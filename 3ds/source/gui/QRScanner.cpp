@@ -25,12 +25,14 @@
  */
 
 #include "QRScanner.hpp"
+#include "Configuration.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "base64.hpp"

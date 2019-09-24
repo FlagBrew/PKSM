@@ -25,7 +25,6 @@
  */
 
 #include "BallOverlay.hpp"
-#include "Configuration.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 

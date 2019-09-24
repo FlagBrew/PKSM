@@ -24,12 +24,19 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "MainMenuButton.hpp"
-#include "gui.hpp"
+#ifndef CORETYPES_H
+#define CORETYPES_H
 
-void MainMenuButton::draw() const
-{
-    Gui::sprite(key, xPos, yPos);
-    Gui::sprite(menuImage, xPos + 10, imageY);
-    Gui::text(text, xPos + 94, yPos + 16, size, textColor, TextPosX::CENTER, TextPosY::TOP);
-}
+#include <stdint.h>
+
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
+typedef int8_t s8;
+typedef int16_t s16;
+typedef int32_t s32;
+typedef int64_t s64;
+
+#endif

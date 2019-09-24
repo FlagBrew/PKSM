@@ -25,7 +25,7 @@
  */
 
 #include "PK5.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK5::shuffleArray(u8 sv)
@@ -813,7 +813,7 @@ static void fixString(std::u16string& fixString)
     }
 }
 
-std::shared_ptr<PKX> PK5::next(void) const
+std::shared_ptr<PKX> PK5::next(Sav& save) const
 {
     u8 dt[232] = {0};
     PK6* pk6   = new PK6(dt);
@@ -973,15 +973,15 @@ std::shared_ptr<PKX> PK5::next(void) const
     pk6->ribbon(4, 3, ribbon(7, 3)); // National Champion
     pk6->ribbon(4, 4, ribbon(2, 5)); // World Champion
 
-    pk6->region(TitleLoader::save->subRegion());
-    pk6->country(TitleLoader::save->country());
-    pk6->consoleRegion(TitleLoader::save->consoleRegion());
+    pk6->region(save.subRegion());
+    pk6->country(save.country());
+    pk6->consoleRegion(save.consoleRegion());
 
     pk6->currentHandler(1);
-    pk6->htName(TitleLoader::save->otName());
-    pk6->htGender(TitleLoader::save->gender());
-    pk6->geoRegion(0, TitleLoader::save->subRegion());
-    pk6->geoCountry(0, TitleLoader::save->country());
+    pk6->htName(save.otName());
+    pk6->htGender(save.gender());
+    pk6->geoRegion(0, save.subRegion());
+    pk6->geoCountry(0, save.country());
     pk6->htIntensity(1);
     pk6->htMemory(4);
     pk6->htFeeling(randomNumbers() % 10);
@@ -1007,7 +1007,7 @@ std::shared_ptr<PKX> PK5::next(void) const
     return std::shared_ptr<PKX>(pk6);
 }
 
-std::shared_ptr<PKX> PK5::previous(void) const
+std::shared_ptr<PKX> PK5::previous(Sav& save) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);
@@ -1031,7 +1031,7 @@ std::shared_ptr<PKX> PK5::previous(void) const
     // met location ???
     for (int i = 0; i < 4; i++)
     {
-        if (pk4->move(i) > TitleLoader::save->maxMove())
+        if (pk4->move(i) > save.maxMove())
         {
             pk4->move(i, 0);
         }

@@ -27,6 +27,7 @@
 #ifndef STORAGEVIEWOVERLAY_HPP
 #define STORAGEVIEWOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "ViewOverlay.hpp"
 #include <bitset>
 #include <vector>

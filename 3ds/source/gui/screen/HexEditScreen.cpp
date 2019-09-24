@@ -25,6 +25,7 @@
  */
 
 #include "HexEditScreen.hpp"
+#include "Configuration.hpp"
 #include "PB7.hpp"
 #include "loader.hpp"
 #include <bitset>

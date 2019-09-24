@@ -60,7 +60,7 @@ private:
     Language lang = Language::JP;
     nlohmann::json ids;
     const int emptySlot;
-    const std::vector<MysteryGift::giftData> gifts;
+    const std::vector<Sav::giftData> gifts;
 
     bool setLanguage(Language lang);
     bool isLangAvailable(Language lang) const;

@@ -25,6 +25,7 @@
  */
 
 #include "banks.hpp"
+#include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "archive.hpp"
 #include "json.hpp"

@@ -92,10 +92,10 @@ public:
     std::shared_ptr<PKX> pkm(u8 slot) const override;
     std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
 
-    // NOTICE: this sets a pkx into the savefile, not a pkx
+    // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
+    bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
@@ -105,7 +105,7 @@ public:
     int dexSeen(void) const override;
     int dexCaught(void) const override;
     int emptyGiftLocation(void) const override;
-    std::vector<MysteryGift::giftData> currentGifts(void) const override;
+    std::vector<Sav::giftData> currentGifts(void) const override;
     void mysteryGift(WCX& wc, int& pos) override;
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
@@ -129,7 +129,7 @@ public:
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
-    std::string pouchName(Pouch pouch) const override;
+    std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalDPPtHGSS::formCount(species); }
 };

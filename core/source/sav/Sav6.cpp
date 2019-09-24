@@ -131,7 +131,7 @@ u8 Sav6::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     return ret;
 }
@@ -213,15 +213,19 @@ std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK6>(data + boxOffset(box, slot), ekx);
 }
 
-void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    transfer(pk);
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
-    }
+        if (applyTrade)
+        {
+            trade(pk);
+        }
 
-    std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+    }
+    return (bool)pk;
 }
 
 void Sav6::trade(std::shared_ptr<PKX> pk)
@@ -231,9 +235,6 @@ void Sav6::trade(std::shared_ptr<PKX> pk)
     {
         if (otName() != pk6->otName() || TID() != pk6->TID() || SID() != pk6->SID() || gender() != pk6->otGender())
         {
-            pk6->metDay(Configuration::getInstance().day());
-            pk6->metMonth(Configuration::getInstance().month());
-            pk6->metYear(Configuration::getInstance().year() - 2000);
             pk6->metLocation(30002);
         }
         return;
@@ -675,9 +676,9 @@ int Sav6::emptyGiftLocation(void) const
     return !empty ? 23 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav6::currentGifts(void) const
+std::vector<Sav::giftData> Sav6::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
@@ -750,20 +751,20 @@ std::vector<std::pair<Pouch, int>> Sav6::pouches(void) const
         {Medicine, game == Game::XY ? 51 : 54}, {Berry, 67}};
 }
 
-std::string Sav6::pouchName(Pouch pouch) const
+std::string Sav6::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMHM");
+            return i18n::localize(lang, "TMHM");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         default:
             return "";
     }

@@ -33,7 +33,7 @@ static nlohmann::json& formJson()
     static bool first = true;
     if (first)
     {
-        FILE* in = fopen("romfs:/i18n/forms.json", "rt");
+        FILE* in = fopen(I18N_PATH "forms.json", "rt");
         if (in)
         {
             if (!ferror(in))
@@ -110,8 +110,8 @@ LanguageStrings::LanguageStrings(Language lang)
 
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    static constexpr const char* base = I18N_PATH;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -145,8 +145,8 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 
 void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    static constexpr const char* base = I18N_PATH;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
     if (values)

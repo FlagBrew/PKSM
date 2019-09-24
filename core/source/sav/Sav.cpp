@@ -165,19 +165,27 @@ bool Sav::validSequence(u8* dt, size_t offset)
     return *(u32*)(dt + offset - 0x8) == DATE_INTERNATIONAL || *(u32*)(dt + offset - 0x8) == DATE_KOREAN;
 }
 
-void Sav::transfer(std::shared_ptr<PKX>& pk)
+std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
 {
-    while (pk->generation() != generation())
+    std::shared_ptr<PKX> ret = pk;
+    while (ret->generation() != generation())
     {
-        if (pk->generation() > generation())
+        Generation oldGen = pk->generation();
+        if (ret->generation() > generation())
         {
-            pk = pk->previous();
+            ret = ret->previous(*this);
         }
         else
         {
-            pk = pk->next();
+            ret = ret->next(*this);
+        }
+        if (ret->generation() == oldGen) // Untransferrable
+        {
+            ret = nullptr;
+            break;
         }
     }
+    return ret;
 }
 
 void Sav::fixParty()

@@ -26,6 +26,7 @@
 
 #include "ConfigCountryOverlay.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 
 ConfigCountryOverlay::ConfigCountryOverlay(ReplaceableScreen& screen)

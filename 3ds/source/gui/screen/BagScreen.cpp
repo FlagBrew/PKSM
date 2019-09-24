@@ -39,7 +39,7 @@ BagScreen::BagScreen()
     for (size_t i = 0; i < limits.size(); i++)
     {
         buttons.push_back(std::make_unique<Button>(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
-            TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
+            TitleLoader::save->pouchName(Configuration::getInstance().language(), limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
     buttons.push_back(std::make_unique<AccelButton>(
         117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
