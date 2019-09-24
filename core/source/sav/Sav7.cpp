@@ -241,7 +241,7 @@ bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
     }
-    return (bool) pk;
+    return (bool)pk;
 }
 
 void Sav7::trade(std::shared_ptr<PKX> pk)

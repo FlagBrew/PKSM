@@ -168,9 +168,9 @@ bool Sav::validSequence(u8* dt, size_t offset)
 std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
 {
     std::shared_ptr<PKX> ret = pk;
-    Generation oldGen        = pk->generation();
     while (ret->generation() != generation())
     {
+        Generation oldGen = pk->generation();
         if (ret->generation() > generation())
         {
             ret = ret->previous(*this);
@@ -183,10 +183,6 @@ std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
         {
             ret = nullptr;
             break;
-        }
-        else
-        {
-            oldGen = ret->generation();
         }
     }
     return ret;
