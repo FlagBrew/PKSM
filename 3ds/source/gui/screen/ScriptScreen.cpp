@@ -311,25 +311,8 @@ void ScriptScreen::applyScript()
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {
-            u32 sbo = 0;
-            u32 gbo = 0;
-            switch (TitleLoader::save->version())
-            {
-                case 7:
-                case 8:
-                    sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
-                    break;
-                case 10:
-                case 11:
-                    sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
-                    break;
-                case 12:
-                    sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
-                    break;
-            }
+            u32 sbo = ((Sav4*)TitleLoader::save.get())->getSBO();
+            u32 gbo = ((Sav4*)TitleLoader::save.get())->getGBO();
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
             {
                 offset += sbo;

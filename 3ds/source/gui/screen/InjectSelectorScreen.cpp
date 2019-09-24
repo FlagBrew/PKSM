@@ -43,14 +43,7 @@ InjectSelectorScreen::InjectSelectorScreen()
 
     if (TitleLoader::save->generation() == Generation::FIVE)
     {
-        if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
-        {
-            ((SavB2W2*)TitleLoader::save.get())->cryptMysteryGiftData();
-        }
-        else
-        {
-            ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
-        }
+        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
     }
 
     gifts = TitleLoader::save->currentGifts();
@@ -80,14 +73,7 @@ InjectSelectorScreen::~InjectSelectorScreen()
     MysteryGift::exit();
     if (TitleLoader::save->generation() == Generation::FIVE)
     {
-        if (TitleLoader::save->version() == 22 || TitleLoader::save->version() == 23)
-        {
-            ((SavB2W2*)TitleLoader::save.get())->cryptMysteryGiftData();
-        }
-        else
-        {
-            ((SavBW*)TitleLoader::save.get())->cryptMysteryGiftData();
-        }
+        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
     }
 }
 
