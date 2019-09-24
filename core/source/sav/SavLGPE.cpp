@@ -1180,10 +1180,7 @@ const std::set<int>& SavLGPE::availableAbilities(void) const
     static std::set<int> ret;
     if (ret.empty())
     {
-        for (int i = 1; i <= maxAbility(); i++)
-        {
-            ret.insert(i);
-        }
+        fill_set(ret, 1, maxAbility());
     }
     return ret;
 }
@@ -1193,10 +1190,7 @@ const std::set<int>& SavLGPE::availableBalls(void) const
     static std::set<int> ret;
     if (ret.empty())
     {
-        for (int i = 1; i <= maxBall(); i++)
-        {
-            ret.insert(i);
-        }
+        fill_set(ret, 1, maxBall());
     }
     return ret;
 }

@@ -73,18 +73,17 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
             continue;
         moves.emplace_back(*i, rawMoves[*i]);
     }
-    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+    std::sort(moves.begin(), moves.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
         if (pair1.first == 0)
         {
-            if (pair2.first == 0)
-            {
-                return false;
-            }
-            return true;
+            return pair2.first != 0;
+        }
+        if (pair2.first == 0)
+        {
+            return false;
         }
         return pair1.second < pair2.second;
-    };
-    std::sort(moves.begin(), moves.end(), less);
+    });
     validMoves = moves;
 
     hid.update(moves.size());

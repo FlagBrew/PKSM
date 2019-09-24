@@ -77,11 +77,11 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
     std::sort(items.begin(), items.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
         if (pair1.first == 0)
         {
-            if (pair2.first == 0)
-            {
-                return false;
-            }
-            return true;
+            return pair2.first != 0;
+        }
+        if (pair2.first == 0)
+        {
+            return false;
         }
         return pair1.second < pair2.second;
     });

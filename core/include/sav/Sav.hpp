@@ -98,6 +98,14 @@ protected:
     virtual int maxAbility(void) const = 0;
     virtual int maxBall(void) const    = 0;
 
+    static inline void fill_set(std::set<int>& set, int begin, int end)
+    {
+        for (; begin <= end; begin++)
+        {
+            set.insert(begin);
+        }
+    }
+
 public:
     u8 boxes = 0;
 
