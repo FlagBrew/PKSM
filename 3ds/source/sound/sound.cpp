@@ -346,11 +346,14 @@ void Sound::playEffect(const std::string& effectName)
 // Must be called by the main thread. Will be called via extern function in Gui::mainLoop for sound.hpp to stay implementation-independent
 void SOUND_correctBGMDataSize()
 {
-    size_t sizeWanted = currentBGM->bufferSize() * sizeof(u16) * 2;
-    if (currentBGM && linearGetSize(bgmData) < sizeWanted)
+    if (currentBGM)
     {
-        linearFree(bgmData);
-        bgmData = (s16*)linearAlloc(sizeWanted);
+        size_t sizeWanted = currentBGM->bufferSize() * sizeof(u16) * 2;
+        if (linearGetSize(bgmData) < sizeWanted)
+        {
+            linearFree(bgmData);
+            bgmData = (s16*)linearAlloc(sizeWanted);
+        }
+        sizeGood = (bgmData != nullptr);
     }
-    sizeGood = (bgmData != nullptr);
 }
