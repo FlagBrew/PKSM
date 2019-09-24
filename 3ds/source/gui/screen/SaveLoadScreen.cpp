@@ -53,6 +53,7 @@ SaveLoadScreen::SaveLoadScreen()
     : Screen(
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
+    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     for (int i = 1; i < 5; i++)
@@ -63,7 +64,6 @@ SaveLoadScreen::SaveLoadScreen()
     buttons.push_back(std::make_unique<AccelButton>(
         24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
@@ -460,6 +460,10 @@ void SaveLoadScreen::update(touchPosition* touch)
                 selectedGroup = true;
                 selectedSave  = 0;
             }
+        }
+        if (buttons[0]->update(touch))
+        {
+            return;
         }
     }
     if (downKeys & KEY_X)
