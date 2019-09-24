@@ -37,12 +37,7 @@
 class BallOverlay : public ReplaceableScreen
 {
 public:
-    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
-    {
-        hid.update(24);
-        hid.select(pkm->ball() - 1);
-    }
+    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
     virtual ~BallOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -52,6 +47,7 @@ public:
 private:
     std::shared_ptr<PKX> pkm;
     HidHorizontal hid;
+    std::vector<int> balls;
 };
 
 #endif

@@ -45,6 +45,11 @@ protected:
     int dexFormCount(int species) const;
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
+    int maxSpecies(void) const override { return 809; } // This is going to be FUN: only numbers 1-151, 808, & 809
+    int maxMove(void) const override { return 742; }
+    int maxItem(void) const override { return 1057; }
+    int maxAbility(void) const override { return 233; } // Same as G7
+    int maxBall(void) const override { return 0x1A; }   // Same as G7
 
 public:
     SavLGPE(u8* dt);
@@ -127,11 +132,11 @@ public:
     int maxBoxes(void) const override { return 34; }         // ish; stupid 1000-slot box makes this dumb
     size_t maxWondercards(void) const override { return 1; } // Data not stored
     Generation generation(void) const override { return Generation::LGPE; }
-    int maxSpecies(void) const { return 809; } // This is going to be FUN: only numbers 1-151, 808, & 809
-    int maxMove(void) const { return 742; }
-    int maxItem(void) const { return 1057; }
-    int maxAbility(void) const { return 233; } // Same as G7
-    int maxBall(void) const { return 0x1A; }   // Same as G7
+    const std::set<int>& availableItems(void) const override;
+    const std::set<int>& availableMoves(void) const override;
+    const std::set<int>& availableSpecies(void) const override;
+    const std::set<int>& availableAbilities(void) const override;
+    const std::set<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

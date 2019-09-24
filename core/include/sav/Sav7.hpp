@@ -43,6 +43,11 @@ protected:
 
     virtual int dexFormIndex(int species, int formct, int start) const = 0;
     virtual int dexFormCount(int species) const                        = 0;
+    int maxSpecies(void) const override { return game == Game::SM ? 802 : 807; }
+    int maxMove(void) const override { return game == Game::SM ? 720 : 728; }
+    int maxItem(void) const override { return game == Game::SM ? 920 : 959; }
+    int maxAbility(void) const override { return game == Game::SM ? 232 : 233; }
+    int maxBall(void) const override { return 0x1A; }
 
 private:
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
@@ -116,11 +121,11 @@ public:
     int maxBoxes(void) const override { return 32; }
     size_t maxWondercards(void) const override { return 48; }
     Generation generation(void) const override { return Generation::SEVEN; }
-    int maxSpecies(void) const { return game == Game::SM ? 802 : 807; }
-    int maxMove(void) const { return game == Game::SM ? 720 : 728; }
-    int maxItem(void) const { return game == Game::SM ? 920 : 959; }
-    int maxAbility(void) const { return game == Game::SM ? 232 : 233; }
-    int maxBall(void) const { return 0x1A; }
+    const std::set<int>& availableItems(void) const override;
+    const std::set<int>& availableMoves(void) const override;
+    const std::set<int>& availableSpecies(void) const override;
+    const std::set<int>& availableAbilities(void) const override;
+    const std::set<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;

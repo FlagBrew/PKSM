@@ -31,10 +31,6 @@
 #include "loader.hpp"
 #include "utils.hpp"
 
-static constexpr auto stringComp = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-    return pair1.second < pair2.second;
-};
-
 namespace
 {
     int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
@@ -70,18 +66,25 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
-    for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
+    const std::set<int>& availableItems      = TitleLoader::save->availableItems();
+    for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
-        if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos)
-            continue;
-        else if (i >= 807 && i <= 835)
-            continue; // Bag Z-Crystals
-        else if (i >= 927 && i <= 932)
-            continue; // Bag Z-Crystals
-        items.emplace_back(i, rawItems[i]);
+        if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||
+            (*i >= 807 && *i <= 835) || (*i >= 927 && *i <= 932))
+            continue; // Invalid items and bag Z-Crystals
+        items.emplace_back(*i, rawItems[*i]);
     }
-    std::sort(items.begin(), items.end(), stringComp);
-    items.insert(items.begin(), {0, rawItems[0]});
+    std::sort(items.begin(), items.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        if (pair1.first == 0)
+        {
+            return pair2.first != 0;
+        }
+        if (pair2.first == 0)
+        {
+            return false;
+        }
+        return pair1.second < pair2.second;
+    });
     validItems = items;
 
     hid.update(items.size());
@@ -98,7 +101,7 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
             itemIndex--;
         }
     }
-    hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
+    hid.select(itemIndex);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
             searchBar();

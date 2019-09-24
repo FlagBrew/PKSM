@@ -100,25 +100,25 @@ bool HexEditScreen::checkValue()
         switch (i)
         {
             case 0x8 ... 0x9:
-                if (pkm->species() > TitleLoader::save->maxSpecies())
+                if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() >= TitleLoader::save->maxItem())
+                if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x14:
-                if (pkm->ability() >= TitleLoader::save->maxAbility())
+                if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x5A ... 0x61:
-                if (pkm->move((i - 0x5A) / 2) >= TitleLoader::save->maxMove())
+                if (TitleLoader::save->availableMoves().count(pkm->move((i - 0x5A) / 2)) == 0)
                 {
                     return false;
                 }
@@ -130,7 +130,7 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0x6A ... 0x71:
-                if (pkm->relearnMove((i - 0x6A) / 2) >= TitleLoader::save->maxMove())
+                if (TitleLoader::save->availableMoves().count(pkm->relearnMove((i - 0x6A) / 2)) == 0)
                 {
                     return false;
                 }
@@ -169,25 +169,25 @@ bool HexEditScreen::checkValue()
         switch (i)
         {
             case 0x8 ... 0x9:
-                if (pkm->species() > TitleLoader::save->maxSpecies())
+                if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0xA ... 0xB:
-                if (pkm->heldItem() >= TitleLoader::save->maxItem())
+                if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x15:
-                if (pkm->ability() >= TitleLoader::save->maxAbility())
+                if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x28 ... 0x2F:
-                if (pkm->move((i - 0x28) / 2) >= TitleLoader::save->maxMove())
+                if (TitleLoader::save->availableMoves().count(pkm->move((i - 0x28) / 2)) == 0)
                 {
                     return false;
                 }

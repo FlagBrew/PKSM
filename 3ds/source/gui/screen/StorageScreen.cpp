@@ -924,12 +924,12 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     bool moveBad = false;
     for (int i = 0; i < 4; i++)
     {
-        if (moveMon->move(i) > TitleLoader::save->maxMove())
+        if (TitleLoader::save->availableMoves().count((int)moveMon->move(i)) == 0)
         {
             moveBad = true;
             break;
         }
-        if (moveMon->relearnMove(i) > TitleLoader::save->maxMove())
+        if (TitleLoader::save->availableMoves().count((int)moveMon->relearnMove(i)) == 0)
         {
             moveBad = true;
             break;
@@ -941,7 +941,7 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
         return false;
     }
-    else if (moveMon->species() > TitleLoader::save->maxSpecies())
+    else if (TitleLoader::save->availableSpecies().count((int)moveMon->species()) == 0)
     {
         if (!bulkTransfer)
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
@@ -954,19 +954,19 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
         return false;
     }
-    else if (moveMon->ability() > TitleLoader::save->maxAbility())
+    else if (TitleLoader::save->availableAbilities().count((int)moveMon->ability()) == 0)
     {
         if (!bulkTransfer)
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
         return false;
     }
-    else if (moveMon->heldItem() > TitleLoader::save->maxItem())
+    else if (TitleLoader::save->availableItems().count((int)moveMon->heldItem()) == 0)
     {
         if (!bulkTransfer)
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
         return false;
     }
-    else if (moveMon->ball() > TitleLoader::save->maxBall())
+    else if (TitleLoader::save->availableBalls().count((int)moveMon->ball()) == 0)
     {
         if (!bulkTransfer)
             Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));

@@ -769,3 +769,53 @@ std::string Sav6::pouchName(Language lang, Pouch pouch) const
             return "";
     }
 }
+
+const std::set<int>& Sav6::availableItems(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxItem());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav6::availableMoves(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxMove());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav6::availableSpecies(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxSpecies());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav6::availableAbilities(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxAbility());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav6::availableBalls(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxBall());
+    }
+    return ret;
+}

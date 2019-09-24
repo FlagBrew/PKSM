@@ -36,6 +36,11 @@ class Sav5 : public Sav
 {
 protected:
     int PCLayout, Trainer1, Trainer2, BattleSubway, PokeDexLanguageFlags;
+    int maxSpecies(void) const override { return 649; }
+    int maxMove(void) const override { return 559; }
+    int maxItem(void) const override { return game == Game::BW ? 632 : 638; }
+    int maxAbility(void) const override { return 164; }
+    int maxBall(void) const override { return 0x19; }
 
 private:
     int dexFormIndex(int species, int formct) const;
@@ -107,11 +112,11 @@ public:
     int maxBoxes(void) const override { return 24; }
     size_t maxWondercards(void) const override { return 12; }
     Generation generation(void) const override { return Generation::FIVE; }
-    int maxSpecies(void) const { return 649; }
-    int maxMove(void) const { return 559; }
-    int maxItem(void) const { return game == Game::BW ? 632 : 638; }
-    int maxAbility(void) const { return 164; }
-    int maxBall(void) const { return 0x19; }
+    const std::set<int>& availableItems(void) const override;
+    const std::set<int>& availableMoves(void) const override;
+    const std::set<int>& availableSpecies(void) const override;
+    const std::set<int>& availableAbilities(void) const override;
+    const std::set<int>& availableBalls(void) const override;
 
     void item(Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
