@@ -94,6 +94,7 @@ GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	../common/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
+I18N_PATH		:=	romfs:/i18n/
 
 ICON			:=	../assets/icon.png
 BANNER_AUDIO	:=	../assets/audio.wav
@@ -117,6 +118,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
+			-DI18N_PATH=\"$(strip ${I18N_PATH})\" \
 			`arm-none-eabi-pkg-config SDL_mixer --cflags` \
 			`curl-config --cflags`
 
