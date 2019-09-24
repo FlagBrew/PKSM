@@ -25,7 +25,7 @@
  */
 
 #include "PK6.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK6::shuffleArray(u8 sv)
@@ -941,7 +941,7 @@ u16 PK6::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK6::next(void) const
+std::shared_ptr<PKX> PK6::next(Sav& save) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -979,8 +979,8 @@ std::shared_ptr<PKX> PK6::next(void) const
     pk7->htTextVar(0);
     pk7->htIntensity(1);
     pk7->htFeeling(randomNumbers() % 10);
-    pk7->geoCountry(0, TitleLoader::save->country());
-    pk7->geoRegion(0, TitleLoader::save->subRegion());
+    pk7->geoCountry(0, save.country());
+    pk7->geoRegion(0, save.subRegion());
 
     pk7->currentHandler(1);
 
@@ -988,7 +988,7 @@ std::shared_ptr<PKX> PK6::next(void) const
     return std::shared_ptr<PKX>(pk7);
 }
 
-std::shared_ptr<PKX> PK6::previous(void) const
+std::shared_ptr<PKX> PK6::previous(Sav& save) const
 {
     u8 dt[232] = {0};
     PK5* pk5   = new PK5(dt);
@@ -1095,7 +1095,7 @@ std::shared_ptr<PKX> PK6::previous(void) const
 
     for (int i = 0; i < 4; i++)
     {
-        if (pk5->move(i) > TitleLoader::save->maxMove())
+        if (pk5->move(i) > save.maxMove())
         {
             pk5->move(i, 0);
         }

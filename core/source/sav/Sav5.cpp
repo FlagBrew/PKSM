@@ -212,15 +212,19 @@ std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK5>(data + boxOffset(box, slot), ekx);
 }
 
-void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    transfer(pk);
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
-    }
+        if (applyTrade)
+        {
+            trade(pk);
+        }
 
-    std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+    }
+    return (bool)pk;
 }
 
 void Sav5::trade(std::shared_ptr<PKX> pk)

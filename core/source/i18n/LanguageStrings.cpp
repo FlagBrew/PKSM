@@ -111,7 +111,7 @@ LanguageStrings::LanguageStrings(Language lang)
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
     static constexpr const char* base = I18N_PATH;
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -146,7 +146,7 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
     static constexpr const char* base = I18N_PATH;
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
     if (values)

@@ -326,13 +326,18 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PB7>(data + boxOffset(box, slot), ekx);
 }
 
-void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
+        if (applyTrade)
+        {
+            trade(pk);
+        }
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
     }
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
+    return (bool)pk;
 }
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)

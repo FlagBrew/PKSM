@@ -25,7 +25,7 @@
  */
 
 #include "PK7.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK7::shuffleArray(u8 sv)
@@ -888,7 +888,7 @@ u16 PK7::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK7::previous(void) const
+std::shared_ptr<PKX> PK7::previous(Sav& save) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -916,16 +916,16 @@ std::shared_ptr<PKX> PK7::previous(void) const
     pk6->htTextVar(0);
     pk6->htIntensity(1);
     pk6->htFeeling(randomNumbers() % 10);
-    pk6->geoCountry(0, TitleLoader::save->country());
-    pk6->geoRegion(0, TitleLoader::save->subRegion());
+    pk6->geoCountry(0, save.country());
+    pk6->geoRegion(0, save.subRegion());
 
     for (int i = 0; i < 4; i++)
     {
-        if (pk6->move(i) > TitleLoader::save->maxMove())
+        if (pk6->move(i) > save.maxMove())
         {
             pk6->move(i, 0);
         }
-        if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+        if (pk6->relearnMove(i) > save.maxMove())
         {
             pk6->relearnMove(i, 0);
         }

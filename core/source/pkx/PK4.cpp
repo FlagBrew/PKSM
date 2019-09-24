@@ -25,6 +25,7 @@
  */
 
 #include "PK4.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK4::shuffleArray(u8 sv)
@@ -788,7 +789,7 @@ u16 PK4::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK4::next(void) const
+std::shared_ptr<PKX> PK4::next(Sav& save) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);

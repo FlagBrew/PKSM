@@ -188,7 +188,7 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> next(void) const override;
+    std::shared_ptr<PKX> next(Sav& save) const override;
 
     inline u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(formSpecies()); }

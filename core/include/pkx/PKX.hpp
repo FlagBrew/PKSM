@@ -40,6 +40,8 @@
 #include "random.hpp"
 #include "utils.hpp"
 
+class Sav;
+
 class PKX
 {
 protected:
@@ -217,8 +219,8 @@ public:
     virtual int partyLevel(void) const           = 0;
     virtual void partyLevel(u8 v)                = 0;
 
-    virtual std::shared_ptr<PKX> previous(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
-    virtual std::shared_ptr<PKX> next(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> previous(Sav& save) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> next(Sav& save) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
 
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);
