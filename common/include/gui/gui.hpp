@@ -37,15 +37,14 @@
 #include "i18n.hpp"
 #include "json.hpp"
 #include "mixer.hpp"
+#include "random.hpp"
 #include "spritesheets.h"
 #include "thread.hpp"
 #include "types.h"
 #include "utils.hpp"
 #include <citro2d.h>
-#include <random>
 #include <stack>
 #include <string.h>
-#include <unordered_map>
 
 namespace Gui
 {

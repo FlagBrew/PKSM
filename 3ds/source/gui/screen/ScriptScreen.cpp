@@ -25,6 +25,7 @@
  */
 
 #include "ScriptScreen.hpp"
+#include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
 #include "ScrollingTextScreen.hpp"

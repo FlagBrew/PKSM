@@ -29,6 +29,7 @@
 #include "ClickButton.hpp"
 #include "CloudOverlay.hpp"
 #include "CloudViewOverlay.hpp"
+#include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
 #include "QRScanner.hpp"

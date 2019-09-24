@@ -375,9 +375,6 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
     PB7* pb7 = (PB7*)pk.get();
     if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
-        pb7->metDay(Configuration::getInstance().day());
-        pb7->metMonth(Configuration::getInstance().month());
-        pb7->metYear(Configuration::getInstance().year() - 2000);
         pb7->metLocation(30002);
     }
     else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
@@ -404,7 +401,7 @@ std::shared_ptr<PKX> SavLGPE::emptyPkm() const
 
 std::string SavLGPE::boxName(u8 box) const
 {
-    return i18n::localize("BOX") + " " + std::to_string((int)box + 1);
+    return i18n::localize(Language(language()), "BOX") + " " + std::to_string((int)box + 1);
 }
 
 void SavLGPE::boxName(u8 box, const std::string& name)
@@ -578,7 +575,7 @@ int SavLGPE::dexSeen(void) const
     {
         for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & BIT(i % 8))
+            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & (1 << (i % 8)))
             {
                 ret++;
                 break;
@@ -593,7 +590,7 @@ int SavLGPE::dexCaught(void) const
     int ret = 0;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x88 + i / 8] & BIT(i % 8))
+        if (data[PokeDex + 0x88 + i / 8] & (1 << (i % 8)))
         {
             ret++;
         }
@@ -1108,24 +1105,24 @@ std::map<Pouch, std::vector<int>> SavLGPE::validItems() const
                 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
 }
 
-std::string SavLGPE::pouchName(Pouch pouch) const
+std::string SavLGPE::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case TM:
-            return i18n::localize("TMS");
+            return i18n::localize(lang, "TMS");
         case Candy:
-            return i18n::localize("CANDIES");
+            return i18n::localize(lang, "CANDIES");
         case ZCrystals:
-            return i18n::localize("ZCRYSTALS");
+            return i18n::localize(lang, "ZCRYSTALS");
         case Ball:
-            return i18n::localize("CATCHING_ITEMS");
+            return i18n::localize(lang, "CATCHING_ITEMS");
         case Battle:
-            return i18n::localize("BATTLE_ITEMS");
+            return i18n::localize(lang, "BATTLE_ITEMS");
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         default:
             return "";
     }

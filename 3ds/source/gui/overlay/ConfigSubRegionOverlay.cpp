@@ -26,6 +26,7 @@
 
 #include "ConfigSubRegionOverlay.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 
 ConfigSubRegionOverlay::ConfigSubRegionOverlay(ReplaceableScreen& screen)

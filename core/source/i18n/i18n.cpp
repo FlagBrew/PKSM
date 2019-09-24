@@ -366,11 +366,6 @@ const std::string& i18n::localize(Language lang, const std::string& val)
     return emptyString;
 }
 
-const std::string& i18n::localize(const std::string& index)
-{
-    return localize(Configuration::getInstance().language(), index);
-}
-
 const std::string& i18n::langString(Language l)
 {
     static const std::string JPN = "JPN";

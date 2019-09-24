@@ -25,6 +25,7 @@
  */
 
 #include "SortOverlay.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 
 void SortOverlay::drawBottom() const

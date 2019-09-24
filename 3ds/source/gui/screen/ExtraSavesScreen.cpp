@@ -25,6 +25,7 @@
  */
 
 #include "ExtraSavesScreen.hpp"
+#include "Configuration.hpp"
 #include "ExtraSavesSubScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"

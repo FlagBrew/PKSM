@@ -34,10 +34,10 @@
 
 #include "Item.hpp"
 #include "PKFilter.hpp"
+#include "coretypes.h"
 #include "generation.hpp"
 #include "personal.hpp"
 #include "random.hpp"
-#include "types.h"
 #include "utils.hpp"
 
 class PKX

@@ -131,7 +131,7 @@ u8 Sav5::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     return ret;
 }
@@ -227,9 +227,6 @@ void Sav5::trade(std::shared_ptr<PKX> pk)
 {
     if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
     {
-        pk->metDay(Configuration::getInstance().day());
-        pk->metMonth(Configuration::getInstance().month());
-        pk->metYear(Configuration::getInstance().year() - 2000);
         pk->metLocation(30003);
     }
 }
@@ -470,9 +467,9 @@ int Sav5::emptyGiftLocation(void) const
     return !empty ? 11 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav5::currentGifts(void) const
+std::vector<Sav::giftData> Sav5::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
@@ -554,20 +551,20 @@ std::vector<std::pair<Pouch, int>> Sav5::pouches() const
     return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27}, {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
 }
 
-std::string Sav5::pouchName(Pouch pouch) const
+std::string Sav5::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMHM");
+            return i18n::localize(lang, "TMHM");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         default:
             return "";
     }

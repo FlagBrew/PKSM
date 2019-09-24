@@ -33,7 +33,6 @@
 #include "game.hpp"
 #include "generation.hpp"
 #include "i18n.hpp"
-#include "mysterygift.hpp"
 #include "utils.hpp"
 #include <memory>
 #include <stdint.h>
@@ -83,6 +82,19 @@ protected:
     static bool validSequence(u8* dt, size_t offset);
 
 public:
+    struct giftData
+    {
+        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, int gender = 0)
+            : name(name), game(game), species(species), form(form), gender(gender)
+        {
+        }
+        std::string name;
+        std::string game;
+        int species;
+        int form;
+        int gender;
+    };
+
     u8 boxes = 0;
 
     virtual ~Sav();
@@ -137,18 +149,18 @@ public:
     virtual void trade(std::shared_ptr<PKX> pk)   = 0; // Look into bank boolean parameter
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
 
-    virtual void dex(std::shared_ptr<PKX> pk)                           = 0;
-    virtual int dexSeen(void) const                                     = 0;
-    virtual int dexCaught(void) const                                   = 0;
-    virtual int emptyGiftLocation(void) const                           = 0;
-    virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;
-    virtual std::unique_ptr<WCX> mysteryGift(int pos) const             = 0;
-    virtual void mysteryGift(WCX& wc, int& pos)                         = 0;
-    virtual void cryptBoxData(bool crypted)                             = 0;
-    virtual std::string boxName(u8 box) const                           = 0;
-    virtual void boxName(u8 box, const std::string& name)               = 0;
-    virtual u8 partyCount(void) const                                   = 0;
-    virtual void partyCount(u8 count)                                   = 0;
+    virtual void dex(std::shared_ptr<PKX> pk)                   = 0;
+    virtual int dexSeen(void) const                             = 0;
+    virtual int dexCaught(void) const                           = 0;
+    virtual int emptyGiftLocation(void) const                   = 0;
+    virtual std::vector<Sav::giftData> currentGifts(void) const = 0;
+    virtual std::unique_ptr<WCX> mysteryGift(int pos) const     = 0;
+    virtual void mysteryGift(WCX& wc, int& pos)                 = 0;
+    virtual void cryptBoxData(bool crypted)                     = 0;
+    virtual std::string boxName(u8 box) const                   = 0;
+    virtual void boxName(u8 box, const std::string& name)       = 0;
+    virtual u8 partyCount(void) const                           = 0;
+    virtual void partyCount(u8 count)                           = 0;
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
@@ -165,7 +177,7 @@ public:
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;
     virtual std::vector<std::pair<Pouch, int>> pouches(void) const   = 0;
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
-    virtual std::string pouchName(Pouch pouch) const                 = 0;
+    virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
     u32 getLength() { return length; }
     u8* rawData() { return data; }

@@ -29,7 +29,6 @@
 
 #include "PK5.hpp"
 #include "PKX.hpp"
-#include "time.h"
 
 class PK4 : public PKX
 {

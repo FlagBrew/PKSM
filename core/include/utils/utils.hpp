@@ -27,7 +27,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include "types.h"
+#include "coretypes.h"
 #include <codecvt>
 #include <locale>
 #include <memory>

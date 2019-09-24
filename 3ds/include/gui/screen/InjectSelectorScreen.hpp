@@ -59,7 +59,7 @@ private:
     bool updateGifts = false;
     HidHorizontal dumpHid;
     void dumpCard(void) const;
-    std::vector<MysteryGift::giftData> gifts;
+    std::vector<Sav::giftData> gifts;
     std::string langFilter = "";
     int typeFilter         = -1;
 };

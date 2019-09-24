@@ -151,4 +151,10 @@ private:
     size_t oldSize = 0;
 };
 
+namespace i18n
+{
+    const std::string& localize(Language lang, const std::string& index);
+    inline const std::string& localize(const std::string& index) { return i18n::localize(Configuration::getInstance().language(), index); }
+}
+
 #endif

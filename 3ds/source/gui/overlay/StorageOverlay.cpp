@@ -28,6 +28,7 @@
 #include "BankSelectionScreen.hpp"
 #include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "FilterScreen.hpp"
 #include "SortScreen.hpp"
 #include "gui.hpp"

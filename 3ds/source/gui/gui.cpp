@@ -25,6 +25,7 @@
  */
 
 #include "gui.hpp"
+#include "Configuration.hpp"
 #include "TextParse.hpp"
 #include <queue>
 

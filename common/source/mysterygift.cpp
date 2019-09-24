@@ -140,9 +140,9 @@ std::vector<nlohmann::json> MysteryGift::wondercards()
     return mysteryGiftSheet["matches"];
 }
 
-MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
+Sav::giftData MysteryGift::wondercardInfo(size_t index)
 {
     nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
-    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>());
+    Sav::giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>());
     return ret;
 }

@@ -27,6 +27,7 @@
 #ifndef BOXOVERLAY_HPP
 #define BOXOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include "i18n.hpp"

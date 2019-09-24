@@ -203,14 +203,14 @@ u8 Sav4::badges(void) const
     u8 ret       = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     if (game == Game::HGSS)
     {
         badgeBits = data[Trainer1 + 0x1F];
         for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
         {
-            ret += badgeBits & BIT(i) ? 1 : 0;
+            ret += badgeBits & (1 << i) ? 1 : 0;
         }
     }
     return ret;
@@ -310,9 +310,6 @@ void Sav4::trade(std::shared_ptr<PKX> pk)
 {
     if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
     {
-        pk->metDay(Configuration::getInstance().day());
-        pk->metMonth(Configuration::getInstance().month());
-        pk->metYear(Configuration::getInstance().year() - 2000);
         pk->metLocation(2002);
     }
 }
@@ -748,9 +745,9 @@ int Sav4::emptyGiftLocation(void) const
     return !empty ? 7 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav4::currentGifts(void) const
+std::vector<Sav::giftData> Sav4::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
@@ -869,26 +866,26 @@ std::map<Pouch, std::vector<int>> Sav4::validItems() const
         {Battle, {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}}};
 }
 
-std::string Sav4::pouchName(Pouch pouch) const
+std::string Sav4::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMHM");
+            return i18n::localize(lang, "TMHM");
         case Mail:
-            return i18n::localize("MAIL");
+            return i18n::localize(lang, "MAIL");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         case Ball:
-            return i18n::localize("BALLS");
+            return i18n::localize(lang, "BALLS");
         case Battle:
-            return i18n::localize("BATTLE_ITEMS");
+            return i18n::localize(lang, "BATTLE_ITEMS");
         default:
             return "";
     }

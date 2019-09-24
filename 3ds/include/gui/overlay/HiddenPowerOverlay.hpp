@@ -27,6 +27,7 @@
 #ifndef HIDDENPOWEROVERLAY_HPP
 #define HIDDENPOWEROVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 #include "ReplaceableScreen.hpp"

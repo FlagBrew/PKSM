@@ -28,6 +28,7 @@
 #define BAGITEMOVERLAY_HPP
 
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include "gui.hpp"

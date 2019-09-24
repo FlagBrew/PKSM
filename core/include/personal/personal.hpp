@@ -27,12 +27,12 @@
 #ifndef PERSONAL_HPP
 #define PERSONAL_HPP
 
+#include "coretypes.h"
 #include "personal_bwb2w2.h"
 #include "personal_dppthgss.h"
 #include "personal_lgpe.h"
 #include "personal_smusum.h"
 #include "personal_xyoras.h"
-#include "types.h"
 
 namespace PersonalLGPE
 {

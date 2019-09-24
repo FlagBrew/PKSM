@@ -25,6 +25,7 @@
  */
 
 #include "FileChooseOverlay.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 

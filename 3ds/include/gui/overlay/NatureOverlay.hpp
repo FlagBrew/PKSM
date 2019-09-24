@@ -27,6 +27,7 @@
 #ifndef NATURESELECTIONSCREEN_HPP
 #define NATURESELECTIONSCREEN_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 #include "ReplaceableScreen.hpp"

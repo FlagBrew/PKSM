@@ -26,6 +26,7 @@
 
 #include "BankChoice.hpp"
 #include "BoxChoice.hpp"
+#include "Configuration.hpp"
 #include "FortyChoice.hpp"
 #include "PB7.hpp"
 #include "PK4.hpp"

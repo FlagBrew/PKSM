@@ -27,6 +27,7 @@
 #ifndef SORTOVERLAY_HPP
 #define SORTOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include "i18n.hpp"

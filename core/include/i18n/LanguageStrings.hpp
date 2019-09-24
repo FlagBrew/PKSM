@@ -27,10 +27,10 @@
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
+#include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
 #include "json.hpp"
-#include "types.h"
 #include <algorithm>
 #include <stdio.h>
 #include <string>

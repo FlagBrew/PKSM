@@ -25,6 +25,7 @@
  */
 
 #include "ScrollingTextScreen.hpp"
+#include "Configuration.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
 

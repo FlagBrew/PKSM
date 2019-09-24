@@ -147,7 +147,7 @@ u8 Sav7::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     return ret;
 }
@@ -247,9 +247,6 @@ void Sav7::trade(std::shared_ptr<PKX> pk)
     {
         if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() || gender() != pk7->otGender())
         {
-            pk7->metDay(Configuration::getInstance().day());
-            pk7->metMonth(Configuration::getInstance().month());
-            pk7->metYear(Configuration::getInstance().year() - 2000);
             pk7->metLocation(30002);
         }
         return;
@@ -543,16 +540,16 @@ int Sav7::emptyGiftLocation(void) const
     return !empty ? 47 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav7::currentGifts(void) const
+std::vector<Sav::giftData> Sav7::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {
             ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
-                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1));
+                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC7::length + 0xA1));
         }
         else
         {
@@ -633,24 +630,24 @@ std::vector<std::pair<Pouch, int>> Sav7::pouches(void) const
     return pouches;
 }
 
-std::string Sav7::pouchName(Pouch pouch) const
+std::string Sav7::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMS");
+            return i18n::localize(lang, "TMS");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         case ZCrystals:
-            return i18n::localize("ZCRYSTALS");
+            return i18n::localize(lang, "ZCRYSTALS");
         case Battle:
-            return i18n::localize("ROTOM_POWERS");
+            return i18n::localize(lang, "ROTOM_POWERS");
         default:
             return "";
     }

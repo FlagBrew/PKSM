@@ -27,6 +27,7 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
 #include "PKX.hpp"
 #include "ReplaceableScreen.hpp"

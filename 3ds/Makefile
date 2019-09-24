@@ -47,6 +47,7 @@ FORMATSOURCES	:=	../common/source \
 					../core/source/personal \
 					../core/source/pkx \
 					../core/source/sav \
+					../core/source/utils \
 					../core/source/wcx \
 					source \
 					source/gui \
@@ -73,6 +74,7 @@ FORMATINCLUDES	:=	../common/include \
 					../core/include/personal \
 					../core/include/pkx \
 					../core/include/sav \
+					../core/include/utils \
 					../core/include/wcx \
 					include \
 					include/gui \

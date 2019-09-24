@@ -27,6 +27,7 @@
 #include "EditSelectorScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "EditorScreen.hpp"
 #include "SavLGPE.hpp"
 #include "gui.hpp"

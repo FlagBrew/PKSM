@@ -83,17 +83,17 @@ static bool goToScreen(int buttonNum)
 MainMenu::MainMenu()
 {
     buttons[0] = std::make_unique<MainMenuButton>(
-        15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, "STORAGE", FONT_SIZE_15, COLOR_WHITE, 27);
+        15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
     buttons[1] = std::make_unique<MainMenuButton>(
-        165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, "EDITOR", FONT_SIZE_15, COLOR_WHITE, 28);
+        165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, i18n::localize("EDITOR"), FONT_SIZE_15, COLOR_WHITE, 28);
     buttons[2] = std::make_unique<MainMenuButton>(
-        15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, "EVENTS", FONT_SIZE_15, COLOR_WHITE, 93);
+        15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, i18n::localize("EVENTS"), FONT_SIZE_15, COLOR_WHITE, 93);
     buttons[3] = std::make_unique<MainMenuButton>(
-        165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, "SCRIPTS", FONT_SIZE_15, COLOR_WHITE, 91);
+        165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, i18n::localize("SCRIPTS"), FONT_SIZE_15, COLOR_WHITE, 91);
     buttons[4] = std::make_unique<MainMenuButton>(
-        15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, "BAG", FONT_SIZE_15, COLOR_WHITE, 157);
+        15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, i18n::localize("BAG"), FONT_SIZE_15, COLOR_WHITE, 157);
     buttons[5] = std::make_unique<MainMenuButton>(
-        165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, "SETTINGS", FONT_SIZE_15, COLOR_WHITE, 160);
+        165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, i18n::localize("SETTINGS"), FONT_SIZE_15, COLOR_WHITE, 160);
 }
 
 MainMenu::~MainMenu()

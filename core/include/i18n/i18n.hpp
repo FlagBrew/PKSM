@@ -27,7 +27,6 @@
 #ifndef I18N_HPP
 #define I18N_HPP
 
-#include "Configuration.hpp"
 #include "LanguageStrings.hpp"
 
 namespace i18n
@@ -58,7 +57,6 @@ namespace i18n
 
     // Used for general GUI stuff; not for PKM values
     const std::string& localize(Language lang, const std::string& index);
-    const std::string& localize(const std::string& index);
     const std::string& langString(Language l);
     Language langFromString(const std::string& value);
 };

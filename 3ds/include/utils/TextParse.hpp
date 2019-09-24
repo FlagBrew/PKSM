@@ -24,14 +24,13 @@
  *         reasonable ways as different from the original version.
  */
 
-
 // TODO: Make this work for both 3DS and Switch, as I really like the interface and it's just better overall than parsing strings multiple times
 #ifndef TextBUF_HPP
 #define TextBUF_HPP
 
 #include "TextPos.hpp"
-#include "types.h"
 #include "colors.hpp"
+#include "types.h"
 #include <memory>
 #include <optional>
 #include <string>
@@ -87,17 +86,14 @@ namespace TextParse
 #elif defined(__SWITCH__)
     struct Glyph
     {
-        Glyph(FT_Glyph ftGlyph, FTC_Node node, u32 line = 0, float xPos = 0.0f)
-            : ftGlyph(ftGlyph), line(line), xPos(xPos)
-        {
-        }
+        Glyph(FT_Glyph ftGlyph, FTC_Node node, u32 line = 0, float xPos = 0.0f) : ftGlyph(ftGlyph), line(line), xPos(xPos) {}
         Glyph(const Glyph& other) = delete;
         Glyph(const Glyph&& other)
         {
             ftGlyph = other.ftGlyph;
-            node = other.node;
-            line = other.line;
-            xPos = other.xPos;
+            node    = other.node;
+            line    = other.line;
+            xPos    = other.xPos;
         }
         ~Glyph();
         FT_Glyph ftGlyph;
@@ -157,8 +153,7 @@ namespace TextParse
     public:
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
-        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos,
-            PKSM_Color color = COLOR_BLACK);
+        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
         void optimize();
         void draw() const;
         void clear();
@@ -166,8 +161,7 @@ namespace TextParse
     private:
         struct DrawableGlyph
         {
-            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize size,
-                PKSM_Color color = COLOR_BLACK)
+            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize size, PKSM_Color color = COLOR_BLACK)
                 : x(x), y(y), z(z), size(size), color(color), glyph(glyph)
             {
             }

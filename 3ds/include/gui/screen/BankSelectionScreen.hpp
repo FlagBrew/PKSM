@@ -27,6 +27,7 @@
 #ifndef BANKSELECTIONSCREEN_HPP
 #define BANKSELECTIONSCREEN_HPP
 
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "Screen.hpp"
 #include "banks.hpp"

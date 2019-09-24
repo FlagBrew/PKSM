@@ -26,6 +26,7 @@
 
 #include "LocationOverlay.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 
 LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met)
