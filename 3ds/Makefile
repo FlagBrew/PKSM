@@ -69,7 +69,6 @@ FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
 					../common/include/io \
 					../common/include/utils \
-					../core/include \
 					../core/include/i18n \
 					../core/include/personal \
 					../core/include/pkx \
@@ -87,7 +86,8 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
-					../core/memecrypto
+					../core/memecrypto \
+					../core/include
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
