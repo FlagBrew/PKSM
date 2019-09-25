@@ -62,7 +62,6 @@ struct EffectThreadArg
     s16* linearMem;
     int channel;
     volatile std::atomic_flag inUse;
-    Thread myThread;
 };
 
 static void clearDoneEffects()
