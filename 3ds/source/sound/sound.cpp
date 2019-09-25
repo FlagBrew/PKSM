@@ -50,6 +50,7 @@ static std::atomic<bool> playMusic = false;
 static std::atomic<bool> bgmDone   = true;
 static std::atomic<bool> exitBGM   = false;
 static u8 currentVolume            = 0;
+static std::list<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
 
 struct EffectThreadArg
 {
@@ -70,6 +71,7 @@ static void clearDoneEffects()
     {
         if (!i->inUse.test_and_set())
         {
+            freeChannels.push_back(i->channel);
             linearFree(i->linearMem);
             i = effectThreads.erase(i);
         }
@@ -370,12 +372,13 @@ void Sound::playEffect(const std::string& effectName)
 {
     auto effect = effects.find(effectName);
     clearDoneEffects();
-    if (effect != effects.end() && effectThreads.size() < 22)
+    if (effect != effects.end() && !freeChannels.empty())
     {
         auto decoder = Decoder::get(effect->second);
         if (decoder && decoder->good())
         {
-            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), effectThreads.size() + 1);
+            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
+            freeChannels.pop_front();
             Threads::create(&playEffectThread, (void*)&*effectThreads.rbegin());
         }
     }
