@@ -39,18 +39,7 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include "quirc/quirc.h"
-
-typedef struct
-{
-    u16* camera_buffer;
-    Handle mutex;
-    volatile bool finished;
-    Handle cancel;
-    bool capturing;
-    struct quirc* context;
-    C3D_Tex* tex;
-    C2D_Image image;
-} qr_data;
+#include <atomic>
 
 class QRData
 {
@@ -88,7 +77,7 @@ private:
     Handle imageMutex;
     quirc* data;
     Handle exitEvent;
-    volatile bool finished                    = false;
+    std::atomic<bool> finished                = false;
     bool capturing                            = false;
     static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
 };
