@@ -62,6 +62,7 @@ struct EffectThreadArg
     s16* linearMem;
     int channel;
     volatile std::atomic_flag inUse;
+    Thread myThread;
 };
 
 static void clearDoneEffects()
@@ -285,7 +286,7 @@ void Sound::startBGM()
 static void playEffectThread(void* rawArg)
 {
     EffectThreadArg* arg = (EffectThreadArg*)rawArg;
-    if (arg->channel < 23 && arg->linearMem) // Check to make sure that we have enough channels
+    if (arg->linearMem) // Did the linearAlloc work properly?
     {
         ndspChnReset(arg->channel);
         ndspChnWaveBufClear(arg->channel);
@@ -379,7 +380,13 @@ void Sound::playEffect(const std::string& effectName)
         {
             effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
             freeChannels.pop_front();
-            Threads::create(&playEffectThread, (void*)&*effectThreads.rbegin());
+
+            s32 prio = 0;
+            svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+            if (!threadCreate((ThreadFunc)playEffectThread, (void*)&effectThreads.back(), 4 * 1024, prio - 1, -2, true))
+            {
+                effectThreads.back().inUse.clear();
+            }
         }
     }
 }
@@ -390,7 +397,11 @@ void SOUND_correctBGMDataSize()
     if (currentBGM)
     {
         size_t sizeWanted = currentBGM->bufferSize() * sizeof(u16) * 2;
-        if (linearGetSize(bgmData) < sizeWanted)
+        if (bgmData == nullptr)
+        {
+            bgmData = (s16*)linearAlloc(sizeWanted);
+        }
+        else if (linearGetSize(bgmData) < sizeWanted)
         {
             linearFree(bgmData);
             bgmData = (s16*)linearAlloc(sizeWanted);
