@@ -171,6 +171,7 @@ static void bgmPlayThread(void*)
         svcSleepThread(1000000); // About one millisecond.
         if (i > 5 * 1000)        // Timeout in about 5 seconds.
         {
+            bgmDone = true;
             return;
         }
     }
@@ -254,8 +255,7 @@ static void bgmControlThread(void*)
             {
                 return;
             }
-            bgmDone = false;
-            Threads::create(&bgmPlayThread);
+            bgmDone = !Threads::createDetached(&bgmPlayThread);
         }
         if (currentVolume == 0)
         {
@@ -381,9 +381,7 @@ void Sound::playEffect(const std::string& effectName)
             effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
             freeChannels.pop_front();
 
-            s32 prio = 0;
-            svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-            if (!threadCreate((ThreadFunc)playEffectThread, (void*)&effectThreads.back(), 4 * 1024, prio - 1, -2, true))
+            if (!Threads::createDetached(&playEffectThread, (void*)&effectThreads.back()))
             {
                 effectThreads.back().inUse.clear();
             }

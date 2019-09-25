@@ -28,6 +28,13 @@
 
 static std::vector<Thread> threads;
 
+Thread Threads::createDetached(ThreadFunc entrypoint, void* arg)
+{
+    s32 prio = 0;
+    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+    return threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, true);
+}
+
 void Threads::create(ThreadFunc entrypoint, void* arg)
 {
     s32 prio = 0;
