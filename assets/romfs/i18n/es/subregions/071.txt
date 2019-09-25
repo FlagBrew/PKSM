@@ -1,0 +1,22 @@
+0|—
+6|Ciudad de Zagreb
+7|Condado de Bjelovar-Bilogora
+8|Condado de Brod-Posavina
+9|Condado de Dubrovnik-Neretva
+10|Condado de Istria
+11|Condado de Karlovac
+12|Condado de Koprivnica-Križevci
+13|Condado de Krapina-Zagorje
+14|Condado de Lika-Senj
+15|Condado de Medimurje
+16|Condado de Osijek-Baranja
+17|Condado de Požega-Eslavonia
+18|Condado de Primorje-Gorski Kotar
+19|Condado de Sisak-Moslavina
+20|Condado de Split-Dalmacia
+21|Condado de Šibenik-Knin
+22|Condado de Varaždin
+23|Condado de Virovitica-Podravina
+24|Condado de Vukovar-Srijem
+25|Condado de Zadar
+26|Condado de Zagreb

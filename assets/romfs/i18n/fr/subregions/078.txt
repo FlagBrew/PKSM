@@ -1,0 +1,17 @@
+0|—
+2|Berlin
+3|Hesse
+4|Bade-Wurtemberg
+5|Bavière
+6|Brandebourg
+7|Brême
+8|Hambourg
+9|Mecklembourg-Poméranie antérieure
+10|Basse-Saxe
+11|Rhénanie-du-Nord-Westphalie
+12|Rhénanie-Palatinat
+13|Sarre
+14|Saxe
+15|Saxe-Anhalt
+16|Schleswig-Holstein
+17|Thuringe

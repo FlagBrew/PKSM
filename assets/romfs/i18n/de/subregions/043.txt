@@ -1,0 +1,15 @@
+0|—
+2|Saint George Basseterre
+3|Christ Church Nichola Town
+4|Saint Anne Sandy Point
+5|Saint George Gingerland
+6|Saint James Windward
+7|Saint John Capisterre
+8|Saint John Figtree
+9|Saint Mary Cayon
+10|Saint Paul Capisterre
+11|Saint Paul Charlestown
+12|Saint Peter Basseterre
+13|Saint Thomas Lowland
+14|Saint Thomas Middle Island
+15|Trinity Palmetto Point

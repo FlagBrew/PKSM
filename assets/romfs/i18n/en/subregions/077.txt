@@ -1,0 +1,27 @@
+0|—
+2|Île-de-France
+3|Alsace
+4|Aquitaine
+5|Auvergne
+6|Lower Normandy
+7|Burgundy
+8|Brittany
+9|Centre
+10|Champagne-Ardenne
+11|Corsica
+12|Franche-Comté
+13|Upper Normandy
+14|Languedoc-Roussillon
+15|Limousin
+16|Lorraine
+17|Midi-Pyrénées
+18|Nord-Pas-de-Calais
+19|Pays de la Loire
+20|Picardy
+21|Poitou-Charentes
+22|Provence-Alpes-Côte d'Azur
+23|Rhône-Alpes
+24|Guadeloupe
+25|Martinique
+26|French Guiana
+27|Réunion

@@ -36,19 +36,18 @@ class BagScreen : public Screen
 {
 public:
     BagScreen();
-    virtual ~BagScreen();
+    virtual ~BagScreen() {}
 
     void update(touchPosition* touch) override;
-    void draw() const override;
-
-    ScreenType type() const { return ScreenType::BAG; }
+    void drawTop() const override;
+    void drawBottom() const override;
 
 private:
     std::vector<std::pair<Pouch, int>> limits;
     std::map<Pouch, std::vector<int>> allowedItems;
-    std::vector<Button*> amountButtons;
+    std::vector<std::unique_ptr<Button>> amountButtons;
     int currentPouch = 0;
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     int selectedItem    = 0;
     int firstItem       = 0;
     int firstEmpty      = 0;

@@ -1,0 +1,23 @@
+0|—
+2|Taipeh
+3|Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|Xinbei
+10|Kreis Taoyuan
+11|Kreis Hsinchu
+12|Kreis Miaoli
+14|Kreis Changhua
+15|Kreis Nantou
+16|Kreis Yunlin
+17|Kreis Chiayi
+20|Kreis Pingtung
+21|Kreis Yilan
+22|Kreis Hualien
+23|Kreis Taitung
+24|Kreis Penghu
+25|Kreis Kinmen
+26|Kreis Lienchiang

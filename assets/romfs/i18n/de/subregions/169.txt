@@ -1,0 +1,35 @@
+0|—
+2|Delhi
+3|Andamanen und Nikobaren
+4|Andhra Pradesh
+5|Assam
+6|Chandigarh
+7|Dadra und Nagar Haveli
+8|Gujarat
+9|Haryana
+10|Himachal Pradesh
+12|Kerala
+13|Lakshadweep
+14|Maharashtra
+15|Manipur
+16|Meghalaya
+17|Karnataka
+18|Nagaland
+19|Odisha
+20|Puducherry
+21|Punjab
+22|Rajasthan
+23|Tamil Nadu
+24|Tripura
+25|Westbengalen
+26|Sikkim
+28|Mizoram
+29|Daman und Diu
+30|Goa
+31|Bihar
+32|Madhya Pradesh
+33|Uttar Pradesh
+34|Chhattisgarh
+35|Jharkhand
+36|Uttarakhand
+37|Sonstige

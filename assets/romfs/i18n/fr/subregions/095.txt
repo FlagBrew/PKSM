@@ -1,0 +1,17 @@
+0|—
+2|Wellington
+3|Auckland
+4|Bay of Plenty
+5|Canterbury
+6|Otago
+7|Hawke's Bay
+8|Manawatu-Wanganui
+9|Nelson
+10|Northland
+12|Southland
+13|Taranaki
+14|Waikato
+15|Gisborne
+16|West Coast
+17|Marlborough
+18|Tasman

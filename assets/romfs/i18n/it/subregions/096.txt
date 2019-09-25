@@ -1,0 +1,21 @@
+0|—
+7|Oslo
+8|Akershus
+9|Aust-Agder
+10|Buskerud
+11|Finnmark
+12|Hedmark
+13|Hordaland
+14|Møre og Romsdal
+15|Nordland
+16|Nord-Trøndelag
+17|Oppland
+18|Rogaland
+19|Sogn og Fjordane
+20|Sør-Trøndelag
+21|Telemark
+22|Troms
+23|Vest-Agder
+24|Vestfold
+25|Østfold
+26|Isole Svalbard

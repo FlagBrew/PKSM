@@ -1,0 +1,27 @@
+0|—
+2|Berna
+4|Argovia
+5|Ciudad de Basilea
+6|Friburgo
+7|Ginebra
+8|Glaris
+9|Grisones
+10|Jura
+11|Lucerna
+12|Neuchâtel
+13|Obwalden
+14|Sankt Gallen
+15|Schaffhausen
+16|Schwyz
+17|Soleura
+18|Turgovia
+19|Tesino
+20|Uri
+21|Valais
+22|Vaud
+23|Zug
+24|Zúrich
+25|Appenzell Rodas Exteriores
+26|Appenzell Rodas Interiores
+27|Basilea-Campiña
+28|Nidwalden

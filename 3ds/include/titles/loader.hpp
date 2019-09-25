@@ -56,7 +56,7 @@ namespace TitleLoader
 {
     void scanTitles(void);
     bool scanCard(void);
-    bool cardUpdate(void);
+    bool cardWasUpdated(void);
     void scanSaves(void);
     bool load(std::shared_ptr<Title> title);
     bool load(std::shared_ptr<Title> title, const std::string& path);
@@ -66,10 +66,11 @@ namespace TitleLoader
     void saveToTitle(bool ask);
     void exit(void);
 
-    extern std::vector<std::shared_ptr<Title>> nandTitles;
-    extern std::shared_ptr<Title> cardTitle;
-    extern std::unordered_map<std::string, std::vector<std::string>> sdSaves;
-    extern std::shared_ptr<Sav> save;
+    // Title list
+    inline std::vector<std::shared_ptr<Title>> nandTitles;
+    inline std::shared_ptr<Title> cardTitle = nullptr;
+    inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
+    inline std::shared_ptr<Sav> save;
 }
 
 #endif

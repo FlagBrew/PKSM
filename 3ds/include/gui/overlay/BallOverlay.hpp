@@ -27,28 +27,27 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <memory>
 
-class BallOverlay : public Overlay
+class BallOverlay : public ReplaceableScreen
 {
 public:
-    BallOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
-    {
-        hid.update(24);
-        hid.select(pkm->ball() - 1);
-    }
+    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
     virtual ~BallOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
     std::shared_ptr<PKX> pkm;
     HidHorizontal hid;
+    std::vector<int> balls;
 };
 
 #endif

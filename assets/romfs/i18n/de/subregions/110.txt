@@ -1,0 +1,5 @@
+0|—
+2|England
+4|Schottland
+5|Wales
+6|Nordirland

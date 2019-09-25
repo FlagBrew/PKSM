@@ -25,7 +25,7 @@
  */
 
 #include "PK7.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK7::shuffleArray(u8 sv)
@@ -63,22 +63,29 @@ void PK7::crypt(void)
     }
 }
 
-PK7::PK7(u8* dt, bool ekx, bool party)
+PK7::PK7(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
 {
     length = party ? 260 : 232;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
 
-    std::copy(dt, dt + length, data);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
+
     if (ekx)
     {
         decrypt();
     }
 }
 
-std::shared_ptr<PKX> PK7::clone(void)
+std::shared_ptr<PKX> PK7::clone(void) const
 {
-    return std::make_shared<PK7>(data, false, length == 260);
+    return std::make_shared<PK7>(const_cast<u8*>(data), false, length == 260);
 }
 
 Generation PK7::generation(void) const
@@ -310,11 +317,11 @@ void PK7::ribbon(u8 ribcat, u8 ribnum, u8 v)
 
 std::string PK7::nickname(void) const
 {
-    return StringUtils::getString(data, 0x40, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x40, 12));
 }
 void PK7::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x40, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12);
 }
 
 u16 PK7::move(u8 m) const
@@ -387,11 +394,11 @@ void PK7::nicknamed(bool v)
 
 std::string PK7::htName(void) const
 {
-    return StringUtils::getString(data, 0x78, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x78, 12));
 }
 void PK7::htName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x78, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
 }
 
 u8 PK7::htGender(void) const
@@ -504,11 +511,11 @@ void PK7::enjoyment(u8 v)
 
 std::string PK7::otName(void) const
 {
-    return StringUtils::getString(data, 0xB0, 13);
+    return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13));
 }
 void PK7::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0xB0, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13);
 }
 
 u8 PK7::otFriendship(void) const
@@ -881,7 +888,7 @@ u16 PK7::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK7::previous(void) const
+std::shared_ptr<PKX> PK7::previous(Sav& save) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -909,16 +916,16 @@ std::shared_ptr<PKX> PK7::previous(void) const
     pk6->htTextVar(0);
     pk6->htIntensity(1);
     pk6->htFeeling(randomNumbers() % 10);
-    pk6->geoCountry(0, TitleLoader::save->country());
-    pk6->geoRegion(0, TitleLoader::save->subRegion());
+    pk6->geoCountry(0, save.country());
+    pk6->geoRegion(0, save.subRegion());
 
     for (int i = 0; i < 4; i++)
     {
-        if (pk6->move(i) > TitleLoader::save->maxMove())
+        if (pk6->move(i) > save.maxMove())
         {
             pk6->move(i, 0);
         }
-        if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
+        if (pk6->relearnMove(i) > save.maxMove())
         {
             pk6->relearnMove(i, 0);
         }
@@ -977,33 +984,5 @@ void PK7::partyLevel(u8 v)
     if (length != 232)
     {
         *(data + 0xEC) = v;
-    }
-}
-
-void PK7::reorderMoves(void)
-{
-    PKX::reorderMoves();
-    if (relearnMove(3) != 0 && relearnMove(2) == 0)
-    {
-        relearnMove(2, relearnMove(3));
-        PP(2, PP(3));
-        PPUp(2, PPUp(3));
-        relearnMove(3, 0);
-    }
-    if (relearnMove(2) != 0 && relearnMove(1) == 0)
-    {
-        relearnMove(1, relearnMove(2));
-        PP(1, PP(2));
-        PPUp(1, PPUp(2));
-        relearnMove(2, 0);
-        reorderMoves();
-    }
-    if (relearnMove(1) != 0 && relearnMove(0) == 0)
-    {
-        relearnMove(0, relearnMove(1));
-        PP(0, PP(1));
-        PPUp(0, PPUp(1));
-        relearnMove(1, 0);
-        reorderMoves();
     }
 }

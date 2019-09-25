@@ -1,0 +1,27 @@
+0|—
+2|Dublin
+10|County Carlow
+11|County Cavan
+12|County Clare
+13|County Cork
+14|County Donegal
+15|County Galway
+16|County Kerry
+17|County Kildare
+18|County Kilkenny
+19|County Laois
+20|County Leitrim
+21|County Limerick
+22|County Longford
+23|County Louth
+24|County Mayo
+25|County Meath
+26|County Monaghan
+27|County Offaly
+28|County Roscommon
+29|County Sligo
+30|County Tipperary
+31|County Waterford
+32|County Westmeath
+33|County Wexford
+34|County Wicklow

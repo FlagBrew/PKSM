@@ -1,0 +1,10 @@
+0|—
+2|Viena
+3|Burgenland
+4|Carintia
+5|Baja Austria
+6|Alta Austria
+7|Salzburgo
+8|Estiria
+9|Tirol
+10|Vorarlberg

@@ -29,6 +29,7 @@
 
 #include "PGF.hpp"
 #include "PGT.hpp"
+#include "Sav.hpp"
 #include "WB7.hpp"
 #include "WC4.hpp"
 #include "WC6.hpp"
@@ -39,17 +40,9 @@
 
 namespace MysteryGift
 {
-    struct giftData
-    {
-        std::string name;
-        std::string game;
-        int species;
-        int form;
-        int gender;
-    };
     void init(Generation gen);
     std::vector<nlohmann::json> wondercards();
-    MysteryGift::giftData wondercardInfo(size_t index);
+    Sav::giftData wondercardInfo(size_t index);
     std::unique_ptr<WCX> wondercard(size_t index);
     void exit();
 }

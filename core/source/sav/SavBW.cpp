@@ -28,7 +28,7 @@
 
 SavBW::SavBW(u8* dt)
 {
-    length = 0x24000;
+    length = 0x80000;
     boxes  = 24;
     game   = Game::BW;
 

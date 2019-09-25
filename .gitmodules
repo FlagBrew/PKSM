@@ -1,6 +1,6 @@
 [submodule "source/memecrypto"]
 	path = core/memecrypto
-	url = https://github.com/dsoldier/memecrypto.git
+	url = https://github.com/FlagBrew/memecrypto.git
 [submodule "build/PKSM-Scripts"]
 	path = external/PKSM-Scripts
 	url = https://github.com/FlagBrew/PKSM-Scripts

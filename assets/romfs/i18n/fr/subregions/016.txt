@@ -1,0 +1,28 @@
+0|—
+2|District Fédéral
+3|Acre
+4|Alagoas
+5|Amapá
+6|Amazonas
+7|Bahia
+8|Ceará
+9|Espírito Santo
+10|Mato Grosso do Sul
+11|Maranhão
+12|Mato Grosso
+13|Minas Gerais
+14|Pará
+15|Paraíba
+16|Paraná
+17|Piauí
+18|État de Rio de Janeiro
+19|Rio Grande do Norte
+20|Rio Grande do Sul
+21|Rondônia
+22|Roraima
+23|Santa Catarina
+24|État de São Paulo
+25|Sergipe
+26|Goiás
+27|Pernambouc
+28|Tocantins

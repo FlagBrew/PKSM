@@ -1,0 +1,14 @@
+0|—
+2|Attica
+3|Grecia Centrale
+4|Macedonia Centrale
+5|Creta
+6|Macedonia Orientale e Tracia
+7|Epiro
+8|Isole Ionie
+9|Egeo Settentrionale
+10|Peloponneso
+11|Egeo Meridionale
+12|Tessaglia
+13|Grecia Occidentale
+14|Macedonia Occidentale

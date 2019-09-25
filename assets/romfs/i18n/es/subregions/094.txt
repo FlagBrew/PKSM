@@ -1,0 +1,13 @@
+0|—
+2|Holanda Septentrional
+3|Drente
+4|Flevoland
+5|Frisia
+6|Güeldres
+7|Groninga
+8|Limburgo
+9|Brabante Septentrional
+10|Overijssel
+11|Holanda Meridional
+12|Utrecht
+13|Zelanda

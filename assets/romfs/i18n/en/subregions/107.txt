@@ -1,0 +1,22 @@
+0|—
+2|Stockholm County
+3|Skåne County
+4|Västra Götaland County
+5|Östergötland County
+6|Södermanland County
+7|Värmland County
+8|Uppsala County
+9|Gävleborg County
+10|Västerbotten County
+11|Norrbotten County
+12|Gotland Island
+13|Jämtland County
+14|Dalarna County
+15|Blekinge County
+16|Örebro County
+17|Västernorrland County
+18|Jönköping County
+19|Kronoberg County
+20|Kalmar County
+21|Västmanland County
+22|Halland County

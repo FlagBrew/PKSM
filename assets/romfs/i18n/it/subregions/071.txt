@@ -1,0 +1,22 @@
+0|—
+6|Zagabria
+7|Regione di Bjelovar e della Bilogora
+8|Regione di Brod e della Posavina
+9|Regione Raguseo-Narentana
+10|Regione Istriana
+11|Regione di Karlovac
+12|Regione di Koprivnica e Križevci
+13|Regione di Krapina e dello Zagorje
+14|Regione della Lika e di Segna
+15|Regione del Medjimurje
+16|Regione di Osijek e della Baranja
+17|Regione di Požega e della Slavonia
+18|Regione Litoraneo-Montana
+19|Regione di Sisak e della Moslavina
+20|Regione Spalatino-Dalmata
+21|Regione di Sebenico e Tenin
+22|Regione di Varasdino
+23|Regione di Virovitica e della Podravina
+24|Regione di Vukovar e della Sirmia
+25|Regione Zaratina
+26|Regione Zagabrese

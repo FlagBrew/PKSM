@@ -62,22 +62,28 @@ void PB7::crypt(void)
     }
 }
 
-PB7::PB7(u8* dt, bool ekx)
+PB7::PB7(u8* dt, bool ekx, bool direct) : directAccess(direct)
 {
     length = 260;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
 
-    std::copy(dt, dt + length, data);
     if (ekx)
     {
         decrypt();
     }
 }
 
-std::shared_ptr<PKX> PB7::clone(void)
+std::shared_ptr<PKX> PB7::clone(void) const
 {
-    return std::make_shared<PB7>(data);
+    return std::make_shared<PB7>(const_cast<u8*>(data));
 }
 
 Generation PB7::generation(void) const
@@ -977,32 +983,4 @@ u8 PB7::weight(void) const
 void PB7::weight(u8 v)
 {
     data[0x3B] = v;
-}
-
-void PB7::reorderMoves(void)
-{
-    if (relearnMove(3) != 0 && relearnMove(2) == 0)
-    {
-        relearnMove(2, relearnMove(3));
-        PP(2, PP(3));
-        PPUp(2, PPUp(3));
-        relearnMove(3, 0);
-    }
-    if (relearnMove(2) != 0 && relearnMove(1) == 0)
-    {
-        relearnMove(1, relearnMove(2));
-        PP(1, PP(2));
-        PPUp(1, PPUp(2));
-        relearnMove(2, 0);
-        reorderMoves();
-    }
-    if (relearnMove(1) != 0 && relearnMove(0) == 0)
-    {
-        relearnMove(0, relearnMove(1));
-        PP(0, PP(1));
-        PPUp(0, PPUp(1));
-        relearnMove(1, 0);
-        reorderMoves();
-    }
-    PKX::reorderMoves();
 }

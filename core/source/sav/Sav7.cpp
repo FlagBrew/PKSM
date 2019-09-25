@@ -116,11 +116,11 @@ void Sav7::language(u8 v)
 
 std::string Sav7::otName(void) const
 {
-    return StringUtils::getString(data, TrainerCard + 0x38, 13);
+    return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x38, 13));
 }
 void Sav7::otName(const std::string& v)
 {
-    return StringUtils::setString(data, v, TrainerCard + 0x38, 13);
+    return StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x38, 13);
 }
 
 u32 Sav7::money(void) const
@@ -147,7 +147,7 @@ u8 Sav7::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     return ret;
 }
@@ -200,16 +200,14 @@ u32 Sav7::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav7::pkm(u8 slot) const
 {
-    u8 buf[260];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 260, buf);
-    return std::make_unique<PK7>(buf, true, true);
+    return std::make_unique<PK7>(data + partyOffset(slot), true, true);
 }
 
 void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[260] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true);
+    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true, true);
 
     if (pk->getLength() != 260)
     {
@@ -228,20 +226,22 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
 {
-    u8 buf[232];
-    std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 232, buf);
-    return std::make_unique<PK7>(buf, ekx);
+    return std::make_unique<PK7>(data + boxOffset(box, slot), ekx);
 }
 
-void Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    transfer(pk);
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
-    }
+        if (applyTrade)
+        {
+            trade(pk);
+        }
 
-    std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+    }
+    return (bool)pk;
 }
 
 void Sav7::trade(std::shared_ptr<PKX> pk)
@@ -251,9 +251,6 @@ void Sav7::trade(std::shared_ptr<PKX> pk)
     {
         if (otName() != pk7->otName() || TID() != pk7->TID() || SID() != pk7->SID() || gender() != pk7->otGender())
         {
-            pk7->metDay(Configuration::getInstance().day());
-            pk7->metMonth(Configuration::getInstance().month());
-            pk7->metYear(Configuration::getInstance().year() - 2000);
             pk7->metLocation(30002);
         }
         return;
@@ -281,12 +278,11 @@ void Sav7::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::shared_ptr<PKX> pk7 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(data + boxOffset(box, slot), crypted, false, true);
             if (!crypted)
             {
                 pk7->encrypt();
             }
-            pkm(pk7, box, slot, false);
         }
     }
 }
@@ -458,13 +454,14 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
 
 int Sav7::dexSeen(void) const
 {
-    int ret                     = 0;
-    static constexpr int brSize = 0x8C;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ret = 0;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        for (int j = 1; j <= 4; j++)
+        int bitIndex = (i - 1) & 7;
+        for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + brSize * j + i / 8] & BIT(i % 8))
+            int ofs = PokeDex + (0xF0 + (j * 0x8C)) + ((i - 1) >> 3);
+            if ((data[ofs] >> bitIndex & 1) != 0)
             {
                 ret++;
                 break;
@@ -477,9 +474,11 @@ int Sav7::dexSeen(void) const
 int Sav7::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x88 + i / 8] & BIT(i % 8))
+        int bitIndex = (i - 1) & 7;
+        int ofs      = PokeDex + 0x88 + ((i - 1) >> 3);
+        if ((data[ofs] >> bitIndex & 1) != 0)
         {
             ret++;
         }
@@ -497,12 +496,12 @@ void Sav7::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav7::boxName(u8 box) const
 {
-    return StringUtils::getString(data, PCLayout + 0x22 * box, 17);
+    return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22 * box, 17));
 }
 
 void Sav7::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x22 * box, 17);
+    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
 }
 
 u8 Sav7::partyCount(void) const
@@ -516,8 +515,7 @@ void Sav7::partyCount(u8 v)
 
 std::shared_ptr<PKX> Sav7::emptyPkm() const
 {
-    static auto empty = std::make_shared<PK7>();
-    return empty;
+    return std::make_shared<PK7>();
 }
 
 int Sav7::emptyGiftLocation(void) const
@@ -546,20 +544,20 @@ int Sav7::emptyGiftLocation(void) const
     return !empty ? 47 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav7::currentGifts(void) const
+std::vector<Sav::giftData> Sav7::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
-                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC6::length + 0xA1)});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
+                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC7::length + 0xA1));
         }
         else
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", -1, -1, -1);
         }
     }
     return ret;
@@ -636,25 +634,75 @@ std::vector<std::pair<Pouch, int>> Sav7::pouches(void) const
     return pouches;
 }
 
-std::string Sav7::pouchName(Pouch pouch) const
+std::string Sav7::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMS");
+            return i18n::localize(lang, "TMS");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         case ZCrystals:
-            return i18n::localize("ZCRYSTALS");
+            return i18n::localize(lang, "ZCRYSTALS");
         case Battle:
-            return i18n::localize("ROTOM_POWERS");
+            return i18n::localize(lang, "ROTOM_POWERS");
         default:
             return "";
     }
+}
+
+const std::set<int>& Sav7::availableItems(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxItem());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav7::availableMoves(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxMove());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav7::availableSpecies(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxSpecies());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav7::availableAbilities(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxAbility());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav7::availableBalls(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxBall());
+    }
+    return ret;
 }

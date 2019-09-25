@@ -33,9 +33,9 @@
 #include "game.hpp"
 #include "generation.hpp"
 #include "i18n.hpp"
-#include "mysterygift.hpp"
 #include "utils.hpp"
 #include <memory>
+#include <set>
 #include <stdint.h>
 
 enum Pouch
@@ -54,6 +54,15 @@ enum Pouch
 
 class Sav
 {
+    // Friends so they can use the max functions, as these classes are guaranteed to know what they're doing
+    // This allows for some optimizations in transfer code
+    friend class PKX;
+    friend class PK4;
+    friend class PK5;
+    friend class PK6;
+    friend class PK7;
+    friend class PB7;
+
 protected:
     int Box, Party, PokeDex, WondercardData, WondercardFlags;
     int PouchHeldItem, PouchKeyItem, PouchTMHM, PouchMedicine, PouchBerry;
@@ -80,9 +89,36 @@ protected:
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(u8* dt);
-    static bool validSequence(u8* dt, u8* pattern, int shift = 0);
+    static bool validSequence(u8* dt, size_t offset);
+
+    virtual int maxSpecies(void) const = 0;
+    virtual int maxMove(void) const    = 0;
+    virtual int maxItem(void) const    = 0;
+    virtual int maxAbility(void) const = 0;
+    virtual int maxBall(void) const    = 0;
+
+    static inline void fill_set(std::set<int>& set, int begin, int end)
+    {
+        for (; begin <= end; begin++)
+        {
+            set.insert(begin);
+        }
+    }
 
 public:
+    struct giftData
+    {
+        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, int gender = 0)
+            : name(name), game(game), species(species), form(form), gender(gender)
+        {
+        }
+        std::string name;
+        std::string game;
+        int species;
+        int form;
+        int gender;
+    };
+
     u8 boxes = 0;
 
     virtual ~Sav();
@@ -132,40 +168,40 @@ public:
     virtual std::shared_ptr<PKX> pkm(u8 slot) const                             = 0;
     virtual void pkm(std::shared_ptr<PKX> pk, u8 slot)                          = 0;
     virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const   = 0;
-    virtual void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
-    void transfer(std::shared_ptr<PKX>& pk);
+    virtual bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
+    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
     virtual void trade(std::shared_ptr<PKX> pk)   = 0; // Look into bank boolean parameter
     virtual std::shared_ptr<PKX> emptyPkm() const = 0;
 
-    virtual void dex(std::shared_ptr<PKX> pk)                           = 0;
-    virtual int dexSeen(void) const                                     = 0;
-    virtual int dexCaught(void) const                                   = 0;
-    virtual int emptyGiftLocation(void) const                           = 0;
-    virtual std::vector<MysteryGift::giftData> currentGifts(void) const = 0;
-    virtual std::unique_ptr<WCX> mysteryGift(int pos) const             = 0;
-    virtual void mysteryGift(WCX& wc, int& pos)                         = 0;
-    virtual void cryptBoxData(bool crypted)                             = 0;
-    virtual std::string boxName(u8 box) const                           = 0;
-    virtual void boxName(u8 box, const std::string& name)               = 0;
-    virtual u8 partyCount(void) const                                   = 0;
-    virtual void partyCount(u8 count)                                   = 0;
+    virtual void dex(std::shared_ptr<PKX> pk)                   = 0;
+    virtual int dexSeen(void) const                             = 0;
+    virtual int dexCaught(void) const                           = 0;
+    virtual int emptyGiftLocation(void) const                   = 0;
+    virtual std::vector<Sav::giftData> currentGifts(void) const = 0;
+    virtual std::unique_ptr<WCX> mysteryGift(int pos) const     = 0;
+    virtual void mysteryGift(WCX& wc, int& pos)                 = 0;
+    virtual void cryptBoxData(bool crypted)                     = 0;
+    virtual std::string boxName(u8 box) const                   = 0;
+    virtual void boxName(u8 box, const std::string& name)       = 0;
+    virtual u8 partyCount(void) const                           = 0;
+    virtual void partyCount(u8 count)                           = 0;
     virtual void fixParty(void); // Has to be overridden by SavLGPE because it works stupidly
 
     virtual int maxSlot(void) const { return maxBoxes() * 30; }
-    virtual int maxBoxes(void) const          = 0;
-    virtual size_t maxWondercards(void) const = 0;
-    virtual int maxSpecies(void) const        = 0;
-    virtual int maxMove(void) const           = 0;
-    virtual int maxItem(void) const           = 0;
-    virtual int maxAbility(void) const        = 0;
-    virtual int maxBall(void) const           = 0;
-    virtual Generation generation(void) const = 0;
+    virtual int maxBoxes(void) const                            = 0;
+    virtual size_t maxWondercards(void) const                   = 0;
+    virtual Generation generation(void) const                   = 0;
+    virtual const std::set<int>& availableItems(void) const     = 0;
+    virtual const std::set<int>& availableMoves(void) const     = 0;
+    virtual const std::set<int>& availableSpecies(void) const   = 0;
+    virtual const std::set<int>& availableAbilities(void) const = 0;
+    virtual const std::set<int>& availableBalls(void) const     = 0;
 
     virtual void item(Item& item, Pouch pouch, u16 slot)             = 0;
     virtual std::unique_ptr<Item> item(Pouch pouch, u16 slot) const  = 0;
     virtual std::vector<std::pair<Pouch, int>> pouches(void) const   = 0;
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
-    virtual std::string pouchName(Pouch pouch) const                 = 0;
+    virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
     u32 getLength() { return length; }
     u8* rawData() { return data; }

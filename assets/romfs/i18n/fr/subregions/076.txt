@@ -1,0 +1,21 @@
+0|—
+8|Uusimaa
+9|Laponie
+10|Ostrobotnie du Nord
+11|Kainuu
+12|Carélie du Nord
+13|Savonie du Nord
+14|Savonie du Sud
+15|Ostrobotnie du Sud
+16|Ostrobotnie
+17|Pirkanmaa
+18|Satakunta
+19|Ostrobotnie-Centrale
+20|Finlande-Centrale
+21|Finlande propre
+22|Carélie du Sud
+23|Päijät-Häme
+24|Kanta-Häme
+25|Uusimaa de l'Est
+26|Vallée de la Kymi
+27|Åland

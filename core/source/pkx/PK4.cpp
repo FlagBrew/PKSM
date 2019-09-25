@@ -25,6 +25,7 @@
  */
 
 #include "PK4.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK4::shuffleArray(u8 sv)
@@ -62,20 +63,28 @@ void PK4::crypt(void)
     }
 }
 
-PK4::PK4(u8* dt, bool ekx, bool party)
+PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
 {
     length = party ? 236 : 136;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
 
-    std::copy(dt, dt + length, data);
     if (ekx)
+    {
         decrypt();
+    }
 }
 
-std::shared_ptr<PKX> PK4::clone(void)
+std::shared_ptr<PKX> PK4::clone(void) const
 {
-    return std::make_shared<PK4>(data, false, length == 236);
+    return std::make_shared<PK4>(const_cast<u8*>(data), false, length == 236);
 }
 
 Generation PK4::generation(void) const
@@ -294,6 +303,15 @@ void PK4::move(u8 m, u16 v)
     *(u16*)(data + 0x28 + m * 2) = v;
 }
 
+u16 PK4::relearnMove(u8 m) const
+{
+    return 0;
+}
+void PK4::relearnMove(u8 m, u16 v)
+{
+    // stubbed
+}
+
 u8 PK4::PP(u8 m) const
 {
     return data[0x30 + m];
@@ -418,11 +436,11 @@ void PK4::shinyLeaf(u8 v)
 
 std::string PK4::nickname(void) const
 {
-    return StringUtils::getString4(data, 0x48, 11);
+    return StringUtils::transString45(StringUtils::getString4(data, 0x48, 11));
 }
 void PK4::nickname(const std::string& v)
 {
-    StringUtils::setString4(data, v, 0x48, 11);
+    StringUtils::setString4(data, StringUtils::transString45(v), 0x48, 11);
 }
 
 u8 PK4::version(void) const
@@ -436,11 +454,11 @@ void PK4::version(u8 v)
 
 std::string PK4::otName(void) const
 {
-    return StringUtils::getString4(data, 0x68, 8);
+    return StringUtils::transString45(StringUtils::getString4(data, 0x68, 8));
 }
 void PK4::otName(const std::string& v)
 {
-    StringUtils::setString4(data, v, 0x68, 8);
+    StringUtils::setString4(data, StringUtils::transString45(v), 0x68, 8);
 }
 
 u8 PK4::eggYear(void) const
@@ -771,7 +789,7 @@ u16 PK4::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK4::next(void) const
+std::shared_ptr<PKX> PK4::next(Sav& save) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);

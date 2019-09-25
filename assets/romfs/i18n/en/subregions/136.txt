@@ -1,0 +1,17 @@
+0|—
+2|Seoul-teukbyeolsi
+3|Busan-gwangyeoksi
+4|Daegu-gwangyeoksi
+5|Incheon-gwangyeoksi
+6|Gwangju-gwangyeoksi
+7|Daejeon-gwangyeoksi
+8|Ulsan-gwangyeoksi
+9|Gyeonggi-do
+10|Gangwon-do
+11|Chungcheongbuk-do
+12|Chungcheongnam-do
+13|Jeollabuk-do
+14|Jeollanam-do
+15|Gyeongsangbuk-do
+16|Gyeongsangnam-do
+17|Jeju-teukbyeoljachido

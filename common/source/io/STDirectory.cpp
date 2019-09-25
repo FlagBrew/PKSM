@@ -45,10 +45,7 @@ STDirectory::STDirectory(const std::string& root)
     {
         while ((ent = readdir(dir)))
         {
-            std::string name           = std::string(ent->d_name);
-            bool directory             = ent->d_type == DT_DIR;
-            struct STDirectoryEntry de = {name, directory};
-            mList.push_back(de);
+            mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);
         }
     }
 

@@ -27,23 +27,26 @@
 #ifndef BOXOVERLAY_HPP
 #define BOXOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <string>
 #include <vector>
 
-class BoxOverlay : public Overlay
+class BoxOverlay : public ReplaceableScreen
 {
 public:
-    BoxOverlay(Screen& screen, std::vector<std::string>& boxes, int& current)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
+    BoxOverlay(ReplaceableScreen& screen, std::vector<std::string>& boxes, int& current)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), strings(boxes), out(current)
     {
         hid.update(strings.size());
         hid.select(current);
     }
     virtual ~BoxOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

@@ -1,0 +1,17 @@
+0|—
+2|Región de Wellington
+3|Región de Auckland
+4|Bahía de Plenty
+5|Canterbury
+6|Otago
+7|Bahía de Hawke
+8|Manawatu-Wanganui
+9|Región de Nelson
+10|Northland
+12|Southland
+13|Taranaki
+14|Waikato
+15|Gisborne
+16|Costa Oeste
+17|Marlborough
+18|Tasman

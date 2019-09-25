@@ -38,76 +38,75 @@
 #include "PkmItemOverlay.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
+#include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "random.hpp"
-#include "banks.hpp"
 
-#define NO_TEXT_BUTTON(x, y, w, h, function, image) new Button(x, y, w, h, function, image, "", 0.0f, 0)
-#define NO_TEXT_ACCEL(x, y, w, h, function, image) new AccelButton(x, y, w, h, function, image, "", 0.0f, 0)
-#define NO_TEXT_CLICK(x, y, w, h, function, image) new ClickButton(x, y, w, h, function, image, "", 0.0f, 0)
+#define NO_TEXT_BUTTON(x, y, w, h, function, image) std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
+#define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
+#define NO_TEXT_CLICK(x, y, w, h, function, image) std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 
 static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
 
-EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency) : pkm(pokemon), box(box), index(index), emergency(emergency)
+EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency)
+    : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
-    if (!pkm || (pkm->encryptionConstant() == 0 && pkm->species() == 0))
+    addOverlay<ViewOverlay>(pkm, false);
+    if (!pkm || pkm->species() == 0)
     {
-        pkm = TitleLoader::save->emptyPkm()->clone();
+        pkm = TitleLoader::save->emptyPkm();
         if (Configuration::getInstance().useSaveInfo())
         {
             pkm->TID(TitleLoader::save->TID());
             pkm->SID(TitleLoader::save->SID());
             pkm->otName(TitleLoader::save->otName());
+            pkm->otGender(TitleLoader::save->gender());
         }
         else
         {
             pkm->TID(Configuration::getInstance().defaultTID());
             pkm->SID(Configuration::getInstance().defaultSID());
-            switch (pkm->generation())
-            {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                default:
-                    pkm->otName(Configuration::getInstance().defaultOT().substr(0, 7));
-                    break;
-                case Generation::SIX:
-                case Generation::SEVEN:
-                    pkm->otName(Configuration::getInstance().defaultOT());
-                    break;
-            }
+            pkm->otName(Configuration::getInstance().defaultOT());
         }
         pkm->ball(4);
-        pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
+        pkm->encryptionConstant((u32)randomNumbers());
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
             case 7:
             case 8:
                 pkm->metLocation(0x0095); // Route 1, HGSS
+                break;
             case 10:
             case 11:
             case 12:
                 pkm->metLocation(0x0010); // Route 201, DPPt
+                break;
             case 20:
             case 21:
             case 22:
             case 23:
                 pkm->metLocation(0x000e); // Route 1, BWB2W2
+                break;
             case 24:
             case 25:
                 pkm->metLocation(0x0008); // Route 1, XY
+                break;
             case 26:
             case 27:
                 pkm->metLocation(0x00cc); // Route 101, ORAS
+                break;
             case 30:
             case 31:
             case 32:
             case 33:
                 pkm->metLocation(0x0006); // Route 1, SMUSUM
+                break;
             case 42:
             case 43:
                 pkm->metLocation(0x0003); // Route 1, LGPE
+                break;
         }
         pkm->fixMoves();
         // pkm->PID((u32)randomNumbers());
@@ -122,12 +121,16 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
             ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
             ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+            ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+            ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
             ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
             ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
             ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
+            ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
+            ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         // if (pkm->generation() == Generation::LGPE)
         // {
@@ -135,7 +138,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         //     ((PB7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
         //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         // }
-        currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+        addOverlay<SpeciesOverlay>(pkm);
     }
 
     if (this->box == 0xFF)
@@ -149,7 +152,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK4>(pkmData, false, true);
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::FIVE:
@@ -159,7 +162,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     pkm = std::make_shared<PK5>(pkmData, false, true);
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::SIX:
@@ -177,7 +180,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                         pkm = std::make_shared<PK7>(pkmData, false, true);
                     }
                     partyUpdate();
-                    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+                    addOverlay<SpeciesOverlay>(pkm);
                 }
                 break;
             case Generation::LGPE:
@@ -200,19 +203,19 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
 
     buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
     instructions.addCircle(false, 12, 11, 4, COLOR_GREY);
-    instructions.addBox(false, 10, 11, 4, 32, COLOR_GREY);
+    instructions.addLine(false, 12, 11, 12, 43, 4, COLOR_GREY);
     instructions.addBox(false, 10, 43, 50, 16, COLOR_GREY, i18n::localize("BALL"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this]() { return this->selectBall(); }, ui_sheet_res_null_idx));
     instructions.addBox(false, 224, 33, 60, 68, COLOR_GREY, i18n::localize("CHANGE_FORM"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this]() { return this->selectForm(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 305, 14, 11, COLOR_GREY);
-    instructions.addBox(false, 303, 14, 4, 92, COLOR_GREY);
+    instructions.addLine(false, 305, 14, 305, 106, 4, COLOR_GREY);
     instructions.addBox(false, 207, 106, 100, 16, COLOR_GREY, i18n::localize("HEX_EDIT"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
     buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { setLevel(); });
+            setLevel();
             return false;
         },
         ui_sheet_res_null_idx));
@@ -229,46 +232,46 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setOT(); });
+            setOT();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(75, 174, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setNick(); });
+            setNick();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { return this->setFriendship(); });
+            setFriendship();
             return false;
         },
         ui_sheet_res_null_idx));
     buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(new Button(204, 109, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 109, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<StatsEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(204, 140, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 140, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MoveEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new Button(204, 171, 108, 30,
+    buttons.push_back(std::make_unique<Button>(204, 171, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MiscEditScreen>(pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(new ClickButton(204, 202, 108, 30,
+    buttons.push_back(std::make_unique<ClickButton>(204, 202, 108, 30,
         [this]() {
             this->save();
             this->goBack();
@@ -278,21 +281,20 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     instructions.addBox(false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this]() { return this->selectSpecies(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 192, 13, 6, COLOR_GREY);
-    instructions.addBox(false, 190, 11, 4, 32, COLOR_GREY);
+    instructions.addLine(false, 192, 13, 192, 45, 4, COLOR_GREY);
     instructions.addBox(false, 124, 43, 70, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
-    instructions.addBox(false, 214, 12, 46, 4, COLOR_GREY);
-    instructions.addBox(false, 214, 16, 4, 48, COLOR_GREY);
+    instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
+    instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
     instructions.addBox(false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
 }
 
-void EditorScreen::draw() const
+void EditorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -306,23 +308,23 @@ void EditorScreen::draw() const
         Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 30 + i * 40);
     }
 
-    for (auto button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }
 
-    Gui::staticText(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("OT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("OT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
     Gui::ball(pkm->ball(), 4, 3);
-    Gui::dynamicText(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     switch (pkm->gender())
     {
         case 0:
@@ -336,28 +338,21 @@ void EditorScreen::draw() const
         default:
             break;
     }
-    Gui::dynamicText(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(
-        pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-        TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(pkm->otName(), 95, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(pkm->nickname(), 95, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(
-        std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->otName(), 95, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->nickname(), 95, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::pkm(*pkm, 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
     Gui::pkm(*pkm, 224, 33, 2.0f);
 }
 
 void EditorScreen::update(touchPosition* touch)
 {
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -396,10 +391,6 @@ void EditorScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_START)
     {
-        if (!Gui::showChoiceMessage("Update Pokémon data with save info?", "This may cause some legality issues."))
-        {
-            return;
-        }
         setSaveInfo();
         return;
     }
@@ -487,7 +478,7 @@ bool EditorScreen::advanceMon(bool forward)
                 }
                 pkm = TitleLoader::save->pkm(box, index);
             }
-        } while (pkm->encryptionConstant() == 0 && pkm->species() == 0);
+        } while (pkm->species() == 0);
         sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     }
     return false;
@@ -555,7 +546,7 @@ bool EditorScreen::togglePokerus()
 void EditorScreen::setOT()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (8 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (8 - 1));
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -570,7 +561,7 @@ void EditorScreen::setOT()
 void EditorScreen::setNick()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN ? 12 : (11 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (11 - 1));
     swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -698,7 +689,7 @@ bool EditorScreen::save()
 
 bool EditorScreen::selectNature()
 {
-    currentOverlay = std::make_unique<NatureOverlay>(*this, pkm);
+    addOverlay<NatureOverlay>(pkm);
     return false;
 }
 
@@ -814,7 +805,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    currentOverlay = std::make_unique<PkmItemOverlay>(*this, pkm);
+    addOverlay<PkmItemOverlay>(pkm);
     return false;
 }
 
@@ -834,20 +825,20 @@ bool EditorScreen::selectForm()
     }
     if (count > 1)
     {
-        currentOverlay = std::make_unique<FormOverlay>(*this, pkm, count);
+        addOverlay<FormOverlay>(pkm, count);
     }
     return false;
 }
 
 bool EditorScreen::selectBall()
 {
-    currentOverlay = std::make_unique<BallOverlay>(*this, pkm);
+    addOverlay<BallOverlay>(pkm);
     return false;
 }
 
 bool EditorScreen::selectSpecies()
 {
-    currentOverlay = std::make_unique<SpeciesOverlay>(*this, pkm);
+    addOverlay<SpeciesOverlay>(pkm);
     return false;
 }
 

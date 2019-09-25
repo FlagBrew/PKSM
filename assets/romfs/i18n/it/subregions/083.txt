@@ -1,0 +1,21 @@
+0|—
+2|Lazio
+3|Valle d'Aosta
+4|Piemonte
+5|Liguria
+6|Lombardia
+7|Trentino-Alto Adige
+8|Veneto
+9|Friuli-Venezia Giulia
+10|Emilia-Romagna
+11|Toscana
+12|Umbria
+13|Marche
+14|Abruzzo
+15|Molise
+16|Campania
+17|Puglia
+18|Basilicata
+19|Calabria
+20|Sicilia
+21|Sardegna

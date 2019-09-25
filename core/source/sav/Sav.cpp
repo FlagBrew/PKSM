@@ -96,22 +96,22 @@ bool Sav::isValidDSSave(u8* dt)
     }
 
     // Check for block identifiers
-    u8 dpPattern[]   = {0x00, 0xC1, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    u8 ptPattern[]   = {0x2C, 0xCF, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    u8 hgssPattern[] = {0x28, 0xF6, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    if (validSequence(dt, dpPattern))
+    static constexpr size_t DP_OFFSET   = 0xC100;
+    static constexpr size_t PT_OFFSET   = 0xCF2C;
+    static constexpr size_t HGSS_OFFSET = 0xF628;
+    if (validSequence(dt, DP_OFFSET))
         return true;
-    if (validSequence(dt, ptPattern))
+    if (validSequence(dt, PT_OFFSET))
         return true;
-    if (validSequence(dt, hgssPattern))
+    if (validSequence(dt, HGSS_OFFSET))
         return true;
 
     // Check the other save
-    if (validSequence(dt, dpPattern, 0x40000))
+    if (validSequence(dt, DP_OFFSET + 0x40000))
         return true;
-    if (validSequence(dt, ptPattern, 0x40000))
+    if (validSequence(dt, PT_OFFSET + 0x40000))
         return true;
-    if (validSequence(dt, hgssPattern, 0x40000))
+    if (validSequence(dt, HGSS_OFFSET + 0x40000))
         return true;
     return false;
 }
@@ -132,48 +132,60 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
     }
 
     // Check for block identifiers
-    u8 dpPattern[]   = {0x00, 0xC1, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    u8 ptPattern[]   = {0x2C, 0xCF, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    u8 hgssPattern[] = {0x28, 0xF6, 0x00, 0x00, 0x23, 0x06, 0x06, 0x20, 0x00, 0x00};
-    if (validSequence(dt, dpPattern))
+    static constexpr size_t DP_OFFSET   = 0xC100;
+    static constexpr size_t PT_OFFSET   = 0xCF2C;
+    static constexpr size_t HGSS_OFFSET = 0xF628;
+    if (validSequence(dt, DP_OFFSET))
         return std::make_unique<SavDP>(dt);
-    if (validSequence(dt, ptPattern))
+    if (validSequence(dt, PT_OFFSET))
         return std::make_unique<SavPT>(dt);
-    if (validSequence(dt, hgssPattern))
+    if (validSequence(dt, HGSS_OFFSET))
         return std::make_unique<SavHGSS>(dt);
 
     // Check the other save
-    if (validSequence(dt, dpPattern, 0x40000))
+    if (validSequence(dt, DP_OFFSET + 0x40000))
         return std::make_unique<SavDP>(dt);
-    if (validSequence(dt, ptPattern, 0x40000))
+    if (validSequence(dt, PT_OFFSET + 0x40000))
         return std::make_unique<SavPT>(dt);
-    if (validSequence(dt, hgssPattern, 0x40000))
+    if (validSequence(dt, HGSS_OFFSET + 0x40000))
         return std::make_unique<SavHGSS>(dt);
     return nullptr;
 }
 
-bool Sav::validSequence(u8* dt, u8* pattern, int shift)
+bool Sav::validSequence(u8* dt, size_t offset)
 {
-    int ofs = *(u16*)(pattern)-0xC + shift;
-    for (int i = 0; i < 10; i++)
-        if (dt[i + ofs] != pattern[i])
-            return false;
-    return true;
+    static constexpr u32 DATE_INTERNATIONAL = 0x20060623;
+    static constexpr u32 DATE_KOREAN        = 0x20070903;
+
+    if (*(u32*)(dt + offset - 0xC) != (offset & 0xFFFF))
+    {
+        return false;
+    }
+
+    return *(u32*)(dt + offset - 0x8) == DATE_INTERNATIONAL || *(u32*)(dt + offset - 0x8) == DATE_KOREAN;
 }
 
-void Sav::transfer(std::shared_ptr<PKX>& pk)
+std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
 {
-    while (pk->generation() != generation())
+    std::shared_ptr<PKX> ret = pk;
+    while (ret->generation() != generation())
     {
-        if (pk->generation() > generation())
+        Generation oldGen = pk->generation();
+        if (ret->generation() > generation())
         {
-            pk = pk->previous();
+            ret = ret->previous(*this);
         }
         else
         {
-            pk = pk->next();
+            ret = ret->next(*this);
+        }
+        if (ret->generation() == oldGen) // Untransferrable
+        {
+            ret = nullptr;
+            break;
         }
     }
+    return ret;
 }
 
 void Sav::fixParty()
@@ -183,13 +195,13 @@ void Sav::fixParty()
     for (int i = 5; i > 0; i--)
     {
         auto checkPKM = pkm(i);
-        if ((checkPKM->encryptionConstant() == 0 && checkPKM->species() == 0))
+        if (checkPKM->species() == 0)
         {
             numPkm--;
             continue;
         }
         auto prevPKM = pkm(i - 1);
-        if (!(checkPKM->encryptionConstant() == 0 && checkPKM->species() == 0) && (prevPKM->encryptionConstant() == 0 && prevPKM->species() == 0))
+        if (checkPKM->species() != 0 && prevPKM->species() == 0)
         {
             pkm(checkPKM, i - 1);
             pkm(prevPKM, i);

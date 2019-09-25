@@ -1,0 +1,9 @@
+0|—
+2|Australian Capital Territory
+3|New South Wales
+4|Northern Territory
+5|Queensland
+6|South Australia
+7|Tasmania
+8|Victoria
+9|Western Australia

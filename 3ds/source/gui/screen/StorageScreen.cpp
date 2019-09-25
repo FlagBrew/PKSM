@@ -29,6 +29,7 @@
 #include "BankSelectionScreen.hpp"
 #include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
+#include "CloudScreen.hpp"
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
@@ -37,43 +38,18 @@
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
-#include "TitleLoadScreen.hpp"
 #include "StorageViewOverlay.hpp"
+#include "TitleLoadScreen.hpp"
+#include "app.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
 #include <variant>
 
-extern "C" {
-#include "base64.h"
-}
-
 extern std::stack<std::unique_ptr<Screen>> screens;
 
 static bool backHeld = false;
-
-int bobPointer()
-{
-    static int currentBob = 0;
-    static bool up        = true;
-    if (up)
-    {
-        currentBob++;
-        if (currentBob >= 12)
-        {
-            up = false;
-        }
-    }
-    else
-    {
-        currentBob--;
-        if (currentBob <= 0)
-        {
-            up = true;
-        }
-    }
-    return currentBob / 4;
-}
 
 void StorageScreen::setBoxName(bool storage)
 {
@@ -153,16 +129,16 @@ void StorageScreen::setBoxName(bool storage)
 }
 
 StorageScreen::StorageScreen()
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("Y_CURSOR_MODE") + '\n' +
              i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("START_EXTRA_FUNC") + '\n' +
              i18n::localize("B_BACK"))
 {
     instructions.addBox(true, 69, 21, 156, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     instructions.addCircle(false, 266, 23, 11, COLOR_GREY);
-    instructions.addBox(false, 264, 23, 4, 50, COLOR_GREY);
+    instructions.addLine(false, 266, 23, 266, 73, 4, COLOR_GREY);
     instructions.addBox(false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
-    mainButtons[0] =
-        std::make_unique<ClickButton>(242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, 0);
+    mainButtons[0] = std::make_unique<ClickButton>(
+        242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[2] = std::make_unique<Button>(
@@ -173,36 +149,23 @@ StorageScreen::StorageScreen()
         212, 140, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[5] = std::make_unique<Button>(
         212, 171, 108, 28, [this]() { return this->duplicate(); }, ui_sheet_button_editor_idx, i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, 0);
+    mainButtons[6] =
+        std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[7] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[8] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
-    instructions.addBox(false, 15, 175, 4, 50, COLOR_GREY);
-    instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("SHARE_HINT"), COLOR_WHITE);
+    instructions.addLine(false, 17, 175, 17, 225, 4, COLOR_GREY);
+    instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
         [this]() {
-            if (!infoMon)
-            {
-                if (cursorIndex == 0 || !Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-                {
-                    return false;
-                }
-                Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
-            }
-            else
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-                {
-                    return false;
-                }
-                shareSend();
-            }
+            Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
+            justSwitched = true;
             return true;
         },
-        ui_sheet_button_wireless_no_y_idx, "", 0.0f, 0);
+        ui_sheet_button_wireless_no_y_idx, "", 0.0f, COLOR_BLACK);
 
     // Pokemon buttons
     u16 y = 45;
@@ -211,15 +174,15 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
     }
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     clickButtons[30] =
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
@@ -233,7 +196,7 @@ StorageScreen::~StorageScreen()
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
-            if (TitleLoader::save->pkm(u8(0), i)->encryptionConstant())
+            if (TitleLoader::save->pkm(u8(0), i)->species())
             {
                 occupiedSlots++;
             }
@@ -248,9 +211,8 @@ StorageScreen::~StorageScreen()
     TitleLoader::save->currentBox((u8)boxBox);
 }
 
-void StorageScreen::draw() const
+void StorageScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
@@ -281,23 +243,23 @@ void StorageScreen::draw() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
             if (currentlySelecting && !storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
                 std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() > 0)
                 {
-                    Gui::pkm(*pokemon, x, y);
+                    float blend = *pokemon == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
                 }
                 if (TitleLoader::save->generation() == Generation::LGPE)
                 {
@@ -313,25 +275,26 @@ void StorageScreen::draw() const
         y += 30;
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!storageChosen)
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 97 + (i % selectDimensions.first) * 34;
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -351,19 +314,20 @@ void StorageScreen::draw() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -381,43 +345,45 @@ void StorageScreen::draw() const
             }
         }
     }
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void StorageScreen::drawTop() const
+{
     Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
     Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
     Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-    Gui::dynamicText(Banks::bank->name(), 394, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+    Gui::text(Banks::bank->name(), 394, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-    Gui::staticText("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::staticText("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
 
-    y = 66;
+    int y = 66;
     for (u8 row = 0; row < 5; row++)
     {
         u16 x = 45;
         for (u8 column = 0; column < 6; column++)
         {
-            // C2D_Color32(0x50, 0xF0, 0x40, 0x80);
             if (currentlySelecting && storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
             {
-                Gui::pkm(*pkm, x, y);
+                float blend = *pkm == *filter ? 0.0f : 0.5f;
+                Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
             x += 34;
         }
@@ -436,19 +402,20 @@ void StorageScreen::draw() const
     {
         if (cursorIndex == 0)
         {
-            int dy = bobPointer();
+            int dy = Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 138 + (i % selectDimensions.first) * 34;
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -468,19 +435,20 @@ void StorageScreen::draw() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + bobPointer();
+            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
                 int x = 53 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
                 if (selectDimensions.first > 1 || selectDimensions.second > 1)
                 {
-                    C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
                 }
                 if (moveMon[i])
                 {
+                    float blend = *moveMon[i] == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*moveMon[i], x, y, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                    Gui::pkm(*moveMon[i], x - 3, y - 5);
+                    Gui::pkm(*moveMon[i], x - 3, y - 5, 1.0f, COLOR_BLACK, blend);
                 }
             }
             switch (pickupMode)
@@ -501,31 +469,32 @@ void StorageScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(infoMon->nickname(), 276, 61, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(infoMon->species());
-        Gui::dynamicText(info, 273, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info        = i18n::localize("LV") + std::to_string(infoMon->level());
-        float width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 375 - (int)width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        info      = i18n::localize("LV") + std::to_string(infoMon->level());
+        auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        int width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 362 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
         }
         else if (infoMon->gender() == 1)
         {
-            Gui::sprite(ui_sheet_icon_female_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
         }
         else if (infoMon->gender() == 2)
         {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - (int)width, 80);
+            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
         }
         if (infoMon->shiny())
         {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - (int)width, 81);
+            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::dynamicText(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
         if (infoMon->generation() == Generation::FOUR)
@@ -546,17 +515,18 @@ void StorageScreen::draw() const
         }
 
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
-        Gui::dynamicText(info, 276, 141, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::dynamicText(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
-        width = StringUtils::textWidth(info, FONT_SIZE_12);
-        Gui::dynamicText(info, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
+        width = text->maxWidth(FONT_SIZE_12);
+        Gui::text(text, 276, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
-        Gui::dynamicText(info, 276 + (int)width + 70 / 2, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
-        Gui::dynamicText(info, 276 + (int)width + 70 / 2, 209, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }
@@ -574,7 +544,6 @@ void StorageScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    Screen::update();
     static bool sleep = true;
     u32 kDown         = hidKeysDown();
     u32 kHeld         = hidKeysHeld();
@@ -605,7 +574,7 @@ void StorageScreen::update(touchPosition* touch)
         {
             if (moveMon.empty())
             {
-                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, storageChosen));
+                setBoxName(storageChosen);
             }
         }
         else
@@ -615,31 +584,22 @@ void StorageScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_START)
     {
-        currentOverlay = std::make_unique<StorageOverlay>(*this, storageChosen, boxBox, storageBox);
-        justSwitched   = true;
+        addOverlay<StorageOverlay>(storageChosen, boxBox, storageBox, filter);
+        justSwitched = true;
+    }
+    else if (kDown & KEY_X)
+    {
+        if (currentlySelecting)
+        {
+            grabSelection(false);
+        }
+        else
+        {
+            showViewer();
+        }
     }
     else if (buttonCooldown <= 0)
     {
-        if (kDown & KEY_X)
-        {
-            if (!infoMon)
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-                {
-                    return;
-                }
-                Gui::setNextKeyboardFunc([this]() { this->shareReceive(); });
-            }
-            else
-            {
-                if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-                {
-                    return;
-                }
-                shareSend();
-            }
-            return;
-        }
         sleep = false;
         if (kHeld & KEY_LEFT)
         {
@@ -757,7 +717,7 @@ void StorageScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -833,7 +793,7 @@ bool StorageScreen::clickBottomIndex(int index)
         {
             if (moveMon.empty())
             {
-                Gui::setNextKeyboardFunc(std::bind(&StorageScreen::setBoxName, this, false));
+                setBoxName(false);
                 return true;
             }
         }
@@ -900,7 +860,8 @@ bool StorageScreen::showViewer()
     if (infoMon && infoMon->species() != 0)
     {
         justSwitched = true;
-        currentOverlay = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting, std::pair<int,int>{storageChosen ? storageBox : -1, cursorIndex - 1});
+        overlay      = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
+            std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1});
     }
     return true;
 }
@@ -963,65 +924,52 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     bool moveBad = false;
     for (int i = 0; i < 4; i++)
     {
-        if (moveMon->move(i) > TitleLoader::save->maxMove())
+        if (TitleLoader::save->availableMoves().count((int)moveMon->move(i)) == 0)
         {
             moveBad = true;
             break;
         }
-        if (moveMon->generation() == Generation::SIX)
+        if (TitleLoader::save->availableMoves().count((int)moveMon->relearnMove(i)) == 0)
         {
-            PK6* pk6 = (PK6*)moveMon.get();
-            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                moveBad = true;
-                break;
-            }
-        }
-        else if (moveMon->generation() == Generation::SEVEN)
-        {
-            PK7* pk7 = (PK7*)moveMon.get();
-            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                moveBad = true;
-                break;
-            }
+            moveBad = true;
+            break;
         }
     }
     if (moveBad)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
         return false;
     }
-    else if (moveMon->species() > TitleLoader::save->maxSpecies())
+    else if (TitleLoader::save->availableSpecies().count((int)moveMon->species()) == 0)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
         return false;
     }
     else if (moveMon->alternativeForm() > TitleLoader::save->formCount(moveMon->species()) &&
              !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= TitleLoader::save->formCount(666)))
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
         return false;
     }
-    else if (moveMon->ability() > TitleLoader::save->maxAbility())
+    else if (TitleLoader::save->availableAbilities().count((int)moveMon->ability()) == 0)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
         return false;
     }
-    else if (moveMon->heldItem() > TitleLoader::save->maxItem())
+    else if (TitleLoader::save->availableItems().count((int)moveMon->heldItem()) == 0)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
         return false;
     }
-    else if (moveMon->ball() > TitleLoader::save->maxBall())
+    else if (TitleLoader::save->availableBalls().count((int)moveMon->ball()) == 0)
     {
         if (!bulkTransfer)
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
         return false;
     }
     return true;
@@ -1087,7 +1035,7 @@ void StorageScreen::pickup()
                 selectDimensions = std::pair{storageChosen ? storageBox : boxBox, cursorIndex - 1};
             }
 
-            if ((moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0))
+            if (moveMon.back()->species() == 0)
             {
                 moveMon.clear();
                 partyNum.clear();
@@ -1147,7 +1095,7 @@ void StorageScreen::pickup()
                     if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
                     {
                         checkedWithUser = true;
-                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
+                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
                     }
                     std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                     if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
@@ -1159,7 +1107,7 @@ void StorageScreen::pickup()
                         {
                             ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
                         }
-                        if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
+                        if (temPkm->species() == 0)
                         {
                             moveMon[index] = nullptr;
                         }
@@ -1212,8 +1160,9 @@ void StorageScreen::pickup()
                 {
                     return;
                 }
-                if ((Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
-                    Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2")))
+                if (bankMon->species() == 0 ||
+                    (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
+                    Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
                 {
                     if (storageChosen)
                     {
@@ -1261,12 +1210,12 @@ bool StorageScreen::dumpPkm()
 {
     if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
-        char stringDate[11]   = {0};
-        char stringTime[10]   = {0};
+        char stringDate[12]   = {0};
+        char stringTime[11]   = {0};
         time_t unixTime       = time(NULL);
         struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-        std::strftime(stringDate, 10, "%Y-%m-%d", timeStruct);
-        std::strftime(stringTime, 9, "/%H-%M-%S", timeStruct);
+        std::strftime(stringDate, 11, "%Y-%m-%d", timeStruct);
+        std::strftime(stringTime, 10, "/%H-%M-%S", timeStruct);
         std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
         mkdir(path.c_str(), 777);
         path += stringTime;
@@ -1342,7 +1291,7 @@ bool StorageScreen::duplicate()
             }
             moveMon.emplace_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone());
         }
-        if ((moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0))
+        if (moveMon.back()->species() == 0)
         {
             moveMon.clear();
         }
@@ -1367,14 +1316,14 @@ bool StorageScreen::swapBoxWithStorage()
             break;
         }
         std::shared_ptr<PKX> temPkm = Banks::bank->pkm(storageBox, i);
-        if ((temPkm->encryptionConstant() == 0 && temPkm->species() == 0))
+        if (temPkm->species() == 0)
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
         if (!checkedWithUser && temPkm->generation() != TitleLoader::save->generation())
         {
             checkedWithUser = true;
-            acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1"), i18n::localize("GEN_CHANGE_2"));
+            acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
@@ -1400,7 +1349,7 @@ bool StorageScreen::swapBoxWithStorage()
             unswapped += std::to_string(i) + ",";
         }
         unswapped.pop_back();
-        Gui::warn(i18n::localize("NO_SWAP_BULK"), unswapped);
+        Gui::warn(i18n::localize("NO_SWAP_BULK") + '\n' + unswapped);
     }
     return false;
 }
@@ -1530,7 +1479,7 @@ void StorageScreen::grabSelection(bool remove)
                 fromStorage = true;
                 moveMon.emplace_back(Banks::bank->pkm(storageBox, pickupIndex));
                 partyNum.push_back(-1);
-                if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                if (moveMon.back()->species() == 0)
                 {
                     *moveMon.rbegin() = nullptr;
                 }
@@ -1556,7 +1505,7 @@ void StorageScreen::grabSelection(bool remove)
                     }
                 }
                 moveMon.emplace_back(TitleLoader::save->pkm(boxBox, pickupIndex));
-                if (moveMon.back()->encryptionConstant() == 0 && moveMon.back()->species() == 0)
+                if (moveMon.back()->species() == 0)
                 {
                     *moveMon.rbegin() = nullptr;
                 }
@@ -1583,267 +1532,4 @@ void StorageScreen::grabSelection(bool remove)
         cursorIndex = baseIndex + 1;
     }
     scrunchSelection();
-}
-
-static bool transferFine(std::shared_ptr<PKX>& pkm)
-{
-    TitleLoader::save->transfer(pkm);
-    for (int i = 0; i < 4; i++)
-    {
-        if (pkm->move(i) > TitleLoader::save->maxMove())
-        {
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
-            return false;
-        }
-        if (pkm->generation() == Generation::SIX)
-        {
-            PK6* pk6 = (PK6*)pkm.get();
-            if (pk6->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
-                return false;
-            }
-        }
-        else if (pkm->generation() == Generation::SEVEN)
-        {
-            PK7* pk7 = (PK7*)pkm.get();
-            if (pk7->relearnMove(i) > TitleLoader::save->maxMove())
-            {
-                Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_MOVE"));
-                return false;
-            }
-        }
-    }
-    if (pkm->species() > TitleLoader::save->maxSpecies())
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_SPECIES"));
-        return false;
-    }
-    else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()))
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_FORM"));
-        return false;
-    }
-    else if (pkm->ability() > TitleLoader::save->maxAbility())
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ABILITY"));
-        return false;
-    }
-    else if (pkm->heldItem() > TitleLoader::save->maxItem())
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_ITEM"));
-        return false;
-    }
-    else if (pkm->ball() > TitleLoader::save->maxBall())
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER"), i18n::localize("STORAGE_BAD_BALL"));
-        return false;
-    }
-    return true;
-}
-
-static size_t header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
-{
-    std::string tmp(buffer, size * nitems);
-    if (tmp.find("Generation:") == 0)
-    {
-        tmp = tmp.substr(12);
-        if (tmp.find("4") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FOUR;
-        }
-        else if (tmp.find("5") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FIVE;
-        }
-        else if (tmp.find("6") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SIX;
-        }
-        else if (tmp.find("7") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SEVEN;
-        }
-        else if (tmp.find("LGPE") == 0)
-        {
-            *(Generation*)(userdata) = Generation::LGPE;
-        }
-    }
-    return nitems * size;
-}
-
-void StorageScreen::shareSend()
-{
-    const u8* rawData = infoMon->rawData();
-    size_t outSize;
-    long status_code     = 0;
-    char* b64Data        = base64_encode((char*)rawData, infoMon->getLength(), &outSize);
-    std::string postdata = b64Data;
-    free(b64Data);
-
-    std::string version = "Generation: " + genToString(infoMon->generation());
-    std::string size    = "Size: " + std::to_string(infoMon->getLength());
-    std::string info =
-        "Info: " + infoMon->nickname() + "," + infoMon->otName() + "," + std::to_string((int)infoMon->level()) + "," +
-        std::to_string(infoMon->species()) + "," + std::to_string(infoMon->move(0)) + "," + std::to_string(infoMon->move(1)) + "," +
-        std::to_string(infoMon->move(2)) + "," + std::to_string(infoMon->move(3)) + "," + std::to_string((int)infoMon->nature()) + "," +
-        std::to_string((int)infoMon->iv(0)) + "," + std::to_string((int)infoMon->iv(1)) + "," + std::to_string((int)infoMon->iv(2)) // HP, Atk, Def
-        + "," + std::to_string((int)infoMon->iv(5)) + "," + std::to_string((int)infoMon->iv(3)) + "," +
-        std::to_string((int)infoMon->iv(4)) // Sp. Atk, Sp. Def, Speed
-        + "," + std::to_string((int)infoMon->gender()) + "," + std::to_string((bool)infoMon->shiny()) + "," +
-        std::to_string((int)infoMon->ability()) + "," + std::to_string((int)infoMon->heldItem()) + "," + std::to_string((int)infoMon->TID()) + "," + std::to_string((int) infoMon->ball()) + "," + std::to_string((int) infoMon->pkrs());
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/base64");
-    headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, size.c_str());
-    headers                    = curl_slist_append(headers, info.c_str());
-
-    std::string writeData = "";
-    if (Fetch::init("https://flagbrew.org/gpss/share", true, true, &writeData, headers, postdata))
-    {
-        CURLcode res = Fetch::perform();
-        if (res != CURLE_OK)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
-        }
-        else
-        {
-            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
-            {
-                case 200:
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE"), writeData);
-                    break;
-                case 400:
-                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
-                    break;
-                case 502:
-                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                    break;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    break;
-            }
-        }
-        Fetch::exit();
-    }
-    curl_slist_free_all(headers);
-}
-
-void StorageScreen::shareReceive()
-{
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
-        first = false;
-    }
-    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
-    swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
-    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
-    char input[11]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[10]       = '\0';
-    CURLcode res;
-    if (ret == SWKBD_BUTTON_MIDDLE)
-    {
-        std::vector<u8> data = QRScanner::scan(NUMBER);
-        if (!data.empty() && data.size() < 12)
-        {
-            std::copy(data.begin(), data.end(), input);
-            input[10] = '\0';
-            ret = SWKBD_BUTTON_CONFIRM;
-        }
-    }
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
-        std::string retB64Data = "";
-        if (Fetch::init(url, false, true, &retB64Data, nullptr, ""))
-        {
-            long status_code = 0;
-            Generation gen   = Generation::UNUSED;
-            Fetch::setopt(CURLOPT_HEADERDATA, &gen);
-            Fetch::setopt(CURLOPT_HEADERFUNCTION, header_callback);
-            res = Fetch::perform();
-            if (res != CURLE_OK)
-            {
-                Gui::error(i18n::localize("CURL_ERROR"), abs(res));
-            }
-            else
-            {
-                Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                switch (status_code)
-                {
-                    case 200:
-                        break;
-                    case 400:
-                    case 404:
-                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                        Fetch::exit();
-                        return;
-                    case 502:
-                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        Fetch::exit();
-                        return;
-                    default:
-                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        Fetch::exit();
-                        return;
-                }
-                size_t outSize;
-                u8* retData = base64_decode(retB64Data.data(), retB64Data.size(), &outSize);
-
-                size_t targetLength = 0;
-                switch (gen)
-                {
-                    case Generation::FOUR:
-                    case Generation::FIVE:
-                        targetLength = 138;
-                        break;
-                    case Generation::SIX:
-                    case Generation::SEVEN:
-                        targetLength = 234;
-                        break;
-                    case Generation::LGPE:
-                        targetLength = 261;
-                        break;
-                    default:
-                        break;
-                }
-                if (outSize != targetLength)
-                {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), outSize);
-                    free(retData);
-                    Fetch::exit();
-                    return;
-                }
-
-                auto pkm = PKX::getPKM(gen, retData);
-
-                if (storageChosen)
-                {
-                    Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
-                }
-                else
-                {
-                    if ((TitleLoader::save->generation() != Generation::LGPE && pkm->generation() != Generation::LGPE) ||
-                        (TitleLoader::save->generation() == Generation::LGPE && pkm->generation() == Generation::LGPE))
-                    {
-                        if (transferFine(pkm))
-                        {
-                            TitleLoader::save->pkm(pkm, boxBox, cursorIndex - 1, true);
-                        }
-                    }
-                    else
-                    {
-                        Gui::warn(i18n::localize("SHARE_GENERATION_TRANSFER_ERROR"));
-                    }
-                }
-                free(retData);
-            }
-        }
-        Fetch::exit();
-    }
 }

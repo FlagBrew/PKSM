@@ -1,0 +1,17 @@
+0|—
+2|Berlino
+3|Assia
+4|Baden-Württemberg
+5|Baviera
+6|Brandeburgo
+7|Brema
+8|Amburgo
+9|Meclemburgo-Pomerania Anteriore
+10|Bassa Sassonia
+11|Renania Settentrionale-Vestfalia
+12|Renania-Palatinato
+13|Saarland
+14|Sassonia
+15|Sassonia-Anhalt
+16|Schleswig-Holstein
+17|Turingia

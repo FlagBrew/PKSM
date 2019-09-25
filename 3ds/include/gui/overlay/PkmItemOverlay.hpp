@@ -30,15 +30,17 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "loader.hpp"
 
-class PkmItemOverlay : public Overlay
+class PkmItemOverlay : public ReplaceableScreen
 {
 public:
-    PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    ~PkmItemOverlay() { delete searchButton; }
-    void draw() const override;
+    PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    ~PkmItemOverlay() {}
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
@@ -49,7 +51,7 @@ private:
     std::vector<std::pair<int, std::string>> validItems;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    Button* searchButton;
+    std::unique_ptr<Button> searchButton;
     bool justSwitched = true;
 };
 

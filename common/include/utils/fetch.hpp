@@ -30,10 +30,15 @@
 #include <memory>
 #include <string>
 
-namespace Fetch
+// This should theoretically be thread-safe, but on the 3DS it is not, because SOC stuff is not thread safe. Whee
+class Fetch
 {
-    extern std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
-    bool init(const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+public:
+    static std::unique_ptr<Fetch> init(
+        const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+    static Result download(const std::string& url, const std::string& path, const std::string& postData = "",
+        curl_xferinfo_callback progress = nullptr, void* progressInfo = nullptr);
+
     CURLcode perform();
     template <typename T>
     CURLcode setopt(CURLoption opt, T data)
@@ -45,6 +50,9 @@ namespace Fetch
     {
         return curl_easy_getinfo(curl.get(), info, outvar);
     }
-    Result download(const std::string& url, const std::string& path);
-    void exit();
-} // namespace Fetch
+    std::unique_ptr<curl_mime, decltype(curl_mime_free)*> mimeInit();
+
+private:
+    Fetch() : curl(nullptr, &curl_easy_cleanup) {}
+    std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
+};

@@ -1,296 +1,296 @@
-0000|－
-0002|Lugar misterioso
-0004|Lugar lejano
-0006|Pueblo Boceto
-0008|Ruta 1
-0009|Sendero Boceto
-000a|Pueblo Acuarela
-000c|Ruta 2
-000d|Vía del Avance
-000e|Bosque de Novarte
-0010|Ruta 3
-0011|Senda Despejada
-0012|Ciudad Novarte
-0014|Ruta 4
-0015|Senda del Parterre
-0016|Ciudad Luminalia
-0018|Torre Prisma
-001a|Laboratorios Lysson
-001c|Ruta 5
-001d|Vía Repecho
-001e|Pueblo Vánitas
-0020|Castillo Caduco
-0022|Ruta 6
-0023|Alameda del Palacio
-0024|Palacio Cénit
-0026|Ruta 7
-0027|Paseo de la Ribera
-0028|Ciudad Relieve
-002a|Ruta 8
-002b|Muralla Costera
-002c|Pueblo Petroglifo
-002e|Ruta 9
-002f|Paso de Rhyhorn
-0030|Bastión Batalla
-0032|Ruta 10
-0033|Camino Menhires
-0034|Pueblo Crómlech
-0036|Ruta 11
-0037|Senda Reflejos
-0038|Cueva Reflejos
-003a|Ciudad Yantra
-003c|Torre Maestra
-003e|Ruta 12
-003f|Vereda del Heno
-0040|Ciudad Témpera
-0042|Ruta 13
-0043|Páramo de Luminalia
-0044|Ruta 14
-0045|Arboleda Romantis
-0046|Ciudad Romantis
-0048|Fábrica Poké Balls
-004a|Ruta 15
-004b|Sendero Hojarasca
-004c|Pueblo Fresco
-004e|Ruta 16
-004f|Senda Melancolía
-0050|[~ 80]
-0051|[~ 81]
-0052|Gruta Helada
-0054|Ruta 17
-0055|Sendero Mamoswine
-0056|Ciudad Fluxus
-0058|Ruta 18
-0059|Senda Valle Angosto
-005a|Pueblo Mosaico
-005c|Ruta 19
-005d|Senda del Gran Valle
-005e|Ciudad Fractal
-0060|Ruta 20
-0061|Bosque Errantes
-0062|Villa Pokémon
-0064|Ruta 21
-0065|Vía Ultimia
-0066|Ruta 22
-0067|Vía Desvío
-0068|Calle Victoria
-006a|Liga Pokémon
-006c|Ciudad Batik
-006e|Mansión Batalla
-0070|Bahía Azul
-0072|Acceso a Fresco
-0074|Acceso a Mosaico
-0076|Acceso a Petroglifo
-0078|Acceso a Luminalia
-007a|Acceso a Yantra
-007c|Acceso a Témpera
-007e|Acceso a Romantis
-0080|Acceso a Fluxus
-0082|Acceso a Fractal
-0084|Cueva Brillante
-0086|Gruta Tierraunida
-0087|Escondrijo Zubat
-0088|Central de Kalos
-008a|Guarida Team Flare
-008c|Cueva Desenlace
-008e|Hotel Desolación
-0090|Estancia Vacua
-0092|Cueva Talasia
-0094|Safari Amistad
-0096|Sala de las Llamas
-0098|Sala de la Esclusa
-009a|Sala del Metal
-009c|Sala del Draco
-009e|Sala de la Luz
-00a0|Acceso Liga Pokémon
-00a2|Estación Luminalia
-00a4|Estación Batik
-00a6|Acuario Petroglifo
-00a8|Mazmorra Rara
-00aa|Villa Raíz
-00ac|Pueblo Escaso
-00ae|Pueblo Azuliza
-00b0|Pueblo Lavacalda
-00b2|Pueblo Pardal
-00b4|Pueblo Verdegal
-00b6|Pueblo Oromar
-00b8|Ciudad Petalia
-00ba|Ciudad Portual
-00bc|Ciudad Malvalona
-00be|Ciudad Férrica
-00c0|Ciudad Arborada
-00c2|Ciudad Calagua
-00c4|Ciudad Algaria
-00c6|Arrecípolis
-00c8|Ciudad Colosalia
-00ca|Liga Pokémon
-00cc|Ruta 101
-00ce|Ruta 102
-00d0|Ruta 103
-00d2|Ruta 104
-00d4|Ruta 105
-00d6|Ruta 106
-00d8|Ruta 107
-00da|Ruta 108
-00dc|Ruta 109
-00de|Ruta 110
-00e0|Ruta 111
-00e2|Ruta 112
-00e4|Ruta 113
-00e6|Ruta 114
-00e8|Ruta 115
-00ea|Ruta 116
-00ec|Ruta 117
-00ee|Ruta 118
-00f0|Ruta 119
-00f2|Ruta 120
-00f4|Ruta 121
-00f6|Ruta 122
-00f8|Ruta 123
-00fa|Ruta 124
-00fc|Ruta 125
-00fe|Ruta 126
-0100|Ruta 127
-0102|Ruta 128
-0104|Ruta 129
-0106|Ruta 130
-0108|Ruta 131
-010a|Ruta 132
-010c|Ruta 133
-010e|Ruta 134
-0110|Cascada Meteoro
-0112|Túnel Fervergal
-0114|(?)
-0116|Ruinas del Desierto
-0118|Cueva Granito
-011a|Bosque Petalia
-011c|Monte Cenizo
-011e|Desfiladero
-0120|Senda Ígnea
-0122|Monte Pírico
-0124|Guarida Aqua
-0126|Caverna Abisal
-0128|Cueva Ancestral
-012a|Calle Victoria
-012c|Cueva Cardumen
-012e|Malvalanova
-0130|Malvamar
-0132|Cueva Insular
-0134|Tumba Antigua
-0136|Cámara Sellada
-0138|Gruta Solar
-013a|Guarida Magma
-013c|Pilar Celeste
-013e|Resort Batalla
-0140|Isla del Sur
-0142|S.S. Marea
-0144|Zona Safari
-0146|Bosque Espejismo
-0148|Cueva Espejismo
-014a|Isla Espejismo
-014c|Monte Espejismo
-014e|Bosque Virgen
-0150|Llanura Sinnombre
-0152|Cueva Ignota
-0154|Cueva Incierta
-0156|Boquete Irregular
-0158|Isla Creciente
-015a|Islote Secreto
-015c|Firmamento
-015e|Costa Secreta
-0160|Prado Secreto
-0162|Base Secreta
-7531|Intercambio
-7532|Intercambio en conexión
-7533|Kanto
-7534|Johto
-7535|Hoenn
-7536|Sinnoh
-7537|Tierra lejana
-7538|－－－－－－－－－－
-7539|Teselia
-753a|Kalos
-753b|Nexo Pokémon
-9c41|Lugar encantador
-9c42|Lugar lejano
-9c43|Película Pokémon
-9c44|Película Pokémon 2013
-9c45|Película Pokémon 2014
-9c46|Película Pokémon 2015
-9c47|Película Pokémon 2016
-9c48|Película Pokémon 2017
-9c49|Película Pokémon 2018
-9c4a|Centro Pokémon
-9c4b|Serie de animación Pokémon
-9c4c|Centro Pokémon Tokio
-9c4d|Centro Pokémon Osaka
-9c4e|Centro Pokémon Fukuoka
-9c4f|Centro Pokémon Nagoya
-9c50|Centro Pokémon Sapporo
-9c51|Centro Pokémon Yokohama
-9c52|Centro Pokémon Tohoku
-9c53|Centro Pokémon Tokyo Bay
-9c54|Pokémon Store
-9c55|Campeonato Mundial
-9c56|Campeonato Mundial 2013
-9c57|Campeonato Mundial 2014
-9c58|Campeonato Mundial 2015
-9c59|Campeonato Mundial 2016
-9c5a|Campeonato Mundial 2017
-9c5b|Campeonato Mundial 2018
-9c5c|Campeonato Mundial
-9c5d|Campeonato Mundial 2013
-9c5e|Campeonato Mundial 2014
-9c5f|Campeonato Mundial 2015
-9c60|Campeonato Mundial 2016
-9c61|Campeonato Mundial 2017
-9c62|Campeonato Mundial 2018
-9c63|Evento de Videojuegos
-9c64|Evento Videojuegos 2013
-9c65|Evento Videojuegos 2014
-9c66|Evento Videojuegos 2015
-9c67|Evento Videojuegos 2016
-9c68|Evento Videojuegos 2017
-9c69|Evento Videojuegos 2018
-9c6a|Evento Pokémon
-9c6b|Torneo
-9c6c|Evento de Videojuegos
-9c6d|Club de Fans de Pokémon
-9c6e|Programa sobre Pokémon
-9c6f|Concierto Pokémon
-9c70|Regalo en línea
-9c71|Pokémon Global Link
-9c72|Evento Pokémon 2013
-9c73|Evento Pokémon 2014
-9c74|Evento Pokémon 2015
-9c75|Evento Pokémon 2016
-9c76|Evento Pokémon 2017
-9c77|Evento Pokémon 2018
-9c78|Pokémon Festa
-9c79|Pokémon Festa 2013
-9c7a|Pokémon Festa 2014
-9c7b|Pokémon Festa 2015
-9c7c|Pokémon Festa 2016
-9c7d|Pokémon Festa 2017
-9c7e|Pokémon Festa 2018
-9c7f|PokéPark
-9c80|PokéPark 2013
-9c81|PokéPark 2014
-9c82|PokéPark 2015
-9c83|PokéPark 2016
-9c84|PokéPark 2017
-9c85|PokéPark 2018
-9c86|Evento
-9c87|GAME FREAK
-9c88|Estadio
-9c89|Camp. de Videojuegos
-9c8a|Camp. de Videojuegos 2013
-9c8b|Camp. de Videojuegos 2014
-9c8c|Camp. de Videojuegos 2015
-9c8d|Camp. de Videojuegos 2016
-9c8e|Camp. de Videojuegos 2017
-9c8f|Camp. de Videojuegos 2018
-ea61|Persona lejana
-ea62|Pareja de la Guardería
-ea63|Buscatesoros
-ea64|Anciana del Balneario
+0x0000|－
+0x0002|Lugar misterioso
+0x0004|Lugar lejano
+0x0006|Pueblo Boceto
+0x0008|Ruta 1
+0x0009|Sendero Boceto
+0x000a|Pueblo Acuarela
+0x000c|Ruta 2
+0x000d|Vía del Avance
+0x000e|Bosque de Novarte
+0x0010|Ruta 3
+0x0011|Senda Despejada
+0x0012|Ciudad Novarte
+0x0014|Ruta 4
+0x0015|Senda del Parterre
+0x0016|Ciudad Luminalia
+0x0018|Torre Prisma
+0x001a|Laboratorios Lysson
+0x001c|Ruta 5
+0x001d|Vía Repecho
+0x001e|Pueblo Vánitas
+0x0020|Castillo Caduco
+0x0022|Ruta 6
+0x0023|Alameda del Palacio
+0x0024|Palacio Cénit
+0x0026|Ruta 7
+0x0027|Paseo de la Ribera
+0x0028|Ciudad Relieve
+0x002a|Ruta 8
+0x002b|Muralla Costera
+0x002c|Pueblo Petroglifo
+0x002e|Ruta 9
+0x002f|Paso de Rhyhorn
+0x0030|Bastión Batalla
+0x0032|Ruta 10
+0x0033|Camino Menhires
+0x0034|Pueblo Crómlech
+0x0036|Ruta 11
+0x0037|Senda Reflejos
+0x0038|Cueva Reflejos
+0x003a|Ciudad Yantra
+0x003c|Torre Maestra
+0x003e|Ruta 12
+0x003f|Vereda del Heno
+0x0040|Ciudad Témpera
+0x0042|Ruta 13
+0x0043|Páramo de Luminalia
+0x0044|Ruta 14
+0x0045|Arboleda Romantis
+0x0046|Ciudad Romantis
+0x0048|Fábrica Poké Balls
+0x004a|Ruta 15
+0x004b|Sendero Hojarasca
+0x004c|Pueblo Fresco
+0x004e|Ruta 16
+0x004f|Senda Melancolía
+0x0050|[~ 80]
+0x0051|[~ 81]
+0x0052|Gruta Helada
+0x0054|Ruta 17
+0x0055|Sendero Mamoswine
+0x0056|Ciudad Fluxus
+0x0058|Ruta 18
+0x0059|Senda Valle Angosto
+0x005a|Pueblo Mosaico
+0x005c|Ruta 19
+0x005d|Senda del Gran Valle
+0x005e|Ciudad Fractal
+0x0060|Ruta 20
+0x0061|Bosque Errantes
+0x0062|Villa Pokémon
+0x0064|Ruta 21
+0x0065|Vía Ultimia
+0x0066|Ruta 22
+0x0067|Vía Desvío
+0x0068|Calle Victoria
+0x006a|Liga Pokémon
+0x006c|Ciudad Batik
+0x006e|Mansión Batalla
+0x0070|Bahía Azul
+0x0072|Acceso a Fresco
+0x0074|Acceso a Mosaico
+0x0076|Acceso a Petroglifo
+0x0078|Acceso a Luminalia
+0x007a|Acceso a Yantra
+0x007c|Acceso a Témpera
+0x007e|Acceso a Romantis
+0x0080|Acceso a Fluxus
+0x0082|Acceso a Fractal
+0x0084|Cueva Brillante
+0x0086|Gruta Tierraunida
+0x0087|Escondrijo Zubat
+0x0088|Central de Kalos
+0x008a|Guarida Team Flare
+0x008c|Cueva Desenlace
+0x008e|Hotel Desolación
+0x0090|Estancia Vacua
+0x0092|Cueva Talasia
+0x0094|Safari Amistad
+0x0096|Sala de las Llamas
+0x0098|Sala de la Esclusa
+0x009a|Sala del Metal
+0x009c|Sala del Draco
+0x009e|Sala de la Luz
+0x00a0|Acceso Liga Pokémon
+0x00a2|Estación Luminalia
+0x00a4|Estación Batik
+0x00a6|Acuario Petroglifo
+0x00a8|Mazmorra Rara
+0x00aa|Villa Raíz
+0x00ac|Pueblo Escaso
+0x00ae|Pueblo Azuliza
+0x00b0|Pueblo Lavacalda
+0x00b2|Pueblo Pardal
+0x00b4|Pueblo Verdegal
+0x00b6|Pueblo Oromar
+0x00b8|Ciudad Petalia
+0x00ba|Ciudad Portual
+0x00bc|Ciudad Malvalona
+0x00be|Ciudad Férrica
+0x00c0|Ciudad Arborada
+0x00c2|Ciudad Calagua
+0x00c4|Ciudad Algaria
+0x00c6|Arrecípolis
+0x00c8|Ciudad Colosalia
+0x00ca|Liga Pokémon
+0x00cc|Ruta 101
+0x00ce|Ruta 102
+0x00d0|Ruta 103
+0x00d2|Ruta 104
+0x00d4|Ruta 105
+0x00d6|Ruta 106
+0x00d8|Ruta 107
+0x00da|Ruta 108
+0x00dc|Ruta 109
+0x00de|Ruta 110
+0x00e0|Ruta 111
+0x00e2|Ruta 112
+0x00e4|Ruta 113
+0x00e6|Ruta 114
+0x00e8|Ruta 115
+0x00ea|Ruta 116
+0x00ec|Ruta 117
+0x00ee|Ruta 118
+0x00f0|Ruta 119
+0x00f2|Ruta 120
+0x00f4|Ruta 121
+0x00f6|Ruta 122
+0x00f8|Ruta 123
+0x00fa|Ruta 124
+0x00fc|Ruta 125
+0x00fe|Ruta 126
+0x0100|Ruta 127
+0x0102|Ruta 128
+0x0104|Ruta 129
+0x0106|Ruta 130
+0x0108|Ruta 131
+0x010a|Ruta 132
+0x010c|Ruta 133
+0x010e|Ruta 134
+0x0110|Cascada Meteoro
+0x0112|Túnel Fervergal
+0x0114|(?)
+0x0116|Ruinas del Desierto
+0x0118|Cueva Granito
+0x011a|Bosque Petalia
+0x011c|Monte Cenizo
+0x011e|Desfiladero
+0x0120|Senda Ígnea
+0x0122|Monte Pírico
+0x0124|Guarida Aqua
+0x0126|Caverna Abisal
+0x0128|Cueva Ancestral
+0x012a|Calle Victoria
+0x012c|Cueva Cardumen
+0x012e|Malvalanova
+0x0130|Malvamar
+0x0132|Cueva Insular
+0x0134|Tumba Antigua
+0x0136|Cámara Sellada
+0x0138|Gruta Solar
+0x013a|Guarida Magma
+0x013c|Pilar Celeste
+0x013e|Resort Batalla
+0x0140|Isla del Sur
+0x0142|S.S. Marea
+0x0144|Zona Safari
+0x0146|Bosque Espejismo
+0x0148|Cueva Espejismo
+0x014a|Isla Espejismo
+0x014c|Monte Espejismo
+0x014e|Bosque Virgen
+0x0150|Llanura Sinnombre
+0x0152|Cueva Ignota
+0x0154|Cueva Incierta
+0x0156|Boquete Irregular
+0x0158|Isla Creciente
+0x015a|Islote Secreto
+0x015c|Firmamento
+0x015e|Costa Secreta
+0x0160|Prado Secreto
+0x0162|Base Secreta
+0x7531|Intercambio
+0x7532|Intercambio en conexión
+0x7533|Kanto
+0x7534|Johto
+0x7535|Hoenn
+0x7536|Sinnoh
+0x7537|Tierra lejana
+0x7538|－－－－－－－－－－
+0x7539|Teselia
+0x753a|Kalos
+0x753b|Nexo Pokémon
+0x9c41|Lugar encantador
+0x9c42|Lugar lejano
+0x9c43|Película Pokémon
+0x9c44|Película Pokémon 2013
+0x9c45|Película Pokémon 2014
+0x9c46|Película Pokémon 2015
+0x9c47|Película Pokémon 2016
+0x9c48|Película Pokémon 2017
+0x9c49|Película Pokémon 2018
+0x9c4a|Centro Pokémon
+0x9c4b|Serie de animación Pokémon
+0x9c4c|Centro Pokémon Tokio
+0x9c4d|Centro Pokémon Osaka
+0x9c4e|Centro Pokémon Fukuoka
+0x9c4f|Centro Pokémon Nagoya
+0x9c50|Centro Pokémon Sapporo
+0x9c51|Centro Pokémon Yokohama
+0x9c52|Centro Pokémon Tohoku
+0x9c53|Centro Pokémon Tokyo Bay
+0x9c54|Pokémon Store
+0x9c55|Campeonato Mundial
+0x9c56|Campeonato Mundial 2013
+0x9c57|Campeonato Mundial 2014
+0x9c58|Campeonato Mundial 2015
+0x9c59|Campeonato Mundial 2016
+0x9c5a|Campeonato Mundial 2017
+0x9c5b|Campeonato Mundial 2018
+0x9c5c|Campeonato Mundial
+0x9c5d|Campeonato Mundial 2013
+0x9c5e|Campeonato Mundial 2014
+0x9c5f|Campeonato Mundial 2015
+0x9c60|Campeonato Mundial 2016
+0x9c61|Campeonato Mundial 2017
+0x9c62|Campeonato Mundial 2018
+0x9c63|Evento de Videojuegos
+0x9c64|Evento Videojuegos 2013
+0x9c65|Evento Videojuegos 2014
+0x9c66|Evento Videojuegos 2015
+0x9c67|Evento Videojuegos 2016
+0x9c68|Evento Videojuegos 2017
+0x9c69|Evento Videojuegos 2018
+0x9c6a|Evento Pokémon
+0x9c6b|Torneo
+0x9c6c|Evento de Videojuegos
+0x9c6d|Club de Fans de Pokémon
+0x9c6e|Programa sobre Pokémon
+0x9c6f|Concierto Pokémon
+0x9c70|Regalo en línea
+0x9c71|Pokémon Global Link
+0x9c72|Evento Pokémon 2013
+0x9c73|Evento Pokémon 2014
+0x9c74|Evento Pokémon 2015
+0x9c75|Evento Pokémon 2016
+0x9c76|Evento Pokémon 2017
+0x9c77|Evento Pokémon 2018
+0x9c78|Pokémon Festa
+0x9c79|Pokémon Festa 2013
+0x9c7a|Pokémon Festa 2014
+0x9c7b|Pokémon Festa 2015
+0x9c7c|Pokémon Festa 2016
+0x9c7d|Pokémon Festa 2017
+0x9c7e|Pokémon Festa 2018
+0x9c7f|PokéPark
+0x9c80|PokéPark 2013
+0x9c81|PokéPark 2014
+0x9c82|PokéPark 2015
+0x9c83|PokéPark 2016
+0x9c84|PokéPark 2017
+0x9c85|PokéPark 2018
+0x9c86|Evento
+0x9c87|GAME FREAK
+0x9c88|Estadio
+0x9c89|Camp. de Videojuegos
+0x9c8a|Camp. de Videojuegos 2013
+0x9c8b|Camp. de Videojuegos 2014
+0x9c8c|Camp. de Videojuegos 2015
+0x9c8d|Camp. de Videojuegos 2016
+0x9c8e|Camp. de Videojuegos 2017
+0x9c8f|Camp. de Videojuegos 2018
+0xea61|Persona lejana
+0xea62|Pareja de la Guardería
+0xea63|Buscatesoros
+0xea64|Anciana del Balneario

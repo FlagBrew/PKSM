@@ -1,0 +1,14 @@
+0|—
+2|Attique
+3|Grèce-Centrale
+4|Macédoine-Centrale
+5|Crète
+6|Macédoine-Orientale-et-Thrace
+7|Épire
+8|Îles Ioniennes
+9|Égée-Septentrionale
+10|Péloponnèse
+11|Égée-Méridionale
+12|Thessalie
+13|Grèce-Occidentale
+14|Macédoine-Occidentale

@@ -1,0 +1,4 @@
+0|—
+2|Región de Bruselas-Capital
+3|Región de Flandes
+4|Región de Valonia

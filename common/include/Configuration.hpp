@@ -35,7 +35,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 6;
+    static constexpr int CURRENT_VERSION = 8;
 
     static Configuration& getInstance(void)
     {
@@ -51,7 +51,7 @@ public:
 
     bool useExtData(void) const { return mJson["useExtData"]; }
 
-    u32 defaultTID(void) const { return mJson["defaults"]["pid"]; }
+    u32 defaultTID(void) const { return mJson["defaults"]["tid"]; }
 
     u32 defaultSID(void) const { return mJson["defaults"]["sid"]; }
 
@@ -59,26 +59,34 @@ public:
 
     int nationality(void) const { return mJson["defaults"]["nationality"]; }
 
-    int day(void) { return mJson["defaults"]["date"]["day"]; }
+    int day(void) const { return mJson["defaults"]["date"]["day"]; }
 
-    int month(void) { return mJson["defaults"]["date"]["month"]; }
+    int month(void) const { return mJson["defaults"]["date"]["month"]; }
 
-    int year(void) { return mJson["defaults"]["date"]["year"]; }
+    int year(void) const { return mJson["defaults"]["date"]["year"]; }
 
     // Files
-    std::vector<std::string> extraSaves(const std::string& id);
+    std::vector<std::string> extraSaves(const std::string& id) const;
 
-    bool writeFileSave(void) { return mJson["writeFileSave"]; }
+    bool writeFileSave(void) const { return mJson["writeFileSave"]; }
 
-    bool useSaveInfo(void) { return mJson["useSaveInfo"]; }
+    bool useSaveInfo(void) const { return mJson["useSaveInfo"]; }
 
-    bool randomMusic(void) { return mJson["randomMusic"]; }
+    bool randomMusic(void) const { return mJson["randomMusic"]; }
 
-    int defaultRegion(void) { return mJson["defaults"]["region"]; }
+    int defaultRegion(void) const { return mJson["defaults"]["region"]; }
 
-    int defaultCountry(void) { return mJson["defaults"]["country"]; }
+    int defaultCountry(void) const { return mJson["defaults"]["country"]; }
 
-    bool showBackups(void) { return mJson["showBackups"]; }
+    bool showBackups(void) const { return mJson["showBackups"]; }
+
+    std::string legalEndpoint(void) const { return mJson["legalEndpoint"]; }
+
+    std::string patronCode(void) const { return mJson["patronCode"]; }
+
+    bool alphaChannel(void) const { return mJson["alphaChannel"]; }
+
+    bool autoUpdate(void) const { return mJson["autoUpdate"]; }
 
     void language(Language lang) { mJson["language"] = lang; }
 
@@ -88,7 +96,7 @@ public:
 
     void useExtData(bool use) { mJson["useExtData"] = use; }
 
-    void defaultTID(u32 pid) { mJson["defaults"]["pid"] = pid; }
+    void defaultTID(u32 tid) { mJson["defaults"]["tid"] = tid; }
 
     void defaultSID(u32 sid) { mJson["defaults"]["sid"] = sid; }
 
@@ -119,6 +127,14 @@ public:
 
     void showBackups(bool value) { mJson["showBackups"] = value; }
 
+    void legalEndpoint(const std::string& value) { mJson["legalEndpoint"] = value; }
+
+    void patronCode(const std::string& value) { mJson["patronCode"] = value; }
+
+    void alphaChannel(bool value) { mJson["alphaChannel"] = value; }
+
+    void autoUpdate(bool value) { mJson["autoUpdate"] = value; }
+
     void save(void);
 
 private:
@@ -134,5 +150,11 @@ private:
 
     size_t oldSize = 0;
 };
+
+namespace i18n
+{
+    const std::string& localize(Language lang, const std::string& index);
+    inline const std::string& localize(const std::string& index) { return i18n::localize(Configuration::getInstance().language(), index); }
+}
 
 #endif

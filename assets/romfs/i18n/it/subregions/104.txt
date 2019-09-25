@@ -1,0 +1,10 @@
+0|—
+2|Gauteng
+3|Capo Occidentale
+4|Capo Settentrionale
+5|Capo Orientale
+6|KwaZulu-Natal
+7|Stato Libero
+8|Provincia del Nordovest
+9|Mpumalanga
+10|Limpopo

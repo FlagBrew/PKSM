@@ -45,23 +45,16 @@ class TitleLoadScreen : public Screen
 {
 public:
     TitleLoadScreen();
-    ~TitleLoadScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
-    void drawSelector(int x, int y) const;
-    void draw() const override;
-    ScreenType type() const override { return ScreenType::TITLELOAD; }
+    ~TitleLoadScreen() {}
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
     int selectedTitle = -2;
     std::vector<std::string> availableCheckpointSaves;
     int firstSave = -1;
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     int selectedSave    = -1;
     bool selectedGame   = false;
     bool uninstGameView = false;

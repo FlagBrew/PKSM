@@ -1,0 +1,20 @@
+0|—
+2|Madrid
+3|Andalusien
+4|Aragonien
+5|Asturien
+6|Balearische Inseln
+7|Kanarische Inseln
+8|Kantabrien
+9|Kastilien-La Mancha
+10|Kastilien-León
+11|Katalonien
+12|Valencia
+13|Extremadura
+14|Galicien
+15|Murcia
+16|Navarra
+17|Baskenland
+18|La Rioja
+19|Ceuta
+20|Melilla

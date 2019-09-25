@@ -1,0 +1,21 @@
+0|—
+8|Uusimaa
+9|Laponia finlandesa
+10|Ostrobothnia del Norte
+11|Kainuu
+12|Karelia del Norte
+13|Savonia del Norte
+14|Savonia del Sur
+15|Ostrobothnia del Sur
+16|Ostrobothnia
+17|Pirkanmaa
+18|Satakunta
+19|Ostrobothnia Central
+20|Finlandia Central
+21|Finlandia Propia
+22|Karelia del Sur
+23|Päijänne Tavastia
+24|Tavastia Propia
+25|Uusimaa Oriental
+26|Kymenlaakso
+27|Islas de Åland

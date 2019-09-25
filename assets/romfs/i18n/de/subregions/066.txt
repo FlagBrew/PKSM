@@ -1,0 +1,10 @@
+0|—
+2|Wien
+3|Burgenland
+4|Kärnten
+5|Niederösterreich
+6|Oberösterreich
+7|Salzburg
+8|Steiermark
+9|Tirol
+10|Vorarlberg

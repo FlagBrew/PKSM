@@ -1,0 +1,33 @@
+0|—
+2|District Fédéral
+3|Aguascalientes
+4|Basse-Californie
+5|Basse-Californie du Sud
+6|Campeche
+7|Chiapas
+8|Chihuahua
+9|Coahuila
+10|Colima
+11|Durango
+12|Guanajuato
+13|Guerrero
+14|Hidalgo
+15|Jalisco
+16|Mexico
+17|Michoacán
+18|Morelos
+19|Nayarit
+20|Nuevo León
+21|Oaxaca
+22|Puebla
+23|Querétaro
+24|Quintana Roo
+25|San Luis Potosí
+26|Sinaloa
+27|Sonora
+28|Tabasco
+29|Tamaulipas
+30|Tlaxcala
+31|Veracruz
+32|Yucatán
+33|Zacatecas

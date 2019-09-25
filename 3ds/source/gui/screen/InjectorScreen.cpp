@@ -67,49 +67,49 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
         {
             if (langIndex != (int)Language::UNUSED)
             {
-                buttons.push_back(new Button(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
+                buttons.push_back(std::make_unique<Button>(
+                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
     }
-    buttons.push_back(new Button(235, 102, 38, 23,
+    buttons.push_back(std::make_unique<Button>(235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(273, 102, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(235, 135, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(273, 135, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(255, 168, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
             choosingSlot = true;
             hid.select(slot - 1);
             return true;
         },
-        ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, 0));
-    buttons.push_back(new Button(282, 212, 34, 28,
+        ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 
     changeDate();
 }
@@ -127,41 +127,41 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         {
             if (langIndex != (int)Language::UNUSED)
             {
-                buttons.push_back(new Button(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, 0));
+                buttons.push_back(std::make_unique<Button>(
+                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
     }
-    buttons.push_back(new Button(235, 102, 38, 23,
+    buttons.push_back(std::make_unique<Button>(235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(273, 102, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(235, 135, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(273, 135, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, 0));
-    buttons.push_back(new Button(255, 168, 38, 23,
+        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
             if (TitleLoader::save->generation() == Generation::LGPE)
             {
-                Gui::warn(i18n::localize("WC_LGPE"), i18n::localize("NOT_A_BUG"));
+                Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
                 return false;
             }
             else
@@ -173,32 +173,31 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         },
         TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
                                                             : ui_sheet_emulated_button_unselected_red_idx,
-        "", 0.0f, 0));
-    buttons.push_back(new Button(282, 212, 34, 28,
+        "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
-void InjectorScreen::draw() const
+void InjectorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_red, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_red_idx, -3, 213);
     Gui::sprite(ui_sheet_stripe_wondercard_info_idx, 0, 14);
-    Gui::dynamicText(i18n::localize("WC_SWITCH"), 9, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("WC_SWITCH"), 9, 15, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_point_big_idx, 15, 54);
-    Gui::staticText(i18n::localize("LANGUAGES"), 26, 49, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("LANGUAGES"), 26, 49, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     Gui::sprite(ui_sheet_point_big_idx, 15, 110);
-    Gui::staticText(i18n::localize("OVERWRITE_WC"), 26, 105, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("OVERWRITE_WC"), 26, 105, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     Gui::sprite(ui_sheet_point_big_idx, 15, 143);
-    Gui::staticText(i18n::localize("ADAPT_LANGUAGE"), 26, 138, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ADAPT_LANGUAGE"), 26, 138, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     Gui::sprite(ui_sheet_point_big_idx, 15, 176);
-    Gui::staticText(i18n::localize("INJECT_TO_SLOT"), 26, 171, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("INJECT_TO_SLOT"), 26, 171, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
@@ -212,28 +211,27 @@ void InjectorScreen::draw() const
                     if (langIndex == (int)lang)
                     {
                         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
-                        Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE,
-                            TextPosX::CENTER, TextPosY::TOP);
+                        Gui::text(
+                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     }
                     else
                     {
                         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
-                        Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK,
-                            TextPosX::CENTER, TextPosY::TOP);
+                        Gui::text(
+                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                     }
                 }
                 else
                 {
                     Gui::sprite(ui_sheet_emulated_button_unavailable_red_idx, x, y);
-                    Gui::dynamicText(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK,
-                        TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
             }
             langIndex++;
         }
     }
 
-    for (Button* button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }
@@ -247,12 +245,12 @@ void InjectorScreen::draw() const
             if (overwriteCard)
             {
                 Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
-                Gui::dynamicText(word, x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(word, x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
                 Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
-                Gui::dynamicText(word, x + 38 / 2, y + 2, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(word, x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
             first = false;
         }
@@ -260,40 +258,49 @@ void InjectorScreen::draw() const
     if (overwriteCard)
     {
         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 103);
-        Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 103);
-        Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     else
     {
         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 103);
-        Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 103);
-        Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (adaptLanguage)
     {
         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 136);
-        Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 136);
-        Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     else
     {
         Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 136);
-        Gui::dynamicText(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 136);
-        Gui::dynamicText(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
-    Gui::dynamicText(std::to_string(slot), 255 + 38 / 2, 170, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string(slot), 255 + 38 / 2, 170, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::dynamicText(i18n::localize("START_TO_INJECT"), 160, 221, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("START_TO_INJECT"), 160, 221, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
+    if (choosingSlot)
+    {
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
+        Gui::text(i18n::localize("WC_CHANGE_SLOT"), 160, 100, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("WC_DUMP2"), 160, 128, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    }
+}
+
+void InjectorScreen::drawTop() const
+{
     if (!choosingSlot)
     {
-        C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_emulated_bg_top_red, 0, 0);
         Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
         Gui::sprite(ui_sheet_bar_arc_top_red_idx, 0, 0);
@@ -301,7 +308,7 @@ void InjectorScreen::draw() const
         Gui::backgroundAnimatedTop();
 
         Gui::sprite(ui_sheet_textbox_event_name_idx, 0, 3);
-        Gui::dynamicText(wondercard->title(), 25, 7, FONT_SIZE_14, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(wondercard->title(), 25, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::ball(wondercard->ball(), 4, 6);
         if (wondercard->pokemon())
         {
@@ -330,20 +337,20 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_point_big_idx, 1, 40 + 20 * i);
         }
-        Gui::staticText(i18n::localize("SPECIES"), 9, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("LEVEL"), 9, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("HELD_ITEM"), 9, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("OT"), 9, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("TID_SID"), 9, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("GAME"), 9, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("DATE"), 9, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("SPECIES"), 9, 35, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("LEVEL"), 9, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("HELD_ITEM"), 9, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("OT"), 9, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("TID_SID"), 9, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("GAME"), 9, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DATE"), 9, 155, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (wondercard->pokemon())
         {
-            Gui::dynamicText(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
             std::string text = wondercard->otName();
             u16 tid = wondercard->TID(), sid = wondercard->SID();
             if (text == i18n::localize("YOUR_OT_NAME") || text == "")
@@ -352,24 +359,24 @@ void InjectorScreen::draw() const
                 tid  = TitleLoader::save->TID();
                 sid  = TitleLoader::save->SID();
             }
-            Gui::dynamicText(text, 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14,
-                FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
-                Gui::staticText(i18n::localize("ITEM"), 9, 175, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(i18n::localize("ITEM"), 9, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
-                Gui::dynamicText(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, FONT_SIZE_14,
-                    COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
+                    TextPosY::TOP);
             }
         }
         else if (wondercard->item())
         {
-            Gui::staticText(i18n::localize("NA"), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 35, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             const std::string* itemString = &i18n::item(Configuration::getInstance().language(), wondercard->object());
             std::string numString         = "";
             if (wondercard->generation() == Generation::SIX)
@@ -381,22 +388,21 @@ void InjectorScreen::draw() const
                 itemString = &i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
                 numString  = " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
             }
-            Gui::dynamicText(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 155, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
         else if (wondercard->BP())
         {
-            Gui::staticText(i18n::localize("NA"), 87, 35, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 55, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("BP"), 87, 75, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 95, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 115, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(game, 87, 135, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::staticText(i18n::localize("NA"), 87, 155, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 35, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("BP"), 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("NA"), 87, 155, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
         for (int i = 0; i < 3; i++)
         {
@@ -407,20 +413,15 @@ void InjectorScreen::draw() const
         {
             Gui::sprite(ui_sheet_point_small_idx, 238, 161 + 20 * i);
         }
-        Gui::staticText(i18n::localize("MOVES"), 251, 136, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("MOVES"), 251, 136, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         for (int i = 0; i < 4; i++)
         {
-            Gui::dynamicText(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(Configuration::getInstance().language(), wondercard->move(i)), 251, 156 + 20 * i, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
         }
     }
     else
     {
-        C2D_DrawRectSolid(0, 0, 0.5, 320, 240, COLOR_MASKBLACK);
-        Gui::dynamicText(i18n::localize("WC_CHANGE_SLOT"), 160, 100, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::dynamicText(i18n::localize("WC_DUMP2"), 160, 128, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        C2D_SceneBegin(g_renderTargetTop);
         Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
         auto saveGeneration = TitleLoader::save->generation();
         for (size_t i = 0; i < 40; i++)
@@ -434,7 +435,7 @@ void InjectorScreen::draw() const
             }
             if (hid.index() == i)
             {
-                C2D_DrawRectSolid(x * 50, y * 48, 0.5f, 49, 47, C2D_Color32(15, 22, 89, 255));
+                Gui::drawSolidRect(x * 50, y * 48, 49, 47, PKSM_Color(15, 22, 89, 255));
             }
             if (fullI < gifts.size())
             {
@@ -447,18 +448,15 @@ void InjectorScreen::draw() const
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::dynamicText(
-                    std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else if (fullI == gifts.size())
             {
-                Gui::dynamicText(
-                    std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::dynamicText(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER,
-                    TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 50 / 2, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }
@@ -466,11 +464,10 @@ void InjectorScreen::draw() const
 
 void InjectorScreen::update(touchPosition* touch)
 {
-    Screen::update();
     u32 downKeys = hidKeysDown();
     if (!choosingSlot)
     {
-        for (Button* button : buttons)
+        for (auto& button : buttons)
         {
             if (button->update(touch))
             {

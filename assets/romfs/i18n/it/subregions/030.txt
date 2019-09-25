@@ -1,0 +1,23 @@
+0|—
+2|Guatemala
+3|Alta Verapaz
+4|Baja Verapaz
+5|Chimaltenango
+6|Chiquimula
+7|El Progreso
+8|Escuintla
+9|Huehuetenango
+10|Izabal
+11|Jalapa
+12|Jutiapa
+13|Petén
+14|Quetzaltenango
+15|Quiché
+16|Retalhuleu
+17|Sacatepéquez
+18|San Marcos
+19|Santa Rosa
+20|Sololá
+21|Suchitepéquez
+22|Totonicapán
+23|Zacapa

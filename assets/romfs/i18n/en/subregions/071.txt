@@ -1,0 +1,22 @@
+0|—
+6|Zagreb
+7|Bjelovar-Bilogora County
+8|Brod-Posavina County
+9|Dubrovnik-Neretva County
+10|Istria County
+11|Karlovac County
+12|Koprivnica-Križevci County
+13|Krapina-Zagorje County
+14|Lika-Senj County
+15|Međimurje County
+16|Osijek-Baranja County
+17|Požega-Slavonia County
+18|Primorje-Gorski Kotar County
+19|Sisak-Moslavina County
+20|Split-Dalmatia County
+21|Šibenik-Knin County
+22|Varaždin County
+23|Virovitica-Podravina County
+24|Vukovar-Syrmia County
+25|Zadar County
+26|Zagreb County

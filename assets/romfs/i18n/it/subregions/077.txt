@@ -1,0 +1,27 @@
+0|—
+2|Île-de-France
+3|Alsazia
+4|Aquitania
+5|Alvernia
+6|Bassa Normandia
+7|Borgogna
+8|Bretagna
+9|Centro
+10|Champagne-Ardenne
+11|Corsica
+12|Franca Contea
+13|Alta Normandia
+14|Linguadoca-Rossiglione
+15|Limosino
+16|Lorena
+17|Mezzogiorno-Pirenei
+18|Nord-Passo di Calais
+19|Paesi della Loira
+20|Piccardia
+21|Poitou-Charentes
+22|Provenza-Alpi-Costa Azzurra
+23|Rodano-Alpi
+24|Guadalupa
+25|Martinica
+26|Guyana Francese
+27|Riunione

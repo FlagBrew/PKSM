@@ -41,19 +41,13 @@ class InjectorScreen : public Screen
 public:
     InjectorScreen(nlohmann::json ids);
     InjectorScreen(std::unique_ptr<WCX> card);
-    ~InjectorScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
+    ~InjectorScreen() {}
     void update(touchPosition* touch) override;
-    void draw(void) const override;
-    ScreenType type() const override { return ScreenType::INJECTOR; }
+    void drawTop(void) const override;
+    void drawBottom(void) const override;
 
 private:
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     std::unique_ptr<WCX> wondercard;
     std::string game;
     bool overwriteCard = false;
@@ -66,7 +60,7 @@ private:
     Language lang = Language::JP;
     nlohmann::json ids;
     const int emptySlot;
-    const std::vector<MysteryGift::giftData> gifts;
+    const std::vector<Sav::giftData> gifts;
 
     bool setLanguage(Language lang);
     bool isLangAvailable(Language lang) const;

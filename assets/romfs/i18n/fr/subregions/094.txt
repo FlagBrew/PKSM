@@ -1,0 +1,13 @@
+0|—
+2|Hollande-Septentrionale
+3|Drenthe
+4|Flevoland
+5|Frise
+6|Gueldre
+7|Groningue
+8|Limbourg
+9|Brabant-Septentrional
+10|Overijssel
+11|Hollande-Méridionale
+12|Utrecht
+13|Zélande

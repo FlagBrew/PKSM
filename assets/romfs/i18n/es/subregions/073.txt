@@ -1,0 +1,15 @@
+0|—
+2|Praga
+3|Región de Bohemia Central
+4|Región de Bohemia Meridional
+5|Región de Pilsen
+6|Región de Karlovy Vary
+7|Región de Ústí nad Labem
+8|Región de Liberec
+9|Región de Hradec Králové
+10|Región de Pardubice
+11|Región de Olomouc
+12|Región de Moravia-Silesia
+13|Región de Moravia Meridional
+14|Región de Zlín
+15|Región de Vysočina

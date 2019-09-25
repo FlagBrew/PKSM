@@ -34,11 +34,10 @@
 class ScriptChoice : public Screen
 {
 public:
-    ScriptChoice(char* question) : question(question) {}
+    ScriptChoice(const char* question) : question(question) {}
     int run();
     bool finished() const { return done; }
-    ScreenType type() const override { return ScreenType::SCRIPTSELECT; }
-    void drawBottom() const;
+    void drawBottom() const override;
 
 protected:
     std::string question;

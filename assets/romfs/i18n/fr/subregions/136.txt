@@ -1,0 +1,17 @@
+0|—
+2|Séoul
+3|Pusan
+4|Daegu
+5|Incheon
+6|Gwangju
+7|Daejeon
+8|Ulsan
+9|Gyeonggi
+10|Gangwon
+11|Chungcheong du Nord
+12|Chungcheong du Sud
+13|Jeolla du Nord
+14|Jeolla du Sud
+15|Gyeongsang du Nord
+16|Gyeongsang du Sud
+17|Jeju

@@ -25,6 +25,7 @@
  */
 
 #include "app.hpp"
+#include "gui.hpp"
 #include <3ds.h>
 
 int main(int argc, char* argv[])

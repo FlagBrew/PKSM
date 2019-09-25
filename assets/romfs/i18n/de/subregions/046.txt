@@ -1,0 +1,11 @@
+0|—
+2|Paramaribo
+3|Brokopondo
+4|Commewijne
+5|Coronie
+6|Marowijne
+7|Nickerie
+8|Para
+9|Saramacca
+10|Sipaliwini
+11|Wanica

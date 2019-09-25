@@ -2,8 +2,8 @@ APP_TITLE		:= 	PKSM
 APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
-VERSION_MAJOR	:=	6
-VERSION_MINOR	:=	2
+VERSION_MAJOR	:=	7
+VERSION_MINOR	:=	0
 VERSION_MICRO	:=	1
 GIT_REV="$(shell git rev-parse --short HEAD)"
 
@@ -20,6 +20,9 @@ revision:
 
 3ds: revision
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO)
+
+no-deps: revision
+	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO) no-deps
 
 docs:
 	@mkdir -p $(OUTDIR)

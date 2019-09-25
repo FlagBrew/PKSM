@@ -30,25 +30,24 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PKFilter.hpp"
+#include "ReplaceableScreen.hpp"
 #include "loader.hpp"
 
-class MoveOverlay : public Overlay
+class MoveOverlay : public ReplaceableScreen
 {
 public:
-    MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex);
-    ~MoveOverlay()
-    {
-        pkm->fixMoves();
-        delete searchButton;
-    }
-    void draw() const override;
+    MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& pkm, int moveIndex);
+    ~MoveOverlay();
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
     int moveIndex;
     HidVertical hid;
@@ -56,7 +55,7 @@ private:
     std::vector<std::pair<int, std::string>> validMoves;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    Button* searchButton;
+    std::unique_ptr<Button> searchButton;
     bool justSwitched = true;
 };
 

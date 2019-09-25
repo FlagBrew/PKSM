@@ -33,11 +33,14 @@
 #include <string>
 
 #include "Item.hpp"
+#include "PKFilter.hpp"
+#include "coretypes.h"
 #include "generation.hpp"
 #include "personal.hpp"
 #include "random.hpp"
-#include "types.h"
 #include "utils.hpp"
+
+class Sav;
 
 class PKX
 {
@@ -59,9 +62,10 @@ public:
     virtual u8* rawData(void) { return data; }
     void decrypt(void);
     void encrypt(void);
-    virtual std::shared_ptr<PKX> clone(void) = 0;
+    virtual std::shared_ptr<PKX> clone(void) const = 0;
     virtual ~PKX(){};
     static std::shared_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false);
+    bool operator==(const PKFilter& filter) const;
 
     virtual Generation generation(void) const = 0;
     bool gen7(void) const;
@@ -127,6 +131,8 @@ public:
     virtual void nickname(const std::string& v) = 0;
     virtual u16 move(u8 move) const             = 0;
     virtual void move(u8 move, u16 v)           = 0;
+    virtual u16 relearnMove(u8 move) const      = 0;
+    virtual void relearnMove(u8 move, u16 v)    = 0;
     virtual u8 PP(u8 move) const                = 0;
     virtual void PP(u8 move, u8 v)              = 0;
     virtual u8 PPUp(u8 move) const              = 0;
@@ -213,8 +219,8 @@ public:
     virtual int partyLevel(void) const           = 0;
     virtual void partyLevel(u8 v)                = 0;
 
-    virtual std::shared_ptr<PKX> previous(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
-    virtual std::shared_ptr<PKX> next(void) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> previous(Sav& save) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
+    virtual std::shared_ptr<PKX> next(Sav& save) const { return std::shared_ptr<PKX>(const_cast<PKX*>(this)); }
 
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);

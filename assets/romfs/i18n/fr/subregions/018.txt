@@ -1,0 +1,14 @@
+0|—
+2|Ontario
+3|Alberta
+4|Colombie-Britannique
+5|Manitoba
+6|Nouveau-Brunswick
+7|Terre-Neuve et Labrador
+8|Nouvelle-Écosse
+9|Île-du-Prince-Édouard
+10|Québec
+11|Saskatchewan
+12|Territoire du Yukon
+13|Territoires du Nord-Ouest
+14|Territoire du Nunavut

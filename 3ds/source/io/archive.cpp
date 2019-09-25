@@ -39,7 +39,7 @@ static constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNI
 Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
 {
     Result res;
-    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != 0xC82044BE && res != 0xC82044B9)
+    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
         return res;
     Directory d(src, dir);
     std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
@@ -67,6 +67,9 @@ Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive ds
 
     FSUSER_DeleteDirectory(src, fsMakePath(PATH_UTF16, dir.data()));
 
+    if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+        return 0;
+
     return res;
 }
 
@@ -77,7 +80,7 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
     if (stream.good())
     {
         size_t target = stream.size();
-        FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
+        deleteFile(dst, dest);
         FSStream out(dst, dest, FS_OPEN_WRITE, target);
         if (out.good())
         {
@@ -101,7 +104,7 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
             delete[] data;
             if (R_SUCCEEDED(res))
             {
-                FSUSER_DeleteFile(src, fsMakePath(PATH_UTF16, file.data()));
+                deleteFile(src, file);
             }
         }
         else
@@ -125,7 +128,7 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
     if (stream.good())
     {
         size_t target = stream.size();
-        FSUSER_DeleteFile(dst, fsMakePath(PATH_UTF16, dest.data()));
+        deleteFile(dst, dest);
         FSStream out(dst, dest, FS_OPEN_WRITE, target);
         if (out.good())
         {
@@ -162,7 +165,12 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
     return res;
 }
 
-Result Archive::init(std::string& execPath)
+Result Archive::deleteFile(FS_Archive archive, const std::u16string& file)
+{
+    return FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, file.c_str()));
+}
+
+Result Archive::init(const std::string& execPath)
 {
     Result res = 0;
     if (R_FAILED(res = FSUSER_OpenArchive(&sdmc, ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""))))
@@ -170,6 +178,9 @@ Result Archive::init(std::string& execPath)
     if (R_FAILED(res = extdata(&mData, UNIQUE_ID)))
     {
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+            return res;
+
+        if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
             return res;
     }
     else
@@ -191,7 +202,7 @@ Result Archive::init(std::string& execPath)
             if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
                 return res;
 
-            if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)))
+            if (R_FAILED(res = FSUSER_CreateFile(data(), fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
                 return res;
         }
         else
@@ -264,7 +275,7 @@ bool Archive::extdataAccessible(u32 id)
     return false;
 }
 
-Result Archive::createPKSMExtdataArchive(std::string& execPath)
+Result Archive::createPKSMExtdataArchive(const std::string& execPath)
 {
     u32 ndirs     = 100;                // TODO
     u32 nfiles    = 200;                // TODO

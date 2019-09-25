@@ -27,8 +27,9 @@
 #ifndef SORTOVERLAY_HPP
 #define SORTOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <array>
 #include <string>
@@ -123,16 +124,19 @@ static constexpr std::string_view sortTypeToString(SortType type)
     }
 }
 
-class SortOverlay : public Overlay
+class SortOverlay : public ReplaceableScreen
 {
 public:
-    SortOverlay(Screen& screen, SortType& type) : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
+    SortOverlay(ReplaceableScreen& screen, SortType& type)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
     {
         hid.update(vals.size());
         hid.select(int(type));
     }
     virtual ~SortOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

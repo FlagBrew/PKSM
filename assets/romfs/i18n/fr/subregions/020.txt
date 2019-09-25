@@ -1,0 +1,14 @@
+0|—
+2|Région Métropolitaine de Santiago
+3|Valparaiso
+4|Aisén del General Carlos Ibáñez del Campo
+5|Antofagasta
+6|Araucanie
+7|Atacama
+8|Biobío
+9|Coquimbo
+10|Libertador General Bernardo O'Higgins
+11|Los Lagos
+12|Magellan et Antarctique Chilienne
+13|Maule
+14|Tarapacá

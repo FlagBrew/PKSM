@@ -1,0 +1,34 @@
+0|—
+2|Distretto Capitale
+3|Cundinamarca
+4|Amazonas
+5|Antioquia
+6|Arauca
+7|Atlántico
+8|Bolívar
+9|Boyacá
+10|Caldas
+11|Caquetá
+12|Cauca
+13|Cesar
+14|Chocó
+15|Córdoba
+16|Guaviare
+17|Guainía
+18|Huila
+19|La Guajira
+20|Magdalena
+21|Meta
+22|Nariño
+23|Norte de Santander
+24|Putumayo
+25|Quindío
+26|Risaralda
+27|" Providencia et Santa Cataline"
+28|Santander
+29|Sucre
+30|Tolima
+31|Valle del Cauca
+32|Vaupés
+33|Vichada
+34|Casanare

@@ -1,0 +1,29 @@
+0|—
+2|Sofia (ville)
+3|Sofia (oblast)
+4|Blagoevgrad
+5|Pleven
+6|Vidin
+7|Varna
+8|Bourgas
+9|Dobritch
+10|Gabrovo
+11|Khaskovo
+12|Yambol
+13|Kardjali
+14|Kyoustendil
+15|Lovetch
+16|Montana
+17|Pazardjik
+18|Pernik
+19|Plovdiv
+20|Razgrad
+21|Roussé
+22|Silistra
+23|Sliven
+24|Smolyan
+25|Stara Zagora
+26|Choumen
+27|Targovichte
+28|Veliko Tarnovo
+29|Vratsa

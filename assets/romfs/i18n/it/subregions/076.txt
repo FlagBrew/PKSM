@@ -1,0 +1,21 @@
+0|—
+8|Uusimaa
+9|Lapponia
+10|Ostrobotnia Settentrionale
+11|Kainuu
+12|Carelia Settentrionale
+13|Savo Settentrionale
+14|Savo Meridionale
+15|Ostrobotnia Meridionale
+16|Ostrobotnia
+17|Pirkanmaa
+18|Satakunta
+19|Ostrobotnia Centrale
+20|Finlandia Centrale
+21|Finlandia Sud-Occidentale
+22|Carelia Meridionale
+23|Päijät-Häme
+24|Kanta-Häme
+25|Uusimaa Orientale
+26|Kymenlaakso
+27|Isole Åland

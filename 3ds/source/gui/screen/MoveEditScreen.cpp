@@ -27,10 +27,9 @@
 #include "MoveEditScreen.hpp"
 #include "ClickButton.hpp"
 #include "MoveOverlay.hpp"
+#include "PB7.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
-
-extern int bobPointer();
 
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -39,7 +38,7 @@ MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     for (int i = 0; i < 4; i++)
     {
         buttons.push_back(std::make_unique<ClickButton>(0, 30 + 20 * i, 240, 20,
@@ -47,14 +46,16 @@ MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
                 moveSelected = i;
                 return true;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<ClickButton>(0, 140 + 20 * i, 240, 20,
             [=]() {
                 moveSelected = i + 4;
                 return true;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     }
+
+    addOverlay<ViewOverlay>(this->pkm, false);
 }
 
 void MoveEditScreen::update(touchPosition* touch)
@@ -93,15 +94,10 @@ void MoveEditScreen::update(touchPosition* touch)
             moveSelected--;
         }
     }
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
 }
 
-void MoveEditScreen::draw() const
+void MoveEditScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -126,42 +122,38 @@ void MoveEditScreen::draw() const
         button->draw();
     }
 
-    Gui::staticText(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("MOVES"), 12, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("RELEARN_MOVES"), 12, 113, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::dynamicText(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        if (pkm->generation() == Generation::SIX)
+        Gui::text(i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        if (pkm->generation() < Generation::SIX)
         {
-            Gui::dynamicText(i18n::move(lang, ((PK6*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
-        }
-        else if (pkm->generation() == Generation::SEVEN)
-        {
-            Gui::dynamicText(i18n::move(lang, ((PK7*)pkm.get())->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
-            Gui::staticText(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(i18n::move(lang, pkm->relearnMove(i)), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 
     if (moveSelected < 4)
     {
-        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 31 + moveSelected * 20);
-        Gui::staticText("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 31 + moveSelected * 20);
+        Gui::text("\uE000", 194, 29 + moveSelected * 20, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
     else
     {
-        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + bobPointer(), 140 + (moveSelected - 4) * 20);
-        Gui::staticText("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::sprite(ui_sheet_emulated_pointer_horizontal_flipped_idx, 169 + Gui::pointerBob(), 140 + (moveSelected - 4) * 20);
+        Gui::text("\uE000", 194, 138 + (moveSelected - 4) * 20, FONT_SIZE_18, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
 void MoveEditScreen::changeMove()
 {
-    currentOverlay = std::make_unique<MoveOverlay>(*this, pkm, moveSelected);
+    if (moveSelected < 4 || pkm->generation() >= Generation::SIX)
+    {
+        addOverlay<MoveOverlay>(pkm, moveSelected);
+    }
 }

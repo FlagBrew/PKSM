@@ -1,0 +1,13 @@
+0|—
+2|Nordholland
+3|Drenthe
+4|Flevoland
+5|Friesland
+6|Gelderland
+7|Groningen
+8|Limburg
+9|Nordbrabant
+10|Overijssel
+11|Südholland
+12|Utrecht
+13|Zeeland

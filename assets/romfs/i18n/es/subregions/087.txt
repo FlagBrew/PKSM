@@ -1,0 +1,11 @@
+0|—
+2|Condado de Vilna
+3|Condado de Alytus
+4|Condado de Kaunas
+5|Condado de Klaipėda
+6|Condado de Marijampolė
+7|Condado de Panevėžys
+8|Condado de Šiauliai
+9|Condado de Tauragė
+10|Condado de Telšiai
+11|Condado de Utena

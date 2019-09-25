@@ -1,0 +1,15 @@
+0|—
+2|Praga
+3|Boemia Centrale
+4|Boemia Meridionale
+5|Regione di Plseň
+6|Regione di Karlovy Vary
+7|Regione di Ústí nad Labem
+8|Regione di Liberec
+9|Regione di Hradec Králové
+10|Regione di Pardubice
+11|Regione di Olomouc
+12|Regione di Moravia-Slesia
+13|Moravia Meridionale
+14|Regione di Zlín
+15|Regione di Vysočina

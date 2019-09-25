@@ -27,27 +27,38 @@
 #ifndef FORMOVERLAY_HPP
 #define FORMOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <memory>
+#include <variant>
 
-class FormOverlay : public Overlay
+class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(Screen& screen, std::shared_ptr<PKX> pkm, u8 formCount)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 6), formCount(formCount)
+    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
     {
         hid.update(40);
-        hid.select(pkm->alternativeForm());
+        if (object.index() == 0)
+        {
+            hid.select(std::get<0>(object)->alternativeForm());
+        }
+        else
+        {
+            hid.select(std::get<1>(object)->alternativeForm());
+        }
     }
     virtual ~FormOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     HidHorizontal hid;
     u8 formCount;
 };

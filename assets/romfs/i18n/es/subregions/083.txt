@@ -1,0 +1,21 @@
+0|—
+2|Lacio
+3|Valle de Aosta
+4|Piamonte
+5|Liguria
+6|Lombardía
+7|Trentino-Alto Adigio
+8|Véneto
+9|Friuli-Venecia Julia
+10|Emilia-Romaña
+11|Toscana
+12|Umbría
+13|Las Marcas
+14|Abruzos
+15|Molise
+16|Campania
+17|Apulia
+18|Basilicata
+19|Calabria
+20|Sicilia
+21|Cerdeña

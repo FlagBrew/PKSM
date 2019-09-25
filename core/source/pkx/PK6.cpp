@@ -25,7 +25,7 @@
  */
 
 #include "PK6.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK6::shuffleArray(u8 sv)
@@ -63,22 +63,28 @@ void PK6::crypt(void)
     }
 }
 
-PK6::PK6(u8* dt, bool ekx, bool party)
+PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
 {
     length = party ? 260 : 232;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
 
-    std::copy(dt, dt + length, data);
     if (ekx)
     {
         decrypt();
     }
 }
 
-std::shared_ptr<PKX> PK6::clone(void)
+std::shared_ptr<PKX> PK6::clone(void) const
 {
-    return std::make_shared<PK6>(data, false, length == 260);
+    return std::make_shared<PK6>(const_cast<u8*>(data), false, length == 260);
 }
 
 Generation PK6::generation(void) const
@@ -347,11 +353,11 @@ void PK6::ribbonBattleCount(u8 v)
 
 std::string PK6::nickname(void) const
 {
-    return StringUtils::getString(data, 0x40, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x40, 12));
 }
 void PK6::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x40, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x40, 12);
 }
 
 u16 PK6::move(u8 m) const
@@ -442,11 +448,11 @@ void PK6::nicknamed(bool v)
 
 std::string PK6::htName(void) const
 {
-    return StringUtils::getString(data, 0x78, 12);
+    return StringUtils::transString67(StringUtils::getString(data, 0x78, 12));
 }
 void PK6::htName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x78, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0x78, 12);
 }
 
 u8 PK6::htGender(void) const
@@ -559,11 +565,11 @@ void PK6::enjoyment(u8 v)
 
 std::string PK6::otName(void) const
 {
-    return StringUtils::getString(data, 0xB0, 13);
+    return StringUtils::transString67(StringUtils::getString(data, 0xB0, 13));
 }
 void PK6::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0xB0, 12);
+    StringUtils::setString(data, StringUtils::transString67(v), 0xB0, 13);
 }
 
 u8 PK6::otFriendship(void) const
@@ -935,7 +941,7 @@ u16 PK6::stat(const u8 stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK6::next(void) const
+std::shared_ptr<PKX> PK6::next(Sav& save) const
 {
     u8 dt[232];
     std::copy(data, data + 232, dt);
@@ -973,8 +979,8 @@ std::shared_ptr<PKX> PK6::next(void) const
     pk7->htTextVar(0);
     pk7->htIntensity(1);
     pk7->htFeeling(randomNumbers() % 10);
-    pk7->geoCountry(0, TitleLoader::save->country());
-    pk7->geoRegion(0, TitleLoader::save->subRegion());
+    pk7->geoCountry(0, save.country());
+    pk7->geoRegion(0, save.subRegion());
 
     pk7->currentHandler(1);
 
@@ -982,7 +988,7 @@ std::shared_ptr<PKX> PK6::next(void) const
     return std::shared_ptr<PKX>(pk7);
 }
 
-std::shared_ptr<PKX> PK6::previous(void) const
+std::shared_ptr<PKX> PK6::previous(Sav& save) const
 {
     u8 dt[232] = {0};
     PK5* pk5   = new PK5(dt);
@@ -1022,8 +1028,8 @@ std::shared_ptr<PKX> PK6::previous(void) const
 
     pk5->version(version());
 
-    pk5->nickname(nickname().substr(0, 11));
-    pk5->otName(otName().substr(0, 7));
+    pk5->nickname(nickname());
+    pk5->otName(otName());
 
     pk5->metYear(metYear());
     pk5->metMonth(metMonth());
@@ -1089,7 +1095,7 @@ std::shared_ptr<PKX> PK6::previous(void) const
 
     for (int i = 0; i < 4; i++)
     {
-        if (pk5->move(i) > TitleLoader::save->maxMove())
+        if (pk5->move(i) > save.maxMove())
         {
             pk5->move(i, 0);
         }
@@ -1147,33 +1153,5 @@ void PK6::partyLevel(u8 v)
     if (length != 232)
     {
         *(data + 0xEC) = v;
-    }
-}
-
-void PK6::reorderMoves(void)
-{
-    PKX::reorderMoves();
-    if (relearnMove(3) != 0 && relearnMove(2) == 0)
-    {
-        relearnMove(2, relearnMove(3));
-        PP(2, PP(3));
-        PPUp(2, PPUp(3));
-        relearnMove(3, 0);
-    }
-    if (relearnMove(2) != 0 && relearnMove(1) == 0)
-    {
-        relearnMove(1, relearnMove(2));
-        PP(1, PP(2));
-        PPUp(1, PPUp(2));
-        relearnMove(2, 0);
-        reorderMoves();
-    }
-    if (relearnMove(1) != 0 && relearnMove(0) == 0)
-    {
-        relearnMove(0, relearnMove(1));
-        PP(0, PP(1));
-        PPUp(0, PPUp(1));
-        relearnMove(1, 0);
-        reorderMoves();
     }
 }

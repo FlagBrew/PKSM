@@ -1,0 +1,17 @@
+0|—
+2|Masowien
+3|Niederschlesien
+4|Kujawien-Pommern
+5|Lodsch
+6|Lublin
+7|Lebus
+8|Kleinpolen
+9|Oppeln
+10|Karpatenvorland
+11|Podlachien
+12|Pommern
+13|Schlesien
+14|Heiligkreuz
+15|Ermland-Masuren
+16|Großpolen
+17|Westpommern

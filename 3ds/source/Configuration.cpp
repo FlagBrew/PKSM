@@ -31,8 +31,7 @@
 
 Configuration::Configuration()
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-    FSStream stream(Archive::data(), path, FS_OPEN_READ);
+    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_READ);
 
     if (R_FAILED(stream.result()))
     {
@@ -48,21 +47,40 @@ Configuration::Configuration()
         mJson = nlohmann::json::parse(jsonData, nullptr, false);
         delete[] jsonData;
 
-        if (mJson.is_discarded())
+        if (!mJson.is_object())
         {
-            Gui::warn(i18n::localize("CONFIGURATION_FILE_CORRUPTED_1"), i18n::localize("CONFIGURATION_FILE_CORRUPTED_2"));
             loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_FILE_CORRUPTED_1") + '\n' +
+                          i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                mJson["language"]);
+            return;
         }
-        else if (!mJson.contains("version"))
+
+        if (!(mJson.contains("version") && mJson["version"].is_number_integer()))
         {
-            Gui::warn(i18n::localize("CONFIGURATION_VERSION_MISSING_1"), i18n::localize("CONFIGURATION_VERSION_MISSING_2"));
             loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                          i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                mJson["language"]);
+            return;
         }
-        else if (mJson["version"].get<int>() != CURRENT_VERSION)
+
+        if (!(mJson.contains("language") && mJson["language"].is_number_integer()))
+        {
+            loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                          i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                mJson["language"]);
+            return;
+        }
+
+        if (mJson["version"].get<int>() != CURRENT_VERSION)
         {
             if (mJson["version"].get<int>() > CURRENT_VERSION)
             {
-                Gui::warn(i18n::localize("THE_FUCK"), i18n::localize("DO_NOT_DOWNGRADE"));
+                loadFromRomfs();
+                Gui::warn(
+                    i18n::localize(mJson["language"], "THE_FUCK") + '\n' + i18n::localize(mJson["language"], "DO_NOT_DOWNGRADE"), mJson["language"]);
                 return;
             }
             if (mJson["version"].get<int>() < 2)
@@ -77,6 +95,14 @@ Configuration::Configuration()
             {
                 u8 countryData[4];
                 CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
+                if (!(mJson.contains("defaults") && mJson["defaults"].is_object()))
+                {
+                    loadFromRomfs();
+                    Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                                  i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                        mJson["language"]);
+                    return;
+                }
                 mJson["defaults"]["country"] = countryData[3];
                 mJson["defaults"]["region"]  = countryData[2];
                 CFGU_SecureInfoGetRegion(countryData);
@@ -84,51 +110,141 @@ Configuration::Configuration()
             }
             if (mJson["version"].get<int>() < 5)
             {
-                for (auto& game : mJson["extraSaves"])
-                {
-                    game.erase("folders");
-                    if (game.count("files") > 0)
+                if (!(mJson.contains("extraSaves") && mJson["extraSaves"].is_object()))
+                    for (auto& game : mJson["extraSaves"])
                     {
-                        nlohmann::json tmp = game["files"];
-                        game               = tmp;
+                        if (!game.is_object())
+                        {
+                            loadFromRomfs();
+                            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                                          i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                                mJson["language"]);
+                            return;
+                        }
+
+                        game.erase("folders");
+                        if (game.contains("files") && game["files"].is_array())
+                        {
+                            nlohmann::json tmp = game["files"];
+                            game               = tmp;
+                        }
+                        else
+                        {
+                            game = nlohmann::json::array();
+                        }
                     }
-                    else
-                    {
-                        game = nlohmann::json::array();
-                    }
-                }
             }
             if (mJson["version"].get<int>() < 6)
             {
                 mJson.erase("storageSize");
                 mJson["showBackups"] = false;
             }
+            if (mJson["version"].get<int>() < 7)
+            {
+                if (!(mJson.contains("defaults") && mJson["defaults"].is_object()) ||
+                    !(mJson["defaults"].contains("pid") && mJson["defaults"]["pid"].is_number_integer()))
+                {
+                    loadFromRomfs();
+                    Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                                  i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                        mJson["language"]);
+                    return;
+                }
+                mJson["defaults"]["tid"] = mJson["defaults"]["pid"];
+                mJson["defaults"].erase("pid");
+                mJson["legalEndpoint"] = "https://flagbrew.org/pksm/legality/check";
+            }
+            if (mJson["version"].get<int>() < 8)
+            {
+                mJson["patronCode"]   = "";
+                mJson["alphaChannel"] = false;
+                mJson["autoUpdate"]   = true;
+            }
 
             mJson["version"] = CURRENT_VERSION;
             save();
+        }
+
+        // clang-format off
+        if (!(mJson.contains("version") && mJson["version"].is_number_integer()) ||
+            !(mJson.contains("language") && mJson["language"].is_number_integer()) ||
+            !(mJson.contains("autoBackup") && mJson["autoBackup"].is_boolean()) ||
+            !(mJson.contains("transferEdit") && mJson["transferEdit"].is_boolean()) ||
+            !(mJson.contains("useExtData") && mJson["useExtData"].is_boolean()) ||
+            !(mJson.contains("defaults") && mJson["defaults"].is_object()) ||
+            !(mJson.contains("extraSaves") && mJson["extraSaves"].is_object()) ||
+            !(mJson.contains("writeFileSave") && mJson["writeFileSave"].is_boolean()) ||
+            !(mJson.contains("useSaveInfo") && mJson["useSaveInfo"].is_boolean()) ||
+            !(mJson.contains("randomMusic") && mJson["randomMusic"].is_boolean()) ||
+            !(mJson.contains("showBackups") && mJson["showBackups"].is_boolean()) ||
+            !(mJson.contains("legalEndpoint") && mJson["legalEndpoint"].is_string()) ||
+            !(mJson.contains("patronCode") && mJson["patronCode"].is_string()) ||
+            !(mJson.contains("alphaChannel") && mJson["alphaChannel"].is_boolean()) ||
+            !(mJson.contains("autoUpdate") && mJson["autoUpdate"].is_boolean()) ||
+            !(mJson["defaults"].contains("tid") && mJson["defaults"]["tid"].is_number_integer()) ||
+            !(mJson["defaults"].contains("sid") && mJson["defaults"]["sid"].is_number_integer()) ||
+            !(mJson["defaults"].contains("ot") && mJson["defaults"]["ot"].is_string()) ||
+            !(mJson["defaults"].contains("nationality") && mJson["defaults"]["nationality"].is_number_integer()) ||
+            !(mJson["defaults"].contains("country") && mJson["defaults"]["country"].is_number_integer()) ||
+            !(mJson["defaults"].contains("region") && mJson["defaults"]["region"].is_number_integer()) ||
+            !(mJson["defaults"].contains("date") && mJson["defaults"]["date"].is_object()) ||
+            !(mJson["defaults"]["date"].contains("day") && mJson["defaults"]["date"]["day"].is_number_integer()) ||
+            !(mJson["defaults"]["date"].contains("month") && mJson["defaults"]["date"]["month"].is_number_integer()) ||
+            !(mJson["defaults"]["date"].contains("year") && mJson["defaults"]["date"]["year"].is_number_integer()))
+        // clang-format on
+        {
+            loadFromRomfs();
+            Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                          i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                mJson["language"]);
+            return;
+        }
+
+        for (auto& game : mJson["extraSaves"])
+        {
+            if (game.is_array())
+            {
+                for (auto& save : game)
+                {
+                    if (!save.is_string())
+                    {
+                        loadFromRomfs();
+                        Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                                      i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                            mJson["language"]);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                loadFromRomfs();
+                Gui::warn(i18n::localize(mJson["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                              i18n::localize(mJson["language"], "CONFIGURATION_USING_DEFAULT"),
+                    mJson["language"]);
+                return;
+            }
         }
     }
 }
 
 void Configuration::save()
 {
-    static const std::u16string path = StringUtils::UTF8toUTF16("/config.json");
-
     std::string writeData = mJson.dump(2);
     writeData.shrink_to_fit();
     size_t size = writeData.size();
 
     if (oldSize != size)
     {
-        FSUSER_DeleteFile(Archive::data(), fsMakePath(PATH_UTF16, path.data()));
+        Archive::deleteFile(Archive::data(), "/config.json");
     }
 
-    FSStream stream(Archive::data(), path, FS_OPEN_WRITE, oldSize = size);
+    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_WRITE, oldSize = size);
     stream.write(writeData.data(), size);
     stream.close();
 }
 
-std::vector<std::string> Configuration::extraSaves(const std::string& id)
+std::vector<std::string> Configuration::extraSaves(const std::string& id) const
 {
     if (mJson["extraSaves"].count(id) > 0)
     {

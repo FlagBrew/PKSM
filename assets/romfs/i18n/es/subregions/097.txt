@@ -1,0 +1,17 @@
+0|—
+2|Mazovia
+3|Baja Silesia
+4|Cuyavia y Pomerania
+5|Lodz
+6|Lublin
+7|Lubus
+8|Pequeña Polonia
+9|Opole
+10|Subcarpacia
+11|Podlaquia
+12|Pomerania
+13|Silesia
+14|Santa Cruz
+15|Varmia y Masuria
+16|Gran Polonia
+17|Pomerania Occidental

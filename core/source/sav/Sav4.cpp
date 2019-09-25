@@ -172,11 +172,11 @@ void Sav4::language(u8 v)
 
 std::string Sav4::otName(void) const
 {
-    return StringUtils::getString4(data, Trainer1, 8);
+    return StringUtils::transString45(StringUtils::getString4(data, Trainer1, 8));
 }
 void Sav4::otName(const std::string& v)
 {
-    StringUtils::setString4(data, v, Trainer1, 8);
+    StringUtils::setString4(data, StringUtils::transString45(v), Trainer1, 8);
 }
 
 u32 Sav4::money(void) const
@@ -203,14 +203,14 @@ u8 Sav4::badges(void) const
     u8 ret       = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     if (game == Game::HGSS)
     {
         badgeBits = data[Trainer1 + 0x1F];
         for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
         {
-            ret += badgeBits & BIT(i) ? 1 : 0;
+            ret += badgeBits & (1 << i) ? 1 : 0;
         }
     }
     return ret;
@@ -266,17 +266,14 @@ u32 Sav4::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 {
-    u8 buf[236];
-    u32 ofs = partyOffset(slot);
-    std::copy(data + ofs, data + ofs + 236, buf);
-    return std::make_shared<PK4>(buf, true, true);
+    return std::make_shared<PK4>(data + partyOffset(slot), true, true);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[236] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true);
+    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true, true);
 
     if (pk->getLength() != 236)
     {
@@ -295,30 +292,28 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
 {
-    u8 buf[136];
-    u32 ofs = boxOffset(box, slot);
-    std::copy(data + ofs, data + ofs + 136, buf);
-    return std::make_shared<PK4>(buf, ekx);
+    return std::make_shared<PK4>(data + boxOffset(box, slot), ekx);
 }
 
-void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    transfer(pk);
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
-    }
+        if (applyTrade)
+        {
+            trade(pk);
+        }
 
-    std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+    }
+    return (bool)pk;
 }
 
 void Sav4::trade(std::shared_ptr<PKX> pk)
 {
     if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
     {
-        pk->metDay(Configuration::getInstance().day());
-        pk->metMonth(Configuration::getInstance().month());
-        pk->metYear(Configuration::getInstance().year() - 2000);
         pk->metLocation(2002);
     }
 }
@@ -329,12 +324,11 @@ void Sav4::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::shared_ptr<PKX> pk4 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pk4 = std::make_unique<PK4>(data + boxOffset(box, slot), crypted, false, true);
             if (!crypted)
             {
                 pk4->encrypt();
             }
-            pkm(pk4, box, slot, false);
         }
     }
 }
@@ -348,19 +342,19 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
     if (game == Game::DP)
     {
         static constexpr size_t dpSlotActive = 0xEDB88320;
-        static const int ofs = WondercardFlags + 0x100;
-        *(u32*)(data + ofs + 4*pos) = dpSlotActive;
+        static const int ofs                 = WondercardFlags + 0x100;
+        *(u32*)(data + ofs + 4 * pos)        = dpSlotActive;
     }
 }
 
 std::string Sav4::boxName(u8 box) const
 {
-    return StringUtils::getString4(data, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
+    return StringUtils::transString45(StringUtils::getString4(data, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9));
 }
 
 void Sav4::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString4(data, name, boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
+    StringUtils::setString4(data, StringUtils::transString45(name), boxOffset(18, 0) + box * 0x28 + (game == Game::HGSS ? 0x8 : 0), 9);
 }
 
 u8 Sav4::partyCount(void) const
@@ -496,11 +490,16 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
 
 int Sav4::dexSeen(void) const
 {
-    static constexpr int brSize = 0x40;
     int ret                     = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    static constexpr int brSize = 0x40;
+    int ofs                     = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + brSize + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
+
+        if ((1 << bm & data[ofs + bd + brSize]) != 0)
         {
             ret++;
         }
@@ -511,9 +510,14 @@ int Sav4::dexSeen(void) const
 int Sav4::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ofs = PokeDex + 0x4;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x4 + i / 8] & BIT(i % 8))
+        int bit = i - 1;
+        int bd  = bit >> 3;
+        int bm  = bit & 7;
+
+        if ((1 << bm & data[ofs + bd]) != 0)
         {
             ret++;
         }
@@ -717,8 +721,7 @@ u32 Sav4::setDexFormValues(std::vector<u8> forms, u8 bitsPerForm, u8 readCt)
 
 std::shared_ptr<PKX> Sav4::emptyPkm() const
 {
-    static auto empty = std::make_shared<PK4>();
-    return empty;
+    return std::make_shared<PK4>();
 }
 
 int Sav4::emptyGiftLocation(void) const
@@ -746,24 +749,24 @@ int Sav4::emptyGiftLocation(void) const
     return !empty ? 7 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav4::currentGifts(void) const
+std::vector<Sav::giftData> Sav4::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
             PK4 getData(wonderCards + i * PGT::length + 8, true);
-            ret.push_back({"Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender()});
+            ret.emplace_back("Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender());
         }
         else if (*(wonderCards + i * PGT::length) == 7)
         {
-            ret.push_back({"Wonder Card", "", 490, -1, -1});
+            ret.emplace_back("Wonder Card", "", 490, -1, -1);
         }
         else
         {
-            ret.push_back({"Wonder Card", "", -1, -1, -1});
+            ret.emplace_back("Wonder Card", "", -1, -1, -1);
         }
     }
     return ret;
@@ -867,27 +870,77 @@ std::map<Pouch, std::vector<int>> Sav4::validItems() const
         {Battle, {55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67}}};
 }
 
-std::string Sav4::pouchName(Pouch pouch) const
+std::string Sav4::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMHM");
+            return i18n::localize(lang, "TMHM");
         case Mail:
-            return i18n::localize("MAIL");
+            return i18n::localize(lang, "MAIL");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         case Ball:
-            return i18n::localize("BALLS");
+            return i18n::localize(lang, "BALLS");
         case Battle:
-            return i18n::localize("BATTLE_ITEMS");
+            return i18n::localize(lang, "BATTLE_ITEMS");
         default:
             return "";
     }
+}
+
+const std::set<int>& Sav4::availableItems(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxItem());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav4::availableMoves(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxMove());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav4::availableSpecies(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxSpecies());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav4::availableAbilities(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxAbility());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav4::availableBalls(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxBall());
+    }
+    return ret;
 }

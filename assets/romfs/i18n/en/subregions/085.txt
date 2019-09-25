@@ -1,0 +1,11 @@
+0|—
+2|Maseru
+3|Berea
+4|Butha-Buthe
+5|Leribe
+6|Mafeteng
+7|Mohale's Hoek
+8|Mokhotlong
+9|Qacha's Nek
+10|Quthing
+11|Thaba-Tseka

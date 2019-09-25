@@ -1,0 +1,19 @@
+0|—
+2|Central
+3|Alto Paraná
+4|Amambay
+5|Caaguazú
+6|Caazapá
+7|Concepción
+8|Cordillera
+9|Guairá
+10|Itapúa
+11|Misiones
+12|Ñeembucú
+13|Paraguarí
+14|Presidente Hayes
+15|San Pedro
+16|Canindeyú
+17|Asunción
+18|Alto Paraguay
+19|Boquerón

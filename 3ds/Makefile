@@ -39,6 +39,7 @@ TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
 FORMATSOURCES	:=	../common/source \
+					../common/source/gui \
 					../common/source/io \
 					../common/source/sound \
 					../common/source/sound/decoder \
@@ -48,6 +49,7 @@ FORMATSOURCES	:=	../common/source \
 					../core/source/personal \
 					../core/source/pkx \
 					../core/source/sav \
+					../core/source/utils \
 					../core/source/wcx \
 					source \
 					source/gui \
@@ -67,15 +69,16 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/memecrypto
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
+					../common/include/gui \
 					../common/include/io \
 					../common/include/sound \
 					../common/include/sound/decoder \
 					../common/include/utils \
-					../core/include \
 					../core/include/i18n \
 					../core/include/personal \
 					../core/include/pkx \
 					../core/include/sav \
+					../core/include/utils \
 					../core/include/wcx \
 					include \
 					include/gui \
@@ -88,13 +91,15 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
-					../core/memecrypto
+					../core/memecrypto \
+					../core/include
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
 PACKER			:=	../common/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
+I18N_PATH		:=	romfs:/i18n/
 
 ICON			:=	../assets/icon.png
 BANNER_AUDIO	:=	../assets/audio.wav
@@ -110,16 +115,17 @@ ICON_FLAGS		:=	nosavebackups,visible
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
+CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
-			-Wno-implicit-fallthrough -Wno-unused-parameter \
+			-Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
-			`sdl-config --cflags` \
-			`arm-none-eabi-pkg-config opusfile --cflags`
+			-DI18N_PATH=\"$(strip ${I18N_PATH})\" \
+			`arm-none-eabi-pkg-config SDL_mixer --cflags` \
+			`curl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
@@ -128,9 +134,9 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lSDL_mixer -lSDL -lmpg123 -lvorbisidec -lopusfile -lopus -logg -lmikmod -lmad \
-		   -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lbz2 \
-		   -lz -lcitro2d -lcitro3d -lctru -lm
+LIBS	:= -lcitro2d -lbz2 \
+		   `arm-none-eabi-pkg-config SDL_mixer --libs-only-l --libs-only-L` -lvorbisidec -logg -lmikmod -lmad \
+		   `curl-config --libs`
 
 CXX		:= `which ccache` $(CXX)
 CC		:= `which ccache` $(CC)
@@ -163,6 +169,7 @@ SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 PICAFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.v.pica)))
 SHLISTFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.shlist)))
 GFXFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.t3s)))
+FONTFILES	:=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.ttf)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 
 #---------------------------------------------------------------------------------
@@ -180,6 +187,7 @@ endif
 #---------------------------------------------------------------------------------
 
 export T3XFILES		:=	$(GFXFILES:.t3s=.t3x)
+export ROMFS_FONTFILES	:=	$(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
 
 export OFILES_SOURCES 	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
@@ -249,7 +257,7 @@ clean:
 	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
 	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
-no-deps:
+no-deps: $(ROMFS_FONTFILES)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
@@ -262,8 +270,14 @@ format:
 #---------------------------------------------------------------------------------
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
-	@cppcheck . --enable=all -I ../common 2> $(BUILD)/cppcheck.log
+	@cppcheck . --enable=all $(INCLUDE) --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
+
+#---------------------------------------------------------------------------------
+$(GFXBUILD)/%.bcfnt :		%.ttf
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
 else
 
 #---------------------------------------------------------------------------------
@@ -319,6 +333,12 @@ endef
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@tex3ds -i $< -H $*.h -d $*.d -o $(TOPDIR)/$(GFXBUILD)/$*.t3x
+
+#---------------------------------------------------------------------------------
+%.bcfnt :		%.ttf
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@mkbcfnt -o $*.bcfnt $<
 
 -include $(DEPSDIR)/*.d
 

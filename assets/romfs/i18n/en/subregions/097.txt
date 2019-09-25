@@ -1,0 +1,17 @@
+0|—
+2|Masovia
+3|Lower Silesia
+4|Kuyavian-Pomeranian Voivodeship
+5|Lodz
+6|Lublin
+7|Lubusz
+8|Lesser Poland
+9|Opole
+10|Subcarpathia
+11|Podlachia
+12|Pomerania
+13|Silesia
+14|Świętokrzyskie
+15|Warmian-Masurian Voivodeship
+16|Greater Poland
+17|Western Pomerania

@@ -43,7 +43,7 @@ u16 PGF::ID(void) const
 
 std::string PGF::title(void) const
 {
-    return StringUtils::getString(data, 0x60, 37, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, 0x60, 37, u'\uFFFF'));
 }
 
 u8 PGF::type(void) const

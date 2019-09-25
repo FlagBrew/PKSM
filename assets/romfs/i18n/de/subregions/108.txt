@@ -1,0 +1,27 @@
+0|—
+2|Bern
+4|Aargau
+5|Basel-Stadt
+6|Freiburg
+7|Genf
+8|Glarus
+9|Graubünden
+10|Jura
+11|Luzern
+12|Neuenburg
+13|Obwalden
+14|Sankt Gallen
+15|Schaffhausen
+16|Schwyz
+17|Solothurn
+18|Thurgau
+19|Tessin
+20|Uri
+21|Wallis
+22|Waadt
+23|Zug
+24|Zürich
+25|Appenzell Ausserrhoden
+26|Appenzell Innerrhoden
+27|Basel-Landschaft
+28|Nidwalden

@@ -1,0 +1,23 @@
+0|—
+2|Taipei
+3|Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|Nouveau Taipei
+10|Taoyuan (comté de)
+11|Hsinchu (comté de)
+12|Miaoli (comté de)
+14|Changhua (comté de)
+15|Nantou (comté de)
+16|Yunlin (comté de)
+17|Chiayi (comté de)
+20|Pingtung (comté de)
+21|Ilan (comté de)
+22|Hualien (comté de)
+23|Taitung (comté de)
+24|Penghu (comté de)
+25|Kinmen (comté de)
+26|Lienchiang (comté de)

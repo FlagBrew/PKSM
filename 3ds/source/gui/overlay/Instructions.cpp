@@ -31,22 +31,14 @@ Instructions::Instructions(const std::string& simpleInstructions)
 {
     if (!simpleInstructions.empty())
     {
-        int lines           = 1;
-        std::string wrapped = StringUtils::wrap(simpleInstructions, FONT_SIZE_12, 300);
-        for (auto i = wrapped.begin(); i != wrapped.end(); i++)
-        {
-            if (*i == '\n')
-            {
-                lines++;
-            }
-        }
-        int height = fontGetInfo()->lineFeed * FONT_SIZE_12 * lines + 20;
+        auto instrText = Gui::parseText(simpleInstructions, FONT_SIZE_12, 300);
+        int height     = fontGetInfo(NULL)->lineFeed * FONT_SIZE_12 * instrText->lineWidths.size() + 20;
         addBox(true, 40, 220 - height, 320, height, COLOR_GREY);
-        addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, wrapped, COLOR_WHITE);
+        addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, simpleInstructions, COLOR_WHITE);
     }
 }
 
-void Instructions::addBox(bool top, int x, int y, int width, int height, u32 color, const std::string& text, u32 textColor)
+void Instructions::addBox(bool top, int x, int y, int width, int height, PKSM_Color color, const std::string& text, PKSM_Color textColor)
 {
     boxes.emplace_back(top, x, y, width, height, color);
     if (!text.empty())
@@ -55,45 +47,90 @@ void Instructions::addBox(bool top, int x, int y, int width, int height, u32 col
     }
 }
 
-void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, u32 color, const std::string& text)
+void Instructions::addLine(bool top, int x1, int y1, int x2, int y2, int w, PKSM_Color color)
 {
-    texts.emplace_back(top, x, y, xPos, yPos, color, StringUtils::wrap(text, FONT_SIZE_12, maxWidth));
+    lines.emplace_back(top, x1, y1, x2, y2, w, color);
 }
 
-void Instructions::addCircle(bool top, int x, int y, int radius, u32 color)
+void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color, const std::string& text)
+{
+    texts.emplace_back(top, x, y, maxWidth, xPos, yPos, color, text);
+}
+
+void Instructions::addCircle(bool top, int x, int y, int radius, PKSM_Color color)
 {
     circles.emplace_back(top, x, y, radius, color);
 }
 
-void Instructions::draw() const
+void Instructions::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     dim();
-    C2D_SceneBegin(g_renderTargetBottom);
-    dim();
-    C3D_RenderTarget* target = nullptr;
 
     for (auto& box : boxes)
     {
-        target = box.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        C2D_DrawRectSolid(box.x, box.y, 0.5f, box.w, box.h, box.color);
+        if (box.top)
+        {
+            Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
+        }
     }
-    for (auto& text : texts)
+    for (auto& line : lines)
     {
-        target = text.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        Gui::dynamicText(text.string, text.x, text.y, FONT_SIZE_12, FONT_SIZE_12, text.color, text.xPos, text.yPos);
+        if (line.top)
+        {
+            Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
+        }
     }
     for (auto& circle : circles)
     {
-        target = circle.top ? g_renderTargetTop : g_renderTargetBottom;
-        C2D_SceneBegin(target);
-        C2D_DrawCircleSolid(circle.x, circle.y, 0.5f, circle.radius, circle.color);
+        if (circle.top)
+        {
+            Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
+        }
+    }
+    for (auto& text : texts)
+    {
+        if (text.top)
+        {
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+        }
+    }
+}
+
+void Instructions::drawBottom() const
+{
+    dim();
+
+    for (auto& box : boxes)
+    {
+        if (!box.top)
+        {
+            Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
+        }
+    }
+    for (auto& line : lines)
+    {
+        if (!line.top)
+        {
+            Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
+        }
+    }
+    for (auto& circle : circles)
+    {
+        if (!circle.top)
+        {
+            Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
+        }
+    }
+    for (auto& text : texts)
+    {
+        if (!text.top)
+        {
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+        }
     }
 }
 
 void Instructions::dim() const
 {
-    C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_MASKBLACK);
+    Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
 }

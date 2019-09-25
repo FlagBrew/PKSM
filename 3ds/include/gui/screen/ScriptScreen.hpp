@@ -38,10 +38,9 @@ class ScriptScreen : public Screen
 public:
     ScriptScreen();
 
-    void draw() const override;
+    void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
-
-    ScreenType type() const override { return ScreenType::SCRIPTS; }
 
 private:
     void updateEntries();

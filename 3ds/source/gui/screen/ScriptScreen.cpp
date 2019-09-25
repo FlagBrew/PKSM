@@ -25,14 +25,14 @@
  */
 
 #include "ScriptScreen.hpp"
+#include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "ScrollingTextScreen.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
 #include "loader.hpp"
-extern "C" {
 #include "picoc.h"
-}
 #undef min // Get rid of picoc's min function
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
@@ -83,19 +83,6 @@ namespace
         PicocInitialise(&picoc, PICOC_STACKSIZE);
         return &picoc;
     }
-
-    // slight change to stripy top
-    void menuTop()
-    {
-        for (int x = 0; x < 400; x += 7)
-        {
-            for (int y = 0; y < 240; y += 7)
-            {
-                Gui::sprite(ui_sheet_bg_stripe_top_idx, x, y);
-            }
-        }
-        C2D_DrawRectSolid(0, 0, 0.5f, 400, 20, C2D_Color32(15, 22, 89, 255));
-    }
 }
 
 ScriptScreen::ScriptScreen()
@@ -117,17 +104,22 @@ ScriptScreen::ScriptScreen()
     updateEntries();
 }
 
-void ScriptScreen::draw() const
+void ScriptScreen::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
-    menuTop();
+    // slight change to stripy top
+    Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
+    for (int x = -240; x < 400; x += 7)
+    {
+        Gui::drawLine(x, 0, x + 240, 240, 2, COLOR_LINEBLUE);
+    }
+    Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 
     // Leaving space for the icon
-    Gui::dynamicText(currDirString, 15, 2, FONT_SIZE_11, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(currDirString, 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    C2D_DrawRectSolid(0, 20 + hid.index() * 25, 0.5f, 400, 25, C2D_Color32(128, 128, 128, 255));
-    C2D_DrawRectSolid(1, 21 + hid.index() * 25, 0.5f, 398, 23, COLOR_MASKBLACK);
+    Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
+    Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
 
     for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
@@ -138,19 +130,19 @@ void ScriptScreen::draw() const
         else
         {
             Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
-            Gui::dynamicText(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void ScriptScreen::drawBottom() const
+{
     Gui::backgroundBottom(true);
-    C2D_DrawRectSolid(20, 40, 0.5f, 280, 60, C2D_Color32(128, 128, 128, 255));
-    C2D_DrawRectSolid(21, 41, 0.5f, 278, 58, COLOR_MASKBLACK);
-    Gui::staticText(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::drawSolidRect(20, 40, 280, 60, PKSM_Color(128, 128, 128, 255));
+    Gui::drawSolidRect(21, 41, 278, 58, COLOR_MASKBLACK);
+    Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    std::string draw = StringUtils::wrap(currFiles[hid.fullIndex()].first, FONT_SIZE_11, 260.0f);
-    Gui::dynamicText(draw, 30, 44, FONT_SIZE_11, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 260.0f);
 }
 
 void ScriptScreen::update(touchPosition* touch)
@@ -174,17 +166,20 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_A)
     {
-        if (currFiles[hid.fullIndex()].second)
+        if (currDir.good() && currDir.count() > 0)
         {
-            currDirString += '/' + currFiles[hid.fullIndex()].first;
-            currDir = STDirectory(currDirString);
-            updateEntries();
-        }
-        else
-        {
-            if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE"), '\'' + currFiles[hid.fullIndex()].first + '\''))
+            if (currFiles[hid.fullIndex()].second)
             {
-                applyScript();
+                currDirString += '/' + currFiles[hid.fullIndex()].first;
+                currDir = STDirectory(currDirString);
+                updateEntries();
+            }
+            else
+            {
+                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE") + "\n" + ('\'' + currFiles[hid.fullIndex()].first + '\'')))
+                {
+                    applyScript();
+                }
             }
         }
     }
@@ -202,7 +197,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
+            Gui::warn(("\"" + dirString + "\"") + '\n' + i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
     else if (down & KEY_Y)
@@ -219,7 +214,7 @@ void ScriptScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::warn("\"" + dirString + "\"", i18n::localize("SCRIPTS_NOT_FOUND"));
+            Gui::warn(("\"" + dirString + "\"") + '\n' + i18n::localize("SCRIPTS_NOT_FOUND"));
         }
     }
 }
@@ -231,6 +226,11 @@ void ScriptScreen::updateEntries()
     if (!currDir.good())
     {
         currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
+        return;
+    }
+    if (currDir.count() == 0)
+    {
+        currFiles.push_back({i18n::localize("EMPTY"), false});
         return;
     }
     for (size_t i = 0; i < currDir.count(); i++)
@@ -312,25 +312,8 @@ void ScriptScreen::applyScript()
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {
-            u32 sbo = 0;
-            u32 gbo = 0;
-            switch (TitleLoader::save->version())
-            {
-                case 7:
-                case 8:
-                    sbo = ((SavHGSS*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavHGSS*)TitleLoader::save.get())->getGBO();
-                    break;
-                case 10:
-                case 11:
-                    sbo = ((SavDP*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavDP*)TitleLoader::save.get())->getGBO();
-                    break;
-                case 12:
-                    sbo = ((SavPT*)TitleLoader::save.get())->getSBO();
-                    gbo = ((SavPT*)TitleLoader::save.get())->getGBO();
-                    break;
-            }
+            u32 sbo = ((Sav4*)TitleLoader::save.get())->getSBO();
+            u32 gbo = ((Sav4*)TitleLoader::save.get())->getGBO();
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
             {
                 offset += sbo;
@@ -352,13 +335,15 @@ void ScriptScreen::applyScript()
 
 void ScriptScreen::parsePicoCScript(std::string& file)
 {
+    // The loops used in PicoC make this basically a necessity
+    aptSetHomeAllowed(false);
     // setup for printing errors
-    static char error[1024];
-    std::fill_n(error, 1024, '\0');
+    static char error[4096];
+    std::fill_n(error, 4096, '\0');
     // Save stdout state
     int stdout_save = dup(STDOUT_FILENO);
     // Set stdout to buffer to error
-    setvbuf(stdout, error, _IOFBF, 1024);
+    setvbuf(stdout, error, _IOFBF, 4096);
 
     Picoc* picoc = picoC();
     if (!PicocPlatformSetExitPoint(picoc))
@@ -372,23 +357,27 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         char version       = TitleLoader::save->version();
         args[2]            = &version;
         PicocCallMain(picoc, 3, args);
-        // Restore stdout state
-        dup2(stdout_save, STDOUT_FILENO);
     }
-    else
+
+    // Restore stdout state
+    dup2(stdout_save, STDOUT_FILENO);
+
+    if (picoc->PicocExitValue != 0)
     {
-        // consoleInit(GFX_BOTTOM, NULL);
-        // Restore stdout state
-        dup2(stdout_save, STDOUT_FILENO);
-        Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR"), file, error);
-        // printf(error);
-        // hidScanInput();
-        // while (aptMainLoop() && !hidKeysDown()) hidScanInput();
-        // Gui::warn(error);
+        std::string show = error;
+        if (!show.empty())
+        {
+            Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
+            show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
+            Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
+        }
     }
+
     if (Banks::bank->hasChanged())
     {
         Banks::bank->save();
     }
     PicocCleanup(picoc);
+    // And here we'll clean up
+    aptSetHomeAllowed(true);
 }

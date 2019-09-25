@@ -1,0 +1,20 @@
+0|—
+2|Madrid
+3|Andalucía
+4|Aragón
+5|Asturias
+6|Illes Balears
+7|Canarias
+8|Cantabria
+9|Castilla-La Mancha
+10|Castilla y León
+11|Cataluña
+12|Comunitat Valenciana
+13|Extremadura
+14|Galicia
+15|Murcia
+16|Navarra
+17|País Vasco
+18|La Rioja
+19|Ceuta
+20|Melilla

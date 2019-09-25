@@ -30,55 +30,74 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-SpeciesOverlay::SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 8)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      object(object),
+      hid(40, 8),
+      dispPkm(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end())
 {
+    std::sort(dispPkm.begin(), dispPkm.end());
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = new ClickButton(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
+    hid.update(dispPkm.size());
     if (TitleLoader::save->generation() != Generation::LGPE)
     {
-        for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
+        if (object.index() == 0)
         {
-            dispPkm.push_back(i);
-        }
-        hid.update(dispPkm.size());
-        hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-    }
-    else
-    {
-        for (size_t i = 1; i <= 151; i++)
-        {
-            dispPkm.push_back(i);
-        }
-        dispPkm.push_back(808);
-        dispPkm.push_back(809);
-        hid.update(dispPkm.size());
-        if (pkm->species() == 808 || pkm->species() == 809)
-        {
-            hid.select(pkm->species() - 657);
+            auto& pkm = std::get<0>(object);
+            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
         }
         else
         {
-            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+            auto& filter = std::get<1>(object);
+            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+        }
+    }
+    else
+    {
+        if (object.index() == 0)
+        {
+            auto& pkm = std::get<0>(object);
+            if (pkm->species() == 808 || pkm->species() == 809)
+            {
+                hid.select(pkm->species() - 657);
+            }
+            else
+            {
+                hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+            }
+        }
+        else
+        {
+            auto& filter = std::get<1>(object);
+            if (filter->species() == 808 || filter->species() == 809)
+            {
+                hid.select(filter->species() - 657);
+            }
+            else
+            {
+                hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
+            }
         }
     }
 }
 
-void SpeciesOverlay::draw() const
+void SpeciesOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void SpeciesOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
 
     int x = (hid.index() % 8) * 50;
@@ -86,11 +105,11 @@ void SpeciesOverlay::draw() const
     // Selector
     if (dispPkm.size() > 0)
     {
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 47, COLOR_MASKBLACK);
-        C2D_DrawRectSolid(x, y, 0.5f, 49, 1, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x + 48, y, 0.5f, 1, 47, COLOR_YELLOW);
-        C2D_DrawRectSolid(x, y + 46, 0.5f, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 49, 47, COLOR_MASKBLACK);
+        Gui::drawSolidRect(x, y, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x + 48, y, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(x, y + 46, 49, 1, COLOR_YELLOW);
     }
 
     for (int y = 0; y < 5; y++)
@@ -104,8 +123,7 @@ void SpeciesOverlay::draw() const
             }
             size_t species = dispPkm[pkmIndex];
             Gui::pkm(species, 0, TitleLoader::save->generation(), 0, x * 50 + 7, y * 48 + 2);
-            Gui::dynamicText(
-                std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
@@ -123,82 +141,29 @@ void SpeciesOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
     if (!searchString.empty() && searchString != oldSearchString)
     {
         dispPkm.clear();
-        if (TitleLoader::save->generation() != Generation::LGPE)
+        for (auto i = TitleLoader::save->availableSpecies().begin(); i != TitleLoader::save->availableSpecies().end(); i++)
         {
-            for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-            {
-                std::string speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                StringUtils::toLower(speciesName);
-                if (speciesName == searchString)
-                {
-                    dispPkm.push_back(i);
-                }
-            }
-        }
-        else
-        {
-            std::string speciesName;
-            for (size_t i = 1; i <= 151; i++)
-            {
-                speciesName = i18n::species(Configuration::getInstance().language(), i).substr(0, searchString.size());
-                StringUtils::toLower(speciesName);
-                if (speciesName == searchString)
-                {
-                    dispPkm.push_back(i);
-                }
-            }
-            speciesName = i18n::species(Configuration::getInstance().language(), 808).substr(0, searchString.size());
+            std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
             StringUtils::toLower(speciesName);
             if (speciesName == searchString)
             {
-                dispPkm.push_back(808);
-            }
-            speciesName = i18n::species(Configuration::getInstance().language(), 809).substr(0, searchString.size());
-            StringUtils::toLower(speciesName);
-            if (speciesName == searchString)
-            {
-                dispPkm.push_back(809);
+                dispPkm.push_back(*i);
             }
         }
+        std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString;
     }
     else if (searchString.empty() && !oldSearchString.empty())
     {
         dispPkm.clear();
-        if (TitleLoader::save->generation() != Generation::LGPE)
-        {
-            for (int i = 1; i <= TitleLoader::save->maxSpecies(); i++)
-            {
-                dispPkm.push_back(i);
-            }
-            hid.update(dispPkm.size());
-            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-        }
-        else
-        {
-            for (size_t i = 1; i <= 151; i++)
-            {
-                dispPkm.push_back(i);
-            }
-            dispPkm.push_back(808);
-            dispPkm.push_back(809);
-            hid.update(dispPkm.size());
-            if (pkm->species() == 808 || pkm->species() == 809)
-            {
-                hid.select(pkm->species() - 657);
-            }
-            else
-            {
-                hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-            }
-        }
-
+        dispPkm.insert(dispPkm.begin(), TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+        std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString = "";
     }
     if (hid.fullIndex() >= dispPkm.size())
@@ -207,24 +172,38 @@ void SpeciesOverlay::update(touchPosition* touch)
     }
     hid.update(dispPkm.size());
     u32 downKeys = hidKeysDown();
-    if (downKeys & KEY_A && dispPkm.size() > 0)
+    if (downKeys & KEY_A)
     {
-        int species = dispPkm[hid.fullIndex()];
-        if (pkm->species() == 0 || !pkm->nicknamed())
+        if (dispPkm.size() > 0)
         {
-            pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+            int species = dispPkm[hid.fullIndex()];
+            if (object.index() == 0)
+            {
+                auto pkm = std::get<0>(object);
+                if (pkm->species() == 0 || !pkm->nicknamed())
+                {
+                    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+                }
+                pkm->species((u16)species);
+                pkm->alternativeForm(0);
+                pkm->setAbility(0);
+                pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
+                    pkm->PID(), pkm->generation()));
+            }
+            else
+            {
+                std::get<1>(object)->species((u16)species);
+            }
         }
-        pkm->species((u16)species);
-        pkm->alternativeForm(0);
-        pkm->setAbility(0);
-        pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
-            pkm->PID(), pkm->generation()));
-        screen.removeOverlay();
+        if (object.index() == 1 || std::get<0>(object)->species() != 0)
+        {
+            parent->removeOverlay();
+        }
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

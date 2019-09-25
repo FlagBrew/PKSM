@@ -1,0 +1,21 @@
+0|—
+2|Distrito de Lisboa
+7|Madeira
+8|Azores
+9|Distrito de Aveiro
+10|Distrito de Beja
+11|Distrito de Braga
+12|Distrito de Braganza
+13|Distrito de Castelo Branco
+14|Distrito de Coímbra
+15|Distrito de Évora
+16|Distrito de Faro
+17|Distrito de Guarda
+18|Distrito de Leiria
+19|Distrito de Portalegre
+20|Distrito de Oporto
+21|Distrito de Santarém
+22|Distrito de Setúbal
+23|Distrito de Viana do Castelo
+24|Distrito de Vila Real
+25|Distrito de Viseu

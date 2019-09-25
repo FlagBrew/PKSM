@@ -27,22 +27,25 @@
 #ifndef HIDDENPOWEROVERLAY_HPP
 #define HIDDENPOWEROVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 
-class HiddenPowerOverlay : public Overlay
+class HiddenPowerOverlay : public ReplaceableScreen
 {
 public:
-    HiddenPowerOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
+    HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
     {
         hid.update(16);
         hid.select(pkm->hpType());
     }
     virtual ~HiddenPowerOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

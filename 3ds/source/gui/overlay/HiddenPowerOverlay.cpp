@@ -28,22 +28,23 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 
-void HiddenPowerOverlay::draw() const
+void HiddenPowerOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void HiddenPowerOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_4x4_idx, 0, 0);
     int x = (hid.index() % 4) * 100;
     int y = (hid.index() / 4) * 60;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 59, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 99, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 98, y, 0.5f, 1, 59, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 58, 0.5f, 99, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 99, 59, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 99, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 59, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 98, y, 1, 59, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 58, 99, 1, COLOR_YELLOW);
     for (int i = 0; i < 16; i++)
     {
         Gui::type(Configuration::getInstance().language(), (u8)i + 1, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
@@ -57,12 +58,12 @@ void HiddenPowerOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->hpType((u8)hid.fullIndex());
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

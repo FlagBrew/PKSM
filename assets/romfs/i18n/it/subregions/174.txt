@@ -1,0 +1,14 @@
+0|—
+2|Al-Riyad
+3|Al-Bahah
+4|Medina
+5|Ash-Sharqiyah
+6|Al-Qasim
+7|'Asir
+8|Ha'il
+9|Mecca
+10|Al-Hudud ash-Shamaliyah
+11|Najran
+12|Jizan
+13|Tabuk
+14|Al-Jawf

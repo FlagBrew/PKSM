@@ -1,0 +1,23 @@
+0|—
+2|Taipéi
+3|Condado de Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|Nuevo Taipéi
+10|Condado de Taoyuan
+11|Condado de Hsinchu
+12|Distrito de Miaoli
+14|Condado de Changhua
+15|Condado de Nantou
+16|Condado de Yunlin
+17|Condado de Chiayi
+20|Condado de Pingtung
+21|Condado de Yilan
+22|Condado de Hualien
+23|Condado de Taitung
+24|Islas Pescadores
+25|Condado de Kinmen
+26|Condado de Lienchiang

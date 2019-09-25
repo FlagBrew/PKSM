@@ -42,6 +42,7 @@ static LanguageStrings* ru = nullptr;
 static const std::string emptyString                = "";
 static const std::vector<std::string> emptyVector   = {};
 static const std::map<u16, std::string> emptyU16Map = {};
+static const std::map<u8, std::string> emptyU8Map   = {};
 
 void i18n::init(void)
 {
@@ -365,11 +366,6 @@ const std::string& i18n::localize(Language lang, const std::string& val)
     return emptyString;
 }
 
-const std::string& i18n::localize(const std::string& index)
-{
-    return localize(Configuration::getInstance().language(), index);
-}
-
 const std::string& i18n::langString(Language l)
 {
     static const std::string JPN = "JPN";
@@ -669,4 +665,132 @@ size_t i18n::numGameStrings(u8 lang)
             return ru->numGameStrings();
     }
     return 0;
+}
+
+const std::string& i18n::subregion(u8 lang, u8 country, u8 value)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->subregion(country, value);
+        case Language::EN:
+            return en->subregion(country, value);
+        case Language::ES:
+            return es->subregion(country, value);
+        case Language::FR:
+            return fr->subregion(country, value);
+        case Language::IT:
+            return it->subregion(country, value);
+        case Language::JP:
+            return jp->subregion(country, value);
+        case Language::KO:
+            return ko->subregion(country, value);
+        case Language::NL:
+            return nl->subregion(country, value);
+        case Language::PT:
+            return pt->subregion(country, value);
+        case Language::ZH:
+            return zh->subregion(country, value);
+        case Language::TW:
+            return tw->subregion(country, value);
+        case Language::RU:
+            return ru->subregion(country, value);
+    }
+    return emptyString;
+}
+
+const std::string& i18n::country(u8 lang, u8 value)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->country(value);
+        case Language::EN:
+            return en->country(value);
+        case Language::ES:
+            return es->country(value);
+        case Language::FR:
+            return fr->country(value);
+        case Language::IT:
+            return it->country(value);
+        case Language::JP:
+            return jp->country(value);
+        case Language::KO:
+            return ko->country(value);
+        case Language::NL:
+            return nl->country(value);
+        case Language::PT:
+            return pt->country(value);
+        case Language::ZH:
+            return zh->country(value);
+        case Language::TW:
+            return tw->country(value);
+        case Language::RU:
+            return ru->country(value);
+    }
+    return emptyString;
+}
+
+const std::map<u8, std::string>& i18n::rawCountries(u8 lang)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->rawCountries();
+        case Language::EN:
+            return en->rawCountries();
+        case Language::ES:
+            return es->rawCountries();
+        case Language::FR:
+            return fr->rawCountries();
+        case Language::IT:
+            return it->rawCountries();
+        case Language::JP:
+            return jp->rawCountries();
+        case Language::KO:
+            return ko->rawCountries();
+        case Language::NL:
+            return nl->rawCountries();
+        case Language::PT:
+            return pt->rawCountries();
+        case Language::ZH:
+            return zh->rawCountries();
+        case Language::TW:
+            return tw->rawCountries();
+        case Language::RU:
+            return ru->rawCountries();
+    }
+    return emptyU8Map;
+}
+
+const std::map<u8, std::string>& i18n::rawSubregions(u8 lang, u8 country)
+{
+    switch (lang)
+    {
+        case Language::DE:
+            return de->rawSubregions(country);
+        case Language::EN:
+            return en->rawSubregions(country);
+        case Language::ES:
+            return es->rawSubregions(country);
+        case Language::FR:
+            return fr->rawSubregions(country);
+        case Language::IT:
+            return it->rawSubregions(country);
+        case Language::JP:
+            return jp->rawSubregions(country);
+        case Language::KO:
+            return ko->rawSubregions(country);
+        case Language::NL:
+            return nl->rawSubregions(country);
+        case Language::PT:
+            return pt->rawSubregions(country);
+        case Language::ZH:
+            return zh->rawSubregions(country);
+        case Language::TW:
+            return tw->rawSubregions(country);
+        case Language::RU:
+            return ru->rawSubregions(country);
+    }
+    return emptyU8Map;
 }

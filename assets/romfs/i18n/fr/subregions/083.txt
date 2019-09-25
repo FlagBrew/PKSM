@@ -1,0 +1,21 @@
+0|—
+2|Latium
+3|Vallée d'Aoste
+4|Piémont
+5|Ligurie
+6|Lombardie
+7|Trentin-Haut-Adige
+8|Vénétie
+9|Frioul-Vénétie julienne
+10|Émilie-Romagne
+11|Toscane
+12|Ombrie
+13|Marches
+14|Abruzzes
+15|Molise
+16|Campanie
+17|Pouilles
+18|Basilicate
+19|Calabre
+20|Sicile
+21|Sardaigne

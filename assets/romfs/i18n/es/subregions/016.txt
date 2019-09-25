@@ -1,0 +1,28 @@
+0|—
+2|Distrito Federal
+3|Acre
+4|Alagoas
+5|Amapá
+6|Amazonas
+7|Bahía
+8|Ceará
+9|Espírito Santo
+10|Mato Grosso do Sul
+11|Maranhão
+12|Mato Grosso
+13|Minas Gerais
+14|Pará
+15|Paraíba
+16|Paraná
+17|Piauí
+18|Río de Janeiro
+19|Rio Grande do Norte
+20|Rio Grande do Sul
+21|Rondônia
+22|Roraima
+23|Santa Catarina
+24|São Paulo
+25|Sergipe
+26|Goiás
+27|Pernambuco
+28|Tocantins

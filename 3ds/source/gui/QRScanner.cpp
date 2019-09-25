@@ -25,21 +25,28 @@
  */
 
 #include "QRScanner.hpp"
+#include "Configuration.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "base64.hpp"
+#include "gui.hpp"
 #include "loader.hpp"
+#include "quirc/quirc.h"
+#include <atomic>
 
 class QRData
 {
 public:
     QRData() : image{new C3D_Tex, &subtex}, data(quirc_new())
     {
+        std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
         C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
         C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
         svcCreateMutex(&bufferMutex, false);
@@ -60,29 +67,30 @@ public:
     void captureThread();
     void handler(QRMode mode, std::vector<u8>& out);
     bool done() { return finished; }
+
 private:
     void buffToImage();
     void finish();
-    std::array<u16, 400*240> cameraBuffer;
+    std::array<u16, 400 * 240> cameraBuffer;
     Handle bufferMutex;
     C2D_Image image;
     Handle imageMutex;
     quirc* data;
     Handle exitEvent;
-    volatile bool finished = false;
-    bool capturing = false;
+    std::atomic<bool> finished                = false;
+    bool capturing                            = false;
     static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
 };
 
 static void drawHelp(void* arg)
 {
-    QRData* data = (QRData*) arg;
+    QRData* data = (QRData*)arg;
     data->drawThread();
 }
 
 static void captureHelp(void* arg)
 {
-    QRData* data = (QRData*) arg;
+    QRData* data = (QRData*)arg;
     data->captureThread();
 }
 
@@ -94,10 +102,10 @@ void QRData::buffToImage()
         for (u32 y = 0; y < 240; y++)
         {
             u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) +
-                                ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
-                            2;
+                             ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
+                         2;
             u32 srcPos = (y * 400 + x) * 2;
-            memcpy((u8*)image.tex->data + dstPos, (u8*)cameraBuffer.data() + srcPos, 2);
+            memcpy(((u8*)image.tex->data) + dstPos, ((u8*)cameraBuffer.data()) + srcPos, 2);
         }
     }
     svcReleaseMutex(bufferMutex);
@@ -114,26 +122,31 @@ void QRData::finish()
     svcReleaseMutex(imageMutex);
 }
 
-extern C3D_RenderTarget *g_renderTargetTop, *g_renderTargetBottom;
-
 void QRData::drawThread()
 {
-    bool first = true;
     svcWaitSynchronization(imageMutex, U64_MAX);
     while (aptMainLoop() && !finished)
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         buffToImage();
 
-        C2D_SceneBegin(g_renderTargetTop);
-        C2D_DrawImageAt(image, 0, 0, 0.5f, nullptr, 1.0f, 1.0f);
-        if (first)
+        Gui::target(GFX_TOP);
+        Gui::drawImageAt(image, 0, 0, nullptr, 1.0f, 1.0f);
+
+        Gui::target(GFX_BOTTOM);
+        Gui::backgroundBottom(false);
+        Gui::backgroundAnimatedBottom();
+        Gui::drawSolidRect(0, 0, 320.0f, 240.0f, COLOR_MASKBLACK);
+        Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::flushText();
+
+        if (!aptIsHomeAllowed() && aptIsHomePressed())
         {
-            C2D_SceneBegin(g_renderTargetBottom);
-            C2D_DrawRectSolid(0, 0, 0.5f, 320.0f, 240.0f, COLOR_MASKBLACK);
-            Gui::staticText(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-            first = false;
+            Gui::setDoHomeDraw();
         }
+
+        Gui::drawNoHome();
+
         C3D_FrameEnd(0);
     }
     svcReleaseMutex(imageMutex);
@@ -146,7 +159,6 @@ void QRData::captureThread()
     u32 transferUnit;
 
     u16* buffer = new u16[400 * 240];
-    std::fill(buffer, buffer + 400*240, 0);
     camInit();
     CAMU_SetSize(SELECT_OUT1, SIZE_CTR_TOP_LCD, CONTEXT_A);
     CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
@@ -154,6 +166,9 @@ void QRData::captureThread()
     CAMU_SetNoiseFilter(SELECT_OUT1, true);
     CAMU_SetAutoExposure(SELECT_OUT1, true);
     CAMU_SetAutoWhiteBalance(SELECT_OUT1, true);
+    CAMU_SetPhotoMode(SELECT_OUT1, PHOTO_MODE_LETTER);
+    // No clue if this is actually effective or if it's just a placebo effect, but it seems to help?
+    CAMU_SetSharpness(SELECT_OUT1, 127);
     CAMU_Activate(SELECT_OUT1);
     CAMU_GetBufferErrorInterruptEvent(&events[2], PORT_CAM1);
     CAMU_SetTrimming(PORT_CAM1, false);
@@ -267,91 +282,63 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             finish();
             if (mode == WCX4)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == PGT::length || outSize == WC4::length)
+                if (out.size() != PGT::length && out.size() != WC4::length)
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == WCX5)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == PGF::length)
+                if (out.size() != PGF::length)
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == WCX6 || mode == WCX7)
             {
-                size_t outSize;
                 static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                u8* retData                       = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (outSize == WC6::length || outSize == WC6::lengthFull)
+                if (out.size() != WC6::length && out.size() != WC6::lengthFull)
                 {
-                    out.resize(WC6::length);
-                    int ofs = outSize == WC6::lengthFull ? 0x206 : 0;
-
-                    std::copy(retData + ofs, retData + ofs + WC6::length, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM4)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                if (outSize == 136) // PK4/5 length
+                if (out.size() != 136) // PK4/5 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM5)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 6; // strlen("null/#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                Gui::warn(std::to_string(outSize));
-
-                if (outSize == 136) // PK4/5 length
+                if (out.size() != 136) // PK4/5 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM6)
             {
-                size_t outSize;
                 static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
-                u8* retData                       = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader, &outSize);
+                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
 
-                if (PKX::genFromBytes(retData, outSize, true) == 6) // PK6 length
+                if (PKX::genFromBytes(out.data(), out.size(), true) != 6) // PK6 length
                 {
-                    out.resize(outSize);
-                    std::copy(retData, retData + outSize, out.begin());
+                    out.clear();
                 }
-
-                free(retData);
             }
             else if (mode == PKM7)
             {
@@ -415,14 +402,14 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
 
 std::vector<u8> QRScanner::scan(QRMode mode)
 {
-    C3D_FrameEnd(0);
-    std::vector<u8> out = {};
+    std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
+    aptSetHomeAllowed(false);
     threadCreate((ThreadFunc)&drawHelp, data.get(), 0x10000, 0x1A, 1, true);
     while (!data->done())
     {
         data->handler(mode, out);
     }
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    aptSetHomeAllowed(true);
     return out;
 }

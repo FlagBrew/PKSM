@@ -1,0 +1,23 @@
+0|—
+2|Taipei
+3|Kaohsiung
+4|Keelung
+5|Hsinchu
+6|Taichung
+7|Chiayi
+8|Tainan
+9|New Taipei
+10|Contea di Taoyuan
+11|Contea di HsinChu
+12|Contea di Miaoli
+14|Contea di Changhua
+15|Contea di Nantou
+16|Contea di Yunlin
+17|Contea di Chiayi
+20|Contea di Pingtung
+21|Contea di Yilan
+22|Contea di Hualien
+23|Contea di Taitung
+24|Contea di Penghu
+25|Contea di Kinmen
+26|Contea di Lienchiang

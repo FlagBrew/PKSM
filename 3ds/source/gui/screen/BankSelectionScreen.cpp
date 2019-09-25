@@ -27,31 +27,32 @@
 #include "BankSelectionScreen.hpp"
 #include "gui.hpp"
 
-void BankSelectionScreen::draw() const
+void BankSelectionScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    Gui::staticText(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
-        FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
+        COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void BankSelectionScreen::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::dynamicText(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-                FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-            Gui::dynamicText(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192,
-                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12,
+                FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {
@@ -88,11 +89,11 @@ void BankSelectionScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { renameBank(); });
+        renameBank();
     }
     else if (downKeys & KEY_Y)
     {
-        Gui::setNextKeyboardFunc([this]() { resizeBank(); });
+        resizeBank();
     }
     else if (downKeys & KEY_START)
     {
@@ -118,10 +119,10 @@ void BankSelectionScreen::renameBank()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 10);
         first = false;
     }
-    swkbdSetHintText(&state, i18n::localize("CONFIG_STORAGE_SIZE").c_str());
+    swkbdSetHintText(&state, i18n::localize("BANK_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[41]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));

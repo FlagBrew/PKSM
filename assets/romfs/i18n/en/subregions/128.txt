@@ -1,0 +1,23 @@
+0|—
+2|Taipei City
+3|Kaohsiung City
+4|Keelung City
+5|Hsinchu City
+6|Taichung City
+7|Chiayi City
+8|Tainan City
+9|New Taipei City
+10|Taoyuan County
+11|HsinChu County
+12|Miaoli County
+14|Changhua County
+15|Nantou County
+16|Yunlin County
+17|Chiayi County
+20|Pingtung County
+21|Yilan County
+22|Hualien County
+23|Taitung County
+24|Penghu County
+25|Kinmen County
+26|Lienchiang County

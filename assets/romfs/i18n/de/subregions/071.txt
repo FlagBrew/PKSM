@@ -1,0 +1,22 @@
+0|—
+6|Zagreb (Stadt)
+7|Bjelovar-Bilogora
+8|Brod-Posavina
+9|Dubrovnik-Neretva
+10|Istrien
+11|Karlovac
+12|Koprivnica-Križevci
+13|Krapina-Zagorje
+14|Lika-Senj
+15|Medimurje
+16|Osijek-Baranja
+17|Požega-Slawonien
+18|Primorje-Gorski kotar
+19|Sisak-Moslavina
+20|Split-Dalmatien
+21|Šibenik-Knin
+22|Varaždin
+23|Virovitica-Podravina
+24|Vukovar-Srijem
+25|Zadar
+26|Zagreb

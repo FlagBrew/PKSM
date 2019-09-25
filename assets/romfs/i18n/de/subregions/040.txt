@@ -1,0 +1,11 @@
+0|—
+2|Panama
+3|Bocas del Toro
+4|Chiriquí
+5|Coclé
+6|Colón
+7|Darién
+8|Herrera
+9|Los Santos
+10|Kuna Yala
+11|Veraguas

@@ -28,25 +28,26 @@
 #define STORAGESCREEN_HPP
 
 #include "Button.hpp"
+#include "PKFilter.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
 #include "SortOverlay.hpp"
-#include "loader.hpp"
 #include "StorageViewOverlay.hpp"
+#include "loader.hpp"
 #include <array>
 
 class StorageScreen : public Screen
 {
-friend class StorageViewOverlay;
+    friend class StorageViewOverlay;
+
 public:
     StorageScreen();
     ~StorageScreen();
 
     void update(touchPosition* touch) override;
-    void draw() const override;
-
-    ScreenType type() const override { return ScreenType::STORAGE; }
+    void drawTop() const override;
+    void drawBottom() const override;
 
 private:
     bool swapBoxWithStorage();
@@ -68,9 +69,6 @@ private:
     void scrunchSelection();
     void grabSelection(bool remove);
 
-    void shareSend();
-    void shareReceive();
-
     bool storageChosen = false;
     bool fromStorage   = false;
     std::array<std::unique_ptr<Button>, 10> mainButtons;
@@ -91,6 +89,7 @@ private:
     // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions = {0, 0};
     bool currentlySelecting              = false;
+    std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
 };
 
 #endif

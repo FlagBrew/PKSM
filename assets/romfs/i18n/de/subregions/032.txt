@@ -1,0 +1,11 @@
+0|—
+2|Ouest
+3|Nord-Ouest
+4|Artibonite
+5|Centre
+6|Grand'Anse
+7|Nord
+8|Nord-Est
+9|Sud
+10|Sud-Est
+11|Nippes

@@ -1,0 +1,21 @@
+0|—
+2|Lisbona
+7|Madera
+8|Azzorre
+9|Aveiro
+10|Beja
+11|Braga
+12|Bragança
+13|Castelo Branco
+14|Coimbra
+15|Évora
+16|Faro
+17|Guarda
+18|Leiria
+19|Portalegre
+20|Porto
+21|Santarém
+22|Setúbal
+23|Viana do Castelo
+24|Vila Real
+25|Viseu

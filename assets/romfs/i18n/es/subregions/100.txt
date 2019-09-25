@@ -1,0 +1,84 @@
+0|—
+9|Ciudad de Moscú
+10|República de Adigueya
+11|República de Altái
+12|Territorio de Altái
+13|Región de Amur
+14|Región de Arjánguelsk
+15|Región de Astracán
+16|República de Baskortostán
+17|Región de Bélgorod
+18|Región de Briansk
+19|República de Buriatia
+20|República de Chechenia
+21|Región de Cheliábinsk
+22|Distrito autónomo de Chukotka
+23|República de Chuvasia
+24|República de Daguestán
+25|República de Ingusetia
+26|Región de Irkutsk
+27|Región de Ivánovo
+28|República de Kabardino-Balkaria
+29|Región de Kaliningrado
+30|República de Kalmukia
+31|Región de Kaluga
+32|Territorio de Kamchatka
+33|República de Karacháyevo-Cherkesia
+34|República de Carelia
+35|Región de Kémerovo
+36|Territorio de Jabárovsk
+37|República de Jakasia
+38|Distrito autónomo de Janti-Mansi
+39|Región de Kírov
+40|República de Komi
+41|Región de Kostromá
+42|Territorio de Krasnodar
+43|Territorio de Krasnoyarsk
+44|Región de Kurgán
+45|Región de Kursk
+46|Región de Leningrado
+47|Región de Lípetsk
+48|Región de Magadán
+49|República de Mari-El
+50|República de Mordovia
+51|Región de Moscú
+52|Región de Múrmansk
+53|Distrito autónomo de Nenetsia
+54|Región de Nizhni Nóvgorod
+55|Región de Nóvgorod
+56|Región de Novosibirsk
+57|Región de Omsk
+58|Región de Oremburgo
+59|Región de Oriol
+60|Región de Penza
+61|Territorio de Perm
+62|Territorio de Primorie
+63|Región de Pskov
+64|Región de Rostov
+65|Región de Riazán
+66|República de Sajá (Yakutia)
+67|Región de Sajalín
+68|Región de Samara
+69|San Petersburgo
+70|Región de Sarátov
+71|República de Osetia del Norte-Alania
+72|Región de Smolensk
+73|Territorio de Stávropol
+74|Región de Sverdlovsk
+75|Región de Tambov
+76|República de Tartaristán
+77|Región de Tomsk
+78|Región de Tula
+79|Región de Tver
+80|Región de Tiumén
+81|República de Tuvá
+82|República de Udmurtia
+83|Región de Uliánovsk
+84|Región de Vladímir
+85|Región de Volgogrado
+86|Región de Vólogda
+87|Región de Vorónezh
+88|Distrito autónomo de Yamalo-Nénets
+89|Región de Yaroslavl
+90|Región Autónoma Hebrea
+91|Territorio de Zabaikalie

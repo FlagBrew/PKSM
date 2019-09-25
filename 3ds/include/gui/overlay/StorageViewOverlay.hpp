@@ -27,16 +27,18 @@
 #ifndef STORAGEVIEWOVERLAY_HPP
 #define STORAGEVIEWOVERLAY_HPP
 
+#include "Configuration.hpp"
 #include "ViewOverlay.hpp"
-#include <vector>
 #include <bitset>
+#include <vector>
 
 class StorageViewOverlay : public ViewOverlay
 {
 public:
-    StorageViewOverlay(Screen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
+    StorageViewOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>& pkm, std::vector<std::shared_ptr<PKX>>& clone, std::vector<int>& partyNum,
         std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
-        : ViewOverlay(screen, pkm, true, i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+        : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pkm, true,
+              i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
           clone(clone),
           partyNum(partyNum),
           cloneDims(cloneDims),
@@ -46,7 +48,8 @@ public:
     }
     virtual ~StorageViewOverlay() {}
     void update(touchPosition* touch) override;
-    void draw() const override;
+    void drawBottom() const override;
+    bool handlesUpdate() const override { return true; }
 
 private:
     std::vector<std::shared_ptr<PKX>>& clone;

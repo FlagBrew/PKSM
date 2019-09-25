@@ -27,22 +27,25 @@
 #ifndef NATURESELECTIONSCREEN_HPP
 #define NATURESELECTIONSCREEN_HPP
 
+#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 
-class NatureOverlay : public Overlay
+class NatureOverlay : public ReplaceableScreen
 {
 public:
-    NatureOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
+    NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
     {
         hid.update(25);
         hid.select(pkm->nature());
     }
     virtual ~NatureOverlay() {}
-    void draw() const override;
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

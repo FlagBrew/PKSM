@@ -1,0 +1,13 @@
+0|—
+2|Tirana
+3|Berat
+4|Dibër
+5|Durazzo
+6|Elbasan
+7|Fier
+8|Argirocastro
+9|Coriza
+10|Kukës
+11|Alessio
+12|Scutari
+13|Valona

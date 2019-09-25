@@ -1,0 +1,21 @@
+0|—
+2|Lazio
+3|Aosta Valley
+4|Piedmont
+5|Liguria
+6|Lombardy
+7|Trentino-Alto Adige
+8|Veneto
+9|Friuli Venezia Giulia
+10|Emilia-Romagna
+11|Tuscany
+12|Umbria
+13|Marche
+14|Abruzzo
+15|Molise
+16|Campania
+17|Apulia
+18|Basilicata
+19|Calabria
+20|Sicily
+21|Sardinia

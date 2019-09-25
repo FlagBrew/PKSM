@@ -31,24 +31,17 @@
 #include "PKX.hpp"
 #include "Screen.hpp"
 #include "ViewOverlay.hpp"
-extern "C" {
 #include "sha256.h"
-}
 
 class EditorScreen : public Screen
 {
 public:
-    ~EditorScreen()
-    {
-        for (auto button : buttons)
-        {
-            delete button;
-        }
-    }
+    ~EditorScreen() {}
     EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
-    void draw() const override;
+    // Done with Overlay
+    void drawTop() const override {}
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
-    ScreenType type() const override { return ScreenType::EDITOR; }
 
 private:
     bool changeLevel(bool up);
@@ -73,7 +66,7 @@ private:
     bool advanceMon(bool forward);
     bool setSaveInfo();
     bool saved();
-    std::vector<Button*> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     std::shared_ptr<PKX> pkm;
     std::array<u8, SHA256_BLOCK_SIZE> origHash;
     int box               = 0;

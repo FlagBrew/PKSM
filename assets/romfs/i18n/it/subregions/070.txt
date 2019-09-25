@@ -1,0 +1,29 @@
+0|—
+2|Sofia
+3|Regione di Sofia
+4|Blagoevgrad
+5|Pleven
+6|Vidin
+7|Varna
+8|Burgas
+9|Dobrich
+10|Gabrovo
+11|Haskovo
+12|Jambol
+13|Kardzhali
+14|Kjustendil
+15|Lovech
+16|Montana
+17|Pazardzhik
+18|Pernik
+19|Plovdiv
+20|Razgrad
+21|Ruse
+22|Silistra
+23|Sliven
+24|Smoljan
+25|Stara Zagora
+26|Shumen
+27|Targovishte
+28|Veliko Tarnovo
+29|Vratsa

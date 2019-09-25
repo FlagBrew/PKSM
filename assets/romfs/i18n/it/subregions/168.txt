@@ -1,0 +1,8 @@
+0|—
+2|Abu Dhabi
+3|Ajman
+4|Sharjah
+5|Ras al-Khaimah
+6|Dubai
+7|Fujayrah
+8|Umm al-Qaiwain

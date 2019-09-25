@@ -1,0 +1,13 @@
+0|—
+2|Tirana
+3|Berat
+4|Dibra
+5|Durrës
+6|Elbasan
+7|Fier
+8|Gjirokastra
+9|Korça
+10|Kukës
+11|Lezha
+12|Shkodra
+13|Vlora

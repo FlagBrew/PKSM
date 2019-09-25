@@ -25,7 +25,7 @@
  */
 
 #include "PK5.hpp"
-#include "loader.hpp"
+#include "Sav.hpp"
 #include "random.hpp"
 
 void PK5::shuffleArray(u8 sv)
@@ -63,20 +63,28 @@ void PK5::crypt(void)
     }
 }
 
-PK5::PK5(u8* dt, bool ekx, bool party)
+PK5::PK5(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
 {
     length = party ? 220 : 136;
-    data   = new u8[length];
-    std::fill_n(data, length, 0);
+    if (directAccess)
+    {
+        data = dt;
+    }
+    else
+    {
+        data = new u8[length];
+        std::copy(dt, dt + length, data);
+    }
 
-    std::copy(dt, dt + length, data);
     if (ekx)
+    {
         decrypt();
+    }
 }
 
-std::shared_ptr<PKX> PK5::clone(void)
+std::shared_ptr<PKX> PK5::clone(void) const
 {
-    return std::make_shared<PK5>(data, false, length == 236);
+    return std::make_shared<PK5>(const_cast<u8*>(data), false, length == 236);
 }
 
 Generation PK5::generation(void) const
@@ -295,6 +303,15 @@ void PK5::move(u8 m, u16 v)
     *(u16*)(data + 0x28 + m * 2) = v;
 }
 
+u16 PK5::relearnMove(u8 m) const
+{
+    return 0;
+}
+void PK5::relearnMove(u8 m, u16 v)
+{
+    // stubbed
+}
+
 u8 PK5::PP(u8 m) const
 {
     return data[0x30 + m];
@@ -415,11 +432,11 @@ void PK5::nPokemon(bool v)
 
 std::string PK5::nickname(void) const
 {
-    return StringUtils::getString(data, 0x48, 11, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, 0x48, 11, u'\uFFFF'));
 }
 void PK5::nickname(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x48, 11, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), 0x48, 11, u'\uFFFF', 0);
 }
 
 u8 PK5::version(void) const
@@ -433,11 +450,11 @@ void PK5::version(u8 v)
 
 std::string PK5::otName(void) const
 {
-    return StringUtils::getString(data, 0x68, 8, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, 0x68, 8, u'\uFFFF'));
 }
 void PK5::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x68, 8, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), 0x68, 8, u'\uFFFF', 0);
 }
 
 u8 PK5::eggYear(void) const
@@ -796,7 +813,7 @@ static void fixString(std::u16string& fixString)
     }
 }
 
-std::shared_ptr<PKX> PK5::next(void) const
+std::shared_ptr<PKX> PK5::next(Sav& save) const
 {
     u8 dt[232] = {0};
     PK6* pk6   = new PK6(dt);
@@ -956,15 +973,15 @@ std::shared_ptr<PKX> PK5::next(void) const
     pk6->ribbon(4, 3, ribbon(7, 3)); // National Champion
     pk6->ribbon(4, 4, ribbon(2, 5)); // World Champion
 
-    pk6->region(TitleLoader::save->subRegion());
-    pk6->country(TitleLoader::save->country());
-    pk6->consoleRegion(TitleLoader::save->consoleRegion());
+    pk6->region(save.subRegion());
+    pk6->country(save.country());
+    pk6->consoleRegion(save.consoleRegion());
 
     pk6->currentHandler(1);
-    pk6->htName(TitleLoader::save->otName());
-    pk6->htGender(TitleLoader::save->gender());
-    pk6->geoRegion(0, TitleLoader::save->subRegion());
-    pk6->geoCountry(0, TitleLoader::save->country());
+    pk6->htName(save.otName());
+    pk6->htGender(save.gender());
+    pk6->geoRegion(0, save.subRegion());
+    pk6->geoCountry(0, save.country());
     pk6->htIntensity(1);
     pk6->htMemory(4);
     pk6->htFeeling(randomNumbers() % 10);
@@ -990,7 +1007,7 @@ std::shared_ptr<PKX> PK5::next(void) const
     return std::shared_ptr<PKX>(pk6);
 }
 
-std::shared_ptr<PKX> PK5::previous(void) const
+std::shared_ptr<PKX> PK5::previous(Sav& save) const
 {
     u8 dt[136];
     std::copy(data, data + 136, dt);
@@ -1014,7 +1031,7 @@ std::shared_ptr<PKX> PK5::previous(void) const
     // met location ???
     for (int i = 0; i < 4; i++)
     {
-        if (pk4->move(i) > TitleLoader::save->maxMove())
+        if (pk4->move(i) > save.maxMove())
         {
             pk4->move(i, 0);
         }

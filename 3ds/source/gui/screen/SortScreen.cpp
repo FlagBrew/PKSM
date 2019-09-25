@@ -39,7 +39,7 @@ SortScreen::SortScreen(bool storage) : storage(storage)
                 pickSort(i);
                 return false;
             },
-            ui_sheet_button_editor_idx, "", 0.0f, 0));
+            ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
     }
     buttons.push_back(std::make_unique<ClickButton>(212, 210, 108, 28,
         [this]() {
@@ -54,16 +54,17 @@ SortScreen::SortScreen(bool storage) : storage(storage)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
 
-void SortScreen::draw() const
+void SortScreen::drawTop() const
 {
-    C2D_SceneBegin(g_renderTargetTop);
     Gui::backgroundTop(false);
     Gui::backgroundAnimatedTop();
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
+void SortScreen::drawBottom() const
+{
     Gui::backgroundBottom(false);
     Gui::backgroundAnimatedBottom();
 
@@ -76,13 +77,13 @@ void SortScreen::draw() const
     {
         if (i >= sortTypes.size())
         {
-            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(
+                i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
         }
         else
         {
-            Gui::dynamicText(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-                TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::CENTER);
         }
     }
 }
@@ -121,7 +122,7 @@ void SortScreen::pickSort(size_t number)
         number = sortTypes.size();
         sortTypes.push_back(NONE);
     }
-    currentOverlay = std::make_shared<SortOverlay>(*this, sortTypes[number]);
+    addOverlay<SortOverlay>(sortTypes[number]);
 }
 
 void SortScreen::sort()
@@ -142,7 +143,7 @@ void SortScreen::sort()
             for (int i = 0; i < Banks::bank->boxes() * 30; i++)
             {
                 std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                if (pkm->species() != 0)
                 {
                     sortMe.push_back(pkm);
                 }
@@ -153,7 +154,7 @@ void SortScreen::sort()
             for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
             {
                 std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
-                if (pkm->encryptionConstant() != 0 && pkm->species() != 0)
+                if (pkm->species() != 0)
                 {
                     sortMe.push_back(pkm);
                 }

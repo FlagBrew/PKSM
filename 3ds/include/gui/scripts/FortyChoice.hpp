@@ -39,10 +39,10 @@ public:
     {
         for (int i = 0; i < items; i++)
         {
-            labels.push_back(text[i]);
+            labels.emplace_back(text[i]);
         }
     }
-    void draw() const override;
+    void drawTop() const override;
     void update(touchPosition* touch) override;
 
 private:

@@ -49,26 +49,22 @@ menu.
 
 ## Applications compatible with PKSM
 
-* **[serveLegality](https://github.com/FlagBrew/serveLegality)**: PC tool to
-  check and fix a pkmn's legality. (Development on hold)
 * **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6
   QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR
   codes scannable from PKSM. Runs on Twitter.
-* **[servepkx](https://github.com/FlagBrew/servepkx)**: multiplatform tool to
-  send .pk7, .pk6, .wc7full, .wc6full, .wc7, .wc6 files to PKSM. Requires a web
-  browser or JRE. (Support on hold)
 * **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: a toolkit to
   develop and compile .pksm and .c scripts.
+* **[The GPSS](https://flagbrew.org/gpss)**: an online Pokémon sharing platform
 
 ## Working path
 
-* Additional assets are located at `/3ds/PKSM/assets/`
+* Additional assets are located at `/3ds/PKSM/assets`
 * Automatic save backups are located at `/3ds/PKSM/backups`
 * Extra storage data is located at `/3ds/PKSM/banks`
 * .pkx and .wcx dumps are located in `/3ds/PKSM/dumps`
-* Custom scripts are located in `3ds/PKSM/scripts`
-* Custom background songs are located in `3ds/PKSM/songs`
+* Custom scripts are located in `/3ds/PKSM/scripts`
+* Custom background songs are located in `/3ds/PKSM/songs`
 
 ## Troubleshooting
 
@@ -90,9 +86,10 @@ You can get real-time support by joining FlagBrew's discord server.
 
 PKSM has the following dependencies:
 
-- The latest version of ctrulib, citro3d, citro2d, 3ds-curl and SDL_mixer with
+- The latest version of ctrulib, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, 3ds-bzip2, 3dstools, tex3ds, and SDL_mixer with
   their dependancies. All of these should be installed from [devKitPro
   pacman](https://devkitpro.org/wiki/devkitPro_pacman).
+- Your system's pkg-config
 - [3dstool](https://github.com/dnasdw/3dstool/releases),
   [bannertool](https://github.com/Steveice10/bannertool/releases) and
   [makerom](https://github.com/profi200/Project_CTR/releases), if you want to be
@@ -117,9 +114,8 @@ all`.
 * [SpiredMoth](https://github.com/SpiredMoth),
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
-* [Archit Date](https://github.com/architdate) for serveLegality
-* [Allen](https://github.com/FM1337) and
-  [zaksabeast](https://github.com/zaksabeast) for servepkx
+* [Archit Date](https://github.com/architdate) for CoreConsole
+* [Allen](https://github.com/FM1337) for the GPSS
 * The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
 * [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
@@ -138,7 +134,7 @@ all`.
 * All the patrons and the huge amount of supporters that this project has gained
   over the year
 
-without you, this project wouldn't have existed. Thank you.
+Without you, this project wouldn't have existed. Thank you.
 
 ## Support us
 
@@ -151,4 +147,4 @@ This project is licensed under the GNU GPLv3. Additional Terms 7.b and 7.c of
 GPLv3 apply to this. See
 [LICENSE](https://github.com/FlagBrew/PKSM/blob/master/LICENSE) for details.
 
-Visit us on [flagbrew.org](https://flagbrew.org/).
+Visit us on [flagbrew.org](https://flagbrew.org/)!

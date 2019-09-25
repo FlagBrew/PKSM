@@ -1,0 +1,17 @@
+0|—
+2|Seoul
+3|Busan
+4|Daegu
+5|Incheon
+6|Gwangju
+7|Daejeon
+8|Ulsan
+9|Gyeonggi
+10|Gangwon
+11|Chungcheong Settentrionale
+12|Chungcheong Meridionale
+13|Jeolla Settentrionale
+14|Jeolla Meridionale
+15|Gyeongsang Settentrionale
+16|Gyeongsang Meridionale
+17|Jeju

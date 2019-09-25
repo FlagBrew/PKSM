@@ -1,0 +1,10 @@
+0|—
+2|La Paz
+3|Chuquisaca
+4|Cochabamba
+5|Beni
+6|Oruro
+7|Pando
+8|Potosí
+9|Santa Cruz
+10|Tarija

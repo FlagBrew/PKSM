@@ -26,10 +26,11 @@
 
 #include "LocationOverlay.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 
-LocationOverlay::LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool met)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2),
       validLocations(i18n::locations(Configuration::getInstance().language(), pkm->generation())),
@@ -39,34 +40,35 @@ LocationOverlay::LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool 
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(locations.size());
     hid.select(std::distance(locations.begin(), std::find_if(locations.begin(), locations.end(), [pkm, met](const std::pair<u16, std::string>& pair) {
         return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());
     })));
 }
 
-void LocationOverlay::draw() const
+void LocationOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void LocationOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     // Stupid non random-access iterators
     std::map<u16, std::string>::const_iterator locIt = locations.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
@@ -78,8 +80,8 @@ void LocationOverlay::draw() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < locations.size())
         {
-            Gui::dynamicText(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9,
-                FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
             locIt++;
         }
         else
@@ -102,7 +104,7 @@ void LocationOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 
@@ -134,25 +136,28 @@ void LocationOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        auto locIt = locations.begin();
-        for (size_t i = 0; i < hid.fullIndex(); i++)
+        if (locations.size() > 0)
         {
-            locIt++;
+            auto locIt = locations.begin();
+            for (size_t i = 0; i < hid.fullIndex(); i++)
+            {
+                locIt++;
+            }
+            if (met)
+            {
+                pkm->metLocation(locIt->first);
+            }
+            else
+            {
+                pkm->eggLocation(locIt->first);
+            }
         }
-        if (met)
-        {
-            pkm->metLocation(locIt->first);
-        }
-        else
-        {
-            pkm->eggLocation(locIt->first);
-        }
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

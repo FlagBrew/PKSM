@@ -1,0 +1,10 @@
+0|—
+2|Gauteng
+3|Westkap
+4|Nordkap
+5|Ostkap
+6|KwaZulu-Natal
+7|Freistaat
+8|Nordwest
+9|Mpumalanga
+10|Limpopo

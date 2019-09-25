@@ -28,19 +28,20 @@
 #define BAGITEMOVERLAY_HPP
 
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "gui.hpp"
 #include <string>
 #include <vector>
 
-class BagItemOverlay : public Overlay
+class BagItemOverlay : public ReplaceableScreen
 {
 public:
-    BagItemOverlay(Screen& screen, std::vector<std::pair<const std::string*, int>>& items, size_t selected, std::pair<Pouch, int> pouch, int slot,
-        int& firstEmpty)
-        : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
-                              i18n::localize("B_BACK")),
+    BagItemOverlay(ReplaceableScreen& screen, std::vector<std::pair<const std::string*, int>>& items, size_t selected, std::pair<Pouch, int> pouch,
+        int slot, int& firstEmpty)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
+                                         i18n::localize("B_BACK")),
           hid(40, 2),
           validItems(items),
           items(items),
@@ -50,17 +51,19 @@ public:
           firstEmpty(firstEmpty)
     {
         instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-        searchButton = new ClickButton(75, 30, 170, 23,
+        searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
             [this]() {
-                startSearch = true;
+                searchBar();
                 return false;
             },
-            ui_sheet_emulated_box_search_idx, "", 0, 0);
+            ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
         hid.update(items.size());
         hid.select(selected);
     }
-    ~BagItemOverlay() { delete searchButton; }
-    void draw() const override;
+    ~BagItemOverlay() {}
+    void drawTop() const override;
+    void drawBottom() const override;
+    bool replacesTop() const override { return true; }
     void update(touchPosition* touch) override;
 
 private:
@@ -75,8 +78,7 @@ private:
     bool justSwitched           = true;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    Button* searchButton;
-    bool startSearch = false;
+    std::unique_ptr<Button> searchButton;
 };
 
 #endif

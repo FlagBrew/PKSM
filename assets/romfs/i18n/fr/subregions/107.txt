@@ -1,0 +1,22 @@
+0|—
+2|Stockholm
+3|Skåne
+4|Västra Götaland
+5|Östergötland
+6|Södermanland
+7|Värmland
+8|Uppsala
+9|Gävleborg
+10|Västerbotten
+11|Norrbotten
+12|Gotland
+13|Jämtland
+14|Dalarna
+15|Blekinge
+16|Örebro
+17|Västernorrland
+18|Jönköping
+19|Kronoberg
+20|Kalmar
+21|Västmanland
+22|Halland

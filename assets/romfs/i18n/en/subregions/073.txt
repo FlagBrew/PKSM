@@ -1,0 +1,15 @@
+0|—
+2|Prague
+3|Central Bohemian Region
+4|South Bohemian Region
+5|Plzeň Region
+6|Karlovy Vary Region
+7|Ústí nad Labem Region
+8|Liberec Region
+9|Hradec Králové Region
+10|Pardubice Region
+11|Olomouc Region
+12|Moravian-Silesian Region
+13|South Moravian Region
+14|Zlín Region
+15|Vysočina Region

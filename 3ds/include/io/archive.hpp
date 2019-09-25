@@ -33,7 +33,7 @@
 
 namespace Archive
 {
-    Result init(std::string& execPath);
+    Result init(const std::string& execPath);
     void exit(void);
     FS_Archive sd(void);
     FS_Archive data(void);
@@ -41,10 +41,11 @@ namespace Archive
     Result extdata(FS_Archive* archive, u32 extdata);
     bool saveAccessible(FS_MediaType mediatype, u32 lowid, u32 highid);
     bool extdataAccessible(u32 id);
-    Result createPKSMExtdataArchive(std::string& execPath);
+    Result createPKSMExtdataArchive(const std::string& execPath);
     Result moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest);
     Result moveFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
     Result copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
+    Result deleteFile(FS_Archive archive, const std::u16string& file);
     inline Result moveDir(FS_Archive src, const std::string& dir, FS_Archive dst, const std::string& dest)
     {
         return moveDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
@@ -57,6 +58,7 @@ namespace Archive
     {
         return copyFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
+    inline Result deleteFile(FS_Archive archive, const std::string& file) { return deleteFile(archive, StringUtils::UTF8toUTF16(file)); }
 }
 
 #endif

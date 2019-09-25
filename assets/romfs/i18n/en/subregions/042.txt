@@ -1,0 +1,26 @@
+0|—
+2|Lima
+3|Amazonas
+4|Ancash
+5|Apurímac
+6|Arequipa
+7|Ayacucho
+8|Cajamarca
+9|Callao
+10|Cuzco
+11|Huancavelica
+12|Huánuco
+13|Ica
+14|Junín
+15|La Libertad
+16|Lambayeque
+17|Loreto
+18|Madre de Dios
+19|Moquegua
+20|Pasco
+21|Piura
+22|Puno
+23|San Martín
+24|Tacna
+25|Tumbes
+26|Ucayali

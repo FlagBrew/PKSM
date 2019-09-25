@@ -29,23 +29,27 @@
 
 #include "Button.hpp"
 #include "HidHorizontal.hpp"
-#include "Overlay.hpp"
+#include "PKFilter.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
+#include <variant>
 
-class SpeciesOverlay : public Overlay
+class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    ~SpeciesOverlay() { delete searchButton; }
-    void draw() const override;
+    SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object);
+    ~SpeciesOverlay() {}
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
     HidHorizontal hid;
-    Button* searchButton;
+    std::unique_ptr<Button> searchButton;
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::vector<int> dispPkm;

@@ -1,0 +1,5 @@
+0|—
+2|Inghilterra
+4|Scozia
+5|Galles
+6|Irlanda del Nord

@@ -1,0 +1,14 @@
+0|—
+2|Port-of-Spain
+3|Arima
+4|Caroni
+5|Mayaro
+6|Nariva
+7|Saint Andrew
+8|Saint David
+9|Saint George
+10|Saint Patrick
+11|San Fernando
+12|Tobago
+13|Victoria
+14|Point Fortin

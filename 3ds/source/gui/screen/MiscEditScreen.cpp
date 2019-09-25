@@ -29,14 +29,12 @@
 #include "ClickButton.hpp"
 #include "LocationOverlay.hpp"
 #include "PB7.hpp"
+#include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
+#include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
-
-extern "C" {
-#include "base64.h"
-}
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -45,106 +43,107 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             Gui::screenBack();
             return true;
         },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
             otAndMet = !otAndMet;
             return true;
         },
-        ui_sheet_button_editor_idx, "", 0.0f, 0));
+        ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
-    instructions.addBox(false, 20, 175, 4, 50, COLOR_GREY);
-    instructions.addBox(false, 20, 175, 90, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
+    instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
+    instructions.addBox(false, 20, 175, 140, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(3, 211, 34, 28,
         [this]() {
             validate();
             return true;
         },
-        ui_sheet_button_wireless_idx, "", 0.0f, 0));
+        ui_sheet_button_wireless_idx, "", 0.0f, COLOR_BLACK));
 
     buttons.push_back(std::make_unique<AccelButton>(
-        94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+        94, 34, 13, 13, [this]() { return this->changeMetLevel(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(109, 34, 31, 13,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { setMetLevel(); });
+            setMetLevel();
             return false;
         },
-        ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(
-        std::make_unique<AccelButton>(142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+        ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<AccelButton>(
+        142, 34, 13, 13, [this]() { return this->changeMetLevel(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
     buttons.push_back(std::make_unique<Button>(95, 54, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { day(); });
+            day();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(95, 74, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { month(); });
+            month();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 94, 15, 12,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { year(); });
+            year();
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 114, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<LocationOverlay>(*this, this->pkm, this->otAndMet);
+            addOverlay<LocationOverlay>(this->pkm, this->otAndMet);
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(95, 134, 15, 12,
         [this]() {
-            currentOverlay = std::make_shared<VersionOverlay>(*this, this->pkm);
+            addOverlay<VersionOverlay>(this->pkm);
             return true;
         },
-        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, 0));
+        ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
 
     if (pkm->generation() > Generation::FIVE)
     {
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 154, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setEnjoyment(); });
+                setEnjoyment();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 154, 13, 13, [this]() { return this->changeEnjoyment(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 154, 13, 13, [this]() { return this->changeEnjoyment(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 174, 13, 13, [this]() { return this->changeFullness(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 174, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setFullness(); });
+                setFullness();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, 0));
+            94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
             [this]() {
-                Gui::setNextKeyboardFunc([this]() { setAffection(); });
+                setAffection();
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<AccelButton>(
-            142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, 0));
+            142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
     }
+
+    addOverlay<ViewOverlay>(this->pkm, false);
 }
 
-void MiscEditScreen::draw() const
+void MiscEditScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
@@ -163,40 +162,32 @@ void MiscEditScreen::draw() const
         button->draw();
     }
 
-    Gui::staticText(
-        i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 254, 186, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::staticText(i18n::localize("MET_LEVEL"), 5, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
-        i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
-        i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(
-        i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::staticText(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 254, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("MET_LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
-        Gui::staticText(i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::staticText(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
+        Gui::text(i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 
-    Gui::dynamicText(
-        std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::dynamicText(std::to_string((int)(otAndMet ? pkm->metDay() : pkm->eggDay())), 115, 52, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-        TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(std::to_string((int)(otAndMet ? pkm->metMonth() : pkm->eggMonth())), 115, 72, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
-        TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string((int)(otAndMet ? pkm->metDay() : pkm->eggDay())), 115, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)(otAndMet ? pkm->metMonth() : pkm->eggMonth())), 115, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     int print = otAndMet ? pkm->metYear() : pkm->eggYear();
     if (print < 2000)
     {
         print += 2000;
     }
-    Gui::dynamicText(std::to_string(print), 115, 92, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), pkm->version()), 115, 112, FONT_SIZE_12, FONT_SIZE_12,
+    Gui::text(std::to_string(print), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), TitleLoader::save->version()), 115, 112, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::dynamicText(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
         if (pkm->generation() == Generation::SIX)
@@ -211,7 +202,7 @@ void MiscEditScreen::draw() const
         {
             print = ((PB7*)pkm.get())->enjoyment();
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() == Generation::SIX)
         {
             print = ((PK6*)pkm.get())->fullness();
@@ -224,7 +215,7 @@ void MiscEditScreen::draw() const
         {
             print = ((PB7*)pkm.get())->fullness();
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (otAndMet)
         {
             if (pkm->generation() == Generation::SIX)
@@ -255,17 +246,12 @@ void MiscEditScreen::draw() const
                 print = ((PB7*)pkm.get())->htAffection();
             }
         }
-        Gui::staticText(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
 void MiscEditScreen::update(touchPosition* touch)
 {
-    if (!currentOverlay)
-    {
-        currentOverlay = std::make_shared<ViewOverlay>(*this, pkm, false);
-    }
-
     u32 kDown = hidKeysDown();
     if (justSwitched)
     {
@@ -676,105 +662,40 @@ void MiscEditScreen::year()
     }
 }
 
-void MiscEditScreen::appendWriteData(char* data, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-    {
-        dataToWrite.push_back(data[i]);
-    }
-}
-
-static size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
-{
-    ((MiscEditScreen*)userdata)->appendWriteData(ptr, size * nmemb);
-    return size * nmemb;
-}
-
-static std::string getVersionString(int version)
-{
-    switch (version)
-    {
-        case 10: // diamond
-            return "D";
-        case 11: // pearl
-            return "P";
-        case 12: // platinum
-            return "Pt";
-        case 7: // heart gold
-            return "HG";
-        case 8: // soul silver
-            return "SS";
-        case 20: // white
-            return "W";
-        case 21: // black
-            return "B";
-        case 22: // white2
-            return "W2";
-        case 23: // black2
-            return "B2";
-        case 24: // x
-            return "X";
-        case 25: // y
-            return "Y";
-        case 26: // as
-            return "AS";
-        case 27: // or
-            return "OR";
-        case 30: // sun
-            return "S";
-        case 31: // moon
-            return "M";
-        case 32: // us
-            return "US";
-        case 33: // um
-            return "UM";
-        case 42: // let's go Pikachu
-            return "GP";
-        case 43: // let's go Eevee
-            return "GE";
-    }
-    return "";
-}
-
 void MiscEditScreen::validate()
 {
-    if (!Gui::showChoiceMessage(i18n::localize("AUTO_LEGALIZE_WARNING_1"), i18n::localize("AUTO_LEGALIZE_WARNING_2")))
-    {
-        return;
-    }
-    const u8* rawData = pkm->rawData();
-    CURLcode res;
-    std::string postdata = "";
-    size_t outSize;
-    long status_code = 0;
-    char* b64Data    = base64_encode((char*)rawData, pkm->getLength(), &outSize);
-    postdata += b64Data;
-    free(b64Data);
-    std::string size    = "Size: " + std::to_string(pkm->getLength());
-    std::string version = "Version: " + getVersionString(TitleLoader::save->version());
-
+    std::string version        = "Generation: " + genToString(pkm->generation());
     struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, version.c_str());
-    headers                    = curl_slist_append(headers, "Content-Type: application/base64");
-    headers                    = curl_slist_append(headers, size.c_str());
 
-    if (Fetch::init("https://pksm.flagbrew.org/api/legalize", true, true, nullptr, headers, postdata))
+    std::string writeData = "";
+    if (auto fetch = Fetch::init(Configuration::getInstance().legalEndpoint(), false, true, &writeData, headers, ""))
     {
-        Fetch::setopt(CURLOPT_WRITEDATA, this);
-        Fetch::setopt(CURLOPT_WRITEFUNCTION, write_callback);
+        auto mimeThing       = fetch->mimeInit();
+        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
+        curl_mime_name(field, "pkmn");
+        curl_mime_data(field, (char*)pkm->rawData(), pkm->getLength());
+        curl_mime_filename(field, "pkmn");
+        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        res = Fetch::perform();
+        CURLcode res = fetch->perform();
         if (res != CURLE_OK)
         {
             Gui::error(i18n::localize("CURL_ERROR"), abs(res));
         }
         else
         {
-            Fetch::getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+            long status_code;
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
-                    std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
+                    if (writeData.size() > 0)
+                    {
+                        Gui::setScreen(std::make_unique<ScrollingTextScreen>(writeData, pkm));
+                    }
                     break;
                 case 400:
                     Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
@@ -787,9 +708,8 @@ void MiscEditScreen::validate()
                     break;
             }
         }
-        Fetch::exit();
     }
     curl_slist_free_all(headers);
-    dataToWrite.clear();
+    // dataToWrite.clear();
     return;
 }

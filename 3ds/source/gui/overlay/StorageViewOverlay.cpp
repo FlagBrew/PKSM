@@ -26,18 +26,15 @@
 
 #include "StorageViewOverlay.hpp"
 #include "EditorScreen.hpp"
-#include "gui.hpp"
 #include "StorageScreen.hpp"
+#include "gui.hpp"
 
-void StorageViewOverlay::draw() const
+void StorageViewOverlay::drawBottom() const
 {
-    ViewOverlay::draw();
-
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
     if (clone.empty())
     {
-        Gui::staticText(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
@@ -50,7 +47,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         partyNum.push_back(-1);
         cloneDims          = {1, 1};
         currentlySelecting = false;
-        screen.removeOverlay();
+        parent->removeOverlay();
     }
     else if (kDown & KEY_UP)
     {
@@ -129,6 +126,6 @@ void StorageViewOverlay::update(touchPosition* touch)
         {
             Gui::setScreen(std::make_unique<EditorScreen>(pkm, emergencyInfo.first, emergencyInfo.second, true));
         }
-        screen.removeOverlay();
+        parent->removeOverlay();
     }
 }

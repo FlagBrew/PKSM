@@ -1,0 +1,8 @@
+0|—
+2|San José
+3|Alajuela
+4|Cartago
+5|Guanacaste
+6|Heredia
+7|Limón
+8|Puntarenas

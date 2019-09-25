@@ -1,0 +1,25 @@
+0|—
+2|Pichincha
+3|Galápagos
+4|Azuay
+5|Bolívar
+6|Cañar
+7|Carchi
+8|Chimborazo
+9|Cotopaxi
+10|El Oro
+11|Esmeraldas
+12|Guayas
+13|Imbabura
+14|Loja
+15|Los Ríos
+16|Manabí
+17|Morona-Santiago
+18|Pastaza
+19|Tungurahua
+20|Zamora-Chinchipe
+21|Sucumbíos
+22|Napo
+23|Orellana
+24|Santa Elena
+25|Santo Domingo de los Tsáchilas

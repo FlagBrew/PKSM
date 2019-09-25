@@ -27,21 +27,24 @@
 #ifndef VIEWOVERLAY_HPP
 #define VIEWOVERLAY_HPP
 
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include "Sav.hpp"
 
-class ViewOverlay : public Overlay
+class ViewOverlay : public ReplaceableScreen
 {
 public:
     // if it's not green, it's blue
-    ViewOverlay(Screen& screen, std::shared_ptr<PKX>& pokemon, bool green, const std::string& instr = "")
-        : Overlay(screen, instr), pkm(pokemon), green(green)
+    ViewOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>& pokemon, bool green, const std::string& instr = "")
+        : ReplaceableScreen(&screen, instr), pkm(pokemon), green(green)
     {
     }
     virtual ~ViewOverlay() {}
-    virtual void draw() const override;
-    virtual void update(touchPosition* touch) override;
+    virtual void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    virtual void drawBottom() const override {}
+    bool handlesUpdate() const override { return false; }
+    void update(touchPosition* touch) {}
 
 protected:
     std::shared_ptr<PKX>& pkm;

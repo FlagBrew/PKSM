@@ -1,0 +1,10 @@
+0|—
+2|Vienne
+3|Burgenland
+4|Carinthie
+5|Basse-Autriche
+6|Haute-Autriche
+7|Salzbourg
+8|Styrie
+9|Tyrol
+10|Vorarlberg

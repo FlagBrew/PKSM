@@ -1,0 +1,20 @@
+0|—
+2|Madrid
+3|Andalusia
+4|Aragon
+5|Principality of Asturias
+6|Balearic Islands
+7|Canary Islands
+8|Cantabria
+9|Castile-La Mancha
+10|Castilla y León
+11|Catalonia
+12|Valencia
+13|Extremadura
+14|Galicia
+15|Murcia
+16|Navarre
+17|Basque Country
+18|La Rioja
+19|Ceuta
+20|Melilla

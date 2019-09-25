@@ -36,19 +36,25 @@ class PK6 : public PKX
 protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
-    void reorderMoves(void) override;
 
 public:
     PK6()
     {
-        length = 232;
-        data   = new u8[length];
+        directAccess = false;
+        length       = 232;
+        data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK6(u8* dt, bool ekx = false, bool party = false);
-    virtual ~PK6() { delete[] data; };
+    PK6(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    virtual ~PK6()
+    {
+        if (!directAccess)
+        {
+            delete[] data;
+        }
+    }
 
-    std::shared_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
 
@@ -118,8 +124,8 @@ public:
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
     void PPUp(u8 move, u8 v) override;
-    u16 relearnMove(u8 move) const;
-    void relearnMove(u8 move, u16 v);
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     bool secretSuperTrainingUnlocked(void) const;
     void secretSuperTrainingUnlocked(bool v);
     bool secretSuperTrainingComplete(void) const;
@@ -232,8 +238,8 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> next(void) const override;
-    std::shared_ptr<PKX> previous(void) const override;
+    std::shared_ptr<PKX> next(Sav& save) const override;
+    std::shared_ptr<PKX> previous(Sav& save) const override;
 
     inline u8 baseHP(void) const override { return PersonalXYORAS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalXYORAS::baseAtk(formSpecies()); }
@@ -248,6 +254,9 @@ public:
     inline u8 expType(void) const override { return PersonalXYORAS::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalXYORAS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalXYORAS::formStatIndex(formSpecies()); }
+
+private:
+    bool directAccess;
 };
 
 #endif

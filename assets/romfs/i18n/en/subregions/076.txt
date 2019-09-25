@@ -1,0 +1,21 @@
+0|—
+8|Uusimaa / Nyland
+9|Lappi / Lapland
+10|Pohjois-Pohjanmaa / Norra Österbotten
+11|Kainuu / Kajanaland
+12|Pohjois-Karjala / Norra Karelen
+13|Pohjois-Savo / Norra Savolax
+14|Etelä-Savo / Södra Savolax
+15|Etelä-Pohjanmaa / Södra Österbotten
+16|Pohjanmaa / Österbotten
+17|Pirkanmaa / Birkaland
+18|Satakunta / Satakunda
+19|Keski-Pohjanmaa / Mellersta Österbotten
+20|Keski-Suomi / Mellersta Finland
+21|Varsinais-Suomi / Egentliga Finland
+22|Etelä-Karjala / Södra Karelen
+23|Päijät-Häme / Päijänne Tavastland
+24|Kanta-Häme / Egentliga Tavastland
+25|Itä-Uusimaa / Östra Nyland
+26|Kymenlaakso / Kymmenedalen
+27|Ahvenanmaa / Åland

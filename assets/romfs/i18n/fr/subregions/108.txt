@@ -1,0 +1,27 @@
+0|—
+2|Berne
+4|Argovie
+5|Bâle-Ville
+6|Fribourg
+7|Genève
+8|Glaris
+9|Grisons
+10|Jura
+11|Lucerne
+12|Neuchâtel
+13|Obwald
+14|Saint-Gall
+15|Schaffhouse
+16|Schwytz
+17|Soleure
+18|Thurgovie
+19|Tessin
+20|Uri
+21|Valais
+22|Vaud
+23|Zoug
+24|Zurich
+25|Appenzell Rhodes-Extérieures
+26|Appenzell Rhodes-Intérieures
+27|Bâle-Campagne
+28|Nidwald

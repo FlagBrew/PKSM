@@ -1,0 +1,31 @@
+0|—
+2|District National
+3|Azua
+4|Baoruco
+5|Barahona
+6|Dajabón
+7|Duarte
+8|Espaillat
+9|Independencia
+10|La Altagracia
+11|Elías Piña
+12|La Romana
+13|María Trinidad Sánchez
+14|Monte Cristi
+15|Pedernales
+16|Peravia
+17|Puerto Plata
+18|Salcedo
+19|Samaná
+20|Sánchez Ramírez
+21|San Juan
+22|San Pedro de Macorís
+23|Santiago
+24|Santiago Rodríguez
+25|Valverde
+26|El Seibo
+27|Hato Mayor
+28|La Vega
+29|Monseñor Nouel
+30|Monte Plata
+31|San Cristóbal

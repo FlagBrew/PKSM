@@ -1,0 +1,14 @@
+0|—
+2|Riad
+3|Al Bahah
+4|Medina
+5|Región Oriental
+6|Al Qasim
+7|Asir
+8|Hail
+9|La Meca
+10|Frontera Norte
+11|Najran
+12|Jizan
+13|Tabuk
+14|Al Jouf

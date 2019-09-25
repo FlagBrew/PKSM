@@ -1,0 +1,14 @@
+0|—
+2|Región Metropolitana
+3|Valparaíso
+4|Aisén del General Carlos Ibáñez del Campo
+5|Antofagasta
+6|Araucanía
+7|Atacama
+8|Bío-Bío
+9|Coquimbo
+10|Libertador General Bernardo O'Higgins
+11|Los Lagos
+12|Magallanes y Antártica Chilena
+13|Maule
+14|Tarapacá

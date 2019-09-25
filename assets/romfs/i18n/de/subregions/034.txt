@@ -1,0 +1,15 @@
+0|—
+2|Saint Thomas
+3|Clarendon
+4|Hanover
+5|Manchester
+6|Portland
+7|Saint Andrew
+8|Saint Ann
+9|Saint Catherine
+10|Saint Elizabeth
+11|Saint James
+12|Saint Mary
+13|Trelawny
+14|Westmoreland
+15|Kingston

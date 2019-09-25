@@ -1,0 +1,15 @@
+0|—
+2|Prag
+3|Mittelböhmische Region
+4|Südböhmische Region
+5|Region Pilsen
+6|Region Karlsbad
+7|Region Ústí
+8|Region Liberec
+9|Region Hradec Králové
+10|Region Pardubice
+11|Region Olmütz
+12|Region Mährisch-Schlesien
+13|Südmährische Region
+14|Region Zlin
+15|Region Vysočina

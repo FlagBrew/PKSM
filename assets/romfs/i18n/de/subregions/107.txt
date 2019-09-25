@@ -1,0 +1,22 @@
+0|—
+2|Stockholms län
+3|Skåne län
+4|Västra Götalands län
+5|Östergötlands län
+6|Södermanlands län
+7|Värmlands län
+8|Uppsala län
+9|Gävleborgs län
+10|Västerbottens län
+11|Norrbottens län
+12|Gotlands Iän
+13|Jämtlands län
+14|Dalarnas län
+15|Blekinge län
+16|Örebro län
+17|Västernorrlands län
+18|Jönköpings län
+19|Kronobergs län
+20|Kalmar län
+21|Västmanlands län
+22|Hallands län

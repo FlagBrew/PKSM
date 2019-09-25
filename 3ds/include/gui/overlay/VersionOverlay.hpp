@@ -30,14 +30,16 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
+#include "ReplaceableScreen.hpp"
 #include "loader.hpp"
 
-class VersionOverlay : public Overlay
+class VersionOverlay : public ReplaceableScreen
 {
 public:
-    VersionOverlay(Screen& screen, std::shared_ptr<PKX> pkm);
-    void draw() const override;
+    VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

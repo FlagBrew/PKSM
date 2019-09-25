@@ -1,0 +1,21 @@
+0|—
+2|Latium
+3|Aostatal
+4|Piemont
+5|Ligurien
+6|Lombardei
+7|Trentino-Südtirol
+8|Venetien
+9|Friaul-Julisch Venetien
+10|Emilia-Romagna
+11|Toskana
+12|Umbrien
+13|Marken
+14|Abruzzen
+15|Molise
+16|Kampanien
+17|Apulien
+18|Basilikata
+19|Kalabrien
+20|Sizilien
+21|Sardinien

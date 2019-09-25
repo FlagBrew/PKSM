@@ -1,0 +1,27 @@
+0|—
+2|Berna
+4|Argovia
+5|Basilea Città
+6|Friburgo
+7|Ginevra
+8|Glarona
+9|Grigioni
+10|Giura
+11|Lucerna
+12|Neuchâtel
+13|Obvaldo
+14|San Gallo
+15|Sciaffusa
+16|Svitto
+17|Soletta
+18|Turgovia
+19|Ticino
+20|Uri
+21|Vallese
+22|Vaud
+23|Zugo
+24|Zurigo
+25|Appenzello Esterno
+26|Appenzello Interno
+27|Basilea Campagna
+28|Nidvaldo

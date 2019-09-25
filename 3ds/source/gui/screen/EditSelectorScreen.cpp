@@ -27,13 +27,13 @@
 #include "EditSelectorScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "EditorScreen.hpp"
 #include "SavLGPE.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include <memory>
 
-extern int bobPointer();
 static bool dirtyBack = true;
 
 void EditSelectorScreen::changeBoxName()
@@ -146,23 +146,24 @@ bool EditSelectorScreen::doQR()
 
 EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
 {
-    currentOverlay = std::make_shared<ViewOverlay>(*this, infoMon, false);
+    addOverlay<ViewOverlay>(infoMon, false);
 
-    buttons.push_back(new ClickButton(283, 211, 34, 28,
-        [this]() {
-            return goBack();
-        },
-        ui_sheet_button_back_idx, "", 0.0f, 0));
+    buttons.push_back(
+        std::make_unique<ClickButton>(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, 0));
-    buttons.push_back(new AccelButton(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
-    buttons.push_back(new AccelButton(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, 0, 10, 5));
-    int cameraButtonWidth = StringUtils::textWidth("\uE004+\uE005 \uE01E", FONT_SIZE_14);
-    instructions.addCircle(false, 310 - cameraButtonWidth / 2, 24, 8, COLOR_GREY);
-    instructions.addBox(false, 308 - cameraButtonWidth / 2, 24, 4, 20, COLOR_GREY);
-    instructions.addBox(false, 222 - cameraButtonWidth / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(new ClickButton(310 - cameraButtonWidth, 16, cameraButtonWidth + 2, 16, [this]() { return this->doQR(); },
-        ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    buttons.push_back(
+        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
+    buttons.push_back(
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
+    auto cameraButtonText = Gui::parseText("\uE004+\uE005 \uE01E", FONT_SIZE_14, 0.0f);
+    instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
+    instructions.addLine(
+        false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 4, COLOR_GREY);
+    instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
+    buttons.push_back(std::make_unique<ClickButton>(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2,
+        16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     u16 y = 45;
@@ -171,8 +172,8 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            pkmButtons[row * 6 + column] = new ClickButton(
-                x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+            pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
+                x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
@@ -181,45 +182,37 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
     {
         int x              = (i % 2 == 0 ? 221 : 271);
         int y              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = new ClickButton(x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, 0);
+        pkmButtons[30 + i] = std::make_unique<ClickButton>(
+            x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
     }
 
-    viewerButtons.push_back(buttons[0]);
-    viewerButtons.push_back(new ClickButton(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
         "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 78, 108, 28, [this]() { menu = false; return this->releasePokemon(); }, ui_sheet_button_editor_idx,
-        "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
-    viewerButtons.push_back(new ClickButton(212, 109, 108, 28, [this]() { menu = false; return this->clonePkm(); }, ui_sheet_button_editor_idx,
-        "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 78, 108, 28,
+        [this]() {
+            menu = false;
+            return this->releasePokemon();
+        },
+        ui_sheet_button_editor_idx, "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 109, 108, 28,
+        [this]() {
+            menu = false;
+            return this->clonePkm();
+        },
+        ui_sheet_button_editor_idx, "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
     box = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
 
 EditSelectorScreen::~EditSelectorScreen()
 {
-    for (Button* button : buttons)
-    {
-        delete button;
-    }
-
-    for (Button* button : pkmButtons)
-    {
-        delete button;
-    }
-
-    // Skip shared back button
-    for (size_t i = 1; i < viewerButtons.size(); i++)
-    {
-        delete viewerButtons[i];
-    }
-
     if (TitleLoader::save->generation() == Generation::LGPE)
     {
         ((SavLGPE*)TitleLoader::save.get())->compressBox();
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
-            if (TitleLoader::save->pkm(u8(0), i)->encryptionConstant())
+            if (TitleLoader::save->pkm(u8(0), i)->species())
             {
                 occupiedSlots++;
             }
@@ -234,21 +227,19 @@ EditSelectorScreen::~EditSelectorScreen()
     TitleLoader::save->currentBox((u8)box);
 }
 
-void EditSelectorScreen::draw() const
+void EditSelectorScreen::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
-    Gui::dynamicText("\uE004+\uE005 \uE01E", 311, 15, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
     Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (Button* b : buttons)
+    for (auto& b : buttons)
     {
         b->draw();
     }
@@ -282,7 +273,7 @@ void EditSelectorScreen::draw() const
         {
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
-                C2D_DrawRectSolid(x, y, 0.5f, 34, 30, C2D_Color32(128, 128, 128, 128));
+                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
@@ -316,11 +307,11 @@ void EditSelectorScreen::draw() const
         }
     }
 
-    Gui::dynamicText(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (cursorPos == 0)
     {
-        int dy = bobPointer();
+        int dy = Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, 94, 5 + dy);
@@ -330,7 +321,7 @@ void EditSelectorScreen::draw() const
     else if (cursorPos < 31)
     {
         int tempIndex = cursorPos - 1;
-        int yMod      = (tempIndex / 6) * 30 + bobPointer();
+        int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
@@ -340,7 +331,7 @@ void EditSelectorScreen::draw() const
     else
     {
         int x = 238 + ((cursorPos - 1) % 2) * 50;
-        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + bobPointer();
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, x - 12, y + 9);
@@ -350,17 +341,18 @@ void EditSelectorScreen::draw() const
 
     if (infoMon)
     {
-        Gui::dynamicText(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
-            FONT_SIZE_9, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
+            FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)
     {
-        C2D_DrawRectSolid(0, 0, 0.5f, 320, 240, COLOR_MASKBLACK);
-        for (auto button : viewerButtons)
+        Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
+        for (auto& button : viewerButtons)
         {
             button->draw();
         }
+        buttons[0]->draw();
     }
 }
 
@@ -402,7 +394,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && (infoMon->encryptionConstant() == 0 && infoMon->species() == 0))
+    if (infoMon && infoMon->species() == 0)
     {
         infoMon = nullptr;
     }
@@ -412,33 +404,27 @@ void EditSelectorScreen::update(touchPosition* touch)
 
     if (menu)
     {
+        if (!dirtyBack)
+        {
+            if (buttons[0]->clicked(touch))
+            {
+                dirtyBack = true;
+            }
+            if (buttons[0]->update(touch))
+            {
+                return;
+            }
+        }
+        else
+        {
+            if (!buttons[0]->clicked(touch))
+            {
+                dirtyBack = false;
+            }
+        }
         for (size_t i = 0; i < viewerButtons.size(); i++)
         {
-            if (i == 0)
-            {
-                if (!dirtyBack)
-                {
-                    if (viewerButtons[i]->clicked(touch))
-                    {
-                        dirtyBack = true;
-                    }
-                    if (viewerButtons[i]->update(touch))
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!viewerButtons[i]->clicked(touch))
-                    {
-                        dirtyBack = false;
-                    }
-                }
-            }
-            else
-            {
-                viewerButtons[i]->update(touch);
-            }
+            viewerButtons[i]->update(touch);
         }
 
         if (downKeys & KEY_B)
@@ -490,7 +476,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
         }
 
-        for (Button* button : pkmButtons)
+        for (auto& button : pkmButtons)
         {
             button->update(touch);
         }
@@ -504,7 +490,7 @@ void EditSelectorScreen::update(touchPosition* touch)
         {
             if (cursorPos == 0)
             {
-                Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+                changeBoxName();
             }
             else if (moveMon && cursorPos < 31)
             {
@@ -512,7 +498,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                    if (tmpMon && tmpMon->species() == 0)
                     {
                         tmpMon = nullptr;
                     }
@@ -527,7 +513,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 {
                     tmpMon = TitleLoader::save->pkm(cursorPos - 31);
                 }
-                if (tmpMon && (tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon && tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }
@@ -890,7 +876,7 @@ bool EditSelectorScreen::clickIndex(int i)
     {
         if (cursorPos == 0)
         {
-            Gui::setNextKeyboardFunc(std::bind(&EditSelectorScreen::changeBoxName, this));
+            changeBoxName();
         }
         else
         {
@@ -915,7 +901,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                if (moveMon && moveMon->species() == 0)
                 {
                     moveMon = nullptr;
                 }
@@ -923,7 +909,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon && tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }
@@ -937,7 +923,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (moveMon && (moveMon->encryptionConstant() == 0 && moveMon->species() == 0))
+                if (moveMon && moveMon->species() == 0)
                 {
                     moveMon = nullptr;
                 }
@@ -945,7 +931,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if ((tmpMon->encryptionConstant() == 0 && tmpMon->species() == 0))
+                if (tmpMon->species() == 0)
                 {
                     tmpMon = nullptr;
                 }

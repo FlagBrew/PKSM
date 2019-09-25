@@ -28,8 +28,10 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <time.h>
 
-std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> Fetch::curl(nullptr, &curl_easy_cleanup);
+#define SPEED_TOO_SLOW 300
+#define CALLS_TOO_SLOW 100
 
 static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
 {
@@ -38,34 +40,40 @@ static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* 
     return size * nmemb;
 }
 
-bool Fetch::init(const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
+std::unique_ptr<Fetch> Fetch::init(
+    const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
 {
-    curl = std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
-    if (curl)
+    auto fetch  = std::unique_ptr<Fetch>(new Fetch);
+    fetch->curl = std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
+    if (fetch->curl)
     {
-        Fetch::setopt(CURLOPT_URL, url.c_str());
-        Fetch::setopt(CURLOPT_HTTPHEADER, headers);
+        fetch->setopt(CURLOPT_URL, url.c_str());
+        fetch->setopt(CURLOPT_HTTPHEADER, headers);
         if (ssl)
         {
-            Fetch::setopt(CURLOPT_SSL_VERIFYPEER, 0L);
+            fetch->setopt(CURLOPT_SSL_VERIFYPEER, 0L);
         }
         if (writeData)
         {
-            Fetch::setopt(CURLOPT_WRITEDATA, writeData);
-            Fetch::setopt(CURLOPT_WRITEFUNCTION, string_write_callback);
+            fetch->setopt(CURLOPT_WRITEDATA, writeData);
+            fetch->setopt(CURLOPT_WRITEFUNCTION, string_write_callback);
         }
         if (post)
         {
-            Fetch::setopt(CURLOPT_POSTFIELDS, postdata.data());
-            Fetch::setopt(CURLOPT_POSTFIELDSIZE, postdata.length());
+            fetch->setopt(CURLOPT_POSTFIELDSIZE, postdata.length());
+            fetch->setopt(CURLOPT_COPYPOSTFIELDS, postdata.data());
         }
-        Fetch::setopt(CURLOPT_NOPROGRESS, 1L);
-        Fetch::setopt(CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
-        Fetch::setopt(CURLOPT_FOLLOWLOCATION, 1L);
-        Fetch::setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
-        Fetch::setopt(CURLOPT_LOW_SPEED_TIME, 60);
+        fetch->setopt(CURLOPT_NOPROGRESS, 1L);
+        fetch->setopt(CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
+        fetch->setopt(CURLOPT_FOLLOWLOCATION, 1L);
+        fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
+        fetch->setopt(CURLOPT_LOW_SPEED_TIME, 30);
     }
-    return (bool)curl;
+    else
+    {
+        fetch = nullptr;
+    }
+    return fetch;
 }
 
 CURLcode Fetch::perform()
@@ -73,12 +81,39 @@ CURLcode Fetch::perform()
     return curl_easy_perform(curl.get());
 }
 
-void Fetch::exit()
+struct callbackWrapper
 {
-    curl = nullptr;
+    curl_xferinfo_callback progress;
+    void* progressInfo;
+};
+
+static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    callbackWrapper* data      = (callbackWrapper*)wrapper;
+    static curl_off_t oldDlNow = dlnow;
+    static int timesTooSlow    = 0;
+    if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
+    {
+        timesTooSlow++;
+        oldDlNow = dlnow;
+    }
+    if (timesTooSlow >= CALLS_TOO_SLOW)
+    {
+        return 1;
+    }
+    else
+    {
+        if (timesTooSlow > 0)
+        {
+            timesTooSlow--;
+        }
+        oldDlNow = dlnow;
+        return data->progress(data->progressInfo, dltotal, dlnow, ultotal, ulnow);
+    }
 }
 
-Result Fetch::download(const std::string& url, const std::string& path)
+Result Fetch::download(
+    const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -86,14 +121,21 @@ Result Fetch::download(const std::string& url, const std::string& path)
         return -errno;
     }
 
-    if (Fetch::init(url, false, true, nullptr, nullptr, ""))
+    bool doPost             = !postData.empty();
+    callbackWrapper wrapper = {progress, progressInfo};
+    if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
     {
-        Fetch::setopt(CURLOPT_WRITEFUNCTION, fwrite);
-        Fetch::setopt(CURLOPT_WRITEDATA, file);
-        CURLcode cres = Fetch::perform();
-
-        // cleanup
-        Fetch::exit();
+        fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
+        fetch->setopt(CURLOPT_WRITEDATA, file);
+        if (progress)
+        {
+            fetch->setopt(CURLOPT_NOPROGRESS, 0L);
+            fetch->setopt(CURLOPT_XFERINFOFUNCTION, down_callback_wrap);
+            fetch->setopt(CURLOPT_XFERINFODATA, &wrapper);
+            fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 0L);
+            fetch->setopt(CURLOPT_LOW_SPEED_TIME, 0L);
+        }
+        CURLcode cres = fetch->perform();
 
         fclose(file);
 
@@ -109,4 +151,13 @@ Result Fetch::download(const std::string& url, const std::string& path)
     }
 
     return 0;
+}
+
+std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
+{
+    if (curl)
+    {
+        return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(curl_mime_init(curl.get()), &curl_mime_free);
+    }
+    return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
 }

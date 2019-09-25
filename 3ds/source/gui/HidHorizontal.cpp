@@ -25,6 +25,7 @@
  */
 
 #include "HidHorizontal.hpp"
+#include <3ds.h>
 
 void HidHorizontal::update(size_t count)
 {

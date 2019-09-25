@@ -1,0 +1,11 @@
+0|—
+2|Demerara-Mahaica
+3|Barima-Waini
+4|Cuyuni-Mazaruni
+5|East Berbice-Corentyne
+6|Essequibo Islands-West Demerara
+7|Mahaica-Berbice
+8|Pomeroon-Supenaam
+9|Potaro-Siparuni
+10|Upper Demerara-Berbice
+11|Upper Takutu-Upper Essequibo

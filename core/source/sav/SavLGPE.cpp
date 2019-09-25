@@ -27,7 +27,6 @@
 #include "SavLGPE.hpp"
 #include "PB7.hpp"
 #include "WB7.hpp"
-#include "gui.hpp"
 #include "random.hpp"
 
 SavLGPE::SavLGPE(u8* dt)
@@ -318,7 +317,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
     }
     else
     {
-        return emptyPkm()->clone();
+        return emptyPkm();
     }
 }
 
@@ -327,20 +326,25 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PB7>(data + boxOffset(box, slot), ekx);
 }
 
-void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
+        if (applyTrade)
+        {
+            trade(pk);
+        }
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
     }
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
+    return (bool)pk;
 }
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u32 off     = partyOffset(slot);
     u16 newSlot = partyBoxSlot(slot);
-    if (pk->encryptionConstant() == 0 && pk->species() == 0)
+    if (pk->species() == 0)
     {
         if (off != 0)
         {
@@ -376,9 +380,6 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
     PB7* pb7 = (PB7*)pk.get();
     if (pb7->egg() && !(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
     {
-        pb7->metDay(Configuration::getInstance().day());
-        pb7->metMonth(Configuration::getInstance().month());
-        pb7->metYear(Configuration::getInstance().year() - 2000);
         pb7->metLocation(30002);
     }
     else if (!(otName() == pb7->otName() && TID() == pb7->TID() && SID() == pb7->SID() && gender() == pb7->otGender()))
@@ -400,13 +401,12 @@ void SavLGPE::trade(std::shared_ptr<PKX> pk)
 
 std::shared_ptr<PKX> SavLGPE::emptyPkm() const
 {
-    static auto empty = std::make_shared<PB7>();
-    return empty;
+    return std::make_shared<PB7>();
 }
 
 std::string SavLGPE::boxName(u8 box) const
 {
-    return i18n::localize("BOX") + " " + std::to_string((int)box + 1);
+    return i18n::localize(Language(language()), "BOX") + " " + std::to_string((int)box + 1);
 }
 
 void SavLGPE::boxName(u8 box, const std::string& name)
@@ -580,7 +580,7 @@ int SavLGPE::dexSeen(void) const
     {
         for (int j = 0; j < 4; j++)
         {
-            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & BIT(i % 8))
+            if (data[PokeDex + 0x88 + 0x68 + brSize * j + i / 8] & (1 << (i % 8)))
             {
                 ret++;
                 break;
@@ -595,7 +595,7 @@ int SavLGPE::dexCaught(void) const
     int ret = 0;
     for (int i = 0; i < maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x88 + i / 8] & BIT(i % 8))
+        if (data[PokeDex + 0x88 + i / 8] & (1 << (i % 8)))
         {
             ret++;
         }
@@ -613,12 +613,11 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 return;
             }
-            auto pb7 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pb7 = std::make_unique<PB7>(data + boxOffset(box, slot), crypted, true);
             if (!crypted)
             {
                 pb7->encrypt();
             }
-            pkm(pb7, box, slot, false);
         }
     }
 }
@@ -1111,25 +1110,89 @@ std::map<Pouch, std::vector<int>> SavLGPE::validItems() const
                 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 900, 901, 902}}};
 }
 
-std::string SavLGPE::pouchName(Pouch pouch) const
+std::string SavLGPE::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case TM:
-            return i18n::localize("TMS");
+            return i18n::localize(lang, "TMS");
         case Candy:
-            return i18n::localize("CANDIES");
+            return i18n::localize(lang, "CANDIES");
         case ZCrystals:
-            return i18n::localize("ZCRYSTALS");
+            return i18n::localize(lang, "ZCRYSTALS");
         case Ball:
-            return i18n::localize("CATCHING_ITEMS");
+            return i18n::localize(lang, "CATCHING_ITEMS");
         case Battle:
-            return i18n::localize("BATTLE_ITEMS");
+            return i18n::localize(lang, "BATTLE_ITEMS");
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         default:
             return "";
     }
+}
+
+const std::set<int>& SavLGPE::availableItems(void) const
+{
+    static std::set<int> ret = {0, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903, 328, 329, 330, 331, 332,
+        333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360,
+        361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 50,
+        960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987,
+        988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012,
+        1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035,
+        1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 51, 53,
+        81, 82, 83, 84, 85, 849, 1, 2, 3, 4, 12, 164, 166, 168, 861, 862, 863, 864, 865, 866, 55, 56, 57, 58, 59, 60, 61, 62, 656, 659, 660, 661, 662,
+        663, 671, 672, 675, 676, 678, 679, 760, 762, 770, 773, 76, 77, 78, 79, 86, 87, 88, 89, 90, 91, 92, 93, 101, 102, 103, 113, 115, 121, 122, 123,
+        124, 125, 126, 127, 128, 442, 571, 632, 651, 795, 796, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894,
+        895, 896, 900, 901, 902};
+    return ret;
+}
+
+const std::set<int>& SavLGPE::availableMoves(void) const
+{
+    static std::set<int> ret = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+        32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
+        67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101,
+        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+        130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157,
+        158, 159, 160, 161, 162, 163, 164, 182, 188, 200, 224, 227, 231, 242, 243, 247, 252, 257, 261, 263, 269, 270, 276, 280, 281, 339, 347, 355,
+        364, 369, 389, 394, 398, 399, 403, 404, 405, 406, 417, 420, 430, 438, 446, 453, 483, 492, 499, 503, 504, 525, 529, 583, 585, 603, 605, 606,
+        607, 729, 730, 731, 733, 734, 735, 736, 737, 738, 739, 740, 742};
+    return ret;
+}
+
+const std::set<int>& SavLGPE::availableSpecies(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        for (int i = 1; i <= 151; i++)
+        {
+            ret.insert(i);
+        }
+        ret.insert(808);
+        ret.insert(809);
+    }
+    return ret;
+}
+
+const std::set<int>& SavLGPE::availableAbilities(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxAbility());
+    }
+    return ret;
+}
+
+const std::set<int>& SavLGPE::availableBalls(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxBall());
+    }
+    return ret;
 }

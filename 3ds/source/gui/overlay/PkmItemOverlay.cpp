@@ -31,10 +31,6 @@
 #include "loader.hpp"
 #include "utils.hpp"
 
-static constexpr auto stringComp = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-    return pair1.second < pair2.second;
-};
-
 namespace
 {
     int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
@@ -65,23 +61,30 @@ namespace
     }
 }
 
-PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
+PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
-    for (int i = 1; i <= TitleLoader::save->maxItem(); i++)
+    const std::set<int>& availableItems      = TitleLoader::save->availableItems();
+    for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
-        if (rawItems[i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[i].find("???") != std::string::npos)
-            continue;
-        else if (i >= 807 && i <= 835)
-            continue; // Bag Z-Crystals
-        else if (i >= 927 && i <= 932)
-            continue; // Bag Z-Crystals
-        items.push_back({i, rawItems[i]});
+        if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||
+            (*i >= 807 && *i <= 835) || (*i >= 927 && *i <= 932))
+            continue; // Invalid items and bag Z-Crystals
+        items.emplace_back(*i, rawItems[*i]);
     }
-    std::sort(items.begin(), items.end(), stringComp);
-    items.insert(items.begin(), {0, rawItems[0]});
+    std::sort(items.begin(), items.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        if (pair1.first == 0)
+        {
+            return pair2.first != 0;
+        }
+        if (pair2.first == 0)
+        {
+            return false;
+        }
+        return pair1.second < pair2.second;
+    });
     validItems = items;
 
     hid.update(items.size());
@@ -98,41 +101,42 @@ PkmItemOverlay::PkmItemOverlay(Screen& screen, std::shared_ptr<PKX> pkm)
             itemIndex--;
         }
     }
-    hid.select(index(items, i18n::item(Configuration::getInstance().language(), pkm->heldItem())));
-    searchButton = new ClickButton(75, 30, 170, 23,
+    hid.select(itemIndex);
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
-void PkmItemOverlay::draw() const
+void PkmItemOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void PkmItemOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < items.size())
         {
-            Gui::dynamicText(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                                 items[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
+                          items[hid.page() * hid.maxVisibleEntries() + i].second,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -154,21 +158,21 @@ void PkmItemOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        items.push_back(validItems[0]);
+        items.emplace_back(validItems[0]);
         for (size_t i = 1; i < validItems.size(); i++)
         {
             std::string itemName = validItems[i].second.substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                items.push_back(validItems[i]);
+                items.emplace_back(validItems[i]);
             }
         }
         oldSearchString = searchString;
@@ -188,12 +192,12 @@ void PkmItemOverlay::update(touchPosition* touch)
     if (downKeys & KEY_A)
     {
         pkm->heldItem((u16)items[hid.fullIndex()].first);
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

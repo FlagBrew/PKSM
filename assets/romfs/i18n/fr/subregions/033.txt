@@ -1,0 +1,19 @@
+0|—
+2|Francisco Morazán
+3|Atlántida
+4|Choluteca
+5|Colón
+6|Comayagua
+7|Copán
+8|Cortés
+9|El Paraíso
+10|Gracias a Dios
+11|Intibucá
+12|Islas de la Bahía
+13|La Paz
+14|Lempira
+15|Ocotepeque
+16|Olancho
+17|Santa Bárbara
+18|Valle
+19|Yoro

@@ -38,44 +38,44 @@ BagScreen::BagScreen()
     currentPouch = limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
     {
-        buttons.push_back(new Button(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
-            TitleLoader::save->pouchName(limits[i].first), FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(std::make_unique<Button>(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
+            TitleLoader::save->pouchName(Configuration::getInstance().language(), limits[i].first), FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(
-        new AccelButton(117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(std::make_unique<AccelButton>(
+        117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
     {
-        buttons.push_back(
-            new ClickButton(117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
+        buttons.push_back(std::make_unique<ClickButton>(
+            117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK));
     }
-    buttons.push_back(
-        new AccelButton(117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
+    buttons.push_back(std::make_unique<AccelButton>(
+        117, 225, 198, 30, [this]() { return clickIndex(7); }, ui_sheet_res_null_idx, "", FONT_SIZE_12, COLOR_BLACK, 10, 5));
     for (int i = 0; i < 7; i++)
     {
-        amountButtons.push_back(new AccelButton(249, 23 + i * 30, 13, 13,
+        amountButtons.push_back(std::make_unique<AccelButton>(249, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(false, i);
                 selectingPouch = false;
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, 0));
-        amountButtons.push_back(new ClickButton(262, 23 + i * 30, 37, 13,
+            ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, COLOR_BLACK));
+        amountButtons.push_back(std::make_unique<ClickButton>(262, 23 + i * 30, 37, 13,
             [this, i]() {
-                Gui::setNextKeyboardFunc([this, i]() { setCount(i); });
+                setCount(i);
                 selectingPouch = false;
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_res_null_idx, "", 0.0f, 0));
-        amountButtons.push_back(new AccelButton(299, 23 + i * 30, 13, 13,
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+        amountButtons.push_back(std::make_unique<AccelButton>(299, 23 + i * 30, 13, 13,
             [this, i]() {
                 editCount(true, i);
                 selectingPouch = false;
                 selectedItem   = i;
                 return false;
             },
-            ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, 0));
+            ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, COLOR_BLACK));
     }
 
     for (int i = 0; i < limits[0].second; i++)
@@ -89,48 +89,22 @@ BagScreen::BagScreen()
     }
 }
 
-BagScreen::~BagScreen()
+void BagScreen::drawTop() const
 {
-    for (auto button : buttons)
-    {
-        delete button;
-    }
-}
-
-static int bobPointer()
-{
-    static int currentBob = 0;
-    static bool up        = true;
-    if (up)
-    {
-        currentBob++;
-        if (currentBob >= 12)
-        {
-            up = false;
-        }
-    }
-    else
-    {
-        currentBob--;
-        if (currentBob <= 0)
-        {
-            up = true;
-        }
-    }
-    return currentBob / 4;
-}
-
-void BagScreen::draw() const
-{
-    C2D_SceneBegin(g_renderTargetTop);
-    Gui::backgroundTop(false);
+    Gui::sprite(ui_sheet_emulated_bg_top_yellow_idx, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
+    Gui::sprite(ui_sheet_bar_arc_top_red_idx, 0, 0);
+}
 
-    C2D_SceneBegin(g_renderTargetBottom);
-    C2D_DrawRectSolid(0, 0, 0.5f, 106, 240, COLOR_DARKBLUE);
-    C2D_DrawRectSolid(107, 0, 0.5f, 213, 240, COLOR_BLUE);
+void BagScreen::drawBottom() const
+{
+    Gui::sprite(ui_sheet_emulated_bg_bottom_yellow_idx, 0, 0);
+    Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
+    Gui::drawSolidRect(0, 0, 110, 240, COLOR_DARKYELLOW);
+    // Gui::drawSolidRect(107, 0, 213, 240, COLOR_BLUE);
 
-    for (auto button : buttons)
+    for (auto& button : buttons)
     {
         button->draw();
     }
@@ -148,20 +122,13 @@ void BagScreen::draw() const
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
-        // std::string print = i18n::item(Configuration::getInstance().language(), item->id());
-        // if (item->id() > 0)
-        // {
-        //     print += " x " + std::to_string((int)item->count());
-        // }
-        Gui::dynamicText(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
-            canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::item(Configuration::getInstance().language(), item->id()), 117 + 131 / 2, 30 + 30 * i, FONT_SIZE_12,
+            canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::CENTER);
         if (item->id() > 0)
         {
-            Gui::dynamicText(std::to_string((int)item->count()), 262 + 37 / 2, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12,
-                canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)item->count()), 262 + 37 / 2, 30 + 30 * i, FONT_SIZE_12,
+                canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER, TextPosY::CENTER);
         }
-        // Gui::dynamicText(print, 223, 20 + 30 * i, FONT_SIZE_12, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK :
-        // C2D_Color32(128, 128, 128, 255), TextPosX::CENTER, TextPosY::TOP);
     }
 
     u8 mod = 0;
@@ -178,7 +145,7 @@ void BagScreen::draw() const
         }
     }
 
-    int xMod = bobPointer();
+    int xMod = Gui::pointerBob();
 
     if (!selectingPouch)
     {
@@ -376,7 +343,7 @@ void BagScreen::update(touchPosition* touch)
             selectingPouch = false;
         }
     }
-    for (auto button : buttons)
+    for (auto& button : buttons)
     {
         button->update(touch);
     }
@@ -497,7 +464,7 @@ void BagScreen::editItem()
         }
     }
 
-    currentOverlay = std::make_unique<BagItemOverlay>(*this, items, currItemIndex, limits[currentPouch], firstItem + selectedItem, firstEmpty);
+    addOverlay<BagItemOverlay>(items, currItemIndex, limits[currentPouch], firstItem + selectedItem, firstEmpty);
 }
 
 void BagScreen::editCount(bool up, int selected)

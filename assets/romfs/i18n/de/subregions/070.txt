@@ -1,0 +1,29 @@
+0|—
+2|Sofia (Stadt)
+3|Sofia (Region)
+4|Blagoewgrad
+5|Plewen
+6|Widin
+7|Warna
+8|Burgas
+9|Dobritsch
+10|Gabrowo
+11|Chaskowo
+12|Jambol
+13|Kardschali
+14|Kjustendil
+15|Lowetsch
+16|Montana
+17|Pasardschik
+18|Pernik
+19|Plowdiw
+20|Rasgrad
+21|Russe
+22|Silistra
+23|Sliwen
+24|Smoljan
+25|Stara Sagora
+26|Schumen
+27|Targowischte
+28|Weliko Tarnowo
+29|Wraza

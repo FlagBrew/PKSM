@@ -29,16 +29,18 @@
 
 #include "Button.hpp"
 #include "HidVertical.hpp"
-#include "Overlay.hpp"
 #include "PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
 
-class LocationOverlay : public Overlay
+class LocationOverlay : public ReplaceableScreen
 {
 public:
-    LocationOverlay(Screen& screen, std::shared_ptr<PKX> pkm, bool met);
-    void draw() const override;
+    LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met);
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:

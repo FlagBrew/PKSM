@@ -1,0 +1,11 @@
+0|—
+2|Vilnius
+3|Alytus
+4|Kaunas
+5|Klaipėda
+6|Marijampolė
+7|Panevėžys
+8|Šiauliai
+9|Tauragė
+10|Telšiai
+11|Utena

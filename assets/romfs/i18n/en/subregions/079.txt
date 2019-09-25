@@ -1,0 +1,14 @@
+0|—
+2|Attica
+3|Central Greece
+4|Central Macedonia
+5|Crete
+6|East Macedonia and Thrace
+7|Epirus
+8|Ionian Islands
+9|North Aegean
+10|Peloponnese
+11|South Aegean
+12|Thessaly
+13|West Greece
+14|West Macedonia

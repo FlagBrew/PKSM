@@ -1,0 +1,84 @@
+0|—
+9|Moscou (ville)
+10|Adyguée
+11|Altaï (république)
+12|Altaï (kraï)
+13|Amour
+14|Arkhangelsk
+15|Astrakhan
+16|Bachkirie
+17|Belgorod
+18|Briansk
+19|Bouriatie
+20|Tchétchénie
+21|Tcheliabinsk
+22|Tchoukotka
+23|Tchouvachie
+24|Daguestan
+25|Ingouchie
+26|Irkoutsk
+27|Ivanovo
+28|Kabardino-Balkarie
+29|Kaliningrad
+30|Kalmoukie
+31|Kalouga
+32|Kamtchatka
+33|Karatchaïévo-Tcherkessie
+34|Carélie
+35|Kemerovo
+36|Khabarovsk
+37|Khakassie
+38|Khantys-Mansis
+39|Kirov
+40|Komis
+41|Kostroma
+42|Krasnodar
+43|Krasnoïarsk
+44|Kourgan
+45|Koursk
+46|Léningrad
+47|Lipetsk
+48|Magadan
+49|Maris
+50|Mordovie
+51|Moscou (oblast)
+52|Mourmansk
+53|Nénétsie
+54|Nijni Novgorod
+55|Novgorod
+56|Novossibirsk
+57|Omsk
+58|Orenbourg
+59|Orel
+60|Penza
+61|Perm
+62|Primorie
+63|Pskov
+64|Rostov
+65|Riazan
+66|Sakha (Iakoutie)
+67|Sakhaline
+68|Samara
+69|Saint-Pétersbourg
+70|Saratov
+71|Ossétie-du-Nord-Alanie
+72|Smolensk
+73|Stavropol
+74|Sverdlovsk
+75|Tambov
+76|Tatarstan
+77|Tomsk
+78|Toula
+79|Tver
+80|Tioumen
+81|Touva
+82|Oudmourtie
+83|Oulianovsk
+84|Vladimir
+85|Volgograd
+86|Vologda
+87|Voronej
+88|Iamalie
+89|Iaroslavl
+90|Oblast autonome juif
+91|Transbaïkalie

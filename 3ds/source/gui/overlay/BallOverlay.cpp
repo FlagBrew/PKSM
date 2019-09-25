@@ -25,56 +25,75 @@
  */
 
 #include "BallOverlay.hpp"
-#include "Configuration.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 
-void BallOverlay::draw() const
+BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(30, 6),
+      balls(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end())
 {
-    C2D_SceneBegin(g_renderTargetBottom);
-    dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    std::sort(balls.begin(), balls.end());
+    hid.update(24);
+    auto index = std::find(balls.begin(), balls.end(), pkm->ball());
+    if (index != balls.end())
+    {
+        hid.select(std::distance(balls.begin(), index));
+    }
+    else
+    {
+        hid.select(0);
+    }
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void BallOverlay::drawBottom() const
+{
+    dim();
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
+
+void BallOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
     int x = (hid.index() % 6) * 67;
     int y = (hid.index() / 6) * 48;
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 47, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 66, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 65, y, 0.5f, 1, 47, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 46, 0.5f, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 66, 47, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 65, y, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 46, 66, 1, COLOR_YELLOW);
 
-    for (int y = 0; y < 5; y++)
+    for (size_t y = 0; y < 5; y++)
     {
-        for (int x = 0; x < 6; x++)
+        for (size_t x = 0; x < 6; x++)
         {
-            if (x + y * 6 >= TitleLoader::save->maxBall())
+            if (x + y * 6 >= balls.size())
             {
                 break;
             }
-            Gui::ball(x + y * 6 + 1, x * 67 + 24, y * 48 + 8);
-            Gui::dynamicText(i18n::ball(Configuration::getInstance().language(), x + y * 6), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, FONT_SIZE_9,
-                COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::ball(balls[x + y * 6], x * 67 + 24, y * 48 + 8);
+            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6] - 1), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
 
 void BallOverlay::update(touchPosition* touch)
 {
-    hid.update(TitleLoader::save->maxBall());
+    hid.update(balls.size());
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->ball((u8)hid.fullIndex() + 1);
-        screen.removeOverlay();
+        pkm->ball(balls[hid.fullIndex()]);
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

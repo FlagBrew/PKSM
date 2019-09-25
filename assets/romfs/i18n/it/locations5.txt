@@ -1,281 +1,281 @@
-0000|－－－－－－－－－－
-0001|Zona Misteriosa
-0002|Luogo Remoto
-0003|di
-0004|Soffiolieve
-0005|Quattroventi
-0006|Levantopoli
-0007|Zefiropoli
-0008|Austropoli
-0009|Sciroccopoli
-000a|Libecciopoli
-000b|Ponentopoli
-000c|Mistralopoli
-000d|Boreduopoli
-000e|Percorso 1
-000f|Percorso 2
-0010|Percorso 3
-0011|Percorso 4
-0012|Percorso 5
-0013|Percorso 6
-0014|Percorso 7
-0015|Percorso 8
-0016|Percorso 9
-0017|Percorso 10
-0018|Percorso 11
-0019|Percorso 12
-001a|Percorso 13
-001b|Percorso 14
-001c|Percorso 15
-001d|Percorso 16
-001e|Percorso 17
-001f|Percorso 18
-0020|Cantiere dei Sogni
-0021|Bosco Girandola
-0022|Deserto della Quiete
-0023|Castello Sepolto
-0024|PWT
-0025|Cava Pietrelettrica
-0026|Monte Vite
-0027|Torre Dragospira
-0028|Via Vittoria
-0029|Fortebrezza
-002a|Spiraria
-002b|Roteolia
-002c|Lega Pokémon
-002d|Palazzo di N
-002e|Nave Reale Unima
-002f|Staz. Ruotadentata
-0030|Metrò Lotta
-0031|Teatro Musical
-0032|Città Nera
-0033|Foresta Bianca
-0034|Torre Unione
-0035|Falda Sotterranea
-0036|Cava Ponentopoli
-0037|Radura Filosofia
-0038|Torre Cielo
-0039|Palude Mistralopoli
-003a|Magazzini
-003b|Caverna Ascesi
-003c|Centro Pokétrasporto
-003d|Fossa Gigante
-003e|Isola Libertà
-003f|Laboratorio P&P
-0040|Ponte Freccialuce
-0041|Ponte Libecciopoli
-0042|Ponte Propulsione
-0043|Ponte Villaggio
-0044|Ponte Meraviglie
-0045|Intramondo
-0046|Tempio Abbondanza
-0047|Baia Spiraria
-0048|Bosco Smarrimento
-0049|Sala del Cimento
-004a|Sala della Guida
-004b|Bosco Intramondo
-004c|Sciroccopoli
-004d|Libecciopoli
-004e|Ponentopoli
-004f|Mistralopoli
-0050|Boreduopoli
-0051|Soffiolieve
-0052|Foresta Bianca
-0053|Città Nera
-0054|Deposito Frigo
-0055|Cava Pietrelettrica
-0056|Monte Vite
-0057|Torre Dragospira
-0058|Fossa Gigante
-0059|Ponte Libecciopoli
-005a|Ponte Propulsione
-005b|Ponte Villaggio
-005c|Ponte Meraviglie
-005d|Percorso 5
-005e|Percorso 6
-005f|Percorso 7
-0060|Percorso 8
-0061|Percorso 9
-0062|Percorso 11
-0063|Percorso 12
-0064|Percorso 13
-0065|Percorso 14
-0066|Percorso 15
-0067|Percorso 16
-0068|Fortebrezza
-0069|Spiraria
-006a|Varco Quattroventi
-006b|Varco Spiraria
-006c|Varco Zefiropoli
-006d|Varco Austropoli
-006e|Varco Sciroccopoli
-006f|Varco Boreduopoli
-0070|Varco Nero
-0071|Varco Bianco
-0072|Varco Ponte
-0073|Varco Percorso
-0074|Rovine degli Abissi
-0075|Alisopoli
-0076|Zondopoli
-0077|Grecalopoli
-0078|Pokéwood
-0079|Galleria Solidarietà
-007a|Venturia
-007b|Poggiovento
-007c|Percorso 19
-007d|Percorso 20
-007e|Percorso 21
-007f|Percorso 22
-0080|Percorso 23
-0081|Fogne di Austropoli
-0082|Fattoria di Venturia
-0083|Cantiere Zondopoli
-0084|Monte Antipodi
-0085|Casa Bizzarra
-0086|Via Vittoria
-0087|Fregata Plasma
-0088|Antico Sentiero
-0089|Passo di Rafan
-008a|－－－－－－－－－－
-008b|Antro Albero Bianco
-008c|Grattacielo Nero
-008d|Grotta Costiera
-008e|Cava della Mente
-008f|Meandro Nascosto
-0090|Tunnel Marino
-0091|Varco Zondopoli
-0092|Varco Alisopoli
-0093|Riserva Naturale
-0094|Ufficio Premi
-0095|Rovine Sotterranee
-0096|Sala Picco
-0097|Sala Iceberg
-0098|Sala Ferro
-0099|Bosco del Giuramento
-7531|－－－－－－－－－－
-7532|Scambio in link
-7533|Scambio in link
-7534|Kanto
-7535|Johto
-7536|Hoenn
-7537|Sinnoh
-7538|Terra Lontana
-7539|－－－－－－－－－－
-753a|－－－－－－－－－－
-753b|－－－－－－－－－－
-753c|－－－－－－－－－－
-753d|－－－－－－－－－－
-753e|Intramondo
-753f|RAdar Pokémon
-9c41|Luogo grazioso
-9c42|Luogo Remoto
-9c43|Film Pokémon
-9c44|Film Pokémon 10
-9c45|Film Pokémon 11
-9c46|Film Pokémon 12
-9c47|Film Pokémon 13
-9c48|Film Pokémon 14
-9c49|Film Pokémon 15
-9c4a|Film Pokémon 16
-9c4b|Film Pokémon 17
-9c4c|Film Pokémon 18
-9c4d|Film Pokémon 19
-9c4e|Film Pokémon 20
-9c4f|Centro Pokémon
-9c50|Cartone Pokémon
-9c51|CP Tokyo
-9c52|CP Osaka
-9c53|CP Fukuoka
-9c54|CP Nagoya
-9c55|CP Sapporo
-9c56|CP Yokohama
-9c57|WCS
-9c58|WCS 2010
-9c59|WCS 2011
-9c5a|WCS 2012
-9c5b|WCS 2013
-9c5c|WCS 2014
-9c5d|WCS 2015
-9c5e|WCS 2016
-9c5f|WCS 2017
-9c60|WCS 2018
-9c61|WCS 2019
-9c62|WCS 2020
-9c63|Worlds
-9c64|Worlds 2010
-9c65|Worlds 2011
-9c66|Worlds 2012
-9c67|Worlds 2013
-9c68|Worlds 2014
-9c69|Worlds 2015
-9c6a|Worlds 2016
-9c6b|Worlds 2017
-9c6c|Worlds 2018
-9c6d|Worlds 2019
-9c6e|Worlds 2020
-9c6f|Evento di Gioco
-9c70|Evento di Gioco 2010
-9c71|Evento di Gioco 2011
-9c72|Evento di Gioco 2012
-9c73|Evento di Gioco 2013
-9c74|Evento di Gioco 2014
-9c75|Evento di Gioco 2015
-9c76|Evento di Gioco 2016
-9c77|Evento di Gioco 2017
-9c78|Evento di Gioco 2018
-9c79|Evento di Gioco 2019
-9c7a|Evento di Gioco 2020
-9c7b|Evento Pokémon
-9c7c|Gara di Lotta
-9c7d|Evento videoludico
-9c7e|Pokémon Fan Club
-9c7f|Pokémon Sunday
-9c80|Sfida in Piazza
-9c81|Sfida di Lotta
-9c82|Campo Allenatori
-9c83|Tour di Lotta
-9c84|Concerto
-9c85|Dono Wi-Fi
-9c86|Pokémon Ranger
-9c87|Federazione Ranger
-9c88|PBR
-9c89|PDW
-9c8a|Even. Pokémon 10
-9c8b|Even. Pokémon 11
-9c8c|Even. Pokémon 12
-9c8d|Even. Pokémon 13
-9c8e|Even. Pokémon 14
-9c8f|Even. Pokémon 15
-9c90|Even. Pokémon 16
-9c91|Even. Pokémon 17
-9c92|Even. Pokémon 18
-9c93|Even. Pokémon 19
-9c94|Even. Pokémon 20
-9c95|Pokémon Festa
-9c96|Pokémon Festa 10
-9c97|Pokémon Festa 11
-9c98|Pokémon Festa 12
-9c99|Pokémon Festa 13
-9c9a|Pokémon Festa 14
-9c9b|Pokémon Festa 15
-9c9c|Pokémon Festa 16
-9c9d|Pokémon Festa 17
-9c9e|Pokémon Festa 18
-9c9f|Pokémon Festa 19
-9ca0|Pokémon Festa 20
-9ca1|POKÉPARK
-9ca2|POKÉPARK 10
-9ca3|POKÉPARK 11
-9ca4|POKÉPARK 12
-9ca5|POKÉPARK 13
-9ca6|POKÉPARK 14
-9ca7|POKÉPARK 15
-9ca8|POKÉPARK 16
-9ca9|POKÉPARK 17
-9caa|POKÉPARK 18
-9cab|POKÉPARK 19
-9cac|POKÉPARK 20
-9cad|Luogo Evento
-ea61|Persona lontana
-ea62|Coppia Pensione
-ea63|AllevaPKMN
+0x0000|－－－－－－－－－－
+0x0001|Zona Misteriosa
+0x0002|Luogo Remoto
+0x0003|di
+0x0004|Soffiolieve
+0x0005|Quattroventi
+0x0006|Levantopoli
+0x0007|Zefiropoli
+0x0008|Austropoli
+0x0009|Sciroccopoli
+0x000a|Libecciopoli
+0x000b|Ponentopoli
+0x000c|Mistralopoli
+0x000d|Boreduopoli
+0x000e|Percorso 1
+0x000f|Percorso 2
+0x0010|Percorso 3
+0x0011|Percorso 4
+0x0012|Percorso 5
+0x0013|Percorso 6
+0x0014|Percorso 7
+0x0015|Percorso 8
+0x0016|Percorso 9
+0x0017|Percorso 10
+0x0018|Percorso 11
+0x0019|Percorso 12
+0x001a|Percorso 13
+0x001b|Percorso 14
+0x001c|Percorso 15
+0x001d|Percorso 16
+0x001e|Percorso 17
+0x001f|Percorso 18
+0x0020|Cantiere dei Sogni
+0x0021|Bosco Girandola
+0x0022|Deserto della Quiete
+0x0023|Castello Sepolto
+0x0024|PWT
+0x0025|Cava Pietrelettrica
+0x0026|Monte Vite
+0x0027|Torre Dragospira
+0x0028|Via Vittoria
+0x0029|Fortebrezza
+0x002a|Spiraria
+0x002b|Roteolia
+0x002c|Lega Pokémon
+0x002d|Palazzo di N
+0x002e|Nave Reale Unima
+0x002f|Staz. Ruotadentata
+0x0030|Metrò Lotta
+0x0031|Teatro Musical
+0x0032|Città Nera
+0x0033|Foresta Bianca
+0x0034|Torre Unione
+0x0035|Falda Sotterranea
+0x0036|Cava Ponentopoli
+0x0037|Radura Filosofia
+0x0038|Torre Cielo
+0x0039|Palude Mistralopoli
+0x003a|Magazzini
+0x003b|Caverna Ascesi
+0x003c|Centro Pokétrasporto
+0x003d|Fossa Gigante
+0x003e|Isola Libertà
+0x003f|Laboratorio P&P
+0x0040|Ponte Freccialuce
+0x0041|Ponte Libecciopoli
+0x0042|Ponte Propulsione
+0x0043|Ponte Villaggio
+0x0044|Ponte Meraviglie
+0x0045|Intramondo
+0x0046|Tempio Abbondanza
+0x0047|Baia Spiraria
+0x0048|Bosco Smarrimento
+0x0049|Sala del Cimento
+0x004a|Sala della Guida
+0x004b|Bosco Intramondo
+0x004c|Sciroccopoli
+0x004d|Libecciopoli
+0x004e|Ponentopoli
+0x004f|Mistralopoli
+0x0050|Boreduopoli
+0x0051|Soffiolieve
+0x0052|Foresta Bianca
+0x0053|Città Nera
+0x0054|Deposito Frigo
+0x0055|Cava Pietrelettrica
+0x0056|Monte Vite
+0x0057|Torre Dragospira
+0x0058|Fossa Gigante
+0x0059|Ponte Libecciopoli
+0x005a|Ponte Propulsione
+0x005b|Ponte Villaggio
+0x005c|Ponte Meraviglie
+0x005d|Percorso 5
+0x005e|Percorso 6
+0x005f|Percorso 7
+0x0060|Percorso 8
+0x0061|Percorso 9
+0x0062|Percorso 11
+0x0063|Percorso 12
+0x0064|Percorso 13
+0x0065|Percorso 14
+0x0066|Percorso 15
+0x0067|Percorso 16
+0x0068|Fortebrezza
+0x0069|Spiraria
+0x006a|Varco Quattroventi
+0x006b|Varco Spiraria
+0x006c|Varco Zefiropoli
+0x006d|Varco Austropoli
+0x006e|Varco Sciroccopoli
+0x006f|Varco Boreduopoli
+0x0070|Varco Nero
+0x0071|Varco Bianco
+0x0072|Varco Ponte
+0x0073|Varco Percorso
+0x0074|Rovine degli Abissi
+0x0075|Alisopoli
+0x0076|Zondopoli
+0x0077|Grecalopoli
+0x0078|Pokéwood
+0x0079|Galleria Solidarietà
+0x007a|Venturia
+0x007b|Poggiovento
+0x007c|Percorso 19
+0x007d|Percorso 20
+0x007e|Percorso 21
+0x007f|Percorso 22
+0x0080|Percorso 23
+0x0081|Fogne di Austropoli
+0x0082|Fattoria di Venturia
+0x0083|Cantiere Zondopoli
+0x0084|Monte Antipodi
+0x0085|Casa Bizzarra
+0x0086|Via Vittoria
+0x0087|Fregata Plasma
+0x0088|Antico Sentiero
+0x0089|Passo di Rafan
+0x008a|－－－－－－－－－－
+0x008b|Antro Albero Bianco
+0x008c|Grattacielo Nero
+0x008d|Grotta Costiera
+0x008e|Cava della Mente
+0x008f|Meandro Nascosto
+0x0090|Tunnel Marino
+0x0091|Varco Zondopoli
+0x0092|Varco Alisopoli
+0x0093|Riserva Naturale
+0x0094|Ufficio Premi
+0x0095|Rovine Sotterranee
+0x0096|Sala Picco
+0x0097|Sala Iceberg
+0x0098|Sala Ferro
+0x0099|Bosco del Giuramento
+0x7531|－－－－－－－－－－
+0x7532|Scambio in link
+0x7533|Scambio in link
+0x7534|Kanto
+0x7535|Johto
+0x7536|Hoenn
+0x7537|Sinnoh
+0x7538|Terra Lontana
+0x7539|－－－－－－－－－－
+0x753a|－－－－－－－－－－
+0x753b|－－－－－－－－－－
+0x753c|－－－－－－－－－－
+0x753d|－－－－－－－－－－
+0x753e|Intramondo
+0x753f|RAdar Pokémon
+0x9c41|Luogo grazioso
+0x9c42|Luogo Remoto
+0x9c43|Film Pokémon
+0x9c44|Film Pokémon 10
+0x9c45|Film Pokémon 11
+0x9c46|Film Pokémon 12
+0x9c47|Film Pokémon 13
+0x9c48|Film Pokémon 14
+0x9c49|Film Pokémon 15
+0x9c4a|Film Pokémon 16
+0x9c4b|Film Pokémon 17
+0x9c4c|Film Pokémon 18
+0x9c4d|Film Pokémon 19
+0x9c4e|Film Pokémon 20
+0x9c4f|Centro Pokémon
+0x9c50|Cartone Pokémon
+0x9c51|CP Tokyo
+0x9c52|CP Osaka
+0x9c53|CP Fukuoka
+0x9c54|CP Nagoya
+0x9c55|CP Sapporo
+0x9c56|CP Yokohama
+0x9c57|WCS
+0x9c58|WCS 2010
+0x9c59|WCS 2011
+0x9c5a|WCS 2012
+0x9c5b|WCS 2013
+0x9c5c|WCS 2014
+0x9c5d|WCS 2015
+0x9c5e|WCS 2016
+0x9c5f|WCS 2017
+0x9c60|WCS 2018
+0x9c61|WCS 2019
+0x9c62|WCS 2020
+0x9c63|Worlds
+0x9c64|Worlds 2010
+0x9c65|Worlds 2011
+0x9c66|Worlds 2012
+0x9c67|Worlds 2013
+0x9c68|Worlds 2014
+0x9c69|Worlds 2015
+0x9c6a|Worlds 2016
+0x9c6b|Worlds 2017
+0x9c6c|Worlds 2018
+0x9c6d|Worlds 2019
+0x9c6e|Worlds 2020
+0x9c6f|Evento di Gioco
+0x9c70|Evento di Gioco 2010
+0x9c71|Evento di Gioco 2011
+0x9c72|Evento di Gioco 2012
+0x9c73|Evento di Gioco 2013
+0x9c74|Evento di Gioco 2014
+0x9c75|Evento di Gioco 2015
+0x9c76|Evento di Gioco 2016
+0x9c77|Evento di Gioco 2017
+0x9c78|Evento di Gioco 2018
+0x9c79|Evento di Gioco 2019
+0x9c7a|Evento di Gioco 2020
+0x9c7b|Evento Pokémon
+0x9c7c|Gara di Lotta
+0x9c7d|Evento videoludico
+0x9c7e|Pokémon Fan Club
+0x9c7f|Pokémon Sunday
+0x9c80|Sfida in Piazza
+0x9c81|Sfida di Lotta
+0x9c82|Campo Allenatori
+0x9c83|Tour di Lotta
+0x9c84|Concerto
+0x9c85|Dono Wi-Fi
+0x9c86|Pokémon Ranger
+0x9c87|Federazione Ranger
+0x9c88|PBR
+0x9c89|PDW
+0x9c8a|Even. Pokémon 10
+0x9c8b|Even. Pokémon 11
+0x9c8c|Even. Pokémon 12
+0x9c8d|Even. Pokémon 13
+0x9c8e|Even. Pokémon 14
+0x9c8f|Even. Pokémon 15
+0x9c90|Even. Pokémon 16
+0x9c91|Even. Pokémon 17
+0x9c92|Even. Pokémon 18
+0x9c93|Even. Pokémon 19
+0x9c94|Even. Pokémon 20
+0x9c95|Pokémon Festa
+0x9c96|Pokémon Festa 10
+0x9c97|Pokémon Festa 11
+0x9c98|Pokémon Festa 12
+0x9c99|Pokémon Festa 13
+0x9c9a|Pokémon Festa 14
+0x9c9b|Pokémon Festa 15
+0x9c9c|Pokémon Festa 16
+0x9c9d|Pokémon Festa 17
+0x9c9e|Pokémon Festa 18
+0x9c9f|Pokémon Festa 19
+0x9ca0|Pokémon Festa 20
+0x9ca1|POKÉPARK
+0x9ca2|POKÉPARK 10
+0x9ca3|POKÉPARK 11
+0x9ca4|POKÉPARK 12
+0x9ca5|POKÉPARK 13
+0x9ca6|POKÉPARK 14
+0x9ca7|POKÉPARK 15
+0x9ca8|POKÉPARK 16
+0x9ca9|POKÉPARK 17
+0x9caa|POKÉPARK 18
+0x9cab|POKÉPARK 19
+0x9cac|POKÉPARK 20
+0x9cad|Luogo Evento
+0xea61|Persona lontana
+0xea62|Coppia Pensione
+0xea63|AllevaPKMN

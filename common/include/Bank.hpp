@@ -28,10 +28,7 @@
 #define BANK_HPP
 
 #include "Sav.hpp"
-
-extern "C" {
 #include "sha256.h"
-}
 
 class Bank
 {
@@ -43,6 +40,7 @@ public:
     void resize(size_t boxes);
     void load(int maxBoxes);
     bool save() const;
+    bool saveWithoutBackup() const;
     bool backup() const;
     std::string boxName(int box) const;
     std::pair<std::string, std::string> paths() const;
@@ -57,7 +55,7 @@ private:
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
     void createJSON();
     void createBank(int maxBoxes);
-    void convert();
+    void convertFromBankBin();
     struct BankHeader
     {
         const char MAGIC[8];
@@ -73,6 +71,7 @@ private:
     nlohmann::json boxNames;
     size_t size;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
+    mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     mutable bool needsCheck = false;
     std::string bankName;
 };

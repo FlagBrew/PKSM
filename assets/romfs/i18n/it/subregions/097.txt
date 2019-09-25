@@ -1,0 +1,17 @@
+0|—
+2|Masovia
+3|Bassa Slesia
+4|Cuiavia-Pomerania
+5|Łódź
+6|Lublino
+7|Lebus
+8|Piccola Polonia
+9|Opole
+10|Precarpazi
+11|Podlachia
+12|Pomerania
+13|Slesia
+14|Santacroce
+15|Varmia-Masuria
+16|Grande Polonia
+17|Pomerania Occidentale

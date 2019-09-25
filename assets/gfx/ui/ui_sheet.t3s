@@ -10,8 +10,6 @@ bar_bottom_red.png
 bar_boxname_empty.png
 bar_boxname_with_arrows.png
 bg_bottom_greyscale.png
-bg_stripe_bottom.png
-bg_stripe_top.png
 bg_style_bottom.png
 bg_style_top.png
 bg_top_greyscale.png
@@ -26,6 +24,9 @@ button_swap_boxes.png
 button_trainer_info.png
 button_wireless.png
 button_wireless_no_y.png
+checkbox_blank.png
+checkbox_off.png
+checkbox_on.png
 eventmenu_bar_selected.png
 eventmenu_bar_unselected.png
 eventmenu_page_indicator.png
@@ -34,6 +35,7 @@ gameselector_cart.png
 gameselector_savebox.png
 gameselector_twlcart.png
 gameselector_unknown.png
+home_blocked.png
 icon_bag.png
 icon_credits.png
 icon_editor.png
@@ -67,6 +69,11 @@ part_mtx_15x16.png
 part_mtx_4x4.png
 part_mtx_5x6.png
 part_mtx_5x8.png
+pkrs_chn.png
+pkrs_cured.png
+pkrs_eng.png
+pkrs_jpn.png
+pkrs_rus.png
 point_big.png
 point_small.png
 pointer_arrow.png
@@ -85,6 +92,7 @@ stripe_stats_move_row.png
 stripe_wondercard_info.png
 textbox_event_name.png
 textbox_hidden_power.png
+textbox_legal.png
 textbox_name_bottom.png
 textbox_name_top.png
 textbox_pksm.png

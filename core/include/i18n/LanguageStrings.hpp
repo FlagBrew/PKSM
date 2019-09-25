@@ -27,11 +27,12 @@
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
+#include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
 #include "json.hpp"
-#include "types.h"
 #include <algorithm>
+#include <stdio.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -50,7 +51,8 @@ enum Language
     TW,
     NL,
     PT,
-    RU
+    RU,
+    RO
 };
 
 class LanguageStrings
@@ -70,19 +72,59 @@ protected:
     std::map<u16, std::string> locations6;
     std::map<u16, std::string> locations7;
     std::map<u16, std::string> locationsLGPE;
+    std::map<u8, std::string> countries;
+    std::map<u8, std::map<u8, std::string>> subregions;
     nlohmann::json gui;
 
-    void load(Language lang, const std::string name, std::vector<std::string>& array);
-    void loadMap(Language lang, const std::string name, std::map<u16, std::string>& map);
-    void loadGui(Language lang);
+    static void load(Language lang, const std::string& name, std::vector<std::string>& array);
+    template <typename T>
+    static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
+    {
+        static constexpr const char* base = I18N_PATH;
+        std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+
+        std::string tmp;
+        FILE* values = fopen(path.c_str(), "rt");
+        if (values)
+        {
+            if (ferror(values))
+            {
+                fclose(values);
+                return;
+            }
+            char* data  = (char*)malloc(128);
+            size_t size = 0;
+            while (!feof(values) && !ferror(values))
+            {
+                size = std::max(size, (size_t)128);
+                if (__getline(&data, &size, values) >= 0)
+                {
+                    tmp = std::string(data);
+                    tmp = tmp.substr(0, tmp.find('\n'));
+                    // 0 automatically deduces the base: 0x prefix makes it hexadecimal, 0 prefix makes it octal
+                    T val    = std::stoi(tmp.substr(0, tmp.find('|')), 0, 0);
+                    map[val] = tmp.substr(0, tmp.find('\r')).substr(tmp.find('|') + 1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            fclose(values);
+            free(data);
+        }
+    }
+    static void load(Language lang, const std::string& name, nlohmann::json& json);
 
 public:
     LanguageStrings(Language lang);
-    std::string folder(Language lang) const;
+    static std::string folder(Language lang);
 
     const std::vector<std::string>& rawItems() const;
     const std::vector<std::string>& rawMoves() const;
     const std::map<u16, std::string>& locations(Generation g) const;
+    const std::map<u8, std::string>& rawCountries() const;
+    const std::map<u8, std::string>& rawSubregions(u8 country) const;
     size_t numGameStrings() const;
 
     const std::string& ability(u8 v) const;
@@ -95,6 +137,8 @@ public:
     const std::string& form(u16 species, u8 form, Generation generation) const;
     const std::string& location(u16 v, Generation generation) const;
     const std::string& game(u8 v) const;
+    const std::string& subregion(u8 country, u8 v) const;
+    const std::string& country(u8 v) const;
 
     const std::string& localize(const std::string& v) const;
 };

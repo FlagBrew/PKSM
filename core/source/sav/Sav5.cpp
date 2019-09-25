@@ -100,11 +100,11 @@ void Sav5::language(u8 v)
 
 std::string Sav5::otName(void) const
 {
-    return StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF'));
 }
 void Sav5::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, Trainer1 + 0x4, 8, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
 }
 
 u32 Sav5::money(void) const
@@ -118,11 +118,11 @@ void Sav5::money(u32 v)
 
 u32 Sav5::BP(void) const
 {
-    return *(u32*)(data + BattleSubway);
+    return *(u16*)(data + BattleSubway);
 }
 void Sav5::BP(u32 v)
 {
-    *(u32*)(data + BattleSubway) = v;
+    *(u16*)(data + BattleSubway) = v;
 }
 
 u8 Sav5::badges(void) const
@@ -131,7 +131,7 @@ u8 Sav5::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & BIT(i) ? 1 : 0;
+        ret += badgeBits & (1 << i) ? 1 : 0;
     }
     return ret;
 }
@@ -183,16 +183,14 @@ u32 Sav5::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
 {
-    u8 buf[220];
-    std::copy(data + partyOffset(slot), data + partyOffset(slot) + 220, buf);
-    return std::make_shared<PK5>(buf, true, true);
+    return std::make_shared<PK5>(data + partyOffset(slot), true, true);
 }
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
     u8 buf[220] = {0};
     std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true);
+    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
 
     if (pk->getLength() != 220)
     {
@@ -211,29 +209,28 @@ void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
 std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
 {
-    u8 buf[136];
-    std::copy(data + boxOffset(box, slot), data + boxOffset(box, slot) + 136, buf);
-    return std::make_shared<PK5>(buf, ekx);
+    return std::make_shared<PK5>(data + boxOffset(box, slot), ekx);
 }
 
-void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    transfer(pk);
-    if (applyTrade)
+    pk = transfer(pk);
+    if (pk)
     {
-        trade(pk);
-    }
+        if (applyTrade)
+        {
+            trade(pk);
+        }
 
-    std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+    }
+    return (bool)pk;
 }
 
 void Sav5::trade(std::shared_ptr<PKX> pk)
 {
     if (pk->egg() && (otName() != pk->otName() || TID() != pk->TID() || SID() != pk->SID() || gender() != pk->otGender()))
     {
-        pk->metDay(Configuration::getInstance().day());
-        pk->metMonth(Configuration::getInstance().month());
-        pk->metYear(Configuration::getInstance().year() - 2000);
         pk->metLocation(30003);
     }
 }
@@ -244,12 +241,11 @@ void Sav5::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::shared_ptr<PKX> pk5 = pkm(box, slot, crypted);
+            std::unique_ptr<PKX> pk5 = std::make_unique<PK5>(data + boxOffset(box, slot), crypted, false, true);
             if (!crypted)
             {
                 pk5->encrypt();
             }
-            pkm(pk5, box, slot, false);
         }
     }
 }
@@ -384,13 +380,14 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
 
 int Sav5::dexSeen(void) const
 {
-    static constexpr int brSize = 0x54;
-    int ret                     = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    int ret = 0;
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        for (int j = 1; j <= 4; j++) // All seen flags: gender & shinies
+        int bitIndex = (i - 1) & 7;
+        for (int j = 0; j < 4; j++) // All seen flags: gender & shinies
         {
-            if (data[PokeDex + 0x4 + (brSize * j) + i / 8] & BIT(i % 8))
+            int ofs = PokeDex + (0x5C + (j * 0x54)) + ((i - 1) >> 3);
+            if ((data[ofs] >> bitIndex & 1) != 0)
             {
                 ret++;
                 break;
@@ -403,9 +400,11 @@ int Sav5::dexSeen(void) const
 int Sav5::dexCaught(void) const
 {
     int ret = 0;
-    for (int i = 0; i < maxSpecies(); i++)
+    for (int i = 1; i <= maxSpecies(); i++)
     {
-        if (data[PokeDex + 0x8 + i / 8] & BIT(i % 8))
+        int bitIndex = (i - 1) & 7;
+        int ofs      = PokeDex + 0x8 + ((i - 1) >> 3);
+        if ((data[ofs] >> bitIndex & 1) != 0)
         {
             ret++;
         }
@@ -424,12 +423,12 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 
 std::string Sav5::boxName(u8 box) const
 {
-    return StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF');
+    return StringUtils::transString45(StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
 }
 
 void Sav5::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, name, PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
+    StringUtils::setString(data, StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
 }
 
 u8 Sav5::partyCount(void) const
@@ -443,8 +442,7 @@ void Sav5::partyCount(u8 v)
 
 std::shared_ptr<PKX> Sav5::emptyPkm() const
 {
-    static auto empty = std::make_shared<PK5>();
-    return empty;
+    return std::make_shared<PK5>();
 }
 
 int Sav5::emptyGiftLocation(void) const
@@ -473,20 +471,20 @@ int Sav5::emptyGiftLocation(void) const
     return !empty ? 11 : t;
 }
 
-std::vector<MysteryGift::giftData> Sav5::currentGifts(void) const
+std::vector<Sav::giftData> Sav5::currentGifts(void) const
 {
-    std::vector<MysteryGift::giftData> ret;
+    std::vector<Sav::giftData> ret;
     u8* wonderCards = data + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
-                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35)});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
+                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35));
         }
         else
         {
-            ret.push_back({StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1});
+            ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "", -1, -1, -1);
         }
     }
     return ret;
@@ -557,21 +555,71 @@ std::vector<std::pair<Pouch, int>> Sav5::pouches() const
     return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27}, {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
 }
 
-std::string Sav5::pouchName(Pouch pouch) const
+std::string Sav5::pouchName(Language lang, Pouch pouch) const
 {
     switch (pouch)
     {
         case NormalItem:
-            return i18n::localize("ITEMS");
+            return i18n::localize(lang, "ITEMS");
         case KeyItem:
-            return i18n::localize("KEY_ITEMS");
+            return i18n::localize(lang, "KEY_ITEMS");
         case TM:
-            return i18n::localize("TMHM");
+            return i18n::localize(lang, "TMHM");
         case Medicine:
-            return i18n::localize("MEDICINE");
+            return i18n::localize(lang, "MEDICINE");
         case Berry:
-            return i18n::localize("BERRIES");
+            return i18n::localize(lang, "BERRIES");
         default:
             return "";
     }
+}
+
+const std::set<int>& Sav5::availableItems(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxItem());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav5::availableMoves(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 0, maxMove());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav5::availableSpecies(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxSpecies());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav5::availableAbilities(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxAbility());
+    }
+    return ret;
+}
+
+const std::set<int>& Sav5::availableBalls(void) const
+{
+    static std::set<int> ret;
+    if (ret.empty())
+    {
+        fill_set(ret, 1, maxBall());
+    }
+    return ret;
 }

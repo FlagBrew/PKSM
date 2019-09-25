@@ -41,14 +41,21 @@ protected:
 public:
     PK5()
     {
-        length = 136;
-        data   = new u8[length];
+        directAccess = false;
+        length       = 136;
+        data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK5(u8* dt, bool ekx = false, bool party = false);
-    virtual ~PK5() { delete[] data; };
+    PK5(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    virtual ~PK5()
+    {
+        if (!directAccess)
+        {
+            delete[] data;
+        }
+    }
 
-    std::shared_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
 
@@ -95,6 +102,8 @@ public:
 
     u16 move(u8 move) const override;
     void move(u8 move, u16 v) override;
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     u8 PP(u8 move) const override;
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
@@ -175,8 +184,8 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> next(void) const override;
-    std::shared_ptr<PKX> previous(void) const override;
+    std::shared_ptr<PKX> next(Sav& save) const override;
+    std::shared_ptr<PKX> previous(Sav& save) const override;
 
     inline u8 baseHP(void) const override { return PersonalBWB2W2::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalBWB2W2::baseAtk(formSpecies()); }
@@ -191,6 +200,9 @@ public:
     inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
+
+private:
+    bool directAccess;
 };
 
 #endif

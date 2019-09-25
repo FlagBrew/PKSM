@@ -242,6 +242,8 @@ for gen in range (4, 7+1):
 	data += scanDir(root, sheet, 0)
 	if (gen == 7):
 		data += scanDir("./EventsGallery/Unreleased/Gen 7/Movie 21", sheet, len(data))
+	elif (gen == 4):
+		data += scanDir("./EventsGallery/Released/Gen 4/Pokemon Ranger Manaphy Egg", sheet, len(data))
 	
 	# sort, then get rid of data not needed in final product
 	sheet['matches'] = sorted(sheet['matches'], key=sortById)

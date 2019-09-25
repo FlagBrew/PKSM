@@ -1,0 +1,15 @@
+0|—
+2|San Salvador
+3|Ahuachapán
+4|Cabañas
+5|Chalatenango
+6|Cuscatlán
+7|La Libertad
+8|La Paz
+9|La Unión
+10|Morazán
+11|San Miguel
+12|Santa Ana
+13|San Vicente
+14|Sonsonate
+15|Usulután

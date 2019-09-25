@@ -1,0 +1,9 @@
+0|—
+2|Territorio della Capitale Australiana
+3|Nuovo Galles del Sud
+4|Territorio del Nord
+5|Queensland
+6|Australia Meridionale
+7|Tasmania
+8|Victoria
+9|Australia Occidentale

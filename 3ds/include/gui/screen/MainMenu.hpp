@@ -37,14 +37,14 @@ public:
     MainMenu();
     ~MainMenu();
     void update(touchPosition* touch) override;
-    void draw() const override;
-    ScreenType type() const override { return ScreenType::MAINMENU; }
+    void drawTop() const override;
+    void drawBottom() const override;
     void setTimer(bool time) { doTimer = time; }
 
 private:
-    std::array<MainMenuButton*, 6> buttons = {NULL};
-    bool justSwitched                      = true;
-    bool doTimer                           = false;
+    std::array<std::unique_ptr<MainMenuButton>, 6> buttons;
+    bool justSwitched = true;
+    bool doTimer      = false;
 };
 
 #endif

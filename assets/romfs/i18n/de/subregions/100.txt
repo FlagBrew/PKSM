@@ -1,0 +1,84 @@
+0|—
+9|Moskau (Stadt)
+10|Republik Adygeja
+11|Republik Altai
+12|Region Altai
+13|Oblast Amur
+14|Oblast Archangelsk
+15|Oblast Astrachan
+16|Republik Baschkortostan
+17|Oblast Belgorod
+18|Oblast Brjansk
+19|Republik Burjatien
+20|Republik Tschetschenien
+21|Oblast Tscheljabinsk
+22|Autonomer Kreis der Tschuktschen
+23|Republik Tschuwaschien
+24|Republik Dagestan
+25|Republik Inguschetien
+26|Oblast Irkutsk
+27|Oblast Iwanowo
+28|Republik Kabardino-Balkarien
+29|Oblast Kaliningrad
+30|Republik Kalmückien
+31|Oblast Kaluga
+32|Region Kamtschatka
+33|Republik Karatschai-Tscherkessien
+34|Republik Karelien
+35|Oblast Kemerowo
+36|Region Chabarowsk
+37|Republik Chakassien
+38|Autonomer Kreis der Chanten und Mansen
+39|Oblast Kirow
+40|Republik Komi
+41|Oblast Kostroma
+42|Region Krasnodar
+43|Region Krasnojarsk
+44|Oblast Kurgan
+45|Oblast Kursk
+46|Oblast Leningrad
+47|Oblast Lipezk
+48|Oblast Magadan
+49|Republik Mari El
+50|Republik Mordwinien
+51|Oblast Moskau
+52|Oblast Murmansk
+53|Autonomer Kreis der Nenzen
+54|Oblast Nischni Nowgorod
+55|Oblast Nowgorod
+56|Oblast Nowosibirsk
+57|Oblast Omsk
+58|Oblast Orenburg
+59|Oblast Orjol
+60|Oblast Pensa
+61|Region Perm
+62|Region Primorje
+63|Oblast Pskow
+64|Oblast Rostow
+65|Oblast Rjasan
+66|Republik Sacha (Jakutien)
+67|Oblast Sachalin
+68|Oblast Samara
+69|Sankt Petersburg
+70|Oblast Saratow
+71|Republik Nordossetien-Alanien
+72|Oblast Smolensk
+73|Region Stawropol
+74|Oblast Swerdlowsk
+75|Oblast Tambow
+76|Republik Tatarstan
+77|Oblast Tomsk
+78|Oblast Tula
+79|Oblast Twer
+80|Oblast Tjumen
+81|Republik Tuwa
+82|Republik Udmurtien
+83|Oblast Uljanowsk
+84|Oblast Wladimir
+85|Oblast Wolgograd
+86|Oblast Wologda
+87|Oblast Woronesch
+88|Autonomer Kreis der Jamal-Nenzen
+89|Oblast Jaroslawl
+90|Jüdisches Autonomes Gebiet
+91|Region Transbaikalien

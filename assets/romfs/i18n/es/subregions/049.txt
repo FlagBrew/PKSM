@@ -1,0 +1,53 @@
+0|—
+2|Distrito de Columbia
+3|Alaska
+4|Alabama
+5|Arkansas
+6|Arizona
+7|California
+8|Colorado
+9|Connecticut
+10|Delaware
+11|Florida
+12|Georgia
+13|Hawái
+14|Iowa
+15|Idaho
+16|Illinois
+17|Indiana
+18|Kansas
+19|Kentucky
+20|Luisiana
+21|Massachusetts
+22|Maryland
+23|Maine
+24|Míchigan
+25|Minnesota
+26|Misuri
+27|Misisipi
+28|Montana
+29|Carolina del Norte
+30|Dakota del Norte
+31|Nebraska
+32|Nuevo Hampshire
+33|Nueva Jersey
+34|Nuevo México
+35|Nevada
+36|Nueva York
+37|Ohio
+38|Oklahoma
+39|Oregón
+40|Pensilvania
+41|Rhode Island
+42|Carolina del Sur
+43|Dakota del Sur
+44|Tennessee
+45|Texas
+46|Utah
+47|Virginia
+48|Vermont
+49|Washington
+50|Wisconsin
+51|Virginia Occidental
+52|Wyoming
+53|Puerto Rico

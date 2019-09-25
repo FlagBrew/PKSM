@@ -1,0 +1,9 @@
+0|—
+2|Australisches Hauptstadtterritorium
+3|Neusüdwales
+4|Nördliches Territorium
+5|Queensland
+6|Südaustralien
+7|Tasmanien
+8|Victoria
+9|Westaustralien

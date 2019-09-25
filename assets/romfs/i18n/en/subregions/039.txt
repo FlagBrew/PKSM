@@ -1,0 +1,18 @@
+0|—
+2|Managua
+3|Boaco
+4|Carazo
+5|Chinandega
+6|Chontales
+7|Estelí
+8|Granada
+9|Jinotega
+10|León
+11|Madriz
+12|Masaya
+13|Matagalpa
+14|Nueva Segovia
+15|Río San Juan
+16|Rivas
+17|Atlántico Norte
+18|Atlántico Sur

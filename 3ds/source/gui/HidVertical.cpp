@@ -25,6 +25,7 @@
  */
 
 #include "HidVertical.hpp"
+#include <3ds.h>
 
 void HidVertical::update(size_t count)
 {

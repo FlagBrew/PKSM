@@ -1,0 +1,9 @@
+0|—
+2|Bratislava
+3|Banská Bystrica
+4|Košice
+5|Nitra
+6|Prešov
+7|Trenčín
+8|Trnava
+9|Žilina

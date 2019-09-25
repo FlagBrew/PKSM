@@ -1,0 +1,14 @@
+0|—
+2|Riyad
+3|Al Bâhah
+4|Médine
+5|Province Est
+6|Al Qasim
+7|Assir
+8|Haïl
+9|La Mecque
+10|Frontière Nord
+11|Najran
+12|Jizan
+13|Tabouk
+14|Al Djôf

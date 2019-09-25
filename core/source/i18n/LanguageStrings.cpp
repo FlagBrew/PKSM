@@ -25,7 +25,7 @@
  */
 
 #include "LanguageStrings.hpp"
-#include <stdio.h>
+#include "utils.hpp"
 
 static nlohmann::json& formJson()
 {
@@ -33,18 +33,21 @@ static nlohmann::json& formJson()
     static bool first = true;
     if (first)
     {
-        FILE* in = fopen("romfs:/i18n/forms.json", "rt");
-        if (!ferror(in))
+        FILE* in = fopen(I18N_PATH "forms.json", "rt");
+        if (in)
         {
-            forms = nlohmann::json::parse(in, nullptr, false);
+            if (!ferror(in))
+            {
+                forms = nlohmann::json::parse(in, nullptr, false);
+            }
+            fclose(in);
         }
-        fclose(in);
         first = false;
     }
     return forms;
 }
 
-std::string LanguageStrings::folder(Language lang) const
+std::string LanguageStrings::folder(Language lang)
 {
     switch (lang)
     {
@@ -70,6 +73,8 @@ std::string LanguageStrings::folder(Language lang) const
             return "zh";
         case Language::TW:
             return "tw";
+        case Language::RO:
+            return "ro";
         default:
             return "en";
     }
@@ -88,87 +93,67 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/natures.txt", natures);
     load(lang, "/species.txt", speciess);
     load(lang, "/games.txt", games);
-    loadMap(lang, "/locations4.txt", locations4);
-    loadMap(lang, "/locations5.txt", locations5);
-    loadMap(lang, "/locations6.txt", locations6);
-    loadMap(lang, "/locations7.txt", locations7);
-    loadMap(lang, "/locationsLGPE.txt", locationsLGPE);
-    loadGui(lang);
+    load(lang, "/locations4.txt", locations4);
+    load(lang, "/locations5.txt", locations5);
+    load(lang, "/locations6.txt", locations6);
+    load(lang, "/locations7.txt", locations7);
+    load(lang, "/locationsLGPE.txt", locationsLGPE);
+    countries = {};
+    load(lang, "/countries.txt", countries);
+    for (auto i = countries.begin(); i != countries.end(); i++)
+    {
+        subregions[i->first] = {};
+        load(lang, StringUtils::format("/subregions/%03i.txt", (int)i->first), subregions[i->first]);
+    }
+    load(lang, "/gui.json", gui);
 }
 
-void LanguageStrings::load(Language lang, const std::string name, std::vector<std::string>& array)
+void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    static constexpr const char* base = I18N_PATH;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
-    if (ferror(values))
+    if (values)
     {
+        if (ferror(values))
+        {
+            fclose(values);
+            return;
+        }
+        char* data  = (char*)malloc(128);
+        size_t size = 0;
+        while (!feof(values) && !ferror(values))
+        {
+            size = std::max(size, (size_t)128);
+            if (__getline(&data, &size, values) >= 0)
+            {
+                tmp = std::string(data);
+                tmp = tmp.substr(0, tmp.find('\n'));
+                array.emplace_back(tmp.substr(0, tmp.find('\r')));
+            }
+            else
+            {
+                break;
+            }
+        }
         fclose(values);
-        return;
+        free(data);
     }
-    char* data  = (char*)malloc(128);
-    size_t size = 0;
-    while (!feof(values) && !ferror(values))
-    {
-        size = std::max(size, (size_t)128);
-        if (__getline(&data, &size, values) >= 0)
-        {
-            tmp = std::string(data);
-            tmp = tmp.substr(0, tmp.find('\n'));
-            array.push_back(tmp.substr(0, tmp.find('\r')));
-        }
-        else
-        {
-            break;
-        }
-    }
-    fclose(values);
-    free(data);
 }
 
-void LanguageStrings::loadMap(Language lang, const std::string name, std::map<u16, std::string>& map)
+void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
-    static const std::string base = "romfs:/i18n/";
-    std::string path              = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    static constexpr const char* base = I18N_PATH;
+    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
-    std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
-    if (ferror(values))
+    if (values)
     {
+        json = nlohmann::json::parse(values, nullptr, false);
         fclose(values);
-        return;
     }
-    char* data  = (char*)malloc(128);
-    size_t size = 0;
-    while (!feof(values) && !ferror(values))
-    {
-        size = std::max(size, (size_t)128);
-        if (__getline(&data, &size, values) >= 0)
-        {
-            tmp      = std::string(data);
-            tmp      = tmp.substr(0, tmp.find('\n'));
-            u16 val  = std::stoi(tmp.substr(0, 4), 0, 16);
-            map[val] = tmp.substr(0, tmp.find('\r')).substr(5);
-        }
-        else
-        {
-            break;
-        }
-    }
-    fclose(values);
-    free(data);
-}
-
-void LanguageStrings::loadGui(Language lang)
-{
-    static const std::string base = "romfs:/i18n/";
-    std::string path = io::exists(base + folder(lang) + "/gui.json") ? base + folder(lang) + "/gui.json" : base + folder(Language::EN) + "/gui.json";
-
-    FILE* values = fopen(path.c_str(), "rt");
-    gui          = nlohmann::json::parse(values, nullptr, false);
-    fclose(values);
 }
 
 const std::string& LanguageStrings::ability(u8 v) const
@@ -260,20 +245,11 @@ const std::string& LanguageStrings::species(u16 v) const
 
 const std::string& LanguageStrings::localize(const std::string& v) const
 {
-    static std::string MISSING = "MISSING: ";
-    if (MISSING != "MISSING: ")
+    if (!gui.contains(v))
     {
-        MISSING = "MISSING: ";
+        const_cast<nlohmann::json&>(gui)[v] = "MISSING: " + v;
     }
-    if (gui.count(v))
-    {
-        return gui.at(v).get_ref<const std::string&>();
-    }
-    else
-    {
-        MISSING += v;
-        return MISSING;
-    }
+    return gui.at(v).get_ref<const std::string&>();
 }
 
 const std::vector<std::string>& LanguageStrings::rawItems() const
@@ -284,6 +260,31 @@ const std::vector<std::string>& LanguageStrings::rawItems() const
 const std::vector<std::string>& LanguageStrings::rawMoves() const
 {
     return moves;
+}
+
+const std::string& LanguageStrings::subregion(u8 country, u8 v) const
+{
+    auto i = subregions.find(country);
+    if (i != subregions.end())
+    {
+        auto j = i->second.find(v);
+        if (j != i->second.end())
+        {
+            return j->second;
+        }
+        return localize("INVALID_SUBREGION");
+    }
+    return localize("INVALID_COUNTRY");
+}
+
+const std::string& LanguageStrings::country(u8 v) const
+{
+    auto i = countries.find(v);
+    if (i != countries.end())
+    {
+        return i->second;
+    }
+    return localize("INVALID_COUNTRY");
 }
 
 const std::string& LanguageStrings::location(u16 v, Generation generation) const
@@ -359,4 +360,20 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
 size_t LanguageStrings::numGameStrings() const
 {
     return games.size();
+}
+
+const std::map<u8, std::string>& LanguageStrings::rawCountries() const
+{
+    return countries;
+}
+
+const std::map<u8, std::string>& LanguageStrings::rawSubregions(u8 country) const
+{
+    static std::map<u8, std::string> emptyMap;
+    auto i = subregions.find(country);
+    if (i == subregions.end())
+    {
+        return emptyMap;
+    }
+    return i->second;
 }

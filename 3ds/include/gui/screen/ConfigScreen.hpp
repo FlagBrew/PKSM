@@ -27,9 +27,11 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "Screen.hpp"
+#include "ToggleButton.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 #include <array>
+#include <bitset>
 #include <vector>
 
 #ifndef CONFIGSCREEN_HPP
@@ -39,29 +41,23 @@ class ConfigScreen : public Screen
 {
 public:
     ConfigScreen(void);
-    virtual ~ConfigScreen()
-    {
-        for (auto tab : tabButtons)
-        {
-            for (auto button : tab)
-            {
-                delete button;
-            }
-        }
-    }
+    virtual ~ConfigScreen() {}
     void update(touchPosition* touch) override;
-    void draw(void) const override;
-    ScreenType type(void) const override { return SETTINGS; }
+    void drawTop(void) const override;
+    void drawBottom(void) const override;
 
 private:
-    std::array<Button*, 3> tabs;
-    std::array<std::vector<Button*>, 3> tabButtons;
+    std::vector<std::unique_ptr<ToggleButton>> tabs;
+    std::array<std::vector<std::unique_ptr<Button>>, 4> tabButtons;
+    std::bitset<4> patronMenu;
     int currentTab = 0;
     void back(void);
-    void drawTop(void) const;
+    void initButtons(void);
     bool justSwitched       = true;
     bool showBackupsChanged = false;
     bool useExtDataChanged  = false;
+    int patronMenuTimer;
+    int countPatronMenuTimer = false;
 };
 
 #endif

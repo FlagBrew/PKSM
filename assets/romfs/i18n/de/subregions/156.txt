@@ -1,0 +1,17 @@
+0|—
+2|Kuala Lumpur
+3|Johor
+4|Kedah
+5|Kelantan
+6|Malakka
+7|Negeri Sembilan
+8|Pahang
+9|Perak
+10|Perlis
+11|Penang
+12|Sarawak
+13|Selangor
+14|Terengganu
+15|Labuan
+16|Sabah
+17|Putrajaya

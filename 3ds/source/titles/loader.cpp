@@ -28,10 +28,11 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include <atomic>
 #include <ctime>
 #include <sys/stat.h>
 
-static std::map<std::u16string, std::shared_ptr<Directory>> directories;
+static std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
 static constexpr char langIds[8] = {
     'E', // USA
@@ -55,6 +56,8 @@ static constexpr std::string_view dsIds[9] = {
     "IRE", // Black 2
     "IRD"  // White 2
 };
+
+static std::atomic<bool> cartWasUpdated = false;
 
 static std::string idToSaveName(const std::string& id)
 {
@@ -100,6 +103,50 @@ static std::string idToSaveName(const std::string& id)
     return "main";
 }
 
+static std::string idToSaveName(const std::u16string& id)
+{
+    if (id.size() == 3 || id.size() == 4)
+    {
+        if (id.substr(0, 3) == u"ADA")
+        {
+            return "POKEMON D.sav";
+        }
+        if (id.substr(0, 3) == u"APA")
+        {
+            return "POKEMON P.sav";
+        }
+        if (id.substr(0, 3) == u"CPU")
+        {
+            return "POKEMON PL.sav";
+        }
+        if (id.substr(0, 3) == u"IPK")
+        {
+            return "POKEMON HG.sav";
+        }
+        if (id.substr(0, 3) == u"IPG")
+        {
+            return "POKEMON SS.sav";
+        }
+        if (id.substr(0, 3) == u"IRB")
+        {
+            return "POKEMON B.sav";
+        }
+        if (id.substr(0, 3) == u"IRA")
+        {
+            return "POKEMON W.sav";
+        }
+        if (id.substr(0, 3) == u"IRE")
+        {
+            return "POKEMON B2.sav";
+        }
+        if (id.substr(0, 3) == u"IRD")
+        {
+            return "POKEMON W2.sav";
+        }
+    }
+    return "main";
+}
+
 // known 3ds title ids
 static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x0004000000055D00, // X
@@ -111,12 +158,6 @@ static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
     0x00040000001B5000, // Ultrasun
     0x00040000001B5100  // Ultramoon
 };
-
-// title list
-std::vector<std::shared_ptr<Title>> TitleLoader::nandTitles;
-std::shared_ptr<Title> TitleLoader::cardTitle = nullptr;
-std::unordered_map<std::string, std::vector<std::string>> TitleLoader::sdSaves;
-std::shared_ptr<Sav> TitleLoader::save;
 
 static bool saveIsFile;
 static std::string saveFileName;
@@ -165,7 +206,7 @@ void TitleLoader::scanTitles(void)
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) { return l->ID() < r->ID(); });
 }
 
-static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
+static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
 {
     if (directories.count(dir) == 0)
     {
@@ -189,7 +230,7 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
             if (directory->folder(j))
             {
                 std::u16string fileName = directory->item(j);
-                if (fileName.substr(0, id.size()) == StringUtils::UTF8toUTF16(id.c_str()))
+                if (fileName.substr(0, id.size()) == id)
                 {
                     Directory subdir(Archive::sd(), dir + sSeparator + fileName);
                     for (size_t k = 0; k < subdir.count(); k++)
@@ -200,7 +241,7 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
                                 StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k) + sSeparator) + idToSaveName(id);
                             if (io::exists(savePath))
                             {
-                                ret.push_back(savePath);
+                                ret.emplace_back(savePath);
                             }
                         }
                     }
@@ -209,6 +250,11 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
         }
     }
     return ret;
+}
+
+static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
+{
+    return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
 }
 
 void TitleLoader::scanSaves(void)
@@ -232,7 +278,7 @@ void TitleLoader::scanSaves(void)
             {
                 if (io::exists(save))
                 {
-                    saves.push_back(save);
+                    saves.emplace_back(save);
                 }
             }
         }
@@ -257,7 +303,7 @@ void TitleLoader::scanSaves(void)
                 {
                     if (io::exists(save))
                     {
-                        saves.push_back(save);
+                        saves.emplace_back(save);
                     }
                 }
             }
@@ -288,7 +334,7 @@ void TitleLoader::backupSave(const std::string& id)
         out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
         if (Configuration::getInstance().showBackups())
         {
-            sdSaves[id].push_back(path);
+            sdSaves[id].emplace_back(path);
         }
     }
     else
@@ -341,7 +387,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         u32 cap = SPIGetCapacity(title->SPICardType());
         if (cap != 524288)
         {
-            Gui::warn(i18n::localize("WRONG_SIZE"), i18n::localize("Please report"));
+            Gui::warn(i18n::localize("WRONG_SIZE") + '\n' + i18n::localize("Please report"));
             return false;
         }
 
@@ -392,14 +438,13 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     delete[] saveData;
     if (!save)
     {
-        Gui::warn(saveFileName, i18n::localize("SAVE_INVALID"));
+        Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
         saveFileName = "";
         loadedTitle  = nullptr;
         return false;
     }
     if (Configuration::getInstance().autoBackup())
     {
-        std::string id;
         if (title)
         {
             backupSave(title->checkpointPrefix());
@@ -430,7 +475,7 @@ void TitleLoader::saveToTitle(bool ask)
     if (loadedTitle)
     {
         if (TitleLoader::cardTitle == loadedTitle &&
-            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_CARD"))))
+            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
@@ -477,7 +522,7 @@ void TitleLoader::saveToTitle(bool ask)
             for (auto title : TitleLoader::nandTitles)
             {
                 if (title == loadedTitle &&
-                    (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1"), i18n::localize("SAVE_OVERWRITE_INSTALL"))))
+                    (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                 {
                     FS_Archive archive;
                     Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
@@ -610,47 +655,17 @@ bool TitleLoader::scanCard()
             }
         }
     }
-    isScanning = false;
+    isScanning     = false;
+    cartWasUpdated = true;
     return ret;
 }
 
-bool TitleLoader::cardUpdate()
+bool TitleLoader::cardWasUpdated()
 {
-#if !CITRA_DEBUG
-    static bool first     = true;
-    static bool oldCardIn = false;
-    if (first)
+    if (cartWasUpdated)
     {
-        FSUSER_CardSlotIsInserted(&oldCardIn);
-        first = false;
-        return false;
+        cartWasUpdated = false;
+        return true;
     }
-    bool cardIn = false;
-
-    FSUSER_CardSlotIsInserted(&cardIn);
-    if (cardIn != oldCardIn)
-    {
-        bool power;
-        FSUSER_CardSlotGetCardIFPowerStatus(&power);
-        if (cardIn)
-        {
-            if (!power)
-            {
-                FSUSER_CardSlotPowerOn(&power);
-            }
-            while (!power)
-            {
-                FSUSER_CardSlotGetCardIFPowerStatus(&power);
-            }
-            return oldCardIn = scanCard();
-        }
-        else
-        {
-            cardTitle = nullptr;
-            oldCardIn = false;
-            return true;
-        }
-    }
-#endif
     return false;
 }

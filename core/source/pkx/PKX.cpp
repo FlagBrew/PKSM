@@ -81,138 +81,20 @@ u32 PKX::expTable(u8 row, u8 col) const
 
 u8 PKX::blockPosition(u8 index) const
 {
+    // clang-format off
     static constexpr u8 blocks[128] = {
-        0,
-        1,
-        2,
-        3,
-        0,
-        1,
-        3,
-        2,
-        0,
-        2,
-        1,
-        3,
-        0,
-        3,
-        1,
-        2,
-        0,
-        2,
-        3,
-        1,
-        0,
-        3,
-        2,
-        1,
-        1,
-        0,
-        2,
-        3,
-        1,
-        0,
-        3,
-        2,
-        2,
-        0,
-        1,
-        3,
-        3,
-        0,
-        1,
-        2,
-        2,
-        0,
-        3,
-        1,
-        3,
-        0,
-        2,
-        1,
-        1,
-        2,
-        0,
-        3,
-        1,
-        3,
-        0,
-        2,
-        2,
-        1,
-        0,
-        3,
-        3,
-        1,
-        0,
-        2,
-        2,
-        3,
-        0,
-        1,
-        3,
-        2,
-        0,
-        1,
-        1,
-        2,
-        3,
-        0,
-        1,
-        3,
-        2,
-        0,
-        2,
-        1,
-        3,
-        0,
-        3,
-        1,
-        2,
-        0,
-        2,
-        3,
-        1,
-        0,
-        3,
-        2,
-        1,
-        0,
+        0, 1, 2, 3, 0, 1, 3, 2, 0, 2, 1, 3, 0, 3, 1, 2,
+        0, 2, 3, 1, 0, 3, 2, 1, 1, 0, 2, 3, 1, 0, 3, 2,
+        2, 0, 1, 3, 3, 0, 1, 2, 2, 0, 3, 1, 3, 0, 2, 1,
+        1, 2, 0, 3, 1, 3, 0, 2, 2, 1, 0, 3, 3, 1, 0, 2,
+        2, 3, 0, 1, 3, 2, 0, 1, 1, 2, 3, 0, 1, 3, 2, 0,
+        2, 1, 3, 0, 3, 1, 2, 0, 2, 3, 1, 0, 3, 2, 1, 0,
 
         // duplicates of 0-7 to eliminate modulus
-        0,
-        1,
-        2,
-        3,
-        0,
-        1,
-        3,
-        2,
-        0,
-        2,
-        1,
-        3,
-        0,
-        3,
-        1,
-        2,
-        0,
-        2,
-        3,
-        1,
-        0,
-        3,
-        2,
-        1,
-        1,
-        0,
-        2,
-        3,
-        1,
-        0,
-        3,
-        2,
+        0, 1, 2, 3, 0, 1, 3, 2, 0, 2, 1, 3, 0, 3, 1, 2,
+        0, 2, 3, 1, 0, 3, 2, 1, 1, 0, 2, 3, 1, 0, 3, 2,
     };
+    // clang-format on
 
     return blocks[index];
 }
@@ -255,6 +137,29 @@ void PKX::reorderMoves(void)
         PP(0, PP(1));
         PPUp(0, PPUp(1));
         move(1, 0);
+        reorderMoves();
+    }
+    if (relearnMove(3) != 0 && relearnMove(2) == 0)
+    {
+        relearnMove(2, relearnMove(3));
+        PP(2, PP(3));
+        PPUp(2, PPUp(3));
+        relearnMove(3, 0);
+    }
+    if (relearnMove(2) != 0 && relearnMove(1) == 0)
+    {
+        relearnMove(1, relearnMove(2));
+        PP(1, PP(2));
+        PPUp(1, PPUp(2));
+        relearnMove(2, 0);
+        reorderMoves();
+    }
+    if (relearnMove(1) != 0 && relearnMove(0) == 0)
+    {
+        relearnMove(0, relearnMove(1));
+        PP(0, PP(1));
+        PPUp(0, PPUp(1));
+        relearnMove(1, 0);
         reorderMoves();
     }
 }
@@ -558,4 +463,104 @@ std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
         default:
             return nullptr;
     }
+}
+
+bool PKX::operator==(const PKFilter& filter) const
+{
+    if (filter.generationEnabled() && (filter.generationInversed() != (generation() != filter.generation())))
+    {
+        return false;
+    }
+    if (filter.speciesEnabled() && (filter.speciesInversed() != (species() != filter.species())))
+    {
+        return false;
+    }
+    if (filter.heldItemEnabled() && (filter.heldItemInversed() != (heldItem() != filter.heldItem())))
+    {
+        return false;
+    }
+    if (filter.levelEnabled() && (filter.levelInversed() != (level() != filter.level())))
+    {
+        return false;
+    }
+    if (filter.abilityEnabled() && (filter.abilityInversed() != (ability() != filter.ability())))
+    {
+        return false;
+    }
+    if (filter.TSVEnabled() && (filter.TSVInversed() != (TSV() != filter.TSV())))
+    {
+        return false;
+    }
+    if (filter.natureEnabled() && (filter.natureInversed() != (nature() != filter.nature())))
+    {
+        return false;
+    }
+    if (filter.genderEnabled() && (filter.genderInversed() != (gender() != filter.gender())))
+    {
+        return false;
+    }
+    if (filter.ballEnabled() && (filter.ballInversed() != (ball() != filter.ball())))
+    {
+        return false;
+    }
+    if (filter.languageEnabled() && (filter.languageInversed() != (language() != filter.language())))
+    {
+        return false;
+    }
+    if (filter.eggEnabled() && (filter.eggInversed() != (egg() != filter.egg())))
+    {
+        return false;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        if (filter.moveEnabled(i) && (filter.moveInversed(i) != (move(i) != filter.move(i))))
+        {
+            return false;
+        }
+        if (filter.relearnMoveEnabled(i))
+        {
+            switch (generation())
+            {
+                case Generation::FOUR:
+                case Generation::FIVE:
+                    return false;
+                case Generation::SIX:
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i)))
+                    {
+                        return false;
+                    }
+                    break;
+                case Generation::SEVEN:
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i)))
+                    {
+                        return false;
+                    }
+                    break;
+                case Generation::LGPE:
+                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i)))
+                    {
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        }
+    }
+    for (int i = 0; i < 6; i++)
+    {
+        if (filter.ivEnabled(i) && (filter.ivInversed(i) != (iv(i) < filter.iv(i))))
+        {
+            return false;
+        }
+    }
+    if (filter.shinyEnabled() && (filter.shinyInversed() != (filter.shiny() != shiny())))
+    {
+        return false;
+    }
+    if (filter.alternativeFormEnabled() && (filter.alternativeFormInversed() != (filter.alternativeForm() != alternativeForm())))
+    {
+        return false;
+    }
+    return true;
 }

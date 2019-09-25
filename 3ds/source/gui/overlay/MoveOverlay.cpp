@@ -61,76 +61,98 @@ namespace
     }
 }
 
-MoveOverlay::MoveOverlay(Screen& screen, std::shared_ptr<PKX> pkm, int moveIndex)
-    : Overlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), moveIndex(moveIndex), hid(40, 2)
+MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, int moveIndex)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), moveIndex(moveIndex), hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    for (int i = 1; i <= TitleLoader::save->maxMove(); i++)
+    const std::set<int>& availableMoves      = TitleLoader::save->availableMoves();
+    for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
-        if (i >= 622 && i <= 658)
+        if (*i >= 622 && *i <= 658)
             continue;
-        moves.push_back({i, rawMoves[i]});
+        moves.emplace_back(*i, rawMoves[*i]);
     }
-    static const auto less = [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+    std::sort(moves.begin(), moves.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        if (pair1.first == 0)
+        {
+            return pair2.first != 0;
+        }
+        if (pair2.first == 0)
+        {
+            return false;
+        }
         return pair1.second < pair2.second;
-    };
-    std::sort(moves.begin(), moves.end(), less);
-    moves.insert(moves.begin(), {0, rawMoves[0]});
+    });
     validMoves = moves;
 
     hid.update(moves.size());
     if (moveIndex < 4)
     {
-        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pkm->move(moveIndex))));
+        if (object.index() == 0)
+        {
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<0>(object)->move(moveIndex))));
+        }
+        else
+        {
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<1>(object)->move(moveIndex))));
+        }
     }
     else
     {
-        if (pkm->gen6())
+        if (object.index() == 0)
         {
-            PK6* pk6 = ((PK6*)pkm.get());
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk6->relearnMove(moveIndex - 4))));
+            auto pkm = std::get<0>(object);
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pkm->relearnMove(moveIndex - 4))));
         }
-        else if (pkm->gen7())
+        else
         {
-            PK7* pk7 = ((PK7*)pkm.get());
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pk7->relearnMove(moveIndex - 4))));
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<1>(object)->relearnMove(moveIndex - 4))));
         }
     }
-    searchButton = new ClickButton(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
-            Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+            searchBar();
             return false;
         },
-        ui_sheet_emulated_box_search_idx, "", 0, 0);
+        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
-void MoveOverlay::draw() const
+MoveOverlay::~MoveOverlay()
 {
-    C2D_SceneBegin(g_renderTargetBottom);
+    if (object.index() == 0)
+    {
+        std::get<0>(object)->fixMoves();
+    }
+}
+
+void MoveOverlay::drawBottom() const
+{
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::dynamicText(searchString, 95, 32, FONT_SIZE_12, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void MoveOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 11, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, 11, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + 10, 0.5f, 198, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + 197, y, 0.5f, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
         {
-            Gui::dynamicText(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                                 moves[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
+                          moves[hid.page() * hid.maxVisibleEntries() + i].second,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {
@@ -152,21 +174,21 @@ void MoveOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_X)
     {
-        Gui::setNextKeyboardFunc([this]() { this->searchBar(); });
+        searchBar();
     }
     searchButton->update(touch);
 
     if (!searchString.empty() && searchString != oldSearchString)
     {
         moves.clear();
-        moves.push_back(validMoves[0]);
+        moves.emplace_back(validMoves[0]);
         for (size_t i = 1; i < validMoves.size(); i++)
         {
             std::string itemName = validMoves[i].second.substr(0, searchString.size());
             StringUtils::toLower(itemName);
             if (itemName == searchString)
             {
-                moves.push_back(validMoves[i]);
+                moves.emplace_back(validMoves[i]);
             }
         }
         oldSearchString = searchString;
@@ -187,29 +209,34 @@ void MoveOverlay::update(touchPosition* touch)
     {
         if (moveIndex < 4)
         {
-            pkm->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+            switch (object.index())
+            {
+                case 0:
+                    std::get<0>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+                    break;
+                case 1:
+                    std::get<1>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
+                    break;
+            }
         }
         else
         {
-            if (pkm->generation() == Generation::SIX)
+            if (object.index() == 0)
             {
-                ((PK6*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                auto pkm = std::get<0>(object);
+                pkm->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else
             {
-                ((PK7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-            }
-            else if (pkm->generation() == Generation::LGPE)
-            {
-                ((PB7*)pkm.get())->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+                std::get<1>(object)->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
             }
         }
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

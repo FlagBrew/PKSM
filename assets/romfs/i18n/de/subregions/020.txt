@@ -1,0 +1,14 @@
+0|—
+2|Región Metropolitana
+3|Valparaíso (Region V)
+4|Aisén (Region XI)
+5|Antofagasta (Region II)
+6|Araukanien (Region IX)
+7|Atacama (Region III)
+8|Bío-Bío (Region VIII)
+9|Coquimbo (Region IV)
+10|Libertador General Bernardo O'Higgins (Region VI)
+11|Los Lagos (Region X)
+12|Magallanes (Region XII) und Chilenische Antarktis
+13|Maule (Region VII)
+14|Tarapacá (Region I)

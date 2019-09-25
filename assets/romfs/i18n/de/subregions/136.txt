@@ -1,0 +1,17 @@
+0|—
+2|Seoul
+3|Busan
+4|Daegu
+5|Incheon
+6|Gwangju
+7|Daejeon
+8|Ulsan
+9|Gyeonggi-do
+10|Gangwon-do
+11|Chungcheongbuk-do
+12|Chungcheongnam-do
+13|Jeollabuk-do
+14|Jeollanam-do
+15|Gyeongsangbuk-do
+16|Gyeongsangnam-do
+17|Jeju-do

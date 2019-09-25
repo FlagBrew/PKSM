@@ -37,19 +37,25 @@ protected:
 
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
-    void reorderMoves(void) override;
 
 public:
     PK7()
     {
-        length = 232;
-        data   = new u8[length];
+        directAccess = false;
+        length       = 232;
+        data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK7(u8* dt, bool ekx = false, bool party = false);
-    virtual ~PK7() { delete[] data; };
+    PK7(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    virtual ~PK7()
+    {
+        if (!directAccess)
+        {
+            delete[] data;
+        }
+    }
 
-    std::shared_ptr<PKX> clone(void) override;
+    std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
 
@@ -111,8 +117,8 @@ public:
     void PP(u8 move, u8 v) override;
     u8 PPUp(u8 move) const override;
     void PPUp(u8 move, u8 v) override;
-    u16 relearnMove(u8 move) const;
-    void relearnMove(u8 move, u16 v);
+    u16 relearnMove(u8 move) const override;
+    void relearnMove(u8 move, u16 v) override;
     u8 iv(u8 iv) const override;
     void iv(u8 iv, u8 v) override;
 
@@ -222,7 +228,7 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> previous(void) const override;
+    std::shared_ptr<PKX> previous(Sav& save) const override;
 
     inline u8 baseHP(void) const override { return PersonalSMUSUM::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalSMUSUM::baseAtk(formSpecies()); }
@@ -237,6 +243,9 @@ public:
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
+
+private:
+    bool directAccess;
 };
 
 #endif

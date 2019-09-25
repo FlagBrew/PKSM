@@ -29,13 +29,14 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-void FormOverlay::draw() const
+void FormOverlay::drawBottom() const
 {
-    C2D_SceneBegin(g_renderTargetBottom);
     dim();
-    Gui::staticText(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
 
-    C2D_SceneBegin(g_renderTargetTop);
+void FormOverlay::drawTop() const
+{
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
     int x  = (hid.index() % 6) * 67;
@@ -47,11 +48,11 @@ void FormOverlay::draw() const
         dx -= 1;
     }
     // Selector
-    C2D_DrawRectSolid(x, y, 0.5f, dx, dy, COLOR_MASKBLACK);
-    C2D_DrawRectSolid(x, y, 0.5f, dx, 1, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y, 0.5f, 1, dy, COLOR_YELLOW);
-    C2D_DrawRectSolid(x + dx - 1, y, 0.5f, 1, dy, COLOR_YELLOW);
-    C2D_DrawRectSolid(x, y + dy - 1, 0.5f, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, dx, dy, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(x + dx - 1, y, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + dy - 1, dx, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {
@@ -61,13 +62,27 @@ void FormOverlay::draw() const
             {
                 break;
             }
-            Gui::pkm(pkm->species(), x + y * 6, TitleLoader::save->generation(), pkm->gender(), x * 66 + 19, y * 48 + 1);
-            std::string text =
-                StringUtils::wrap(i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 6, TitleLoader::save->generation()),
-                    FONT_SIZE_9, 65.0f, 2);
-            Gui::dynamicText(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-            // Gui::dynamicText(x * 50, y * 48 + 30, 50, i18n::form(Configuration::getInstance().language(), pkm->species(), x + y * 8,
-            // TitleLoader::save->generation()), FONT_SIZE_9, FONT_SIZE_9, COLOR_WHITE);
+            switch (object.index())
+            {
+                case 0:
+                {
+                    Gui::pkm(std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<0>(object)->gender(), x * 66 + 19,
+                        y * 48 + 1);
+                    const std::string& text = i18n::form(
+                        Configuration::getInstance().language(), std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                }
+                break;
+                case 1:
+                {
+                    Gui::pkm(std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<1>(object)->gender(), x * 66 + 19,
+                        y * 48 + 1);
+                    const std::string& text = i18n::form(
+                        Configuration::getInstance().language(), std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                }
+                break;
+            }
         }
     }
 }
@@ -78,13 +93,21 @@ void FormOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->alternativeForm(hid.fullIndex());
-        screen.removeOverlay();
+        switch (object.index())
+        {
+            case 0:
+                std::get<0>(object)->alternativeForm(hid.fullIndex());
+                break;
+            case 1:
+                std::get<1>(object)->alternativeForm(hid.fullIndex());
+                break;
+        }
+        parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        screen.removeOverlay();
+        parent->removeOverlay();
         return;
     }
 }

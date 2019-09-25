@@ -1,0 +1,26 @@
+0|—
+2|Distrito Capital
+3|Amazonas
+4|Anzoátegui
+5|Apure
+6|Aragua
+7|Barinas
+8|Bolívar
+9|Carabobo
+10|Cojedes
+11|Delta Amacuro
+12|Falcón
+13|Guárico
+14|Lara
+15|Mérida
+16|Miranda
+17|Monagas
+18|Nueva Esparta
+19|Portuguesa
+20|Sucre
+21|Táchira
+22|Trujillo
+23|Yaracuy
+24|Zulia
+25|Dependencias Federales
+26|Vargas
