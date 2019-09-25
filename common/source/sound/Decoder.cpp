@@ -1,15 +1,15 @@
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 
 #include "Decoder.hpp"
 
 #include "mp3.hpp"
-#include "wav.hpp"
 #include "vorbis.hpp"
+#include "wav.hpp"
 
 std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
 {
-    FILE* fp = fopen(fileName.c_str(), "r");
+    FILE* fp              = fopen(fileName.c_str(), "r");
     std::string extension = fileName.substr(fileName.find_last_of(".") + 1);
     char magic[4];
 
@@ -28,8 +28,8 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     {
         fprintf(stderr, "Decoder: Using wav.");
         auto wavdec = std::make_shared<WavDecoder>(fileName);
-            if (wavdec->good())
-                return wavdec;
+        if (wavdec->good())
+            return wavdec;
     }
     /*Ogg or Opus*/
     else if (!strncmp(magic, "OggS", 4))

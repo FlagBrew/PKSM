@@ -27,8 +27,8 @@
 #ifndef SOUND_HPP
 #define SOUND_HPP
 
-#include <string>
 #include "types.h"
+#include <string>
 
 namespace Sound
 {

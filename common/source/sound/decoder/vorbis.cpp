@@ -29,30 +29,34 @@
 
 #include "vorbis.hpp"
 
-VorbisDecoder::VorbisDecoder(const std::string& filename) {
-    if((f = fopen(filename.c_str(), "rb")) == NULL)
+VorbisDecoder::VorbisDecoder(const std::string& filename)
+{
+    if ((f = fopen(filename.c_str(), "rb")) == NULL)
         return;
 
-    if(ov_open(f, &vorbisFile, NULL, 0) < 0)
+    if (ov_open(f, &vorbisFile, NULL, 0) < 0)
         return;
 
-    if((vi = ov_info(&vorbisFile, -1)) == NULL)
+    if ((vi = ov_info(&vorbisFile, -1)) == NULL)
         return;
 
     initialized = true;
 }
 
-VorbisDecoder::~VorbisDecoder(void) {
+VorbisDecoder::~VorbisDecoder(void)
+{
     ov_clear(&vorbisFile);
     fclose(f);
     initialized = false;
 }
 
-uint32_t VorbisDecoder::pos(void) {
+uint32_t VorbisDecoder::pos(void)
+{
     return ov_pcm_tell(&vorbisFile);
 }
 
-uint32_t VorbisDecoder::length(void) {
+uint32_t VorbisDecoder::length(void)
+{
     return ov_pcm_total(&vorbisFile, -1);
 }
 
@@ -63,7 +67,7 @@ uint32_t VorbisDecoder::decode(void* buffer)
 
 bool VorbisDecoder::stereo(void)
 {
-    return vi->channels-1;
+    return vi->channels - 1;
 }
 
 uint32_t VorbisDecoder::sampleRate(void)
@@ -78,11 +82,11 @@ uint32_t VorbisDecoder::bufferSize(void)
 
 int isVorbis(const std::string& in)
 {
-    FILE *ft = fopen(in.c_str(), "r");
+    FILE* ft = fopen(in.c_str(), "r");
     OggVorbis_File testvf;
     int err;
 
-    if(ft == NULL)
+    if (ft == NULL)
         return -1;
 
     err = ov_test(ft, &testvf, NULL, 0);
@@ -95,19 +99,16 @@ int isVorbis(const std::string& in)
 uint64_t VorbisDecoder::fillVorbisBuffer(char* bufferOut)
 {
     uint64_t samplesRead = 0;
-    int samplesToRead = buffSize;
+    int samplesToRead    = buffSize;
 
-    while(samplesToRead > 0)
+    while (samplesToRead > 0)
     {
         static int current_section;
-        int samplesJustRead =
-            ov_read(&vorbisFile, bufferOut,
-                    samplesToRead > 4096 ? 4096    : samplesToRead,
-                    &current_section);
+        int samplesJustRead = ov_read(&vorbisFile, bufferOut, samplesToRead > 4096 ? 4096 : samplesToRead, &current_section);
 
-        if(samplesJustRead < 0)
+        if (samplesJustRead < 0)
             return samplesJustRead;
-        else if(samplesJustRead == 0)
+        else if (samplesJustRead == 0)
         {
             /* End of file reached. */
             break;

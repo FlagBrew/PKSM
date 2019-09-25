@@ -29,21 +29,21 @@
 
 #include "mp3.hpp"
 
-Mp3Decoder::Mp3Decoder(const std::string& filename) {
-    int err = 0;
+Mp3Decoder::Mp3Decoder(const std::string& filename)
+{
+    int err      = 0;
     int encoding = 0;
 
-    if((err = mpg123_init()) != MPG123_OK)
+    if ((err = mpg123_init()) != MPG123_OK)
         return;
 
-    if((mh = mpg123_new(NULL, &err)) == NULL)
+    if ((mh = mpg123_new(NULL, &err)) == NULL)
     {
         fprintf(stderr, "Error: %s\n", mpg123_plain_strerror(err));
         return;
     }
 
-    if(mpg123_open(mh, filename.c_str()) != MPG123_OK ||
-            mpg123_getformat(mh, (long *) &rate, (int *) &channels, &encoding) != MPG123_OK)
+    if (mpg123_open(mh, filename.c_str()) != MPG123_OK || mpg123_getformat(mh, (long*)&rate, (int*)&channels, &encoding) != MPG123_OK)
     {
         fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
         return;
@@ -65,18 +65,21 @@ Mp3Decoder::Mp3Decoder(const std::string& filename) {
     initialized = true;
 }
 
-Mp3Decoder::~Mp3Decoder(void) {
+Mp3Decoder::~Mp3Decoder(void)
+{
     mpg123_close(mh);
     mpg123_delete(mh);
     mpg123_exit();
     initialized = false;
 }
 
-uint32_t Mp3Decoder::pos(void) {
+uint32_t Mp3Decoder::pos(void)
+{
     return mpg123_tell(mh);
 }
 
-uint32_t Mp3Decoder::length(void) {
+uint32_t Mp3Decoder::length(void)
+{
     return mpg123_length(mh);
 }
 
@@ -89,7 +92,7 @@ uint32_t Mp3Decoder::decode(void* buffer)
 
 bool Mp3Decoder::stereo(void)
 {
-    return channels-1;
+    return channels - 1;
 }
 
 uint32_t Mp3Decoder::sampleRate(void)

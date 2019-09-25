@@ -124,7 +124,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DI18N_PATH=\"$(strip ${I18N_PATH})\" \
-			`arm-none-eabi-pkg-config SDL_mixer --cflags` \
+			`arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --cflags` \
 			`curl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
@@ -135,7 +135,7 @@ ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:= -lcitro2d -lbz2 \
-		   `arm-none-eabi-pkg-config SDL_mixer --libs-only-l --libs-only-L` -lvorbisidec -logg -lmikmod -lmad \
+		   `arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --libs` -lcitro3d -lmikmod -lmad \
 		   `curl-config --libs`
 
 CXX		:= `which ccache` $(CXX)

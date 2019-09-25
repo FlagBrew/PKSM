@@ -447,7 +447,7 @@ void Gui::mainLoop(void)
 {
     bool exit = false;
     Sound::startBGM();
-    Sound::registerEffect("test", "/3ds/PKSM/click.wav");
+    Sound::registerEffect("test", "/3ds/PKSM/click.mp3");
     while (aptMainLoop() && !exit)
     {
         hidScanInput();

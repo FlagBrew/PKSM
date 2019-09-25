@@ -26,8 +26,9 @@
 #define DR_WAV_IMPLEMENTATION
 #include "wav.hpp"
 
-WavDecoder::WavDecoder(const std::string& filename) {
-    pWav = drwav_open_file(filename.c_str());
+WavDecoder::WavDecoder(const std::string& filename)
+{
+    pWav        = drwav_open_file(filename.c_str());
     wavprogress = 0;
     if (pWav == NULL)
         return;
@@ -35,16 +36,19 @@ WavDecoder::WavDecoder(const std::string& filename) {
     initialized = true;
 }
 
-WavDecoder::~WavDecoder(void) {
+WavDecoder::~WavDecoder(void)
+{
     drwav_close(pWav);
     initialized = false;
 }
 
-uint32_t WavDecoder::pos(void) {
+uint32_t WavDecoder::pos(void)
+{
     return wavprogress;
 }
 
-uint32_t WavDecoder::length(void) {
+uint32_t WavDecoder::length(void)
+{
     return pWav->totalSampleCount;
 }
 
@@ -57,7 +61,7 @@ uint32_t WavDecoder::decode(void* buffer)
 
 bool WavDecoder::stereo(void)
 {
-    return pWav->channels-1;
+    return pWav->channels - 1;
 }
 
 uint32_t WavDecoder::sampleRate(void)
