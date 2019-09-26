@@ -80,7 +80,7 @@ protected:
     template <typename T>
     static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
     {
-        static constexpr const char* base = I18N_PATH;
+        static constexpr const char* base = "romfs:/i18n/";
         std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
 
         std::string tmp;
