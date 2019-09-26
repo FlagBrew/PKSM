@@ -134,8 +134,8 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lcitro2d -lbz2 \
-		   `arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --libs` -lcitro3d -lmikmod -lmad \
+LIBS	:= -lcitro2d -lcitro3d -lbz2 \
+		   `arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --libs` \
 		   `curl-config --libs`
 
 CXX		:= `which ccache` $(CXX)
