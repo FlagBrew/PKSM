@@ -64,6 +64,7 @@ namespace TitleLoader
     void backupSave(const std::string& id);
     void saveChanges(void);
     void saveToTitle(bool ask);
+    void init(void);
     void exit(void);
 
     // Title list
