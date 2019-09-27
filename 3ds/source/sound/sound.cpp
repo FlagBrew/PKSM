@@ -61,7 +61,7 @@ struct EffectThreadArg
     std::shared_ptr<Decoder> decoder;
     s16* linearMem;
     int channel;
-    volatile std::atomic_flag inUse;
+    std::atomic_flag inUse;
 };
 
 static void clearDoneEffects()
@@ -177,7 +177,7 @@ static void bgmPlayThread(void*)
 
     while (playMusic)
     {
-        svcSleepThread(125000000);
+        svcSleepThread(12500000);
 
         if (exitBGM)
         {
@@ -370,19 +370,22 @@ static void playEffectThread(void* rawArg)
 
 void Sound::playEffect(const std::string& effectName)
 {
-    auto effect = effects.find(effectName);
-    clearDoneEffects();
-    if (effect != effects.end() && !freeChannels.empty())
+    if (currentVolume > 0)
     {
-        auto decoder = Decoder::get(effect->second);
-        if (decoder && decoder->good())
+        auto effect = effects.find(effectName);
+        clearDoneEffects();
+        if (effect != effects.end() && !freeChannels.empty())
         {
-            effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
-            freeChannels.pop_front();
-
-            if (!Threads::createDetached(&playEffectThread, (void*)&effectThreads.back()))
+            auto decoder = Decoder::get(effect->second);
+            if (decoder && decoder->good())
             {
-                effectThreads.back().inUse.clear();
+                effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
+                freeChannels.pop_front();
+
+                if (!Threads::createDetached(&playEffectThread, (void*)&effectThreads.back()))
+                {
+                    effectThreads.back().inUse.clear();
+                }
             }
         }
     }

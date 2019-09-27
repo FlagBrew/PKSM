@@ -447,7 +447,6 @@ void Gui::mainLoop(void)
 {
     bool exit = false;
     Sound::startBGM();
-    Sound::registerEffect("test", "/3ds/PKSM/click.mp3");
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -458,13 +457,7 @@ void Gui::mainLoop(void)
         C2D_TargetClear(g_renderTargetTextChop, 0);
         scrollingTextY = 0;
 
-        u32 kDown = hidKeysDown();
         u32 kHeld = hidKeysHeld();
-
-        if (kDown & KEY_SELECT)
-        {
-            Sound::playEffect("test");
-        }
 
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {

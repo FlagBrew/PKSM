@@ -15,7 +15,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
 
     if (!fp)
     {
-        fprintf(stderr, "Err: Tried to get magic an audio file that does not exist?!");
+        // fprintf(stderr, "Err: Tried to get magic an audio file that does not exist?!");
         return nullptr;
     }
 
@@ -26,7 +26,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     /*Wave*/
     if (!strncmp(magic, "RIFF", 4))
     {
-        fprintf(stderr, "Decoder: Using wav.");
+        // fprintf(stderr, "Decoder: Using wav.");
         auto wavdec = std::make_shared<WavDecoder>(fileName);
         if (wavdec->good())
             return wavdec;
@@ -36,23 +36,23 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     {
         if (isVorbis(fileName) == 0)
         {
-            fprintf(stderr, "Decoder: Using ogg vorbis");
+            // fprintf(stderr, "Decoder: Using ogg vorbis");
             auto vorbisdec = std::make_shared<VorbisDecoder>(fileName);
             if (vorbisdec->good())
                 return vorbisdec;
         }
-        else
-            fprintf(stderr, "Decoder: Unknown ogg codec");
+        // else
+        //     fprintf(stderr, "Decoder: Unknown ogg codec");
     }
     /*Mp3*/
     else if (!strncasecmp(extension.c_str(), "MP3", 3))
     {
-        fprintf(stderr, "Decoder: Using mpeg3");
+        // fprintf(stderr, "Decoder: Using mpeg3");
         auto mp3dec = std::make_shared<Mp3Decoder>(fileName);
         if (mp3dec->good())
             return mp3dec;
     }
 
-    fprintf(stderr, "Err: Failed to initalize decoder.");
+    // fprintf(stderr, "Err: Failed to initalize decoder.");
     return nullptr;
 }

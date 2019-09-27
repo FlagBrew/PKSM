@@ -39,13 +39,13 @@ Mp3Decoder::Mp3Decoder(const std::string& filename)
 
     if ((mh = mpg123_new(NULL, &err)) == NULL)
     {
-        fprintf(stderr, "Error: %s\n", mpg123_plain_strerror(err));
+        // fprintf(stderr, "Error: %s\n", mpg123_plain_strerror(err));
         return;
     }
 
     if (mpg123_open(mh, filename.c_str()) != MPG123_OK || mpg123_getformat(mh, (long*)&rate, (int*)&channels, &encoding) != MPG123_OK)
     {
-        fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
+        // fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
         return;
     }
 
