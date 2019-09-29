@@ -1170,6 +1170,8 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
     else if (form == 0)
     {
+        // This max will change over time!
+        species = std::min(809, std::max(0, species));
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
     }
     // Mimikyu
