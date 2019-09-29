@@ -82,7 +82,7 @@ void TitleLoadScreen::drawTop() const
     {
         int y = TitleLoader::nandTitles.size() > 4 ? (i / 4) * 60 + 68 : 98;
         int x = 150 + (4 - (TitleLoader::nandTitles.size() % 4 == 0 ? 4 : TitleLoader::nandTitles.size() % 4)) * 30 + (i > 3 ? i - 4 : i) * 60;
-        ;
+
         if (TitleLoader::nandTitles.size() > 4 && i < 4)
         {
             x = 150 + (i > 3 ? i - 4 : i) * 60;

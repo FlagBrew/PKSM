@@ -339,7 +339,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     aptSetHomeAllowed(false);
     // setup for printing errors
     static char error[4096];
-    std::fill_n(error, 4096, '\0');
+    std::fill_n(error, sizeof(error), '\0');
     // Save stdout state
     int stdout_save = dup(STDOUT_FILENO);
     // Set stdout to buffer to error
