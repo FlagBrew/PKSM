@@ -350,8 +350,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     {
         PicocPlatformScanFile(picoc, file.c_str());
         char* args[3];
-        std::string data   = std::to_string((int)TitleLoader::save->rawData());
-        args[0]            = data.data();
+        args[0] = (char*) TitleLoader::save->rawData();
         std::string length = std::to_string(TitleLoader::save->getLength());
         args[1]            = length.data();
         char version       = TitleLoader::save->version();
