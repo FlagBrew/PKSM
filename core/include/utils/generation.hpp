@@ -27,8 +27,8 @@
 #ifndef GENERATION_HPP
 #define GENERATION_HPP
 
-#include <string>
 #include "coretypes.h"
+#include <string>
 
 enum class Generation : u32
 {

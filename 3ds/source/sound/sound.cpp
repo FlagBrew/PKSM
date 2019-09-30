@@ -221,6 +221,10 @@ static void bgmPlayThread(void*)
 
 static void bgmControlThread(void*)
 {
+    if (bgm.empty())
+    {
+        return;
+    }
     while (playMusic)
     {
         HIDUSER_GetSoundVolume(&currentVolume);
