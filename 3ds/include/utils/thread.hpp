@@ -32,6 +32,7 @@
 
 namespace Threads
 {
+    Thread createDetached(ThreadFunc entrypoint, void* arg = nullptr);
     void create(ThreadFunc entrypoint, void* arg = nullptr);
     void destroy(void);
 }

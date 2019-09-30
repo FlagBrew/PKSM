@@ -23,19 +23,53 @@
  *         or requiring that modified versions of such material be marked in
  *         reasonable ways as different from the original version.
  */
+#define DR_WAV_IMPLEMENTATION
+#include "wav.hpp"
 
-#ifndef MIXER_HPP
-#define MIXER_HPP
+WavDecoder::WavDecoder(const std::string& filename)
+{
+    pWav        = drwav_open_file(filename.c_str());
+    wavprogress = 0;
+    if (pWav == NULL)
+        return;
 
-#include "io.hpp"
-#include <3ds.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
-#include <string>
+    initialized = true;
+}
 
-bool SDLH_Init(void);
-void SDLH_Exit(void);
+WavDecoder::~WavDecoder(void)
+{
+    drwav_close(pWav);
+    initialized = false;
+}
 
-void SDLH_Play(void);
+uint32_t WavDecoder::pos(void)
+{
+    return wavprogress;
+}
 
-#endif
+uint32_t WavDecoder::length(void)
+{
+    return pWav->totalSampleCount;
+}
+
+uint32_t WavDecoder::decode(void* buffer)
+{
+    uint64_t out = drwav_read_s16(pWav, buffSize, reinterpret_cast<drwav_int16*>(buffer));
+    wavprogress += out;
+    return out;
+}
+
+bool WavDecoder::stereo(void)
+{
+    return pWav->channels - 1;
+}
+
+uint32_t WavDecoder::sampleRate(void)
+{
+    return pWav->sampleRate;
+}
+
+uint32_t WavDecoder::bufferSize(void)
+{
+    return buffSize;
+}
