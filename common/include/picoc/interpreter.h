@@ -1,7 +1,7 @@
-/* picoc main header file - this has all the main data structures and 
+/* picoc main header file - this has all the main data structures and
  * function prototypes. If you're just calling picoc you should look at the
  * external interface instead, in picoc.h */
- 
+
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
@@ -63,23 +63,23 @@ typedef struct Picoc_Struct Picoc;
 /* lexical tokens */
 enum LexToken
 {
-    /* 0x00 */ TokenNone, 
+    /* 0x00 */ TokenNone,
     /* 0x01 */ TokenComma,
     /* 0x02 */ TokenAssign, TokenAddAssign, TokenSubtractAssign, TokenMultiplyAssign, TokenDivideAssign, TokenModulusAssign,
     /* 0x08 */ TokenShiftLeftAssign, TokenShiftRightAssign, TokenArithmeticAndAssign, TokenArithmeticOrAssign, TokenArithmeticExorAssign,
-    /* 0x0d */ TokenQuestionMark, TokenColon, 
-    /* 0x0f */ TokenLogicalOr, 
-    /* 0x10 */ TokenLogicalAnd, 
-    /* 0x11 */ TokenArithmeticOr, 
-    /* 0x12 */ TokenArithmeticExor, 
-    /* 0x13 */ TokenAmpersand, 
-    /* 0x14 */ TokenEqual, TokenNotEqual, 
+    /* 0x0d */ TokenQuestionMark, TokenColon,
+    /* 0x0f */ TokenLogicalOr,
+    /* 0x10 */ TokenLogicalAnd,
+    /* 0x11 */ TokenArithmeticOr,
+    /* 0x12 */ TokenArithmeticExor,
+    /* 0x13 */ TokenAmpersand,
+    /* 0x14 */ TokenEqual, TokenNotEqual,
     /* 0x16 */ TokenLessThan, TokenGreaterThan, TokenLessEqual, TokenGreaterEqual,
-    /* 0x1a */ TokenShiftLeft, TokenShiftRight, 
-    /* 0x1c */ TokenPlus, TokenMinus, 
+    /* 0x1a */ TokenShiftLeft, TokenShiftRight,
+    /* 0x1c */ TokenPlus, TokenMinus,
     /* 0x1e */ TokenAsterisk, TokenSlash, TokenModulus,
     /* 0x21 */ TokenIncrement, TokenDecrement, TokenUnaryNot, TokenUnaryExor, TokenSizeof, TokenCast,
-    /* 0x27 */ TokenLeftSquareBracket, TokenRightSquareBracket, TokenDot, TokenArrow, 
+    /* 0x27 */ TokenLeftSquareBracket, TokenRightSquareBracket, TokenDot, TokenArrow,
     /* 0x2b */ TokenOpenBracket, TokenCloseBracket,
     /* 0x2d */ TokenIdentifier, TokenIntegerConstant, TokenFPConstant, TokenStringConstant, TokenCharacterConstant,
     /* 0x32 */ TokenSemicolon, TokenEllipsis,
@@ -118,8 +118,8 @@ struct ParseState
     Picoc *pc;                  /* the picoc instance this parser is a part of */
     const unsigned char *Pos;   /* the character position in the source text */
     char *FileName;             /* what file we're executing (registered string) */
-    short int Line;             /* line number we're executing */
-    short int CharacterPos;     /* character/column in the line we're executing */
+    size_t Line;                /* line number we're executing */
+    size_t CharacterPos;     /* character/column in the line we're executing */
     enum RunMode Mode;          /* whether to skip or run code */
     int SearchLabel;            /* what case label we're searching for */
     const char *SearchGotoLabel;/* what goto label we're searching for */
@@ -128,6 +128,7 @@ struct ParseState
     short int HashIfEvaluateToLevel;    /* if we're not evaluating an if branch, what the last evaluated level was */
     char DebugMode;             /* debugging mode */
     int ScopeID;                /* for keeping track of local variables (free them after they go out of scope) */
+    char FreshGotoSearch;
 };
 
 /* values */
@@ -146,6 +147,7 @@ enum BaseType
     TypeFP,                     /* floating point */
 #endif
     TypeFunction,               /* a function */
+    TypeFunctionPtr,
     TypeMacro,                  /* a macro */
     TypePointer,                /* a pointer */
     TypeArray,                  /* an array of a sub-type */
@@ -242,19 +244,19 @@ struct TableEntry
             char *Key;              /* points to the shared string table */
             struct Value *Val;      /* the value we're storing */
         } v;                        /* used for tables of values */
-        
+
         char Key[1];                /* dummy size - used for the shared string table */
-        
+
         struct BreakpointEntry      /* defines a breakpoint */
         {
             const char *FileName;
-            short int Line;
-            short int CharacterPos;
+            unsigned short int Line;
+            unsigned short int CharacterPos;
         } b;
-        
+
     } p;
 };
-    
+
 struct Table
 {
     short Size;
@@ -366,7 +368,7 @@ struct Picoc_Struct
     struct Table GlobalTable;
     struct CleanupTokenNode *CleanupTokenList;
     struct TableEntry *GlobalHashTable[GLOBAL_TABLE_SIZE];
-    
+
     /* lexer global data */
     struct TokenLine *InteractiveHead;
     struct TokenLine *InteractiveTail;
@@ -380,7 +382,7 @@ struct Picoc_Struct
     /* the table of string literal values */
     struct Table StringLiteralTable;
     struct TableEntry *StringLiteralHashTable[STRING_LITERAL_TABLE_SIZE];
-    
+
     /* the stack */
     struct StackFrame *TopStackFrame;
 
@@ -414,7 +416,7 @@ struct Picoc_Struct
     struct AllocNode *FreeListBucket[FREELIST_BUCKETS];      /* we keep a pool of freelist buckets to reduce fragmentation */
     struct AllocNode *FreeListBig;                           /* free memory which doesn't fit in a bucket */
 
-    /* types */    
+    /* types */
     struct ValueType UberType;
     struct ValueType IntType;
     struct ValueType ShortType;
@@ -433,6 +435,7 @@ struct Picoc_Struct
     struct ValueType MacroType;
     struct ValueType EnumType;
     struct ValueType GotoLabelType;
+    struct ValueType FunctionPtrType;
     struct ValueType *CharPtrType;
     struct ValueType *CharPtrPtrType;
     struct ValueType *CharArrayType;
@@ -443,7 +446,7 @@ struct Picoc_Struct
     struct TableEntry *BreakpointHashTable[BREAKPOINT_TABLE_SIZE];
     int BreakpointCount;
     int DebugManualBreak;
-    
+
     /* C library */
     int BigEndian;
     int LittleEndian;
@@ -453,7 +456,7 @@ struct Picoc_Struct
 
     /* the picoc version string */
     const char *VersionString;
-    
+
     /* exit longjump buffer */
 #if defined(UNIX_HOST) || defined(WIN32)
     jmp_buf PicocExitBuf;
@@ -461,7 +464,7 @@ struct Picoc_Struct
 #ifdef SURVEYOR_HOST
     int PicocExitBuf[41];
 #endif
-    
+
     /* string table */
     struct Table StringTable;
     struct TableEntry *StringHashTable[STRING_TABLE_SIZE];
@@ -473,8 +476,8 @@ void TableInit(Picoc *pc);
 char *TableStrRegister(Picoc *pc, const char *Str);
 char *TableStrRegister2(Picoc *pc, const char *Str, int Len);
 void TableInitTable(struct Table *Tbl, struct TableEntry **HashTable, int Size, int OnHeap);
-int TableSet(Picoc *pc, struct Table *Tbl, char *Key, struct Value *Val, const char *DeclFileName, int DeclLine, int DeclColumn);
-int TableGet(struct Table *Tbl, const char *Key, struct Value **Val, const char **DeclFileName, int *DeclLine, int *DeclColumn);
+int TableSet(Picoc *pc, struct Table *Tbl, char *Key, struct Value *Val, const char *DeclFileName, size_t DeclLine, size_t DeclColumn);
+int TableGet(struct Table *Tbl, const char *Key, struct Value **Val, const char **DeclFileName, size_t *DeclLine, size_t *DeclColumn);
 struct Value *TableDelete(Picoc *pc, struct Table *Tbl, const char *Key);
 char *TableSetIdentifier(Picoc *pc, struct Table *Tbl, const char *Ident, int IdentLen);
 void TableStrFree(Picoc *pc);
@@ -498,7 +501,7 @@ void LexInteractiveStatementPrompt(Picoc *pc);
  * void PicocParseInteractive(); */
 void PicocParseInteractiveNoStartPrompt(Picoc *pc, int EnableDebugger);
 enum ParseResult ParseStatement(struct ParseState *Parser, int CheckTrailingSemicolon);
-struct Value *ParseFunctionDefinition(struct ParseState *Parser, struct ValueType *ReturnType, char *Identifier);
+struct Value *ParseFunctionDefinition(struct ParseState *Parser, struct ValueType *ReturnType, char *Identifier, int IsPointerDecl);
 void ParseCleanup(Picoc *pc);
 void ParserCopyPos(struct ParseState *To, struct ParseState *From);
 void ParserCopy(struct ParseState *To, struct ParseState *From);
@@ -522,6 +525,7 @@ int TypeStackSizeValue(struct Value *Val);
 int TypeLastAccessibleOffset(Picoc *pc, struct Value *Val);
 int TypeParseFront(struct ParseState *Parser, struct ValueType **Typ, int *IsStatic);
 void TypeParseIdentPart(struct ParseState *Parser, struct ValueType *BasicTyp, struct ValueType **Typ, char **Identifier);
+int TypeParseFunctionPointer(struct ParseState *Parser, struct ValueType *BasicTyp, struct ValueType **Typ, char **Identifier);
 void TypeParse(struct ParseState *Parser, struct ValueType **Typ, char **Identifier, int *IsStatic);
 struct ValueType *TypeGetMatching(Picoc *pc, struct ParseState *Parser, struct ValueType *ParentType, enum BaseType Base, int ArraySize, const char *Identifier, int AllowDuplicates);
 struct ValueType *TypeCreateOpaqueStruct(Picoc *pc, struct ParseState *Parser, const char *StructName, int Size);
@@ -609,12 +613,13 @@ void IncludeRegister(Picoc *pc, const char *IncludeName, void (*SetupFunction)(P
 void IncludeFile(Picoc *pc, char *Filename);
 /* the following is defined in picoc.h:
  * void PicocIncludeAllSystemHeaders(); */
- 
+
 /* debug.c */
 void DebugInit();
 void DebugCleanup();
 void DebugCheckStatement(struct ParseState *Parser);
 
+char *GetGotoIdentifier(const char *function_id, const char *goto_id);
 
 /* stdio.c */
 extern const char StdioDefs[];

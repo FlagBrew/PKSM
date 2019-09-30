@@ -367,20 +367,16 @@ static bool update(std::string execPath)
     return false;
 }
 
-static std::atomic<bool> doCartScan = false;
+static std::atomic_flag doCartScan;
 
 static void cartScan(void*)
 {
 #if !CITRA_DEBUG
-    while (doCartScan)
+    bool oldCardIn;
+    FSUSER_CardSlotIsInserted(&oldCardIn);
+
+    while (doCartScan.test_and_set())
     {
-        static bool first     = true;
-        static bool oldCardIn = false;
-        if (first)
-        {
-            FSUSER_CardSlotIsInserted(&oldCardIn);
-            first = false;
-        }
         bool cardIn = false;
 
         FSUSER_CardSlotIsInserted(&cardIn);
@@ -501,10 +497,12 @@ Result App::init(const std::string& execPath)
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
 
+    TitleLoader::init();
+
     Threads::create((ThreadFunc)TitleLoader::scanTitles);
     TitleLoader::scanSaves();
 
-    doCartScan = true;
+    doCartScan.test_and_set();
     Threads::create((ThreadFunc)cartScan);
 
     randomNumbers.seed(osGetTime());
@@ -523,7 +521,7 @@ Result App::exit(void)
     Gui::exit();
     socExit();
     acExit();
-    doCartScan = false;
+    doCartScan.clear();
     Threads::destroy();
     i18n::exit();
     amExit();

@@ -65,7 +65,7 @@ void StdStrftime(struct ParseState *Parser, struct Value *ReturnValue, struct Va
 void StdStrptime(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
 	  extern char *strptime(const char *s, const char *format, struct tm *tm);
-	  
+	
     ReturnValue->Val->Pointer = strptime(Param[0]->Val->Pointer, Param[1]->Val->Pointer, Param[2]->Val->Pointer);
 }
 
@@ -114,7 +114,7 @@ void StdTimeSetupFunc(Picoc *pc)
 {
     /* make a "struct tm" which is the same size as a native tm structure */
     TypeCreateOpaqueStruct(pc, NULL, TableStrRegister(pc, "tm"), sizeof(struct tm));
-    
+
     /* define CLK_PER_SEC etc. */
     VariableDefinePlatformVar(pc, NULL, "CLOCKS_PER_SEC", &pc->IntType, (union AnyValue *)&CLOCKS_PER_SECValue, FALSE);
 #ifdef CLK_PER_SEC

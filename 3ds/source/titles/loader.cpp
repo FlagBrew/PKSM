@@ -58,6 +58,7 @@ static constexpr std::string_view dsIds[9] = {
 };
 
 static std::atomic<bool> cartWasUpdated = false;
+static std::atomic_flag continueScan;
 
 static std::string idToSaveName(const std::string& id)
 {
@@ -163,6 +164,11 @@ static bool saveIsFile;
 static std::string saveFileName;
 static std::shared_ptr<Title> loadedTitle;
 
+void TitleLoader::init(void)
+{
+    continueScan.test_and_set();
+}
+
 void TitleLoader::scanTitles(void)
 {
     Result res = 0;
@@ -171,11 +177,18 @@ void TitleLoader::scanTitles(void)
     // clear title list if filled previously
     nandTitles.clear();
 
-    scanCard();
+    if (continueScan.test_and_set())
+    {
+        scanCard();
+    }
+    else
+    {
+        return;
+    }
 
     // get title count
     res = AM_GetTitleCount(MEDIATYPE_SD, &count);
-    if (R_FAILED(res))
+    if (R_FAILED(res) || !continueScan.test_and_set())
     {
         return;
     }
@@ -184,7 +197,7 @@ void TitleLoader::scanTitles(void)
     std::vector<u64> ids(count);
     u64* p = ids.data();
     res    = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
-    if (R_FAILED(res))
+    if (R_FAILED(res) || !continueScan.test_and_set())
     {
         return;
     }
@@ -192,13 +205,20 @@ void TitleLoader::scanTitles(void)
     for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
         u64 id = ctrTitleIds.at(i);
-        if (std::find(ids.begin(), ids.end(), id) != ids.end())
+        if (continueScan.test_and_set())
         {
-            auto title = std::make_shared<Title>();
-            if (title->load(id, MEDIATYPE_SD, CARD_CTR))
+            if (std::find(ids.begin(), ids.end(), id) != ids.end())
             {
-                nandTitles.push_back(title);
+                auto title = std::make_shared<Title>();
+                if (title->load(id, MEDIATYPE_SD, CARD_CTR))
+                {
+                    nandTitles.push_back(title);
+                }
             }
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -573,6 +593,7 @@ void TitleLoader::saveChanges()
 
 void TitleLoader::exit()
 {
+    continueScan.clear();
     nandTitles.clear();
     cardTitle   = nullptr;
     loadedTitle = nullptr;

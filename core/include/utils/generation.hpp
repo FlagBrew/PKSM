@@ -28,8 +28,9 @@
 #define GENERATION_HPP
 
 #include <string>
+#include "coretypes.h"
 
-enum class Generation
+enum class Generation : u32
 {
     FOUR,
     FIVE,

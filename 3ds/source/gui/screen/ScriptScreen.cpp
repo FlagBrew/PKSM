@@ -339,7 +339,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     aptSetHomeAllowed(false);
     // setup for printing errors
     static char error[4096];
-    std::fill_n(error, 4096, '\0');
+    std::fill_n(error, sizeof(error), '\0');
     // Save stdout state
     int stdout_save = dup(STDOUT_FILENO);
     // Set stdout to buffer to error
@@ -350,8 +350,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     {
         PicocPlatformScanFile(picoc, file.c_str());
         char* args[3];
-        std::string data   = std::to_string((int)TitleLoader::save->rawData());
-        args[0]            = data.data();
+        args[0] = (char*) TitleLoader::save->rawData();
         std::string length = std::to_string(TitleLoader::save->getLength());
         args[1]            = length.data();
         char version       = TitleLoader::save->version();
