@@ -108,11 +108,11 @@ void TitleLoadScreen::drawBottom() const
 
     auto text      = Gui::parseText(i18n::localize("LOADER_ID"), FONT_SIZE_11, 0.0f);
     int nextIdPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 46, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     text              = Gui::parseText(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11, 0.0f);
     int nextMediaPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 58, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     if (auto title = titleFromIndex(selectedTitle))
     {

@@ -247,7 +247,7 @@ void CloudScreen::drawTop() const
         info      = i18n::localize("LV") + std::to_string(infoMon->level());
         auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         int width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 375 - width, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (infoMon->gender() == 0)
         {
             Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
@@ -294,7 +294,7 @@ void CloudScreen::drawTop() const
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 276, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));

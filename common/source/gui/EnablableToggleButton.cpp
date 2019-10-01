@@ -49,7 +49,7 @@ void EnablableToggleButton::draw() const
         if (!text.empty())
         {
             Gui::text(
-                disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize, disabledTextColor, TextPosX::CENTER, TextPosY::CENTER, width);
+                disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize, disabledTextColor, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, width);
         }
     }
     else

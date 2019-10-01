@@ -112,7 +112,7 @@ namespace TextParse
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();
-        void draw(float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
+        void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
         void truncate(size_t lines);
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
@@ -153,7 +153,7 @@ namespace TextParse
     public:
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
-        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
+        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
         void optimize();
         void draw() const;
         void clear();
@@ -161,12 +161,13 @@ namespace TextParse
     private:
         struct DrawableGlyph
         {
-            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize size, PKSM_Color color = COLOR_BLACK)
-                : x(x), y(y), z(z), size(size), color(color), glyph(glyph)
+            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize sizeX, FontSize sizeY, PKSM_Color color = COLOR_BLACK)
+                : x(x), y(y), z(z), sizeX(sizeX), sizeY(sizeY), color(color), glyph(glyph)
             {
             }
             float x, y, z;
-            FontSize size;
+            FontSize sizeX;
+            FontSize sizeY;
             PKSM_Color color;
             Glyph glyph;
         };

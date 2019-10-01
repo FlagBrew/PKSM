@@ -70,7 +70,7 @@ void FormOverlay::drawTop() const
                         y * 48 + 1);
                     const std::string& text = i18n::form(
                         Configuration::getInstance().language(), std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation());
-                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
                 break;
                 case 1:
@@ -79,7 +79,7 @@ void FormOverlay::drawTop() const
                         y * 48 + 1);
                     const std::string& text = i18n::form(
                         Configuration::getInstance().language(), std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation());
-                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
                 break;
             }

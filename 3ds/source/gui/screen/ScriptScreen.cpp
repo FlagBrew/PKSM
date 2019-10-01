@@ -142,7 +142,7 @@ void ScriptScreen::drawBottom() const
     Gui::drawSolidRect(21, 41, 278, 58, COLOR_MASKBLACK);
     Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 260.0f);
+    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
 }
 
 void ScriptScreen::update(touchPosition* touch)

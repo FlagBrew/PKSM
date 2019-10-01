@@ -260,12 +260,12 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, FontSize
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY)
+void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
-    const float lineMod = size * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y -= size * 6;
+    const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
+    y -= sizeY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -278,111 +278,128 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
             break;
     }
 
-    currentText->addText(text, x, y, 0.5f, size, positionX, color);
+    currentText->addText(text, x, y, 0.5f, sizeX, sizeY, positionX, color);
 }
 
-void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, TextWidthAction action, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
-    auto text = parseText(str, size, maxWidth);
-
-    Gui::text(text, x, y, size, color, positionX, positionY);
-}
-
-void Gui::scrollingText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
-{
-    static_assert(std::is_same<FontSize, float>::value);
-    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
+    static constexpr Tex3DS_SubTexture t3x = {512, 64, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
-
-    auto text = parseText(str, size);
-    text->optimize();
-    if (!scrollOffsets.count(str))
+    if (maxWidth == 0)
     {
-        scrollOffsets[str] = {0, 1};
+        action = TextWidthAction::IGNORE;
     }
-
-    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= size * 6;
-    switch (positionY)
+    switch (action)
     {
-        case TextPosY::TOP:
-            break;
-        case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
-            break;
-        case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
-            break;
-    }
-
-    C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, positionX, color);
-    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
-    scrollingTextY += ceilf(lineMod);
-    if (scrollOffsets[str].pauseTime != 0)
-    {
-        if (scrollOffsets[str].pauseTime > 30)
+        case TextWidthAction::IGNORE:
         {
-            if (scrollOffsets[str].offset == 0)
+            auto text = parseText(str, size, 0.0f);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::WRAP:
+        {
+            auto text = parseText(str, size, maxWidth);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SQUISH:
+        {
+            auto text = parseText(str, size, 0.0f);
+            float sizeX = std::min(size, size*(maxWidth/text->maxLineWidth));
+            Gui::text(text, x, y, sizeX, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SLICE:
+        {
+            auto text = parseText(str, size);
+            text->optimize();
+
+            const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
+            const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+            y -= size * 6;
+            switch (positionY)
             {
-                scrollOffsets[str].pauseTime = 0;
+                case TextPosY::TOP:
+                    break;
+                case TextPosY::CENTER:
+                    y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+                    break;
+                case TextPosY::BOTTOM:
+                    y -= lineMod * (float)text->lineWidths.size();
+                    break;
+            }
+
+            C2D_SceneBegin(g_renderTargetTextChop);
+            C2D_TargetClear(g_renderTargetTextChop, 0);
+            text->draw(0, 0, 0, size, size, positionX, color);
+            C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
+            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, lineMod - baselinePos, maxWidth, lineMod * 2 - baselinePos);
+            scrollingTextY += ceilf(lineMod);
+            scrollOffsets[str] = {0, 1};
+            C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
+        }
+        break;
+        case TextWidthAction::SCROLL:
+        {
+            auto text = parseText(str, size);
+            text->optimize();
+            if (!scrollOffsets.count(str))
+            {
+                scrollOffsets[str] = {0, 1};
+            }
+
+            const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
+            const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
+            y -= size * 6;
+            switch (positionY)
+            {
+                case TextPosY::TOP:
+                    break;
+                case TextPosY::CENTER:
+                    y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+                    break;
+                case TextPosY::BOTTOM:
+                    y -= lineMod * (float)text->lineWidths.size();
+                    break;
+            }
+
+            C2D_SceneBegin(g_renderTargetTextChop);
+            C2D_TargetClear(g_renderTargetTextChop, 0);
+            text->draw(-scrollOffsets[str].offset / 3, 0, 0, size, size, positionX, color);
+            C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
+            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, lineMod - baselinePos, maxWidth, lineMod * 2 - baselinePos);
+            if (scrollOffsets[str].pauseTime != 0)
+            {
+                if (scrollOffsets[str].pauseTime > 30)
+                {
+                    if (scrollOffsets[str].offset == 0)
+                    {
+                        scrollOffsets[str].pauseTime = 0;
+                    }
+                    else
+                    {
+                        scrollOffsets[str].pauseTime = 1;
+                    }
+                    scrollOffsets[str].offset = 0;
+                }
+                else
+                {
+                    scrollOffsets[str].pauseTime++;
+                }
             }
             else
             {
-                scrollOffsets[str].pauseTime = 1;
+                scrollOffsets[str].offset += 1;
+                if (scrollOffsets[str].offset / 3 + maxWidth > (int)text->maxLineWidth * size + 5)
+                {
+                    scrollOffsets[str].pauseTime += 1;
+                }
             }
-            scrollOffsets[str].offset = 0;
-        }
-        else
-        {
-            scrollOffsets[str].pauseTime++;
+            C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
         }
     }
-    else
-    {
-        scrollOffsets[str].offset += 1;
-        if (scrollOffsets[str].offset / 3 + width > (int)text->maxLineWidth * size + 5)
-        {
-            scrollOffsets[str].pauseTime += 1;
-        }
-    }
-    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
-}
-
-void Gui::slicedText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
-{
-    static_assert(std::is_same<FontSize, float>::value);
-    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
-    static const C2D_Image textImage   = {&textChopTexture, &t3x};
-
-    auto text = parseText(str, size);
-    text->optimize();
-
-    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= size * 6;
-    switch (positionY)
-    {
-        case TextPosY::TOP:
-            break;
-        case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
-            break;
-        case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
-            break;
-    }
-
-    C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(0, scrollingTextY, 0, size, positionX, color);
-    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
-    scrollingTextY += ceilf(lineMod);
-    scrollOffsets[str] = {0, 1};
-    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
 }
 
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
@@ -420,7 +437,7 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    C3D_TexInitVRAM(&textChopTexture, 512, 256, GPU_RGBA8);
+    C3D_TexInitVRAM(&textChopTexture, 512, 64, GPU_RGBA8);
     g_renderTargetTextChop = C3D_RenderTargetCreateFromTex(&textChopTexture, GPU_TEXFACE_2D, 0, GPU_RB_DEPTH16);
 
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
@@ -1618,7 +1635,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
         auto parsed   = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
@@ -1677,7 +1694,7 @@ void Gui::waitFrame(const std::string& message)
     auto parsed   = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
 
@@ -1716,7 +1733,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
         auto parsed   = parseText(message, FONT_SIZE_15);
         float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
         float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
         if (lang)

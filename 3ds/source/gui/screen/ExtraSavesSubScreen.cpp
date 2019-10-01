@@ -515,11 +515,11 @@ void ExtraSavesSubScreen::drawBottom() const
                 {
                     if ((int)j == selectedSave)
                     {
-                        Gui::scrollingText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169);
                     }
                     else
                     {
-                        Gui::slicedText(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169);
                     }
                     y += 17;
                 }
@@ -540,11 +540,11 @@ void ExtraSavesSubScreen::drawBottom() const
             {
                 if (i - firstSave == selectedSave)
                 {
-                    Gui::scrollingText(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    Gui::text(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169);
                 }
                 else
                 {
-                    Gui::slicedText(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, 169);
+                    Gui::text(currentSaves[i], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169);
                 }
             }
             else
@@ -568,7 +568,7 @@ void ExtraSavesSubScreen::drawBottom() const
     }
 
     Gui::text(i18n::localize("A_ADD_SAVE"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 94);
+    Gui::text(i18n::localize("X_DELETE_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 94);
 
     Gui::text(i18n::localize("EXTRASAVES_CONFIGURE_INSTRUCTIONS"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
