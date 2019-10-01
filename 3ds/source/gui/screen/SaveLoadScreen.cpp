@@ -199,7 +199,8 @@ SaveLoadScreen::SaveLoadScreen()
 
 void SaveLoadScreen::makeInstructions()
 {
-    instructions = Instructions(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"));
+    instructions = Instructions(
+        i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"));
 }
 
 void SaveLoadScreen::drawTop(void) const

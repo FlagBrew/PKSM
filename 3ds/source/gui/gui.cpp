@@ -262,7 +262,8 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, FontSize
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
+void Gui::text(
+    std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
@@ -283,11 +284,12 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     currentText->addText(text, x, y, 0.5f, sizeX, sizeY, positionX, color);
 }
 
-void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, TextWidthAction action, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
+    TextWidthAction action, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
     static constexpr Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
-    static const C2D_Image textImage   = {&textChopTexture, &t3x};
+    static const C2D_Image textImage       = {&textChopTexture, &t3x};
     if (maxWidth == 0)
     {
         action = TextWidthAction::IGNORE;
@@ -308,8 +310,8 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
         break;
         case TextWidthAction::SQUISH:
         {
-            auto text = parseText(str, size, 0.0f);
-            float sizeX = std::min(size, size*(maxWidth/(text->maxLineWidth * size)));
+            auto text   = parseText(str, size, 0.0f);
+            float sizeX = std::min(size, size * (maxWidth / (text->maxLineWidth * size)));
             Gui::text(text, x, y, sizeX, size, color, positionX, positionY);
         }
         break;
@@ -341,7 +343,8 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             C2D_SceneBegin(g_renderTargetTextChop);
             text->draw(0, scrollingTextY, 0, size, size, positionX, color);
             C2D_SceneBegin(g_renderTargetCurrent);
-            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
+            Tex3DS_SubTexture newt3x =
+                _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
             scrollOffsets[str] = {0, 1};
             Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
@@ -380,7 +383,8 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, size, positionX, color);
             text->draw(-scrollOffsets[str].offset / 3, 0, 0, size, size, positionX, color);
             C2D_SceneBegin(g_renderTargetCurrent);
-            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
+            Tex3DS_SubTexture newt3x =
+                _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
             if (scrollOffsets[str].pauseTime != 0)
             {

@@ -515,11 +515,13 @@ void ExtraSavesSubScreen::drawBottom() const
                 {
                     if ((int)j == selectedSave)
                     {
-                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169);
+                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                            TextWidthAction::SCROLL, 169);
                     }
                     else
                     {
-                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169);
+                        Gui::text(idSaves.second[i - firstSave + j], 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                            TextWidthAction::SLICE, 169);
                     }
                     y += 17;
                 }

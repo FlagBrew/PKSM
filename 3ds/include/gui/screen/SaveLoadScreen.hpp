@@ -28,8 +28,8 @@
 #include "Directory.hpp"
 #include "Screen.hpp"
 #include "Title.hpp"
-#include "loader.hpp"
 #include "i18n.hpp"
+#include "loader.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>

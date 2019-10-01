@@ -79,11 +79,13 @@ void ViewOverlay::drawTop() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i]);
+        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+            TextWidthAction::SQUISH, displayWidths[i]);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i + 10]);
+        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+            TextWidthAction::SQUISH, displayWidths[i + 10]);
     }
     Gui::text(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 

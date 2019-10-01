@@ -34,8 +34,8 @@
 #include "SaveLoadScreen.hpp"
 #include "Screen.hpp"
 #include "Title.hpp"
-#include "loader.hpp"
 #include "i18n.hpp"
+#include "loader.hpp"
 #include <cmath>
 #include <memory>
 

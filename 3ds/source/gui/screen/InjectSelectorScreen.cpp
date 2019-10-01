@@ -276,8 +276,8 @@ void InjectSelectorScreen::drawTop() const
                 // Truncate to two lines
                 text->truncate(2);
                 // Then display it
-                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11, i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255),
-                    TextPosX::CENTER, TextPosY::CENTER);
+                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, FONT_SIZE_11,
+                    i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255), TextPosX::CENTER, TextPosY::CENTER);
             }
         }
     }

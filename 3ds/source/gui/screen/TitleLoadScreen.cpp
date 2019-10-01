@@ -65,7 +65,8 @@ TitleLoadScreen::TitleLoadScreen()
 
 void TitleLoadScreen::makeInstructions()
 {
-    instructions = Instructions(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"));
+    instructions = Instructions(
+        i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"));
 }
 
 void TitleLoadScreen::drawTop() const
@@ -147,11 +148,13 @@ void TitleLoadScreen::drawBottom() const
         {
             if (i - firstSave == selectedSave)
             {
-                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                    TextWidthAction::SCROLL, 169.0f);
             }
             else
             {
-                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE,
+                    169.0f);
             }
         }
         else if (i < (int)availableCheckpointSaves.size())

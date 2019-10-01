@@ -48,8 +48,8 @@ void EnablableToggleButton::draw() const
         Gui::sprite(disabledImage, xPos, yPos);
         if (!text.empty())
         {
-            Gui::text(
-                disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize, disabledTextColor, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, width);
+            Gui::text(disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize, disabledTextColor, TextPosX::CENTER, TextPosY::CENTER,
+                TextWidthAction::WRAP, width);
         }
     }
     else

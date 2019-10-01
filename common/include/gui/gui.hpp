@@ -94,9 +94,10 @@ namespace Gui
     // Used to get text width/number of lines
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);
     void clearText(void);
-    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY);
-    void text(
-        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, TextWidthAction action = TextWidthAction::IGNORE, float maxWidth = 0.0f);
+    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX,
+        TextPosY positionY);
+    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
+        TextWidthAction action = TextWidthAction::IGNORE, float maxWidth = 0.0f);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

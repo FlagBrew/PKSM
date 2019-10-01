@@ -101,7 +101,8 @@ void CloudOverlay::drawBottom() const
         button->draw();
     }
     Gui::text(i18n::localize("CLOUD_SORT_FILTER"), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize(sortTypeToString(access.sortType())), 160, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 108);
+    Gui::text(i18n::localize(sortTypeToString(access.sortType())), 160, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
+        TextWidthAction::WRAP, 108);
 }
 
 void CloudOverlay::update(touchPosition* touch)
