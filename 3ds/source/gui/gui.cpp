@@ -286,7 +286,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
 void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, TextWidthAction action, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
-    static constexpr Tex3DS_SubTexture t3x = {512, 64, 0.0f, 1.0f, 1.0f, 0.0f};
+    static constexpr Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     static const C2D_Image textImage   = {&textChopTexture, &t3x};
     if (maxWidth == 0)
     {
@@ -338,14 +338,13 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                     break;
             }
 
-            C2D_TargetClear(g_renderTargetTextChop, 0);
             C2D_SceneBegin(g_renderTargetTextChop);
-            text->draw(0, 0, 0, size, size, positionX, color);
+            text->draw(0, scrollingTextY, 0, size, size, positionX, color);
             C2D_SceneBegin(g_renderTargetCurrent);
-            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, lineMod - baselinePos, maxWidth, lineMod * 2 - baselinePos);
+            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
             scrollOffsets[str] = {0, 1};
-            C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
+            Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
         }
         break;
         case TextWidthAction::SCROLL:
@@ -377,11 +376,12 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                     break;
             }
 
-            C2D_TargetClear(g_renderTargetTextChop, 0);
             C2D_SceneBegin(g_renderTargetTextChop);
+            text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, size, positionX, color);
             text->draw(-scrollOffsets[str].offset / 3, 0, 0, size, size, positionX, color);
             C2D_SceneBegin(g_renderTargetCurrent);
-            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, lineMod - baselinePos, maxWidth, lineMod * 2 - baselinePos);
+            Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
+            scrollingTextY += ceilf(lineMod);
             if (scrollOffsets[str].pauseTime != 0)
             {
                 if (scrollOffsets[str].pauseTime > 30)
@@ -409,7 +409,7 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                     scrollOffsets[str].pauseTime += 1;
                 }
             }
-            C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
+            Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
         }
     }
 }
@@ -449,7 +449,7 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    C3D_TexInitVRAM(&textChopTexture, 512, 64, GPU_RGBA8);
+    C3D_TexInitVRAM(&textChopTexture, 512, 256, GPU_RGBA8);
     g_renderTargetTextChop = C3D_RenderTargetCreateFromTex(&textChopTexture, GPU_TEXFACE_2D, 0, GPU_RB_DEPTH16);
 
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
