@@ -35,6 +35,7 @@
 #include "Screen.hpp"
 #include "Title.hpp"
 #include "loader.hpp"
+#include "i18n.hpp"
 #include <cmath>
 #include <memory>
 
@@ -49,8 +50,10 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
+    void makeInstructions();
 
 private:
+    Language oldLang;
     int selectedTitle = -2;
     std::vector<std::string> availableCheckpointSaves;
     int firstSave = -1;

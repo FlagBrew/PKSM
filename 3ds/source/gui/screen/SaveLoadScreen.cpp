@@ -53,6 +53,7 @@ SaveLoadScreen::SaveLoadScreen()
     : Screen(
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
+    oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
@@ -196,6 +197,11 @@ SaveLoadScreen::SaveLoadScreen()
     }
 }
 
+void SaveLoadScreen::makeInstructions()
+{
+    instructions = Instructions(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"));
+}
+
 void SaveLoadScreen::drawTop(void) const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
@@ -330,6 +336,11 @@ void SaveLoadScreen::drawBottom() const
 
 void SaveLoadScreen::update(touchPosition* touch)
 {
+    if (oldLang != Configuration::getInstance().language())
+    {
+        oldLang = Configuration::getInstance().language();
+        makeInstructions();
+    }
     u32 downKeys = hidKeysDown();
     if (selectedGroup)
     {
