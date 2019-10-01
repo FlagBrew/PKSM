@@ -29,6 +29,7 @@
 
 #include "MainMenuButton.hpp"
 #include "Screen.hpp"
+#include "i18n.hpp"
 #include <array>
 
 class MainMenu : public Screen
@@ -40,11 +41,13 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
     void setTimer(bool time) { doTimer = time; }
+    void makeButtons();
 
 private:
     std::array<std::unique_ptr<MainMenuButton>, 6> buttons;
     bool justSwitched = true;
     bool doTimer      = false;
+    Language oldLang;
 };
 
 #endif
