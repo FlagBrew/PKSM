@@ -29,8 +29,10 @@
 #include "PB7.hpp"
 #include "gui.hpp"
 
-static constexpr std::string_view displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
+static constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
     "HIDDEN_POWER", "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};
+
+static constexpr std::array<float, 16> displayWidths = {75, 75, 75, 75, 75, 75, 75, 75, 110, 110, 60, 60, 60, 60, 60, 60};
 
 void ViewOverlay::drawTop() const
 {
@@ -77,11 +79,11 @@ void ViewOverlay::drawTop() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i]);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i + 10]);
     }
     Gui::text(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
@@ -186,7 +188,7 @@ void ViewOverlay::drawTop() const
         for (int i = 0; i < 4; i++)
         {
             Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252, 156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+                TextPosY::TOP, TextWidthAction::SCROLL, 148.0f);
         }
     }
     else
