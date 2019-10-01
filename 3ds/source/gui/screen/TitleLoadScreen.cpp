@@ -139,13 +139,27 @@ void TitleLoadScreen::drawBottom() const
     {
         if (i == -1)
         {
-            Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            if (i - firstSave == selectedSave)
+            {
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+            }
+            else
+            {
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+            }
         }
         else if (i < (int)availableCheckpointSaves.size())
         {
             std::string save = availableCheckpointSaves[i].substr(0, availableCheckpointSaves[i].find_last_of('/'));
             save             = save.substr(save.find_last_of('/') + 1);
-            Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            if (i - firstSave == selectedSave)
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+            }
+            else
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+            }
         }
         else
         {

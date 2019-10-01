@@ -290,7 +290,14 @@ void SaveLoadScreen::drawBottom() const
             std::string save = saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
             save             = save.substr(save.find_last_of('/') + 1);
             save             = saves[saveGroup][i].first + save;
-            Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            if (i - firstSave == selectedSave)
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+            }
+            else
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+            }
         }
         else
         {

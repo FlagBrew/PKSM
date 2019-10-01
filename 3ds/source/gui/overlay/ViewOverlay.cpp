@@ -188,7 +188,7 @@ void ViewOverlay::drawTop() const
         for (int i = 0; i < 4; i++)
         {
             Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252, 156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP, TextWidthAction::SCROLL, 148.0f);
+                TextPosY::TOP, TextWidthAction::SQUISH, 144.0f);
         }
     }
     else
