@@ -109,7 +109,8 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP,
+        TextWidthAction::SQUISH, 398);
     Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
