@@ -155,6 +155,7 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     int numChars = Param[2]->Val->Integer;
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
@@ -173,6 +174,7 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
     char number[numChars + 1] = {0};
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, numChars);
@@ -186,6 +188,7 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
         {
             Gui::warn(hint);
             C3D_FrameEnd(0); // Just make sure
+            Gui::frameClean();
         }
     } while (button != SWKBD_BUTTON_CONFIRM);
     number[numChars] = '\0';

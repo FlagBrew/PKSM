@@ -148,6 +148,7 @@ void QRData::drawThread()
         Gui::drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     svcReleaseMutex(imageMutex);
 }

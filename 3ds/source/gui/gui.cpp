@@ -61,6 +61,7 @@ struct ScrollingTextOffset
 {
     int offset;
     int pauseTime;
+    bool thisFrame;
 };
 static std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
 
@@ -346,7 +347,6 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             Tex3DS_SubTexture newt3x =
                 _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
-            scrollOffsets[str] = {0, 1};
             switch (positionX)
             {
                 case TextPosX::LEFT:
@@ -370,9 +370,10 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                 return;
             }
             text->optimize();
-            if (!scrollOffsets.count(str))
+            auto offsetIt = scrollOffsets.find(str);
+            if (offsetIt == scrollOffsets.end())
             {
-                scrollOffsets[str] = {0, 1};
+                offsetIt = scrollOffsets.emplace(str, ScrollingTextOffset{0, 1, true}).first;
             }
 
             const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
@@ -391,36 +392,40 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             }
 
             C2D_SceneBegin(g_renderTargetTextChop);
-            text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, size, TextPosX::LEFT, color);
+            text->draw(-offsetIt->second.offset / 3, scrollingTextY, 0, size, size, TextPosX::LEFT, color);
             C2D_SceneBegin(g_renderTargetCurrent);
             Tex3DS_SubTexture newt3x =
                 _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
-            if (scrollOffsets[str].pauseTime != 0)
+            if (!offsetIt->second.thisFrame)
             {
-                if (scrollOffsets[str].pauseTime > 30)
+                offsetIt->second.thisFrame = true;
+                if (offsetIt->second.pauseTime != 0)
                 {
-                    if (scrollOffsets[str].offset == 0)
+                    if (offsetIt->second.pauseTime > 30)
                     {
-                        scrollOffsets[str].pauseTime = 0;
+                        if (offsetIt->second.offset == 0)
+                        {
+                            offsetIt->second.pauseTime = 0;
+                        }
+                        else
+                        {
+                            offsetIt->second.pauseTime = 1;
+                        }
+                        offsetIt->second.offset = 0;
                     }
                     else
                     {
-                        scrollOffsets[str].pauseTime = 1;
+                        offsetIt->second.pauseTime++;
                     }
-                    scrollOffsets[str].offset = 0;
                 }
                 else
                 {
-                    scrollOffsets[str].pauseTime++;
-                }
-            }
-            else
-            {
-                scrollOffsets[str].offset += 1;
-                if (scrollOffsets[str].offset / 3 + maxWidth > (int)text->maxLineWidth * size + 5)
-                {
-                    scrollOffsets[str].pauseTime += 1;
+                    offsetIt->second.offset += 1;
+                    if (offsetIt->second.offset / 3 + maxWidth > (int)text->maxLineWidth * size + 5)
+                    {
+                        offsetIt->second.pauseTime += 1;
+                    }
                 }
             }
 
@@ -513,6 +518,21 @@ Result Gui::init(void)
     return 0;
 }
 
+void Gui::frameClean()
+{
+    for (auto& i : scrollOffsets)
+    {
+        if (i.second.thisFrame)
+        {
+            i.second.thisFrame = false;
+        }
+        else
+        {
+            i.second = {0, 1, false};
+        }
+    }
+}
+
 void Gui::mainLoop(void)
 {
     bool exit = false;
@@ -546,6 +566,7 @@ void Gui::mainLoop(void)
             drawNoHome();
 
             C3D_FrameEnd(0);
+            Gui::frameClean();
             inFrame = false;
         }
         else
@@ -565,6 +586,7 @@ void Gui::mainLoop(void)
             drawNoHome();
 
             C3D_FrameEnd(0);
+            Gui::frameClean();
             inFrame = false;
 
             touchPosition touch;
@@ -1676,6 +1698,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
@@ -1710,6 +1733,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
         drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
         if (timer)
         {
             svcSleepThread(timer);
@@ -1738,6 +1762,7 @@ void Gui::waitFrame(const std::string& message)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1762,6 +1787,7 @@ void Gui::waitFrame(const std::string& message)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1775,6 +1801,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
@@ -1815,6 +1842,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
         drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     if (inFrame)
@@ -1834,6 +1862,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1849,6 +1878,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1861,6 +1891,7 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1876,6 +1907,7 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1888,6 +1920,7 @@ void Gui::showResizeStorage()
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1902,6 +1935,7 @@ void Gui::showResizeStorage()
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1915,6 +1949,7 @@ void Gui::error(const std::string& message, Result errorCode)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
@@ -1946,6 +1981,7 @@ void Gui::error(const std::string& message, Result errorCode)
         drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     if (inFrame)

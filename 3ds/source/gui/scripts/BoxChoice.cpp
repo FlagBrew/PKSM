@@ -295,6 +295,7 @@ std::tuple<int, int, int> BoxChoice::run()
         Gui::drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     return result;
 }

@@ -51,6 +51,7 @@ namespace Gui
     Result init(void);
     void mainLoop(void);
     void exit(void);
+    void frameClean(void);
 
 #if defined(_3DS)
     void target(gfxScreen_t t);
