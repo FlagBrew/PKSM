@@ -27,20 +27,27 @@
 #include "Title.hpp"
 #include <stdio.h>
 
+// Allocate once because threading shenanigans
+static constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
+static C2D_Image dsIcon = {nullptr, &dsIconSubt3x};
+
 Title::~Title(void)
 {
-    if (mIcon.tex && mIcon.tex != Gui::TWLIcon().tex)
+    if (mIcon.tex && mIcon.tex != dsIcon.tex)
     {
         C3D_TexDelete(mIcon.tex);
         delete mIcon.tex;
     }
 }
 
-static C2D_Image loadDSIcon(u8* banner)
+static void loadDSIcon(u8* banner)
 {
-    C3D_Tex* tex = new C3D_Tex;
-    static const Tex3DS_SubTexture subt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
-    C3D_TexInit(tex, 32, 32, GPU_RGB565);
+    if (!dsIcon.tex)
+    {
+        dsIcon.tex = new C3D_Tex;
+        C3D_TexInit(dsIcon.tex, 32, 32, GPU_RGB565);
+    }
+
     struct bannerData {
         u16 version;
         u16 crc;
@@ -50,7 +57,7 @@ static C2D_Image loadDSIcon(u8* banner)
     };
     bannerData* iconData = (bannerData*)banner;
 
-    u16* output = (u16*)tex->data;
+    u16* output = (u16*)dsIcon.tex->data;
     for (size_t x = 0; x < 32; x++)
     {
         for (size_t y = 0; y < 32; y++)
@@ -72,8 +79,6 @@ static C2D_Image loadDSIcon(u8* banner)
             output[dst] = color;
         }
     }
-
-    return {tex, &subt3x};
 }
 
 static C2D_Image loadTextureIcon(smdh_s* smdh)
@@ -140,7 +145,8 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         delete[] headerData;
         headerData = new u8[0x23C0];
         res = FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
-        mIcon = loadDSIcon(headerData);
+        loadDSIcon(headerData);
+        mIcon = dsIcon;
         delete[] headerData;
 
         res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
