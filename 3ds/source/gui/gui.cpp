@@ -437,6 +437,24 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             }
             Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
         }
+        break;
+        case TextWidthAction::SQUISH_OR_SLICE:
+        case TextWidthAction::SQUISH_OR_SCROLL:
+        {
+            auto text   = parseText(str, size, 0.0f);
+            float sizeX = std::min(size, size * (maxWidth / (text->maxLineWidth * size)));
+            if (sizeX >= size * 0.75f)
+            {
+                Gui::text(text, x, y, sizeX, size, color, positionX, positionY);
+            }
+            else
+            {
+                // Won't be terribly less performant because of string caching
+                TextWidthAction nextAction = action == TextWidthAction::SQUISH_OR_SCROLL ? TextWidthAction::SCROLL : TextWidthAction::SLICE;
+                Gui::text(str, x, y, size, color, positionX, positionY, nextAction, maxWidth);
+            }
+        }
+        break;
     }
 }
 
@@ -1807,6 +1825,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
 
 void Gui::screenBack()
 {
+    scrollOffsets.clear();
     screens.pop();
 }
 
