@@ -25,11 +25,55 @@
  */
 
 #include "Title.hpp"
+#include <stdio.h>
 
 Title::~Title(void)
 {
-    if (mCard != CARD_TWL && mIcon.tex)
+    if (mIcon.tex && mIcon.tex != Gui::TWLIcon().tex)
+    {
         C3D_TexDelete(mIcon.tex);
+        delete mIcon.tex;
+    }
+}
+
+static C2D_Image loadDSIcon(u8* banner)
+{
+    C3D_Tex* tex = new C3D_Tex;
+    static const Tex3DS_SubTexture subt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
+    C3D_TexInit(tex, 32, 32, GPU_RGB565);
+    struct bannerData {
+        u16 version;
+        u16 crc;
+        u8 reserved[28];
+        u8 data[512];
+        u16 palette[16];
+    };
+    bannerData* iconData = (bannerData*)banner;
+
+    u16* output = (u16*)tex->data;
+    for (size_t x = 0; x < 32; x++)
+    {
+        for (size_t y = 0; y < 32; y++)
+        {
+            u32 srcOff = (((y >> 3) * 4 + (x >> 3)) * 8 + (y & 7)) * 4 + ((x & 7) >> 1);
+            u32 srcShift = (x & 1) * 4;
+            
+            u16 pIndex = (iconData->data[srcOff] >> srcShift) & 0xF;
+            u16 color = 0xFFFF;
+            if (pIndex != 0)
+            {
+                u16 r = iconData->palette[pIndex] & 0x1F;
+                u16 g = (iconData->palette[pIndex] >> 5) & 0x1F;
+                u16 b = (iconData->palette[pIndex] >> 10) & 0x1F;
+                color = (r << 11) | (g << 6) | (g >> 4) | (b);
+            }
+
+            u32 dst = ((((y >> 3) * (32 >> 3) + (x >> 3)) << 6) + ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
+            output[dst] = color;
+        }
+    }
+
+    return {tex, &subt3x};
 }
 
 static C2D_Image loadTextureIcon(smdh_s* smdh)
@@ -93,15 +137,19 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         _gameCode[5] = '\0';
         mPrefix      = _gameCode;
 
-        res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
         delete[] headerData;
+        headerData = new u8[0x23C0];
+        res = FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
+        mIcon = loadDSIcon(headerData);
+        delete[] headerData;
+
+        res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
         if (R_FAILED(res))
         {
             return false;
         }
 
         mName     = std::string(_cardTitle);
-        mIcon     = Gui::TWLIcon();
         loadTitle = true;
     }
 

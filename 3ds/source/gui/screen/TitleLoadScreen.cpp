@@ -78,7 +78,14 @@ void TitleLoadScreen::drawTop() const
 
     if (auto title = TitleLoader::cardTitle)
     {
-        Gui::drawImageAt(title->icon(), 40, 98, NULL, 1.0f, 1.0f);
+        if (title->icon().subtex->width == 48)
+        {
+            Gui::drawImageAt(title->icon(), 40, 98, NULL, 1.0f, 1.0f);
+        }
+        else
+        {
+            Gui::drawImageAt(title->icon(), 48, 106, NULL, 1.0f, 1.0f);
+        }
         if (titleFromIndex(selectedTitle) == title)
         {
             Gui::drawSelector(39, 97);
@@ -124,7 +131,14 @@ void TitleLoadScreen::drawBottom() const
     if (auto title = titleFromIndex(selectedTitle))
     {
         Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
-        Gui::drawImageAt(title->icon(), 245, 23, NULL, 1.0f, 1.0f);
+        if (title->icon().subtex->width == 48)
+        {
+            Gui::drawImageAt(title->icon(), 245, 23, NULL, 1.0f, 1.0f);
+        }
+        else
+        {
+            Gui::drawImageAt(title->icon(), 253, 31, NULL, 1.0f, 1.0f);
+        }
         Gui::text(title->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(StringUtils::format("%08X", title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
