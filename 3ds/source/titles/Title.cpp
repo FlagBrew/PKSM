@@ -25,11 +25,10 @@
  */
 
 #include "Title.hpp"
-#include <stdio.h>
 
 // Allocate once because threading shenanigans
 static constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
-static C2D_Image dsIcon = {nullptr, &dsIconSubt3x};
+static C2D_Image dsIcon                         = {nullptr, &dsIconSubt3x};
 
 Title::~Title(void)
 {
@@ -42,13 +41,16 @@ Title::~Title(void)
 
 static void loadDSIcon(u8* banner)
 {
+    static constexpr int WIDTH_POW2  = 32;
+    static constexpr int HEIGHT_POW2 = 32;
     if (!dsIcon.tex)
     {
         dsIcon.tex = new C3D_Tex;
-        C3D_TexInit(dsIcon.tex, 32, 32, GPU_RGB565);
+        C3D_TexInit(dsIcon.tex, WIDTH_POW2, HEIGHT_POW2, GPU_RGB565);
     }
 
-    struct bannerData {
+    struct bannerData
+    {
         u16 version;
         u16 crc;
         u8 reserved[28];
@@ -62,11 +64,11 @@ static void loadDSIcon(u8* banner)
     {
         for (size_t y = 0; y < 32; y++)
         {
-            u32 srcOff = (((y >> 3) * 4 + (x >> 3)) * 8 + (y & 7)) * 4 + ((x & 7) >> 1);
+            u32 srcOff   = (((y >> 3) * 4 + (x >> 3)) * 8 + (y & 7)) * 4 + ((x & 7) >> 1);
             u32 srcShift = (x & 1) * 4;
-            
+
             u16 pIndex = (iconData->data[srcOff] >> srcShift) & 0xF;
-            u16 color = 0xFFFF;
+            u16 color  = 0xFFFF;
             if (pIndex != 0)
             {
                 u16 r = iconData->palette[pIndex] & 0x1F;
@@ -75,7 +77,8 @@ static void loadDSIcon(u8* banner)
                 color = (r << 11) | (g << 6) | (g >> 4) | (b);
             }
 
-            u32 dst = ((((y >> 3) * (32 >> 3) + (x >> 3)) << 6) + ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
+            u32 dst     = ((((y >> 3) * (WIDTH_POW2 >> 3) + (x >> 3)) << 6) +
+                       ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
             output[dst] = color;
         }
     }
@@ -146,7 +149,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 
         delete[] headerData;
         headerData = new u8[0x23C0];
-        res = FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
+        FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
         loadDSIcon(headerData);
         mIcon = dsIcon;
         delete[] headerData;
