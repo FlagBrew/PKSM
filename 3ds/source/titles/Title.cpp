@@ -142,6 +142,8 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         _gameCode[5] = '\0';
         mPrefix      = _gameCode;
 
+        bool infrared = headerData[12] == 'I';
+
         delete[] headerData;
         headerData = new u8[0x23C0];
         res = FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
@@ -149,7 +151,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         mIcon = dsIcon;
         delete[] headerData;
 
-        res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
+        res = SPIGetCardType(&mCardType, infrared);
         if (R_FAILED(res))
         {
             return false;
