@@ -341,12 +341,23 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             }
 
             C2D_SceneBegin(g_renderTargetTextChop);
-            text->draw(0, scrollingTextY, 0, size, size, positionX, color);
+            text->draw(0, scrollingTextY, 0, size, size, TextPosX::LEFT, color);
             C2D_SceneBegin(g_renderTargetCurrent);
             Tex3DS_SubTexture newt3x =
                 _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
             scrollingTextY += ceilf(lineMod);
             scrollOffsets[str] = {0, 1};
+            switch (positionX)
+            {
+                case TextPosX::LEFT:
+                    break;
+                case TextPosX::CENTER:
+                    x -= 0.5f * maxWidth;
+                    break;
+                case TextPosX::RIGHT:
+                    x -= maxWidth;
+                    break;
+            }
             Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
         }
         break;
@@ -380,8 +391,7 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             }
 
             C2D_SceneBegin(g_renderTargetTextChop);
-            text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, size, positionX, color);
-            text->draw(-scrollOffsets[str].offset / 3, 0, 0, size, size, positionX, color);
+            text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, size, TextPosX::LEFT, color);
             C2D_SceneBegin(g_renderTargetCurrent);
             Tex3DS_SubTexture newt3x =
                 _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, maxWidth, scrollingTextY + lineMod * 2 - baselinePos);
@@ -412,6 +422,18 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                 {
                     scrollOffsets[str].pauseTime += 1;
                 }
+            }
+
+            switch (positionX)
+            {
+                case TextPosX::LEFT:
+                    break;
+                case TextPosX::CENTER:
+                    x -= 0.5f * maxWidth;
+                    break;
+                case TextPosX::RIGHT:
+                    x -= maxWidth;
+                    break;
             }
             Gui::drawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos);
         }
