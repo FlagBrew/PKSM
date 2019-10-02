@@ -114,7 +114,7 @@
     "CONFIGURATION_USING_DEFAULT": "Usando la configuración por defecto!",
     "CONFIG_AUTO_UPDATE": "Actualizar PKSM automáticamente",
     "CONFIG_BACKUP_INJECTION": "Habilitar \u00abbackup injection\u00bb",
-    "CONFIG_BACKUP_SAVE": "Crear copia de seguridad autom\u00e1tica al cargar",
+    "CONFIG_BACKUP_SAVE": "Crear copia de seguridad autom\u00e1tica",
     "CONFIG_EDIT_TRANSFERS": "Editar durante transferencias",
     "CONFIG_RANDOM_MUSIC": "M\u00fasica al azar",
     "CONFIG_SAVE_INFO": "Usar Info. de Guardado",
