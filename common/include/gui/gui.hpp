@@ -57,7 +57,6 @@ namespace Gui
     void target(gfxScreen_t t);
     void clearScreen(gfxScreen_t t);
     void flushText();
-    C2D_Image TWLIcon(void);
 #elif defined(__SWITCH__)
     // Dunno what specific things might be necessary
 #endif

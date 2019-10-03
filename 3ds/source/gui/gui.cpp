@@ -164,11 +164,6 @@ void Gui::clearScreen(gfxScreen_t screen)
     }
 }
 
-C2D_Image Gui::TWLIcon(void)
-{
-    return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
-}
-
 void Gui::flushText()
 {
     if (textMode)
