@@ -53,7 +53,6 @@ static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 bool textMode = false;
 bool inFrame  = false;
 
-static int scrollingTextY = 0;
 struct ScrollingTextOffset
 {
     int offset;
@@ -466,7 +465,6 @@ void Gui::mainLoop(void)
         inFrame = true;
         Gui::clearScreen(GFX_TOP);
         Gui::clearScreen(GFX_BOTTOM);
-        scrollingTextY = 0;
 
         u32 kHeld = hidKeysHeld();
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())

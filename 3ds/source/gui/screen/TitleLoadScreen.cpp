@@ -204,10 +204,10 @@ void TitleLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP, TextWidthAction::WRAP, 94);
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP, TextWidthAction::WRAP, 94);
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP, TextWidthAction::SQUISH, 318);
 }
 
 void TitleLoadScreen::update(touchPosition* touch)
