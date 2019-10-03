@@ -37,7 +37,7 @@ namespace TextParse
             lineWidths.push_back(word.second);
             for (auto& glyph : word.first)
             {
-                glyph.line = lineWidths.size();
+                glyph.line = lines();
             }
         }
         else
@@ -45,9 +45,9 @@ namespace TextParse
             for (auto& glyph : word.first)
             {
                 glyph.xPos += lineWidths.back();
-                glyph.line = lineWidths.size();
+                glyph.line = lines();
             }
-            lineWidths[lineWidths.size() - 1] += word.second;
+            lineWidths[lines() - 1] += word.second;
         }
         glyphs.insert(glyphs.end(), word.first.begin(), word.first.end());
     }
@@ -94,20 +94,19 @@ namespace TextParse
         }
     }
 
-    std::shared_ptr<Text> Text::truncate(size_t lines) const
+    std::shared_ptr<Text> Text::truncate(size_t lines, size_t offset) const
     {
-        std::shared_ptr<Text> ret = std::make_shared<Text>(*this);
-        for (auto i = ret->glyphs.begin(); i != ret->glyphs.end(); i++)
+        std::shared_ptr<Text> ret = std::make_shared<Text>();
+        for (auto i = glyphs.begin(); i != glyphs.end(); i++)
         {
-            if (i->line > lines)
+            if (i->line > offset && i->line - offset <= lines)
             {
-                i = ret->glyphs.erase(i);
-                i--;
+                ret->glyphs.emplace_back(i->subtex, i->tex, i->font, i->line - offset, i->xPos, i->width);
             }
         }
-        while (ret->lineWidths.size() > lines)
+        for (size_t i = offset; i < lines; i++)
         {
-            ret->lineWidths.pop_back();
+            ret->lineWidths.emplace_back(lineWidths[i]);
         }
         ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
 
@@ -135,6 +134,7 @@ namespace TextParse
         }
         return tex;
     }
+
     std::shared_ptr<Text> Text::slice(float maxWidth, float offset) const
     {
         std::shared_ptr<Text> ret = std::make_shared<Text>();
@@ -161,16 +161,16 @@ namespace TextParse
                 // Partially out of bounds to the left, so xPos will be < 0 and xPos + width will be > 0
                 else if (i->xPos + offset < 0)
                 {
-                    float newXPos = i->xPos + offset;
-                    float targetWidth = (float)i->width + newXPos;
+                    float newXPos               = i->xPos + offset;
+                    float targetWidth           = (float)i->width + newXPos;
                     Tex3DS_SubTexture newSubtex = _select_box(i->subtex, i->width - static_cast<u16>(ceilf(targetWidth)), 0, i->width, 0);
                     ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, 0, newSubtex.width);
                 }
                 // Partially out of bounds to the right, so xPos will be < maxWidth and xPos + width will be > maxWidth
                 else if (i->xPos + i->width + offset > maxWidth)
                 {
-                    float newXPos = i->xPos + offset;
-                    float targetWidth = (float)maxWidth - newXPos;
+                    float newXPos               = i->xPos + offset;
+                    float targetWidth           = (float)maxWidth - newXPos;
                     Tex3DS_SubTexture newSubtex = _select_box(i->subtex, 0, 0, static_cast<u16>(ceilf(targetWidth)), 0);
                     ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, newXPos, newSubtex.width);
                 }

@@ -110,7 +110,7 @@ namespace TextParse
         {
         }
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
-        std::shared_ptr<Text> truncate(size_t lines) const;
+        std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();

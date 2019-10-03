@@ -270,10 +270,10 @@ void Gui::text(
         case TextPosY::TOP:
             break;
         case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+            y -= 0.5f * (lineMod * (float)text->lines());
             break;
         case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
+            y -= lineMod * (float)text->lines();
             break;
     }
 
@@ -369,7 +369,7 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
                 }
             }
 
-            text = text->slice(maxWidth / size, (float) -offsetIt->second.offset / 3.0f / size);
+            text = text->slice(maxWidth / size, (float)-offsetIt->second.offset / 3.0f / size);
             Gui::text(text, x, y, size, size, color, positionX, positionY);
         }
         break;
@@ -1642,7 +1642,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
 
         text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
-        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+        float continueY = 110 + (lineMod / 2) * parsed->lines();
 
         text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
@@ -1703,7 +1703,7 @@ void Gui::waitFrame(const std::string& message)
 
     text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
-    float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+    float continueY = 110 + (lineMod / 2) * parsed->lines();
 
     text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
@@ -1744,7 +1744,7 @@ void Gui::warn(const std::string& message, std::optional<Language> lang)
 
         text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
-        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+        float continueY = 110 + (lineMod / 2) * parsed->lines();
         if (lang)
         {
             text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
