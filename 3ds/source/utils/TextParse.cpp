@@ -149,12 +149,12 @@ namespace TextParse
             if (lineWidths[i->line - 1] > maxWidth)
             {
                 // Completely out of bounds to the left
-                if (i->xPos + i->width + offset < 0)
+                if (i->xPos + i->width + offset <= 0)
                 {
                     continue;
                 }
                 // Completely out of bounds to the right
-                else if (i->xPos + offset > maxWidth)
+                else if (i->xPos + offset >= maxWidth)
                 {
                     continue;
                 }
