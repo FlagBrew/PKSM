@@ -53,7 +53,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
     instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
-    instructions.addBox(false, 20, 175, 140, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
+    instructions.addBox(false, 20, 175, 170, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(3, 211, 34, 28,
         [this]() {
             validate();
@@ -162,18 +162,26 @@ void MiscEditScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 258, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
+    Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 258, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
+        TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
     Gui::text(i18n::localize("MET_LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-    Gui::text(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-    Gui::text(i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-    Gui::text(i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-    Gui::text(i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
+    Gui::text(i18n::localize(otAndMet ? "MET_DAY" : "EGG_DAY"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+        TextWidthAction::SQUISH_OR_SCROLL, 87);
+    Gui::text(i18n::localize(otAndMet ? "MET_MONTH" : "EGG_MONTH"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+        TextWidthAction::SQUISH_OR_SCROLL, 87);
+    Gui::text(i18n::localize(otAndMet ? "MET_YEAR" : "EGG_YEAR"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+        TextWidthAction::SQUISH_OR_SCROLL, 87);
+    Gui::text(i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+        TextWidthAction::SQUISH_OR_SCROLL, 87);
     Gui::text(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
     if (pkm->generation() > Generation::FIVE)
     {
-        Gui::text(i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-        Gui::text(i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-        Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
+        Gui::text(
+            i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
+        Gui::text(
+            i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
+        Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+            TextWidthAction::SQUISH_OR_SCROLL, 87);
     }
 
     Gui::text(std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
