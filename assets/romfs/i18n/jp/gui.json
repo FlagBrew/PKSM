@@ -113,7 +113,7 @@
     "CONFIGURATION_FILE_CORRUPTED_1": "設定ファイルが破損しています!",
     "CONFIGURATION_USING_DEFAULT": "デフォルト設定を使用する",
     "CONFIG_AUTO_UPDATE": "PKSMを自動アップデートする",
-    "CONFIG_BACKUP_INJECTION": "バックアップインジェクトするを有効にする",
+    "CONFIG_BACKUP_INJECTION": "バックアップインジェクションを有効にする",
     "CONFIG_BACKUP_SAVE": "自動的にバックアップを読み込む",
     "CONFIG_EDIT_TRANSFERS": "転送中の変更を有効にする",
     "CONFIG_RANDOM_MUSIC": "音楽をランダムに再生する",
