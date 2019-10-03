@@ -37,6 +37,6 @@ void Button::draw() const
     Gui::sprite(key, xPos, yPos);
     if (!text.empty())
     {
-        Gui::text(text, xPos + width / 2, yPos + height / 2, size, textColor, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, width);
+        Gui::text(text, xPos + width / 2, yPos + height / 2, size, textColor, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::SQUISH_OR_SCROLL, width - 10);
     }
 }
