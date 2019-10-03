@@ -110,15 +110,16 @@ namespace TextParse
         {
         }
         void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
+        std::shared_ptr<Text> truncate(size_t lines) const;
+        std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();
         void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
-        void truncate(size_t lines);
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
-        float maxWidth(float sizeX) { return sizeX * maxLineWidth; }
-        size_t lines() { return lineWidths.size(); }
+        float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
+        size_t lines() const { return lineWidths.size(); }
     };
 
     class TextBuf

@@ -94,21 +94,98 @@ namespace TextParse
         }
     }
 
-    void Text::truncate(size_t lines)
+    std::shared_ptr<Text> Text::truncate(size_t lines) const
     {
-        for (size_t i = 0; i < glyphs.size(); i++)
+        std::shared_ptr<Text> ret = std::make_shared<Text>(*this);
+        for (auto i = ret->glyphs.begin(); i != ret->glyphs.end(); i++)
         {
-            if (glyphs[i].line > 2)
+            if (i->line > lines)
             {
-                glyphs.erase(glyphs.begin() + i);
+                i = ret->glyphs.erase(i);
                 i--;
             }
         }
-        while (lineWidths.size() > 2)
+        while (ret->lineWidths.size() > lines)
         {
-            lineWidths.pop_back();
+            ret->lineWidths.pop_back();
         }
-        maxLineWidth = *std::max_element(lineWidths.begin(), lineWidths.end());
+        ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
+
+        return ret;
+    }
+
+    static Tex3DS_SubTexture _select_box(const Tex3DS_SubTexture& texIn, int x, int y, int endX, int endY)
+    {
+        Tex3DS_SubTexture tex = texIn;
+        if (x != endX)
+        {
+            int deltaX  = endX - x;
+            float texRL = tex.left - tex.right;
+            tex.left    = tex.left - (float)texRL / tex.width * x;
+            tex.right   = tex.left - (float)texRL / tex.width * deltaX;
+            tex.width   = deltaX;
+        }
+        if (y != endY)
+        {
+            float texTB = tex.top - tex.bottom;
+            int deltaY  = endY - y;
+            tex.top     = tex.top - (float)texTB / tex.height * y;
+            tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
+            tex.height  = deltaY;
+        }
+        return tex;
+    }
+    std::shared_ptr<Text> Text::slice(float maxWidth, float offset) const
+    {
+        std::shared_ptr<Text> ret = std::make_shared<Text>();
+        for (auto& width : lineWidths)
+        {
+            ret->lineWidths.push_back(width > maxWidth ? maxWidth : width);
+        }
+        ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
+
+        for (auto i = glyphs.begin(); i != glyphs.end(); i++)
+        {
+            if (lineWidths[i->line - 1] > maxWidth)
+            {
+                // Completely out of bounds to the left
+                if (i->xPos + i->width + offset < 0)
+                {
+                    continue;
+                }
+                // Completely out of bounds to the right
+                else if (i->xPos + offset > maxWidth)
+                {
+                    continue;
+                }
+                // Partially out of bounds to the left, so xPos will be < 0 and xPos + width will be > 0
+                else if (i->xPos + offset < 0)
+                {
+                    float newXPos = i->xPos + offset;
+                    float targetWidth = (float)i->width + newXPos;
+                    Tex3DS_SubTexture newSubtex = _select_box(i->subtex, i->width - static_cast<u16>(ceilf(targetWidth)), 0, i->width, 0);
+                    ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, 0, newSubtex.width);
+                }
+                // Partially out of bounds to the right, so xPos will be < maxWidth and xPos + width will be > maxWidth
+                else if (i->xPos + i->width + offset > maxWidth)
+                {
+                    float newXPos = i->xPos + offset;
+                    float targetWidth = (float)maxWidth - newXPos;
+                    Tex3DS_SubTexture newSubtex = _select_box(i->subtex, 0, 0, static_cast<u16>(ceilf(targetWidth)), 0);
+                    ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, newXPos, newSubtex.width);
+                }
+                // Fully in-bounds: just move it the amount of the offset
+                else
+                {
+                    ret->glyphs.emplace_back(i->subtex, i->tex, i->font, i->line, i->xPos + offset, i->width);
+                }
+            }
+            else
+            {
+                ret->glyphs.emplace_back(*i);
+            }
+        }
+        return ret;
     }
 
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts) : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
