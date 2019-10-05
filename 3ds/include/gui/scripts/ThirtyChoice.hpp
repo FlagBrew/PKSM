@@ -28,7 +28,7 @@
 #define THIRTYCHOICE_HPP
 
 #include "HidHorizontal.hpp"
-#include "ScriptChoice.hpp"
+#include "RunnableScreen.hpp"
 #include "generation.hpp"
 #include <string>
 #include <vector>
@@ -39,11 +39,11 @@ struct pkm
     int form;
 };
 
-class ThirtyChoice : public ScriptChoice
+class ThirtyChoice : public RunnableScreen<size_t>
 {
 public:
     ThirtyChoice(char* question, char** text, pkm* pokemon, int items, Generation gen = Generation::SEVEN)
-        : ScriptChoice(question), hid(30, 6), items(items), gen(gen)
+        : RunnableScreen(0), question(question), hid(30, 6), items(items), gen(gen)
     {
         for (int i = 0; i < items; i++)
         {
@@ -52,9 +52,11 @@ public:
         }
     }
     void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
+    std::string question;
     HidHorizontal hid;
     const int items;
     const Generation gen;

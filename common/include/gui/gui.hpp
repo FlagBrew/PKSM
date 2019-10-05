@@ -42,6 +42,7 @@
 #include "thread.hpp"
 #include "types.h"
 #include "utils.hpp"
+#include "RunnableScreen.hpp"
 #include <citro2d.h>
 #include <stack>
 #include <string.h>
@@ -52,6 +53,8 @@ namespace Gui
     void mainLoop(void);
     void exit(void);
     void frameClean(void);
+    template<typename T>
+    T runScreen(RunnableScreen<T>& s);
 
 #if defined(_3DS)
     void target(gfxScreen_t t);
@@ -109,5 +112,8 @@ namespace Gui
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);
 }
+
+// Must be provided by implementation
+#include "gui.tcc"
 
 #endif

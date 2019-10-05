@@ -33,12 +33,7 @@
 #include "gui.hpp"
 #include "random.hpp"
 
-// storage, box, slot
-auto result = std::make_tuple(0, -1, -1);
-
-static bool backHeld = false;
-
-BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
+BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
     mainButtons[0] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
@@ -266,40 +261,6 @@ void BoxChoice::drawTop() const
     }
 }
 
-std::tuple<int, int, int> BoxChoice::run()
-{
-    while (aptMainLoop() && !finished())
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-
-        Gui::target(GFX_TOP);
-        Gui::clearScreen(GFX_TOP);
-        drawTop();
-        Gui::flushText();
-
-        Gui::target(GFX_BOTTOM);
-        Gui::clearScreen(GFX_BOTTOM);
-        drawBottom();
-        Gui::flushText();
-
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            Gui::setDoHomeDraw();
-        }
-
-        Gui::drawNoHome();
-
-        C3D_FrameEnd(0);
-        Gui::frameClean();
-    }
-    return result;
-}
-
 void BoxChoice::update(touchPosition* touch)
 {
     if (cursorIndex != 0)
@@ -348,7 +309,7 @@ void BoxChoice::update(touchPosition* touch)
         {
             if (cursorIndex != 0)
             {
-                result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+                finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
                 done   = true;
             }
         }
@@ -512,7 +473,7 @@ bool BoxChoice::backButton()
         }
         else
         {
-            result = std::make_tuple(0, -1, -1);
+            finalValue = std::make_tuple(0, -1, -1);
             done   = true;
         }
     }
@@ -539,7 +500,7 @@ bool BoxChoice::clickBottomIndex(int index)
     {
         if (cursorIndex != 0)
         {
-            result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+            finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
             done   = true;
         }
     }

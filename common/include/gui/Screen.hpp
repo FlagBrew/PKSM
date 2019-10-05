@@ -24,44 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "ScriptChoice.hpp"
-#include "gui.hpp"
+#ifndef SCREEN_HPP
+#define SCREEN_HPP
 
-int ScriptChoice::run()
+#include "ReplaceableScreen.hpp"
+
+class Screen : public ReplaceableScreen
 {
-    while (aptMainLoop() && !finished())
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+public:
+    Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
+    virtual ~Screen() {}
+    virtual bool replacesTop() const final { return true; }
+    virtual bool replacesBottom() const final { return true; }
+    virtual bool handlesUpdate() const final { return true; }
+    void removeOverlays() { overlay = nullptr; }
+};
 
-        Gui::target(GFX_TOP);
-        Gui::clearScreen(GFX_TOP);
-        drawTop();
-        Gui::flushText();
-
-        Gui::target(GFX_BOTTOM);
-        Gui::clearScreen(GFX_BOTTOM);
-        drawBottom();
-        Gui::flushText();
-
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            Gui::setDoHomeDraw();
-        }
-
-        Gui::drawNoHome();
-
-        C3D_FrameEnd(0);
-    }
-    return finalVal;
-}
-
-void ScriptChoice::drawBottom() const
-{
-    Gui::backgroundBottom(false);
-    Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-}
+#endif

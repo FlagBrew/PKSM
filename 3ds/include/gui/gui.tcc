@@ -24,24 +24,39 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
-
-#include "Instructions.hpp"
-#include "ReplaceableScreen.hpp"
-#include <3ds.h>
-#include <citro3d.h>
-#include <memory>
-
-class Screen : public ReplaceableScreen
+namespace Gui
 {
-public:
-    Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
-    virtual ~Screen() {}
-    virtual bool replacesTop() const final { return true; }
-    virtual bool replacesBottom() const final { return true; }
-    virtual bool handlesUpdate() const final { return true; }
-    void removeOverlays() { overlay = nullptr; }
-};
+    template<typename T>
+    T Gui::runScreen(RunnableScreen<T>& s)
+    {
+        while (aptMainLoop() && !s.finished())
+        {
+            hidScanInput();
+            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 
-#endif
+            Gui::target(GFX_TOP);
+            Gui::clearScreen(GFX_TOP);
+            s.doTopDraw();
+            Gui::flushText();
+
+            Gui::target(GFX_BOTTOM);
+            Gui::clearScreen(GFX_BOTTOM);
+            s.doBottomDraw();
+            Gui::flushText();
+
+            touchPosition touch;
+            hidTouchRead(&touch);
+            s.doUpdate(&touch);
+
+            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            {
+                Gui::setDoHomeDraw();
+            }
+
+            Gui::drawNoHome();
+
+            C3D_FrameEnd(0);
+        }
+        return s.getFinalValue();
+    }
+}

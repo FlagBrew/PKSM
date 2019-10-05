@@ -56,12 +56,18 @@ void ThirtyChoice::drawTop() const
     }
 }
 
+void ThirtyChoice::drawBottom() const
+{
+    Gui::backgroundBottom(false);
+    Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+}
+
 void ThirtyChoice::update(touchPosition* touch)
 {
     hid.update(items);
     if (hidKeysDown() & KEY_A)
     {
-        finalVal = hid.fullIndex();
+        finalValue = hid.fullIndex();
         done     = true;
     }
 }

@@ -24,25 +24,21 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SCRIPTCHOICE_HPP
-#define SCRIPTCHOICE_HPP
+#ifndef RUNNABLESCREEN_HPP
+#define RUNNABLESCREEN_HPP
 
 #include "Screen.hpp"
-#include <3ds.h>
-#include <string>
 
-class ScriptChoice : public Screen
+template<typename T>
+class RunnableScreen : public Screen
 {
 public:
-    ScriptChoice(const char* question) : question(question) {}
-    int run();
-    bool finished() const { return done; }
-    void drawBottom() const override;
-
+    RunnableScreen(T defaultVal) : finalValue(defaultVal) {}
+    bool finished() { return done; }
+    T getFinalValue() { return finalValue; }
 protected:
-    std::string question;
-    bool done       = false;
-    size_t finalVal = 0;
+    bool done = false;
+    T finalValue;
 };
 
 #endif

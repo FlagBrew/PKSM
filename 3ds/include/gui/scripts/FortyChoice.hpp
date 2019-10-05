@@ -28,14 +28,14 @@
 #define FORTYCHOICE_HPP
 
 #include "HidVertical.hpp"
-#include "ScriptChoice.hpp"
+#include "RunnableScreen.hpp"
 #include <string>
 #include <vector>
 
-class FortyChoice : public ScriptChoice
+class FortyChoice : public RunnableScreen<size_t>
 {
 public:
-    FortyChoice(char* question, char** text, int items) : ScriptChoice(question), hid(40, 2), items(items)
+    FortyChoice(char* question, char** text, int items) : RunnableScreen(0), question(question), hid(40, 2), items(items)
     {
         for (int i = 0; i < items; i++)
         {
@@ -43,9 +43,11 @@ public:
         }
     }
     void drawTop() const override;
+    void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
+    std::string question;
     HidVertical hid;
     const int items;
     std::vector<std::string> labels;
