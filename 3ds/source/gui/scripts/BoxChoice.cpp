@@ -310,7 +310,7 @@ void BoxChoice::update(touchPosition* touch)
             if (cursorIndex != 0)
             {
                 finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-                done   = true;
+                done       = true;
             }
         }
         else if (kDown & KEY_B)
@@ -474,7 +474,7 @@ bool BoxChoice::backButton()
         else
         {
             finalValue = std::make_tuple(0, -1, -1);
-            done   = true;
+            done       = true;
         }
     }
     return true;
@@ -501,7 +501,7 @@ bool BoxChoice::clickBottomIndex(int index)
         if (cursorIndex != 0)
         {
             finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-            done   = true;
+            done       = true;
         }
     }
     else

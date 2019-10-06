@@ -29,8 +29,8 @@
 
 #include "Button.hpp"
 #include "PKX.hpp"
-#include "Sav.hpp"
 #include "RunnableScreen.hpp"
+#include "Sav.hpp"
 #include "ViewOverlay.hpp"
 #include "loader.hpp"
 #include <array>
@@ -55,7 +55,7 @@ private:
     bool clickBottomIndex(int index);
 
     bool storageChosen = false;
-    bool backHeld = false;
+    bool backHeld      = false;
     std::array<std::unique_ptr<Button>, 5> mainButtons;
     std::array<std::unique_ptr<Button>, 30> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;

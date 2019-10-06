@@ -61,6 +61,6 @@ void FortyChoice::update(touchPosition* touch)
     if (hidKeysDown() & KEY_A)
     {
         finalValue = hid.fullIndex();
-        done     = true;
+        done       = true;
     }
 }

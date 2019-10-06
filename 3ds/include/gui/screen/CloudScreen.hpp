@@ -61,10 +61,13 @@ private:
     // Clones from storage (bottom), clones and increments download counter (top), places in storage (bottom), or uploads (top)
     void pickup();
 
+    static bool isValidTransfer(std::shared_ptr<PKX> pkm);
+
     void shareSend();
     void shareReceive();
 
     bool cloudChosen = false;
+    bool saveChosen  = false;
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
     int cursorIndex = 0, storageBox = 0;

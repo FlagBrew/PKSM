@@ -40,8 +40,9 @@
 #include <sys/stat.h>
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' +
-             i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
+             i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
+             i18n::localize("B_BACK")),
       storageBox(storageBox),
       filter(filter == nullptr ? std::make_shared<PKFilter>() : filter)
 {
@@ -107,7 +108,12 @@ void CloudScreen::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            std::shared_ptr<PKX> pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
+            if (saveChosen && storageBox * 30 + row * 6 + column > TitleLoader::save->maxSlot())
+            {
+                break;
+            }
+            std::shared_ptr<PKX> pokemon =
+                saveChosen ? TitleLoader::save->pkm(storageBox, row * 6 + column) : Banks::bank->pkm(storageBox, row * 6 + column);
             if (pokemon->species() > 0)
             {
                 float blend = *pokemon == *filter ? 0.0f : 0.5f;
@@ -118,7 +124,9 @@ void CloudScreen::drawBottom() const
         y += 30;
     }
 
-    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    std::string showMe = saveChosen ? TitleLoader::save->boxName(storageBox) : Banks::bank->boxName(storageBox);
+
+    Gui::text(showMe, 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!cloudChosen)
     {
@@ -352,6 +360,12 @@ void CloudScreen::update(touchPosition* touch)
         }
     }
 
+    if (kDown & KEY_Y)
+    {
+        saveChosen = !saveChosen;
+        storageBox = 0;
+    }
+
     for (auto& button : mainButtons)
     {
         if (button->update(touch))
@@ -501,7 +515,18 @@ void CloudScreen::update(touchPosition* touch)
 
     if (cursorIndex != 0)
     {
-        infoMon = cloudChosen ? access.pkm(cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
+        if (cloudChosen)
+        {
+            infoMon = access.pkm(cursorIndex - 1);
+        }
+        else if (saveChosen)
+        {
+            infoMon = TitleLoader::save->pkm(storageBox, cursorIndex - 1);
+        }
+        else
+        {
+            infoMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
+        }
     }
     else
     {
@@ -528,6 +553,10 @@ void CloudScreen::pickup()
             {
                 moveMon = nullptr;
             }
+        }
+        else if (saveChosen)
+        {
+            moveMon = TitleLoader::save->pkm(storageBox, cursorIndex - 1);
         }
         else
         {
@@ -562,13 +591,21 @@ void CloudScreen::pickup()
         }
         else if (!cloudChosen)
         {
-            auto oldMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-            Banks::bank->pkm(moveMon, storageBox, cursorIndex - 1);
+            auto oldMon       = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
+            bool goodTransfer = !saveChosen || isValidTransfer(moveMon);
+            if (saveChosen && goodTransfer)
+            {
+                TitleLoader::save->pkm(moveMon, storageBox, cursorIndex - 1, false);
+            }
+            else if (!saveChosen)
+            {
+                Banks::bank->pkm(moveMon, storageBox, cursorIndex - 1);
+            }
             if (oldMon && oldMon->species() == 0)
             {
                 moveMon = nullptr;
             }
-            else
+            else if (goodTransfer)
             {
                 moveMon = oldMon;
             }
@@ -592,7 +629,7 @@ bool CloudScreen::prevBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = Banks::bank->boxes() - 1;
+            storageBox = saveChosen ? TitleLoader::save->maxBoxes() - 1 : Banks::bank->boxes() - 1;
         }
     }
     return false;
@@ -623,7 +660,7 @@ bool CloudScreen::nextBox(bool forceBottom)
     else
     {
         storageBox++;
-        if (storageBox == Banks::bank->boxes())
+        if (storageBox == (saveChosen ? TitleLoader::save->maxBoxes() : Banks::bank->boxes()))
         {
             storageBox = 0;
         }
@@ -672,10 +709,17 @@ bool CloudScreen::releasePkm()
 {
     if (!cloudChosen && cursorIndex != 0)
     {
-        auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
+        auto pkm = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
         if (pkm && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
-            Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
+            if (saveChosen)
+            {
+                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1, false);
+            }
+            else
+            {
+                Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
+            }
             return false;
         }
     }
@@ -686,8 +730,8 @@ bool CloudScreen::dumpPkm()
 {
     if (!cloudChosen && cursorIndex != 0)
     {
-        auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        auto dumpMon = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
+        if (dumpMon && dumpMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             char stringDate[12]   = {0};
             char stringTime[11]   = {0};
@@ -704,7 +748,6 @@ bool CloudScreen::dumpPkm()
             }
             else
             {
-                auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
                 path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") +
                         (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
@@ -918,7 +961,21 @@ void CloudScreen::shareReceive()
 
                 if (!cloudChosen && cursorIndex != 0)
                 {
-                    Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                    if (saveChosen)
+                    {
+                        if (isValidTransfer(pkm))
+                        {
+                            TitleLoader::save->pkm(pkm, storageBox, cursorIndex - 1, false);
+                        }
+                        else
+                        {
+                            moveMon = pkm;
+                        }
+                    }
+                    else
+                    {
+                        Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                    }
                 }
                 else
                 {
@@ -927,4 +984,58 @@ void CloudScreen::shareReceive()
             }
         }
     }
+}
+
+bool CloudScreen::isValidTransfer(std::shared_ptr<PKX> moveMon)
+{
+    if (!moveMon)
+    {
+        return false;
+    }
+    bool moveBad = false;
+    for (int i = 0; i < 4; i++)
+    {
+        if (TitleLoader::save->availableMoves().count((int)moveMon->move(i)) == 0)
+        {
+            moveBad = true;
+            break;
+        }
+        if (TitleLoader::save->availableMoves().count((int)moveMon->relearnMove(i)) == 0)
+        {
+            moveBad = true;
+            break;
+        }
+    }
+    if (moveBad)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
+        return false;
+    }
+    else if (TitleLoader::save->availableSpecies().count((int)moveMon->species()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
+        return false;
+    }
+    else if (moveMon->alternativeForm() > TitleLoader::save->formCount(moveMon->species()) &&
+             !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= TitleLoader::save->formCount(666)))
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
+        return false;
+    }
+    else if (TitleLoader::save->availableAbilities().count((int)moveMon->ability()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
+        return false;
+    }
+    else if (TitleLoader::save->availableItems().count((int)moveMon->heldItem()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
+        return false;
+    }
+    else if (TitleLoader::save->availableBalls().count((int)moveMon->ball()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
+        return false;
+    }
+    return true;
 }

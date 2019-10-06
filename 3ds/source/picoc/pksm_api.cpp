@@ -102,7 +102,7 @@ void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     pkm* pokemon              = (pkm*)Param[3]->Val->Pointer;
     Generation gen            = Generation(Param[4]->Val->Integer);
     ThirtyChoice screen       = ThirtyChoice(question, labels, pokemon, options, gen);
-    auto ret = Gui::runScreen(screen);
+    auto ret                  = Gui::runScreen(screen);
     ReturnValue->Val->Integer = ret;
 }
 
@@ -112,7 +112,7 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
     int options               = Param[1]->Val->Integer;
     char** labels             = (char**)Param[2]->Val->Pointer;
     FortyChoice screen        = FortyChoice(question, labels, options);
-    auto ret = Gui::runScreen(screen);
+    auto ret                  = Gui::runScreen(screen);
     ReturnValue->Val->Integer = ret;
 }
 
