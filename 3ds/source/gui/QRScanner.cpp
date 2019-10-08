@@ -49,6 +49,8 @@ public:
         std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
         C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
         C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
+        image.tex->border = 0xFFFFFFFF;
+        C3D_TexSetWrap(image.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
         svcCreateMutex(&bufferMutex, false);
         svcCreateMutex(&imageMutex, false);
         svcCreateEvent(&exitEvent, RESET_STICKY);

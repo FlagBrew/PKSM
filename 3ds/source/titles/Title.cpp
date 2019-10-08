@@ -47,6 +47,8 @@ static void loadDSIcon(u8* banner)
     {
         dsIcon.tex = new C3D_Tex;
         C3D_TexInit(dsIcon.tex, WIDTH_POW2, HEIGHT_POW2, GPU_RGB565);
+        dsIcon.tex->border = 0xFFFFFFFF;
+        C3D_TexSetWrap(dsIcon.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
     }
 
     struct bannerData
@@ -89,6 +91,8 @@ static C2D_Image loadTextureIcon(smdh_s* smdh)
     C3D_Tex* tex                          = new C3D_Tex;
     static const Tex3DS_SubTexture subt3x = {48, 48, 0.0f, 48 / 64.0f, 48 / 64.0f, 0.0f};
     C3D_TexInit(tex, 64, 64, GPU_RGB565);
+    tex->border = 0xFFFFFFFF;
+    C3D_TexSetWrap(tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
 
     u16* dest = (u16*)tex->data + (64 - 48) * 64;
     u16* src  = (u16*)smdh->bigIconData;
