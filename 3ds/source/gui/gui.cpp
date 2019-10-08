@@ -26,6 +26,8 @@
 
 #include "gui.hpp"
 #include "Configuration.hpp"
+#include "DecisionScreen.hpp"
+#include "MessageScreen.hpp"
 #include "TextParse.hpp"
 #include <queue>
 
@@ -1592,7 +1594,7 @@ int Gui::pointerBob()
     return currentBob / 4;
 }
 
-u8 transparencyWaver()
+static u8 transparencyWaver()
 {
     static u8 currentAmount = 255;
     static bool dir         = true;
@@ -1613,67 +1615,8 @@ u8 transparencyWaver()
 
 bool Gui::showChoiceMessage(const std::string& message, int timer)
 {
-    u32 keys = 0;
-    if (inFrame)
-    {
-        C3D_FrameEnd(0);
-        Gui::frameClean();
-    }
-    hidScanInput();
-    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        Gui::clearScreen(GFX_TOP);
-        Gui::clearScreen(GFX_BOTTOM);
-
-        target(GFX_TOP);
-        sprite(ui_sheet_part_info_top_idx, 0, 0);
-
-        auto parsed   = parseText(message, FONT_SIZE_15);
-        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
-
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-
-        float continueY = 110 + (lineMod / 2) * parsed->lines();
-
-        text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        flushText();
-
-        target(GFX_BOTTOM);
-        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            setDoHomeDraw();
-        }
-
-        drawNoHome();
-
-        C3D_FrameEnd(0);
-        Gui::frameClean();
-        if (timer)
-        {
-            svcSleepThread(timer);
-            timer = 0;
-        }
-        if (keys & KEY_A)
-        {
-            hidScanInput();
-            if (inFrame)
-            {
-                C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-            }
-            return true;
-        }
-    }
-    hidScanInput();
-    if (inFrame)
-    {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    }
-    return false;
+    DecisionScreen screen(message);
+    return runScreen(screen);
 }
 
 void Gui::waitFrame(const std::string& message)
@@ -1716,58 +1659,8 @@ void Gui::waitFrame(const std::string& message)
 
 void Gui::warn(const std::string& message, std::optional<Language> lang)
 {
-    u32 keys = 0;
-    if (inFrame)
-    {
-        C3D_FrameEnd(0);
-        Gui::frameClean();
-    }
-    hidScanInput();
-    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        Gui::clearScreen(GFX_TOP);
-        Gui::clearScreen(GFX_BOTTOM);
-
-        target(GFX_TOP);
-        sprite(ui_sheet_part_info_top_idx, 0, 0);
-        auto parsed   = parseText(message, FONT_SIZE_15);
-        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
-
-        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-
-        float continueY = 110 + (lineMod / 2) * parsed->lines();
-        if (lang)
-        {
-            text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            text(i18n::localize("CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        }
-
-        flushText();
-
-        target(GFX_BOTTOM);
-
-        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            setDoHomeDraw();
-        }
-
-        drawNoHome();
-
-        C3D_FrameEnd(0);
-        Gui::frameClean();
-    }
-    hidScanInput();
-    if (inFrame)
-    {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    }
+    MessageScreen screen(message, lang.value_or(Language::EN));
+    runScreen(screen);
 }
 
 void Gui::screenBack()
