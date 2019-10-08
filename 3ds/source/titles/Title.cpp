@@ -39,7 +39,21 @@ Title::~Title(void)
     }
 }
 
-static void loadDSIcon(u8* banner)
+struct bannerData
+{
+    u16 version;
+    u16 crc;
+    u8 reserved[28];
+    u8 data[512];
+    u16 palette[16];
+    u16 titles[8][128];
+    u8 reserved2[0x800];
+    u8 dsiData[8][512];
+    u16 dsiPalettes[8][16];
+    u16 dsiSequence[64];
+};
+
+static void loadDSIcon(bannerData* iconData)
 {
     static constexpr int WIDTH_POW2  = 32;
     static constexpr int HEIGHT_POW2 = 32;
@@ -50,16 +64,6 @@ static void loadDSIcon(u8* banner)
         dsIcon.tex->border = 0xFFFFFFFF;
         C3D_TexSetWrap(dsIcon.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
     }
-
-    struct bannerData
-    {
-        u16 version;
-        u16 crc;
-        u8 reserved[28];
-        u8 data[512];
-        u16 palette[16];
-    };
-    bannerData* iconData = (bannerData*)banner;
 
     u16* output = (u16*)dsIcon.tex->data;
     for (size_t x = 0; x < 32; x++)
@@ -152,11 +156,11 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         bool infrared = headerData[12] == 'I';
 
         delete[] headerData;
-        headerData = new u8[0x23C0];
-        FSUSER_GetLegacyBannerData(mMedia, 0LL, headerData);
-        loadDSIcon(headerData);
+        bannerData* banner = new bannerData;
+        FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
+        loadDSIcon(banner);
         mIcon = dsIcon;
-        delete[] headerData;
+        delete banner;
 
         res = SPIGetCardType(&mCardType, infrared);
         if (R_FAILED(res))
