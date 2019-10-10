@@ -182,7 +182,12 @@ void SpeciesOverlay::update(touchPosition* touch)
                 auto pkm = std::get<0>(object);
                 if (pkm->species() == 0 || !pkm->nicknamed())
                 {
-                    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
+                    std::string nick = i18n::species(Configuration::getInstance().language(), species);
+                    if (pkm->generation() == Generation::FOUR)
+                    {
+                        nick = StringUtils::toUpper(nick);
+                    }
+                    pkm->nickname(nick);
                 }
                 pkm->species((u16)species);
                 pkm->alternativeForm(0);
