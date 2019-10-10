@@ -27,20 +27,15 @@
 #ifndef PKX_HPP
 #define PKX_HPP
 
-#include <algorithm>
 #include <memory>
-#include <stdlib.h>
 #include <string>
 
 #include "Item.hpp"
-#include "PKFilter.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
-#include "personal.hpp"
-#include "random.hpp"
-#include "utils.hpp"
 
 class Sav;
+class PKFilter;
 
 class PKX
 {

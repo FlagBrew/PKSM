@@ -27,13 +27,8 @@
 #ifndef SAV7_HPP
 #define SAV7_HPP
 
-#include "PK7.hpp"
 #include "Sav.hpp"
-#include "WC7.hpp"
-#include "memecrypto.h"
 #include "personal.hpp"
-#include "sha256.h"
-#include <algorithm>
 
 class Sav7 : public Sav
 {

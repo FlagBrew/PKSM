@@ -29,6 +29,7 @@
 
 #include "Sav.hpp"
 #include "sha256.h"
+#include "json.hpp"
 
 class Bank
 {

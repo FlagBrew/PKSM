@@ -30,6 +30,7 @@
 #include "MessageScreen.hpp"
 #include "TextParse.hpp"
 #include <queue>
+#include "personal.hpp"
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;

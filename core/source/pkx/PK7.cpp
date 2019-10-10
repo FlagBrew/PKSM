@@ -27,6 +27,8 @@
 #include "PK7.hpp"
 #include "Sav.hpp"
 #include "random.hpp"
+#include "PK6.hpp"
+#include "utils.hpp"
 
 void PK7::shuffleArray(u8 sv)
 {

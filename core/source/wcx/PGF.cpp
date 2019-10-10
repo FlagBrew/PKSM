@@ -25,6 +25,8 @@
  */
 
 #include "PGF.hpp"
+#include "utils.hpp"
+#include "personal.hpp"
 
 PGF::PGF(u8* dt)
 {

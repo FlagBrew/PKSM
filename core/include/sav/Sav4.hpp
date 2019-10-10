@@ -27,10 +27,8 @@
 #ifndef SAV4_HPP
 #define SAV4_HPP
 
-#include "PK4.hpp"
 #include "Sav.hpp"
 #include "personal.hpp"
-#include <vector>
 
 class Sav4 : public Sav
 {

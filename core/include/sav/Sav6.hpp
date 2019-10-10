@@ -27,9 +27,7 @@
 #ifndef SAV6_HPP
 #define SAV6_HPP
 
-#include "PK6.hpp"
 #include "Sav.hpp"
-#include "WC6.hpp"
 #include "personal.hpp"
 
 class Sav6 : public Sav

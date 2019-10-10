@@ -27,14 +27,9 @@
 #ifndef PKSM_WCX
 #define PKSM_WCX
 
-#include "PKX.hpp"
-#include "personal.hpp"
-#include "utils.hpp"
-#include <stdint.h>
-
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
+#include "coretypes.h"
+#include "generation.hpp"
+#include <string>
 
 class WCX
 {

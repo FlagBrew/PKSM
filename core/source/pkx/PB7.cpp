@@ -25,7 +25,7 @@
  */
 
 #include "PB7.hpp"
-#include "random.hpp"
+#include "utils.hpp"
 
 void PB7::shuffleArray(u8 sv)
 {

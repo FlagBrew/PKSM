@@ -33,6 +33,10 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include <memory>
+#include "PK4.hpp"
+#include "PK5.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
 
 static bool dirtyBack = true;
 

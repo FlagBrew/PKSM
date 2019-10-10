@@ -30,6 +30,7 @@
 #include "generation.hpp"
 #include <bitset>
 #include <string>
+#include <vector>
 
 #define MAKE_DEFN(name, type)                                                                                                                        \
 public:                                                                                                                                              \

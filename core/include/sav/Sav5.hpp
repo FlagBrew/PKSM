@@ -27,8 +27,6 @@
 #ifndef SAV5_HPP
 #define SAV5_HPP
 
-#include "PGF.hpp"
-#include "PK5.hpp"
 #include "Sav.hpp"
 #include "personal.hpp"
 

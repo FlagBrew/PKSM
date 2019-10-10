@@ -26,6 +26,7 @@
 
 #include "LanguageStrings.hpp"
 #include "utils.hpp"
+#include "io.hpp"
 
 static nlohmann::json& formJson()
 {

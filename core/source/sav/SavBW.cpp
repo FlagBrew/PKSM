@@ -25,6 +25,7 @@
  */
 
 #include "SavBW.hpp"
+#include <algorithm>
 
 SavBW::SavBW(u8* dt)
 {

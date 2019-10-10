@@ -36,24 +36,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-enum Language
-{
-    JP = 1,
-    EN,
-    FR,
-    IT,
-    DE,
-    UNUSED,
-    ES,
-    KO,
-    ZH,
-    TW,
-    NL,
-    PT,
-    RU,
-    RO
-};
+#include "Language.hpp"
 
 class LanguageStrings
 {

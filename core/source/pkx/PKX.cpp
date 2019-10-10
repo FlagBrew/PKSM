@@ -30,6 +30,8 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PKFilter.hpp"
+#include "random.hpp"
 
 u32 PKX::expTable(u8 row, u8 col) const
 {

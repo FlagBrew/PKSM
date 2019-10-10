@@ -25,6 +25,7 @@
  */
 
 #include "SavORAS.hpp"
+#include <algorithm>
 
 SavORAS::SavORAS(u8* dt)
 {

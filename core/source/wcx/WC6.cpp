@@ -25,6 +25,8 @@
  */
 
 #include "WC6.hpp"
+#include "personal.hpp"
+#include "utils.hpp"
 
 WC6::WC6(u8* dt, bool full)
 {

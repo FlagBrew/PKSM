@@ -29,6 +29,8 @@
 #include "ClickButton.hpp"
 #include "LocationOverlay.hpp"
 #include "PB7.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
 #include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
