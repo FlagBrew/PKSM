@@ -577,6 +577,9 @@ void CloudScreen::pickup()
                 case 200:
                 case 201:
                     break;
+                case 400:
+                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
+                    break;
                 case 401:
                     Gui::warn(i18n::localize("GPSS_BANNED"));
                     break;
