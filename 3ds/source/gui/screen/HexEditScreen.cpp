@@ -566,11 +566,11 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0xDF:
                 return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_GAME_ID"), NORMAL);
             case 0xE0:
-                return std::make_pair(&i18n::localize("COUNTRY_ID"), OPEN);
+                return std::make_pair(&i18n::localize("COUNTRY_ID"), NORMAL);
             case 0xE1:
-                return std::make_pair(&i18n::localize("REGION_ID"), OPEN);
+                return std::make_pair(&i18n::localize("REGION_ID"), NORMAL);
             case 0xE2:
-                return std::make_pair(&i18n::localize("3DS_REGION_ID"), OPEN);
+                return std::make_pair(&i18n::localize("3DS_REGION_ID"), NORMAL);
             case 0xE3:
                 return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_LANGUAGE_ID"), NORMAL);
             case 0xE4 ... 0xE7:
@@ -1534,6 +1534,100 @@ void HexEditScreen::drawMeaning() const
                     Gui::text(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
                         COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
+                case 0xE0:
+                {
+                    u8 country = 0;
+                    switch (pkm->generation())
+                    {
+                        case Generation::SIX:
+                            country = ((PK6*)pkm.get())->country();
+                            break;
+                        case Generation::SEVEN:
+                            country = ((PK7*)pkm.get())->country();
+                            break;
+                        case Generation::LGPE:
+                            country = ((PB7*)pkm.get())->country();
+                            break;
+                        default:
+                            break;
+                    }
+                    Gui::text(i18n::country(Configuration::getInstance().language(), country), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
+                }
+                break;
+                case 0xE1:
+                {
+                    u8 country = 0;
+                    u8 region  = 0;
+                    switch (pkm->generation())
+                    {
+                        case Generation::SIX:
+                            country = ((PK6*)pkm.get())->country();
+                            region  = ((PK6*)pkm.get())->region();
+                            break;
+                        case Generation::SEVEN:
+                            country = ((PK7*)pkm.get())->country();
+                            region  = ((PK7*)pkm.get())->region();
+                            break;
+                        case Generation::LGPE:
+                            country = ((PB7*)pkm.get())->country();
+                            region  = ((PB7*)pkm.get())->region();
+                            break;
+                        default:
+                            break;
+                    }
+                    Gui::text(i18n::subregion(Configuration::getInstance().language(), country, region), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
+                }
+                break;
+                case 0xE2:
+                {
+                    u8 consoleRegion = 0;
+                    switch (pkm->generation())
+                    {
+                        case Generation::SIX:
+                            consoleRegion = ((PK6*)pkm.get())->consoleRegion();
+                            break;
+                        case Generation::SEVEN:
+                            consoleRegion = ((PK7*)pkm.get())->consoleRegion();
+                            break;
+                        case Generation::LGPE:
+                            consoleRegion = ((PB7*)pkm.get())->consoleRegion();
+                            break;
+                        default:
+                            break;
+                    }
+                    std::string data;
+                    switch (consoleRegion)
+                    {
+                        case 0:
+                            data = "JPN";
+                            break;
+                        case 1:
+                            data = "USA";
+                            break;
+                        case 2:
+                            data = "EUR";
+                            break;
+                        case 3:
+                            data = "AUS";
+                            break;
+                        case 4:
+                            data = "CHN";
+                            break;
+                        case 5:
+                            data = "KOR";
+                            break;
+                        case 6:
+                            data = "TWN";
+                            break;
+                        default:
+                            data = "USA";
+                            break;
+                    }
+                    Gui::text(data, 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                }
+                break;
             }
             break;
         default:
