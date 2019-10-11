@@ -27,9 +27,11 @@
 #ifndef BANK_HPP
 #define BANK_HPP
 
-#include "Sav.hpp"
-#include "sha256.h"
+#include "generation.hpp"
 #include "json.hpp"
+#include "sha256.h"
+
+class PKX;
 
 class Bank
 {

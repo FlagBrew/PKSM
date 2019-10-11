@@ -25,6 +25,8 @@
  */
 
 #include "InjectorScreen.hpp"
+#include "WC6.hpp"
+#include "WC7.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 

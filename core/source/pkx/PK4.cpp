@@ -25,8 +25,8 @@
  */
 
 #include "PK4.hpp"
-#include "utils.hpp"
 #include "PK5.hpp"
+#include "utils.hpp"
 #include <algorithm>
 
 void PK4::shuffleArray(u8 sv)

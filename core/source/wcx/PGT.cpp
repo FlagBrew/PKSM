@@ -25,8 +25,8 @@
  */
 
 #include "PGT.hpp"
-#include "PK4.hpp"
 #include "Language.hpp"
+#include "PK4.hpp"
 
 PGT::PGT(u8* pgt, bool fromWC4)
 {

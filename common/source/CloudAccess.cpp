@@ -27,6 +27,7 @@
 #include "CloudAccess.hpp"
 #include "Configuration.hpp"
 #include "PK7.hpp"
+#include "PKX.hpp"
 #include "app.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"

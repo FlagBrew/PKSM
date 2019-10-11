@@ -32,13 +32,13 @@
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
+#include "PK7.hpp"
 #include "QRScanner.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "io.hpp"
 #include <sys/stat.h>
-#include "PK7.hpp"
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +

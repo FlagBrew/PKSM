@@ -25,6 +25,7 @@
  */
 
 #include "Sav.hpp"
+#include "PKX.hpp"
 #include "SavB2W2.hpp"
 #include "SavBW.hpp"
 #include "SavDP.hpp"
@@ -35,7 +36,6 @@
 #include "SavSUMO.hpp"
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
-#include "PKX.hpp"
 
 Sav::~Sav()
 {

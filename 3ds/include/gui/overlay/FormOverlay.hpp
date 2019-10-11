@@ -29,8 +29,8 @@
 
 #include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "PKX.hpp"
 #include "PKFilter.hpp"
+#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
 #include "i18n.hpp"
 #include <memory>

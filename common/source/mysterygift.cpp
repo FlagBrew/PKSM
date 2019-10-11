@@ -25,6 +25,13 @@
  */
 
 #include "mysterygift.hpp"
+#include "PGF.hpp"
+#include "PGT.hpp"
+#include "WB7.hpp"
+#include "WC4.hpp"
+#include "WC6.hpp"
+#include "WC7.hpp"
+#include "utils.hpp"
 
 static nlohmann::json mysteryGiftSheet;
 static u8* mysteryGiftData;

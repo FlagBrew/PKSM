@@ -27,6 +27,10 @@
 #include "InjectSelectorScreen.hpp"
 #include "FSStream.hpp"
 #include "InjectorScreen.hpp"
+#include "PGF.hpp"
+#include "PGT.hpp"
+#include "WC6.hpp"
+#include "WC7.hpp"
 #include "loader.hpp"
 #include <sys/stat.h>
 

@@ -29,14 +29,14 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
-#include "SavLGPE.hpp"
-#include "gui.hpp"
-#include "loader.hpp"
-#include <memory>
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "SavLGPE.hpp"
+#include "gui.hpp"
+#include "loader.hpp"
+#include <memory>
 
 static bool dirtyBack = true;
 

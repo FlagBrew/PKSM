@@ -27,6 +27,7 @@
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
+#include "Language.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
@@ -36,7 +37,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "Language.hpp"
 
 class LanguageStrings
 {

@@ -657,16 +657,16 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true, (bool) isParty, true);
+            pkm = std::make_shared<PK4>(data, true, (bool)isParty, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true, (bool) isParty, true);
+            pkm = std::make_shared<PK5>(data, true, (bool)isParty, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true, (bool) isParty, true);
+            pkm = std::make_shared<PK6>(data, true, (bool)isParty, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true, (bool) isParty, true);
+            pkm = std::make_shared<PK7>(data, true, (bool)isParty, true);
             break;
         case Generation::LGPE:
         default:
@@ -679,7 +679,7 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
-    int isParty = Param[2]->Val->Integer;
+    int isParty    = Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
@@ -688,16 +688,16 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, (bool) isParty, true);
+            pkm = std::make_shared<PK4>(data, false, (bool)isParty, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, (bool) isParty, true);
+            pkm = std::make_shared<PK5>(data, false, (bool)isParty, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, (bool) isParty, true);
+            pkm = std::make_shared<PK6>(data, false, (bool)isParty, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, (bool) isParty, true);
+            pkm = std::make_shared<PK7>(data, false, (bool)isParty, true);
             break;
         case Generation::LGPE:
         default:

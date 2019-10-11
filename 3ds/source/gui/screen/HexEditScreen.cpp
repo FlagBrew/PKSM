@@ -27,12 +27,12 @@
 #include "HexEditScreen.hpp"
 #include "Configuration.hpp"
 #include "PB7.hpp"
+#include "PK4.hpp"
+#include "PK5.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
 #include "loader.hpp"
 #include <bitset>
-#include "PK7.hpp"
-#include "PK6.hpp"
-#include "PK5.hpp"
-#include "PK4.hpp"
 
 static constexpr std::string_view hyperVals[]        = {"HYPER_HP", "HYPER_ATTACK", "HYPER_DEFENSE", "HYPER_SPATK", "HYPER_SPDEF", "HYPER_SPEED"};
 static constexpr std::string_view marks[]            = {"CIRCLE", "TRIANGLE", "SQUARE", "HEART", "STAR", "DIAMOND"};

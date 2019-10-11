@@ -25,8 +25,8 @@
  */
 
 #include "SavSUMO.hpp"
-#include "sha256.h"
 #include "memecrypto.h"
+#include "sha256.h"
 #include <algorithm>
 
 SavSUMO::SavSUMO(u8* dt)

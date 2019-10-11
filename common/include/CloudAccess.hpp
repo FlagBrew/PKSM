@@ -27,9 +27,10 @@
 #ifndef CLOUDACCESS_HPP
 #define CLOUDACCESS_HPP
 
-#include "PKX.hpp"
 #include "json.hpp"
 #include <memory>
+
+class PKX;
 
 class CloudAccess
 {

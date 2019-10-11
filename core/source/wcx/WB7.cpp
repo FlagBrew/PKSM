@@ -27,6 +27,7 @@
 #include "WB7.hpp"
 #include "Configuration.hpp"
 #include "personal.hpp"
+#include "utils.hpp"
 
 WB7::WB7(u8* dt, bool full)
 {

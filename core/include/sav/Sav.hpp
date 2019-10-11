@@ -27,13 +27,13 @@
 #ifndef SAV_HPP
 #define SAV_HPP
 
+#include "Language.hpp"
+#include "coretypes.h"
 #include "game.hpp"
 #include "generation.hpp"
-#include "coretypes.h"
-#include "Language.hpp"
+#include <map>
 #include <memory>
 #include <set>
-#include <map>
 #include <vector>
 
 enum Pouch

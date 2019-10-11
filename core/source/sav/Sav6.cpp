@@ -25,11 +25,11 @@
  */
 
 #include "Sav6.hpp"
-#include "utils.hpp"
 #include "PK6.hpp"
 #include "WC6.hpp"
-#include "random.hpp"
 #include "i18n.hpp"
+#include "random.hpp"
+#include "utils.hpp"
 
 u16 Sav6::TID(void) const
 {
