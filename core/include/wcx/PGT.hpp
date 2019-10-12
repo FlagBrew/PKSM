@@ -27,8 +27,9 @@
 #ifndef PGT_HPP
 #define PGT_HPP
 
-#include "PK4.hpp"
 #include "WCX.hpp"
+
+class PK4;
 
 class PGT : public WCX
 {

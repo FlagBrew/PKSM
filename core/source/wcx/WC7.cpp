@@ -25,6 +25,8 @@
  */
 
 #include "WC7.hpp"
+#include "personal.hpp"
+#include "utils.hpp"
 
 WC7::WC7(u8* dt, bool full)
 {

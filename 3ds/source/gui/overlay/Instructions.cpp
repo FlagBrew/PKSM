@@ -32,7 +32,7 @@ Instructions::Instructions(const std::string& simpleInstructions)
     if (!simpleInstructions.empty())
     {
         auto instrText = Gui::parseText(simpleInstructions, FONT_SIZE_12, 300);
-        int height     = fontGetInfo(NULL)->lineFeed * FONT_SIZE_12 * instrText->lineWidths.size() + 20;
+        int height     = fontGetInfo(NULL)->lineFeed * FONT_SIZE_12 * instrText->lines() + 20;
         addBox(true, 40, 220 - height, 320, height, COLOR_GREY);
         addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, simpleInstructions, COLOR_WHITE);
     }
@@ -91,7 +91,7 @@ void Instructions::drawTop() const
     {
         if (text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, TextWidthAction::WRAP, text.maxWidth);
         }
     }
 }
@@ -125,7 +125,7 @@ void Instructions::drawBottom() const
     {
         if (!text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, TextWidthAction::WRAP, text.maxWidth);
         }
     }
 }

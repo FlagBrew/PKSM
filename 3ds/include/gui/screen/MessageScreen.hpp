@@ -24,25 +24,23 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SCRIPTCHOICE_HPP
-#define SCRIPTCHOICE_HPP
+#ifndef MESSAGESCREEN_HPP
+#define MESSAGESCREEN_HPP
 
-#include "Screen.hpp"
-#include <3ds.h>
-#include <string>
+#include "RunnableScreen.hpp"
+#include "i18n.hpp"
 
-class ScriptChoice : public Screen
+class MessageScreen : public RunnableScreen<std::nullptr_t>
 {
 public:
-    ScriptChoice(const char* question) : question(question) {}
-    int run();
-    bool finished() const { return done; }
+    MessageScreen(const std::string& message, Language lang = Language::EN) : RunnableScreen(nullptr), message(message), lang(lang) {}
+    void drawTop() const override;
     void drawBottom() const override;
+    void update(touchPosition* touch) override;
 
-protected:
-    std::string question;
-    bool done       = false;
-    size_t finalVal = 0;
+private:
+    std::string message;
+    Language lang;
 };
 
 #endif

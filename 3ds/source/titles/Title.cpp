@@ -26,10 +26,68 @@
 
 #include "Title.hpp"
 
+// Allocate once because threading shenanigans
+static constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
+static C2D_Image dsIcon                         = {nullptr, &dsIconSubt3x};
+
 Title::~Title(void)
 {
-    if (mCard != CARD_TWL && mIcon.tex)
+    if (mIcon.tex && mIcon.tex != dsIcon.tex)
+    {
         C3D_TexDelete(mIcon.tex);
+        delete mIcon.tex;
+    }
+}
+
+struct bannerData
+{
+    u16 version;
+    u16 crc;
+    u8 reserved[28];
+    u8 data[512];
+    u16 palette[16];
+    u16 titles[8][128];
+    u8 reserved2[0x800];
+    u8 dsiData[8][512];
+    u16 dsiPalettes[8][16];
+    u16 dsiSequence[64];
+};
+
+static void loadDSIcon(bannerData* iconData)
+{
+    static constexpr int WIDTH_POW2  = 32;
+    static constexpr int HEIGHT_POW2 = 32;
+    if (!dsIcon.tex)
+    {
+        dsIcon.tex = new C3D_Tex;
+        C3D_TexInit(dsIcon.tex, WIDTH_POW2, HEIGHT_POW2, GPU_RGB565);
+        dsIcon.tex->border = 0xFFFFFFFF;
+        C3D_TexSetWrap(dsIcon.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
+    }
+
+    u16* output = (u16*)dsIcon.tex->data;
+    for (size_t x = 0; x < 32; x++)
+    {
+        for (size_t y = 0; y < 32; y++)
+        {
+            u32 srcOff   = (((y >> 3) * 4 + (x >> 3)) * 8 + (y & 7)) * 4 + ((x & 7) >> 1);
+            u32 srcShift = (x & 1) * 4;
+
+            u16 pIndex = (iconData->data[srcOff] >> srcShift) & 0xF;
+            u16 color  = 0xFFFF;
+            if (pIndex != 0)
+            {
+                u16 r = iconData->palette[pIndex] & 0x1F;
+                u16 g = (iconData->palette[pIndex] >> 5) & 0x1F;
+                u16 b = (iconData->palette[pIndex] >> 10) & 0x1F;
+                color = (r << 11) | (g << 6) | (g >> 4) | (b);
+            }
+
+            u32 dst     = ((((y >> 3) * (WIDTH_POW2 >> 3) + (x >> 3)) << 6) +
+                       ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
+            output[dst] = color;
+        }
+    }
 }
 
 static C2D_Image loadTextureIcon(smdh_s* smdh)
@@ -37,6 +95,8 @@ static C2D_Image loadTextureIcon(smdh_s* smdh)
     C3D_Tex* tex                          = new C3D_Tex;
     static const Tex3DS_SubTexture subt3x = {48, 48, 0.0f, 48 / 64.0f, 48 / 64.0f, 0.0f};
     C3D_TexInit(tex, 64, 64, GPU_RGB565);
+    tex->border = 0xFFFFFFFF;
+    C3D_TexSetWrap(tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
 
     u16* dest = (u16*)tex->data + (64 - 48) * 64;
     u16* src  = (u16*)smdh->bigIconData;
@@ -93,15 +153,22 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         _gameCode[5] = '\0';
         mPrefix      = _gameCode;
 
-        res = SPIGetCardType(&mCardType, (headerData[12] == 'I') ? 1 : 0);
+        bool infrared = headerData[12] == 'I';
+
         delete[] headerData;
+        bannerData* banner = new bannerData;
+        FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
+        loadDSIcon(banner);
+        mIcon = dsIcon;
+        delete banner;
+
+        res = SPIGetCardType(&mCardType, infrared);
         if (R_FAILED(res))
         {
             return false;
         }
 
         mName     = std::string(_cardTitle);
-        mIcon     = Gui::TWLIcon();
         loadTitle = true;
     }
 

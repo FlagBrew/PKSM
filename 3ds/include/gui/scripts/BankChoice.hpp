@@ -28,15 +28,15 @@
 #define BANKCHOICE_HPP
 
 #include "HidVertical.hpp"
-#include "ScriptChoice.hpp"
+#include "RunnableScreen.hpp"
 #include "banks.hpp"
 #include <string>
 #include <vector>
 
-class BankChoice : public ScriptChoice
+class BankChoice : public RunnableScreen<std::nullptr_t>
 {
 public:
-    BankChoice() : ScriptChoice(""), hid(40, 2), strings(Banks::bankNames())
+    BankChoice() : RunnableScreen(nullptr), hid(40, 2), strings(Banks::bankNames())
     {
         int newBankNum = 0;
         while (std::find_if(strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v) {
@@ -59,7 +59,6 @@ private:
     void resizeBank();
     HidVertical hid;
     std::vector<std::pair<std::string, int>> strings;
-    bool finished = false;
 };
 
 #endif

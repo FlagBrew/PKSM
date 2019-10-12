@@ -27,6 +27,10 @@
 #include "InjectSelectorScreen.hpp"
 #include "FSStream.hpp"
 #include "InjectorScreen.hpp"
+#include "PGF.hpp"
+#include "PGT.hpp"
+#include "WC6.hpp"
+#include "WC7.hpp"
 #include "loader.hpp"
 #include <sys/stat.h>
 
@@ -272,12 +276,9 @@ void InjectSelectorScreen::drawTop() const
                 {
                     Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
-                auto text = Gui::parseText(data.name, FONT_SIZE_11, 138.0f);
-                // Truncate to two lines
-                text->truncate(2);
-                // Then display it
-                Gui::text(text, x + 103, y + 14, FONT_SIZE_11, i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255),
-                    TextPosX::CENTER, TextPosY::CENTER);
+                PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255);
+                TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL : TextWidthAction::SQUISH_OR_SLICE;
+                Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER, TextPosY::CENTER, action, 138.0f);
             }
         }
     }

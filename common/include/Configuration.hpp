@@ -27,10 +27,9 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
-#include "LanguageStrings.hpp"
+#include "Language.hpp"
+#include "coretypes.h"
 #include "json.hpp"
-#include "types.h"
-#include "utils.hpp"
 
 class Configuration
 {

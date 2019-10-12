@@ -33,8 +33,8 @@ struct LibraryFunction UnixFunctions[] =
     { bank_get_size,        "int bank_get_size();" },
     { bank_select,          "void bank_select();" },
     // pkm
-    { pkx_encrypt,          "void pkx_decrypt(char* data, enum Generation type);" },
-    { pkx_decrypt,          "void pkx_encrypt(char* data, enum Generation type);" },
+    { pkx_encrypt,          "void pkx_decrypt(char* data, enum Generation type, int isParty);" },
+    { pkx_decrypt,          "void pkx_encrypt(char* data, enum Generation type, int isParty);" },
     { pkx_box_size,         "int pkx_box_size(enum Generation gen);" },
     { pkx_party_size,       "int pkx_party_size(enum Generation gen);" },
     { pkx_generate,         "void pkx_generate(char* data, int species);" },

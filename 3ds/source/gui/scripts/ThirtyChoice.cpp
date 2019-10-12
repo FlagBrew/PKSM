@@ -50,9 +50,16 @@ void ThirtyChoice::drawTop() const
                 break;
             }
             Gui::pkm(pkms[index].species, pkms[index].form, gen, 0, x * 67 + 18, y * 48 + 1);
-            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, 65.0f);
+            Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::SCROLL,
+                65.0f);
         }
     }
+}
+
+void ThirtyChoice::drawBottom() const
+{
+    Gui::backgroundBottom(false);
+    Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }
 
 void ThirtyChoice::update(touchPosition* touch)
@@ -60,7 +67,7 @@ void ThirtyChoice::update(touchPosition* touch)
     hid.update(items);
     if (hidKeysDown() & KEY_A)
     {
-        finalVal = hid.fullIndex();
-        done     = true;
+        finalValue = hid.fullIndex();
+        done       = true;
     }
 }

@@ -82,6 +82,12 @@ static bool goToScreen(int buttonNum)
 
 MainMenu::MainMenu()
 {
+    oldLang = Configuration::getInstance().language();
+    makeButtons();
+}
+
+void MainMenu::makeButtons()
+{
     buttons[0] = std::make_unique<MainMenuButton>(
         15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
     buttons[1] = std::make_unique<MainMenuButton>(
@@ -194,6 +200,11 @@ void MainMenu::drawBottom() const
 
 void MainMenu::update(touchPosition* touch)
 {
+    if (Configuration::getInstance().language() != oldLang)
+    {
+        oldLang = Configuration::getInstance().language();
+        makeButtons();
+    }
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)

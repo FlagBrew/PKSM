@@ -27,6 +27,7 @@
 #ifndef LANGUAGESTRINGS_HPP
 #define LANGUAGESTRINGS_HPP
 
+#include "Language.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
@@ -36,24 +37,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-enum Language
-{
-    JP = 1,
-    EN,
-    FR,
-    IT,
-    DE,
-    UNUSED,
-    ES,
-    KO,
-    ZH,
-    TW,
-    NL,
-    PT,
-    RU,
-    RO
-};
 
 class LanguageStrings
 {

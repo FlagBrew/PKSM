@@ -33,12 +33,7 @@
 #include "gui.hpp"
 #include "random.hpp"
 
-// storage, box, slot
-auto result = std::make_tuple(0, -1, -1);
-
-static bool backHeld = false;
-
-BoxChoice::BoxChoice(bool doCrypt) : doCrypt(doCrypt)
+BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
     mainButtons[0] = std::make_unique<Button>(
         212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
@@ -209,7 +204,7 @@ void BoxChoice::drawTop() const
             info      = i18n::localize("LV") + std::to_string(infoMon->level());
             auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             int width = text->maxWidth(FONT_SIZE_12);
-            Gui::text(text, 375 - width, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (infoMon->gender() == 0)
             {
                 Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
@@ -256,7 +251,7 @@ void BoxChoice::drawTop() const
             info  = i18n::localize("IV") + ": ";
             text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             width = text->maxWidth(FONT_SIZE_12);
-            Gui::text(text, 276, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(0), infoMon->iv(1), infoMon->iv(2));
             Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(4), infoMon->iv(5), infoMon->iv(3));
@@ -264,39 +259,6 @@ void BoxChoice::drawTop() const
             Gui::format(*infoMon, 276, 213);
         }
     }
-}
-
-std::tuple<int, int, int> BoxChoice::run()
-{
-    while (aptMainLoop() && !finished())
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-
-        Gui::target(GFX_TOP);
-        Gui::clearScreen(GFX_TOP);
-        drawTop();
-        Gui::flushText();
-
-        Gui::target(GFX_BOTTOM);
-        Gui::clearScreen(GFX_BOTTOM);
-        drawBottom();
-        Gui::flushText();
-
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            Gui::setDoHomeDraw();
-        }
-
-        Gui::drawNoHome();
-
-        C3D_FrameEnd(0);
-    }
-    return result;
 }
 
 void BoxChoice::update(touchPosition* touch)
@@ -347,8 +309,8 @@ void BoxChoice::update(touchPosition* touch)
         {
             if (cursorIndex != 0)
             {
-                result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-                done   = true;
+                finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+                done       = true;
             }
         }
         else if (kDown & KEY_B)
@@ -511,8 +473,8 @@ bool BoxChoice::backButton()
         }
         else
         {
-            result = std::make_tuple(0, -1, -1);
-            done   = true;
+            finalValue = std::make_tuple(0, -1, -1);
+            done       = true;
         }
     }
     return true;
@@ -538,8 +500,8 @@ bool BoxChoice::clickBottomIndex(int index)
     {
         if (cursorIndex != 0)
         {
-            result = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-            done   = true;
+            finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+            done       = true;
         }
     }
     else

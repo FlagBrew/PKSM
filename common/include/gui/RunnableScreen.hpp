@@ -24,44 +24,22 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef FORMOVERLAY_HPP
-#define FORMOVERLAY_HPP
+#ifndef RUNNABLESCREEN_HPP
+#define RUNNABLESCREEN_HPP
 
-#include "Configuration.hpp"
-#include "HidHorizontal.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
-#include <memory>
-#include <variant>
+#include "Screen.hpp"
 
-class FormOverlay : public ReplaceableScreen
+template <typename T>
+class RunnableScreen : public Screen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        if (object.index() == 0)
-        {
-            hid.select(std::get<0>(object)->alternativeForm());
-        }
-        else
-        {
-            hid.select(std::get<1>(object)->alternativeForm());
-        }
-    }
-    virtual ~FormOverlay() {}
-    void drawTop() const override;
-    bool replacesTop() const override { return true; }
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
+    RunnableScreen(T defaultVal) : finalValue(defaultVal) {}
+    bool finished() { return done; }
+    T getFinalValue() { return finalValue; }
 
-private:
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
-    HidHorizontal hid;
-    u8 formCount;
+protected:
+    bool done = false;
+    T finalValue;
 };
 
 #endif

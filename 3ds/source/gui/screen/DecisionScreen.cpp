@@ -24,44 +24,55 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef FORMOVERLAY_HPP
-#define FORMOVERLAY_HPP
+#include "DecisionScreen.hpp"
+#include "gui.hpp"
 
-#include "Configuration.hpp"
-#include "HidHorizontal.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
-#include <memory>
-#include <variant>
-
-class FormOverlay : public ReplaceableScreen
+static u8 transparencyWaver()
 {
-public:
-    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
+    static u8 currentAmount = 255;
+    static bool dir         = true;
+    if (!dir)
     {
-        hid.update(40);
-        if (object.index() == 0)
-        {
-            hid.select(std::get<0>(object)->alternativeForm());
-        }
-        else
-        {
-            hid.select(std::get<1>(object)->alternativeForm());
-        }
+        currentAmount++;
+        if (currentAmount == 255)
+            dir = true;
     }
-    virtual ~FormOverlay() {}
-    void drawTop() const override;
-    bool replacesTop() const override { return true; }
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
+    else
+    {
+        currentAmount--;
+        if (currentAmount < 155)
+            dir = false;
+    }
+    return currentAmount;
+}
 
-private:
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
-    HidHorizontal hid;
-    u8 formCount;
-};
+void DecisionScreen::drawTop() const
+{
+    Gui::sprite(ui_sheet_part_info_top_idx, 0, 0);
 
-#endif
+    auto parsed   = Gui::parseText(question, FONT_SIZE_15);
+    float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
+
+    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+
+    float continueY = 110 + (lineMod / 2) * parsed->lines();
+
+    Gui::text(clickInfo, 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
+
+void DecisionScreen::drawBottom() const
+{
+    Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+}
+
+void DecisionScreen::update(touchPosition* touch)
+{
+    if (hidKeysDown() & KEY_A)
+    {
+        done = finalValue = true;
+    }
+    if (hidKeysDown() & KEY_B)
+    {
+        done = true;
+    }
+}

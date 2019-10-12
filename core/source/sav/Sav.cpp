@@ -25,6 +25,7 @@
  */
 
 #include "Sav.hpp"
+#include "PKX.hpp"
 #include "SavB2W2.hpp"
 #include "SavBW.hpp"
 #include "SavDP.hpp"

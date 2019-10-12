@@ -24,44 +24,39 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "ScriptChoice.hpp"
-#include "gui.hpp"
-
-int ScriptChoice::run()
+namespace Gui
 {
-    while (aptMainLoop() && !finished())
+    template<typename T>
+    T Gui::runScreen(RunnableScreen<T>& s)
     {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-
-        Gui::target(GFX_TOP);
-        Gui::clearScreen(GFX_TOP);
-        drawTop();
-        Gui::flushText();
-
-        Gui::target(GFX_BOTTOM);
-        Gui::clearScreen(GFX_BOTTOM);
-        drawBottom();
-        Gui::flushText();
-
-        touchPosition touch;
-        hidTouchRead(&touch);
-        update(&touch);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        while (aptMainLoop() && !s.finished())
         {
-            Gui::setDoHomeDraw();
+            hidScanInput();
+            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+
+            Gui::target(GFX_TOP);
+            Gui::clearScreen(GFX_TOP);
+            s.doTopDraw();
+            Gui::flushText();
+
+            Gui::target(GFX_BOTTOM);
+            Gui::clearScreen(GFX_BOTTOM);
+            s.doBottomDraw();
+            Gui::flushText();
+
+            touchPosition touch;
+            hidTouchRead(&touch);
+            s.doUpdate(&touch);
+
+            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            {
+                Gui::setDoHomeDraw();
+            }
+
+            Gui::drawNoHome();
+
+            C3D_FrameEnd(0);
         }
-
-        Gui::drawNoHome();
-
-        C3D_FrameEnd(0);
+        return s.getFinalValue();
     }
-    return finalVal;
-}
-
-void ScriptChoice::drawBottom() const
-{
-    Gui::backgroundBottom(false);
-    Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }

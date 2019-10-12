@@ -28,6 +28,7 @@
 #define GUI_HPP
 
 #include "PKX.hpp"
+#include "RunnableScreen.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
 #include "TextParse.hpp"
@@ -51,12 +52,14 @@ namespace Gui
     Result init(void);
     void mainLoop(void);
     void exit(void);
+    void frameClean(void);
+    template <typename T>
+    T runScreen(RunnableScreen<T>& s);
 
 #if defined(_3DS)
     void target(gfxScreen_t t);
     void clearScreen(gfxScreen_t t);
     void flushText();
-    C2D_Image TWLIcon(void);
 #elif defined(__SWITCH__)
     // Dunno what specific things might be necessary
 #endif
@@ -94,12 +97,10 @@ namespace Gui
     // Used to get text width/number of lines
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);
     void clearText(void);
-    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY);
-    void text(
-        const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth = 0.0f);
-    // Only works with single lines, because why the fuck would you wrap AND scroll?
-    void scrollingText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
-    void slicedText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width);
+    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX,
+        TextPosY positionY);
+    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
+        TextWidthAction action = TextWidthAction::IGNORE, float maxWidth = 0.0f);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);
@@ -111,5 +112,8 @@ namespace Gui
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);
 }
+
+// Must be provided by implementation
+#include "gui.tcc"
 
 #endif

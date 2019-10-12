@@ -25,6 +25,7 @@
  */
 
 #include "SavXY.hpp"
+#include <algorithm>
 
 SavXY::SavXY(u8* dt)
 {

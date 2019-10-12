@@ -25,8 +25,13 @@
  */
 
 #include "PK5.hpp"
+#include "PK4.hpp"
+#include "PK6.hpp"
 #include "Sav.hpp"
+#include "i18n.hpp"
 #include "random.hpp"
+#include "utils.hpp"
+#include <algorithm>
 
 void PK5::shuffleArray(u8 sv)
 {

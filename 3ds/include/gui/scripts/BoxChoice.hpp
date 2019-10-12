@@ -29,23 +29,21 @@
 
 #include "Button.hpp"
 #include "PKX.hpp"
+#include "RunnableScreen.hpp"
 #include "Sav.hpp"
-#include "Screen.hpp"
 #include "ViewOverlay.hpp"
 #include "loader.hpp"
 #include <array>
 #include <tuple>
 
-class BoxChoice : public Screen
+// storage, box, slot
+class BoxChoice : public RunnableScreen<std::tuple<int, int, int>>
 {
 public:
     BoxChoice(bool doCrypt);
     ~BoxChoice();
 
-    std::tuple<int, int, int> run();
-
 private:
-    bool finished() const { return done; }
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -56,8 +54,8 @@ private:
     bool nextBox(bool forceBottom = false);
     bool clickBottomIndex(int index);
 
-    bool done          = false;
     bool storageChosen = false;
+    bool backHeld      = false;
     std::array<std::unique_ptr<Button>, 5> mainButtons;
     std::array<std::unique_ptr<Button>, 30> clickButtons;
     int cursorIndex = 0, storageBox = 0, boxBox = 0;

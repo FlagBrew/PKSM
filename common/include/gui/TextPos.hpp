@@ -39,5 +39,15 @@ enum class TextPosY
     CENTER,
     BOTTOM
 };
+enum class TextWidthAction
+{
+    IGNORE,          // Just print it, fuck the consequences
+    WRAP,            // Normal text wrap
+    SQUISH,          // scaleX = std::min(scaleX, scaleX*(maxWidth/width))
+    SLICE,           // Slice the text into the max size
+    SCROLL,          // Scroll the displayed slice from above
+    SQUISH_OR_SLICE, // If new scaleX is >= scaleY * .75, squish, else slice
+    SQUISH_OR_SCROLL // If new scaleX is >= scaleY * .75, squish, else scroll
+};
 
 #endif

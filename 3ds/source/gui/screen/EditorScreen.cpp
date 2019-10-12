@@ -35,6 +35,10 @@
 #include "MoveEditScreen.hpp"
 #include "NatureOverlay.hpp"
 #include "PB7.hpp"
+#include "PK4.hpp"
+#include "PK5.hpp"
+#include "PK6.hpp"
+#include "PK7.hpp"
 #include "PkmItemOverlay.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
@@ -119,16 +123,12 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         if (pkm->generation() == Generation::SIX)
         {
             ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-            ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-            ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
             ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
             ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
             ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-            ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-            ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
             ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
             ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
@@ -313,15 +313,15 @@ void EditorScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("OT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
+    Gui::text(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("OT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
 
     Gui::ball(pkm->ball(), 4, 3);
     Gui::text(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);

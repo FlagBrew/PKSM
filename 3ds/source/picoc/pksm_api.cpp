@@ -102,7 +102,8 @@ void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     pkm* pokemon              = (pkm*)Param[3]->Val->Pointer;
     Generation gen            = Generation(Param[4]->Val->Integer);
     ThirtyChoice screen       = ThirtyChoice(question, labels, pokemon, options, gen);
-    ReturnValue->Val->Integer = screen.run();
+    auto ret                  = Gui::runScreen(screen);
+    ReturnValue->Val->Integer = ret;
 }
 
 void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -111,7 +112,8 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
     int options               = Param[1]->Val->Integer;
     char** labels             = (char**)Param[2]->Val->Pointer;
     FortyChoice screen        = FortyChoice(question, labels, options);
-    ReturnValue->Val->Integer = screen.run();
+    auto ret                  = Gui::runScreen(screen);
+    ReturnValue->Val->Integer = ret;
 }
 
 void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -154,8 +156,6 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     char* hint   = (char*)Param[1]->Val->Pointer;
     int numChars = Param[2]->Val->Integer;
 
-    C3D_FrameEnd(0);
-
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
     swkbdSetHintText(&state, hint);
@@ -172,8 +172,6 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
 
     char number[numChars + 1] = {0};
 
-    C3D_FrameEnd(0);
-
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, numChars);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
@@ -185,7 +183,6 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
         if (button != SWKBD_BUTTON_CONFIRM)
         {
             Gui::warn(hint);
-            C3D_FrameEnd(0); // Just make sure
         }
     } while (button != SWKBD_BUTTON_CONFIRM);
     number[numChars] = '\0';
@@ -402,7 +399,7 @@ void gui_boxes(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
     int doCrypt      = Param[3]->Val->Integer;
 
     BoxChoice screen = BoxChoice((bool)doCrypt);
-    auto result      = screen.run();
+    auto result      = Gui::runScreen(screen);
 
     *fromStorage              = std::get<0>(result);
     *box                      = std::get<1>(result);
@@ -605,7 +602,7 @@ void bank_get_size(struct ParseState* Parser, struct Value* ReturnValue, struct 
 void bank_select(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     BankChoice screen;
-    screen.run();
+    Gui::runScreen(screen);
 }
 
 void net_ip(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -651,6 +648,7 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
+    int isParty    = Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
@@ -659,16 +657,16 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true, false, true);
+            pkm = std::make_shared<PK4>(data, true, (bool)isParty, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true, false, true);
+            pkm = std::make_shared<PK5>(data, true, (bool)isParty, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true, false, true);
+            pkm = std::make_shared<PK6>(data, true, (bool)isParty, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true, false, true);
+            pkm = std::make_shared<PK7>(data, true, (bool)isParty, true);
             break;
         case Generation::LGPE:
         default:
@@ -681,6 +679,7 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
+    int isParty    = Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
@@ -689,16 +688,16 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     switch (gen)
     {
         case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, false, true);
+            pkm = std::make_shared<PK4>(data, false, (bool)isParty, true);
             break;
         case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, false, true);
+            pkm = std::make_shared<PK5>(data, false, (bool)isParty, true);
             break;
         case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, false, true);
+            pkm = std::make_shared<PK6>(data, false, (bool)isParty, true);
             break;
         case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, false, true);
+            pkm = std::make_shared<PK7>(data, false, (bool)isParty, true);
             break;
         case Generation::LGPE:
         default:

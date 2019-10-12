@@ -25,6 +25,10 @@
  */
 
 #include "Sav7.hpp"
+#include "PK7.hpp"
+#include "WC7.hpp"
+#include "i18n.hpp"
+#include "utils.hpp"
 
 u16 Sav7::check16(u8* buf, u32 blockID, u32 len) const
 {

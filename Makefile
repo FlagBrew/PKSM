@@ -38,4 +38,7 @@ format:
 cppcheck:
 	$(MAKE) -C 3ds cppcheck
 
+cppclean:
+	$(MAKE) -C 3ds cppclean
+
 .PHONY: revision 3ds docs clean format cppcheck

@@ -49,6 +49,7 @@ TitleLoadScreen::TitleLoadScreen()
     : Screen(
           i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"))
 {
+    oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
@@ -62,6 +63,12 @@ TitleLoadScreen::TitleLoadScreen()
     buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 }
 
+void TitleLoadScreen::makeInstructions()
+{
+    instructions = Instructions(
+        i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"));
+}
+
 void TitleLoadScreen::drawTop() const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
@@ -71,7 +78,14 @@ void TitleLoadScreen::drawTop() const
 
     if (auto title = TitleLoader::cardTitle)
     {
-        Gui::drawImageAt(title->icon(), 40, 98, NULL, 1.0f, 1.0f);
+        if (title->icon().subtex->width == 48)
+        {
+            Gui::drawImageAt(title->icon(), 40, 98, NULL, 1.0f, 1.0f);
+        }
+        else
+        {
+            Gui::drawImageAt(title->icon(), 48, 106, NULL, 1.0f, 1.0f);
+        }
         if (titleFromIndex(selectedTitle) == title)
         {
             Gui::drawSelector(39, 97);
@@ -95,7 +109,8 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP,
+        TextWidthAction::SQUISH, 398);
     Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14, PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
@@ -108,16 +123,23 @@ void TitleLoadScreen::drawBottom() const
 
     auto text      = Gui::parseText(i18n::localize("LOADER_ID"), FONT_SIZE_11, 0.0f);
     int nextIdPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 46, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 46, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     text              = Gui::parseText(i18n::localize("LOADER_MEDIA_TYPE"), FONT_SIZE_11, 0.0f);
     int nextMediaPart = 27 + text->maxWidth(FONT_SIZE_11);
-    Gui::text(text, 27, 58, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(text, 27, 58, FONT_SIZE_11, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::LEFT, TextPosY::TOP);
 
     if (auto title = titleFromIndex(selectedTitle))
     {
         Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
-        Gui::drawImageAt(title->icon(), 245, 23, NULL, 1.0f, 1.0f);
+        if (title->icon().subtex->width == 48)
+        {
+            Gui::drawImageAt(title->icon(), 245, 23, NULL, 1.0f, 1.0f);
+        }
+        else
+        {
+            Gui::drawImageAt(title->icon(), 253, 31, NULL, 1.0f, 1.0f);
+        }
         Gui::text(title->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(StringUtils::format("%08X", title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
@@ -139,13 +161,29 @@ void TitleLoadScreen::drawBottom() const
     {
         if (i == -1)
         {
-            Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            if (i - firstSave == selectedSave)
+            {
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                    TextWidthAction::SCROLL, 169.0f);
+            }
+            else
+            {
+                Gui::text(i18n::localize("LOADER_GAME_SAVE"), 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE,
+                    169.0f);
+            }
         }
         else if (i < (int)availableCheckpointSaves.size())
         {
             std::string save = availableCheckpointSaves[i].substr(0, availableCheckpointSaves[i].find_last_of('/'));
             save             = save.substr(save.find_last_of('/') + 1);
-            Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            if (i - firstSave == selectedSave)
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+            }
+            else
+            {
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+            }
         }
         else
         {
@@ -166,14 +204,22 @@ void TitleLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(
+        i18n::localize("LOADER_LOAD"), 200 + 96 / 2, 120, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 94);
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 200 + 96 / 2, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER,
+        TextWidthAction::WRAP, 94);
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP,
+        TextWidthAction::SQUISH, 318);
 }
 
 void TitleLoadScreen::update(touchPosition* touch)
 {
+    if (oldLang != Configuration::getInstance().language())
+    {
+        oldLang = Configuration::getInstance().language();
+        makeInstructions();
+    }
     u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardWasUpdated())
     {

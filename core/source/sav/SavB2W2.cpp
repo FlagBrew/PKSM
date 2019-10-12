@@ -25,6 +25,7 @@
  */
 
 #include "SavB2W2.hpp"
+#include <algorithm>
 
 SavB2W2::SavB2W2(u8* dt)
 {

@@ -28,6 +28,7 @@
 #include "Directory.hpp"
 #include "Screen.hpp"
 #include "Title.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
@@ -56,8 +57,10 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
+    void makeInstructions();
 
 private:
+    Language oldLang;
     int saveGroup = 0;
     // Has to be mutable because no const operator[]
     mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;

@@ -27,15 +27,9 @@
 #ifndef MYSTERYGIFT_HPP
 #define MYSTERYGIFT_HPP
 
-#include "PGF.hpp"
-#include "PGT.hpp"
 #include "Sav.hpp"
-#include "WB7.hpp"
-#include "WC4.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
+#include "WCX.hpp"
 #include "json.hpp"
-#include "utils.hpp"
 #include <bzlib.h>
 
 namespace MysteryGift

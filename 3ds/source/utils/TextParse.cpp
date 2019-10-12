@@ -37,7 +37,7 @@ namespace TextParse
             lineWidths.push_back(word.second);
             for (auto& glyph : word.first)
             {
-                glyph.line = lineWidths.size();
+                glyph.line = lines();
             }
         }
         else
@@ -45,9 +45,9 @@ namespace TextParse
             for (auto& glyph : word.first)
             {
                 glyph.xPos += lineWidths.back();
-                glyph.line = lineWidths.size();
+                glyph.line = lines();
             }
-            lineWidths[lineWidths.size() - 1] += word.second;
+            lineWidths[lines() - 1] += word.second;
         }
         glyphs.insert(glyphs.end(), word.first.begin(), word.first.end());
     }
@@ -68,7 +68,7 @@ namespace TextParse
         });
     }
 
-    void Text::draw(float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color) const
+    void Text::draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color) const
     {
         static_assert(std::is_same<FontSize, float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
@@ -76,39 +76,116 @@ namespace TextParse
         C2D_PlainImageTint(&tint, colorToFormat(color), 1.0f);
         for (auto& glyph : glyphs)
         {
-            float drawY = y + size * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
+            float drawY = y + sizeY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
             // The one exception to using Gui::drawImageAt: we want to control depth here
-            float drawX = x + (float)glyph.xPos * size;
+            float drawX = x + (float)glyph.xPos * sizeX;
             switch (textPos)
             {
                 case TextPosX::LEFT:
                     break;
                 case TextPosX::CENTER:
-                    drawX -= size * lineWidths[glyph.line - 1] / 2;
+                    drawX -= sizeX * lineWidths[glyph.line - 1] / 2;
                     break;
                 case TextPosX::RIGHT:
-                    drawX -= size * lineWidths[glyph.line - 1];
+                    drawX -= sizeX * lineWidths[glyph.line - 1];
                     break;
             }
-            C2D_DrawImageAt({glyph.tex, &glyph.subtex}, drawX, drawY, z, &tint, size, size);
+            C2D_DrawImageAt({glyph.tex, &glyph.subtex}, drawX, drawY, z, &tint, sizeX, sizeY);
         }
     }
 
-    void Text::truncate(size_t lines)
+    std::shared_ptr<Text> Text::truncate(size_t lines, size_t offset) const
     {
-        for (size_t i = 0; i < glyphs.size(); i++)
+        std::shared_ptr<Text> ret = std::make_shared<Text>();
+        for (auto i = glyphs.begin(); i != glyphs.end(); i++)
         {
-            if (glyphs[i].line > 2)
+            if (i->line > offset && i->line - offset <= lines)
             {
-                glyphs.erase(glyphs.begin() + i);
-                i--;
+                ret->glyphs.emplace_back(i->subtex, i->tex, i->font, i->line - offset, i->xPos, i->width);
             }
         }
-        while (lineWidths.size() > 2)
+        for (size_t i = offset; i < lines; i++)
         {
-            lineWidths.pop_back();
+            ret->lineWidths.emplace_back(lineWidths[i]);
         }
-        maxLineWidth = *std::max_element(lineWidths.begin(), lineWidths.end());
+        ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
+
+        return ret;
+    }
+
+    static Tex3DS_SubTexture _select_box(const Tex3DS_SubTexture& texIn, int x, int y, int endX, int endY)
+    {
+        Tex3DS_SubTexture tex = texIn;
+        if (x != endX)
+        {
+            int deltaX  = endX - x;
+            float texRL = tex.left - tex.right;
+            tex.left    = tex.left - (float)texRL / tex.width * x;
+            tex.right   = tex.left - (float)texRL / tex.width * deltaX;
+            tex.width   = deltaX;
+        }
+        if (y != endY)
+        {
+            float texTB = tex.top - tex.bottom;
+            int deltaY  = endY - y;
+            tex.top     = tex.top - (float)texTB / tex.height * y;
+            tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
+            tex.height  = deltaY;
+        }
+        return tex;
+    }
+
+    std::shared_ptr<Text> Text::slice(float maxWidth, float offset) const
+    {
+        std::shared_ptr<Text> ret = std::make_shared<Text>();
+        for (auto& width : lineWidths)
+        {
+            ret->lineWidths.push_back(width > maxWidth ? maxWidth : width);
+        }
+        ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
+
+        for (auto i = glyphs.begin(); i != glyphs.end(); i++)
+        {
+            if (lineWidths[i->line - 1] > maxWidth)
+            {
+                // Completely out of bounds to the left
+                if (i->xPos + i->width + offset <= 0)
+                {
+                    continue;
+                }
+                // Completely out of bounds to the right
+                else if (i->xPos + offset >= maxWidth)
+                {
+                    continue;
+                }
+                // Partially out of bounds to the left, so xPos will be < 0 and xPos + width will be > 0
+                else if (i->xPos + offset < 0)
+                {
+                    float newXPos               = i->xPos + offset;
+                    float targetWidth           = (float)i->width + newXPos;
+                    Tex3DS_SubTexture newSubtex = _select_box(i->subtex, i->width - static_cast<u16>(ceilf(targetWidth)), 0, i->width, 0);
+                    ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, 0, newSubtex.width);
+                }
+                // Partially out of bounds to the right, so xPos will be < maxWidth and xPos + width will be > maxWidth
+                else if (i->xPos + i->width + offset > maxWidth)
+                {
+                    float newXPos               = i->xPos + offset;
+                    float targetWidth           = (float)maxWidth - newXPos;
+                    Tex3DS_SubTexture newSubtex = _select_box(i->subtex, 0, 0, static_cast<u16>(ceilf(targetWidth)), 0);
+                    ret->glyphs.emplace_back(newSubtex, i->tex, i->font, i->line, newXPos, newSubtex.width);
+                }
+                // Fully in-bounds: just move it the amount of the offset
+                else
+                {
+                    ret->glyphs.emplace_back(i->subtex, i->tex, i->font, i->line, i->xPos + offset, i->width);
+                }
+            }
+            else
+            {
+                ret->glyphs.emplace_back(*i);
+            }
+        }
+        return ret;
     }
 
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts) : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
@@ -317,7 +394,8 @@ namespace TextParse
         }
     }
 
-    void ScreenText::addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize size, TextPosX textPos, PKSM_Color color)
+    void ScreenText::addText(
+        std::shared_ptr<Text> text, float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color)
     {
         static_assert(std::is_same<FontSize, float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
@@ -326,20 +404,20 @@ namespace TextParse
 
         for (auto& glyph : text->glyphs)
         {
-            float glyphX = x + size * glyph.xPos;
+            float glyphX = x + sizeX * glyph.xPos;
             switch (textPos)
             {
                 case TextPosX::LEFT:
                     break;
                 case TextPosX::CENTER:
-                    glyphX -= size * text->lineWidths[glyph.line - 1] / 2;
+                    glyphX -= sizeX * text->lineWidths[glyph.line - 1] / 2;
                     break;
                 case TextPosX::RIGHT:
-                    glyphX -= size * text->lineWidths[glyph.line - 1];
+                    glyphX -= sizeX * text->lineWidths[glyph.line - 1];
                     break;
             }
-            float glyphY = y + size * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
-            glyphs.emplace_back(glyph, glyphX, glyphY, z, size, color);
+            float glyphY = y + sizeY * (lineFeed * glyph.line - C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
+            glyphs.emplace_back(glyph, glyphX, glyphY, z, sizeX, sizeY, color);
         }
     }
 
@@ -367,7 +445,7 @@ namespace TextParse
         {
             C2D_PlainImageTint(&tint, colorToFormat(glyph.color), 1.0f);
             // The one exception to using Gui::drawImageAt: we want to control depth here
-            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.size, glyph.size);
+            C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.sizeX, glyph.sizeY);
         }
     }
 

@@ -25,6 +25,10 @@
  */
 
 #include "Sav5.hpp"
+#include "PGF.hpp"
+#include "PK5.hpp"
+#include "i18n.hpp"
+#include "utils.hpp"
 
 u16 Sav5::TID(void) const
 {

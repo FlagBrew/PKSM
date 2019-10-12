@@ -27,16 +27,14 @@
 #ifndef SAV_HPP
 #define SAV_HPP
 
-#include "Item.hpp"
-#include "PKX.hpp"
-#include "WCX.hpp"
+#include "Language.hpp"
+#include "coretypes.h"
 #include "game.hpp"
 #include "generation.hpp"
-#include "i18n.hpp"
-#include "utils.hpp"
+#include <map>
 #include <memory>
 #include <set>
-#include <stdint.h>
+#include <vector>
 
 enum Pouch
 {
@@ -51,6 +49,10 @@ enum Pouch
     Candy,
     ZCrystals
 };
+
+class PKX;
+class Item;
+class WCX;
 
 class Sav
 {

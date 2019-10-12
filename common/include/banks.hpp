@@ -26,12 +26,15 @@
 
 #ifndef BANKS_HPP
 #define BANKS_HPP
+
 #include "Bank.hpp"
 #include "types.h"
 
 #define BANKS_VERSION 1
 #define BANK_DEFAULT_SIZE 50
 #define BANK_MAX_SIZE 500
+
+class Bank;
 
 namespace Banks
 {

@@ -28,7 +28,6 @@
 #define TITLE_HPP
 
 #include "archive.hpp"
-#include "gui.hpp"
 #include "spi.hpp"
 #include "utils.hpp"
 #include <3ds.h>

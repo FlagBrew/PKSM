@@ -28,7 +28,7 @@
 #define PB7_HPP
 
 #include "PKX.hpp"
-#include "SavLGPE.hpp"
+#include "personal.hpp"
 
 class PB7 : public PKX
 {

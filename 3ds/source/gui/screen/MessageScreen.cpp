@@ -24,24 +24,49 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
+#include "MessageScreen.hpp"
+#include "gui.hpp"
 
-#include "Instructions.hpp"
-#include "ReplaceableScreen.hpp"
-#include <3ds.h>
-#include <citro3d.h>
-#include <memory>
-
-class Screen : public ReplaceableScreen
+static u8 transparencyWaver()
 {
-public:
-    Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
-    virtual ~Screen() {}
-    virtual bool replacesTop() const final { return true; }
-    virtual bool replacesBottom() const final { return true; }
-    virtual bool handlesUpdate() const final { return true; }
-    void removeOverlays() { overlay = nullptr; }
-};
+    static u8 currentAmount = 255;
+    static bool dir         = true;
+    if (!dir)
+    {
+        currentAmount++;
+        if (currentAmount == 255)
+            dir = true;
+    }
+    else
+    {
+        currentAmount--;
+        if (currentAmount < 155)
+            dir = false;
+    }
+    return currentAmount;
+}
 
-#endif
+void MessageScreen::drawTop() const
+{
+    Gui::sprite(ui_sheet_part_info_top_idx, 0, 0);
+    auto parsed   = Gui::parseText(message, FONT_SIZE_15);
+    float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
+
+    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+
+    float continueY = 110 + (lineMod / 2) * parsed->lines();
+    Gui::text(i18n::localize(lang, "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+}
+
+void MessageScreen::drawBottom() const
+{
+    Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+}
+
+void MessageScreen::update(touchPosition* touch)
+{
+    if (hidKeysDown() & KEY_A)
+    {
+        done = true;
+    }
+}

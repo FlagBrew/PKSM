@@ -39,6 +39,7 @@ class Item7b;
 class Item
 {
 public:
+    virtual ~Item() {}
     virtual Generation generation(void) const     = 0;
     virtual u16 id(void) const                    = 0;
     virtual u16 count(void) const                 = 0;

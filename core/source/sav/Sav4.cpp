@@ -26,6 +26,9 @@
 
 #include "Sav4.hpp"
 #include "PGT.hpp"
+#include "PK4.hpp"
+#include "i18n.hpp"
+#include "utils.hpp"
 
 void Sav4::GBO(void)
 {

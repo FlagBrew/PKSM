@@ -390,10 +390,11 @@ static void cartScan(void*)
                 {
                     FSUSER_CardSlotPowerOn(&power);
                 }
-                while (!power)
+                while (!power && doCartScan.test_and_set())
                 {
                     FSUSER_CardSlotGetCardIFPowerStatus(&power);
                 }
+                svcSleepThread(500'000'000);
                 for (size_t i = 0; i < 10; i++)
                 {
                     if ((oldCardIn = TitleLoader::scanCard()))
@@ -404,6 +405,7 @@ static void cartScan(void*)
             }
             else
             {
+                FSUSER_CardSlotPowerOff(&power);
                 TitleLoader::scanCard();
                 oldCardIn = false;
             }

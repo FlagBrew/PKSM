@@ -27,7 +27,9 @@
 #include "SavLGPE.hpp"
 #include "PB7.hpp"
 #include "WB7.hpp"
+#include "i18n.hpp"
 #include "random.hpp"
+#include "utils.hpp"
 
 SavLGPE::SavLGPE(u8* dt)
 {

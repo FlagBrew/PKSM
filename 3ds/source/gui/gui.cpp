@@ -26,13 +26,14 @@
 
 #include "gui.hpp"
 #include "Configuration.hpp"
+#include "DecisionScreen.hpp"
+#include "MessageScreen.hpp"
 #include "TextParse.hpp"
+#include "personal.hpp"
 #include <queue>
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;
-C3D_RenderTarget* g_renderTargetTextChop;
-C3D_Tex textChopTexture;
 
 static C2D_SpriteSheet spritesheet_ui;
 static C2D_SpriteSheet spritesheet_pkm;
@@ -54,13 +55,12 @@ static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
 bool textMode = false;
 bool inFrame  = false;
-bool drawingOnTopScreen;
 
-static int scrollingTextY = 0;
 struct ScrollingTextOffset
 {
     int offset;
     int pauseTime;
+    bool thisFrame;
 };
 static std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
 
@@ -166,11 +166,6 @@ void Gui::clearScreen(gfxScreen_t screen)
     }
 }
 
-C2D_Image Gui::TWLIcon(void)
-{
-    return C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_twlcart_idx);
-}
-
 void Gui::flushText()
 {
     if (textMode)
@@ -260,129 +255,139 @@ std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, FontSize
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY)
+void Gui::text(
+    std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
-    const float lineMod = size * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y -= size * 6;
+    const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
+    y -= sizeY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
             break;
         case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
+            y -= 0.5f * (lineMod * (float)text->lines());
             break;
         case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
+            y -= lineMod * (float)text->lines();
             break;
     }
 
-    currentText->addText(text, x, y, 0.5f, size, positionX, color);
+    currentText->addText(text, x, y, 0.5f, sizeX, sizeY, positionX, color);
 }
 
-void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
+    TextWidthAction action, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
-    auto text = parseText(str, size, maxWidth);
-
-    Gui::text(text, x, y, size, color, positionX, positionY);
-}
-
-void Gui::scrollingText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
-{
-    static_assert(std::is_same<FontSize, float>::value);
-    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
-    static const C2D_Image textImage   = {&textChopTexture, &t3x};
-
-    auto text = parseText(str, size);
-    text->optimize();
-    if (!scrollOffsets.count(str))
+    if (maxWidth == 0)
     {
-        scrollOffsets[str] = {0, 1};
+        action = TextWidthAction::IGNORE;
     }
-
-    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= size * 6;
-    switch (positionY)
+    switch (action)
     {
-        case TextPosY::TOP:
-            break;
-        case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
-            break;
-        case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
-            break;
-    }
-
-    C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(-scrollOffsets[str].offset / 3, scrollingTextY, 0, size, positionX, color);
-    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
-    scrollingTextY += ceilf(lineMod);
-    if (scrollOffsets[str].pauseTime != 0)
-    {
-        if (scrollOffsets[str].pauseTime > 30)
+        case TextWidthAction::IGNORE:
         {
-            if (scrollOffsets[str].offset == 0)
+            auto text = parseText(str, size, 0.0f);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::WRAP:
+        {
+            auto text = parseText(str, size, maxWidth);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SQUISH:
+        {
+            auto text   = parseText(str, size, 0.0f);
+            float sizeX = std::min(size, size * (maxWidth / text->maxWidth(size)));
+            Gui::text(text, x, y, sizeX, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SLICE:
+        {
+            auto text = parseText(str, size, 0.0f);
+            if (text->maxWidth(size) < maxWidth)
             {
-                scrollOffsets[str].pauseTime = 0;
+                Gui::text(text, x, y, size, size, color, positionX, positionY);
+                return;
+            }
+
+            text = text->slice(maxWidth / size);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SCROLL:
+        {
+            auto text = parseText(str, size, 0.0f);
+            if (text->maxWidth(size) < maxWidth)
+            {
+                Gui::text(text, x, y, size, size, color, positionX, positionY);
+                return;
+            }
+
+            auto offsetIt = scrollOffsets.find(str);
+            if (offsetIt == scrollOffsets.end())
+            {
+                offsetIt = scrollOffsets.emplace(str, ScrollingTextOffset{0, 1, true}).first;
+            }
+
+            if (!offsetIt->second.thisFrame)
+            {
+                offsetIt->second.thisFrame = true;
+                if (offsetIt->second.pauseTime != 0)
+                {
+                    if (offsetIt->second.pauseTime > 30)
+                    {
+                        if (offsetIt->second.offset == 0)
+                        {
+                            offsetIt->second.pauseTime = 0;
+                        }
+                        else
+                        {
+                            offsetIt->second.pauseTime = 1;
+                        }
+                        offsetIt->second.offset = 0;
+                    }
+                    else
+                    {
+                        offsetIt->second.pauseTime++;
+                    }
+                }
+                else
+                {
+                    offsetIt->second.offset += 1;
+                    if (offsetIt->second.offset / 3 + maxWidth > (int)text->maxWidth(size) + 5)
+                    {
+                        offsetIt->second.pauseTime += 1;
+                    }
+                }
+            }
+
+            text = text->slice(maxWidth / size, (float)-offsetIt->second.offset / 3.0f / size);
+            Gui::text(text, x, y, size, size, color, positionX, positionY);
+        }
+        break;
+        case TextWidthAction::SQUISH_OR_SLICE:
+        case TextWidthAction::SQUISH_OR_SCROLL:
+        {
+            auto text   = parseText(str, size, 0.0f);
+            float sizeX = std::min(size, size * (maxWidth / text->maxWidth(size)));
+            if (sizeX >= size * 0.75f)
+            {
+                Gui::text(text, x, y, sizeX, size, color, positionX, positionY);
             }
             else
             {
-                scrollOffsets[str].pauseTime = 1;
+                // Won't be terribly less performant because of string caching
+                TextWidthAction nextAction = action == TextWidthAction::SQUISH_OR_SCROLL ? TextWidthAction::SCROLL : TextWidthAction::SLICE;
+                Gui::text(str, x, y, size, color, positionX, positionY, nextAction, maxWidth);
             }
-            scrollOffsets[str].offset = 0;
         }
-        else
-        {
-            scrollOffsets[str].pauseTime++;
-        }
+        break;
     }
-    else
-    {
-        scrollOffsets[str].offset += 1;
-        if (scrollOffsets[str].offset / 3 + width > (int)text->maxLineWidth * size + 5)
-        {
-            scrollOffsets[str].pauseTime += 1;
-        }
-    }
-    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
-}
-
-void Gui::slicedText(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY, int width)
-{
-    static_assert(std::is_same<FontSize, float>::value);
-    static const Tex3DS_SubTexture t3x = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
-    static const C2D_Image textImage   = {&textChopTexture, &t3x};
-
-    auto text = parseText(str, size);
-    text->optimize();
-
-    static const float lineMod     = size * C2D_FontGetInfo(nullptr)->lineFeed;
-    static const float baselinePos = size * C2D_FontGetInfo(nullptr)->tglp->baselinePos;
-    y -= size * 6;
-    switch (positionY)
-    {
-        case TextPosY::TOP:
-            break;
-        case TextPosY::CENTER:
-            y -= 0.5f * (lineMod * (float)text->lineWidths.size());
-            break;
-        case TextPosY::BOTTOM:
-            y -= lineMod * (float)text->lineWidths.size();
-            break;
-    }
-
-    C2D_SceneBegin(g_renderTargetTextChop);
-    text->draw(0, scrollingTextY, 0, size, positionX, color);
-    C2D_SceneBegin(drawingOnTopScreen ? g_renderTargetTop : g_renderTargetBottom);
-    Tex3DS_SubTexture newt3x = _select_box(textImage, 0, scrollingTextY + lineMod - baselinePos, width, scrollingTextY + lineMod * 2 - baselinePos);
-    scrollingTextY += ceilf(lineMod);
-    scrollOffsets[str] = {0, 1};
-    C2D_DrawImageAt({&textChopTexture, &newt3x}, x, y + lineMod - baselinePos, 0.5f);
 }
 
 static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
@@ -420,9 +425,6 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    C3D_TexInitVRAM(&textChopTexture, 512, 256, GPU_RGBA8);
-    g_renderTargetTextChop = C3D_RenderTargetCreateFromTex(&textChopTexture, GPU_TEXFACE_2D, 0, GPU_RB_DEPTH16);
-
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
@@ -440,6 +442,21 @@ Result Gui::init(void)
     return 0;
 }
 
+void Gui::frameClean()
+{
+    for (auto& i : scrollOffsets)
+    {
+        if (i.second.thisFrame)
+        {
+            i.second.thisFrame = false;
+        }
+        else
+        {
+            i.second = {0, 1, false};
+        }
+    }
+}
+
 // From sound.cpp. Not in sound.hpp for an implementation-independent sound.hpp
 extern void SOUND_correctBGMDataSize();
 
@@ -454,8 +471,6 @@ void Gui::mainLoop(void)
         inFrame = true;
         Gui::clearScreen(GFX_TOP);
         Gui::clearScreen(GFX_BOTTOM);
-        C2D_TargetClear(g_renderTargetTextChop, 0);
-        scrollingTextY = 0;
 
         u32 kHeld = hidKeysHeld();
 
@@ -477,6 +492,7 @@ void Gui::mainLoop(void)
             drawNoHome();
 
             C3D_FrameEnd(0);
+            Gui::frameClean();
             inFrame = false;
         }
         else
@@ -496,6 +512,7 @@ void Gui::mainLoop(void)
             drawNoHome();
 
             C3D_FrameEnd(0);
+            Gui::frameClean();
             inFrame = false;
 
             touchPosition touch;
@@ -1583,7 +1600,7 @@ int Gui::pointerBob()
     return currentBob / 4;
 }
 
-u8 transparencyWaver()
+static u8 transparencyWaver()
 {
     static u8 currentAmount = 255;
     static bool dir         = true;
@@ -1604,65 +1621,8 @@ u8 transparencyWaver()
 
 bool Gui::showChoiceMessage(const std::string& message, int timer)
 {
-    u32 keys = 0;
-    if (inFrame)
-    {
-        C3D_FrameEnd(0);
-    }
-    hidScanInput();
-    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_B))
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        Gui::clearScreen(GFX_TOP);
-        Gui::clearScreen(GFX_BOTTOM);
-
-        target(GFX_TOP);
-        sprite(ui_sheet_part_info_top_idx, 0, 0);
-
-        auto parsed   = parseText(message, FONT_SIZE_15);
-        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
-
-        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-
-        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
-
-        text(i18n::localize("CONTINUE_CANCEL"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        flushText();
-
-        target(GFX_BOTTOM);
-        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            setDoHomeDraw();
-        }
-
-        drawNoHome();
-
-        C3D_FrameEnd(0);
-        if (timer)
-        {
-            svcSleepThread(timer);
-            timer = 0;
-        }
-        if (keys & KEY_A)
-        {
-            hidScanInput();
-            if (inFrame)
-            {
-                C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-            }
-            return true;
-        }
-    }
-    hidScanInput();
-    if (inFrame)
-    {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    }
-    return false;
+    DecisionScreen screen(message);
+    return runScreen(screen);
 }
 
 void Gui::waitFrame(const std::string& message)
@@ -1670,6 +1630,7 @@ void Gui::waitFrame(const std::string& message)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1682,9 +1643,9 @@ void Gui::waitFrame(const std::string& message)
     auto parsed   = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
-    float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
+    float continueY = 110 + (lineMod / 2) * parsed->lines();
 
     text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
@@ -1694,6 +1655,7 @@ void Gui::waitFrame(const std::string& message)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1703,60 +1665,13 @@ void Gui::waitFrame(const std::string& message)
 
 void Gui::warn(const std::string& message, std::optional<Language> lang)
 {
-    u32 keys = 0;
-    if (inFrame)
-    {
-        C3D_FrameEnd(0);
-    }
-    hidScanInput();
-    while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
-    {
-        hidScanInput();
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-        Gui::clearScreen(GFX_TOP);
-        Gui::clearScreen(GFX_BOTTOM);
-
-        target(GFX_TOP);
-        sprite(ui_sheet_part_info_top_idx, 0, 0);
-        auto parsed   = parseText(message, FONT_SIZE_15);
-        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
-
-        text(parsed, 200, 110, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
-
-        float continueY = 110 + (lineMod / 2) * parsed->lineWidths.size();
-        if (lang)
-        {
-            text(i18n::localize(lang.value(), "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            text(i18n::localize("CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        }
-
-        flushText();
-
-        target(GFX_BOTTOM);
-
-        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
-        {
-            setDoHomeDraw();
-        }
-
-        drawNoHome();
-
-        C3D_FrameEnd(0);
-    }
-    hidScanInput();
-    if (inFrame)
-    {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    }
+    MessageScreen screen(message, lang.value_or(Language::EN));
+    runScreen(screen);
 }
 
 void Gui::screenBack()
 {
+    scrollOffsets.clear();
     screens.pop();
 }
 
@@ -1765,6 +1680,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1780,6 +1696,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1792,6 +1709,7 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1807,6 +1725,7 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1819,6 +1738,7 @@ void Gui::showResizeStorage()
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1833,6 +1753,7 @@ void Gui::showResizeStorage()
     sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
     C3D_FrameEnd(0);
+    Gui::frameClean();
 
     if (inFrame)
     {
@@ -1846,6 +1767,7 @@ void Gui::error(const std::string& message, Result errorCode)
     if (inFrame)
     {
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     while (aptMainLoop() && !((keys = hidKeysDown()) & KEY_A))
@@ -1877,6 +1799,7 @@ void Gui::error(const std::string& message, Result errorCode)
         drawNoHome();
 
         C3D_FrameEnd(0);
+        Gui::frameClean();
     }
     hidScanInput();
     if (inFrame)
