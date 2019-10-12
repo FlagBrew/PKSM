@@ -45,6 +45,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include <PB7.hpp>
+#include <stack>
 #include <variant>
 
 extern std::stack<std::unique_ptr<Screen>> screens;

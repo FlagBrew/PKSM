@@ -28,6 +28,8 @@
 #include "Configuration.hpp"
 #include "PB7.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
+#include "utils.hpp"
 
 static constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
     "HIDDEN_POWER", "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};

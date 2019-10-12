@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "io.hpp"
 #include <atomic>
 #include <ctime>
 #include <sys/stat.h>

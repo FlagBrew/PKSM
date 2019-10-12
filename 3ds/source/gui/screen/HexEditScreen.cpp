@@ -31,6 +31,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 #include <bitset>
 

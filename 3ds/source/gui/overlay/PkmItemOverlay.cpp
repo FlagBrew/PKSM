@@ -27,7 +27,9 @@
 #include "PkmItemOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
+#include "PKX.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 #include "utils.hpp"
 

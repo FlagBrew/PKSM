@@ -26,6 +26,7 @@
 
 #include "BankSelectionScreen.hpp"
 #include "gui.hpp"
+#include "utils.hpp"
 
 void BankSelectionScreen::drawBottom() const
 {

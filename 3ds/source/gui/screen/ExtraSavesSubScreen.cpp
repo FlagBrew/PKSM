@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "FileChooseOverlay.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 
 static const std::string dsIds[] = {
     "CPU", // Platinum

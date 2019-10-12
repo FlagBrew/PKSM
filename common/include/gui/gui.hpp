@@ -27,25 +27,18 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "PKX.hpp"
+#include "Language.hpp"
 #include "RunnableScreen.hpp"
-#include "Sav.hpp"
 #include "Screen.hpp"
 #include "TextParse.hpp"
 #include "TextPos.hpp"
-#include "WCX.hpp"
 #include "colors.hpp"
-#include "i18n.hpp"
+#include "generation.hpp"
 #include "json.hpp"
-#include "random.hpp"
-#include "sound.hpp"
 #include "spritesheets.h"
-#include "thread.hpp"
 #include "types.h"
-#include "utils.hpp"
-#include <citro2d.h>
-#include <stack>
-#include <string.h>
+
+class PKX;
 
 namespace Gui
 {

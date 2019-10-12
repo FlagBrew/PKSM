@@ -28,6 +28,7 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 
 SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)

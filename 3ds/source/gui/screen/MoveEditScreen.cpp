@@ -30,6 +30,7 @@
 #include "PB7.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 
 MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {

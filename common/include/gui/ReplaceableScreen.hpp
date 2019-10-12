@@ -28,7 +28,6 @@
 #define REPLACEABLESCREEN_HPP
 
 #include "Instructions.hpp"
-#include "types.h"
 #include <memory>
 
 class ReplaceableScreen

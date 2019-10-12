@@ -35,6 +35,7 @@
 #include "archive.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "io.hpp"
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second

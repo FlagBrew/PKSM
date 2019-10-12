@@ -28,9 +28,13 @@
 #include "Configuration.hpp"
 #include "DecisionScreen.hpp"
 #include "MessageScreen.hpp"
+#include "PKX.hpp"
 #include "TextParse.hpp"
 #include "personal.hpp"
-#include <queue>
+#include "sound.hpp"
+#include "thread.hpp"
+#include "utils.hpp"
+#include <stack>
 
 C3D_RenderTarget* g_renderTargetTop;
 C3D_RenderTarget* g_renderTargetBottom;

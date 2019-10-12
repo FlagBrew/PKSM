@@ -31,6 +31,7 @@
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
+#include "Sav.hpp"
 #include "gui.hpp"
 #include <string>
 #include <vector>

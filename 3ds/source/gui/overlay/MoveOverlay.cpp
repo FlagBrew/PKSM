@@ -29,6 +29,7 @@
 #include "Configuration.hpp"
 #include "PB7.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 
 namespace

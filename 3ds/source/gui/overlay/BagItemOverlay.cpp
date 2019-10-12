@@ -25,6 +25,8 @@
  */
 
 #include "BagItemOverlay.hpp"
+#include "Item.hpp"
+#include "Sav.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 

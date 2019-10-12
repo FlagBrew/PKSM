@@ -27,6 +27,7 @@
 #include "BankChoice.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
+#include "utils.hpp"
 
 void BankChoice::drawBottom() const
 {

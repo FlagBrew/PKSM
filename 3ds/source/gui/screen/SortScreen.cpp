@@ -26,6 +26,7 @@
 
 #include "SortScreen.hpp"
 #include "ClickButton.hpp"
+#include "PKX.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"

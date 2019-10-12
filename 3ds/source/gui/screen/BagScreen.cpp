@@ -28,6 +28,8 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
+#include "Item.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 
 BagScreen::BagScreen()

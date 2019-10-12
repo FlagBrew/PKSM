@@ -28,6 +28,8 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
+#include "utils.hpp"
 
 ConfigSubRegionOverlay::ConfigSubRegionOverlay(ReplaceableScreen& screen)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),

@@ -37,7 +37,9 @@
 #include "ThirtyChoice.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
+#include "random.hpp"
 #include "utils.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
