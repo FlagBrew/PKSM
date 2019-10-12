@@ -580,50 +580,45 @@ std::string Sav5::pouchName(Language lang, Pouch pouch) const
 
 const std::set<int>& Sav5::availableItems(void) const
 {
-    static std::set<int> ret;
-    if (ret.empty())
+    if (items.empty())
     {
-        fill_set(ret, 0, maxItem());
+        fill_set(items, 0, maxItem());
     }
-    return ret;
+    return items;
 }
 
 const std::set<int>& Sav5::availableMoves(void) const
 {
-    static std::set<int> ret;
-    if (ret.empty())
+    if (moves.empty())
     {
-        fill_set(ret, 0, maxMove());
+        fill_set(moves, 0, maxMove());
     }
-    return ret;
+    return moves;
 }
 
 const std::set<int>& Sav5::availableSpecies(void) const
 {
-    static std::set<int> ret;
-    if (ret.empty())
+    if (species.empty())
     {
-        fill_set(ret, 1, maxSpecies());
+        fill_set(species, 1, maxSpecies());
     }
-    return ret;
+    return species;
 }
 
 const std::set<int>& Sav5::availableAbilities(void) const
 {
-    static std::set<int> ret;
-    if (ret.empty())
+    if (abilities.empty())
     {
-        fill_set(ret, 1, maxAbility());
+        fill_set(abilities, 1, maxAbility());
     }
-    return ret;
+    return abilities;
 }
 
 const std::set<int>& Sav5::availableBalls(void) const
 {
-    static std::set<int> ret;
-    if (ret.empty())
+    if (balls.empty())
     {
-        fill_set(ret, 1, maxBall());
+        fill_set(balls, 1, maxBall());
     }
-    return ret;
+    return balls;
 }

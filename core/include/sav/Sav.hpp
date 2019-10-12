@@ -107,6 +107,8 @@ protected:
         }
     }
 
+    mutable std::set<int> items, moves, species, abilities, balls;
+
 public:
     struct giftData
     {
