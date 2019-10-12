@@ -67,7 +67,7 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shar
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    const std::set<int>& availableMoves      = TitleLoader::save->availableMoves();
+    const std::set<int> availableMoves       = TitleLoader::save->availableMoves();
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
         if (*i >= 622 && *i <= 658)

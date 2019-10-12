@@ -25,6 +25,7 @@
  */
 
 #include "i18n.hpp"
+#include "LanguageStrings.hpp"
 
 static LanguageStrings* jp = nullptr;
 static LanguageStrings* en = nullptr;

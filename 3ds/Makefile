@@ -273,7 +273,8 @@ cppcheck:
 #---------------------------------------------------------------------------------
 cppclean:
 	@rm -f $(BUILD)/cppclean.log
-	@cppclean $(foreach dir,$(INCLUDES),--include-path=$(dir)) $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp)) > $(BUILD)/cppclean.log
+	@cppclean $(foreach dir,$(INCLUDES),--include-path=$(dir)) $(foreach dir,$(LIBDIRS),--include-path=$(dir)/include) --include-path=$(CURDIR)/$(BUILD) $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp)) > $(BUILD)/cppclean.log
+	@echo build/cppclean.log created
 
 #---------------------------------------------------------------------------------
 $(GFXBUILD)/%.bcfnt :		%.ttf

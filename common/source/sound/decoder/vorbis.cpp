@@ -100,10 +100,10 @@ uint64_t VorbisDecoder::fillVorbisBuffer(char* bufferOut)
 {
     uint64_t samplesRead = 0;
     int samplesToRead    = buffSize;
+    int current_section;
 
     while (samplesToRead > 0)
     {
-        static int current_section;
         int samplesJustRead = ov_read(&vorbisFile, bufferOut, samplesToRead > 4096 ? 4096 : samplesToRead, &current_section);
 
         if (samplesJustRead < 0)

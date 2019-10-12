@@ -27,7 +27,12 @@
 #ifndef I18N_HPP
 #define I18N_HPP
 
-#include "LanguageStrings.hpp"
+#include "Language.hpp"
+#include "coretypes.h"
+#include "generation.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 namespace i18n
 {
