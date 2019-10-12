@@ -420,7 +420,7 @@ Result Gui::init(void)
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
-    SDLH_Init();
+    Sound::init();
 
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
@@ -457,10 +457,13 @@ void Gui::frameClean()
     }
 }
 
+// From sound.cpp. Not in sound.hpp for an implementation-independent sound.hpp
+extern void SOUND_correctBGMDataSize();
+
 void Gui::mainLoop(void)
 {
     bool exit = false;
-    Threads::create((ThreadFunc)SDLH_Play);
+    Sound::startBGM();
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -470,6 +473,7 @@ void Gui::mainLoop(void)
         Gui::clearScreen(GFX_BOTTOM);
 
         u32 kHeld = hidKeysHeld();
+
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {
             target(GFX_TOP);
@@ -518,6 +522,7 @@ void Gui::mainLoop(void)
         }
 
         textBuffer->clear();
+        SOUND_correctBGMDataSize();
     }
 }
 
@@ -546,7 +551,7 @@ void Gui::exit(void)
     }
     C2D_Fini();
     C3D_Fini();
-    SDLH_Exit();
+    Sound::exit();
 }
 
 void Gui::sprite(int key, int x, int y)

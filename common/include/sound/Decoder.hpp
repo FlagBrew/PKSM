@@ -24,17 +24,28 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef THREAD_HPP
-#define THREAD_HPP
+#ifndef DECODER_HPP
+#define DECODER_HPP
 
-#include "platform.h"
-#include <vector>
+#include "types.h"
+#include <memory>
+#include <string>
 
-namespace Threads
+class Decoder
 {
-    Thread createDetached(ThreadFunc entrypoint, void* arg = nullptr);
-    void create(ThreadFunc entrypoint, void* arg = nullptr);
-    void destroy(void);
-}
+public:
+    virtual ~Decoder() {}
+    bool good() { return initialized; }
+    virtual u32 pos()                = 0;
+    virtual u32 length()             = 0;
+    virtual u32 decode(void* buffer) = 0;
+    virtual bool stereo()            = 0;
+    virtual u32 sampleRate()         = 0;
+    virtual u32 bufferSize()         = 0;
+    static std::shared_ptr<Decoder> get(const std::string& fileName);
+
+protected:
+    bool initialized = false;
+};
 
 #endif

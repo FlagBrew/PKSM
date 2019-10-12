@@ -24,17 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef THREAD_HPP
-#define THREAD_HPP
+#ifndef SOUND_HPP
+#define SOUND_HPP
 
-#include "platform.h"
-#include <vector>
+#include "types.h"
+#include <string>
 
-namespace Threads
+namespace Sound
 {
-    Thread createDetached(ThreadFunc entrypoint, void* arg = nullptr);
-    void create(ThreadFunc entrypoint, void* arg = nullptr);
-    void destroy(void);
+    Result init(void);
+    void registerEffect(const std::string& effectName, const std::string& fileName);
+    void exit(void);
+
+    void startBGM(void);
+    void playEffect(const std::string& effectName);
 }
 
 #endif

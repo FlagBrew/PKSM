@@ -41,6 +41,8 @@ BUILD			:=	build
 FORMATSOURCES	:=	../common/source \
 					../common/source/gui \
 					../common/source/io \
+					../common/source/sound \
+					../common/source/sound/decoder \
 					../common/source/utils \
 					../core/source \
 					../core/source/i18n \
@@ -56,6 +58,7 @@ FORMATSOURCES	:=	../common/source \
 					source/gui/scripts \
 					source/io \
 					source/picoc \
+					source/sound \
 					source/titles \
 					source/utils
 SOURCES			:=	$(FORMATSOURCES) \
@@ -68,6 +71,8 @@ DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
 					../common/include/io \
+					../common/include/sound \
+					../common/include/sound/decoder \
 					../common/include/utils \
 					../core/include/i18n \
 					../core/include/personal \
@@ -117,7 +122,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
-			`arm-none-eabi-pkg-config SDL_mixer --cflags` \
+			`arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --cflags` \
 			`curl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
@@ -127,8 +132,8 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lcitro2d -lbz2 \
-		   `arm-none-eabi-pkg-config SDL_mixer --libs-only-l --libs-only-L` -lvorbisidec -logg -lmikmod -lmad \
+LIBS	:= -lcitro2d -lcitro3d -lbz2 \
+		   `arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --libs` \
 		   `curl-config --libs`
 
 CXX		:= `which ccache` $(CXX)
