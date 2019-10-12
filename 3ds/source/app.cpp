@@ -155,8 +155,8 @@ static Result HBLDR_SetTarget(const char* path)
 
 static int progress_callback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
 {
-    static auto oldTime = osGetTime();
-    auto time           = osGetTime();
+    thread_local auto oldTime = osGetTime();
+    auto time                 = osGetTime();
     if (dltotal != 0 && time >= oldTime + 1000)
     {
         Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);

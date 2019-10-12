@@ -89,9 +89,9 @@ struct callbackWrapper
 
 static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
 {
-    callbackWrapper* data      = (callbackWrapper*)wrapper;
-    static curl_off_t oldDlNow = dlnow;
-    static int timesTooSlow    = 0;
+    callbackWrapper* data            = (callbackWrapper*)wrapper;
+    thread_local curl_off_t oldDlNow = dlnow;
+    thread_local int timesTooSlow    = 0;
     if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
     {
         timesTooSlow++;
