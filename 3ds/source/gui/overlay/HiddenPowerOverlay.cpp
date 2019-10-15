@@ -26,7 +26,15 @@
 
 #include "HiddenPowerOverlay.hpp"
 #include "Configuration.hpp"
+#include "PKX.hpp"
 #include "gui.hpp"
+
+HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
+{
+    hid.update(16);
+    hid.select(pkm->hpType());
+}
 
 void HiddenPowerOverlay::drawBottom() const
 {

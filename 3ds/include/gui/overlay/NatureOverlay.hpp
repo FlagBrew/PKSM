@@ -29,19 +29,14 @@
 
 #include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
+
+class PKX;
 
 class NatureOverlay : public ReplaceableScreen
 {
 public:
-    NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
-    {
-        hid.update(25);
-        hid.select(pkm->nature());
-    }
+    NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
     virtual ~NatureOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

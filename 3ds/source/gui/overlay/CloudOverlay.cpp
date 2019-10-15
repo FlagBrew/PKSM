@@ -26,6 +26,7 @@
 
 #include "CloudOverlay.hpp"
 #include "ClickButton.hpp"
+#include "CloudAccess.hpp"
 #include "Configuration.hpp"
 #include "ToggleButton.hpp"
 #include "gui.hpp"

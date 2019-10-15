@@ -27,14 +27,13 @@
 #ifndef MOVEOVERLAY_HPP
 #define MOVEOVERLAY_HPP
 
-#include "Button.hpp"
-#include "Configuration.hpp"
 #include "HidVertical.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PKFilter.hpp"
 #include "ReplaceableScreen.hpp"
-#include "loader.hpp"
+#include <variant>
+
+class PKX;
+class PKFilter;
+class Button;
 
 class MoveOverlay : public ReplaceableScreen
 {

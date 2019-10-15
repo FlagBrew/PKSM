@@ -44,6 +44,7 @@
 #include "StatsEditScreen.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 #include "random.hpp"
 

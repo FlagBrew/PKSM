@@ -27,13 +27,14 @@
 #ifndef SPECIESOVERLAY_HPP
 #define SPECIESOVERLAY_HPP
 
-#include "Button.hpp"
 #include "HidHorizontal.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
+
+class Button;
+class PKX;
+class PKFilter;
 
 class SpeciesOverlay : public ReplaceableScreen
 {

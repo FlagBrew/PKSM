@@ -27,11 +27,12 @@
 #ifndef CONFIGSUBREGIONOVERLAY_HPP
 #define CONFIGSUBREGIONOVERLAY_HPP
 
-#include "Button.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
+
+class Button;
 
 class ConfigSubRegionOverlay : public ReplaceableScreen
 {

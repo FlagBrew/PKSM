@@ -30,7 +30,6 @@
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
 #include <array>
 #include <string>
 
@@ -64,7 +63,7 @@ enum SortType
     SHINY
 };
 
-static constexpr std::string_view sortTypeToString(SortType type)
+constexpr std::string_view sortTypeToString(SortType type)
 {
     switch (type)
     {

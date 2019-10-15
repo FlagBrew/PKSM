@@ -29,29 +29,17 @@
 
 #include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
 #include <memory>
 #include <variant>
+
+class PKX;
+class PKFilter;
 
 class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
-    {
-        hid.update(40);
-        if (object.index() == 0)
-        {
-            hid.select(std::get<0>(object)->alternativeForm());
-        }
-        else
-        {
-            hid.select(std::get<1>(object)->alternativeForm());
-        }
-    }
+    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount);
     virtual ~FormOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

@@ -27,11 +27,10 @@
 #ifndef VERSIONOVERLAY_HPP
 #define VERSIONOVERLAY_HPP
 
-#include "Button.hpp"
-#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
-#include "loader.hpp"
+
+class PKX;
 
 class VersionOverlay : public ReplaceableScreen
 {

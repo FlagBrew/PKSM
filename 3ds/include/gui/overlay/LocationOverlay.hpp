@@ -27,12 +27,13 @@
 #ifndef LOCATIONOVERLAY_HPP
 #define LOCATIONOVERLAY_HPP
 
-#include "Button.hpp"
 #include "HidVertical.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
+
+class Button;
+class PKX;
 
 class LocationOverlay : public ReplaceableScreen
 {

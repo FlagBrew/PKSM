@@ -29,19 +29,14 @@
 
 #include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
+
+class PKX;
 
 class HiddenPowerOverlay : public ReplaceableScreen
 {
 public:
-    HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
-    {
-        hid.update(16);
-        hid.select(pkm->hpType());
-    }
+    HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
     virtual ~HiddenPowerOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

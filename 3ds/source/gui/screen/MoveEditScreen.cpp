@@ -26,6 +26,7 @@
 
 #include "MoveEditScreen.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "MoveOverlay.hpp"
 #include "PB7.hpp"
 #include "ViewOverlay.hpp"

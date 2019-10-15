@@ -29,6 +29,7 @@
 #include "PKX.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)

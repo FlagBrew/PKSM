@@ -30,7 +30,6 @@
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
 #include <string>
 #include <vector>
 

@@ -26,8 +26,25 @@
 
 #include "FormOverlay.hpp"
 #include "Configuration.hpp"
+#include "PKFilter.hpp"
+#include "PKX.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
+
+FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
+{
+    hid.update(40);
+    if (object.index() == 0)
+    {
+        hid.select(std::get<0>(object)->alternativeForm());
+    }
+    else
+    {
+        hid.select(std::get<1>(object)->alternativeForm());
+    }
+}
 
 void FormOverlay::drawBottom() const
 {

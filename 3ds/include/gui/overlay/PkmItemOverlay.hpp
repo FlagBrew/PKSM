@@ -27,11 +27,11 @@
 #ifndef PKMITEMOVERLAY_HPP
 #define PKMITEMOVERLAY_HPP
 
-#include "Button.hpp"
-#include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
-#include "loader.hpp"
+
+class Button;
+class PKX;
 
 class PkmItemOverlay : public ReplaceableScreen
 {

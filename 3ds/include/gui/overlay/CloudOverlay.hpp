@@ -27,11 +27,12 @@
 #ifndef CLOUDOVERLAY_HPP
 #define CLOUDOVERLAY_HPP
 
-#include "Button.hpp"
-#include "CloudAccess.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
 #include <vector>
+
+class Button;
+class CloudAccess;
 
 class CloudOverlay : public ReplaceableScreen
 {

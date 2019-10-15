@@ -27,11 +27,12 @@
 #ifndef CONFIGCOUNTRYOVERLAY_HPP
 #define CONFIGCOUNTRYOVERLAY_HPP
 
-#include "Button.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
+
+class Button;
 
 class ConfigCountryOverlay : public ReplaceableScreen
 {

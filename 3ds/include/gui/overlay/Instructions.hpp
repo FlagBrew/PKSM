@@ -29,7 +29,6 @@
 
 #include "TextPos.hpp"
 #include "colors.hpp"
-#include "types.h"
 #include <string>
 #include <vector>
 

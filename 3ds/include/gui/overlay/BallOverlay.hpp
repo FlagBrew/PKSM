@@ -27,12 +27,11 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
-#include "Configuration.hpp"
 #include "HidHorizontal.hpp"
-#include "PKX.hpp"
 #include "ReplaceableScreen.hpp"
-#include "i18n.hpp"
 #include <memory>
+
+class PKX;
 
 class BallOverlay : public ReplaceableScreen
 {

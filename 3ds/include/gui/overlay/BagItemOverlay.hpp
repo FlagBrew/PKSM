@@ -32,7 +32,7 @@
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
 #include "Sav.hpp"
-#include "gui.hpp"
+#include "spritesheets.h"
 #include <string>
 #include <vector>
 

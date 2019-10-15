@@ -27,6 +27,7 @@
 #include "MiscEditScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "LocationOverlay.hpp"
 #include "PB7.hpp"
 #include "PK6.hpp"
@@ -38,6 +39,7 @@
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
+#include "loader.hpp"
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {

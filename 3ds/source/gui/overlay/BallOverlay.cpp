@@ -25,7 +25,10 @@
  */
 
 #include "BallOverlay.hpp"
+#include "Configuration.hpp"
+#include "PKX.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
 
 BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)

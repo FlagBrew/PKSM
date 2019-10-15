@@ -27,11 +27,12 @@
 #ifndef STORAGEOVERLAY_HPP
 #define STORAGEOVERLAY_HPP
 
-#include "Button.hpp"
-#include "PKFilter.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
 #include <vector>
+
+class Button;
+class PKFilter;
 
 class StorageOverlay : public ReplaceableScreen
 {
