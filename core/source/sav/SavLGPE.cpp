@@ -977,7 +977,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
     }
 }
 
-void SavLGPE::item(Item& item, Pouch pouch, u16 slot)
+void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
 {
     Item7b write   = (Item7b)item;
     auto writeData = write.bytes();

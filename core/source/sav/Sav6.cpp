@@ -705,7 +705,7 @@ std::unique_ptr<WCX> Sav6::mysteryGift(int pos) const
     return std::make_unique<WC6>(data + WondercardData + pos * WC6::length);
 }
 
-void Sav6::item(Item& item, Pouch pouch, u16 slot)
+void Sav6::item(const Item& item, Pouch pouch, u16 slot)
 {
     Item6 inject = (Item6)item;
     auto write   = inject.bytes();

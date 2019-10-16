@@ -116,7 +116,7 @@ public:
     const std::set<int>& availableAbilities(void) const override;
     const std::set<int>& availableBalls(void) const override;
 
-    void item(Item& item, Pouch pouch, u16 slot) override;
+    void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;

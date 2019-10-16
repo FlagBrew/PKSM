@@ -780,7 +780,7 @@ std::unique_ptr<WCX> Sav4::mysteryGift(int pos) const
     return std::make_unique<PGT>(data + WondercardData + pos * PGT::length);
 }
 
-void Sav4::item(Item& item, Pouch pouch, u16 slot)
+void Sav4::item(const Item& item, Pouch pouch, u16 slot)
 {
     Item4 inject = (Item4)item;
     auto write   = inject.bytes();

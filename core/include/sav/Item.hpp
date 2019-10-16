@@ -69,6 +69,10 @@ public:
         {
             std::copy(data, data + 4, (u8*)&itemData);
         }
+        else
+        {
+            itemData = {0, 0};
+        }
     }
     Generation generation(void) const override { return Generation::FOUR; }
     u16 id(void) const override { return itemData.id; }
@@ -94,6 +98,10 @@ public:
         {
             std::copy(data, data + 4, (u8*)&itemData);
         }
+        else
+        {
+            itemData = {0, 0};
+        }
     }
     Generation generation(void) const override { return Generation::FIVE; }
     u16 id(void) const override { return itemData.id; }
@@ -118,6 +126,10 @@ public:
         if (data)
         {
             std::copy(data, data + 4, (u8*)&itemData);
+        }
+        else
+        {
+            itemData = {0, 0};
         }
     }
     Generation generation(void) const override { return Generation::SIX; }
@@ -146,6 +158,10 @@ public:
         if (data)
         {
             std::copy(data, data + 4, (u8*)&itemData);
+        }
+        else
+        {
+            itemData = {0, 0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
@@ -180,6 +196,10 @@ public:
         if (data)
         {
             std::copy(data, data + 4, (u8*)&itemData);
+        }
+        else
+        {
+            itemData = {0, 0, 0, 0};
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }

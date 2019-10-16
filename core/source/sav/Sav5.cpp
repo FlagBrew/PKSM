@@ -509,7 +509,7 @@ std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const
     return std::make_unique<PGF>(data + WondercardData + pos * PGF::length);
 }
 
-void Sav5::item(Item& item, Pouch pouch, u16 slot)
+void Sav5::item(const Item& item, Pouch pouch, u16 slot)
 {
     Item5 inject = (Item5)item;
     auto write   = inject.bytes();
