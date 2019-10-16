@@ -413,5 +413,9 @@ std::vector<u8> QRScanner::scan(QRMode mode)
         data->handler(mode, out);
     }
     aptSetHomeAllowed(true);
+    if (out.empty())
+    {
+        Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
+    }
     return out;
 }
