@@ -126,6 +126,9 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
             ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
             ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+            ((PK6*)pkm.get())->otMemory(1);
+            ((PK6*)pkm.get())->otFeeling(0);
+            ((PK6*)pkm.get())->otIntensity(1);
         }
         else if (pkm->generation() == Generation::SEVEN)
         {
