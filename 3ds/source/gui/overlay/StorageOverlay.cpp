@@ -30,6 +30,7 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "FilterScreen.hpp"
+#include "Sav.hpp"
 #include "SortScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"

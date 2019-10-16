@@ -30,6 +30,7 @@
 #include "ConfigScreen.hpp"
 #include "MainMenu.hpp"
 #include "TitleLoadScreen.hpp"
+#include "gui.hpp"
 
 static constexpr std::string_view dsIds[9] = {
     "ADA", // Diamond

@@ -40,6 +40,7 @@
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PkmItemOverlay.hpp"
+#include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
 #include "banks.hpp"
@@ -47,6 +48,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "random.hpp"
+#include "utils.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)

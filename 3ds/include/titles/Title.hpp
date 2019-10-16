@@ -27,9 +27,7 @@
 #ifndef TITLE_HPP
 #define TITLE_HPP
 
-#include "archive.hpp"
 #include "spi.hpp"
-#include "utils.hpp"
 #include <3ds.h>
 #include <algorithm>
 #include <citro2d.h>

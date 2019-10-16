@@ -33,6 +33,7 @@
 #include "StorageScreen.hpp"
 #include "gui.hpp"
 #include "revision.h"
+#include "utils.hpp"
 
 static bool goToScreen(int buttonNum)
 {

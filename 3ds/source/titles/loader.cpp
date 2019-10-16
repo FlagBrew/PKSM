@@ -28,6 +28,10 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "Sav.hpp"
+#include "Title.hpp"
+#include "archive.hpp"
+#include "gui.hpp"
 #include "io.hpp"
 #include <atomic>
 #include <ctime>

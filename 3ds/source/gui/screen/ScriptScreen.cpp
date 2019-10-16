@@ -28,9 +28,12 @@
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "Sav.hpp"
+#include "Sav4.hpp"
 #include "ScrollingTextScreen.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
+#include "gui.hpp"
 #include "loader.hpp"
 #include "picoc.h"
 #undef min // Get rid of picoc's min function

@@ -36,6 +36,7 @@
 #include "SavLGPE.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "utils.hpp"
 #include <memory>
 
 static bool dirtyBack = true;

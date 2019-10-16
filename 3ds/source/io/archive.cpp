@@ -27,6 +27,7 @@
 #include "archive.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
+#include "smdh.hpp"
 #include <sys/stat.h>
 
 static FS_Archive sdmc;

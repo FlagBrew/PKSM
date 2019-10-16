@@ -25,6 +25,7 @@
  */
 
 #include "TitleLoadScreen.hpp"
+#include "gui.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {

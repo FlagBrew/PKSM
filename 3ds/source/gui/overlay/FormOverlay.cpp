@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "PKFilter.hpp"
 #include "PKX.hpp"
+#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"

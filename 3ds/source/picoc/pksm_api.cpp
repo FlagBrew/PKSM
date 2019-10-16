@@ -34,6 +34,7 @@
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "STDirectory.hpp"
+#include "Sav4.hpp"
 #include "ThirtyChoice.hpp"
 #include "banks.hpp"
 #include "gui.hpp"

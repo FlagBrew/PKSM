@@ -29,6 +29,7 @@
 #include "Sav.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "utils.hpp"
 
 void BagItemOverlay::drawBottom() const
 {

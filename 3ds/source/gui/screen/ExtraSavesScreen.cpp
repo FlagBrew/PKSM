@@ -29,6 +29,7 @@
 #include "ExtraSavesSubScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "thread.hpp"
 
 ExtraSavesScreen::ExtraSavesScreen() : Screen(i18n::localize("A_CHOOSE_GROUP") + '\n' + i18n::localize("B_BACK")) {}
 

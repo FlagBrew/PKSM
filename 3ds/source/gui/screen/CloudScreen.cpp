@@ -34,9 +34,11 @@
 #include "FilterScreen.hpp"
 #include "PK7.hpp"
 #include "QRScanner.hpp"
+#include "archive.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "gui.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
 #include <sys/stat.h>

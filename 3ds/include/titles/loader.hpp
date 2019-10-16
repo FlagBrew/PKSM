@@ -27,24 +27,14 @@
 #ifndef LOADER_HPP
 #define LOADER_HPP
 
-#include "Hid.hpp"
-#include "Title.hpp"
-#include "gui.hpp"
-#include "thread.hpp"
 #include <3ds.h>
 #include <memory>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
-#include "Sav.hpp"
-#include "SavB2W2.hpp"
-#include "SavBW.hpp"
-#include "SavDP.hpp"
-#include "SavHGSS.hpp"
-#include "SavORAS.hpp"
-#include "SavPT.hpp"
-#include "SavSUMO.hpp"
-#include "SavUSUM.hpp"
-#include "SavXY.hpp"
+class Sav;
+class Title;
 
 bool isLoadedSaveFromBridge(void);
 bool receiveSaveFromBridge(void);

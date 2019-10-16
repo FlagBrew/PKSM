@@ -25,6 +25,9 @@
  */
 
 #include "Title.hpp"
+#include "archive.hpp"
+#include "smdh.hpp"
+#include "utils.hpp"
 
 // Allocate once because threading shenanigans
 static constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};

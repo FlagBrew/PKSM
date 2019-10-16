@@ -32,6 +32,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "Sav.hpp"
 #include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"

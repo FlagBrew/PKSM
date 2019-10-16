@@ -41,9 +41,11 @@
 #include "StorageViewOverlay.hpp"
 #include "TitleLoadScreen.hpp"
 #include "app.hpp"
+#include "archive.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "gui.hpp"
 #include <PB7.hpp>
 #include <stack>
 #include <variant>

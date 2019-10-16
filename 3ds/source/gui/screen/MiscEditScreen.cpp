@@ -32,6 +32,7 @@
 #include "PB7.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "Sav.hpp"
 #include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"

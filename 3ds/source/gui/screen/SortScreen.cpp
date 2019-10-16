@@ -27,6 +27,7 @@
 #include "SortScreen.hpp"
 #include "ClickButton.hpp"
 #include "PKX.hpp"
+#include "Sav.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"

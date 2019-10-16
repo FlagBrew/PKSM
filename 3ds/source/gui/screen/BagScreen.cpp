@@ -29,6 +29,7 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "Item.hpp"
+#include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 

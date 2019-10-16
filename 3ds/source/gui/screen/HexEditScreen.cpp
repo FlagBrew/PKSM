@@ -31,8 +31,10 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "Sav.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
+#include "utils.hpp"
 #include <bitset>
 
 static constexpr std::string_view hyperVals[]        = {"HYPER_HP", "HYPER_ATTACK", "HYPER_DEFENSE", "HYPER_SPATK", "HYPER_SPDEF", "HYPER_SPEED"};

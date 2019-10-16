@@ -29,8 +29,10 @@
 #include "InjectorScreen.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
+#include "Sav5.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "archive.hpp"
 #include "loader.hpp"
 #include <sys/stat.h>
 

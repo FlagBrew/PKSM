@@ -27,7 +27,6 @@
 #ifndef ARCHIVE_HPP
 #define ARCHIVE_HPP
 
-#include "smdh.hpp"
 #include "utils.hpp"
 #include <3ds.h>
 
