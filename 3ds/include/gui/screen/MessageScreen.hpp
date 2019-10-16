@@ -27,8 +27,8 @@
 #ifndef MESSAGESCREEN_HPP
 #define MESSAGESCREEN_HPP
 
+#include "Language.hpp"
 #include "RunnableScreen.hpp"
-#include "i18n.hpp"
 
 class MessageScreen : public RunnableScreen<std::nullptr_t>
 {

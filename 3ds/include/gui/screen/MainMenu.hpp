@@ -27,10 +27,11 @@
 #ifndef MAINMENU_HPP
 #define MAINMENU_HPP
 
-#include "MainMenuButton.hpp"
+#include "Language.hpp"
 #include "Screen.hpp"
-#include "i18n.hpp"
 #include <array>
+
+class Button;
 
 class MainMenu : public Screen
 {
@@ -44,7 +45,7 @@ public:
     void makeButtons();
 
 private:
-    std::array<std::unique_ptr<MainMenuButton>, 6> buttons;
+    std::array<std::unique_ptr<Button>, 6> buttons;
     bool justSwitched = true;
     bool doTimer      = false;
     Language oldLang;

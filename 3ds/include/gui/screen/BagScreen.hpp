@@ -27,16 +27,15 @@
 #ifndef BAGSCREEN_HPP
 #define BAGSCREEN_HPP
 
-#include "BagItemOverlay.hpp"
-#include "Button.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
+
+class Button;
 
 class BagScreen : public Screen
 {
 public:
     BagScreen();
-    virtual ~BagScreen() {}
 
     void update(touchPosition* touch) override;
     void drawTop() const override;

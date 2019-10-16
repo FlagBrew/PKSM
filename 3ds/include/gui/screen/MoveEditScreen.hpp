@@ -27,11 +27,12 @@
 #ifndef MOVEEDITSCREEN_HPP
 #define MOVEEDITSCREEN_HPP
 
-#include "Button.hpp"
-#include "PKX.hpp"
 #include "Screen.hpp"
 #include <memory>
 #include <vector>
+
+class PKX;
+class Button;
 
 class MoveEditScreen : public Screen
 {

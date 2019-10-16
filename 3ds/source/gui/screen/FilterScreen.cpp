@@ -29,6 +29,7 @@
 #include "EnablableToggleButton.hpp"
 #include "FormOverlay.hpp"
 #include "MoveOverlay.hpp"
+#include "PKFilter.hpp"
 #include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "ToggleButton.hpp"

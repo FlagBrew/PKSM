@@ -27,10 +27,11 @@
 #ifndef EXTRASAVESSCREEN_HPP
 #define EXTRASAVESSCREEN_HPP
 
-#include "Button.hpp"
 #include "Screen.hpp"
 #include <memory>
 #include <vector>
+
+class Button;
 
 class ExtraSavesScreen : public Screen
 {

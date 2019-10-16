@@ -24,29 +24,21 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "AccelButton.hpp"
-#include "Button.hpp"
-#include "ClickButton.hpp"
-#include "ConfigScreen.hpp"
-#include "Directory.hpp"
-#include "FSStream.hpp"
-#include "MainMenu.hpp"
-#include "SaveLoadScreen.hpp"
+#ifndef TITLELOADSCREEN_HPP
+#define TITLELOADSCREEN_HPP
+
+#include "Language.hpp"
 #include "Screen.hpp"
-#include "Title.hpp"
-#include "i18n.hpp"
-#include "loader.hpp"
 #include <cmath>
 #include <memory>
 
-#ifndef TITLELOADSCREEN_HPP
-#define TITLELOADSCREEN_HPP
+class Title;
+class Button;
 
 class TitleLoadScreen : public Screen
 {
 public:
     TitleLoadScreen();
-    ~TitleLoadScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -79,22 +71,7 @@ private:
         return false;
     }
 
-    std::shared_ptr<Title> titleFromIndex(int i) const
-    {
-        if (i == -1)
-        {
-            return TitleLoader::cardTitle;
-        }
-        else if (i == -2)
-        {
-            return nullptr;
-        }
-        else if ((size_t)i < TitleLoader::nandTitles.size())
-        {
-            return TitleLoader::nandTitles[i];
-        }
-        return nullptr;
-    }
+    std::shared_ptr<Title> titleFromIndex(int i) const;
 
     bool loadSave(void) const;
 };

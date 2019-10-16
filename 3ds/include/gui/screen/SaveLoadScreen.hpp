@@ -24,12 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Button.hpp"
-#include "Directory.hpp"
+#ifndef SAVELOADSCREEN_HPP
+#define SAVELOADSCREEN_HPP
+
+#include "Language.hpp"
 #include "Screen.hpp"
-#include "Title.hpp"
-#include "i18n.hpp"
-#include "loader.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -41,19 +40,17 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <unordered_map>
 
-#ifndef SAVELOADSCREEN_HPP
-#define SAVELOADSCREEN_HPP
-
-#define PKSM_PORT 34567
 #define SOC_ALIGN 0x1000
 #define SOC_BUFFERSIZE 0x100000
+
+class Button;
 
 class SaveLoadScreen : public Screen
 {
 public:
     SaveLoadScreen();
-    ~SaveLoadScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

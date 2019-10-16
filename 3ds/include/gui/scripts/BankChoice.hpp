@@ -29,27 +29,13 @@
 
 #include "HidVertical.hpp"
 #include "RunnableScreen.hpp"
-#include "banks.hpp"
 #include <string>
 #include <vector>
 
 class BankChoice : public RunnableScreen<std::nullptr_t>
 {
 public:
-    BankChoice() : RunnableScreen(nullptr), hid(40, 2), strings(Banks::bankNames())
-    {
-        int newBankNum = 0;
-        while (std::find_if(strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v) {
-            return v.first == "New Bank " + std::to_string(newBankNum);
-        }) != strings.end())
-        {
-            newBankNum++;
-        }
-        strings.emplace_back(("New Bank " + std::to_string(newBankNum)).substr(0, 10), 1);
-        hid.update(strings.size());
-        hid.select(std::distance(strings.begin(),
-            std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
-    }
+    BankChoice();
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

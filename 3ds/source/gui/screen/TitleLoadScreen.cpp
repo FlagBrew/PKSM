@@ -25,7 +25,17 @@
  */
 
 #include "TitleLoadScreen.hpp"
+#include "AccelButton.hpp"
+#include "Button.hpp"
+#include "ClickButton.hpp"
+#include "ConfigScreen.hpp"
+#include "Configuration.hpp"
+#include "MainMenu.hpp"
+#include "SaveLoadScreen.hpp"
+#include "Title.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
+#include "utils.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -44,6 +54,23 @@ bool TitleLoadScreen::loadSave() const
     }
 
     return status;
+}
+
+std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
+{
+    if (i == -1)
+    {
+        return TitleLoader::cardTitle;
+    }
+    else if (i == -2)
+    {
+        return nullptr;
+    }
+    else if ((size_t)i < TitleLoader::nandTitles.size())
+    {
+        return TitleLoader::nandTitles[i];
+    }
+    return nullptr;
 }
 
 TitleLoadScreen::TitleLoadScreen()

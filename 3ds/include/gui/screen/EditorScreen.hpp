@@ -27,16 +27,18 @@
 #ifndef EDITORSCREEN_HPP
 #define EDITORSCREEN_HPP
 
-#include "Button.hpp"
-#include "PKX.hpp"
 #include "Screen.hpp"
-#include "ViewOverlay.hpp"
 #include "sha256.h"
+#include <array>
+#include <memory>
+#include <vector>
+
+class PKX;
+class Button;
 
 class EditorScreen : public Screen
 {
 public:
-    ~EditorScreen() {}
     EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
     // Done with Overlay
     void drawTop() const override {}

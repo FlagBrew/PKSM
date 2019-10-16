@@ -27,9 +27,13 @@
 #ifndef SCROLLINGTEXTSCREEN_HPP
 #define SCROLLINGTEXTSCREEN_HPP
 
-#include "PKX.hpp"
 #include "Screen.hpp"
-#include "TextParse.hpp"
+
+class PKX;
+namespace TextParse
+{
+    class Text;
+}
 
 class ScrollingTextScreen : public Screen
 {

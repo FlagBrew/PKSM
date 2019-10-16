@@ -25,7 +25,9 @@
  */
 
 #include "app.hpp"
+#include "Button.hpp"
 #include "Configuration.hpp"
+#include "FSStream.hpp"
 #include "TitleLoadScreen.hpp"
 #include "appIcon.hpp"
 #include "archive.hpp"
@@ -41,6 +43,7 @@
 #include "thread.hpp"
 #include <3ds.h>
 #include <atomic>
+#include <malloc.h>
 #include <stdio.h>
 
 // increase the stack in order to allow quirc to decode large qrs

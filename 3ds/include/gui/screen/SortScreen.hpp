@@ -27,9 +27,10 @@
 #ifndef SORTSCREEN_HPP
 #define SORTSCREEN_HPP
 
-#include "Button.hpp"
 #include "Screen.hpp"
 #include "SortOverlay.hpp"
+
+class Button;
 
 class SortScreen : public Screen
 {

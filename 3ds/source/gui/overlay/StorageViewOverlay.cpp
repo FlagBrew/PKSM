@@ -25,7 +25,9 @@
  */
 
 #include "StorageViewOverlay.hpp"
+#include "Button.hpp"
 #include "EditorScreen.hpp"
+#include "PKX.hpp"
 #include "StorageScreen.hpp"
 #include "gui.hpp"
 

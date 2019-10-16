@@ -27,15 +27,14 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
-#include "Button.hpp"
 #include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "Screen.hpp"
-#include "SortOverlay.hpp"
-#include "StorageViewOverlay.hpp"
-#include "loader.hpp"
 #include <array>
+#include <memory>
+#include <vector>
+
+class Button;
+class PKX;
 
 class StorageScreen : public Screen
 {

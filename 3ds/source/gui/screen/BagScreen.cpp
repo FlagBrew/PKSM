@@ -26,6 +26,7 @@
 
 #include "BagScreen.hpp"
 #include "AccelButton.hpp"
+#include "BagItemOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "Item.hpp"

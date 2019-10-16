@@ -27,7 +27,6 @@
 #ifndef EXTRASAVESSUBSCREEN_HPP
 #define EXTRASAVESSUBSCREEN_HPP
 
-#include "Button.hpp"
 #include "Screen.hpp"
 #include <unordered_map>
 #include <vector>
@@ -48,7 +47,6 @@ public:
         USUM
     };
     ExtraSavesSubScreen(Group group);
-    ~ExtraSavesSubScreen() {}
 
     void update(touchPosition* touch) override;
     void drawTop(void) const override;

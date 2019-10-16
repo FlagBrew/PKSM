@@ -24,17 +24,19 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Button.hpp"
-#include "HidHorizontal.hpp"
-#include "QRScanner.hpp"
-#include "Screen.hpp"
-#include "ToggleButton.hpp"
-#include "gui.hpp"
-#include "mysterygift.hpp"
-#include <vector>
-
 #ifndef INJECTSELECTORSCREEN_HPP
 #define INJECTSELECTORSCREEN_HPP
+
+#include "HidHorizontal.hpp"
+#include "Sav.hpp"
+#include "Screen.hpp"
+#include "json.hpp"
+#include <memory>
+#include <string>
+#include <vector>
+
+class Button;
+class ToggleButton;
 
 class InjectSelectorScreen : public Screen
 {

@@ -30,8 +30,6 @@
 #include "picoc.h"
 #include "3ds/types.h"
 
-#define PKSM_PORT 34567
-
 enum PKX_FIELD
 {
     OT_NAME,

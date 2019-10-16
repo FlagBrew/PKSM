@@ -32,6 +32,7 @@
 #include "FilterScreen.hpp"
 #include "Sav.hpp"
 #include "SortScreen.hpp"
+#include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 

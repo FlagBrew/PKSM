@@ -25,8 +25,25 @@
  */
 
 #include "BankSelectionScreen.hpp"
+#include "Configuration.hpp"
+#include "banks.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "utils.hpp"
+
+BankSelectionScreen::BankSelectionScreen(int& storageBox) : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
+{
+    int newBankNum = 0;
+    while (std::find_if(strings.begin(), strings.end(),
+               [&newBankNum](const std::pair<std::string, int>& v) { return v.first == "New Bank " + std::to_string(newBankNum); }) != strings.end())
+    {
+        newBankNum++;
+    }
+    strings.emplace_back(("New Bank " + std::to_string(newBankNum)).substr(0, 10), 1);
+    hid.update(strings.size());
+    hid.select(std::distance(strings.begin(),
+        std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
+}
 
 void BankSelectionScreen::drawBottom() const
 {

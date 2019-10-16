@@ -27,11 +27,12 @@
 #ifndef STATSEDITSCREEN_HPP
 #define STATSEDITSCREEN_HPP
 
-#include "Button.hpp"
-#include "PKX.hpp"
 #include "Screen.hpp"
 #include <memory>
 #include <vector>
+
+class Button;
+class PKX;
 
 class StatsEditScreen : public Screen
 {

@@ -28,9 +28,11 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "ConfigScreen.hpp"
+#include "Configuration.hpp"
 #include "MainMenu.hpp"
 #include "TitleLoadScreen.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
 
 static constexpr std::string_view dsIds[9] = {
     "ADA", // Diamond

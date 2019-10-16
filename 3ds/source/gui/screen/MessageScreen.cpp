@@ -26,6 +26,7 @@
 
 #include "MessageScreen.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 
 static u8 transparencyWaver()
 {

@@ -43,6 +43,7 @@
 #include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
+#include "ViewOverlay.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"

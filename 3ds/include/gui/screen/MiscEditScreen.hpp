@@ -27,11 +27,12 @@
 #ifndef MISCEDITSCREEN_HPP
 #define MISCEDITSCREEN_HPP
 
-#include "Button.hpp"
-#include "PKX.hpp"
 #include "Screen.hpp"
 #include <memory>
 #include <vector>
+
+class PKX;
+class Button;
 
 class MiscEditScreen : public Screen
 {

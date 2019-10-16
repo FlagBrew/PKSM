@@ -24,24 +24,26 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Button.hpp"
-#include "Configuration.hpp"
-#include "HidHorizontal.hpp"
-#include "Screen.hpp"
-#include "WCX.hpp"
-#include "i18n.hpp"
-#include "mysterygift.hpp"
-#include <vector>
-
 #ifndef INJECTORSCREEN_HPP
 #define INJECTORSCREEN_HPP
+
+#include "HidHorizontal.hpp"
+#include "Language.hpp"
+#include "Sav.hpp"
+#include "Screen.hpp"
+#include "json.hpp"
+#include <memory>
+#include <string>
+#include <vector>
+
+class Button;
+class WCX;
 
 class InjectorScreen : public Screen
 {
 public:
     InjectorScreen(nlohmann::json ids);
     InjectorScreen(std::unique_ptr<WCX> card);
-    ~InjectorScreen() {}
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;

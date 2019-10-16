@@ -29,16 +29,16 @@
 
 #include "Button.hpp"
 #include "HidHorizontal.hpp"
-#include "PKX.hpp"
 #include "Screen.hpp"
 #include "gui.hpp"
 #include <vector>
+
+class PKX;
 
 class HexEditScreen : public Screen
 {
 public:
     HexEditScreen(std::shared_ptr<PKX> pkm);
-    ~HexEditScreen() {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

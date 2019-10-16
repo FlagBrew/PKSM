@@ -25,10 +25,14 @@
  */
 
 #include "InjectorScreen.hpp"
+#include "Button.hpp"
+#include "Configuration.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
+#include "mysterygift.hpp"
 #include "utils.hpp"
 
 static constexpr std::string_view languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "UNUSED", "SPA", "KOR", "CHS", "CHT"};

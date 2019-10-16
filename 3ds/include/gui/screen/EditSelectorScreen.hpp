@@ -27,12 +27,12 @@
 #ifndef EDITSELECTORSCREEN_HPP
 #define EDITSELECTORSCREEN_HPP
 
-#include "Button.hpp"
-#include "QRScanner.hpp"
 #include "Screen.hpp"
-#include "ViewOverlay.hpp"
-#include "loader.hpp"
+#include <array>
 #include <vector>
+
+class Button;
+class PKX;
 
 class EditSelectorScreen : public Screen
 {

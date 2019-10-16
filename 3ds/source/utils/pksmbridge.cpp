@@ -24,10 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "Configuration.hpp"
+#include "FSStream.hpp"
+#include "MainMenu.hpp"
 #include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
 #include "archive.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
+#include "loader.hpp"
+#include <arpa/inet.h>
+#include <unistd.h>
 
 static bool saveFromBridge = false;
 static struct in_addr lastIPAddr;

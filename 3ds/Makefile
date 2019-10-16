@@ -123,7 +123,8 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			`arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --cflags` \
-			`curl-config --cflags`
+			`curl-config --cflags` \
+			-DPKSM_PORT=34567
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
@@ -268,11 +269,13 @@ format:
 #---------------------------------------------------------------------------------
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
+	@mkdir -p $(BUILD)
 	@cppcheck . --enable=all $(INCLUDE) --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
 #---------------------------------------------------------------------------------
 cppclean:
 	@rm -f $(BUILD)/cppclean.log
+	@mkdir -p $(BUILD)
 	@cppclean $(foreach dir,$(INCLUDES),--include-path=$(dir)) $(foreach dir,$(LIBDIRS),--include-path=$(dir)/include) --include-path=$(CURDIR)/$(BUILD) $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp)) > $(BUILD)/cppclean.log
 	@echo build/cppclean.log created
 

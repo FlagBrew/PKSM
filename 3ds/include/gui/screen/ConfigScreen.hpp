@@ -24,24 +24,21 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Button.hpp"
-#include "Configuration.hpp"
+#ifndef CONFIGSCREEN_HPP
+#define CONFIGSCREEN_HPP
+
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
-#include "i18n.hpp"
-#include "loader.hpp"
 #include <array>
 #include <bitset>
 #include <vector>
 
-#ifndef CONFIGSCREEN_HPP
-#define CONFIGSCREEN_HPP
+class Button;
 
 class ConfigScreen : public Screen
 {
 public:
     ConfigScreen(void);
-    virtual ~ConfigScreen() {}
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;

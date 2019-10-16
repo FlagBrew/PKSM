@@ -33,7 +33,9 @@
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
 #include "PK7.hpp"
+#include "PKFilter.hpp"
 #include "QRScanner.hpp"
+#include "Sav.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
@@ -41,6 +43,7 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
+#include "loader.hpp"
 #include <sys/stat.h>
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)

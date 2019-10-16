@@ -29,14 +29,13 @@
 #include "ClickButton.hpp"
 #include "ConfigCountryOverlay.hpp"
 #include "ConfigSubRegionOverlay.hpp"
+#include "Configuration.hpp"
 #include "ExtraSavesScreen.hpp"
 #include "ToggleButton.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
-
-#define STORAGE_BOX_LIMIT 2000
-
-#define LIMITSTORAGE(number) number > STORAGE_BOX_LIMIT ? STORAGE_BOX_LIMIT : number < 0 ? 0 : number
+#include "i18n.hpp"
+#include "loader.hpp"
 
 static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",

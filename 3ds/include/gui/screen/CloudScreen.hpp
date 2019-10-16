@@ -27,13 +27,13 @@
 #ifndef CLOUDSCREEN_HPP
 #define CLOUDSCREEN_HPP
 
-#include "Button.hpp"
 #include "CloudAccess.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "Screen.hpp"
-#include "loader.hpp"
 #include <array>
+
+class Button;
+class PKFilter;
+class PKX;
 
 class CloudScreen : public Screen
 {
@@ -41,7 +41,6 @@ class CloudScreen : public Screen
 
 public:
     CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter = nullptr);
-    ~CloudScreen() {}
 
     void update(touchPosition* touch) override;
     void drawTop() const override;

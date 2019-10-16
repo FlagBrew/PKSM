@@ -27,14 +27,12 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
-#include "Button.hpp"
-#include "PKX.hpp"
 #include "RunnableScreen.hpp"
-#include "Sav.hpp"
-#include "ViewOverlay.hpp"
-#include "loader.hpp"
 #include <array>
 #include <tuple>
+
+class Button;
+class PKX;
 
 // storage, box, slot
 class BoxChoice : public RunnableScreen<std::tuple<int, int, int>>

@@ -25,15 +25,22 @@
  */
 
 #include "InjectSelectorScreen.hpp"
+#include "Button.hpp"
+#include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "InjectorScreen.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
+#include "QRScanner.hpp"
 #include "Sav5.hpp"
+#include "ToggleButton.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "archive.hpp"
+#include "gui.hpp"
+#include "i18n.hpp"
 #include "loader.hpp"
+#include "mysterygift.hpp"
 #include <sys/stat.h>
 
 static constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};

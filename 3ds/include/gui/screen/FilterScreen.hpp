@@ -27,11 +27,12 @@
 #ifndef FILTERSCREEN_HPP
 #define FILTERSCREEN_HPP
 
-#include "Button.hpp"
-#include "PKFilter.hpp"
 #include "Screen.hpp"
 #include <memory>
 #include <vector>
+
+class Button;
+class PKFilter;
 
 class FilterScreen : public Screen
 {

@@ -28,10 +28,16 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
+#include "PKX.hpp"
+#include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
+#include "ViewOverlay.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
+#include "i18n.hpp"
+#include "loader.hpp"
 #include "random.hpp"
+#include "utils.hpp"
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
