@@ -122,9 +122,9 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
+			-DPKSM_PORT=34567 \
 			`arm-none-eabi-pkg-config libmpg123 ogg vorbisidec --cflags` \
-			`curl-config --cflags` \
-			-DPKSM_PORT=34567
+			`curl-config --cflags`
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 

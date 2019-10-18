@@ -42,15 +42,15 @@ static std::unordered_map<std::string, std::string> effects; // effect name to f
 static std::shared_ptr<Decoder> currentBGM = nullptr;
 static std::vector<std::string> bgm;
 static std::list<EffectThreadArg> effectThreads;
-static size_t currentSong        = 0;
-static ndspWaveBuf bgmBuffers[2] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
-static s16* bgmData;
-static std::atomic<bool> sizeGood  = false;
-static std::atomic<bool> playMusic = false;
-static std::atomic<bool> bgmDone   = true;
-static std::atomic<bool> exitBGM   = false;
-static u8 currentVolume            = 0;
-static std::list<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+static size_t currentSong            = 0;
+static ndspWaveBuf bgmBuffers[2]     = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+static s16* bgmData                  = nullptr;
+static std::atomic<bool> sizeGood    = false;
+static std::atomic<bool> playMusic   = false;
+static std::atomic<bool> bgmDone     = true;
+static std::atomic<bool> exitBGM     = false;
+static u8 currentVolume              = 0;
+static std::vector<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
 
 struct EffectThreadArg
 {
@@ -249,16 +249,23 @@ static void bgmControlThread(void*)
                 currentSong = (currentSong + 1) % bgm.size();
             }
             currentBGM = Decoder::get(bgm[currentSong]);
-            sizeGood   = false;
-            while (playMusic && !sizeGood)
+            if (currentBGM)
             {
-                svcSleepThread(125000000); // Yield execution
+                sizeGood = false;
+                while (playMusic && !sizeGood)
+                {
+                    svcSleepThread(125000000); // Yield execution
+                }
+                if (!playMusic) // Make sure to not create a new thread if we're exiting
+                {
+                    return;
+                }
+                bgmDone = !Threads::createDetached(&bgmPlayThread);
             }
-            if (!playMusic) // Make sure to not create a new thread if we're exiting
+            else
             {
-                return;
+                bgm.erase(bgm.begin() + currentSong);
             }
-            bgmDone = !Threads::createDetached(&bgmPlayThread);
         }
         if (currentVolume == 0)
         {
@@ -273,7 +280,10 @@ static void bgmControlThread(void*)
         {
             ndspChnSetPaused(0, false);
         }
-        svcSleepThread(250000000);
+        if (playMusic)
+        {
+            svcSleepThread(250000000);
+        }
     }
     bgmDone = true;
 }
@@ -383,8 +393,8 @@ void Sound::playEffect(const std::string& effectName)
             auto decoder = Decoder::get(effect->second);
             if (decoder && decoder->good())
             {
-                effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.front());
-                freeChannels.pop_front();
+                effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.back());
+                freeChannels.pop_back();
 
                 if (!Threads::createDetached(&playEffectThread, (void*)&effectThreads.back()))
                 {
