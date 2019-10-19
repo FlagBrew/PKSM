@@ -86,6 +86,7 @@ namespace Gui
     void setDoHomeDraw(void);
     void drawNoHome(void);
     void drawSelector(float x, float y);
+    u8 transparencyWaver();
 
     // Used to get text width/number of lines
     std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);

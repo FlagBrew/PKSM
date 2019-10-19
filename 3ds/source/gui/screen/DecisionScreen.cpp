@@ -27,25 +27,6 @@
 #include "DecisionScreen.hpp"
 #include "gui.hpp"
 
-static u8 transparencyWaver()
-{
-    static u8 currentAmount = 255;
-    static bool dir         = true;
-    if (!dir)
-    {
-        currentAmount++;
-        if (currentAmount == 255)
-            dir = true;
-    }
-    else
-    {
-        currentAmount--;
-        if (currentAmount < 155)
-            dir = false;
-    }
-    return currentAmount;
-}
-
 void DecisionScreen::drawTop() const
 {
     Gui::sprite(ui_sheet_part_info_top_idx, 0, 0);
@@ -53,7 +34,7 @@ void DecisionScreen::drawTop() const
     auto parsed   = Gui::parseText(question, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, Gui::transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lines();
 

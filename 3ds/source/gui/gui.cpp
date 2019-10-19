@@ -1604,7 +1604,7 @@ int Gui::pointerBob()
     return currentBob / 4;
 }
 
-static u8 transparencyWaver()
+u8 Gui::transparencyWaver()
 {
     static u8 currentAmount = 255;
     static bool dir         = true;
