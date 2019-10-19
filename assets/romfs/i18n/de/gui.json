@@ -399,6 +399,8 @@
     "NO_DUPES": "Duplikate sind nicht erlaubt.",
     "NO_PARTY_EMPTY": "Kann Party nicht leeren!",
     "NO_SWAP_BULK": "Diese Slots zu vertauschen h\u00e4tte Pok\u00e9mon bearbeitet:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE hat noch keine Wunderkarten!",
     "NS_POKEMON?": "N's Pok\u00e9mon?",
     "NULL_TERMINATOR": "Null-Terminator",

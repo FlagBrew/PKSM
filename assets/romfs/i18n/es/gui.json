@@ -399,6 +399,8 @@
     "NO_DUPES": "No se permiten duplicados.",
     "NO_PARTY_EMPTY": "No se puede eliminar el equipo!",
     "NO_SWAP_BULK": " Intercambiar estas máquinas tragamonedas habría editado Pok\u00e9mon:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE aún no tiene Wondercards!",
     "NS_POKEMON?": "\u00bfPok\u00e9mon de N?",
     "NULL_TERMINATOR": "\u00abNull Terminator\u00bb",

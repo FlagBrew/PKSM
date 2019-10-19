@@ -396,6 +396,8 @@
     "NO_DUPES": "Dublurile nu sunt permise.",
     "NO_PARTY_EMPTY": "Nu se poate goli echipa!",
     "NO_SWAP_BULK": "Schimbarea acestor sloturi ar determina schimbare acestor Pok\u00e9moni:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE nu are Wonder Carduri momentan!",
     "NONE": "Nici unul",
     "NOT_A_BUG": "Acesta nu este un bug.",

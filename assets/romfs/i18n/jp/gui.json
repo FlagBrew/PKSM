@@ -399,6 +399,8 @@
     "NO_DUPES": "重複はできません",
     "NO_PARTY_EMPTY": "パーティーをクリアできません!",
     "NO_SWAP_BULK": "入れ替えるボックスに改造されたポケモンがいます:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPEにはまだ不思議なカードはありません!",
     "NS_POKEMON?": "Nのポケモン?",
     "NULL_TERMINATOR": "ヌルターミネータ",

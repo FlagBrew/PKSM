@@ -399,6 +399,8 @@
     "NO_DUPES": "Les clones ne sont pas permis.",
     "NO_PARTY_EMPTY": "Impossible d'effacer l'\u00e9quipe!",
     "NO_SWAP_BULK": "Interchanger ces bo\u00eetes va r\u00e9sulter en Pok\u00e9 alt\u00e9r\u00e9s:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE n'a pas de cartes myst\u00e8res pour l'instant!",
     "NS_POKEMON?": "Pok\u00e9mon de N?",
     "NULL_TERMINATOR": "Null Terminator",

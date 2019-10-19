@@ -399,6 +399,8 @@
     "NO_DUPES": "不允许重复。",
     "NO_PARTY_EMPTY": "无法清空同行宝可梦!",
     "NO_SWAP_BULK": "交换这些格子会修改宝可梦:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE目前无可用神秘卡片!",
     "NS_POKEMON?": "N的宝可梦?",
     "NULL_TERMINATOR": "空的终端",

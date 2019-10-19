@@ -399,6 +399,8 @@
     "NO_DUPES": "Duplicates not allowed.",
     "NO_PARTY_EMPTY": "Kan team niet legen!",
     "NO_SWAP_BULK": "Deze plekken wisselen zou Pok\u00e9mon bewerken:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE heeft nog geen Wonder Cards!",
     "NS_POKEMON?": "N's Pok\u00e9mon?",
     "NULL_TERMINATOR": "Null Terminator",

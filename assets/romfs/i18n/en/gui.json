@@ -396,6 +396,8 @@
     "NO_DUPES": "Duplicates not allowed.",
     "NO_PARTY_EMPTY": "Cannot clear party!",
     "NO_SWAP_BULK": "Swapping these slots would have edited Pok\u00e9mon:",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "LGPE doesn't have any Wondercards yet!",
     "NONE": "None",
     "NOT_A_BUG": "This is not a bug.",

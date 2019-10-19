@@ -171,7 +171,6 @@ std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
     std::shared_ptr<PKX> ret = pk;
     while (ret->generation() != generation())
     {
-        Generation oldGen = pk->generation();
         if (ret->generation() > generation())
         {
             ret = ret->previous(*this);
@@ -180,10 +179,9 @@ std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
         {
             ret = ret->next(*this);
         }
-        if (ret->generation() == oldGen) // Untransferrable
+        if (ret == nullptr) // Untransferrable
         {
-            ret = nullptr;
-            break;
+            return nullptr;
         }
     }
     return ret;

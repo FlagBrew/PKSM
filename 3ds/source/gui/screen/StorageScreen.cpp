@@ -1094,8 +1094,20 @@ void StorageScreen::pickup()
                 for (int x = 0; x < selectDimensions.first; x++)
                 {
                     int index = x + y * selectDimensions.first;
-                    if (!isValidTransfer(moveMon[index]))
+                    if (!isValidTransfer(moveMon[index], moveMon.size() > 1))
                     {
+                        continue;
+                    }
+                    if (moveMon[index]->species() == 0)
+                    {
+                        moveMon[index] = TitleLoader::save->emptyPkm();
+                    }
+                    if (!TitleLoader::save->transfer(moveMon[index]))
+                    {
+                        if (moveMon.size() == 1)
+                        {
+                            Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()), genToCstring(TitleLoader::save->generation())));
+                        }
                         continue;
                     }
                     if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
@@ -1164,6 +1176,16 @@ void StorageScreen::pickup()
                 std::shared_ptr<PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
                 if (!isValidTransfer(bankMon))
                 {
+                    return;
+                }
+                if (bankMon->species() == 0)
+                {
+                    bankMon = TitleLoader::save->emptyPkm();
+                }
+                bankMon = TitleLoader::save->transfer(bankMon);
+                if (!bankMon)
+                {
+                    Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())));
                     return;
                 }
                 if (bankMon->species() == 0 ||
@@ -1312,7 +1334,7 @@ bool StorageScreen::duplicate()
 
 bool StorageScreen::swapBoxWithStorage()
 {
-    std::vector<int> notGenMatch;
+    std::vector<int> unswappedPkm;
     bool acceptGenChange = Configuration::getInstance().transferEdit();
     bool checkedWithUser = Configuration::getInstance().transferEdit();
     for (int i = 0; i < 30; i++)
@@ -1333,29 +1355,47 @@ bool StorageScreen::swapBoxWithStorage()
         }
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
-            TitleLoader::save->transfer(temPkm);
-            if (isValidTransfer(temPkm, true))
+            // Check for transfer path
+            temPkm = TitleLoader::save->transfer(temPkm);
+            if (temPkm)
             {
-                auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
-                TitleLoader::save->pkm(temPkm, boxBox, i, Configuration::getInstance().transferEdit());
-                TitleLoader::save->dex(temPkm);
-                Banks::bank->pkm(otherTemPkm, storageBox, i);
+                if (isValidTransfer(temPkm, true))
+                {
+                    auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+                    TitleLoader::save->pkm(temPkm, boxBox, i, Configuration::getInstance().transferEdit());
+                    TitleLoader::save->dex(temPkm);
+                    Banks::bank->pkm(otherTemPkm, storageBox, i);
+                }
+            }
+            else
+            {
+                unswappedPkm.push_back(i + 1);
             }
         }
         else
         {
-            notGenMatch.push_back(i + 1);
+            unswappedPkm.push_back(i + 1);
         }
     }
-    if (!notGenMatch.empty())
+    if (!acceptGenChange && !unswappedPkm.empty())
     {
         std::string unswapped;
-        for (int i : notGenMatch)
+        for (int i : unswappedPkm)
         {
             unswapped += std::to_string(i) + ",";
         }
         unswapped.pop_back();
         Gui::warn(i18n::localize("NO_SWAP_BULK") + '\n' + unswapped);
+    }
+    else if (acceptGenChange && !unswappedPkm.empty())
+    {
+        std::string unswapped;
+        for (int i : unswappedPkm)
+        {
+            unswapped += std::to_string(i) + ",";
+        }
+        unswapped.pop_back();
+        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + unswapped);
     }
     return false;
 }

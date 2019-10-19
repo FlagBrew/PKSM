@@ -399,6 +399,8 @@
     "NO_DUPES": "Duplicates not allowed.",
     "NO_PARTY_EMPTY": "파티에는 최소 1마리의 포켓몬이 있어야 합니다!",
     "NO_SWAP_BULK": "슬롯을 서로 바꾸는 것은 에딧 포켓몬을 만들 수 있습니다!",
+    "NO_TRANSFER_PATH": "No way to transfer between generations.",
+    "NO_TRANSFER_PATH_SINGLE": "No way to transfer between generations:\n%s->%s",
     "NO_WONDERCARDS": "렛츠고 피카츄/이브이에서는 아직 원더 카드 시스템이 없습니다!",
     "NS_POKEMON?": "N의 포켓몬?",
     "NULL_TERMINATOR": "널 터미네이터",
