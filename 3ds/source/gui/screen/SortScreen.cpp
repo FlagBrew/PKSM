@@ -32,6 +32,8 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
+#include "Configuration.hpp"
+#include "SortOverlay.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)
 {
@@ -80,12 +82,12 @@ void SortScreen::drawBottom() const
     {
         if (i >= sortTypes.size())
         {
-            Gui::text(
-                i18n::localize(std::string(sortTypeToString(NONE))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+            Gui::text(i18n::localize(sortTypeToString(SortType::NONE)), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::CENTER);
         }
         else
         {
-            Gui::text(i18n::localize(std::string(sortTypeToString(sortTypes[i]))), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+            Gui::text(i18n::localize(sortTypeToString(sortTypes[i])), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
                 TextPosY::CENTER);
         }
     }
@@ -123,22 +125,22 @@ void SortScreen::pickSort(size_t number)
     if (number >= sortTypes.size())
     {
         number = sortTypes.size();
-        sortTypes.push_back(NONE);
+        sortTypes.push_back(SortType::NONE);
     }
     addOverlay<SortOverlay>(sortTypes[number]);
 }
 
 void SortScreen::sort()
 {
-    while (!sortTypes.empty() && sortTypes.back() == NONE)
+    while (!sortTypes.empty() && sortTypes.back() == SortType::NONE)
     {
         sortTypes.pop_back();
     }
     if (!sortTypes.empty())
     {
-        if (std::find(sortTypes.begin(), sortTypes.end(), DEX) == sortTypes.end())
+        if (std::find(sortTypes.begin(), sortTypes.end(), SortType::DEX) == sortTypes.end())
         {
-            sortTypes.push_back(DEX);
+            sortTypes.push_back(SortType::DEX);
         }
         std::vector<std::shared_ptr<PKX>> sortMe;
         if (storage)
@@ -164,143 +166,143 @@ void SortScreen::sort()
             }
         }
         std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<PKX>& pkm1, const std::shared_ptr<PKX>& pkm2) {
-            for (auto type : sortTypes)
+            for (const auto& type : sortTypes)
             {
                 switch (type)
                 {
-                    case DEX:
+                    case SortType::DEX:
                         if (pkm1->species() < pkm2->species())
                             return true;
                         if (pkm2->species() < pkm1->species())
                             return false;
                         break;
-                    case FORM:
+                    case SortType::FORM:
                         if (pkm1->alternativeForm() < pkm2->alternativeForm())
                             return true;
                         if (pkm2->alternativeForm() < pkm1->alternativeForm())
                             return false;
                         break;
-                    case TYPE1:
+                    case SortType::TYPE1:
                         if (pkm1->type1() < pkm2->type1())
                             return true;
                         if (pkm2->type1() < pkm1->type1())
                             return false;
                         break;
-                    case TYPE2:
+                    case SortType::TYPE2:
                         if (pkm1->type2() < pkm2->type2())
                             return true;
                         if (pkm2->type2() < pkm1->type2())
                             return false;
                         break;
-                    case HP:
+                    case SortType::HP:
                         if (pkm1->stat(0) < pkm2->stat(0))
                             return true;
                         if (pkm2->stat(0) < pkm1->stat(0))
                             return false;
                         break;
-                    case ATK:
+                    case SortType::ATK:
                         if (pkm1->stat(1) < pkm2->stat(1))
                             return true;
                         if (pkm2->stat(1) < pkm1->stat(1))
                             return false;
                         break;
-                    case DEF:
+                    case SortType::DEF:
                         if (pkm1->stat(2) < pkm2->stat(2))
                             return true;
                         if (pkm2->stat(2) < pkm1->stat(2))
                             return false;
                         break;
-                    case SATK:
+                    case SortType::SATK:
                         if (pkm1->stat(4) < pkm2->stat(4))
                             return true;
                         if (pkm2->stat(4) < pkm1->stat(4))
                             return false;
                         break;
-                    case SDEF:
+                    case SortType::SDEF:
                         if (pkm1->stat(5) < pkm2->stat(5))
                             return true;
                         if (pkm2->stat(5) < pkm1->stat(5))
                             return false;
                         break;
-                    case SPE:
+                    case SortType::SPE:
                         if (pkm1->stat(3) < pkm2->stat(3))
                             return true;
                         if (pkm2->stat(3) < pkm1->stat(3))
                             return false;
                         break;
-                    case NATURE:
+                    case SortType::NATURE:
                         if (pkm1->nature() < pkm2->nature())
                             return true;
                         if (pkm2->nature() < pkm1->nature())
                             return false;
                         break;
-                    case LEVEL:
+                    case SortType::LEVEL:
                         if (pkm1->level() < pkm2->level())
                             return true;
                         if (pkm2->level() < pkm1->level())
                             return false;
                         break;
-                    case TID:
+                    case SortType::TID:
                         if (pkm1->TID() < pkm2->TID())
                             return true;
                         if (pkm2->TID() < pkm1->TID())
                             return false;
                         break;
-                    case HPIV:
+                    case SortType::HPIV:
                         if (pkm1->iv(0) < pkm2->iv(0))
                             return true;
                         if (pkm2->iv(0) < pkm1->iv(0))
                             return false;
                         break;
-                    case ATKIV:
+                    case SortType::ATKIV:
                         if (pkm1->iv(1) < pkm2->iv(1))
                             return true;
                         if (pkm2->iv(1) < pkm1->iv(1))
                             return false;
                         break;
-                    case DEFIV:
+                    case SortType::DEFIV:
                         if (pkm1->iv(2) < pkm2->iv(2))
                             return true;
                         if (pkm2->iv(2) < pkm1->iv(2))
                             return false;
                         break;
-                    case SATKIV:
+                    case SortType::SATKIV:
                         if (pkm1->iv(4) < pkm2->iv(4))
                             return true;
                         if (pkm2->iv(4) < pkm1->iv(4))
                             return false;
                         break;
-                    case SDEFIV:
+                    case SortType::SDEFIV:
                         if (pkm1->iv(5) < pkm2->iv(5))
                             return true;
                         if (pkm2->iv(5) < pkm1->iv(5))
                             return false;
                         break;
-                    case SPEIV:
+                    case SortType::SPEIV:
                         if (pkm1->iv(3) < pkm2->iv(3))
                             return true;
                         if (pkm2->iv(3) < pkm1->iv(3))
                             return false;
                         break;
-                    case HIDDENPOWER:
+                    case SortType::HIDDENPOWER:
                         if (pkm1->hpType() < pkm2->hpType())
                             return true;
                         if (pkm2->hpType() < pkm1->hpType())
                             return false;
                         break;
-                    case FRIENDSHIP:
+                    case SortType::FRIENDSHIP:
                         if (pkm1->currentFriendship() < pkm2->currentFriendship())
                             return true;
                         if (pkm2->currentFriendship() < pkm1->currentFriendship())
                             return false;
                         break;
-                    case NICKNAME:
+                    case SortType::NICKNAME:
                         if (pkm1->nickname() < pkm2->nickname())
                             return true;
                         if (pkm2->nickname() < pkm1->nickname())
                             return false;
                         break;
-                    case SPECIESNAME:
+                    case SortType::SPECIESNAME:
                         if (i18n::species(Configuration::getInstance().language(), pkm1->species()) <
                             i18n::species(Configuration::getInstance().language(), pkm2->species()))
                             return true;
@@ -308,13 +310,13 @@ void SortScreen::sort()
                             i18n::species(Configuration::getInstance().language(), pkm1->species()))
                             return false;
                         break;
-                    case OTNAME:
+                    case SortType::OTNAME:
                         if (pkm1->otName() < pkm2->otName())
                             return true;
                         if (pkm2->otName() < pkm1->otName())
                             return false;
                         break;
-                    case SHINY:
+                    case SortType::SHINY:
                         if (pkm1->shiny() && !pkm2->shiny())
                             return true;
                         if (pkm2->shiny() && !pkm1->shiny())

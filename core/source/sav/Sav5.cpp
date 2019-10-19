@@ -93,13 +93,13 @@ void Sav5::consoleRegion(u8 v)
     (void)v;
 }
 
-u8 Sav5::language(void) const
+Language Sav5::language(void) const
 {
-    return data[Trainer1 + 0x1E];
+    return Language(data[Trainer1 + 0x1E]);
 }
-void Sav5::language(u8 v)
+void Sav5::language(Language v)
 {
-    data[Trainer1 + 0x1E] = v;
+    data[Trainer1 + 0x1E] = u8(v);
 }
 
 std::string Sav5::otName(void) const
@@ -348,7 +348,7 @@ void Sav5::dex(std::shared_ptr<PKX> pk)
     // Set the Language
     if (bit < 493) // shifted by 1, Gen5 species do not have international language bits
     {
-        int lang = pk->language() - 1;
+        int lang = u8(pk->language()) - 1;
         if (lang > 5)
             lang--; // 0-6 language vals
         if (lang < 0)
@@ -554,7 +554,7 @@ std::unique_ptr<Item> Sav5::item(Pouch pouch, u16 slot) const
     }
 }
 
-std::vector<std::pair<Pouch, int>> Sav5::pouches() const
+std::vector<std::pair<Sav::Pouch, int>> Sav5::pouches() const
 {
     return {{Pouch::NormalItem, 261}, {Pouch::KeyItem, game == Game::BW ? 19 : 27}, {Pouch::TM, 101}, {Pouch::Medicine, 47}, {Pouch::Berry, 64}};
 }

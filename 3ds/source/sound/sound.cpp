@@ -36,7 +36,17 @@
 #include <list>
 #include <unordered_map>
 
-struct EffectThreadArg;
+struct EffectThreadArg
+{
+    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem, int channel) : decoder(decoder), linearMem(linearMem), channel(channel)
+    {
+        inUse.test_and_set();
+    }
+    std::shared_ptr<Decoder> decoder;
+    s16* linearMem;
+    int channel;
+    std::atomic_flag inUse;
+};
 
 static std::unordered_map<std::string, std::string> effects; // effect name to file name
 static std::shared_ptr<Decoder> currentBGM = nullptr;
@@ -51,18 +61,6 @@ static std::atomic<bool> bgmDone     = true;
 static std::atomic<bool> exitBGM     = false;
 static u8 currentVolume              = 0;
 static std::vector<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-
-struct EffectThreadArg
-{
-    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem, int channel) : decoder(decoder), linearMem(linearMem), channel(channel)
-    {
-        inUse.test_and_set();
-    }
-    std::shared_ptr<Decoder> decoder;
-    s16* linearMem;
-    int channel;
-    std::atomic_flag inUse;
-};
 
 static void clearDoneEffects()
 {

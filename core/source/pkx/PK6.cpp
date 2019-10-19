@@ -773,13 +773,13 @@ void PK6::consoleRegion(u8 v)
     data[0xE2] = v;
 }
 
-u8 PK6::language(void) const
+Language PK6::language(void) const
 {
-    return data[0xE3];
+    return Language(data[0xE3]);
 }
-void PK6::language(u8 v)
+void PK6::language(Language v)
 {
-    data[0xE3] = v;
+    data[0xE3] = u8(v);
 }
 
 u8 PK6::currentFriendship(void) const

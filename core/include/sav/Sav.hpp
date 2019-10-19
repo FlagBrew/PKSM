@@ -36,20 +36,6 @@
 #include <set>
 #include <vector>
 
-enum Pouch
-{
-    NormalItem,
-    KeyItem,
-    TM,
-    Mail,
-    Medicine,
-    Berry,
-    Ball,
-    Battle,
-    Candy,
-    ZCrystals
-};
-
 class PKX;
 class Item;
 class WCX;
@@ -110,6 +96,20 @@ protected:
     mutable std::set<int> items, moves, species, abilities, balls;
 
 public:
+    enum Pouch
+    {
+        NormalItem,
+        KeyItem,
+        TM,
+        Mail,
+        Medicine,
+        Berry,
+        Ball,
+        Battle,
+        Candy,
+        ZCrystals
+    };
+
     struct giftData
     {
         giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, int gender = 0)
@@ -145,8 +145,8 @@ public:
     virtual void country(u8 v)                = 0;
     virtual u8 consoleRegion(void) const      = 0;
     virtual void consoleRegion(u8 v)          = 0;
-    virtual u8 language(void) const           = 0;
-    virtual void language(u8 v)               = 0;
+    virtual Language language(void) const     = 0;
+    virtual void language(Language v)         = 0;
     virtual std::string otName(void) const    = 0;
     virtual void otName(const std::string& v) = 0;
     virtual u32 money(void) const             = 0;

@@ -31,6 +31,7 @@
 #include <string>
 
 #include "Item.hpp"
+#include "Language.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
 
@@ -172,8 +173,8 @@ public:
     virtual void otGender(u8 v)               = 0;
     virtual u8 version(void) const            = 0;
     virtual void version(u8 v)                = 0;
-    virtual u8 language(void) const           = 0;
-    virtual void language(u8 v)               = 0;
+    virtual Language language(void) const     = 0;
+    virtual void language(Language v)         = 0;
 
     virtual u8 currentFriendship(void) const = 0;
     virtual void currentFriendship(u8 v)     = 0;

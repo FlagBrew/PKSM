@@ -350,9 +350,9 @@ bool WB7::ribbon(u8 category, u8 index) const
 
 static int langIndex(Language lang)
 {
-    if ((int)lang > Language::UNUSED)
+    if (lang > Language::UNUSED)
     {
-        return lang - 2;
+        return u8(lang) - 2;
     }
     else if (lang == Language::UNUSED)
     {
@@ -360,7 +360,7 @@ static int langIndex(Language lang)
     }
     else
     {
-        return (int)lang - 1;
+        return u8(lang) - 1;
     }
 }
 

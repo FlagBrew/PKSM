@@ -27,6 +27,7 @@
 #ifndef PKSM_WCX
 #define PKSM_WCX
 
+#include "Language.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
 #include <string>
@@ -68,7 +69,7 @@ public:
     virtual u8 alternativeForm(void) const           = 0;
     virtual u8 gender(void) const                    = 0;
     virtual u16 heldItem(void) const                 = 0;
-    virtual u8 language(void) const                  = 0;
+    virtual Language language(void) const            = 0;
     virtual u8 level(void) const                     = 0;
     virtual u8 metLevel(void) const                  = 0;
     virtual u16 move(u8 index) const                 = 0;

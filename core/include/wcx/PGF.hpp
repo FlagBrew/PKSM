@@ -78,7 +78,7 @@ public:
     u32 PID(void) const override;
     bool ribbon(u8 category, u8 index) const override;
     u8 alternativeForm(void) const override;
-    u8 language(void) const override;
+    Language language(void) const override;
     std::string nickname(void) const override;
     u8 nature(void) const override;
     u8 abilityType(void) const override;

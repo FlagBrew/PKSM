@@ -42,7 +42,7 @@ public:
         return config;
     }
 
-    Language language(void) const { return mJson["language"]; }
+    Language language(void) const { return Language(mJson["language"].get<u8>()); }
 
     bool autoBackup(void) const { return mJson["autoBackup"]; }
 
@@ -87,7 +87,7 @@ public:
 
     bool autoUpdate(void) const { return mJson["autoUpdate"]; }
 
-    void language(Language lang) { mJson["language"] = lang; }
+    void language(Language lang) { mJson["language"] = u8(lang); }
 
     void autoBackup(bool backup) { mJson["autoBackup"] = backup; }
 

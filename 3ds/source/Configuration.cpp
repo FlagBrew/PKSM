@@ -265,8 +265,8 @@ void Configuration::loadFromRomfs()
     fclose(in);
 
     // load system language
-    u8 systemLanguage;
-    CFGU_GetSystemLanguage(&systemLanguage);
+    Language systemLanguage;
+    CFGU_GetSystemLanguage((u8*)&systemLanguage);
     u8 countryData[4];
     CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
     mJson["defaults"]["country"] = countryData[3];
@@ -274,7 +274,7 @@ void Configuration::loadFromRomfs()
     CFGU_SecureInfoGetRegion(countryData);
     mJson["defaults"]["nationality"] = *countryData;
 
-    switch (systemLanguage)
+    switch (u8(systemLanguage))
     {
         case CFG_LANGUAGE_JP:
             systemLanguage = Language::JP;
@@ -316,7 +316,7 @@ void Configuration::loadFromRomfs()
             systemLanguage = Language::EN;
             break;
     }
-    mJson["language"] = systemLanguage;
+    mJson["language"] = u8(systemLanguage);
 
     save();
 }

@@ -206,8 +206,8 @@ public:
     void region(u8 v);
     u8 consoleRegion(void) const;
     void consoleRegion(u8 v);
-    u8 language(void) const override;
-    void language(u8 v) override;
+    Language language(void) const override;
+    void language(Language v) override;
 
     u8 currentFriendship(void) const override;
     void currentFriendship(u8 v) override;

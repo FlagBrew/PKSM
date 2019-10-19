@@ -28,17 +28,106 @@
 #define SORTSCREEN_HPP
 
 #include "Screen.hpp"
-#include "SortOverlay.hpp"
 
 class Button;
 
 class SortScreen : public Screen
 {
 public:
+    enum class SortType
+    {
+        NONE,
+        DEX,
+        SPECIESNAME,
+        FORM,
+        TYPE1,
+        TYPE2,
+        HP,
+        ATK,
+        DEF,
+        SATK,
+        SDEF,
+        SPE,
+        HPIV,
+        ATKIV,
+        DEFIV,
+        SATKIV,
+        SDEFIV,
+        SPEIV,
+        NATURE,
+        LEVEL,
+        TID,
+        HIDDENPOWER,
+        FRIENDSHIP,
+        NICKNAME,
+        OTNAME,
+        SHINY
+    };
+
     SortScreen(bool storage);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
+
+    static const char* sortTypeToString(SortType type)
+    {
+        switch (type)
+        {
+            case SortType::NONE:
+            default:
+                return "NONE";
+            case SortType::DEX:
+                return "SPECIES";
+            case SortType::FORM:
+                return "FORM";
+            case SortType::TYPE1:
+                return "TYPE1";
+            case SortType::TYPE2:
+                return "TYPE2";
+            case SortType::HP:
+                return "HP";
+            case SortType::ATK:
+                return "ATTACK";
+            case SortType::DEF:
+                return "DEFENSE";
+            case SortType::SATK:
+                return "SPATK";
+            case SortType::SDEF:
+                return "SPDEF";
+            case SortType::SPE:
+                return "SPEED";
+            case SortType::HPIV:
+                return "HP_IV";
+            case SortType::ATKIV:
+                return "ATTACK_IV";
+            case SortType::DEFIV:
+                return "DEFENSE_IV";
+            case SortType::SATKIV:
+                return "SPATK_IV";
+            case SortType::SDEFIV:
+                return "SPDEF_IV";
+            case SortType::SPEIV:
+                return "SPEED_IV";
+            case SortType::NATURE:
+                return "NATURE";
+            case SortType::LEVEL:
+                return "LEVEL";
+            case SortType::TID:
+                return "TID";
+            case SortType::HIDDENPOWER:
+                return "HIDDEN_POWER";
+            case SortType::FRIENDSHIP:
+                return "FRIENDSHIP";
+            case SortType::NICKNAME:
+                return "NICKNAME";
+            case SortType::SPECIESNAME:
+                return "SPECIES_NAME";
+            case SortType::OTNAME:
+                return "OT_NAME";
+            case SortType::SHINY:
+                return "SHINY";
+        }
+    }
 
 private:
     void pickSort(size_t number);

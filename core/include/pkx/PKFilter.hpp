@@ -27,6 +27,7 @@
 #ifndef PKFILTER_HPP
 #define PKFILTER_HPP
 
+#include "Language.hpp"
 #include "generation.hpp"
 #include <bitset>
 #include <string>
@@ -74,7 +75,7 @@ class PKFilter
     MAKE_NUM_DEFN(move, u16, 4);
     MAKE_NUM_DEFN(relearnMove, u16, 4);
     MAKE_DEFN(ball, u8);
-    MAKE_DEFN(language, u8);
+    MAKE_DEFN(language, Language);
     MAKE_DEFN(egg, bool);
     MAKE_NUM_DEFN(iv, u8, 6);
 };

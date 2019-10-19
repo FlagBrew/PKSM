@@ -260,13 +260,13 @@ void PK5::markValue(u16 v)
     data[0x16] = v;
 }
 
-u8 PK5::language(void) const
+Language PK5::language(void) const
 {
-    return data[0x17];
+    return Language(data[0x17]);
 }
-void PK5::language(u8 v)
+void PK5::language(Language v)
 {
-    data[0x17] = v;
+    data[0x17] = u8(v);
 }
 
 u8 PK5::ev(u8 ev) const

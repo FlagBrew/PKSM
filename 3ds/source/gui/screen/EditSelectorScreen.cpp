@@ -104,17 +104,17 @@ bool EditSelectorScreen::doQR()
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            initMode = QRMode::PKM4;
+            initMode = QRMode::PK4;
             break;
         case Generation::FIVE:
-            initMode = QRMode::PKM5;
+            initMode = QRMode::PK5;
             break;
         case Generation::SIX:
-            initMode = QRMode::PKM6;
+            initMode = QRMode::PK6;
             break;
         case Generation::SEVEN:
         default:
-            initMode = QRMode::PKM7;
+            initMode = QRMode::PK7;
             break;
     }
 

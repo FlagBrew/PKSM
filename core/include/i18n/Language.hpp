@@ -27,7 +27,9 @@
 #ifndef LANGUAGE_HPP
 #define LANGUAGE_HPP
 
-enum Language
+#include "coretypes.h"
+
+enum class Language : u8
 {
     JP = 1,
     EN,

@@ -70,7 +70,7 @@ void SavORAS::resign(void)
     delete[] tmp;
 }
 
-std::map<Pouch, std::vector<int>> SavORAS::validItems() const
+std::map<Sav::Pouch, std::vector<int>> SavORAS::validItems() const
 {
     return {
         {NormalItem,

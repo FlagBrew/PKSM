@@ -94,13 +94,13 @@ void Sav6::consoleRegion(u8 v)
     data[TrainerCard + 0x2C] = v;
 }
 
-u8 Sav6::language(void) const
+Language Sav6::language(void) const
 {
-    return data[TrainerCard + 0x2D];
+    return Language(data[TrainerCard + 0x2D]);
 }
-void Sav6::language(u8 v)
+void Sav6::language(Language v)
 {
-    data[TrainerCard + 0x2D] = v;
+    data[TrainerCard + 0x2D] = u8(v);
 }
 
 std::string Sav6::otName(void) const
@@ -518,7 +518,7 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
 
     const int brSize = 0x60;
     int bit          = pk->species() - 1;
-    int lang         = pk->language() - 1;
+    int lang         = u8(pk->language()) - 1;
     if (lang > 5)
         lang--; // 0-6 language vals
     int origin   = pk->version();
@@ -750,7 +750,7 @@ std::unique_ptr<Item> Sav6::item(Pouch pouch, u16 slot) const
     }
 }
 
-std::vector<std::pair<Pouch, int>> Sav6::pouches(void) const
+std::vector<std::pair<Sav::Pouch, int>> Sav6::pouches(void) const
 {
     return {{NormalItem, game == Game::XY ? 286 : 305}, {KeyItem, game == Game::XY ? 31 : 47}, {TM, game == Game::XY ? 105 : 107},
         {Medicine, game == Game::XY ? 51 : 54}, {Berry, 67}};

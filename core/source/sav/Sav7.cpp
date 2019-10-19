@@ -109,13 +109,13 @@ void Sav7::consoleRegion(u8 v)
     data[TrainerCard + 0x34] = v;
 }
 
-u8 Sav7::language(void) const
+Language Sav7::language(void) const
 {
-    return data[TrainerCard + 0x35];
+    return Language(data[TrainerCard + 0x35]);
 }
-void Sav7::language(u8 v)
+void Sav7::language(Language v)
 {
-    data[TrainerCard + 0x35] = v;
+    data[TrainerCard + 0x35] = u8(v);
 }
 
 std::string Sav7::otName(void) const
@@ -441,7 +441,7 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
         setDexFlags(bitIndex, gender, shiny, pk->species() - 1);
     }
 
-    int lang            = pk->language();
+    int lang            = u8(pk->language());
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {
@@ -627,7 +627,7 @@ std::unique_ptr<Item> Sav7::item(Pouch pouch, u16 slot) const
     }
 }
 
-std::vector<std::pair<Pouch, int>> Sav7::pouches(void) const
+std::vector<std::pair<Sav::Pouch, int>> Sav7::pouches(void) const
 {
     std::vector<std::pair<Pouch, int>> pouches = {{NormalItem, game == Game::SM ? 430 : 427}, {KeyItem, game == Game::SM ? 184 : 198}, {TM, 108},
         {Medicine, game == Game::SM ? 64 : 60}, {Berry, game == Game::SM ? 72 : 67}, {ZCrystals, game == Game::SM ? 30 : 35}};

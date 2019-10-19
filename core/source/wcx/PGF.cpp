@@ -213,9 +213,9 @@ u8 PGF::alternativeForm(void) const
     return *(u8*)(data + 0x1C);
 }
 
-u8 PGF::language(void) const
+Language PGF::language(void) const
 {
-    return *(u8*)(data + 0x1D);
+    return Language(*(u8*)(data + 0x1D));
 }
 
 std::string PGF::nickname(void) const

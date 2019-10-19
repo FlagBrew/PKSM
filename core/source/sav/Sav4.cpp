@@ -121,7 +121,7 @@ void Sav4::SID(u16 v)
 
 u8 Sav4::version(void) const
 {
-    return game == DP ? 10 : game == Pt ? 12 : 7;
+    return game == Game::DP ? 10 : game == Game::Pt ? 12 : 7;
 }
 void Sav4::version(u8 v)
 {
@@ -164,13 +164,13 @@ void Sav4::consoleRegion(u8 v)
     (void)v;
 }
 
-u8 Sav4::language(void) const
+Language Sav4::language(void) const
 {
-    return data[Trainer1 + 0x19];
+    return Language(data[Trainer1 + 0x19]);
 }
-void Sav4::language(u8 v)
+void Sav4::language(Language v)
 {
-    data[Trainer1 + 0x19] = v;
+    data[Trainer1 + 0x19] = u8(v);
 }
 
 std::string Sav4::otName(void) const
@@ -475,7 +475,7 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
 
     // Set the Language
     int languageFlags = formOffset + (game == Game::HGSS ? 0x3C : 0x20);
-    int lang          = pk->language() - 1;
+    int lang          = u8(pk->language()) - 1;
     switch (lang) // invert ITA/GER
     {
         case 3:
@@ -840,7 +840,7 @@ std::unique_ptr<Item> Sav4::item(Pouch pouch, u16 slot) const
     }
 }
 
-std::vector<std::pair<Pouch, int>> Sav4::pouches(void) const
+std::vector<std::pair<Sav::Pouch, int>> Sav4::pouches(void) const
 {
     return {{NormalItem, game == Game::DP ? 161 : game == Game::Pt ? 162 : 162}, {KeyItem, game == Game::DP ? 37 : game == Game::Pt ? 40 : 38},
         {TM, game == Game::DP ? 100 : game == Game::Pt ? 100 : 100}, {Mail, game == Game::DP ? 12 : game == Game::Pt ? 12 : 12},
@@ -848,7 +848,7 @@ std::vector<std::pair<Pouch, int>> Sav4::pouches(void) const
         {Ball, game == Game::DP ? 15 : game == Game::Pt ? 15 : 24}, {Battle, game == Game::DP ? 13 : game == Game::Pt ? 13 : 13}};
 }
 
-std::map<Pouch, std::vector<int>> Sav4::validItems() const
+std::map<Sav::Pouch, std::vector<int>> Sav4::validItems() const
 {
     return {{NormalItem,
                 {68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,

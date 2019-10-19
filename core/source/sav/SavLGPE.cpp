@@ -232,14 +232,14 @@ void SavLGPE::gender(u8 v)
     *(data + 0x1005) = v;
 }
 
-u8 SavLGPE::language() const
+Language SavLGPE::language() const
 {
-    return *(data + 0x1035);
+    return Language(*(data + 0x1035));
 }
 
-void SavLGPE::language(u8 v)
+void SavLGPE::language(Language v)
 {
-    *(data + 0x1035) = v;
+    *(data + 0x1035) = u8(v);
 }
 
 std::string SavLGPE::otName() const
@@ -560,7 +560,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
         setDexFlags(bitIndex, gender, shiny, n - 1);
     }
 
-    int lang            = pk->language();
+    int lang            = u8(pk->language());
     const int langCount = 9;
     if (lang <= 10 && lang != 6 && lang != 0)
     {
@@ -1089,13 +1089,13 @@ std::unique_ptr<WCX> SavLGPE::mysteryGift(int pos) const
     return nullptr;
 }
 
-std::vector<std::pair<Pouch, int>> SavLGPE::pouches() const
+std::vector<std::pair<Sav::Pouch, int>> SavLGPE::pouches() const
 {
     return {{Pouch::Medicine, 60}, {Pouch::TM, 108}, {Pouch::Candy, 200}, {Pouch::ZCrystals, 150}, {Pouch::Ball, 50}, {Pouch::Battle, 150},
         {Pouch::NormalItem, 150}};
 }
 
-std::map<Pouch, std::vector<int>> SavLGPE::validItems() const
+std::map<Sav::Pouch, std::vector<int>> SavLGPE::validItems() const
 {
     return {{Medicine, {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 38, 39, 40, 41, 709, 903}},
         {TM, {328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354,

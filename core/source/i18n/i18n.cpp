@@ -77,7 +77,7 @@ void i18n::exit(void)
     delete ru;
 }
 
-const std::string& i18n::ability(u8 lang, u8 val)
+const std::string& i18n::ability(Language lang, u8 val)
 {
     switch (lang)
     {
@@ -105,11 +105,12 @@ const std::string& i18n::ability(u8 lang, u8 val)
             return tw->ability(val);
         case Language::RU:
             return ru->ability(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::ball(u8 lang, u8 val)
+const std::string& i18n::ball(Language lang, u8 val)
 {
     switch (lang)
     {
@@ -137,11 +138,12 @@ const std::string& i18n::ball(u8 lang, u8 val)
             return tw->ball(val);
         case Language::RU:
             return ru->ball(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::form(u8 lang, u16 species, u8 form, Generation generation)
+const std::string& i18n::form(Language lang, u16 species, u8 form, Generation generation)
 {
     switch (lang)
     {
@@ -169,11 +171,12 @@ const std::string& i18n::form(u8 lang, u16 species, u8 form, Generation generati
             return tw->form(species, form, generation);
         case Language::RU:
             return ru->form(species, form, generation);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::hp(u8 lang, u8 val)
+const std::string& i18n::hp(Language lang, u8 val)
 {
     switch (lang)
     {
@@ -201,11 +204,12 @@ const std::string& i18n::hp(u8 lang, u8 val)
             return tw->hp(val);
         case Language::RU:
             return ru->hp(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::item(u8 lang, u16 val)
+const std::string& i18n::item(Language lang, u16 val)
 {
     switch (lang)
     {
@@ -233,11 +237,12 @@ const std::string& i18n::item(u8 lang, u16 val)
             return tw->item(val);
         case Language::RU:
             return ru->item(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::move(u8 lang, u16 val)
+const std::string& i18n::move(Language lang, u16 val)
 {
     switch (lang)
     {
@@ -265,11 +270,12 @@ const std::string& i18n::move(u8 lang, u16 val)
             return tw->move(val);
         case Language::RU:
             return ru->move(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::nature(u8 lang, u8 val)
+const std::string& i18n::nature(Language lang, u8 val)
 {
     switch (lang)
     {
@@ -297,11 +303,12 @@ const std::string& i18n::nature(u8 lang, u8 val)
             return tw->nature(val);
         case Language::RU:
             return ru->nature(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::species(u8 lang, u16 val)
+const std::string& i18n::species(Language lang, u16 val)
 {
     switch (lang)
     {
@@ -329,8 +336,9 @@ const std::string& i18n::species(u8 lang, u16 val)
             return tw->species(val);
         case Language::RU:
             return ru->species(val);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
 const std::string& i18n::localize(Language lang, const std::string& val)
@@ -444,7 +452,7 @@ Language i18n::langFromString(const std::string& value)
     return Language::EN;
 }
 
-const std::vector<std::string>& i18n::rawItems(u8 lang)
+const std::vector<std::string>& i18n::rawItems(Language lang)
 {
     switch (lang)
     {
@@ -472,11 +480,12 @@ const std::vector<std::string>& i18n::rawItems(u8 lang)
             return tw->rawItems();
         case Language::RU:
             return ru->rawItems();
+        default:
+            return emptyVector;
     }
-    return emptyVector;
 }
 
-const std::vector<std::string>& i18n::rawMoves(u8 lang)
+const std::vector<std::string>& i18n::rawMoves(Language lang)
 {
     switch (lang)
     {
@@ -504,11 +513,12 @@ const std::vector<std::string>& i18n::rawMoves(u8 lang)
             return tw->rawMoves();
         case Language::RU:
             return ru->rawMoves();
+        default:
+            return emptyVector;
     }
-    return emptyVector;
 }
 
-const std::string& i18n::location(u8 lang, u16 v, Generation generation)
+const std::string& i18n::location(Language lang, u16 v, Generation generation)
 {
     switch (lang)
     {
@@ -536,11 +546,12 @@ const std::string& i18n::location(u8 lang, u16 v, Generation generation)
             return tw->location(v, generation);
         case Language::RU:
             return ru->location(v, generation);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::location(u8 lang, u16 v, u8 originGame)
+const std::string& i18n::location(Language lang, u16 v, u8 originGame)
 {
     switch (originGame)
     {
@@ -572,7 +583,7 @@ const std::string& i18n::location(u8 lang, u16 v, u8 originGame)
     return emptyString;
 }
 
-const std::string& i18n::game(u8 lang, u8 v)
+const std::string& i18n::game(Language lang, u8 v)
 {
     switch (lang)
     {
@@ -600,11 +611,12 @@ const std::string& i18n::game(u8 lang, u8 v)
             return tw->game(v);
         case Language::RU:
             return ru->game(v);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::map<u16, std::string>& i18n::locations(u8 lang, Generation g)
+const std::map<u16, std::string>& i18n::locations(Language lang, Generation g)
 {
     switch (lang)
     {
@@ -632,11 +644,12 @@ const std::map<u16, std::string>& i18n::locations(u8 lang, Generation g)
             return tw->locations(g);
         case Language::RU:
             return ru->locations(g);
+        default:
+            return emptyU16Map;
     }
-    return emptyU16Map;
 }
 
-size_t i18n::numGameStrings(u8 lang)
+size_t i18n::numGameStrings(Language lang)
 {
     switch (lang)
     {
@@ -664,11 +677,12 @@ size_t i18n::numGameStrings(u8 lang)
             return tw->numGameStrings();
         case Language::RU:
             return ru->numGameStrings();
+        default:
+            return 0;
     }
-    return 0;
 }
 
-const std::string& i18n::subregion(u8 lang, u8 country, u8 value)
+const std::string& i18n::subregion(Language lang, u8 country, u8 value)
 {
     switch (lang)
     {
@@ -696,11 +710,12 @@ const std::string& i18n::subregion(u8 lang, u8 country, u8 value)
             return tw->subregion(country, value);
         case Language::RU:
             return ru->subregion(country, value);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::string& i18n::country(u8 lang, u8 value)
+const std::string& i18n::country(Language lang, u8 value)
 {
     switch (lang)
     {
@@ -728,11 +743,12 @@ const std::string& i18n::country(u8 lang, u8 value)
             return tw->country(value);
         case Language::RU:
             return ru->country(value);
+        default:
+            return emptyString;
     }
-    return emptyString;
 }
 
-const std::map<u8, std::string>& i18n::rawCountries(u8 lang)
+const std::map<u8, std::string>& i18n::rawCountries(Language lang)
 {
     switch (lang)
     {
@@ -760,11 +776,12 @@ const std::map<u8, std::string>& i18n::rawCountries(u8 lang)
             return tw->rawCountries();
         case Language::RU:
             return ru->rawCountries();
+        default:
+            return emptyU8Map;
     }
-    return emptyU8Map;
 }
 
-const std::map<u8, std::string>& i18n::rawSubregions(u8 lang, u8 country)
+const std::map<u8, std::string>& i18n::rawSubregions(Language lang, u8 country)
 {
     switch (lang)
     {
@@ -792,6 +809,7 @@ const std::map<u8, std::string>& i18n::rawSubregions(u8 lang, u8 country)
             return tw->rawSubregions(country);
         case Language::RU:
             return ru->rawSubregions(country);
+        default:
+            return emptyU8Map;
     }
-    return emptyU8Map;
 }

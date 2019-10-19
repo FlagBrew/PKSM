@@ -204,9 +204,9 @@ u8 WC6::alternativeForm(void) const
     return *(u8*)(data + 0x84);
 }
 
-u8 WC6::language(void) const
+Language WC6::language(void) const
 {
-    return *(u8*)(data + 0x85);
+    return Language(*(u8*)(data + 0x85));
 }
 
 std::string WC6::nickname(void) const

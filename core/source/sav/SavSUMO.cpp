@@ -120,7 +120,7 @@ int SavSUMO::dexFormCount(int species) const
     return 0;
 }
 
-std::map<Pouch, std::vector<int>> SavSUMO::validItems() const
+std::map<Sav::Pouch, std::vector<int>> SavSUMO::validItems() const
 {
     return {
         {NormalItem,

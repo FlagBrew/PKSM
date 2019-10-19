@@ -55,8 +55,6 @@
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 #define NO_TEXT_CLICK(x, y, w, h, function, image) std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 
-static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
-
 EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency)
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {

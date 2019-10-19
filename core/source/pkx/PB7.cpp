@@ -714,13 +714,13 @@ void PB7::consoleRegion(u8 v)
     data[0xE2] = v;
 }
 
-u8 PB7::language(void) const
+Language PB7::language(void) const
 {
-    return data[0xE3];
+    return Language(data[0xE3]);
 }
-void PB7::language(u8 v)
+void PB7::language(Language v)
 {
-    data[0xE3] = v;
+    data[0xE3] = u8(v);
 }
 
 u8 PB7::currentFriendship(void) const

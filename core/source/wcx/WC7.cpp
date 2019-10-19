@@ -228,9 +228,9 @@ u8 WC7::alternativeForm(void) const
     return *(u8*)(data + 0x84);
 }
 
-u8 WC7::language(void) const
+Language WC7::language(void) const
 {
-    return *(u8*)(data + 0x85);
+    return Language(*(u8*)(data + 0x85));
 }
 
 std::string WC7::nickname(void) const

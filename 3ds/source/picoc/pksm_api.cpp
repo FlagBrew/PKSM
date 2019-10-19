@@ -1009,8 +1009,8 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             }
             {
                 auto pouches = TitleLoader::save->pouches();
-                Pouch pouch  = Pouch(getNextVarArg(Param[0])->Val->Integer);
-                auto found = std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Pouch, int>& item) { return item.first == pouch; });
+                Sav::Pouch pouch  = Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
+                auto found = std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Sav::Pouch, int>& item) { return item.first == pouch; });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;
@@ -1087,7 +1087,7 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for SAV_LANGUAGE", NumArgs);
             }
-            ReturnValue->Val->Integer = TitleLoader::save->language();
+            ReturnValue->Val->Integer = u8(TitleLoader::save->language());
             break;
         case SAV_MONEY:
             if (NumArgs != 1)
@@ -1131,7 +1131,7 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             }
             {
                 struct Value* nextArg = getNextVarArg(Param[0]);
-                Pouch pouch           = Pouch(nextArg->Val->Integer);
+                Sav::Pouch pouch           = Sav::Pouch(nextArg->Val->Integer);
                 if (auto item = TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
                 {
                     ReturnValue->Val->Integer = item->id();
@@ -1687,7 +1687,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->language();
+            ReturnValue->Val->UnsignedInteger = u8(pkm->language());
             break;
         case MET_LOCATION:
             if (NumArgs != 3)

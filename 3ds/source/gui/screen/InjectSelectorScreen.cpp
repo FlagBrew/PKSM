@@ -335,16 +335,16 @@ bool InjectSelectorScreen::doQR()
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            initMode = WCX4;
+            initMode = QRMode::WC4;
             break;
         case Generation::FIVE:
-            initMode = WCX5;
+            initMode = QRMode::WC5;
             break;
         case Generation::SIX:
-            initMode = WCX6;
+            initMode = QRMode::WC6;
             break;
         case Generation::SEVEN:
-            initMode = WCX7;
+            initMode = QRMode::WC7;
             break;
         default:
             return false;

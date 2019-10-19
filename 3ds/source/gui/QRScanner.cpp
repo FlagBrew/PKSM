@@ -282,121 +282,125 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
         if (!quirc_decode(&code, &scan_data))
         {
             finish();
-            if (mode == WCX4)
+            switch (mode)
             {
-                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
+                case QRMode::WC4:
+                {
+                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
-                if (out.size() != PGT::length && out.size() != WC4::length)
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == WCX5)
-            {
-                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                if (out.size() != PGF::length)
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == WCX6 || mode == WCX7)
-            {
-                static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
-                out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                if (out.size() != WC6::length && out.size() != WC6::lengthFull)
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == PKM4)
-            {
-                static constexpr int pkHeader = 6; // strlen("null/#")
-                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                if (out.size() != 136) // PK4/5 length
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == PKM5)
-            {
-                static constexpr int pkHeader = 6; // strlen("null/#")
-                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                if (out.size() != 136) // PK4/5 length
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == PKM6)
-            {
-                static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
-                out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                if (PKX::genFromBytes(out.data(), out.size(), true) != 6) // PK6 length
-                {
-                    out.clear();
-                }
-            }
-            else if (mode == PKM7)
-            {
-                if (scan_data.payload_len != 0x1A2)
-                {
-                    return;
-                }
-
-                u32 box    = *(u32*)(scan_data.payload + 8);
-                u32 slot   = *(u32*)(scan_data.payload + 12);
-                u32 copies = *(u32*)(scan_data.payload + 16);
-
-                if (box > 31)
-                {
-                    box = 31;
-                }
-                if (slot > 29)
-                {
-                    slot = 29;
-                }
-
-                if (copies > 1)
-                {
-                    if ((int)box < TitleLoader::save->maxBoxes() && slot < 30)
+                    if (out.size() != PGT::length && out.size() != WC4::length)
                     {
-                        std::shared_ptr<PKX> pkx;
-                        if (mode == PKM6)
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::WC5:
+                {
+                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
+
+                    if (out.size() != PGF::length)
+                    {
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::WC6:
+                case QRMode::WC7:
+                {
+                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
+
+                    if (out.size() != WC6::length && out.size() != WC6::lengthFull)
+                    {
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::PK4:
+                {
+                    static constexpr int pkHeader = 6; // strlen("null/#")
+                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
+
+                    if (out.size() != 136) // PK4/5 length
+                    {
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::PK5:
+                {
+                    static constexpr int pkHeader = 6; // strlen("null/#")
+                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
+
+                    if (out.size() != 136) // PK4/5 length
+                    {
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::PK6:
+                {
+                    static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
+                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
+
+                    if (PKX::genFromBytes(out.data(), out.size(), true) != 6) // PK6 length
+                    {
+                        out.clear();
+                    }
+                }
+                break;
+                case QRMode::PK7:
+                {
+                    if (scan_data.payload_len != 0x1A2)
+                    {
+                        return;
+                    }
+
+                    u32 box    = *(u32*)(scan_data.payload + 8);
+                    u32 slot   = *(u32*)(scan_data.payload + 12);
+                    u32 copies = *(u32*)(scan_data.payload + 16);
+
+                    if (box > 31)
+                    {
+                        box = 31;
+                    }
+                    if (slot > 29)
+                    {
+                        slot = 29;
+                    }
+
+                    if (copies > 1)
+                    {
+                        if ((int)box < TitleLoader::save->maxBoxes() && slot < 30)
                         {
-                            pkx = std::make_shared<PK6>(scan_data.payload + 0x30, true);
-                        }
-                        else
-                        {
-                            pkx = std::make_shared<PK7>(scan_data.payload + 0x30, true);
-                        }
-                        for (u32 i = 0; i < copies; i++)
-                        {
-                            u32 tmpSlot = (slot + i) % 30;
-                            u32 tmpBox  = box + (slot + i) / 30;
-                            if ((int)tmpBox < TitleLoader::save->maxBoxes() && tmpSlot < 30)
+                            std::shared_ptr<PKX> pkx = std::make_shared<PK7>(scan_data.payload + 0x30, true);
+                            for (u32 i = 0; i < copies; i++)
                             {
-                                TitleLoader::save->pkm(pkx, tmpBox, tmpSlot, false);
+                                u32 tmpSlot = (slot + i) % 30;
+                                u32 tmpBox  = box + (slot + i) / 30;
+                                if ((int)tmpBox < TitleLoader::save->maxBoxes() && tmpSlot < 30)
+                                {
+                                    TitleLoader::save->pkm(pkx, tmpBox, tmpSlot, false);
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        out.resize(232);
+                        std::copy(scan_data.payload + 0x30, scan_data.payload + 0x30 + 232, out.begin());
+                    }
                 }
-                else
+                break;
+                case QRMode::NUMBER:
                 {
-                    out.resize(232);
-                    std::copy(scan_data.payload + 0x30, scan_data.payload + 0x30 + 232, out.begin());
+                    out.resize(scan_data.payload_len + 1);
+                    out[scan_data.payload_len] = '\0';
+                    std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
                 }
-            }
-            else if (mode == NUMBER)
-            {
-                out.resize(scan_data.payload_len + 1);
-                out[scan_data.payload_len] = '\0';
-                std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
+                break;
             }
         }
     }

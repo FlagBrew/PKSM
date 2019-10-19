@@ -60,8 +60,8 @@ public:
     void country(u8 v) override;
     u8 consoleRegion(void) const override;
     void consoleRegion(u8 v) override;
-    u8 language(void) const override;
-    void language(u8 v) override;
+    Language language(void) const override;
+    void language(Language v) override;
     std::string otName(void) const override;
     void otName(const std::string& v) override;
     u32 money(void) const override;

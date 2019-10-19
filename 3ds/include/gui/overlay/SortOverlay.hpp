@@ -30,103 +30,14 @@
 #include "Configuration.hpp"
 #include "HidVertical.hpp"
 #include "ReplaceableScreen.hpp"
+#include "SortScreen.hpp"
 #include <array>
 #include <string>
-
-enum SortType
-{
-    NONE,
-    DEX,
-    SPECIESNAME,
-    FORM,
-    TYPE1,
-    TYPE2,
-    HP,
-    ATK,
-    DEF,
-    SATK,
-    SDEF,
-    SPE,
-    HPIV,
-    ATKIV,
-    DEFIV,
-    SATKIV,
-    SDEFIV,
-    SPEIV,
-    NATURE,
-    LEVEL,
-    TID,
-    HIDDENPOWER,
-    FRIENDSHIP,
-    NICKNAME,
-    OTNAME,
-    SHINY
-};
-
-constexpr std::string_view sortTypeToString(SortType type)
-{
-    switch (type)
-    {
-        case NONE:
-        default:
-            return "NONE";
-        case DEX:
-            return "SPECIES";
-        case FORM:
-            return "FORM";
-        case TYPE1:
-            return "TYPE1";
-        case TYPE2:
-            return "TYPE2";
-        case HP:
-            return "HP";
-        case ATK:
-            return "ATTACK";
-        case DEF:
-            return "DEFENSE";
-        case SATK:
-            return "SPATK";
-        case SDEF:
-            return "SPDEF";
-        case SPE:
-            return "SPEED";
-        case HPIV:
-            return "HP_IV";
-        case ATKIV:
-            return "ATTACK_IV";
-        case DEFIV:
-            return "DEFENSE_IV";
-        case SATKIV:
-            return "SPATK_IV";
-        case SDEFIV:
-            return "SPDEF_IV";
-        case SPEIV:
-            return "SPEED_IV";
-        case NATURE:
-            return "NATURE";
-        case LEVEL:
-            return "LEVEL";
-        case TID:
-            return "TID";
-        case HIDDENPOWER:
-            return "HIDDEN_POWER";
-        case FRIENDSHIP:
-            return "FRIENDSHIP";
-        case NICKNAME:
-            return "NICKNAME";
-        case SPECIESNAME:
-            return "SPECIES_NAME";
-        case OTNAME:
-            return "OT_NAME";
-        case SHINY:
-            return "SHINY";
-    }
-}
 
 class SortOverlay : public ReplaceableScreen
 {
 public:
-    SortOverlay(ReplaceableScreen& screen, SortType& type)
+    SortOverlay(ReplaceableScreen& screen, SortScreen::SortType& type)
         : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
     {
         hid.update(vals.size());
@@ -141,9 +52,14 @@ public:
 private:
     HidVertical hid;
     bool finished = false;
-    SortType& out;
-    static constexpr std::array<SortType, 26> vals = {NONE, DEX, SPECIESNAME, FORM, TYPE1, TYPE2, HP, ATK, DEF, SATK, SDEF, SPE, HPIV, ATKIV, DEFIV,
-        SATKIV, SDEFIV, SPEIV, NATURE, LEVEL, TID, HIDDENPOWER, FRIENDSHIP, NICKNAME, OTNAME, SHINY};
+    SortScreen::SortType& out;
+    static constexpr std::array<SortScreen::SortType, 26> vals = {SortScreen::SortType::NONE, SortScreen::SortType::DEX,
+        SortScreen::SortType::SPECIESNAME, SortScreen::SortType::FORM, SortScreen::SortType::TYPE1, SortScreen::SortType::TYPE2,
+        SortScreen::SortType::HP, SortScreen::SortType::ATK, SortScreen::SortType::DEF, SortScreen::SortType::SATK, SortScreen::SortType::SDEF,
+        SortScreen::SortType::SPE, SortScreen::SortType::HPIV, SortScreen::SortType::ATKIV, SortScreen::SortType::DEFIV, SortScreen::SortType::SATKIV,
+        SortScreen::SortType::SDEFIV, SortScreen::SortType::SPEIV, SortScreen::SortType::NATURE, SortScreen::SortType::LEVEL,
+        SortScreen::SortType::TID, SortScreen::SortType::HIDDENPOWER, SortScreen::SortType::FRIENDSHIP, SortScreen::SortType::NICKNAME,
+        SortScreen::SortType::OTNAME, SortScreen::SortType::SHINY};
 };
 
 #endif

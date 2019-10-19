@@ -39,26 +39,26 @@ namespace i18n
     void init(void);
     void exit(void);
 
-    const std::vector<std::string>& rawItems(u8 lang);
-    const std::vector<std::string>& rawMoves(u8 lang);
-    const std::map<u16, std::string>& locations(u8 lang, Generation g);
-    const std::map<u8, std::string>& rawCountries(u8 lang);
-    const std::map<u8, std::string>& rawSubregions(u8 lang, u8 country);
-    size_t numGameStrings(u8 lang);
+    const std::vector<std::string>& rawItems(Language lang);
+    const std::vector<std::string>& rawMoves(Language lang);
+    const std::map<u16, std::string>& locations(Language lang, Generation g);
+    const std::map<u8, std::string>& rawCountries(Language lang);
+    const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
+    size_t numGameStrings(Language lang);
 
-    const std::string& ability(u8 lang, u8 value);
-    const std::string& ball(u8 lang, u8 value);
-    const std::string& hp(u8 lang, u8 value);
-    const std::string& item(u8 lang, u16 value);
-    const std::string& move(u8 lang, u16 value);
-    const std::string& nature(u8 lang, u8 value);
-    const std::string& species(u8 lang, u16 value);
-    const std::string& form(u8 lang, u16 species, u8 form, Generation generation);
-    const std::string& location(u8 lang, u16 value, Generation generation);
-    const std::string& location(u8 lang, u16 value, u8 originGame);
-    const std::string& game(u8 lang, u8 value);
-    const std::string& subregion(u8 lang, u8 country, u8 value);
-    const std::string& country(u8 lang, u8 value);
+    const std::string& ability(Language lang, u8 value);
+    const std::string& ball(Language lang, u8 value);
+    const std::string& hp(Language lang, u8 value);
+    const std::string& item(Language lang, u16 value);
+    const std::string& move(Language lang, u16 value);
+    const std::string& nature(Language lang, u8 value);
+    const std::string& species(Language lang, u16 value);
+    const std::string& form(Language lang, u16 species, u8 form, Generation generation);
+    const std::string& location(Language lang, u16 value, Generation generation);
+    const std::string& location(Language lang, u16 value, u8 originGame);
+    const std::string& game(Language lang, u8 value);
+    const std::string& subregion(Language lang, u8 country, u8 value);
+    const std::string& country(Language lang, u8 value);
 
     // Used for general GUI stuff; not for PKM values
     const std::string& localize(Language lang, const std::string& index);

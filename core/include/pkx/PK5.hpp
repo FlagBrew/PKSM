@@ -89,8 +89,8 @@ public:
     void ability(u8 v) override;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
-    u8 language(void) const override;
-    void language(u8 v) override;
+    Language language(void) const override;
+    void language(Language v) override;
     u8 ev(u8 ev) const override;
     void ev(u8 ev, u8 v) override;
     u8 contest(u8 contest) const override;

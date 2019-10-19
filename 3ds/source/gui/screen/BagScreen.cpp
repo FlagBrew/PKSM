@@ -550,9 +550,9 @@ void BagScreen::editCount(bool up, int selected)
     }
 }
 
-bool BagScreen::canEdit(Pouch pouch, const Item& item) const
+bool BagScreen::canEdit(Sav::Pouch pouch, const Item& item) const
 {
-    if (pouch == Pouch::KeyItem)
+    if (pouch == Sav::Pouch::KeyItem)
     {
         return false;
     }

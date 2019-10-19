@@ -30,16 +30,16 @@
 #include "types.h"
 #include <vector>
 
-enum QRMode
+enum class QRMode
 {
-    PKM4,
-    PKM5,
-    PKM6,
-    PKM7,
-    WCX4,
-    WCX5,
-    WCX6,
-    WCX7,
+    PK4,
+    PK5,
+    PK6,
+    PK7,
+    WC4,
+    WC5,
+    WC6,
+    WC7,
     NUMBER
 };
 

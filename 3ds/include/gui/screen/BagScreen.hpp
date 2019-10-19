@@ -42,8 +42,8 @@ public:
     void drawBottom() const override;
 
 private:
-    std::vector<std::pair<Pouch, int>> limits;
-    std::map<Pouch, std::vector<int>> allowedItems;
+    std::vector<std::pair<Sav::Pouch, int>> limits;
+    std::map<Sav::Pouch, std::vector<int>> allowedItems;
     std::vector<std::unique_ptr<Button>> amountButtons;
     int currentPouch = 0;
     std::vector<std::unique_ptr<Button>> buttons;
@@ -56,7 +56,7 @@ private:
     void editItem();
     void editCount(bool up, int selected);
     void setCount(int selected);
-    bool canEdit(Pouch pouch, const Item& item) const;
+    bool canEdit(Sav::Pouch pouch, const Item& item) const;
 
     std::array<u16, 35> lgpeKeyItems = {101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 632, 651, 872, 873, 874, 875, 876, 877,
         878, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896};
