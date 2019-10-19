@@ -833,11 +833,11 @@ std::shared_ptr<PKX> PK5::next(Sav& save) const
 
     u8 pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
     u8 abilVal         = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
-    if (abilVal <= 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
+    if (abilVal < 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
     {
         abilVal = 2; // HA shared by normal ability
     }
-    if (abilVal <= 3)
+    if (abilVal < 3)
     {
         pk6->abilityNumber(1 << abilVal);
     }
