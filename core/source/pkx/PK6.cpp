@@ -974,7 +974,7 @@ std::shared_ptr<PKX> PK6::next(Sav& save) const
             u8 index = abilityNumber() >> 1;
             if (abilities(index) == ability())
             {
-                pk7->ability(abilities(index));
+                pk7->ability(pk7->abilities(index));
             }
     }
 
