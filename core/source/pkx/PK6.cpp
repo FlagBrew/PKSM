@@ -946,23 +946,21 @@ u16 PK6::stat(const u8 stat) const
 
 std::shared_ptr<PKX> PK6::next(Sav& save) const
 {
-    u8 dt[232];
-    std::copy(data, data + 232, dt);
+    std::shared_ptr<PK7> pk7 = std::make_shared<PK7>();
+    std::copy(data, data + 232, pk7->rawData());
 
     // markvalue field moved, clear old gen 6 data
-    dt[0x2A] = 0;
+    pk7->rawData()[0x2A] = 0;
 
     // Bank Data clearing
     for (int i = 0x94; i < 0x9E; i++)
-        dt[i] = 0; // Geolocations
+        pk7->rawData()[i] = 0; // Geolocations
     for (int i = 0xAA; i < 0xB0; i++)
-        dt[i] = 0; // Amie fullness/enjoyment
+        pk7->rawData()[i] = 0; // Amie fullness/enjoyment
     for (int i = 0xE4; i < 0xE8; i++)
-        dt[i] = 0;    // unused
-    dt[0x72] &= 0xFC; // low 2 bits of super training
-    dt[0xDE] = 0;     // gen 4 encounter type
-
-    PK7* pk7 = new PK7(dt);
+        pk7->rawData()[i] = 0;    // unused
+    pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
+    pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
     pk7->markValue(markValue());
 
@@ -988,13 +986,12 @@ std::shared_ptr<PKX> PK6::next(Sav& save) const
     pk7->currentHandler(1);
 
     pk7->refreshChecksum();
-    return std::shared_ptr<PKX>(pk7);
+    return pk7;
 }
 
 std::shared_ptr<PKX> PK6::previous(Sav& save) const
 {
-    u8 dt[232] = {0};
-    PK5* pk5   = new PK5(dt);
+    std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
 
     pk5->species(species());
     pk5->TID(TID());
@@ -1105,7 +1102,7 @@ std::shared_ptr<PKX> PK6::previous(Sav& save) const
     }
 
     pk5->refreshChecksum();
-    return std::shared_ptr<PKX>(pk5);
+    return pk5;
 }
 
 int PK6::partyCurrHP(void) const

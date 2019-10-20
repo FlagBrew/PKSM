@@ -820,8 +820,7 @@ static void fixString(std::u16string& fixString)
 
 std::shared_ptr<PKX> PK5::next(Sav& save) const
 {
-    u8 dt[232] = {0};
-    PK6* pk6   = new PK6(dt);
+    std::shared_ptr<PK6> pk6 = std::make_shared<PK6>();
 
     pk6->encryptionConstant(PID());
     pk6->species(species());
@@ -1009,18 +1008,16 @@ std::shared_ptr<PKX> PK5::next(Sav& save) const
     pk6->nickname(StringUtils::UTF16toUTF8(toFix));
 
     pk6->refreshChecksum();
-    return std::shared_ptr<PKX>(pk6);
+    return pk6;
 }
 
 std::shared_ptr<PKX> PK5::previous(Sav& save) const
 {
-    u8 dt[136];
-    std::copy(data, data + 136, dt);
+    std::shared_ptr<PK4> pk4 = std::make_shared<PK4>();
+    std::copy(data, data + 136, pk4->rawData());
 
     // Clear nature field
-    dt[0x41] = 0;
-
-    std::shared_ptr<PKX> pk4 = std::make_shared<PK4>(dt);
+    pk4->rawData()[0x41] = 0;
 
     // Force normal Arceus form
     if (pk4->species() == 493)

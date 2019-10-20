@@ -115,7 +115,7 @@ void QRData::buffToImage()
 void QRData::finish()
 {
     svcSignalEvent(exitEvent);
-    while (!finished)
+    while (!done())
         svcSleepThread(1000000);
     LightLock_Lock(&bufferLock);
     LightLock_Unlock(&bufferLock);
@@ -126,7 +126,7 @@ void QRData::finish()
 void QRData::drawThread()
 {
     LightLock_Lock(&imageLock);
-    while (aptMainLoop() && !finished)
+    while (aptMainLoop() && !done())
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         buffToImage();
@@ -256,7 +256,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
         }
     }
 
-    if (finished)
+    if (done())
     {
         return;
     }

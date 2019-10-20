@@ -792,16 +792,14 @@ u16 PK4::stat(const u8 stat) const
 
 std::shared_ptr<PKX> PK4::next(Sav& save) const
 {
-    u8 dt[136];
-    std::copy(data, data + 136, dt);
+    std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
+    std::copy(data, data + 136, pk5->rawData());
 
     // Clear HGSS data
-    *(u16*)(dt + 0x86) = 0;
+    *(u16*)(pk5->rawData() + 0x86) = 0;
 
     // Clear PtHGSS met data
-    *(u32*)(dt + 0x44) = 0;
-
-    std::shared_ptr<PKX> pk5 = std::make_shared<PK5>(dt);
+    *(u32*)(pk5->rawData() + 0x44) = 0;
 
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);

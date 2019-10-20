@@ -892,13 +892,11 @@ u16 PK7::stat(const u8 stat) const
 
 std::shared_ptr<PKX> PK7::previous(Sav& save) const
 {
-    u8 dt[232];
-    std::copy(data, data + 232, dt);
+    std::shared_ptr<PK6> pk6 = std::make_shared<PK6>();
+    std::copy(data, data + 232, pk6->rawData());
 
     // markvalue field moved, clear old gen 7 data
-    *(u16*)(dt + 0x16) = 0;
-
-    PK6* pk6 = new PK6(dt);
+    *(u16*)(pk6->rawData() + 0x16) = 0;
 
     pk6->markValue(markValue());
 
@@ -935,7 +933,7 @@ std::shared_ptr<PKX> PK7::previous(Sav& save) const
     pk6->fixMoves();
 
     pk6->refreshChecksum();
-    return std::shared_ptr<PKX>(pk6);
+    return pk6;
 }
 
 int PK7::partyCurrHP(void) const
