@@ -578,5 +578,4 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
     drawIcon(secondSelected ? groupToLabel2(group) : groupToLabel1(group), 245, 23);
-    // Gui::sprite(ui_sheet_gameselector_unknown_idx, 245, 23);
 }

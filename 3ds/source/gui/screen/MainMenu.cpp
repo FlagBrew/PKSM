@@ -43,11 +43,6 @@ static bool goToScreen(int buttonNum)
     switch (buttonNum)
     {
         case 0:
-            // if (TitleLoader::save->generation() == Generation::LGPE)
-            // {
-            //     Gui::warn(i18n::localize("STORAGE_IMPLEMENTATION") + '\n' + i18n::localize("STORAGE_CHECKBACK"));
-            //     return false;
-            // }
             if (TitleLoader::save->partyCount() < 1)
             {
                 Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));

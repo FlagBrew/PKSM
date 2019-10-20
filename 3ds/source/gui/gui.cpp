@@ -1009,14 +1009,14 @@ void Gui::format(const PKX& pkm, int x, int y)
 {
     switch (pkm.generation())
     {
-            // case 1: // sapphire
-            // case 2: // ruby
-            // case 3: // emerald
-            // case 4: // fire red
-            // case 5: // leaf green
-            // case 15: // colosseum/XD
-            // 	Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
-            //     break;
+        // If this ever happens
+        // case Generation::ONE:
+        // case Generation::TWO:
+        //     Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
+        //     break;
+        // case Generation::THREE: // if this ever happens
+        //     Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+        //     break;
         case Generation::FOUR:
             Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
             break;
@@ -1032,14 +1032,6 @@ void Gui::format(const PKX& pkm, int x, int y)
         case Generation::LGPE:
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
-            // case 35: // rd
-            // case 36: // gn
-            // case 37: // bu
-            // case 38: // yw
-            // case 39: // gd
-            // case 40: // sv
-            // 	Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
-            //     break;
         default:
             break;
     }

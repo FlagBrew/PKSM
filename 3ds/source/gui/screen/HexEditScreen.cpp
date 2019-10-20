@@ -1658,7 +1658,6 @@ bool HexEditScreen::rotateMark(u8 mark)
         case 2:
         default:
             markData &= (0xFFFF ^ (0x3 << (mark * 2)));
-            // markData |= 0x0 << (mark * 2);
             break;
     }
     *(u16*)(pkm->rawData() + 0x16) = markData;

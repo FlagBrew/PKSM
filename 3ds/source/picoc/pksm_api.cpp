@@ -935,7 +935,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
             break;
     }
     pkm->fixMoves();
-    // pkm->PID((u32)randomNumbers());
+    pkm->PID((u32)randomNumbers());
     pkm->language(Configuration::getInstance().language());
     const time_t current = time(NULL);
     pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);

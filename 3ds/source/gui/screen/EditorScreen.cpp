@@ -115,7 +115,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 break;
         }
         pkm->fixMoves();
-        // pkm->PID((u32)randomNumbers());
+        pkm->PID((u32)randomNumbers());
         pkm->language(Configuration::getInstance().language());
         const time_t current = time(NULL);
         pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
@@ -137,12 +137,6 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
             ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
-        // if (pkm->generation() == Generation::LGPE)
-        // {
-        //     ((PB7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        //     ((PB7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-        //     ((PB7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
-        // }
         addOverlay<SpeciesOverlay>(pkm);
     }
 

@@ -445,26 +445,8 @@ void ConfigScreen::drawBottom() const
         button->draw();
     }
 
-    // if (currentTab != 0)
-    // {
-    //     Gui::drawSolidRect(1, 2, 104, 17, COLOR_DARKBLUE);
-    //     Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    // }
-    // if (currentTab != 1)
-    // {
-    //     Gui::drawSolidRect(108, 2, 104, 17, COLOR_DARKBLUE);
-    //     Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    // }
-    // if (currentTab != 2)
-    // {
-    //     Gui::drawSolidRect(215, 2, 104, 17, COLOR_DARKBLUE);
-    //     Gui::text(i18n::localize("MISC"), 267, 2, FONT_SIZE_11, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    // }
-
     if (currentTab == 0)
     {
-        // Gui::text(i18n::localize("LANGUAGE"), 53, 2, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
         Gui::text("日本語", 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("English", 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Français", 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -485,8 +467,6 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        // Gui::text(i18n::localize("DEFAULTS"), 160, 2, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
         Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("SID"), 19, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("OT"), 19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -545,8 +525,6 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 2)
     {
-        // Gui::text(i18n::localize("MISC"), 215 + 104 / 2, 2, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
         Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
             TextWidthAction::SQUISH_OR_SCROLL, 223);
         Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
