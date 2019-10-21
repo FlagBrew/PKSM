@@ -109,7 +109,7 @@ namespace TextParse
             : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
         {
         }
-        void addWord(std::pair<std::vector<Glyph>, float>&& word, float maxWidth = 0.0f);
+        void addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
         std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
@@ -141,7 +141,7 @@ namespace TextParse
         std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
         void makeGlyphSheets(C2D_Font font);
 #endif
-        std::pair<std::vector<Glyph>, float> parseWord(std::string::const_iterator& str, float maxWidth);
+        std::pair<std::vector<Glyph>, std::vector<float>> parseWord(std::string::const_iterator& str, float maxWidth);
         std::variant<float, size_t> parseWhitespace(std::string::const_iterator& str);
         std::vector<FontType> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
