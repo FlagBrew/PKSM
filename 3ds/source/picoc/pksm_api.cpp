@@ -1007,10 +1007,12 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for MAX_IN_POUCH", NumArgs);
             }
+            else
             {
-                auto pouches = TitleLoader::save->pouches();
-                Sav::Pouch pouch  = Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
-                auto found = std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Sav::Pouch, int>& item) { return item.first == pouch; });
+                auto pouches     = TitleLoader::save->pouches();
+                Sav::Pouch pouch = Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
+                auto found =
+                    std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Sav::Pouch, int>& item) { return item.first == pouch; });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;
@@ -1129,9 +1131,10 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 ProgramFail(Parser, "Incorrect number of args (%i) for SAV_ITEM", NumArgs);
             }
+            else
             {
                 struct Value* nextArg = getNextVarArg(Param[0]);
-                Sav::Pouch pouch           = Sav::Pouch(nextArg->Val->Integer);
+                Sav::Pouch pouch      = Sav::Pouch(nextArg->Val->Integer);
                 if (auto item = TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
                 {
                     ReturnValue->Val->Integer = item->id();
@@ -1644,19 +1647,13 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     switch (field)
     {
         case OT_NAME:
-        {
             if (NumArgs != 3)
             {
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
             }
-            std::string name = pkm->otName();
-            char* ret        = (char*)malloc(name.size() + 1);
-            std::copy(name.begin(), name.end(), ret);
-            ret[name.size()]                  = '\0';
-            ReturnValue->Val->UnsignedInteger = (u32)ret;
-        }
-        break;
+            ReturnValue->Val->Pointer = strToRet(pkm->otName());
+            break;
         case TID:
             if (NumArgs != 3)
             {
@@ -1786,19 +1783,13 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             ReturnValue->Val->UnsignedInteger = pkm->iv(3);
             break;
         case NICKNAME:
-        {
             if (NumArgs != 3)
             {
                 delete pkm;
                 ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
             }
-            std::string nick = pkm->nickname();
-            char* ret        = (char*)malloc(nick.size() + 1);
-            std::copy(nick.begin(), nick.end(), ret);
-            ret[nick.size()]                  = '\0';
-            ReturnValue->Val->UnsignedInteger = (u32)ret;
-        }
-        break;
+            ReturnValue->Val->Pointer = strToRet(pkm->nickname());
+            break;
         case ITEM:
             if (NumArgs != 3)
             {

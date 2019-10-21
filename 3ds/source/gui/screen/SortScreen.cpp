@@ -26,14 +26,14 @@
 
 #include "SortScreen.hpp"
 #include "ClickButton.hpp"
+#include "Configuration.hpp"
 #include "PKX.hpp"
 #include "Sav.hpp"
+#include "SortOverlay.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
-#include "Configuration.hpp"
-#include "SortOverlay.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)
 {
@@ -82,13 +82,13 @@ void SortScreen::drawBottom() const
     {
         if (i >= sortTypes.size())
         {
-            Gui::text(i18n::localize(sortTypeToString(SortType::NONE)), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-                TextPosY::CENTER);
+            Gui::text(
+                i18n::localize(sortTypeToString(SortType::NONE)), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
         }
         else
         {
-            Gui::text(i18n::localize(sortTypeToString(sortTypes[i])), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-                TextPosY::CENTER);
+            Gui::text(
+                i18n::localize(sortTypeToString(sortTypes[i])), 160, 29 + 35 * i, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
         }
     }
 }

@@ -1106,7 +1106,8 @@ void StorageScreen::pickup()
                     {
                         if (moveMon.size() == 1)
                         {
-                            Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()), genToCstring(TitleLoader::save->generation())));
+                            Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
+                                genToCstring(TitleLoader::save->generation())));
                         }
                         continue;
                     }
@@ -1185,7 +1186,8 @@ void StorageScreen::pickup()
                 bankMon = TitleLoader::save->transfer(bankMon);
                 if (!bankMon)
                 {
-                    Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())));
+                    Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()),
+                        genToCstring(TitleLoader::save->generation())));
                     return;
                 }
                 if (bankMon->species() == 0 ||
