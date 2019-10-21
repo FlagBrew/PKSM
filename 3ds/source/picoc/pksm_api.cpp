@@ -63,6 +63,20 @@ static void* strToRet(const std::u16string& str)
     return (void*)ret;
 }
 
+#include "picoc.h"
+[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str)
+{
+    ProgramFail(Parser, str.c_str());
+    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+}
+
+template <typename... Ts>
+[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args)
+{
+    ProgramFail(Parser, str.c_str(), args...);
+    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+}
+
 extern "C" {
 #include "pksm_api.h"
 
@@ -77,8 +91,7 @@ static void checkGen(struct ParseState* Parser, Generation gen)
         case Generation::LGPE:
             break;
         default:
-            ProgramFail(Parser, "Generation is not possible!");
-            break;
+            scriptFail(Parser, "Generation is not possible!");
     }
 }
 
@@ -584,7 +597,7 @@ void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
     if (box + slot / 30 >= Banks::bank->boxes() * 30)
     {
-        ProgramFail(Parser, "Invalid box, slot number: Max box is %i", Banks::bank->boxes() - 1);
+        scriptFail(Parser, "Invalid box, slot number: Max box is %i", Banks::bank->boxes() - 1);
     }
     else
     {
@@ -977,35 +990,35 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
         case MAX_SLOTS:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_SLOTS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MAX_SLOTS", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->maxSlot();
             break;
         case MAX_BOXES:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_BOXES", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MAX_BOXES", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->maxBoxes();
             break;
         case MAX_WONDER_CARDS:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_WONDER_CARDS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MAX_WONDER_CARDS", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->maxWondercards();
             break;
         case MAX_FORM:
             if (NumArgs != 2)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->formCount(getNextVarArg(Param[0])->Val->Integer);
             break;
         case MAX_IN_POUCH:
             if (NumArgs != 2)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for MAX_IN_POUCH", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MAX_IN_POUCH", NumArgs);
             }
             else
             {
@@ -1024,8 +1037,7 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             }
             break;
         default:
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
+            scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
 }
 
@@ -1038,98 +1050,98 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
         case SAV_OT_NAME:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_OT_NAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_OT_NAME", NumArgs);
             }
             ReturnValue->Val->Pointer = strToRet(TitleLoader::save->otName());
             break;
         case SAV_TID:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_TID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_TID", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->TID();
             break;
         case SAV_SID:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_SID", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->SID();
             break;
         case SAV_GENDER:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_GENDER", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_GENDER", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->gender();
             break;
         case SAV_COUNTRY:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_COUNTRY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_COUNTRY", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->country();
             break;
         case SAV_SUBREGION:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SUBREGION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_SUBREGION", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->subRegion();
             break;
         case SAV_REGION:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_REGION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_REGION", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->consoleRegion();
             break;
         case SAV_LANGUAGE:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_LANGUAGE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_LANGUAGE", NumArgs);
             }
             ReturnValue->Val->Integer = u8(TitleLoader::save->language());
             break;
         case SAV_MONEY:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_MONEY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_MONEY", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->money();
             break;
         case SAV_BP:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_BP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_BP", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->BP();
             break;
         case SAV_HOURS:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_HOURS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_HOURS", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->playedHours();
             break;
         case SAV_MINUTES:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_MINUTES", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_MINUTES", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->playedMinutes();
             break;
         case SAV_SECONDS:
             if (NumArgs != 1)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_SECONDS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_SECONDS", NumArgs);
             }
             ReturnValue->Val->Integer = TitleLoader::save->playedSeconds();
             break;
         case SAV_ITEM:
             if (NumArgs != 3)
             {
-                ProgramFail(Parser, "Incorrect number of args (%i) for SAV_ITEM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SAV_ITEM", NumArgs);
             }
             else
             {
@@ -1146,8 +1158,7 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             }
             break;
         default:
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
+            scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
 }
 
@@ -1174,7 +1185,7 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
             ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(value);
             break;
         default:
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
+            scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
 }
 
@@ -1250,7 +1261,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
             }
             pkm->otName((char*)nextArg->Val->Pointer);
             break;
@@ -1258,7 +1269,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
             }
             pkm->TID(nextArg->Val->Integer);
             break;
@@ -1266,7 +1277,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
             }
             pkm->SID(nextArg->Val->Integer);
             break;
@@ -1274,7 +1285,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
             }
             pkm->shiny((bool)nextArg->Val->Integer);
             break;
@@ -1282,7 +1293,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
             pkm->language(Language(nextArg->Val->Integer));
             break;
@@ -1290,7 +1301,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
             }
             pkm->metLocation(nextArg->Val->Integer);
             break;
@@ -1298,7 +1309,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 5)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
             }
             pkm->move(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
             break;
@@ -1306,7 +1317,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
             pkm->ball(nextArg->Val->Integer);
             break;
@@ -1314,7 +1325,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
             }
             pkm->level(nextArg->Val->Integer);
             break;
@@ -1322,7 +1333,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
             pkm->gender(nextArg->Val->Integer);
             break;
@@ -1330,7 +1341,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
             pkm->ability(nextArg->Val->Integer);
             break;
@@ -1338,7 +1349,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
             pkm->iv(0, nextArg->Val->Integer);
             break;
@@ -1346,7 +1357,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
             pkm->iv(1, nextArg->Val->Integer);
             break;
@@ -1354,7 +1365,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
             pkm->iv(2, nextArg->Val->Integer);
             break;
@@ -1362,7 +1373,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
             pkm->iv(4, nextArg->Val->Integer);
             break;
@@ -1370,7 +1381,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
             pkm->iv(5, nextArg->Val->Integer);
             break;
@@ -1378,7 +1389,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
             pkm->iv(3, nextArg->Val->Integer);
             break;
@@ -1386,7 +1397,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
             }
             pkm->nickname((char*)nextArg->Val->Pointer);
             break;
@@ -1394,7 +1405,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
             }
             pkm->heldItem(nextArg->Val->Integer);
             break;
@@ -1402,7 +1413,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 5)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
             }
             pkm->pkrsStrain(nextArg->Val->Integer);
             pkm->pkrsDays(getNextVarArg(nextArg)->Val->Integer);
@@ -1411,7 +1422,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
             }
             pkm->eggDay(nextArg->Val->Integer);
             break;
@@ -1419,7 +1430,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
             }
             pkm->eggMonth(nextArg->Val->Integer);
             break;
@@ -1427,7 +1438,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
             pkm->eggYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
             break;
@@ -1435,7 +1446,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
             pkm->metDay(nextArg->Val->Integer);
             break;
@@ -1443,7 +1454,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
             pkm->metMonth(nextArg->Val->Integer);
             break;
@@ -1451,7 +1462,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
             pkm->metYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
             break;
@@ -1459,7 +1470,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
             }
             pkm->alternativeForm(nextArg->Val->Integer);
             break;
@@ -1467,7 +1478,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
             pkm->ev(0, nextArg->Val->Integer);
             break;
@@ -1475,7 +1486,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
             pkm->ev(1, nextArg->Val->Integer);
             break;
@@ -1483,7 +1494,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
             pkm->ev(2, nextArg->Val->Integer);
             break;
@@ -1491,7 +1502,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
             pkm->ev(4, nextArg->Val->Integer);
             break;
@@ -1499,7 +1510,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
             pkm->ev(5, nextArg->Val->Integer);
             break;
@@ -1507,7 +1518,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
             pkm->ev(3, nextArg->Val->Integer);
             break;
@@ -1515,7 +1526,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
             }
             pkm->species(nextArg->Val->Integer);
             break;
@@ -1523,7 +1534,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
             }
             pkm->PID(nextArg->Val->Integer);
             break;
@@ -1531,7 +1542,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
             }
             pkm->nature(nextArg->Val->Integer);
             break;
@@ -1539,7 +1550,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
             }
             pkm->fatefulEncounter((bool)nextArg->Val->Integer);
             break;
@@ -1547,7 +1558,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 5)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
             }
             pkm->PP(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
             break;
@@ -1555,7 +1566,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 5)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
             }
             pkm->PPUp(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
             break;
@@ -1563,7 +1574,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
             }
             pkm->egg((bool)nextArg->Val->Integer);
             break;
@@ -1571,7 +1582,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
             }
             pkm->nicknamed((bool)nextArg->Val->Integer);
             break;
@@ -1579,7 +1590,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
             }
             pkm->eggLocation(nextArg->Val->Integer);
             break;
@@ -1587,7 +1598,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
             }
             pkm->metLevel(nextArg->Val->Integer);
             break;
@@ -1595,7 +1606,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
             }
             pkm->otGender(nextArg->Val->Integer);
             break;
@@ -1603,14 +1614,13 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
             }
             pkm->version(nextArg->Val->Integer);
             break;
         default:
             delete pkm;
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
+            scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
     delete pkm;
 }
@@ -1650,7 +1660,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for OT_NAME", NumArgs);
             }
             ReturnValue->Val->Pointer = strToRet(pkm->otName());
             break;
@@ -1658,7 +1668,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for TID", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->TID();
             break;
@@ -1666,7 +1676,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SID", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->SID();
             break;
@@ -1674,7 +1684,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SHINY", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->shiny();
             break;
@@ -1682,7 +1692,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = u8(pkm->language());
             break;
@@ -1690,7 +1700,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_LOCATION", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->metLocation();
             break;
@@ -1698,7 +1708,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->move(nextArg->Val->Integer);
             break;
@@ -1706,7 +1716,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->ball();
             break;
@@ -1714,7 +1724,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for LEVEL", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->level();
             break;
@@ -1722,7 +1732,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->gender();
             break;
@@ -1730,7 +1740,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->ability();
             break;
@@ -1738,7 +1748,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(0);
             break;
@@ -1746,7 +1756,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(1);
             break;
@@ -1754,7 +1764,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(2);
             break;
@@ -1762,7 +1772,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(4);
             break;
@@ -1770,7 +1780,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(5);
             break;
@@ -1778,7 +1788,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->iv(3);
             break;
@@ -1786,7 +1796,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NICKNAME", NumArgs);
             }
             ReturnValue->Val->Pointer = strToRet(pkm->nickname());
             break;
@@ -1794,7 +1804,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ITEM", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->heldItem();
             break;
@@ -1802,7 +1812,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for POKERUS", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->pkrs();
             break;
@@ -1810,7 +1820,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->eggDay();
             break;
@@ -1818,7 +1828,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->eggMonth();
             break;
@@ -1826,7 +1836,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->eggYear();
             break;
@@ -1834,7 +1844,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->metDay();
             break;
@@ -1842,7 +1852,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->metMonth();
             break;
@@ -1850,7 +1860,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->metYear();
             break;
@@ -1858,7 +1868,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for FORM", NumArgs);
             }
             ReturnValue->Val->UnsignedInteger = pkm->alternativeForm();
             break;
@@ -1866,7 +1876,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(0);
             break;
@@ -1874,7 +1884,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(1);
             break;
@@ -1882,7 +1892,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(2);
             break;
@@ -1890,7 +1900,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(4);
             break;
@@ -1898,7 +1908,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(5);
             break;
@@ -1906,7 +1916,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->ev(3);
             break;
@@ -1914,7 +1924,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->species();
             break;
@@ -1922,7 +1932,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PID", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->PID();
             break;
@@ -1930,7 +1940,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->nature();
             break;
@@ -1938,7 +1948,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for FATEFUL", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->fatefulEncounter();
             break;
@@ -1946,7 +1956,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PP", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->PP(nextArg->Val->Integer);
             break;
@@ -1954,7 +1964,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 4)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for PP_UPS", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->PPUp(nextArg->Val->Integer);
             break;
@@ -1962,7 +1972,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->egg();
             break;
@@ -1970,7 +1980,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for NICKNAMED", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->nicknamed();
             break;
@@ -1978,7 +1988,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for EGG_LOCATION", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->eggLocation();
             break;
@@ -1986,7 +1996,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for MET_LEVEL", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->metLevel();
             break;
@@ -1994,7 +2004,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->otGender();
             break;
@@ -2002,14 +2012,13 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             if (NumArgs != 3)
             {
                 delete pkm;
-                ProgramFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
+                scriptFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
             }
             ReturnValue->Val->Integer = pkm->version();
             break;
         default:
             delete pkm;
-            ProgramFail(Parser, "Field number %i is invalid", (int)field);
-            break;
+            scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
     delete pkm;
 }
