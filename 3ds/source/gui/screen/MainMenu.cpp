@@ -37,6 +37,7 @@
 #include "loader.hpp"
 #include "revision.h"
 #include "utils.hpp"
+#include "Sav5.hpp"
 
 static bool goToScreen(int buttonNum)
 {
@@ -87,6 +88,10 @@ MainMenu::MainMenu()
 
 void MainMenu::makeButtons()
 {
+    if (TitleLoader::save->generation() == Generation::FIVE)
+    {
+        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+    }
     buttons[0] = std::make_unique<MainMenuButton>(
         15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
     buttons[1] = std::make_unique<MainMenuButton>(
@@ -225,6 +230,10 @@ void MainMenu::update(touchPosition* touch)
         if (Gui::showChoiceMessage(
                 i18n::localize("SAVE_CHANGES_1") + '\n' + i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
         {
+            if (TitleLoader::save->generation() == Generation::FIVE)
+            {
+                ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+            }
             TitleLoader::saveChanges();
         }
         Gui::screenBack();

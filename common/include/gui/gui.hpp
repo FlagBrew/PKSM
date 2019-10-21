@@ -37,6 +37,7 @@
 #include "json.hpp"
 #include "spritesheets.h"
 #include "types.h"
+#include <citro2d.h>
 
 class PKX;
 

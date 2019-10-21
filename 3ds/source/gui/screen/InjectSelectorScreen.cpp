@@ -54,11 +54,6 @@ InjectSelectorScreen::InjectSelectorScreen()
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
 
-    if (TitleLoader::save->generation() == Generation::FIVE)
-    {
-        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-    }
-
     gifts = TitleLoader::save->currentGifts();
 
     // QR
@@ -84,10 +79,6 @@ InjectSelectorScreen::InjectSelectorScreen()
 InjectSelectorScreen::~InjectSelectorScreen()
 {
     MysteryGift::exit();
-    if (TitleLoader::save->generation() == Generation::FIVE)
-    {
-        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-    }
 }
 
 void InjectSelectorScreen::update(touchPosition* touch)

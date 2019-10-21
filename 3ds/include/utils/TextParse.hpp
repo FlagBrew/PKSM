@@ -107,6 +107,7 @@ namespace TextParse
     {
         friend class TextBuf;
         friend class ScreenText;
+
     public:
         Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {}, float maxLineWidth = 0.0f)
             : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
@@ -119,6 +120,7 @@ namespace TextParse
         void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
         float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
         size_t lines() const { return lineWidths.size(); }
+
     private:
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;

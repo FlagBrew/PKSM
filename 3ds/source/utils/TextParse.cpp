@@ -272,7 +272,7 @@ namespace TextParse
     {
         std::vector<Glyph> ret;
         std::vector<float> lineWidths = {0.0f};
-        ssize_t iMod = 0;
+        ssize_t iMod                  = 0;
         for (; *str != '\0'; str += iMod)
         {
             u32 chr;
