@@ -103,23 +103,27 @@ namespace TextParse
     };
 #endif
 
-    struct Text
+    class Text
     {
+        friend class TextBuf;
+        friend class ScreenText;
+    public:
         Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {}, float maxLineWidth = 0.0f)
             : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
         {
         }
-        void addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
         std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
         void optimize();
         void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
+        float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
+        size_t lines() const { return lineWidths.size(); }
+    private:
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
-        float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
-        size_t lines() const { return lineWidths.size(); }
+        void addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
     };
 
     class TextBuf
