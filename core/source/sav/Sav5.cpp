@@ -420,7 +420,7 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;
 
-    *(data + WondercardFlags + pgf->ID()) |= 0x1 << (pgf->ID() & 7);
+    *(data + WondercardFlags + (pgf->ID() / 8)) |= 0x1 << (pgf->ID() & 7);
     std::copy(pgf->rawData(), pgf->rawData() + PGF::length, data + WondercardData + pos * PGF::length);
     pos = (pos + 1) % 12;
 }
