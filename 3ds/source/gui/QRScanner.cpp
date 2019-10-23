@@ -286,7 +286,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
             {
                 case QRMode::WC4:
                 {
-                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    static constexpr int wcHeader = 6; // strlen("null/#")
                     out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
                     if (out.size() != PGT::length && out.size() != WC4::length)
@@ -297,7 +297,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
                 break;
                 case QRMode::WC5:
                 {
-                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    static constexpr int wcHeader = 6; // strlen("null/#")
                     out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
                     if (out.size() != PGF::length)
@@ -307,12 +307,21 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
                 }
                 break;
                 case QRMode::WC6:
-                case QRMode::WC7:
                 {
-                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#)
+                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#")
                     out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
 
                     if (out.size() != WC6::length && out.size() != WC6::lengthFull)
+                    {
+                        out.clear();
+                    }
+                }
+                case QRMode::WC7:
+                {
+                    static constexpr int wcHeader = 6; // strlen("null/#")
+                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
+
+                    if (out.size() != WC7::length && out.size() != WC7::lengthFull)
                     {
                         out.clear();
                     }
