@@ -253,7 +253,8 @@ endif
 clean:
 	@echo clean ...
 	@rm -fr $(OUTDIR)
-	@cd $(ROMFS)/mg && find -maxdepth 1 ! -name .gitkeep ! -name . | xargs --no-run-if-empty rm
+	@rm -fr $(ROMFS)/mg/*
+	@touch $(ROMFS)/mg/.gitkeep
 	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 no-deps: $(ROMFS_FONTFILES)
