@@ -36,6 +36,7 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
+#include "QRScanner.hpp"
 
 static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
@@ -85,16 +86,27 @@ static void inputPatronCode()
     static bool first = true;
     if (first)
     {
-        swkbdInit(&state, SWKBD_TYPE_QWERTY, 2, 22);
+        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
         first = false;
     }
     swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
     std::string patronCode = Configuration::getInstance().patronCode();
     swkbdSetInitialText(&state, patronCode.c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
     char input[45]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[44]       = '\0';
+    if (ret == SWKBD_BUTTON_MIDDLE)
+    {
+        std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
+        if (!data.empty() && data.size() == 22)
+        {
+            std::copy(data.begin(), data.end(), input);
+            input[21] = '\0';
+            ret       = SWKBD_BUTTON_CONFIRM;
+        }
+    }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         Configuration::getInstance().patronCode(input);
