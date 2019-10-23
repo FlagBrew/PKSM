@@ -31,13 +31,13 @@
 #include "EditSelectorScreen.hpp"
 #include "InjectSelectorScreen.hpp"
 #include "MainMenuButton.hpp"
+#include "Sav5.hpp"
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "revision.h"
 #include "utils.hpp"
-#include "Sav5.hpp"
 
 static bool goToScreen(int buttonNum)
 {

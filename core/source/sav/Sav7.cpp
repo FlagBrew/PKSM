@@ -494,7 +494,7 @@ void Sav7::mysteryGift(WCX& wc, int& pos)
 {
     WC7* wc7 = (WC7*)&wc;
     *(u8*)(data + WondercardFlags + wc7->ID() / 8) |= 0x1 << (wc7->ID() % 8);
-    std::copy(wc7->rawData(), wc7->rawData() + 264, data + WondercardData + 264 * pos);
+    std::copy(wc7->rawData(), wc7->rawData() + WC7::length, data + WondercardData + WC7::length * pos);
     pos = (pos + 1) % 48;
 }
 

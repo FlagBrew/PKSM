@@ -901,7 +901,7 @@ void CloudScreen::shareReceive()
     CURLcode res;
     if (ret == SWKBD_BUTTON_MIDDLE)
     {
-        std::vector<u8> data = QRScanner::scan(QRMode::NUMBER);
+        std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
         if (!data.empty() && data.size() < 12)
         {
             std::copy(data.begin(), data.end(), input);

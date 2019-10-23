@@ -316,6 +316,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
                         out.clear();
                     }
                 }
+                break;
                 case QRMode::WC7:
                 {
                     static constexpr int wcHeader = 6; // strlen("null/#")
@@ -403,11 +404,11 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
                     }
                 }
                 break;
-                case QRMode::NUMBER:
+                case QRMode::TEXT:
                 {
                     out.resize(scan_data.payload_len + 1);
-                    out[scan_data.payload_len] = '\0';
                     std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
+                    out[scan_data.payload_len] = '\0';
                 }
                 break;
             }

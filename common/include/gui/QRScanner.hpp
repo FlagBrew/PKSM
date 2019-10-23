@@ -40,7 +40,7 @@ enum class QRMode
     WC5,
     WC6,
     WC7,
-    NUMBER
+    TEXT
 };
 
 namespace QRScanner

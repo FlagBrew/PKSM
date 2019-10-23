@@ -621,7 +621,7 @@ void Sav6::mysteryGift(WCX& wc, int& pos)
 {
     WC6* wc6 = (WC6*)&wc;
     *(u8*)(data + WondercardFlags + wc6->ID() / 8) |= 0x1 << (wc6->ID() % 8);
-    std::copy(wc6->rawData(), wc6->rawData() + 264, data + WondercardData + 264 * pos);
+    std::copy(wc6->rawData(), wc6->rawData() + WC6::length, data + WondercardData + WC6::length * pos);
     if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
     {
         static constexpr u32 EON_MAGIC = 0x225D73C2;
