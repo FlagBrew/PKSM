@@ -268,6 +268,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else
         {
+            buttons[0]->update(touch);
             if (buttonsDown & KEY_Y)
             {
                 Gui::screenBack();
@@ -277,7 +278,6 @@ void TitleLoadScreen::update(touchPosition* touch)
             {
                 Gui::setScreen(std::make_unique<ConfigScreen>());
             }
-            buttons[0]->update(touch);
             return;
         }
     }
