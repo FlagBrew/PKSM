@@ -885,13 +885,8 @@ void CloudScreen::shareSend()
 
 void CloudScreen::shareReceive()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
     swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);

@@ -133,13 +133,8 @@ void BankSelectionScreen::update(touchPosition* touch)
 
 void BankSelectionScreen::renameBank()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 10);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 10);
     swkbdSetHintText(&state, i18n::localize("BANK_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[41]  = {0};
@@ -166,13 +161,8 @@ void BankSelectionScreen::renameBank()
 
 void BankSelectionScreen::resizeBank()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
     char input[4]   = {0};

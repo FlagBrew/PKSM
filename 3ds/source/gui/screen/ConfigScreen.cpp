@@ -31,12 +31,12 @@
 #include "ConfigSubRegionOverlay.hpp"
 #include "Configuration.hpp"
 #include "ExtraSavesScreen.hpp"
+#include "QRScanner.hpp"
 #include "ToggleButton.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
-#include "QRScanner.hpp"
 
 static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
@@ -62,13 +62,8 @@ static void inputNumber(std::function<void(int)> callback, int digits, int maxVa
 
 static void inputOT()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25]  = {0};
@@ -82,13 +77,8 @@ static void inputOT()
 
 static void inputPatronCode()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
     swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
     std::string patronCode = Configuration::getInstance().patronCode();
     swkbdSetInitialText(&state, patronCode.c_str());

@@ -372,13 +372,8 @@ bool MiscEditScreen::changeAffection(bool up)
 
 void MiscEditScreen::setAffection()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[4]   = {0};
@@ -457,13 +452,8 @@ bool MiscEditScreen::changeFullness(bool up)
 
 void MiscEditScreen::setFullness()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[4]   = {0};
@@ -524,13 +514,8 @@ bool MiscEditScreen::changeEnjoyment(bool up)
 
 void MiscEditScreen::setEnjoyment()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[4]   = {0};
@@ -569,13 +554,8 @@ bool MiscEditScreen::changeMetLevel(bool up)
 
 void MiscEditScreen::setMetLevel()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[4]   = {0};
@@ -590,13 +570,8 @@ void MiscEditScreen::setMetLevel()
 
 void MiscEditScreen::day()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[3]   = {0};
@@ -618,13 +593,8 @@ void MiscEditScreen::day()
 
 void MiscEditScreen::month()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[3]   = {0};
@@ -646,13 +616,8 @@ void MiscEditScreen::month()
 
 void MiscEditScreen::year()
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 4);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 4);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[5]   = {0};

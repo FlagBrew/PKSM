@@ -84,13 +84,8 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
 void StatsEditScreen::setIV(int which)
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[3]   = {0};
@@ -132,13 +127,8 @@ bool StatsEditScreen::changeIV(int which, bool up)
 
 void StatsEditScreen::setSecondaryStat(int which)
 {
-    static SwkbdState state;
-    static bool first = true;
-    if (first)
-    {
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
-        first = false;
-    }
+    SwkbdState state;
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[4]   = {0};

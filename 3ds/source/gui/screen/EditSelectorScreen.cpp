@@ -50,13 +50,8 @@ void EditSelectorScreen::changeBoxName()
         case Generation::FOUR:
         case Generation::FIVE:
         {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
-            {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
-                first = false;
-            }
+            SwkbdState state;
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
             swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
             swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
             char input[18]  = {0};
@@ -72,13 +67,8 @@ void EditSelectorScreen::changeBoxName()
         case Generation::SIX:
         case Generation::SEVEN:
         {
-            static SwkbdState state;
-            static bool first = true;
-            if (first)
-            {
-                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
-                first = false;
-            }
+            SwkbdState state;
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
             swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
             swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
             char input[34]  = {0};
