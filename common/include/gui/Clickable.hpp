@@ -33,7 +33,7 @@
 class Clickable
 {
 public:
-    Clickable(int x, int y, u16 w, u16 h, const std::function<bool()>& function) : xPos(x), yPos(y), width(w), height(h), noArg(function) {}
+    Clickable(int x, int y, u16 w, u16 h, const std::function<bool()>& function) : noArg(function), xPos(x), yPos(y), width(w), height(h) {}
     virtual ~Clickable(){};
 
     // returns return value of callback, or, if it's not executed, false
@@ -46,9 +46,9 @@ public:
     }
 
 protected:
+    std::function<bool()> noArg;
     int xPos, yPos;
     u16 width, height;
-    std::function<bool()> noArg;
 };
 
 #endif

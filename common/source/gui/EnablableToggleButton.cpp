@@ -34,10 +34,10 @@ EnablableToggleButton::EnablableToggleButton(int x, int y, u16 w, u16 h, const s
     const std::optional<PKSM_Color> disabledTextColor)
     : ToggleButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor, offImage, offText, offFontSize, offTextColor, nullptr, true),
       disabled(disabled),
-      disabledImage(disabledImage.value_or(offImage.value_or(onImage))),
       disabledText(disabledText.value_or(offText.value_or(onText))),
+      disabledTextColor(disabledTextColor.value_or(offTextColor.value_or(onTextColor))),
       disabledFontSize(disabledFontSize.value_or(offFontSize.value_or(onFontSize))),
-      disabledTextColor(disabledTextColor.value_or(offTextColor.value_or(onTextColor)))
+      disabledImage(disabledImage.value_or(offImage.value_or(onImage)))
 {
 }
 

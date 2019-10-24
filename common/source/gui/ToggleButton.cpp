@@ -31,15 +31,15 @@ ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool(
     const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
     std::vector<std::unique_ptr<ToggleButton>>* radioCategory, bool disablable)
     : ClickButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor),
-      onImage(onImage),
-      onText(onText),
-      onFontSize(onFontSize),
-      onColor(onTextColor),
-      offImage(offImage.value_or(onImage)),
-      offText(offText.value_or(onText)),
-      offFontSize(offFontSize.value_or(onFontSize)),
-      offColor(offTextColor.value_or(onTextColor)),
       radioCategory(radioCategory),
+      onText(onText),
+      offText(offText.value_or(onText)),
+      onColor(onTextColor),
+      offColor(offTextColor.value_or(onTextColor)),
+      onFontSize(onFontSize),
+      offFontSize(offFontSize.value_or(onFontSize)),
+      onImage(onImage),
+      offImage(offImage.value_or(onImage)),
       disablable(disablable)
 {
 }

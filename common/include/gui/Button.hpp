@@ -40,10 +40,10 @@ public:
     virtual void draw() const override;
 
 protected:
-    int key;
     std::string text;
-    FontSize size;
     PKSM_Color textColor;
+    FontSize size;
+    int key;
 };
 
 #endif

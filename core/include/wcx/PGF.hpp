@@ -35,7 +35,7 @@ protected:
     u8 data[204];
 
 public:
-    static const u16 length = 204;
+    static constexpr u16 length = 204;
 
     PGF(u8* pgf);
     virtual ~PGF(){};

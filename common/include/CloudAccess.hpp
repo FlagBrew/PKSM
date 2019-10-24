@@ -99,12 +99,13 @@ private:
         bool ascend, legal;
     };
     void refreshPages();
-    bool isGood = false;
     std::shared_ptr<Page> current;
     int pageNumber;
     SortType sort = LATEST;
+    bool isGood = false;
     bool ascend   = true;
     bool legal    = false;
+
     friend void incrementPkmDownloadCount(std::string* num);
     friend void downloadCloudPage(CloudAccess::PageDownloadInfo* di);
 };

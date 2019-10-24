@@ -78,9 +78,9 @@ private:
     LightLock imageLock;
     quirc* data;
     Handle exitEvent;
+    static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     std::atomic<bool> finished                = false;
     bool capturing                            = false;
-    static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
 };
 
 static void drawHelp(void* arg)

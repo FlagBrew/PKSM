@@ -37,8 +37,8 @@ protected:
     int numItems = 0;
 
 public:
-    static const u16 length     = 264;
-    static const u16 lengthFull = 784;
+    static constexpr u16 length     = 264;
+    static constexpr u16 lengthFull = 784;
 
     WB7(u8* dt, bool full = false);
     virtual ~WB7(){};

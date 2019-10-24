@@ -41,9 +41,9 @@ public:
 protected:
     int clickedTime = 0;
     int timer       = 0;
-    bool doTime     = false;
     const int slowTime;
     const int fastTime;
+    bool doTime     = false;
 };
 
 #endif

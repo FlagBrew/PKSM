@@ -1,0 +1,27 @@
+/c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/parse.c: In function 'ParseStatement':
+/c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/parse.c:629:16: warning: this statement may fall through [-Wimplicit-fallthrough=]
+  629 |             if (VariableDefined(Parser->pc, LexerValue->Val->Identifier))
+      |                ^
+/c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/parse.c:685:9: note: here
+  685 |         case TokenAsterisk:
+      |         ^~~~
+In file included from /c/Users/chris/Documents/PKSM/3ds/../common/include/picoc/platform.h:44,
+                 from /c/Users/chris/Documents/PKSM/3ds/../common/include/picoc/interpreter.h:8,
+                 from /c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/lex.c:3:
+/c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/lex.c: In function 'LexGetRawToken':
+/c/Users/chris/Documents/PKSM/3ds/../common/source/picoc/lex.c:863:18: warning: comparison is always true due to limited range of data type [-Wtype-limits]
+  863 |     assert(Token >= TokenNone && Token <= TokenEndOfFunction);
+      |                  ^~
+/c/Users/chris/Documents/PKSM/3ds/../common/source/quirc/identify.c: In function 'quirc_end':
+/c/Users/chris/Documents/PKSM/3ds/../common/source/quirc/identify.c:242:11: warning: '*((void *)&s+4)' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  242 |   s->index--;
+      |   ~~~~~~~~^~
+/c/Users/chris/Documents/PKSM/3ds/../common/source/quirc/identify.c:253:20: note: '*((void *)&s+4)' was declared here
+  253 |  struct fill_stack s;
+      |                    ^
+/c/Users/chris/Documents/PKSM/3ds/../common/source/quirc/identify.c:242:11: warning: '*((void *)&s+4)' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  242 |   s->index--;
+      |   ~~~~~~~~^~
+/c/Users/chris/Documents/PKSM/3ds/../common/source/quirc/identify.c:253:20: note: '*((void *)&s+4)' was declared here
+  253 |  struct fill_stack s;
+      |                    ^

@@ -38,8 +38,8 @@ public:
     T getFinalValue() { return finalValue; }
 
 protected:
-    bool done = false;
     T finalValue;
+    bool done = false;
 };
 
 #endif

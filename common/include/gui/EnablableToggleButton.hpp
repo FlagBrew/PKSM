@@ -44,10 +44,10 @@ public:
 
 protected:
     std::function<bool()> disabled;
-    int disabledImage;
     std::string disabledText;
-    FontSize disabledFontSize;
     PKSM_Color disabledTextColor;
+    FontSize disabledFontSize;
+    int disabledImage;
 };
 
 #endif

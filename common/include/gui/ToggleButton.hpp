@@ -44,15 +44,15 @@ public:
     virtual void setState(bool newState);
 
 protected:
-    int onImage;
-    std::string onText;
-    FontSize onFontSize;
-    PKSM_Color onColor;
-    int offImage;
-    std::string offText;
-    FontSize offFontSize;
-    PKSM_Color offColor;
     std::vector<std::unique_ptr<ToggleButton>>* radioCategory;
+    std::string onText;
+    std::string offText;
+    PKSM_Color onColor;
+    PKSM_Color offColor;
+    FontSize onFontSize;
+    FontSize offFontSize;
+    int onImage;
+    int offImage;
     bool currentState = true, disablable;
 };
 

@@ -28,7 +28,7 @@
 #include "gui.hpp"
 
 Button::Button(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, std::string text, FontSize size, PKSM_Color textColor)
-    : Clickable(x, y, w, h, callback), key(image), text(text), size(size), textColor(textColor)
+    : Clickable(x, y, w, h, callback), text(text), textColor(textColor), size(size), key(image)
 {
 }
 

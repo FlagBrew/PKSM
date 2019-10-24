@@ -38,7 +38,7 @@ protected:
     PK4* pokemonData;
 
 public:
-    static const u16 length = 260;
+    static constexpr u16 length = 260;
 
     PGT(u8* pgt, bool fromWC4 = false);
     ~PGT();
