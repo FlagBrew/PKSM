@@ -49,24 +49,24 @@ public:
     void drawBottom(void) const override;
 
 private:
-    std::vector<std::unique_ptr<Button>> buttons;
-    std::unique_ptr<WCX> wondercard;
-    std::string game;
-    bool overwriteCard = false;
-    bool adaptLanguage = false;
-    bool choosingSlot  = false;
-    int slot;
-    // For multi-item injects
-    int item = 0;
-    HidHorizontal hid;
-    Language lang = Language::JP;
-    nlohmann::json ids;
-    const int emptySlot;
-    const std::vector<Sav::giftData> gifts;
-
     bool setLanguage(Language lang);
     bool isLangAvailable(Language lang) const;
     void changeDate();
+
+    std::vector<std::unique_ptr<Button>> buttons;
+    std::unique_ptr<WCX> wondercard;
+    std::string game;
+    HidHorizontal hid;
+    nlohmann::json ids;
+    const std::vector<Sav::giftData> gifts;
+    const int emptySlot;
+    int slot;
+    // For multi-item injects
+    int item = 0;
+    Language lang = Language::JP;
+    bool overwriteCard = false;
+    bool adaptLanguage = false;
+    bool choosingSlot  = false;
 };
 
 #endif

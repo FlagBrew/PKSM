@@ -45,14 +45,6 @@ public:
     void makeInstructions();
 
 private:
-    Language oldLang;
-    int selectedTitle = -2;
-    std::vector<std::string> availableCheckpointSaves;
-    int firstSave = -1;
-    std::vector<std::unique_ptr<Button>> buttons;
-    int selectedSave    = -1;
-    bool selectedGame   = false;
-    bool uninstGameView = false;
     bool setSelectedSave(int i);
     bool increaseFirstSave()
     {
@@ -70,10 +62,17 @@ private:
         }
         return false;
     }
-
     std::shared_ptr<Title> titleFromIndex(int i) const;
-
     bool loadSave(void) const;
+
+    std::vector<std::string> availableCheckpointSaves;
+    std::vector<std::unique_ptr<Button>> buttons;
+    int selectedTitle = -2;
+    int firstSave = -1;
+    int selectedSave    = -1;
+    Language oldLang;
+    bool selectedGame   = false;
+    bool uninstGameView = false;
 };
 
 #endif

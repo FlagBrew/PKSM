@@ -46,8 +46,8 @@ public:
 private:
     void changeMove();
     std::shared_ptr<PKX> pkm;
-    int moveSelected = 0;
     std::vector<std::unique_ptr<Button>> buttons;
+    int moveSelected = 0;
 };
 
 #endif

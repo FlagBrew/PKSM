@@ -50,17 +50,7 @@ private:
         OPEN,
         UNRESTRICTED
     };
-    std::pair<const std::string*, SecurityLevel> describe(int i) const;
-    bool toggleBit(int selected, int offset);
-    bool editNumber(bool high, bool up);
-    bool checkValue(void);
-    void drawMeaning(void) const;
-    bool rotateMark(u8 mark);
-    std::pair<const std::string*, SecurityLevel> selectedDescription;
-    std::vector<int> selectBytes;
-    std::shared_ptr<PKX> pkm;
-    HidHorizontal hid;
-    SecurityLevel level = SecurityLevel::NORMAL;
+
     class HexEditButton : public Button
     {
     public:
@@ -164,20 +154,31 @@ private:
         u8 bit() { return bitVal; }
 
     private:
+        int clickedTime;
+        int timer      = 0;
         bool toggle;
         bool mark;
         u8 bitVal;
-        int clickedTime;
         bool isClicked = false;
-        int timer      = 0;
         bool doTime    = false;
     };
+    std::pair<const std::string*, SecurityLevel> describe(int i) const;
+    bool toggleBit(int selected, int offset);
+    bool editNumber(bool high, bool up);
+    bool checkValue(void);
+    void drawMeaning(void) const;
+    bool rotateMark(u8 mark);
+    std::pair<const std::string*, SecurityLevel> selectedDescription;
+    std::vector<int> selectBytes;
+    std::shared_ptr<PKX> pkm;
+    HidHorizontal hid;
     // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes
     // to have toggles, bitsetters, and just plain hexediting
     std::vector<std::vector<std::unique_ptr<HexEditButton>>> buttons;
     // For Super Secret Mode
     std::vector<std::unique_ptr<Button>> secretButtons;
+    SecurityLevel level = SecurityLevel::NORMAL;
 };
 
 #endif

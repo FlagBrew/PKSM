@@ -43,11 +43,11 @@ public:
         std::pair<Sav::Pouch, int> pouch, int slot, int& firstEmpty)
         : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
                                          i18n::localize("B_BACK")),
-          hid(40, 2),
           validItems(items),
           items(items),
-          origItem(selected),
           pouch(pouch),
+          hid(40, 2),
+          origItem(selected),
           slot(slot),
           firstEmpty(firstEmpty)
     {
@@ -69,17 +69,17 @@ public:
 
 private:
     void searchBar();
-    HidVertical hid;
     const std::vector<std::pair<const std::string*, int>> validItems;
     std::vector<std::pair<const std::string*, int>> items;
-    int origItem;
     std::pair<Sav::Pouch, int> pouch;
-    int slot;
-    int& firstEmpty;
-    bool justSwitched           = true;
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::unique_ptr<Button> searchButton;
+    HidVertical hid;
+    int origItem;
+    int slot;
+    int& firstEmpty;
+    bool justSwitched           = true;
 };
 
 #endif

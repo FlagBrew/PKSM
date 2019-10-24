@@ -46,9 +46,9 @@ public:
 
 private:
     std::array<std::unique_ptr<Button>, 6> buttons;
+    Language oldLang;
     bool justSwitched = true;
     bool doTimer      = false;
-    Language oldLang;
 };
 
 #endif

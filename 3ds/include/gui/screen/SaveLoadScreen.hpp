@@ -57,14 +57,6 @@ public:
     void makeInstructions();
 
 private:
-    Language oldLang;
-    int saveGroup = 0;
-    // Has to be mutable because no const operator[]
-    mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
-    int firstSave = 0;
-    std::vector<std::unique_ptr<Button>> buttons;
-    int selectedSave   = -1;
-    bool selectedGroup = false;
     bool setSelectedSave(int i);
     bool increaseFirstSave()
     {
@@ -83,8 +75,16 @@ private:
         return false;
     }
     static constexpr std::string_view titleName(int index);
-
     bool loadSave(void);
+
+    // Has to be mutable because no const operator[]
+    mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
+    std::vector<std::unique_ptr<Button>> buttons;
+    int firstSave = 0;
+    int selectedSave   = -1;
+    int saveGroup = 0;
+    Language oldLang;
+    bool selectedGroup = false;
 };
 
 #endif

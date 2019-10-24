@@ -51,8 +51,6 @@ public:
 
 private:
     HidVertical hid;
-    bool finished = false;
-    SortScreen::SortType& out;
     static constexpr std::array<SortScreen::SortType, 26> vals = {SortScreen::SortType::NONE, SortScreen::SortType::DEX,
         SortScreen::SortType::SPECIESNAME, SortScreen::SortType::FORM, SortScreen::SortType::TYPE1, SortScreen::SortType::TYPE2,
         SortScreen::SortType::HP, SortScreen::SortType::ATK, SortScreen::SortType::DEF, SortScreen::SortType::SATK, SortScreen::SortType::SDEF,
@@ -60,6 +58,8 @@ private:
         SortScreen::SortType::SDEFIV, SortScreen::SortType::SPEIV, SortScreen::SortType::NATURE, SortScreen::SortType::LEVEL,
         SortScreen::SortType::TID, SortScreen::SortType::HIDDENPOWER, SortScreen::SortType::FRIENDSHIP, SortScreen::SortType::NICKNAME,
         SortScreen::SortType::OTNAME, SortScreen::SortType::SHINY};
+    SortScreen::SortType& out;
+    bool finished = false;
 };
 
 #endif

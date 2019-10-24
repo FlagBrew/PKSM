@@ -50,7 +50,7 @@ bool InjectorScreen::setLanguage(Language language)
 }
 
 InjectorScreen::InjectorScreen(nlohmann::json ids)
-    : hid(40, 8), ids(ids), emptySlot(TitleLoader::save->emptyGiftLocation()), gifts(TitleLoader::save->currentGifts())
+    : hid(40, 8), ids(ids), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
 {
     const std::string& langString = i18n::langString(Configuration::getInstance().language());
     if (ids.find(langString) != ids.end())
@@ -122,7 +122,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
 }
 
 InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
-    : wondercard(std::move(wcx)), hid(40, 8), ids({}), emptySlot(TitleLoader::save->emptyGiftLocation()), gifts(TitleLoader::save->currentGifts())
+    : wondercard(std::move(wcx)), hid(40, 8), ids({}), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
 {
     lang = Language::UNUSED;
 

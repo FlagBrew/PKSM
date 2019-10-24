@@ -58,10 +58,10 @@ public:
 private:
     std::string question;
     HidHorizontal hid;
-    const int items;
-    const Generation gen;
     std::vector<std::string> labels;
     std::vector<pkm> pkms;
+    const int items;
+    const Generation gen;
 };
 
 #endif

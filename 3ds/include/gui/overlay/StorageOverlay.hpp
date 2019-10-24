@@ -45,10 +45,10 @@ public:
 private:
     bool selectBox();
     std::vector<std::unique_ptr<Button>> buttons;
-    bool storage;
+    std::shared_ptr<PKFilter> filter;
     int& boxBox;
     int& storageBox;
-    std::shared_ptr<PKFilter> filter;
+    bool storage;
 };
 
 #endif

@@ -55,8 +55,6 @@
 
 extern std::stack<std::unique_ptr<Screen>> screens;
 
-static bool backHeld = false;
-
 void StorageScreen::setBoxName(bool storage)
 {
     if (storage)

@@ -34,7 +34,7 @@
 class ExtraSavesSubScreen : public Screen
 {
 public:
-    enum Group
+    enum Group : s8
     {
         Pt = -1,
         DP,
@@ -55,12 +55,14 @@ public:
 
 private:
     void updateSaves();
-    Group group;
-    bool secondSelected = false;
-    int selectedSave = -1, firstSave = 0, numSaves = 0;
     std::vector<std::string> currentSaves;
     std::unordered_map<std::string, std::vector<std::string>> dsCurrentSaves;
     std::string addString = "";
+    int selectedSave = -1;
+    int firstSave = 0;
+    int numSaves = 0;
+    Group group;
+    bool secondSelected = false;
     bool updateConfig     = false;
     // std::vector<std::shared_ptr<Button>> deleteButtons;
 };

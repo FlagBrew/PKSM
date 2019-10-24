@@ -45,8 +45,8 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
     void searchBar();
+    std::shared_ptr<PKX> pkm;
     HidVertical hid;
     const std::map<u16, std::string>& validLocations;
     std::map<u16, std::string> locations;

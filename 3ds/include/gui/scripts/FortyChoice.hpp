@@ -49,8 +49,8 @@ public:
 private:
     std::string question;
     HidVertical hid;
-    const int items;
     std::vector<std::string> labels;
+    const int items;
 };
 
 #endif

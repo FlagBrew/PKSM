@@ -52,13 +52,15 @@ private:
     bool nextBox(bool forceBottom = false);
     bool clickBottomIndex(int index);
 
-    bool storageChosen = false;
-    bool backHeld      = false;
     std::array<std::unique_ptr<Button>, 5> mainButtons;
     std::array<std::unique_ptr<Button>, 30> clickButtons;
-    int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
+    int cursorIndex = 0;
+    int storageBox = 0;
+    int boxBox = 0;
     bool justSwitched            = true;
+    bool storageChosen = false;
+    bool backHeld      = false;
     bool doCrypt;
 };
 

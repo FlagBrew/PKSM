@@ -65,16 +65,17 @@ private:
     void shareSend();
     void shareReceive();
 
-    bool cloudChosen = false;
-    bool saveChosen  = false;
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    int cursorIndex = 0, storageBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     std::shared_ptr<PKX> moveMon;
-    bool justSwitched = true;
     CloudAccess access;
     std::shared_ptr<PKFilter> filter;
+    int cursorIndex = 0;
+    int storageBox = 0;
+    bool justSwitched = true;
+    bool cloudChosen = false;
+    bool saveChosen  = false;
 };
 
 #endif

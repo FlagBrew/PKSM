@@ -44,9 +44,9 @@ public:
     void drawBottom(void) const override;
 
 private:
-    int saveGroup = -1;
     std::vector<std::string> currentSaves;
     std::vector<std::shared_ptr<Button>> deleteButtons;
+    int saveGroup = -1;
 };
 
 #endif

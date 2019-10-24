@@ -46,15 +46,15 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
-    int moveIndex;
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     HidVertical hid;
     std::vector<std::pair<int, std::string>> moves;
     std::vector<std::pair<int, std::string>> validMoves;
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::unique_ptr<Button> searchButton;
+    int moveIndex;
     bool justSwitched = true;
 };
 

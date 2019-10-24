@@ -68,27 +68,30 @@ private:
     void scrunchSelection();
     void grabSelection(bool remove);
 
-    bool storageChosen = false;
-    bool fromStorage   = false;
     std::array<std::unique_ptr<Button>, 10> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    int cursorIndex = 0, storageBox = 0, boxBox = 0;
     std::shared_ptr<PKX> infoMon = nullptr;
     std::vector<std::shared_ptr<PKX>> moveMon;
     std::vector<int> partyNum;
-    bool justSwitched = true;
-    enum PickupMode
+    // While selecting, XY coords of original selection.
+    // When selected, dimensions of moveMon
+    // If pickupMode == SWAP, box number & slot pair
+    std::pair<int, int> selectDimensions = {0, 0};
+    std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
+    int cursorIndex = 0;
+    int storageBox = 0;
+    int boxBox = 0;
+    enum PickupMode : u8
     {
         SINGLE,
         SWAP,
         MULTI
     } pickupMode = SINGLE;
-    // While selecting, XY coords of original selection.
-    // When selected, dimensions of moveMon
-    // If pickupMode == SWAP, box number & slot pair
-    std::pair<int, int> selectDimensions = {0, 0};
     bool currentlySelecting              = false;
-    std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
+    bool justSwitched = true;
+    bool storageChosen = false;
+    bool fromStorage   = false;
+    bool backHeld = false;
 };
 
 #endif

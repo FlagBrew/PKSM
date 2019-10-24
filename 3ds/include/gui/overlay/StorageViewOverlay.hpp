@@ -42,8 +42,8 @@ public:
           clone(clone),
           partyNum(partyNum),
           cloneDims(cloneDims),
-          currentlySelecting(currentlySelecting),
-          emergencyInfo(emergencyInfo)
+          emergencyInfo(emergencyInfo),
+          currentlySelecting(currentlySelecting)
     {
     }
     virtual ~StorageViewOverlay() {}
@@ -55,9 +55,9 @@ private:
     std::vector<std::shared_ptr<PKX>>& clone;
     std::vector<int>& partyNum;
     std::pair<int, int>& cloneDims;
-    bool& currentlySelecting;
     std::pair<int, int> emergencyInfo;
     std::bitset<9> emergencyMode;
+    bool& currentlySelecting;
 };
 
 #endif

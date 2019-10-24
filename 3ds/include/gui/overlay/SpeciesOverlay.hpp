@@ -47,8 +47,8 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     void searchBar();
+    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     HidHorizontal hid;
     std::unique_ptr<Button> searchButton;
     std::string searchString    = "";

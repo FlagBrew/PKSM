@@ -45,8 +45,8 @@ private:
     void resizeBank();
     HidVertical hid;
     std::vector<std::pair<std::string, int>> strings;
-    bool finished = false;
     int& storageBox;
+    bool finished = false;
 };
 
 #endif
