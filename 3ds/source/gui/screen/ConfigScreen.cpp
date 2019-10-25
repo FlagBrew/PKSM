@@ -38,7 +38,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 
-static constexpr std::array<std::string_view, 12> credits = {"piepie62 and Admiral-Fish for their dedication",
+static constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM", "Credits:", "piepie62 and Admiral-Fish for their dedication",
     "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
     "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
     "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
@@ -680,9 +680,9 @@ void ConfigScreen::back()
 
 static u8 getNextAlpha(int off)
 {
-    static u8 retVals[12] = {200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
-    static bool up[12]    = {false, false, false, false, false, false, false, false, false, false, false};
-    static u8 timers[12]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+    static u8 retVals[14] = {190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
+    static bool up[14]    = {false, false, false, false, false, false, false, false, false, false, false, false, false};
+    static u8 timers[14]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
     if (timers[off] == 0)
     {
         if (retVals[off] < 105 && !up[off])
@@ -711,8 +711,9 @@ void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
     Gui::text("PKSM", 200, 12.5f, FONT_SIZE_12, COLOR_BLUE, TextPosX::CENTER, TextPosY::CENTER);
-    int y = 20;
-    for (size_t i = 0; i < credits.size(); i++)
+    Gui::text(std::string(credits[0]), 200, 30, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(0)), TextPosX::CENTER, TextPosY::TOP);
+    int y = 35;
+    for (size_t i = 1; i < credits.size(); i++)
     {
         Gui::text(
             std::string(credits[i]), 200, y += 15, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER, TextPosY::TOP);
