@@ -128,17 +128,17 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
+CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lcitro2d -lcitro3d -lbz2 \
-		   `arm-none-eabi-pkg-config libmpg123 --libs` \
-		   `curl-config --libs`
+LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
+			`arm-none-eabi-pkg-config libmpg123 --libs` \
+			`curl-config --libs`
 
-CXX		:= `which ccache` $(CXX)
-CC		:= `which ccache` $(CC)
+CXX		:=	`which ccache` $(CXX)
+CC		:=	`which ccache` $(CC)
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -231,6 +231,13 @@ endif
 
 .PHONY: all clean deps no-deps format
 
+check_defined = \
+    $(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $2, ($2))))
+
 #---------------------------------------------------------------------------------
 all: deps no-deps
 #---------------------------------------------------------------------------------
@@ -259,6 +266,9 @@ clean:
 #---------------------------------------------------------------------------------
 no-deps: $(ROMFS_FONTFILES)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+	@$(call check_defined, VERSION_MAJOR, Run make from the project directory)
+	@$(call check_defined, VERSION_MINOR, Run make from the project directory)
+	@$(call check_defined, VERSION_MICRO, Run make from the project directory)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
