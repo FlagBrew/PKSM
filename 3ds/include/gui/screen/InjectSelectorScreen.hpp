@@ -62,8 +62,8 @@ private:
     std::vector<Sav::giftData> gifts;
     std::string langFilter = "";
     int typeFilter         = -1;
-    bool dump        = false;
-    bool updateGifts = false;
+    bool dump              = false;
+    bool updateGifts       = false;
 };
 
 #endif

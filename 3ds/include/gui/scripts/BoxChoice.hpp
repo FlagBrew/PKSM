@@ -55,12 +55,12 @@ private:
     std::array<std::unique_ptr<Button>, 5> mainButtons;
     std::array<std::unique_ptr<Button>, 30> clickButtons;
     std::shared_ptr<PKX> infoMon = nullptr;
-    int cursorIndex = 0;
-    int storageBox = 0;
-    int boxBox = 0;
+    int cursorIndex              = 0;
+    int storageBox               = 0;
+    int boxBox                   = 0;
     bool justSwitched            = true;
-    bool storageChosen = false;
-    bool backHeld      = false;
+    bool storageChosen           = false;
+    bool backHeld                = false;
     bool doCrypt;
 };
 

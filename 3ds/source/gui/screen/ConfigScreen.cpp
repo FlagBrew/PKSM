@@ -38,8 +38,9 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 
-static constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM", "Credits:", "piepie62 and Admiral-Fish for their dedication",
-    "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
+static constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
+    "Credits:", "piepie62 and Admiral-Fish for their dedication", "dsoldier for the gorgeous graphic work",
+    "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
     "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
     "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
     "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};

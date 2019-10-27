@@ -68,8 +68,8 @@ private:
     std::vector<std::string> availableCheckpointSaves;
     std::vector<std::unique_ptr<Button>> buttons;
     int selectedTitle = -2;
-    int firstSave = -1;
-    int selectedSave    = -1;
+    int firstSave     = -1;
+    int selectedSave  = -1;
     Language oldLang;
     bool selectedGame   = false;
     bool uninstGameView = false;

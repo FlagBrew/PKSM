@@ -50,11 +50,11 @@ private:
     void back(void);
     void initButtons(void);
     int patronMenuTimer;
-    int currentTab = 0;
+    int currentTab            = 0;
     bool countPatronMenuTimer = false;
-    bool justSwitched       = true;
-    bool showBackupsChanged = false;
-    bool useExtDataChanged  = false;
+    bool justSwitched         = true;
+    bool showBackupsChanged   = false;
+    bool useExtDataChanged    = false;
 };
 
 #endif

@@ -71,11 +71,11 @@ private:
     std::shared_ptr<PKX> moveMon;
     CloudAccess access;
     std::shared_ptr<PKFilter> filter;
-    int cursorIndex = 0;
-    int storageBox = 0;
+    int cursorIndex   = 0;
+    int storageBox    = 0;
     bool justSwitched = true;
-    bool cloudChosen = false;
-    bool saveChosen  = false;
+    bool cloudChosen  = false;
+    bool saveChosen   = false;
 };
 
 #endif

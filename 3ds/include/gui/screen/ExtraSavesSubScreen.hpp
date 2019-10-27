@@ -58,12 +58,12 @@ private:
     std::vector<std::string> currentSaves;
     std::unordered_map<std::string, std::vector<std::string>> dsCurrentSaves;
     std::string addString = "";
-    int selectedSave = -1;
-    int firstSave = 0;
-    int numSaves = 0;
+    int selectedSave      = -1;
+    int firstSave         = 0;
+    int numSaves          = 0;
     Group group;
     bool secondSelected = false;
-    bool updateConfig     = false;
+    bool updateConfig   = false;
     // std::vector<std::shared_ptr<Button>> deleteButtons;
 };
 

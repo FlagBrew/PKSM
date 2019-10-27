@@ -80,9 +80,9 @@ private:
     // Has to be mutable because no const operator[]
     mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
     std::vector<std::unique_ptr<Button>> buttons;
-    int firstSave = 0;
-    int selectedSave   = -1;
-    int saveGroup = 0;
+    int firstSave    = 0;
+    int selectedSave = -1;
+    int saveGroup    = 0;
     Language oldLang;
     bool selectedGroup = false;
 };

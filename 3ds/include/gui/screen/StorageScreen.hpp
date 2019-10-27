@@ -78,20 +78,20 @@ private:
     // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions = {0, 0};
     std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
-    int cursorIndex = 0;
-    int storageBox = 0;
-    int boxBox = 0;
+    int cursorIndex                      = 0;
+    int storageBox                       = 0;
+    int boxBox                           = 0;
     enum PickupMode : u8
     {
         SINGLE,
         SWAP,
         MULTI
-    } pickupMode = SINGLE;
-    bool currentlySelecting              = false;
-    bool justSwitched = true;
-    bool storageChosen = false;
-    bool fromStorage   = false;
-    bool backHeld = false;
+    } pickupMode            = SINGLE;
+    bool currentlySelecting = false;
+    bool justSwitched       = true;
+    bool storageChosen      = false;
+    bool fromStorage        = false;
+    bool backHeld           = false;
 };
 
 #endif

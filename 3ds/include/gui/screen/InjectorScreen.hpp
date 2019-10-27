@@ -62,8 +62,8 @@ private:
     const int emptySlot;
     int slot;
     // For multi-item injects
-    int item = 0;
-    Language lang = Language::JP;
+    int item           = 0;
+    Language lang      = Language::JP;
     bool overwriteCard = false;
     bool adaptLanguage = false;
     bool choosingSlot  = false;

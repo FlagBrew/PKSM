@@ -155,7 +155,7 @@ private:
 
     private:
         int clickedTime;
-        int timer      = 0;
+        int timer = 0;
         bool toggle;
         bool mark;
         u8 bitVal;

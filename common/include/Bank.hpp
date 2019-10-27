@@ -75,7 +75,7 @@ private:
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     std::string bankName;
     size_t size;
-    u8* data = nullptr;
+    u8* data                = nullptr;
     mutable bool needsCheck = false;
 };
 

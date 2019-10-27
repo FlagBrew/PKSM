@@ -102,7 +102,7 @@ private:
     std::shared_ptr<Page> current;
     int pageNumber;
     SortType sort = LATEST;
-    bool isGood = false;
+    bool isGood   = false;
     bool ascend   = true;
     bool legal    = false;
 

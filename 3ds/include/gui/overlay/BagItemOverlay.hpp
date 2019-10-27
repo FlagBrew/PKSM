@@ -79,7 +79,7 @@ private:
     int origItem;
     int slot;
     int& firstEmpty;
-    bool justSwitched           = true;
+    bool justSwitched = true;
 };
 
 #endif

@@ -43,7 +43,7 @@ protected:
     int timer       = 0;
     const int slowTime;
     const int fastTime;
-    bool doTime     = false;
+    bool doTime = false;
 };
 
 #endif
