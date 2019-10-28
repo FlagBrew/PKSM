@@ -92,14 +92,14 @@ public:
     void gender(u8 g) override;
     u8 alternativeForm(void) const override;
     void alternativeForm(u8 v) override;
-    u8 ev(u8 ev) const override;
-    void ev(u8 ev, u8 v) override;
+    u8 ev(Stat ev) const override;
+    void ev(Stat ev, u8 v) override;
     // Stubbed; data no longer exists
     u8 contest(u8 contest) const { return 0; };
     void contest(u8 contest, u8 v) { (void)contest, (void)v; };
     // Replaced by
-    u8 awakened(u8 stat) const;
-    void awakened(u8 stat, u8 v);
+    u8 awakened(Stat stat) const;
+    void awakened(Stat stat, u8 v);
 
     u8 pelagoEventStatus(void) const;
     void pelagoEventStatus(u8 v);
@@ -123,8 +123,8 @@ public:
     void PPUp(u8 move, u8 v) override;
     u16 relearnMove(u8 move) const override;
     void relearnMove(u8 move, u16 v) override;
-    u8 iv(u8 iv) const override;
-    void iv(u8 iv, u8 v) override;
+    u8 iv(Stat iv) const override;
+    void iv(Stat iv, u8 v) override;
 
     bool egg(void) const override;
     void egg(bool v) override;
@@ -223,13 +223,13 @@ public:
     bool shiny(void) const override;
     void shiny(bool v) override;
     u16 formSpecies(void) const override;
-    u16 stat(const u8 stat) const override;
+    u16 stat(Stat stat) const override;
     u16 CP(void) const;
 
     int partyCurrHP(void) const override;
     void partyCurrHP(u16 v) override;
-    int partyStat(const u8 stat) const override;
-    void partyStat(const u8 stat, u16 v) override;
+    int partyStat(Stat stat) const override;
+    void partyStat(Stat stat, u16 v) override;
     int partyLevel(void) const override;
     void partyLevel(u8 v) override;
     u16 partyCP(void) const;

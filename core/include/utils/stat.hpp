@@ -24,35 +24,19 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef STATSEDITSCREEN_HPP
-#define STATSEDITSCREEN_HPP
+#ifndef STAT_HPP
+#define STAT_HPP
 
-#include "Screen.hpp"
-#include "stat.hpp"
-#include <memory>
-#include <vector>
+#include "coretypes.h"
 
-class Button;
-class PKX;
-
-class StatsEditScreen : public Screen
+enum class Stat : u8
 {
-public:
-    StatsEditScreen(std::shared_ptr<PKX> pkm);
-    // Done in Overlay
-    void drawTop() const override {}
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
-
-private:
-    bool changeIV(Stat which, bool up);
-    void setIV(Stat which);
-    // Either EV or Awakened value
-    bool changeSecondaryStat(Stat which, bool up);
-    void setSecondaryStat(Stat which);
-    bool setHP();
-    std::shared_ptr<PKX> pkm;
-    std::vector<std::unique_ptr<Button>> buttons;
+    HP,
+    ATK,
+    DEF,
+    SPD,
+    SPATK,
+    SPDEF
 };
 
 #endif

@@ -29,6 +29,7 @@
 
 #include "Language.hpp"
 #include "generation.hpp"
+#include "stat.hpp"
 #include <bitset>
 #include <string>
 #include <vector>
@@ -60,6 +61,20 @@ private:                                                                        
     std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                                                                      \
     std::bitset<amount> name##Inverse = std::bitset<amount>(0)
 
+#define MAKE_NUM_DEFN_INDEXTYPE(name, type, amount, indextype)                                                                                       \
+public:                                                                                                                                              \
+    type name(indextype which) const { return type##name[size_t(which)]; }                                                                           \
+    void name(indextype which, type v) { type##name[size_t(which)] = v; }                                                                            \
+    bool name##Enabled(indextype which) const { return name##Bool[size_t(which)]; }                                                                  \
+    void name##Enabled(indextype which, bool v) { name##Bool[size_t(which)] = v; }                                                                   \
+    bool name##Inversed(indextype which) const { return name##Inverse[size_t(which)]; }                                                              \
+    void name##Inversed(indextype which, bool v) { name##Inverse[size_t(which)] = v; }                                                               \
+                                                                                                                                                     \
+private:                                                                                                                                             \
+    std::vector<type> type##name      = std::vector<type>(amount, type());                                                                           \
+    std::bitset<amount> name##Bool    = std::bitset<amount>(0);                                                                                      \
+    std::bitset<amount> name##Inverse = std::bitset<amount>(0)
+
 class PKFilter
 {
     MAKE_DEFN(generation, Generation);
@@ -77,7 +92,8 @@ class PKFilter
     MAKE_DEFN(ball, u8);
     MAKE_DEFN(language, Language);
     MAKE_DEFN(egg, bool);
-    MAKE_NUM_DEFN(iv, u8, 6);
+    // In the same order as Stat
+    MAKE_NUM_DEFN_INDEXTYPE(iv, u8, 6, Stat);
 };
 
 #endif

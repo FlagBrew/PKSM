@@ -302,9 +302,9 @@ u8 WC7::contest(u8 index) const
     return *(u8*)(data + 0xA9 + index);
 }
 
-u8 WC7::iv(u8 index) const
+u8 WC7::iv(Stat index) const
 {
-    return *(u8*)(data + 0xAF + index);
+    return *(u8*)(data + 0xAF + u8(index));
 }
 
 u8 WC7::otGender(void) const
@@ -347,9 +347,9 @@ u8 WC7::otFeeling(void) const
     return *(u8*)(data + 0xE4);
 }
 
-u8 WC7::ev(u8 index) const
+u8 WC7::ev(Stat index) const
 {
-    return *(u8*)(data + 0xE5 + index);
+    return *(u8*)(data + 0xE5 + u8(index));
 }
 
 bool WC7::ribbon(u8 category, u8 index) const

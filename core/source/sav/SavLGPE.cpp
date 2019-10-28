@@ -698,8 +698,8 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         pkm->eggLocation(wb7->eggLocation());
         for (int i = 0; i < 6; i++)
         {
-            pkm->awakened(i, wb7->awakened(i));
-            pkm->ev(i, wb7->ev(i));
+            pkm->awakened(Stat(i), wb7->awakened(Stat(i)));
+            pkm->ev(Stat(i), wb7->ev(Stat(i)));
         }
         if (wb7->nickname((Language)language()).length() == 0)
         {
@@ -729,10 +729,10 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         int perfectIVs = 0;
         for (int i = 0; i < 6; i++)
         {
-            pkm->iv(randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
-            if (wb7->iv(i) - 0xFC < 3)
+            pkm->iv(Stat(i), randomNumbers() % 30 + 1); // Initialize IVs so that none are perfect (though they can be close)
+            if (wb7->iv(Stat(i)) - 0xFC < 3)
             {
-                perfectIVs = wb7->iv(i) - 0xFB; // How many perfects should there be?
+                perfectIVs = wb7->iv(Stat(i)) - 0xFB; // How many perfects should there be?
                 break;
             }
         }
@@ -740,18 +740,18 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             for (int i = 0; i < perfectIVs; i++)
             {
-                u8 chosenIV;
+                Stat chosenIV;
                 do
                 {
-                    chosenIV = randomNumbers() % 6;
+                    chosenIV = Stat(randomNumbers() % 6);
                 } while (pkm->iv(chosenIV) == 31);
                 pkm->iv(chosenIV, 31);
             }
             for (int i = 0; i < 6; i++)
             {
-                if (pkm->iv(i) != 31)
+                if (pkm->iv(Stat(i)) != 31)
                 {
-                    pkm->iv(i, randomNumbers() % 32);
+                    pkm->iv(Stat(i), randomNumbers() % 32);
                 }
             }
         }
@@ -759,7 +759,7 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         {
             for (int i = 0; i < 6; i++)
             {
-                pkm->iv(i, randomNumbers() % 32);
+                pkm->iv(Stat(i), randomNumbers() % 32);
             }
         }
 
@@ -817,10 +817,10 @@ void SavLGPE::mysteryGift(WCX& wc, int& pos)
         pkm->currentFriendship(PersonalLGPE::baseFriendship(pkm->formSpecies()));
 
         pkm->partyCP(pkm->CP());
-        pkm->partyCurrHP(pkm->stat(0));
+        pkm->partyCurrHP(pkm->stat(Stat::HP));
         for (int i = 0; i < 6; i++)
         {
-            pkm->partyStat(pkm->stat(i));
+            pkm->partyStat(Stat(i), pkm->stat(Stat(i)));
         }
 
         pkm->height(randomNumbers() % 256);

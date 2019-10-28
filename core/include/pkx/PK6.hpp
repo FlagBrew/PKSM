@@ -95,8 +95,8 @@ public:
     void gender(u8 g) override;
     u8 alternativeForm(void) const override;
     void alternativeForm(u8 v) override;
-    u8 ev(u8 ev) const override;
-    void ev(u8 ev, u8 v) override;
+    u8 ev(Stat ev) const override;
+    void ev(Stat ev, u8 v) override;
     u8 contest(u8 contest) const override;
     void contest(u8 contest, u8 v) override;
 
@@ -129,8 +129,8 @@ public:
     void secretSuperTrainingUnlocked(bool v);
     bool secretSuperTrainingComplete(void) const;
     void secretSuperTrainingComplete(bool v);
-    u8 iv(u8 iv) const override;
-    void iv(u8 iv, u8 v) override;
+    u8 iv(Stat iv) const override;
+    void iv(Stat iv, u8 v) override;
 
     bool egg(void) const override;
     void egg(bool v) override;
@@ -228,12 +228,12 @@ public:
     bool shiny(void) const override;
     void shiny(bool v) override;
     u16 formSpecies(void) const override;
-    u16 stat(const u8 stat) const override;
+    u16 stat(Stat stat) const override;
 
     int partyCurrHP(void) const override;
     void partyCurrHP(u16 v) override;
-    int partyStat(const u8 stat) const override;
-    void partyStat(const u8 stat, u16 v) override;
+    int partyStat(Stat stat) const override;
+    void partyStat(Stat stat, u16 v) override;
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 

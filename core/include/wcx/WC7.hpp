@@ -103,8 +103,8 @@ public:
     u16 eggLocation(void) const override;
     u16 metLocation(void) const override;
     u8 contest(u8 index) const override;
-    u8 iv(u8 index) const override;
-    u8 ev(u8 index) const;
+    u8 iv(Stat index) const override;
+    u8 ev(Stat index) const;
     u16 additionalItem(void) const;
     bool ribbon(u8 category, u8 index) const override;
 

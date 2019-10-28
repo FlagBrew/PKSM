@@ -173,7 +173,7 @@ void ViewOverlay::drawTop() const
         Gui::text(
             i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
+        static constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
         for (int i = 0; i < 6; i++)
         {
             Gui::text(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);

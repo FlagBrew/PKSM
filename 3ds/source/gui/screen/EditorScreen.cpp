@@ -188,9 +188,10 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 Gui::warn(i18n::localize("THE_FUCK"));
         }
 
+        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
         for (int i = 0; i < 6; i++)
         {
-            origPartyStats[i] = pkm->partyStat(i);
+            origPartyStats[i] = pkm->partyStat(stats[i]);
         }
         origPartyLevel  = pkm->partyLevel();
         origPartyCurrHP = pkm->partyCurrHP();
@@ -619,12 +620,13 @@ void EditorScreen::setFriendship()
 void EditorScreen::partyUpdate()
 {
     // Update party values IF the user hasn't edited them themselves
+    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {
-        if (pkm->partyStat(i) == origPartyStats[i])
+        if (pkm->partyStat(stats[i]) == origPartyStats[i])
         {
-            pkm->partyStat(i, pkm->stat(i));
-            origPartyStats[i] = pkm->stat(i);
+            pkm->partyStat(stats[i], pkm->stat(stats[i]));
+            origPartyStats[i] = pkm->stat(stats[i]);
         }
     }
     if (pkm->partyLevel() == origPartyLevel)
@@ -634,8 +636,8 @@ void EditorScreen::partyUpdate()
     }
     if (pkm->partyCurrHP() == origPartyCurrHP)
     {
-        pkm->partyCurrHP(pkm->stat(0));
-        origPartyCurrHP = pkm->stat(0);
+        pkm->partyCurrHP(pkm->stat(Stat::HP));
+        origPartyCurrHP = pkm->stat(Stat::HP);
     }
     if (pkm->generation() == Generation::LGPE)
     {

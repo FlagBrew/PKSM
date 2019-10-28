@@ -30,6 +30,7 @@
 #include "Language.hpp"
 #include "coretypes.h"
 #include "generation.hpp"
+#include "stat.hpp"
 #include <string>
 
 class WCX
@@ -83,7 +84,7 @@ public:
     virtual u16 eggLocation(void) const              = 0;
     virtual u16 metLocation(void) const              = 0;
     virtual u8 contest(u8 index) const               = 0;
-    virtual u8 iv(u8 index) const                    = 0;
+    virtual u8 iv(Stat index) const                  = 0;
     virtual u32 PID(void) const                      = 0;
     virtual bool ribbon(u8 category, u8 index) const = 0;
 

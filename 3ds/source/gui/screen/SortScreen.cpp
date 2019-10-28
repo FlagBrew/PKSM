@@ -195,39 +195,39 @@ void SortScreen::sort()
                             return false;
                         break;
                     case SortType::HP:
-                        if (pkm1->stat(0) < pkm2->stat(0))
+                        if (pkm1->stat(Stat::HP) < pkm2->stat(Stat::HP))
                             return true;
-                        if (pkm2->stat(0) < pkm1->stat(0))
+                        if (pkm2->stat(Stat::HP) < pkm1->stat(Stat::HP))
                             return false;
                         break;
                     case SortType::ATK:
-                        if (pkm1->stat(1) < pkm2->stat(1))
+                        if (pkm1->stat(Stat::ATK) < pkm2->stat(Stat::ATK))
                             return true;
-                        if (pkm2->stat(1) < pkm1->stat(1))
+                        if (pkm2->stat(Stat::ATK) < pkm1->stat(Stat::ATK))
                             return false;
                         break;
                     case SortType::DEF:
-                        if (pkm1->stat(2) < pkm2->stat(2))
+                        if (pkm1->stat(Stat::DEF) < pkm2->stat(Stat::DEF))
                             return true;
-                        if (pkm2->stat(2) < pkm1->stat(2))
+                        if (pkm2->stat(Stat::DEF) < pkm1->stat(Stat::DEF))
                             return false;
                         break;
                     case SortType::SATK:
-                        if (pkm1->stat(4) < pkm2->stat(4))
+                        if (pkm1->stat(Stat::SPATK) < pkm2->stat(Stat::SPATK))
                             return true;
-                        if (pkm2->stat(4) < pkm1->stat(4))
+                        if (pkm2->stat(Stat::SPATK) < pkm1->stat(Stat::SPATK))
                             return false;
                         break;
                     case SortType::SDEF:
-                        if (pkm1->stat(5) < pkm2->stat(5))
+                        if (pkm1->stat(Stat::SPDEF) < pkm2->stat(Stat::SPDEF))
                             return true;
-                        if (pkm2->stat(5) < pkm1->stat(5))
+                        if (pkm2->stat(Stat::SPDEF) < pkm1->stat(Stat::SPDEF))
                             return false;
                         break;
                     case SortType::SPE:
-                        if (pkm1->stat(3) < pkm2->stat(3))
+                        if (pkm1->stat(Stat::SPDEF) < pkm2->stat(Stat::SPD))
                             return true;
-                        if (pkm2->stat(3) < pkm1->stat(3))
+                        if (pkm2->stat(Stat::SPDEF) < pkm1->stat(Stat::SPD))
                             return false;
                         break;
                     case SortType::NATURE:
@@ -249,39 +249,39 @@ void SortScreen::sort()
                             return false;
                         break;
                     case SortType::HPIV:
-                        if (pkm1->iv(0) < pkm2->iv(0))
+                        if (pkm1->iv(Stat::HP) < pkm2->iv(Stat::HP))
                             return true;
-                        if (pkm2->iv(0) < pkm1->iv(0))
+                        if (pkm2->iv(Stat::HP) < pkm1->iv(Stat::HP))
                             return false;
                         break;
                     case SortType::ATKIV:
-                        if (pkm1->iv(1) < pkm2->iv(1))
+                        if (pkm1->iv(Stat::ATK) < pkm2->iv(Stat::ATK))
                             return true;
-                        if (pkm2->iv(1) < pkm1->iv(1))
+                        if (pkm2->iv(Stat::ATK) < pkm1->iv(Stat::ATK))
                             return false;
                         break;
                     case SortType::DEFIV:
-                        if (pkm1->iv(2) < pkm2->iv(2))
+                        if (pkm1->iv(Stat::DEF) < pkm2->iv(Stat::DEF))
                             return true;
-                        if (pkm2->iv(2) < pkm1->iv(2))
+                        if (pkm2->iv(Stat::DEF) < pkm1->iv(Stat::DEF))
                             return false;
                         break;
                     case SortType::SATKIV:
-                        if (pkm1->iv(4) < pkm2->iv(4))
+                        if (pkm1->iv(Stat::SPATK) < pkm2->iv(Stat::SPATK))
                             return true;
-                        if (pkm2->iv(4) < pkm1->iv(4))
+                        if (pkm2->iv(Stat::SPATK) < pkm1->iv(Stat::SPATK))
                             return false;
                         break;
                     case SortType::SDEFIV:
-                        if (pkm1->iv(5) < pkm2->iv(5))
+                        if (pkm1->iv(Stat::SPDEF) < pkm2->iv(Stat::SPDEF))
                             return true;
-                        if (pkm2->iv(5) < pkm1->iv(5))
+                        if (pkm2->iv(Stat::SPDEF) < pkm1->iv(Stat::SPDEF))
                             return false;
                         break;
                     case SortType::SPEIV:
-                        if (pkm1->iv(3) < pkm2->iv(3))
+                        if (pkm1->iv(Stat::SPD) < pkm2->iv(Stat::SPD))
                             return true;
-                        if (pkm2->iv(3) < pkm1->iv(3))
+                        if (pkm2->iv(Stat::SPD) < pkm1->iv(Stat::SPD))
                             return false;
                         break;
                     case SortType::HIDDENPOWER:

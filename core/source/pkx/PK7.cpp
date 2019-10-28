@@ -254,13 +254,13 @@ void PK7::alternativeForm(u8 v)
     data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3));
 }
 
-u8 PK7::ev(u8 ev) const
+u8 PK7::ev(Stat ev) const
 {
-    return data[0x1E + ev];
+    return data[0x1E + u8(ev)];
 }
-void PK7::ev(u8 ev, u8 v)
+void PK7::ev(Stat ev, u8 v)
 {
-    data[0x1E + ev] = v;
+    data[0x1E + u8(ev)] = v;
 }
 
 u8 PK7::contest(u8 contest) const
@@ -362,17 +362,17 @@ void PK7::relearnMove(u8 m, u16 v)
     *(u16*)(data + 0x6A + m * 2) = v;
 }
 
-u8 PK7::iv(u8 stat) const
+u8 PK7::iv(Stat stat) const
 {
     u32 buffer = *(u32*)(data + 0x74);
-    return (u8)((buffer >> 5 * stat) & 0x1F);
+    return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
-void PK7::iv(u8 stat, u8 v)
+void PK7::iv(Stat stat, u8 v)
 {
     u32 buffer = *(u32*)(data + 0x74);
-    buffer &= ~(0x1F << 5 * stat);
-    buffer |= v << (5 * stat);
+    buffer &= ~(0x1F << 5 * u8(stat));
+    buffer |= v << (5 * u8(stat));
     *(u32*)(data + 0x74) = buffer;
 }
 
@@ -763,7 +763,10 @@ void PK7::refreshChecksum(void)
 
 u8 PK7::hpType(void) const
 {
-    return 15 * ((iv(0) & 1) + 2 * (iv(1) & 1) + 4 * (iv(2) & 1) + 8 * (iv(3) & 1) + 16 * (iv(4) & 1) + 32 * (iv(5) & 1)) / 63;
+    return 15 *
+           ((iv(Stat::HP) & 1) + 2 * (iv(Stat::ATK) & 1) + 4 * (iv(Stat::DEF) & 1) + 8 * (iv(Stat::SPD) & 1) + 16 * (iv(Stat::SPATK) & 1) +
+               32 * (iv(Stat::SPDEF) & 1)) /
+           63;
 }
 void PK7::hpType(u8 v)
 {
@@ -788,8 +791,7 @@ void PK7::hpType(u8 v)
 
     for (u8 i = 0; i < 6; i++)
     {
-        iv((iv(i) & 0x1E) + hpivs[v][i], i);
-        iv(i, (iv(i) & 0x1E) + hpivs[v][i]);
+        iv(Stat(i), (iv(Stat(i)) & 0x1E) + hpivs[v][i]);
     }
 }
 
@@ -861,31 +863,40 @@ u16 PK7::formSpecies(void) const
     return tmpSpecies;
 }
 
-u16 PK7::stat(const u8 stat) const
+u16 PK7::stat(Stat stat) const
 {
     u16 calc;
     u8 mult = 10, basestat = 0;
 
-    if (stat == 0)
-        basestat = baseHP();
-    else if (stat == 1)
-        basestat = baseAtk();
-    else if (stat == 2)
-        basestat = baseDef();
-    else if (stat == 3)
-        basestat = baseSpe();
-    else if (stat == 4)
-        basestat = baseSpa();
-    else if (stat == 5)
-        basestat = baseSpd();
+    switch (stat)
+    {
+        case Stat::HP:
+            basestat = baseHP();
+            break;
+        case Stat::ATK:
+            basestat = baseAtk();
+            break;
+        case Stat::DEF:
+            basestat = baseDef();
+            break;
+        case Stat::SPD:
+            basestat = baseSpe();
+            break;
+        case Stat::SPATK:
+            basestat = baseSpa();
+            break;
+        case Stat::SPDEF:
+            basestat = baseSpd();
+            break;
+    }
 
-    if (stat == 0)
-        calc = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
+    if (stat == Stat::HP)
+        calc = 10 + ((2 * basestat) + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4 + 100) * level() / 100;
     else
-        calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[stat]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100;
-    if (nature() / 5 + 1 == stat)
+        calc = 5 + (2 * basestat + ((((data[0xDE] >> hyperTrainLookup[u8(stat)]) & 1) == 1) ? 31 : iv(stat)) + ev(stat) / 4) * level() / 100;
+    if (nature() / 5 + 1 == u8(stat))
         mult++;
-    if (nature() % 5 + 1 == stat)
+    if (nature() % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
 }
@@ -953,20 +964,20 @@ void PK7::partyCurrHP(u16 v)
     }
 }
 
-int PK7::partyStat(const u8 stat) const
+int PK7::partyStat(Stat stat) const
 {
     if (length == 232)
     {
         return -1;
     }
-    return *(u16*)(data + 0xF2 + stat * 2);
+    return *(u16*)(data + 0xF2 + u8(stat) * 2);
 }
 
-void PK7::partyStat(const u8 stat, u16 v)
+void PK7::partyStat(Stat stat, u16 v)
 {
     if (length != 232)
     {
-        *(u16*)(data + 0xF2 + stat * 2) = v;
+        *(u16*)(data + 0xF2 + u8(stat) * 2) = v;
     }
 }
 

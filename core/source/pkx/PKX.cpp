@@ -551,7 +551,7 @@ bool PKX::operator==(const PKFilter& filter) const
     }
     for (int i = 0; i < 6; i++)
     {
-        if (filter.ivEnabled(i) && (filter.ivInversed(i) != (iv(i) < filter.iv(i))))
+        if (filter.ivEnabled(Stat(i)) && (filter.ivInversed(Stat(i)) != (iv(Stat(i)) < filter.iv(Stat(i)))))
         {
             return false;
         }

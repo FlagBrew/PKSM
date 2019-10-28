@@ -266,9 +266,7 @@ clean:
 #---------------------------------------------------------------------------------
 no-deps: $(ROMFS_FONTFILES)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
-	@$(call check_defined, VERSION_MAJOR, Run make from the project directory)
-	@$(call check_defined, VERSION_MINOR, Run make from the project directory)
-	@$(call check_defined, VERSION_MICRO, Run make from the project directory)
+	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn

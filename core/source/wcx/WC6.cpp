@@ -278,9 +278,9 @@ u8 WC6::contest(u8 index) const
     return *(u8*)(data + 0xA9 + index);
 }
 
-u8 WC6::iv(u8 index) const
+u8 WC6::iv(Stat index) const
 {
-    return *(u8*)(data + 0xAF + index);
+    return *(u8*)(data + 0xAF + u8(index));
 }
 
 u8 WC6::otGender(void) const
@@ -323,9 +323,9 @@ u8 WC6::otFeeling(void) const
     return *(u8*)(data + 0xE4);
 }
 
-u8 WC6::ev(u8 index) const
+u8 WC6::ev(Stat index) const
 {
-    return *(u8*)(data + 0xE5 + index);
+    return *(u8*)(data + 0xE5 + u8(index));
 }
 
 bool WC6::ribbon(u8 category, u8 index) const

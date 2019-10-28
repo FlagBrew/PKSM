@@ -267,9 +267,9 @@ u8 PGF::contest(u8 index) const
     return *(u8*)(data + 0x3D + index);
 }
 
-u8 PGF::iv(u8 index) const
+u8 PGF::iv(Stat index) const
 {
-    return *(u8*)(data + 0x43 + index);
+    return *(u8*)(data + 0x43 + u8(index));
 }
 
 bool PGF::egg(void) const

@@ -328,7 +328,7 @@ u8 PGT::contest(u8 index) const
     return pokemonData->contest(index);
 }
 
-u8 PGT::iv(u8 index) const
+u8 PGT::iv(Stat index) const
 {
     return pokemonData->iv(index);
 }

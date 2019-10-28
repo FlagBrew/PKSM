@@ -202,10 +202,10 @@ void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
     {
         for (int i = 0; i < 6; i++)
         {
-            pk6->partyStat(i, pk6->stat(i));
+            pk6->partyStat(Stat(i), pk6->stat(Stat(i)));
         }
         pk6->partyLevel(pk6->level());
-        pk6->partyCurrHP(pk6->stat(0));
+        pk6->partyCurrHP(pk6->stat(Stat::HP));
     }
 
     pk6->encrypt();

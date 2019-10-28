@@ -33,7 +33,7 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-static constexpr int statValues[] = {0, 1, 2, 4, 5, 3};
+static constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
 
 StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {
@@ -82,7 +82,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     addOverlay<ViewOverlay>(this->pkm, false);
 }
 
-void StatsEditScreen::setIV(int which)
+void StatsEditScreen::setIV(Stat which)
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
@@ -98,7 +98,7 @@ void StatsEditScreen::setIV(int which)
     }
 }
 
-bool StatsEditScreen::changeIV(int which, bool up)
+bool StatsEditScreen::changeIV(Stat which, bool up)
 {
     if (up)
     {
@@ -125,7 +125,7 @@ bool StatsEditScreen::changeIV(int which, bool up)
     return false;
 }
 
-void StatsEditScreen::setSecondaryStat(int which)
+void StatsEditScreen::setSecondaryStat(Stat which)
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
@@ -136,14 +136,14 @@ void StatsEditScreen::setSecondaryStat(int which)
     input[3]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 val = (u8)std::min(std::stoi(input), 0xFF);
+        u8 val = (u8)std::min(std::stoi(input), 252);
         if (pkm->generation() != Generation::LGPE)
         {
             pkm->ev(which, val);
             u16 total = 0;
             for (int i = 0; i < 6; i++)
             {
-                total += i != which ? pkm->ev(i) : 0;
+                total += statValues[i] != which ? pkm->ev(statValues[i]) : 0;
             }
             if (total + val > 510)
             {
@@ -157,7 +157,7 @@ void StatsEditScreen::setSecondaryStat(int which)
     }
 }
 
-bool StatsEditScreen::changeSecondaryStat(int which, bool up)
+bool StatsEditScreen::changeSecondaryStat(Stat which, bool up)
 {
     if (up)
     {
@@ -166,7 +166,7 @@ bool StatsEditScreen::changeSecondaryStat(int which, bool up)
             u16 total = 0;
             for (int i = 0; i < 6; i++)
             {
-                total += pkm->ev(i);
+                total += pkm->ev(statValues[i]);
             }
             // TODO: remove hardcoded value and set it in classes
             if (total < 510 || pkm->ev(which) == 0xFC)
@@ -207,7 +207,7 @@ bool StatsEditScreen::changeSecondaryStat(int which, bool up)
                 u16 total = 0xFC;
                 for (int i = 0; i < 6; i++)
                 {
-                    total += pkm->ev(i);
+                    total += pkm->ev(statValues[i]);
                 }
                 // TODO: remove hardcoded value and set it in classes
                 if (total <= 510)

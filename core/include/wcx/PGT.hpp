@@ -91,7 +91,7 @@ public:
     u16 metLocation(void) const override;
     u8 metLevel(void) const override;
     u8 contest(u8 index) const override;
-    u8 iv(u8 index) const override;
+    u8 iv(Stat index) const override;
     bool egg(void) const override;
 
     u16 formSpecies(void) const override;

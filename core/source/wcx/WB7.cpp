@@ -288,14 +288,14 @@ u16 WB7::metLocation(void) const
     return *(u16*)(data + 0xA6);
 }
 
-u8 WB7::awakened(u8 index) const
+u8 WB7::awakened(Stat index) const
 {
-    return *(u8*)(data + 0xA9 + index);
+    return *(u8*)(data + 0xA9 + u8(index));
 }
 
-u8 WB7::iv(u8 index) const
+u8 WB7::iv(Stat index) const
 {
-    return *(u8*)(data + 0xAF + index);
+    return *(u8*)(data + 0xAF + u8(index));
 }
 
 u8 WB7::otGender(void) const
@@ -338,9 +338,9 @@ u8 WB7::otFeeling(void) const
     return *(u8*)(data + 0xE4);
 }
 
-u8 WB7::ev(u8 index) const
+u8 WB7::ev(Stat index) const
 {
-    return *(u8*)(data + 0xE5 + index);
+    return *(u8*)(data + 0xE5 + u8(index));
 }
 
 bool WB7::ribbon(u8 category, u8 index) const

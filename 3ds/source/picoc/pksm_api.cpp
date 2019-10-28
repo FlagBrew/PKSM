@@ -1351,7 +1351,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
-            pkm->iv(0, nextArg->Val->Integer);
+            pkm->iv(Stat::HP, nextArg->Val->Integer);
             break;
         case IV_ATK:
             if (NumArgs != 4)
@@ -1359,7 +1359,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
-            pkm->iv(1, nextArg->Val->Integer);
+            pkm->iv(Stat::ATK, nextArg->Val->Integer);
             break;
         case IV_DEF:
             if (NumArgs != 4)
@@ -1367,7 +1367,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
-            pkm->iv(2, nextArg->Val->Integer);
+            pkm->iv(Stat::DEF, nextArg->Val->Integer);
             break;
         case IV_SPATK:
             if (NumArgs != 4)
@@ -1375,7 +1375,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
-            pkm->iv(4, nextArg->Val->Integer);
+            pkm->iv(Stat::SPATK, nextArg->Val->Integer);
             break;
         case IV_SPDEF:
             if (NumArgs != 4)
@@ -1383,7 +1383,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
-            pkm->iv(5, nextArg->Val->Integer);
+            pkm->iv(Stat::SPDEF, nextArg->Val->Integer);
             break;
         case IV_SPEED:
             if (NumArgs != 4)
@@ -1391,7 +1391,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
-            pkm->iv(3, nextArg->Val->Integer);
+            pkm->iv(Stat::SPD, nextArg->Val->Integer);
             break;
         case NICKNAME:
             if (NumArgs != 4)
@@ -1480,7 +1480,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
-            pkm->ev(0, nextArg->Val->Integer);
+            pkm->ev(Stat::HP, nextArg->Val->Integer);
             break;
         case EV_ATK:
             if (NumArgs != 4)
@@ -1488,7 +1488,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
-            pkm->ev(1, nextArg->Val->Integer);
+            pkm->ev(Stat::ATK, nextArg->Val->Integer);
             break;
         case EV_DEF:
             if (NumArgs != 4)
@@ -1496,7 +1496,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
-            pkm->ev(2, nextArg->Val->Integer);
+            pkm->ev(Stat::DEF, nextArg->Val->Integer);
             break;
         case EV_SPATK:
             if (NumArgs != 4)
@@ -1504,7 +1504,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
-            pkm->ev(4, nextArg->Val->Integer);
+            pkm->ev(Stat::SPATK, nextArg->Val->Integer);
             break;
         case EV_SPDEF:
             if (NumArgs != 4)
@@ -1512,7 +1512,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
-            pkm->ev(5, nextArg->Val->Integer);
+            pkm->ev(Stat::SPDEF, nextArg->Val->Integer);
             break;
         case EV_SPEED:
             if (NumArgs != 4)
@@ -1520,7 +1520,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
-            pkm->ev(3, nextArg->Val->Integer);
+            pkm->ev(Stat::SPD, nextArg->Val->Integer);
             break;
         case SPECIES:
             if (NumArgs != 4)
@@ -1750,7 +1750,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(0);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::HP);
             break;
         case IV_ATK:
             if (NumArgs != 3)
@@ -1758,7 +1758,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(1);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::ATK);
             break;
         case IV_DEF:
             if (NumArgs != 3)
@@ -1766,7 +1766,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(2);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::DEF);
             break;
         case IV_SPATK:
             if (NumArgs != 3)
@@ -1774,7 +1774,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(4);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPATK);
             break;
         case IV_SPDEF:
             if (NumArgs != 3)
@@ -1782,7 +1782,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(5);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPDEF);
             break;
         case IV_SPEED:
             if (NumArgs != 3)
@@ -1790,7 +1790,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(3);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPD);
             break;
         case NICKNAME:
             if (NumArgs != 3)
@@ -1878,7 +1878,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(0);
+            ReturnValue->Val->Integer = pkm->ev(Stat::HP);
             break;
         case EV_ATK:
             if (NumArgs != 3)
@@ -1886,7 +1886,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(1);
+            ReturnValue->Val->Integer = pkm->ev(Stat::ATK);
             break;
         case EV_DEF:
             if (NumArgs != 3)
@@ -1894,7 +1894,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(2);
+            ReturnValue->Val->Integer = pkm->ev(Stat::DEF);
             break;
         case EV_SPATK:
             if (NumArgs != 3)
@@ -1902,7 +1902,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(4);
+            ReturnValue->Val->Integer = pkm->ev(Stat::SPATK);
             break;
         case EV_SPDEF:
             if (NumArgs != 3)
@@ -1910,7 +1910,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(5);
+            ReturnValue->Val->Integer = pkm->ev(Stat::SPDEF);
             break;
         case EV_SPEED:
             if (NumArgs != 3)
@@ -1918,7 +1918,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(3);
+            ReturnValue->Val->Integer = pkm->ev(Stat::SPD);
             break;
         case SPECIES:
             if (NumArgs != 3)
