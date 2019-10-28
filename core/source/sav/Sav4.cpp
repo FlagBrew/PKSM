@@ -345,7 +345,7 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
     if (game == Game::DP)
     {
         static constexpr size_t dpSlotActive = 0xEDB88320;
-        static const int ofs                 = WondercardFlags + 0x100;
+        const int ofs                        = WondercardFlags + 0x100;
         *(u32*)(data + ofs + 4 * pos)        = dpSlotActive;
     }
 }
@@ -376,10 +376,10 @@ void Sav4::dex(std::shared_ptr<PKX> pk)
         return;
     }
 
-    static const int brSize = 0x40;
-    int bit                 = pk->species() - 1;
-    u8 mask                 = (u8)(1 << (bit & 7));
-    int ofs                 = PokeDex + (bit >> 3) + 0x4;
+    static constexpr int brSize = 0x40;
+    int bit                     = pk->species() - 1;
+    u8 mask                     = (u8)(1 << (bit & 7));
+    int ofs                     = PokeDex + (bit >> 3) + 0x4;
 
     /* 4 BitRegions with 0x40*8 bits
      * Region 0: Caught (Captured/Owned) flags
@@ -567,7 +567,7 @@ bool Sav4::checkInsertForm(std::vector<u8>& forms, u8 formNum)
 
 std::vector<u8> Sav4::getForms(u16 species)
 {
-    static const u8 brSize = 0x40;
+    static constexpr u8 brSize = 0x40;
     if (species == 386)
     {
         u32 val = (u32)data[PokeDex + 0x4 + 1 * brSize - 1] | data[PokeDex + 0x4 + 2 * brSize - 1] << 8;
@@ -634,7 +634,7 @@ std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
 
 void Sav4::setForms(std::vector<u8> forms, u16 species)
 {
-    static const u8 brSize = 0x40;
+    static constexpr u8 brSize = 0x40;
     if (species == 386)
     {
         u32 newval                           = setDexFormValues(forms, 4, 4);

@@ -802,9 +802,9 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    static const std::vector<u16> noChange = {
+    static constexpr std::array<u16, 2> noChange = {
         716, 717}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    for (auto bad : noChange)
+    for (auto& bad : noChange)
     {
         if (bad == pkm->species())
             return false;

@@ -30,7 +30,7 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-static const std::string dsIds[] = {
+static constexpr std::string_view dsIds[] = {
     "CPU", // Platinum
     "ADA", // Diamond
     "APA", // Pearl
@@ -44,30 +44,30 @@ static const std::string dsIds[] = {
 
 static constexpr char dsPostfixes[] = {'E', 'S', 'K', 'J', 'I', 'D', 'F', 'O'};
 
-static const std::string ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
+static constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
 static std::string groupToId1(ExtraSavesSubScreen::Group g)
 {
     switch (g)
     {
         case ExtraSavesSubScreen::Group::Pt:
-            return dsIds[0] + dsPostfixes[0];
+            return std::string(dsIds[0]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::DP:
-            return dsIds[1] + dsPostfixes[0];
+            return std::string(dsIds[1]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::HGSS:
-            return dsIds[3] + dsPostfixes[0];
+            return std::string(dsIds[3]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::BW:
-            return dsIds[5] + dsPostfixes[0];
+            return std::string(dsIds[5]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::B2W2:
-            return dsIds[7] + dsPostfixes[0];
+            return std::string(dsIds[7]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::XY:
-            return ctrIds[0];
+            return std::string(ctrIds[0]);
         case ExtraSavesSubScreen::Group::ORAS:
-            return ctrIds[2];
+            return std::string(ctrIds[2]);
         case ExtraSavesSubScreen::Group::SM:
-            return ctrIds[4];
+            return std::string(ctrIds[4]);
         case ExtraSavesSubScreen::Group::USUM:
-            return ctrIds[6];
+            return std::string(ctrIds[6]);
     }
     return "";
 }
@@ -77,23 +77,23 @@ static std::string groupToId2(ExtraSavesSubScreen::Group g)
     switch (g)
     {
         case ExtraSavesSubScreen::Group::Pt:
-            return dsIds[0] + dsPostfixes[0];
+            return std::string(dsIds[0]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::DP:
-            return dsIds[2] + dsPostfixes[0];
+            return std::string(dsIds[2]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::HGSS:
-            return dsIds[4] + dsPostfixes[0];
+            return std::string(dsIds[4]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::BW:
-            return dsIds[6] + dsPostfixes[0];
+            return std::string(dsIds[6]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::B2W2:
-            return dsIds[8] + dsPostfixes[0];
+            return std::string(dsIds[8]) + dsPostfixes[0];
         case ExtraSavesSubScreen::Group::XY:
-            return ctrIds[1];
+            return std::string(ctrIds[1]);
         case ExtraSavesSubScreen::Group::ORAS:
-            return ctrIds[3];
+            return std::string(ctrIds[3]);
         case ExtraSavesSubScreen::Group::SM:
-            return ctrIds[5];
+            return std::string(ctrIds[5]);
         case ExtraSavesSubScreen::Group::USUM:
-            return ctrIds[7];
+            return std::string(ctrIds[7]);
     }
     return "";
 }
@@ -230,72 +230,72 @@ void ExtraSavesSubScreen::updateSaves()
         case ExtraSavesSubScreen::Group::Pt:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves(dsIds[0] + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves(std::string(dsIds[0]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace(dsIds[0] + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace(std::string(dsIds[0]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::DP:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[2] : dsIds[1]) + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? dsIds[2] : dsIds[1]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace((secondSelected ? dsIds[2] : dsIds[1]) + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace(std::string(secondSelected ? dsIds[2] : dsIds[1]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::HGSS:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[4] : dsIds[3]) + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? dsIds[4] : dsIds[3]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace((secondSelected ? dsIds[4] : dsIds[3]) + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace(std::string(secondSelected ? dsIds[4] : dsIds[3]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::BW:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[6] : dsIds[5]) + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? dsIds[6] : dsIds[5]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace((secondSelected ? dsIds[6] : dsIds[5]) + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace(std::string(secondSelected ? dsIds[6] : dsIds[5]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::B2W2:
             for (auto& postfix : dsPostfixes)
             {
-                auto pFixSaves = Configuration::getInstance().extraSaves((secondSelected ? dsIds[8] : dsIds[7]) + postfix);
+                auto pFixSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? dsIds[8] : dsIds[7]) + postfix);
                 if (!pFixSaves.empty())
                 {
                     numSaves += pFixSaves.size();
-                    dsCurrentSaves.emplace((secondSelected ? dsIds[8] : dsIds[7]) + postfix, std::move(pFixSaves));
+                    dsCurrentSaves.emplace(std::string(secondSelected ? dsIds[8] : dsIds[7]) + postfix, std::move(pFixSaves));
                 }
             }
             break;
         case ExtraSavesSubScreen::Group::XY:
-            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[1] : ctrIds[0]);
+            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[1] : ctrIds[0]));
             numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::ORAS:
-            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[3] : ctrIds[2]);
+            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[3] : ctrIds[2]));
             numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::SM:
-            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[5] : ctrIds[4]);
+            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[5] : ctrIds[4]));
             numSaves     = currentSaves.size();
             break;
         case ExtraSavesSubScreen::Group::USUM:
-            currentSaves = Configuration::getInstance().extraSaves(secondSelected ? ctrIds[7] : ctrIds[6]);
+            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[7] : ctrIds[6]));
             numSaves     = currentSaves.size();
             break;
         default:

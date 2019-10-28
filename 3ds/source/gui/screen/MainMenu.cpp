@@ -185,7 +185,7 @@ void MainMenu::drawTop() const
         }
     }
 
-    static const std::string version = StringUtils::format("v%d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    const std::string version = StringUtils::format("v%d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     Gui::text("PKSM", 282, 16, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::CENTER);
     Gui::text(version, 398, 17, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::CENTER);
 }

@@ -83,8 +83,6 @@ static constexpr std::string_view gen67ToggleTexts[] = {"UNUSED", "UNUSED", "SPA
     "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG", "DAZZLING_DIZZYING_DANCE_SPOONS", "WHAT_UPSTART_MAGIKARP_MOVING_UP",
     "WATCH_MULTIPLE_MEGA", "UNUSED", "UNUSED"};
 
-static int currRibbon = 0;
-
 static constexpr int FAST_TIME     = 1;
 static constexpr int SLOW_TIME     = 5;
 static constexpr int TIME_TO_ACCEL = 5;
@@ -934,7 +932,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
 
 HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
 {
-    currRibbon = 0;
+    int currRibbon = 0;
     for (u32 i = 0; i < pkm->getLength(); i++)
     {
         buttons.push_back({});

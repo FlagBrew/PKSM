@@ -95,8 +95,8 @@ static void loadDSIcon(bannerData* iconData)
 
 static C2D_Image loadTextureIcon(smdh_s* smdh)
 {
-    C3D_Tex* tex                          = new C3D_Tex;
-    static const Tex3DS_SubTexture subt3x = {48, 48, 0.0f, 48 / 64.0f, 48 / 64.0f, 0.0f};
+    C3D_Tex* tex                              = new C3D_Tex;
+    static constexpr Tex3DS_SubTexture subt3x = {48, 48, 0.0f, 48 / 64.0f, 48 / 64.0f, 0.0f};
     C3D_TexInit(tex, 64, 64, GPU_RGB565);
     tex->border = 0xFFFFFFFF;
     C3D_TexSetWrap(tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);

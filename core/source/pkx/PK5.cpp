@@ -35,8 +35,8 @@
 
 void PK5::shuffleArray(u8 sv)
 {
-    static const int blockLength = 32;
-    u8 index                     = sv * 4;
+    static constexpr int blockLength = 32;
+    u8 index                         = sv * 4;
 
     u8 cdata[length];
     std::copy(data, data + length, cdata);

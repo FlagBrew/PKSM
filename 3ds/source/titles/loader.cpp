@@ -245,7 +245,6 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
             directories[dir] = std::make_shared<Directory>(Archive::sd(), dir);
         }
     }
-    static const std::u16string sSeparator = u"/";
     std::vector<std::string> ret;
     auto& directory = directories[dir];
     if (directory->loaded())
@@ -257,13 +256,12 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
                 std::u16string fileName = directory->item(j);
                 if (fileName.substr(0, id.size()) == id)
                 {
-                    Directory subdir(Archive::sd(), dir + sSeparator + fileName);
+                    Directory subdir(Archive::sd(), dir + u"/" + fileName);
                     for (size_t k = 0; k < subdir.count(); k++)
                     {
                         if (subdir.folder(k))
                         {
-                            std::string savePath =
-                                StringUtils::UTF16toUTF8(dir + sSeparator + fileName + sSeparator + subdir.item(k) + sSeparator) + idToSaveName(id);
+                            std::string savePath = StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir.item(k) + u"/") + idToSaveName(id);
                             if (io::exists(savePath))
                             {
                                 ret.emplace_back(savePath);
@@ -285,12 +283,11 @@ static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, cons
 void TitleLoader::scanSaves(void)
 {
     Gui::waitFrame(i18n::localize("SCAN_SAVES"));
-    static const std::u16string chkpntDir = u"/3ds/Checkpoint/saves";
     for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
         u32 uniqueId                   = (u32)ctrTitleIds[i] >> 8;
         std::string id                 = StringUtils::format("0x%05X", uniqueId);
-        std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
+        std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
         if (Configuration::getInstance().showBackups())
         {
             std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
@@ -315,7 +312,7 @@ void TitleLoader::scanSaves(void)
         for (size_t lang = 0; lang < 8; lang++)
         {
             std::string id                 = std::string(dsIds[game]) + langIds[lang];
-            std::vector<std::string> saves = scanDirectoryFor(chkpntDir, id);
+            std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
             {
                 std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);

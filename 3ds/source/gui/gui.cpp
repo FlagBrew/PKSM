@@ -1104,7 +1104,7 @@ void Gui::sprite(int key, int x, int y, PKSM_Color color)
 
 void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, float blend)
 {
-    static C2D_ImageTint tint;
+    C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, colorToFormat(color), blend);
 
     if (pokemon.egg())
