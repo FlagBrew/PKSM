@@ -264,13 +264,7 @@ static bool update(std::string execPath)
         std::string fileName = path.substr(path.find_last_of('/') + 1);
         Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
             [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
-                thread_local auto oldTime = osGetTime();
-                auto time                 = osGetTime();
-                if (dltotal != 0 && time >= oldTime + 1000)
-                {
-                    Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
-                    oldTime = time;
-                }
+                Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
                 return 0;
             },
             &fileName);
