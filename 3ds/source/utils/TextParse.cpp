@@ -36,7 +36,7 @@ namespace TextParse
         {
             for (auto& glyph : word.first)
             {
-                glyph.line += lines();
+                glyph.line += lines() + 1;
             }
             for (size_t i = 0; i < word.second.size(); i++)
             {
@@ -304,7 +304,6 @@ namespace TextParse
                                          glyphPos.texcoord.left, glyphPos.texcoord.top, glyphPos.texcoord.right, glyphPos.texcoord.bottom},
                         &glyphSheets[font][glyphPos.sheetIndex], font, lineWidths.size(), 0, glyphPos.width);
                     lineWidths.push_back(glyphPos.xAdvance);
-                    break;
                 }
             }
             else
