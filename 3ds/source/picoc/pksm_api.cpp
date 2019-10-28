@@ -305,6 +305,12 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         else
         {
             TitleLoader::save->transfer(pkm);
+            if (!pkm)
+            {
+                Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
+                    genToCstring(TitleLoader::save->generation())));
+                return;
+            }
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
@@ -776,6 +782,12 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         else
         {
             TitleLoader::save->transfer(pkm);
+            if (!pkm)
+            {
+                Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
+                    genToCstring(TitleLoader::save->generation())));
+                return;
+            }
             bool moveBad = false;
             for (int i = 0; i < 4; i++)
             {
