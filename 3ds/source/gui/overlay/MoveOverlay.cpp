@@ -250,7 +250,7 @@ void MoveOverlay::searchBar()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
-    swkbdSetHintText(&state, i18n::localize("ITEM").c_str());
+    swkbdSetHintText(&state, i18n::localize("MOVE").c_str());
     swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
     char input[25]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
