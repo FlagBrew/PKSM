@@ -24,5 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-void PKSM_Rand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs);
-void PKSM_Srand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs);
+#ifndef PKSM_RANDOM_H
+#define PKSM_RANDOM_H
+
+void PKSM_Rand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs);
+void PKSM_Srand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs);
+
+#endif

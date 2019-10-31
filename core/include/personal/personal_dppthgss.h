@@ -1,4 +1,7 @@
-const char personal_dppthgss[] = {
+#ifndef PERSONAL_DPPTHGSS_H
+#define PERSONAL_DPPTHGSS_H
+
+constexpr char personal_dppthgss[] = {
     0x00,
     0x00,
     0x00,
@@ -8128,4 +8131,6 @@ const char personal_dppthgss[] = {
     0x00,
     0x06,
 };
-const int personal_dppthgss_size = 8128;
+constexpr int personal_dppthgss_size = 8128;
+
+#endif

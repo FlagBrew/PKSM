@@ -24,9 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
 #ifdef _3DS
 #include <3ds.h>
 #endif
 #ifdef __SWITCH__
 #include <switch.h>
+#endif
+
 #endif
