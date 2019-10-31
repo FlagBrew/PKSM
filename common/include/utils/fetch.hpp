@@ -24,6 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
+#ifndef FETCH_HPP
+#define FETCH_HPP
+
 #include "types.h"
 #include <curl/curl.h>
 #include <functional>
@@ -34,7 +37,7 @@
 class Fetch
 {
 public:
-    static std::unique_ptr<Fetch> init(
+    [[nodiscard]] static std::unique_ptr<Fetch> init(
         const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
     static Result download(const std::string& url, const std::string& path, const std::string& postData = "",
         curl_xferinfo_callback progress = nullptr, void* progressInfo = nullptr);
@@ -56,3 +59,5 @@ private:
     Fetch() : curl(nullptr, &curl_easy_cleanup) {}
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
 };
+
+#endif
