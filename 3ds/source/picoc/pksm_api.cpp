@@ -2042,43 +2042,12 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
     if (TitleLoader::save->generation() != Generation::FOUR)
     {
-        std::u16string write = StringUtils::UTF8toUTF16(string);
-        while (write.size() >= codepoints)
-        {
-            write.pop_back();
-        }
-        for (size_t i = 0; i < write.size(); i++) // Not sure whether this includes terminator, so let's make sure
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + i) = write[i];
-        }
-        if (TitleLoader::save->generation() == Generation::FIVE)
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + write.size()) = 0xFFFF;
-        }
-        else
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + write.size()) = 0;
-        }
-        for (size_t i = write.size() + 1; i < codepoints; i++)
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + i) = 0;
-        }
+        StringUtils::setString(
+            TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
     }
     else
     {
-        auto write = StringUtils::stringToG4(string);
-        while (write.size() > codepoints) // Remove non-terminator codepoints
-        {
-            write.erase(write.end() - 1);
-        }
-        for (size_t i = 0; i < write.size(); i++) // Definitely includes the terminator
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + i) = write[i];
-        }
-        for (size_t i = write.size() + 1; i < codepoints; i++)
-        {
-            *((u16*)(TitleLoader::save->rawData() + offset) + i) = 0;
-        }
+        StringUtils::setString4(TitleLoader::save->rawData().get(), string, offset, codepoints);
     }
 }
 
@@ -2089,15 +2058,7 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     if (TitleLoader::save->generation() == Generation::FOUR)
     {
-        std::string data = StringUtils::getString4(TitleLoader::save->rawData(), offset, codepoints);
-        char* ret        = (char*)malloc(data.size() + 1);
-        std::copy(data.begin(), data.end(), ret);
-        ret[data.size()]                  = '\0';
-        ReturnValue->Val->UnsignedInteger = (u32)ret;
-    }
-    else if (TitleLoader::save->generation() == Generation::FIVE)
-    {
-        std::string data = StringUtils::getString(TitleLoader::save->rawData(), offset, codepoints, u'\uFFFF');
+        std::string data = StringUtils::getString4(TitleLoader::save->rawData().get(), offset, codepoints);
         char* ret        = (char*)malloc(data.size() + 1);
         std::copy(data.begin(), data.end(), ret);
         ret[data.size()]                  = '\0';
@@ -2105,7 +2066,7 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
     else
     {
-        std::string data = StringUtils::getString(TitleLoader::save->rawData(), offset, codepoints);
+        std::string data = StringUtils::getString(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
         char* ret        = (char*)malloc(data.size() + 1);
         std::copy(data.begin(), data.end(), ret);
         ret[data.size()]                  = '\0';

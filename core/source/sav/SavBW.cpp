@@ -27,14 +27,12 @@
 #include "SavBW.hpp"
 #include <algorithm>
 
-SavBW::SavBW(u8* dt)
+SavBW::SavBW(std::shared_ptr<u8[]> dt)
 {
     length = 0x80000;
     boxes  = 24;
     game   = Game::BW;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     PCLayout             = 0x0;
     Trainer1             = 0x19400;
@@ -63,10 +61,10 @@ void SavBW::resign(void)
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(data + blockOfs[i], data + blockOfs[i] + lengths[i], tmp);
+        std::copy(&data[blockOfs[i]], &data[blockOfs[i] + lengths[i]], tmp);
         cs                           = ccitt16(tmp, lengths[i]);
-        *(u16*)(data + chkMirror[i]) = cs;
-        *(u16*)(data + chkofs[i])    = cs;
+        *(u16*)(&data[chkMirror[i]]) = cs;
+        *(u16*)(&data[chkofs[i]])    = cs;
     }
 
     delete[] tmp;

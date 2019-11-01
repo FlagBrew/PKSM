@@ -53,7 +53,7 @@ protected:
     int maxBall(void) const override { return 0x1A; }   // Same as G7
 
 public:
-    SavLGPE(u8* dt);
+    SavLGPE(std::shared_ptr<u8[]> dt);
     ~SavLGPE();
 
     u16 check16(u8* buf, u32 blockID, u32 len) const;

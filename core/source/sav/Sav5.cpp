@@ -32,20 +32,20 @@
 
 u16 Sav5::TID(void) const
 {
-    return *(u16*)(data + Trainer1 + 0x14);
+    return *(u16*)(&data[Trainer1 + 0x14]);
 }
 void Sav5::TID(u16 v)
 {
-    *(u16*)(data + Trainer1 + 0x14) = v;
+    *(u16*)(&data[Trainer1 + 0x14]) = v;
 }
 
 u16 Sav5::SID(void) const
 {
-    return *(u16*)(data + Trainer1 + 0x16);
+    return *(u16*)(&data[Trainer1 + 0x16]);
 }
 void Sav5::SID(u16 v)
 {
-    *(u16*)(data + Trainer1 + 0x16) = v;
+    *(u16*)(&data[Trainer1 + 0x16]) = v;
 }
 
 u8 Sav5::version(void) const
@@ -104,29 +104,29 @@ void Sav5::language(Language v)
 
 std::string Sav5::otName(void) const
 {
-    return StringUtils::transString45(StringUtils::getString(data, Trainer1 + 0x4, 8, u'\uFFFF'));
+    return StringUtils::transString45(StringUtils::getString(data.get(), Trainer1 + 0x4, 8, u'\uFFFF'));
 }
 void Sav5::otName(const std::string& v)
 {
-    StringUtils::setString(data, StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
+    StringUtils::setString(data.get(), StringUtils::transString45(v), Trainer1 + 0x4, 8, u'\uFFFF', 0);
 }
 
 u32 Sav5::money(void) const
 {
-    return *(u32*)(data + Trainer2);
+    return *(u32*)(&data[Trainer2]);
 }
 void Sav5::money(u32 v)
 {
-    *(u32*)(data + Trainer2) = v;
+    *(u32*)(&data[Trainer2]) = v;
 }
 
 u32 Sav5::BP(void) const
 {
-    return *(u16*)(data + BattleSubway);
+    return *(u16*)(&data[BattleSubway]);
 }
 void Sav5::BP(u32 v)
 {
-    *(u16*)(data + BattleSubway) = v;
+    *(u16*)(&data[BattleSubway]) = v;
 }
 
 u8 Sav5::badges(void) const
@@ -142,11 +142,11 @@ u8 Sav5::badges(void) const
 
 u16 Sav5::playedHours(void) const
 {
-    return *(u16*)(data + Trainer1 + 0x24);
+    return *(u16*)(&data[Trainer1 + 0x24]);
 }
 void Sav5::playedHours(u16 v)
 {
-    *(u16*)(data + Trainer1 + 0x24) = v;
+    *(u16*)(&data[Trainer1 + 0x24]) = v;
 }
 
 u8 Sav5::playedMinutes(void) const
@@ -187,7 +187,7 @@ u32 Sav5::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
 {
-    return std::make_shared<PK5>(data + partyOffset(slot), true, true);
+    return std::make_shared<PK5>(&data[partyOffset(slot)], true, true);
 }
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
@@ -207,13 +207,13 @@ void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk5->encrypt();
-    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
-    std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), data + partyOffset(slot));
+    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
+    std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
 }
 
 std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_shared<PK5>(data + boxOffset(box, slot), ekx);
+    return std::make_shared<PK5>(&data[boxOffset(box, slot)], ekx);
 }
 
 bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -226,7 +226,7 @@ bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + 136, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 136, &data[boxOffset(box, slot)]);
     }
     return (bool)pk;
 }
@@ -245,7 +245,7 @@ void Sav5::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk5 = std::make_unique<PK5>(data + boxOffset(box, slot), crypted, false, true);
+            std::unique_ptr<PKX> pk5 = std::make_unique<PK5>(&data[boxOffset(box, slot)], crypted, false, true);
             if (!crypted)
             {
                 pk5->encrypt();
@@ -420,19 +420,19 @@ void Sav5::mysteryGift(WCX& wc, int& pos)
 {
     PGF* pgf = (PGF*)&wc;
 
-    *(data + WondercardFlags + (pgf->ID() / 8)) |= 0x1 << (pgf->ID() & 7);
-    std::copy(pgf->rawData(), pgf->rawData() + PGF::length, data + WondercardData + pos * PGF::length);
+    data[WondercardFlags + (pgf->ID() / 8)] |= 0x1 << (pgf->ID() & 7);
+    std::copy(pgf->rawData(), pgf->rawData() + PGF::length, &data[WondercardData + pos * PGF::length]);
     pos = (pos + 1) % 12;
 }
 
 std::string Sav5::boxName(u8 box) const
 {
-    return StringUtils::transString45(StringUtils::getString(data, PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
+    return StringUtils::transString45(StringUtils::getString(data.get(), PCLayout + 0x28 * box + 4, 9, u'\uFFFF'));
 }
 
 void Sav5::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
+    StringUtils::setString(data.get(), StringUtils::transString45(name), PCLayout + 0x28 * box + 4, 9, u'\uFFFF', 0);
 }
 
 u8 Sav5::partyCount(void) const
@@ -459,7 +459,7 @@ int Sav5::emptyGiftLocation(void) const
         empty = true;
         for (u32 j = 0; j < PGF::length; j++)
         {
-            if (*(data + WondercardData + t * PGF::length + j) != 0)
+            if (data[WondercardData + t * PGF::length + j] != 0)
             {
                 empty = false;
                 break;
@@ -478,7 +478,7 @@ int Sav5::emptyGiftLocation(void) const
 std::vector<Sav::giftData> Sav5::currentGifts(void) const
 {
     std::vector<Sav::giftData> ret;
-    u8* wonderCards = data + WondercardData;
+    u8* wonderCards = data.get() + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
@@ -496,17 +496,17 @@ std::vector<Sav::giftData> Sav5::currentGifts(void) const
 
 void Sav5::cryptMysteryGiftData()
 {
-    u32 seed = *(u32*)(data + 0x1D290);
+    u32 seed = *(u32*)(&data[0x1D290]);
     for (int i = 0; i < 0xA90; i += 2)
     {
         seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(data + WondercardFlags + i) ^= (seed >> 16);
+        *(u16*)(&data[WondercardFlags + i]) ^= (seed >> 16);
     }
 }
 
 std::unique_ptr<WCX> Sav5::mysteryGift(int pos) const
 {
-    return std::make_unique<PGF>(data + WondercardData + pos * PGF::length);
+    return std::make_unique<PGF>(&data[WondercardData + pos * PGF::length]);
 }
 
 void Sav5::item(const Item& item, Pouch pouch, u16 slot)
@@ -516,19 +516,19 @@ void Sav5::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case NormalItem:
-            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchHeldItem + slot * 4]);
             break;
         case KeyItem:
-            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchKeyItem + slot * 4]);
             break;
         case TM:
-            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchTMHM + slot * 4]);
             break;
         case Medicine:
-            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchMedicine + slot * 4]);
             break;
         case Berry:
-            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchBerry + slot * 4]);
             break;
         default:
             return;
@@ -540,15 +540,15 @@ std::unique_ptr<Item> Sav5::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case NormalItem:
-            return std::make_unique<Item5>(data + PouchHeldItem + slot * 4);
+            return std::make_unique<Item5>(&data[PouchHeldItem + slot * 4]);
         case KeyItem:
-            return std::make_unique<Item5>(data + PouchKeyItem + slot * 4);
+            return std::make_unique<Item5>(&data[PouchKeyItem + slot * 4]);
         case TM:
-            return std::make_unique<Item5>(data + PouchTMHM + slot * 4);
+            return std::make_unique<Item5>(&data[PouchTMHM + slot * 4]);
         case Medicine:
-            return std::make_unique<Item5>(data + PouchMedicine + slot * 4);
+            return std::make_unique<Item5>(&data[PouchMedicine + slot * 4]);
         case Berry:
-            return std::make_unique<Item5>(data + PouchBerry + slot * 4);
+            return std::make_unique<Item5>(&data[PouchBerry + slot * 4]);
         default:
             return nullptr;
     }

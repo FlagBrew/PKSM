@@ -33,20 +33,20 @@
 
 u16 Sav6::TID(void) const
 {
-    return *(u16*)(data + TrainerCard);
+    return *(u16*)(&data[TrainerCard]);
 }
 void Sav6::TID(u16 v)
 {
-    *(u16*)(data + TrainerCard) = v;
+    *(u16*)(&data[TrainerCard]) = v;
 }
 
 u16 Sav6::SID(void) const
 {
-    return *(u16*)(data + TrainerCard + 2);
+    return *(u16*)(&data[TrainerCard + 2]);
 }
 void Sav6::SID(u16 v)
 {
-    *(u16*)(data + TrainerCard + 2) = v;
+    *(u16*)(&data[TrainerCard + 2]) = v;
 }
 
 u8 Sav6::version(void) const
@@ -105,29 +105,29 @@ void Sav6::language(Language v)
 
 std::string Sav6::otName(void) const
 {
-    return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x48, 13));
+    return StringUtils::transString67(StringUtils::getString(data.get(), TrainerCard + 0x48, 13));
 }
 void Sav6::otName(const std::string& v)
 {
-    StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x48, 13);
+    StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x48, 13);
 }
 
 u32 Sav6::money(void) const
 {
-    return *(u32*)(data + Trainer2 + 0x8);
+    return *(u32*)(&data[Trainer2 + 0x8]);
 }
 void Sav6::money(u32 v)
 {
-    *(u32*)(data + Trainer2 + 0x8) = v;
+    *(u32*)(&data[Trainer2 + 0x8]) = v;
 }
 
 u32 Sav6::BP(void) const
 {
-    return *(u32*)(data + Trainer2 + (game == Game::XY ? 0x3C : 0x30));
+    return *(u32*)(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
 }
 void Sav6::BP(u32 v)
 {
-    *(u32*)(data + Trainer2 + (game == Game::XY ? 0x3C : 0x30)) = v;
+    *(u32*)(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]) = v;
 }
 
 u8 Sav6::badges(void) const
@@ -143,29 +143,29 @@ u8 Sav6::badges(void) const
 
 u16 Sav6::playedHours(void) const
 {
-    return *(u16*)(data + PlayTime);
+    return *(u16*)(&data[PlayTime]);
 }
 void Sav6::playedHours(u16 v)
 {
-    *(u16*)(data + PlayTime) = v;
+    *(u16*)(&data[PlayTime]) = v;
 }
 
 u8 Sav6::playedMinutes(void) const
 {
-    return *(u8*)(data + PlayTime + 2);
+    return data[PlayTime + 2];
 }
 void Sav6::playedMinutes(u8 v)
 {
-    *(u8*)(data + PlayTime + 2) = v;
+    data[PlayTime + 2] = v;
 }
 
 u8 Sav6::playedSeconds(void) const
 {
-    return *(u8*)(data + PlayTime + 3);
+    return data[PlayTime + 3];
 }
 void Sav6::playedSeconds(u8 v)
 {
-    *(u8*)(data + PlayTime + 3) = v;
+    data[PlayTime + 3] = v;
 }
 
 u8 Sav6::currentBox(void) const
@@ -189,7 +189,7 @@ u32 Sav6::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav6::pkm(u8 slot) const
 {
-    return std::make_shared<PK6>(data + partyOffset(slot), true, true);
+    return std::make_shared<PK6>(&data[partyOffset(slot)], true, true);
 }
 
 void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
@@ -209,13 +209,13 @@ void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk6->encrypt();
-    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
-    std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), data + partyOffset(slot));
+    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
+    std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), &data[partyOffset(slot)]);
 }
 
 std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_shared<PK6>(data + boxOffset(box, slot), ekx);
+    return std::make_shared<PK6>(&data[boxOffset(box, slot)], ekx);
 }
 
 bool Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -228,7 +228,7 @@ bool Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 232, &data[boxOffset(box, slot)]);
     }
     return (bool)pk;
 }
@@ -317,7 +317,7 @@ void Sav6::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk6 = std::make_unique<PK6>(data + boxOffset(box, slot), crypted, false, true);
+            std::unique_ptr<PKX> pk6 = std::make_unique<PK6>(&data[boxOffset(box, slot)], crypted, false, true);
             if (!crypted)
             {
                 pk6->encrypt();
@@ -554,8 +554,8 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && *(u16*)(data + EncounterCount + (pk->species() - 1) * 2) == 0)
-        *(u16*)(data + EncounterCount + (pk->species() - 1) * 2) = 1;
+    if (game == Game::ORAS && *(u16*)(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
+        *(u16*)(&data[EncounterCount + (pk->species() - 1) * 2]) = 1;
 
     // Set Form flags
     int fc = PersonalXYORAS::formCount(pk->species());
@@ -620,25 +620,25 @@ int Sav6::dexCaught(void) const
 void Sav6::mysteryGift(WCX& wc, int& pos)
 {
     WC6* wc6 = (WC6*)&wc;
-    *(u8*)(data + WondercardFlags + wc6->ID() / 8) |= 0x1 << (wc6->ID() % 8);
-    std::copy(wc6->rawData(), wc6->rawData() + WC6::length, data + WondercardData + WC6::length * pos);
+    data[WondercardFlags + wc6->ID() / 8] |= 0x1 << (wc6->ID() % 8);
+    std::copy(wc6->rawData(), wc6->rawData() + WC6::length, &data[WondercardData + WC6::length * pos]);
     if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
     {
         static constexpr u32 EON_MAGIC = 0x225D73C2;
-        *(u32*)(data + 0x319B8)        = EON_MAGIC;
-        *(u32*)(data + 0x319DE)        = EON_MAGIC;
+        *(u32*)(&data[0x319B8])        = EON_MAGIC;
+        *(u32*)(&data[0x319DE])        = EON_MAGIC;
     }
     pos = (pos + 1) % 24;
 }
 
 std::string Sav6::boxName(u8 box) const
 {
-    return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22 * box, 17));
+    return StringUtils::transString67(StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
 }
 
 void Sav6::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
+    StringUtils::setString(data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
 }
 
 u8 Sav6::partyCount(void) const
@@ -665,7 +665,7 @@ int Sav6::emptyGiftLocation(void) const
         empty = true;
         for (u32 j = 0; j < WC6::length; j++)
         {
-            if (*(data + WondercardData + t * WC6::length + j) != 0)
+            if (data[WondercardData + t * WC6::length + j] != 0)
             {
                 empty = false;
                 break;
@@ -684,7 +684,7 @@ int Sav6::emptyGiftLocation(void) const
 std::vector<Sav::giftData> Sav6::currentGifts(void) const
 {
     std::vector<Sav::giftData> ret;
-    u8* wonderCards = data + WondercardData;
+    u8* wonderCards = data.get() + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC6::length + 0x51) == 0)
@@ -702,7 +702,7 @@ std::vector<Sav::giftData> Sav6::currentGifts(void) const
 
 std::unique_ptr<WCX> Sav6::mysteryGift(int pos) const
 {
-    return std::make_unique<WC6>(data + WondercardData + pos * WC6::length);
+    return std::make_unique<WC6>(&data[WondercardData + pos * WC6::length]);
 }
 
 void Sav6::item(const Item& item, Pouch pouch, u16 slot)
@@ -712,19 +712,19 @@ void Sav6::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case NormalItem:
-            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchHeldItem + slot * 4]);
             break;
         case KeyItem:
-            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchKeyItem + slot * 4]);
             break;
         case TM:
-            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchTMHM + slot * 4]);
             break;
         case Medicine:
-            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchMedicine + slot * 4]);
             break;
         case Berry:
-            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchBerry + slot * 4]);
             break;
         default:
             return;
@@ -736,15 +736,15 @@ std::unique_ptr<Item> Sav6::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case NormalItem:
-            return std::make_unique<Item6>(data + PouchHeldItem + slot * 4);
+            return std::make_unique<Item6>(&data[PouchHeldItem + slot * 4]);
         case KeyItem:
-            return std::make_unique<Item6>(data + PouchKeyItem + slot * 4);
+            return std::make_unique<Item6>(&data[PouchKeyItem + slot * 4]);
         case TM:
-            return std::make_unique<Item6>(data + PouchTMHM + slot * 4);
+            return std::make_unique<Item6>(&data[PouchTMHM + slot * 4]);
         case Medicine:
-            return std::make_unique<Item6>(data + PouchMedicine + slot * 4);
+            return std::make_unique<Item6>(&data[PouchMedicine + slot * 4]);
         case Berry:
-            return std::make_unique<Item6>(data + PouchBerry + slot * 4);
+            return std::make_unique<Item6>(&data[PouchBerry + slot * 4]);
         default:
             return nullptr;
     }

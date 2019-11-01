@@ -27,14 +27,12 @@
 #include "SavHGSS.hpp"
 #include "PGT.hpp"
 
-SavHGSS::SavHGSS(u8* dt)
+SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt)
 {
     length = 0x80000;
     boxes  = 18;
     game   = Game::HGSS;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     GBOOffset = 0xF618;
     SBOOffset = 0x21A00;

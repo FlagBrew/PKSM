@@ -353,7 +353,7 @@ void TitleLoader::backupSave(const std::string& id)
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
-        out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
+        out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
         if (Configuration::getInstance().showBackups())
         {
             sdSaves[id].emplace_back(path);
@@ -366,7 +366,7 @@ void TitleLoader::backupSave(const std::string& id)
     out.close();
 }
 
-bool TitleLoader::load(u8* data, size_t size)
+bool TitleLoader::load(std::shared_ptr<u8[]> data, size_t size)
 {
     save = Sav::getSave(data, size);
     return save != nullptr;
@@ -383,11 +383,10 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         FSStream in(archive, u"/main", FS_OPEN_READ);
         if (in.good())
         {
-            u8* data = new u8[in.size()];
-            in.read(data, in.size());
+            std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[in.size()]);
+            in.read(data.get(), in.size());
             save = Sav::getSave(data, in.size());
             in.close();
-            delete[] data;
             FSUSER_CloseArchive(archive);
             if (Configuration::getInstance().autoBackup())
             {
@@ -413,16 +412,15 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             return false;
         }
 
-        u8* data       = new u8[cap];
-        u32 sectorSize = (cap < 0x10000) ? cap : 0x10000;
+        std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[cap]);
+        u32 sectorSize             = (cap < 0x10000) ? cap : 0x10000;
 
         for (u32 i = 0; i < cap / sectorSize; ++i)
         {
-            SPIReadSaveData(title->SPICardType(), sectorSize * i, data + sectorSize * i, sectorSize);
+            SPIReadSaveData(title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
         }
 
         save = Sav::getSave(data, cap);
-        delete[] data;
         if (Configuration::getInstance().autoBackup())
         {
             backupSave(title->checkpointPrefix());
@@ -440,12 +438,12 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     loadedTitle  = title;
     FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
     u32 size;
-    u8* saveData = nullptr;
+    std::shared_ptr<u8[]> saveData = nullptr;
     if (in.good())
     {
         size     = in.size();
-        saveData = new u8[size];
-        in.read(saveData, size);
+        saveData = std::shared_ptr<u8[]>(new u8[size]);
+        in.read(saveData.get(), size);
     }
     else
     {
@@ -457,7 +455,6 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     }
     in.close();
     save = Sav::getSave(saveData, size);
-    delete[] saveData;
     if (!save)
     {
         Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
@@ -507,7 +504,7 @@ void TitleLoader::saveToTitle(bool ask)
                 FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->getLength());
                 if (out.good())
                 {
-                    out.write(save->rawData(), save->getLength());
+                    out.write(save->rawData().get(), save->getLength());
                     if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
                     {
                         out.close();
@@ -529,7 +526,7 @@ void TitleLoader::saveToTitle(bool ask)
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
-                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i, save->rawData() + pageSize * i, pageSize);
+                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i, &save->rawData()[pageSize * i], pageSize);
                     if (R_FAILED(res))
                     {
                         break;
@@ -551,7 +548,7 @@ void TitleLoader::saveToTitle(bool ask)
                     FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->getLength());
                     if (out.good())
                     {
-                        out.write(save->rawData(), save->getLength());
+                        out.write(save->rawData().get(), save->getLength());
                         if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
                         {
                             out.close();
@@ -580,7 +577,7 @@ void TitleLoader::saveChanges()
     {
         // No need to check size; if it was read successfully, that means that it has the correct size
         FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(saveFileName), FS_OPEN_WRITE);
-        out.write(save->rawData(), save->getLength());
+        out.write(save->rawData().get(), save->getLength());
         out.close();
         if (Configuration::getInstance().writeFileSave())
         {
@@ -647,14 +644,14 @@ bool TitleLoader::scanCard()
             auto title = std::make_shared<Title>();
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
-                ret               = true;
-                CardType cardType = title->SPICardType();
-                u32 saveSize      = SPIGetCapacity(cardType);
-                u32 sectorSize    = (saveSize < 0x10000) ? saveSize : 0x10000;
-                u8* saveFile      = new u8[saveSize];
+                ret                            = true;
+                CardType cardType              = title->SPICardType();
+                u32 saveSize                   = SPIGetCapacity(cardType);
+                u32 sectorSize                 = (saveSize < 0x10000) ? saveSize : 0x10000;
+                std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
                 for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
-                    res = SPIReadSaveData(cardType, sectorSize * i, saveFile + sectorSize * i, sectorSize);
+                    res = SPIReadSaveData(cardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
                     if (R_FAILED(res))
                     {
                         break;
@@ -665,8 +662,6 @@ bool TitleLoader::scanCard()
                 {
                     cardTitle = title;
                 }
-
-                delete[] saveFile;
             }
             else
             {

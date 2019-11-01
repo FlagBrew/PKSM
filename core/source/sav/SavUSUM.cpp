@@ -29,14 +29,12 @@
 #include "sha256.h"
 #include <algorithm>
 
-SavUSUM::SavUSUM(u8* dt)
+SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt)
 {
     length = 0x6CC00;
     boxes  = 32;
     game   = Game::USUM;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     TrainerCard          = 0x1400;
     Misc                 = 0x4400;
@@ -60,14 +58,14 @@ SavUSUM::SavUSUM(u8* dt)
 
 void SavUSUM::resign(void)
 {
-    const u8 blockCount = 39;
-    u8* tmp             = new u8[*std::max_element(chklen, chklen + blockCount)];
-    const u32 csoff     = 0x6CA1A;
+    constexpr u8 blockCount = 39;
+    u8* tmp                 = new u8[*std::max_element(chklen, chklen + blockCount)];
+    constexpr u32 csoff     = 0x6CA1A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
-        *(u16*)(data + csoff + i * 8) = check16(tmp, *(u16*)(data + csoff + i * 8 - 2), chklen[i]);
+        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
+        *(u16*)(&data[csoff + i * 8]) = check16(tmp, *(u16*)(&data[csoff + i * 8 - 2]), chklen[i]);
     }
 
     delete[] tmp;
@@ -77,10 +75,10 @@ void SavUSUM::resign(void)
     const u32 memecryptoOffset    = 0x6C100;
 
     u8 currentSignature[0x80];
-    std::copy(data + memecryptoOffset, data + memecryptoOffset + 0x80, currentSignature);
+    std::copy(&data[memecryptoOffset], &data[memecryptoOffset + 0x80], currentSignature);
 
     u8 checksumTable[checksumTableLength];
-    std::copy(data + checksumTableOffset, data + checksumTableOffset + checksumTableLength, checksumTable);
+    std::copy(&data[checksumTableOffset], &data[checksumTableOffset + checksumTableLength], checksumTable);
 
     u8 hash[SHA256_BLOCK_SIZE];
     sha256(hash, checksumTable, checksumTableLength);
@@ -90,7 +88,7 @@ void SavUSUM::resign(void)
     std::copy(hash, hash + SHA256_BLOCK_SIZE, decryptedSignature);
 
     memecrypto_sign(decryptedSignature, currentSignature, 0x80);
-    std::copy(currentSignature, currentSignature + 0x80, data + memecryptoOffset);
+    std::copy(currentSignature, currentSignature + 0x80, &data[memecryptoOffset]);
 }
 
 int SavUSUM::dexFormIndex(int species, int formct, int start) const

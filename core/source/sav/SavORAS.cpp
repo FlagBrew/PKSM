@@ -27,14 +27,12 @@
 #include "SavORAS.hpp"
 #include <algorithm>
 
-SavORAS::SavORAS(u8* dt)
+SavORAS::SavORAS(std::shared_ptr<u8[]> dt)
 {
     length = 0x76000;
     boxes  = 31;
     game   = Game::ORAS;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     TrainerCard          = 0x14000;
     Trainer2             = 0x04200;
@@ -57,14 +55,14 @@ SavORAS::SavORAS(u8* dt)
 
 void SavORAS::resign(void)
 {
-    const u8 blockCount = 58;
-    u8* tmp             = new u8[*std::max_element(chklen, chklen + blockCount)];
-    const u32 csoff     = 0x75E1A;
+    constexpr u8 blockCount = 58;
+    u8* tmp                 = new u8[*std::max_element(chklen, chklen + blockCount)];
+    constexpr u32 csoff     = 0x75E1A;
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
-        *(u16*)(data + csoff + i * 8) = ccitt16(tmp, chklen[i]);
+        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
+        *(u16*)(&data[csoff + i * 8]) = ccitt16(tmp, chklen[i]);
     }
 
     delete[] tmp;

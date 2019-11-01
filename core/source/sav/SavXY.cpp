@@ -27,14 +27,12 @@
 #include "SavXY.hpp"
 #include <algorithm>
 
-SavXY::SavXY(u8* dt)
+SavXY::SavXY(std::shared_ptr<u8[]> dt)
 {
     length = 0x65600;
     boxes  = 31;
     game   = Game::XY;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     TrainerCard          = 0x14000;
     Trainer2             = 0x4200;
@@ -63,8 +61,8 @@ void SavXY::resign(void)
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
-        *(u16*)(data + csoff + i * 8) = ccitt16(tmp, chklen[i]);
+        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
+        *(u16*)(&data[csoff + i * 8]) = ccitt16(tmp, chklen[i]);
     }
 
     delete[] tmp;

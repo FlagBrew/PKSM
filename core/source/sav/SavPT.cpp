@@ -27,14 +27,12 @@
 #include "SavPT.hpp"
 #include "PGT.hpp"
 
-SavPT::SavPT(u8* dt)
+SavPT::SavPT(std::shared_ptr<u8[]> dt)
 {
     length = 0x80000;
     boxes  = 18;
     game   = Game::Pt;
-
-    data = new u8[length];
-    std::copy(dt, dt + length, data);
+    data   = dt;
 
     GBOOffset = 0xCF1C;
     SBOOffset = 0x1F100;

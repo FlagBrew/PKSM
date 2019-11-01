@@ -329,7 +329,7 @@ void ScriptScreen::applyScript()
 
         for (size_t i = 0; i < repeat; i++)
         {
-            std::copy(scriptData.data() + index + 8, scriptData.data() + index + 8 + length, TitleLoader::save->rawData() + offset + i * length);
+            std::copy(scriptData.data() + index + 8, scriptData.data() + index + 8 + length, &TitleLoader::save->rawData()[offset + i * length]);
         }
 
         index += 12 + length;
@@ -353,7 +353,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     {
         PicocPlatformScanFile(picoc, file.c_str());
         char* args[3];
-        args[0]            = (char*)TitleLoader::save->rawData();
+        args[0]            = (char*)TitleLoader::save->rawData().get();
         std::string length = std::to_string(TitleLoader::save->getLength());
         args[1]            = length.data();
         char version       = TitleLoader::save->version();

@@ -13,7 +13,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *   along with this program.  If not, see <http://www.&gnu[g/licenses/]>.
  *
  *   Additional Terms 7.b and 7.c of GPLv3 apply to this file:
  *       * Requiring preservation of specified reasonable legal notices or
@@ -48,20 +48,20 @@ u16 Sav7::check16(u8* buf, u32 blockID, u32 len) const
 
 u16 Sav7::TID(void) const
 {
-    return *(u16*)(data + TrainerCard);
+    return *(u16*)(&data[TrainerCard]);
 }
 void Sav7::TID(u16 v)
 {
-    *(u16*)(data + TrainerCard) = v;
+    *(u16*)(&data[TrainerCard]) = v;
 }
 
 u16 Sav7::SID(void) const
 {
-    return *(u16*)(data + TrainerCard + 2);
+    return *(u16*)(&data[TrainerCard + 2]);
 }
 void Sav7::SID(u16 v)
 {
-    *(u16*)(data + TrainerCard + 2) = v;
+    *(u16*)(&data[TrainerCard + 2]) = v;
 }
 
 u8 Sav7::version(void) const
@@ -120,34 +120,34 @@ void Sav7::language(Language v)
 
 std::string Sav7::otName(void) const
 {
-    return StringUtils::transString67(StringUtils::getString(data, TrainerCard + 0x38, 13));
+    return StringUtils::transString67(StringUtils::getString(data.get(), TrainerCard + 0x38, 13));
 }
 void Sav7::otName(const std::string& v)
 {
-    return StringUtils::setString(data, StringUtils::transString67(v), TrainerCard + 0x38, 13);
+    return StringUtils::setString(data.get(), StringUtils::transString67(v), TrainerCard + 0x38, 13);
 }
 
 u32 Sav7::money(void) const
 {
-    return *(u32*)(data + Misc + 0x4);
+    return *(u32*)(&data[Misc + 0x4]);
 }
 void Sav7::money(u32 v)
 {
-    *(u32*)(data + Misc + 0x4) = v > 9999999 ? 9999999 : v;
+    *(u32*)(&data[Misc + 0x4]) = v > 9999999 ? 9999999 : v;
 }
 
 u32 Sav7::BP(void) const
 {
-    return *(u32*)(data + Misc + 0x11C);
+    return *(u32*)(&data[Misc + 0x11C]);
 }
 void Sav7::BP(u32 v)
 {
-    *(u32*)(data + Misc + 0x11C) = v > 9999 ? 9999 : v;
+    *(u32*)(&data[Misc + 0x11C]) = v > 9999 ? 9999 : v;
 }
 
 u8 Sav7::badges(void) const
 {
-    u32 badgeBits = (*(u32*)(data + Misc + 0x8) << 13) >> 17;
+    u32 badgeBits = (*(u32*)(&data[Misc + 0x8]) << 13) >> 17;
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
@@ -158,11 +158,11 @@ u8 Sav7::badges(void) const
 
 u16 Sav7::playedHours(void) const
 {
-    return *(u16*)(data + PlayTime);
+    return *(u16*)(&data[PlayTime]);
 }
 void Sav7::playedHours(u16 v)
 {
-    *(u16*)(data + PlayTime) = v;
+    *(u16*)(&data[PlayTime]) = v;
 }
 
 u8 Sav7::playedMinutes(void) const
@@ -204,7 +204,7 @@ u32 Sav7::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav7::pkm(u8 slot) const
 {
-    return std::make_unique<PK7>(data + partyOffset(slot), true, true);
+    return std::make_unique<PK7>(&data[partyOffset(slot)], true, true);
 }
 
 void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
@@ -224,13 +224,13 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk7->encrypt();
-    std::fill(data + partyOffset(slot), data + partyOffset(slot + 1), (u8)0);
-    std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), data + partyOffset(slot));
+    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
+    std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), &data[partyOffset(slot)]);
 }
 
 std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_unique<PK7>(data + boxOffset(box, slot), ekx);
+    return std::make_unique<PK7>(&data[boxOffset(box, slot)], ekx);
 }
 
 bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -243,7 +243,7 @@ bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             trade(pk);
         }
 
-        std::copy(pk->rawData(), pk->rawData() + 232, data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + 232, &data[boxOffset(box, slot)]);
     }
     return (bool)pk;
 }
@@ -282,7 +282,7 @@ void Sav7::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(data + boxOffset(box, slot), crypted, false, true);
+            std::unique_ptr<PKX> pk7 = std::make_unique<PK7>(&data[boxOffset(box, slot)], crypted, false, true);
             if (!crypted)
             {
                 pk7->encrypt();
@@ -403,7 +403,7 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(data + PokeDex + 0x8E8 + shift * 4) = pk->encryptionConstant();
+            *(u32*)(&data[PokeDex + 0x8E8 + shift * 4]) = pk->encryptionConstant();
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -493,19 +493,19 @@ int Sav7::dexCaught(void) const
 void Sav7::mysteryGift(WCX& wc, int& pos)
 {
     WC7* wc7 = (WC7*)&wc;
-    *(u8*)(data + WondercardFlags + wc7->ID() / 8) |= 0x1 << (wc7->ID() % 8);
-    std::copy(wc7->rawData(), wc7->rawData() + WC7::length, data + WondercardData + WC7::length * pos);
+    data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
+    std::copy(wc7->rawData(), wc7->rawData() + WC7::length, &data[WondercardData + WC7::length * pos]);
     pos = (pos + 1) % 48;
 }
 
 std::string Sav7::boxName(u8 box) const
 {
-    return StringUtils::transString67(StringUtils::getString(data, PCLayout + 0x22 * box, 17));
+    return StringUtils::transString67(StringUtils::getString(data.get(), PCLayout + 0x22 * box, 17));
 }
 
 void Sav7::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(data, StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
+    StringUtils::setString(data.get(), StringUtils::transString67(name), PCLayout + 0x22 * box, 17);
 }
 
 u8 Sav7::partyCount(void) const
@@ -532,7 +532,7 @@ int Sav7::emptyGiftLocation(void) const
         empty = true;
         for (u32 j = 0; j < WC7::length; j++)
         {
-            if (*(data + WondercardData + t * WC7::length + j) != 0)
+            if (data[WondercardData + t * WC7::length + j] != 0)
             {
                 empty = false;
                 break;
@@ -551,7 +551,7 @@ int Sav7::emptyGiftLocation(void) const
 std::vector<Sav::giftData> Sav7::currentGifts(void) const
 {
     std::vector<Sav::giftData> ret;
-    u8* wonderCards = data + WondercardData;
+    u8* wonderCards = data.get() + WondercardData;
     for (int i = 0; i < emptyGiftLocation(); i++)
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
@@ -569,7 +569,7 @@ std::vector<Sav::giftData> Sav7::currentGifts(void) const
 
 std::unique_ptr<WCX> Sav7::mysteryGift(int pos) const
 {
-    return std::make_unique<WC7>(data + WondercardData + pos * WC7::length);
+    return std::make_unique<WC7>(&data[WondercardData + pos * WC7::length]);
 }
 
 void Sav7::item(const Item& item, Pouch pouch, u16 slot)
@@ -579,25 +579,25 @@ void Sav7::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case NormalItem:
-            std::copy(write.first, write.first + write.second, data + PouchHeldItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchHeldItem + slot * 4]);
             break;
         case KeyItem:
-            std::copy(write.first, write.first + write.second, data + PouchKeyItem + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchKeyItem + slot * 4]);
             break;
         case TM:
-            std::copy(write.first, write.first + write.second, data + PouchTMHM + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchTMHM + slot * 4]);
             break;
         case Medicine:
-            std::copy(write.first, write.first + write.second, data + PouchMedicine + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchMedicine + slot * 4]);
             break;
         case Berry:
-            std::copy(write.first, write.first + write.second, data + PouchBerry + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchBerry + slot * 4]);
             break;
         case ZCrystals:
-            std::copy(write.first, write.first + write.second, data + PouchZCrystals + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[PouchZCrystals + slot * 4]);
             break;
         case Battle:
-            std::copy(write.first, write.first + write.second, data + BattleItems + slot * 4);
+            std::copy(write.first, write.first + write.second, &data[BattleItems + slot * 4]);
             break;
         default:
             return;
@@ -609,19 +609,19 @@ std::unique_ptr<Item> Sav7::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case NormalItem:
-            return std::make_unique<Item7>(data + PouchHeldItem + slot * 4);
+            return std::make_unique<Item7>(&data[PouchHeldItem + slot * 4]);
         case KeyItem:
-            return std::make_unique<Item7>(data + PouchKeyItem + slot * 4);
+            return std::make_unique<Item7>(&data[PouchKeyItem + slot * 4]);
         case TM:
-            return std::make_unique<Item7>(data + PouchTMHM + slot * 4);
+            return std::make_unique<Item7>(&data[PouchTMHM + slot * 4]);
         case Medicine:
-            return std::make_unique<Item7>(data + PouchMedicine + slot * 4);
+            return std::make_unique<Item7>(&data[PouchMedicine + slot * 4]);
         case Berry:
-            return std::make_unique<Item7>(data + PouchBerry + slot * 4);
+            return std::make_unique<Item7>(&data[PouchBerry + slot * 4]);
         case ZCrystals:
-            return std::make_unique<Item7>(data + PouchZCrystals + slot * 4);
+            return std::make_unique<Item7>(&data[PouchZCrystals + slot * 4]);
         case Battle:
-            return std::make_unique<Item7>(data + BattleItems + slot * 4);
+            return std::make_unique<Item7>(&data[BattleItems + slot * 4]);
         default:
             return nullptr;
     }
