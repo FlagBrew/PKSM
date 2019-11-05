@@ -1,8 +1,9 @@
 #include "interpreter.h"
 #include "pksm_api.h"
 
-void UnixSetupFunc() { }
+void UnixSetupFunc() {}
 
+// clang-format off
 /* list of all library functions and their prototypes */
 struct LibraryFunction UnixFunctions[] =
 {
@@ -47,8 +48,8 @@ struct LibraryFunction UnixFunctions[] =
     { delete_directory,     "void delete_directory(struct directory* dir);" },
     // configurations
     { cfg_default_ot,       "char* cfg_default_ot();" },
-    { cfg_default_tid,      "int cfg_default_tid();" },
-    { cfg_default_sid,      "int cfg_default_sid();" },
+    { cfg_default_tid,      "unsigned short cfg_default_tid();" },
+    { cfg_default_sid,      "unsigned short cfg_default_sid();" },
     { cfg_default_day,      "int cfg_default_day();" },
     { cfg_default_month,    "int cfg_default_month();" },
     { cfg_default_year,     "int cfg_default_year();" },
