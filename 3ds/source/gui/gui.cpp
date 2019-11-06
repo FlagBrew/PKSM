@@ -1136,6 +1136,249 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, f
     }
 }
 
+static constexpr int getSpeciesOffset(int species)
+{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+    int imageOffsetFromBack = 0;
+    switch (species)
+    {
+        // case NEXT_SPECIES_WITH_FORMS:
+        // imageOffsetFromBack += 1;
+        case 801:
+            imageOffsetFromBack += 3;
+        case 800:
+            imageOffsetFromBack += 1;
+        case 784:
+            imageOffsetFromBack += 1;
+        case 778:
+            imageOffsetFromBack += 1;
+        case 777:
+            imageOffsetFromBack += 7;
+        case 774:
+            imageOffsetFromBack += 1;
+        case 758:
+            imageOffsetFromBack += 1;
+        case 754:
+            imageOffsetFromBack += 1;
+        case 752:
+            imageOffsetFromBack += 1;
+        case 746:
+            imageOffsetFromBack += 2;
+        case 745:
+            imageOffsetFromBack += 1;
+        case 744:
+            imageOffsetFromBack += 1;
+        case 743:
+            imageOffsetFromBack += 3;
+        case 741:
+            imageOffsetFromBack += 1;
+        case 738:
+            imageOffsetFromBack += 1;
+        case 735:
+            imageOffsetFromBack += 1;
+        case 720:
+            imageOffsetFromBack += 1;
+        case 719:
+            imageOffsetFromBack += 4;
+        case 718:
+            imageOffsetFromBack += 1;
+        case 681:
+            imageOffsetFromBack += 1;
+        case 678:
+            imageOffsetFromBack += 9;
+        case 676:
+            imageOffsetFromBack += 4;
+        case 671:
+            imageOffsetFromBack += 5;
+        case 670:
+            imageOffsetFromBack += 4;
+        case 669:
+            imageOffsetFromBack += 19;
+        case 666:
+            imageOffsetFromBack += 2;
+        case 658:
+            imageOffsetFromBack += 1;
+        case 648:
+            imageOffsetFromBack += 1;
+        case 647:
+            imageOffsetFromBack += 2;
+        case 646:
+            imageOffsetFromBack += 1;
+        case 645:
+            imageOffsetFromBack += 1;
+        case 642:
+            imageOffsetFromBack += 1;
+        case 641:
+            imageOffsetFromBack += 3;
+        case 586:
+            imageOffsetFromBack += 3;
+        case 585:
+            imageOffsetFromBack += 1;
+        case 555:
+            imageOffsetFromBack += 1;
+        case 550:
+            imageOffsetFromBack += 1;
+        case 531:
+            imageOffsetFromBack += 1;
+        case 492:
+            imageOffsetFromBack += 1;
+        case 487:
+            imageOffsetFromBack += 5;
+        case 479:
+            imageOffsetFromBack += 1;
+        case 475:
+            imageOffsetFromBack += 1;
+        case 460:
+            imageOffsetFromBack += 1;
+        case 448:
+            imageOffsetFromBack += 1;
+        case 445:
+            imageOffsetFromBack += 1;
+        case 428:
+            imageOffsetFromBack += 1;
+        case 423:
+            imageOffsetFromBack += 1;
+        case 422:
+            imageOffsetFromBack += 1;
+        case 421:
+            imageOffsetFromBack += 2;
+        case 413:
+            imageOffsetFromBack += 2;
+        case 412:
+            imageOffsetFromBack += 3;
+        case 386:
+            imageOffsetFromBack += 1;
+        case 384:
+            imageOffsetFromBack += 1;
+        case 383:
+            imageOffsetFromBack += 1;
+        case 382:
+            imageOffsetFromBack += 1;
+        case 381:
+            imageOffsetFromBack += 1;
+        case 380:
+            imageOffsetFromBack += 1;
+        case 376:
+            imageOffsetFromBack += 1;
+        case 373:
+            imageOffsetFromBack += 1;
+        case 362:
+            imageOffsetFromBack += 1;
+        case 359:
+            imageOffsetFromBack += 1;
+        case 354:
+            imageOffsetFromBack += 3;
+        case 351:
+            imageOffsetFromBack += 1;
+        case 334:
+            imageOffsetFromBack += 1;
+        case 323:
+            imageOffsetFromBack += 1;
+        case 319:
+            imageOffsetFromBack += 1;
+        case 310:
+            imageOffsetFromBack += 1;
+        case 308:
+            imageOffsetFromBack += 1;
+        case 306:
+            imageOffsetFromBack += 1;
+        case 303:
+            imageOffsetFromBack += 1;
+        case 302:
+            imageOffsetFromBack += 1;
+        case 282:
+            imageOffsetFromBack += 1;
+        case 260:
+            imageOffsetFromBack += 1;
+        case 257:
+            imageOffsetFromBack += 1;
+        case 254:
+            imageOffsetFromBack += 1;
+        case 248:
+            imageOffsetFromBack += 1;
+        case 229:
+            imageOffsetFromBack += 1;
+        case 214:
+            imageOffsetFromBack += 1;
+        case 212:
+            imageOffsetFromBack += 1;
+        case 208:
+            imageOffsetFromBack += 1;
+        case 181:
+            imageOffsetFromBack += 1;
+        case 172:
+            imageOffsetFromBack += 2;
+        case 150:
+            imageOffsetFromBack += 1;
+        case 142:
+            imageOffsetFromBack += 1;
+        case 130:
+            imageOffsetFromBack += 1;
+        case 127:
+            imageOffsetFromBack += 1;
+        case 115:
+            imageOffsetFromBack += 2;
+        case 105:
+            imageOffsetFromBack += 1;
+        case 103:
+            imageOffsetFromBack += 1;
+        case 94:
+            imageOffsetFromBack += 1;
+        case 89:
+            imageOffsetFromBack += 1;
+        case 88:
+            imageOffsetFromBack += 1;
+        case 80:
+            imageOffsetFromBack += 1;
+        case 76:
+            imageOffsetFromBack += 1;
+        case 75:
+            imageOffsetFromBack += 1;
+        case 74:
+            imageOffsetFromBack += 1;
+        case 65:
+            imageOffsetFromBack += 1;
+        case 53:
+            imageOffsetFromBack += 1;
+        case 52:
+            imageOffsetFromBack += 1;
+        case 51:
+            imageOffsetFromBack += 1;
+        case 50:
+            imageOffsetFromBack += 1;
+        case 38:
+            imageOffsetFromBack += 1;
+        case 37:
+            imageOffsetFromBack += 1;
+        case 28:
+            imageOffsetFromBack += 1;
+        case 27:
+            imageOffsetFromBack += 1;
+        case 26:
+            imageOffsetFromBack += 13;
+        case 25:
+            imageOffsetFromBack += 2;
+        case 20:
+            imageOffsetFromBack += 1;
+        case 19:
+            imageOffsetFromBack += 1;
+        case 18:
+            imageOffsetFromBack += 1;
+        case 15:
+            imageOffsetFromBack += 1;
+        case 9:
+            imageOffsetFromBack += 2;
+        case 6:
+            imageOffsetFromBack += 1;
+        case 3:
+            imageOffsetFromBack += 0;
+    }
+#pragma GCC diagnostic pop
+
+    return imageOffsetFromBack;
+}
+
 void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, PKSM_Color color, float blend)
 {
     static C2D_ImageTint tint;
@@ -1272,242 +1515,353 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         }
         int imageOffsetFromBack = 0;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+        // In switch for constexpr evaluation
         switch (species)
         {
-            // case NEXT_SPECIES_WITH_FORMS:
-            // imageOffsetFromBack += 1;
             case 801:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(801);
+                break;
             case 800:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(800);
+                break;
             case 784:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(784);
+                break;
             case 778:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(778);
+                break;
             case 777:
-                imageOffsetFromBack += 7;
+                imageOffsetFromBack = getSpeciesOffset(777);
+                break;
             case 774:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(774);
+                break;
             case 758:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(758);
+                break;
             case 754:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(754);
+                break;
             case 752:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(752);
+                break;
             case 746:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(746);
+                break;
             case 745:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(745);
+                break;
             case 744:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(744);
+                break;
             case 743:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(743);
+                break;
             case 741:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(741);
+                break;
             case 738:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(738);
+                break;
             case 735:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(735);
+                break;
             case 720:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(720);
+                break;
             case 719:
-                imageOffsetFromBack += 4;
+                imageOffsetFromBack = getSpeciesOffset(719);
+                break;
             case 718:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(718);
+                break;
             case 681:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(681);
+                break;
             case 678:
-                imageOffsetFromBack += 9;
+                imageOffsetFromBack = getSpeciesOffset(678);
+                break;
             case 676:
-                imageOffsetFromBack += 4;
+                imageOffsetFromBack = getSpeciesOffset(676);
+                break;
             case 671:
-                imageOffsetFromBack += 5;
+                imageOffsetFromBack = getSpeciesOffset(671);
+                break;
             case 670:
-                imageOffsetFromBack += 4;
+                imageOffsetFromBack = getSpeciesOffset(670);
+                break;
             case 669:
-                imageOffsetFromBack += 19;
+                imageOffsetFromBack = getSpeciesOffset(669);
+                break;
             case 666:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(666);
+                break;
             case 658:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(658);
+                break;
             case 648:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(648);
+                break;
             case 647:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(647);
+                break;
             case 646:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(646);
+                break;
             case 645:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(645);
+                break;
             case 642:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(642);
+                break;
             case 641:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(641);
+                break;
             case 586:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(586);
+                break;
             case 585:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(585);
+                break;
             case 555:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(555);
+                break;
             case 550:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(550);
+                break;
             case 531:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(531);
+                break;
             case 492:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(492);
+                break;
             case 487:
-                imageOffsetFromBack += 5;
+                imageOffsetFromBack = getSpeciesOffset(487);
+                break;
             case 479:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(479);
+                break;
             case 475:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(475);
+                break;
             case 460:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(460);
+                break;
             case 448:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(448);
+                break;
             case 445:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(445);
+                break;
             case 428:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(428);
+                break;
             case 423:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(423);
+                break;
             case 422:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(422);
+                break;
             case 421:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(421);
+                break;
             case 413:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(413);
+                break;
             case 412:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(412);
+                break;
             case 386:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(386);
+                break;
             case 384:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(384);
+                break;
             case 383:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(383);
+                break;
             case 382:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(382);
+                break;
             case 381:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(381);
+                break;
             case 380:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(380);
+                break;
             case 376:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(376);
+                break;
             case 373:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(373);
+                break;
             case 362:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(362);
+                break;
             case 359:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(359);
+                break;
             case 354:
-                imageOffsetFromBack += 3;
+                imageOffsetFromBack = getSpeciesOffset(354);
+                break;
             case 351:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(351);
+                break;
             case 334:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(334);
+                break;
             case 323:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(323);
+                break;
             case 319:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(319);
+                break;
             case 310:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(310);
+                break;
             case 308:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(308);
+                break;
             case 306:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(306);
+                break;
             case 303:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(303);
+                break;
             case 302:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(302);
+                break;
             case 282:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(282);
+                break;
             case 260:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(260);
+                break;
             case 257:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(257);
+                break;
             case 254:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(254);
+                break;
             case 248:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(248);
+                break;
             case 229:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(229);
+                break;
             case 214:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(214);
+                break;
             case 212:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(212);
+                break;
             case 208:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(208);
+                break;
             case 181:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(181);
+                break;
             case 172:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(172);
+                break;
             case 150:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(150);
+                break;
             case 142:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(142);
+                break;
             case 130:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(130);
+                break;
             case 127:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(127);
+                break;
             case 115:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(115);
+                break;
             case 105:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(105);
+                break;
             case 103:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(103);
+                break;
             case 94:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(94);
+                break;
             case 89:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(89);
+                break;
             case 88:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(88);
+                break;
             case 80:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(80);
+                break;
             case 76:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(76);
+                break;
             case 75:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(75);
+                break;
             case 74:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(74);
+                break;
             case 65:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(65);
+                break;
             case 53:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(53);
+                break;
             case 52:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(52);
+                break;
             case 51:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(51);
+                break;
             case 50:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(50);
+                break;
             case 38:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(38);
+                break;
             case 37:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(37);
+                break;
             case 28:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(28);
+                break;
             case 27:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(27);
+                break;
             case 26:
-                imageOffsetFromBack += 13;
+                imageOffsetFromBack = getSpeciesOffset(26);
+                break;
             case 25:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(25);
+                break;
             case 20:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(20);
+                break;
             case 19:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(19);
+                break;
             case 18:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(18);
+                break;
             case 15:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(15);
+                break;
+
             case 9:
-                imageOffsetFromBack += 2;
+                imageOffsetFromBack = getSpeciesOffset(9);
+                break;
             case 6:
-                imageOffsetFromBack += 1;
+                imageOffsetFromBack = getSpeciesOffset(6);
+                break;
             case 3:
-                imageOffsetFromBack += 0;
+                imageOffsetFromBack = getSpeciesOffset(3);
+                break;
         }
-#pragma GCC diagnostic pop
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
         {
