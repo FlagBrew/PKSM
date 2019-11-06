@@ -34,9 +34,9 @@
 #include "loader.hpp"
 
 FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 6), formCount(formCount)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(30, 6), formCount(formCount)
 {
-    hid.update(40);
+    hid.update(30);
     if (object.index() == 0)
     {
         hid.select(std::get<0>(object)->alternativeForm());
