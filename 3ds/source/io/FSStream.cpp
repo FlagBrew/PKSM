@@ -35,12 +35,12 @@ FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags)
     mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
     if (R_SUCCEEDED(mResult))
     {
-        FSFILE_GetSize(mHandle, (u64*)&mSize);
+        FSFILE_GetSize(mHandle, &mSize);
         mGood = true;
     }
 }
 
-FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u32 size)
+FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size)
 {
     mGood   = false;
     mSize   = size;
@@ -81,7 +81,7 @@ Result FSStream::result(void)
     return mResult;
 }
 
-u32 FSStream::size(void)
+u64 FSStream::size(void)
 {
     return mSize;
 }
@@ -114,7 +114,7 @@ bool FSStream::eof(void)
     return mOffset >= mSize;
 }
 
-u32 FSStream::offset(void)
+u64 FSStream::offset(void)
 {
     return mOffset;
 }

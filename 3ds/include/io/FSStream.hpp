@@ -35,26 +35,26 @@ class FSStream
 {
 public:
     FSStream(FS_Archive archive, const std::u16string& path, u32 flags);
-    FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u32 size);
+    FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size);
     FSStream(FS_Archive archive, const std::string& path, u32 flags) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags) {}
-    FSStream(FS_Archive archive, const std::string& path, u32 flags, u32 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
-    ~FSStream(void){};
+    FSStream(FS_Archive archive, const std::string& path, u32 flags, u64 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
+    ~FSStream() {}
 
-    Result close(void);
-    bool eof(void);
-    bool good(void);
-    u32 offset(void);
+    Result close();
+    bool eof();
+    bool good();
+    u64 offset();
     u32 read(void* buf, u32 size);
-    Result result(void);
-    u32 size(void);
+    Result result();
+    u64 size();
     u32 write(const void* buf, u32 size);
     void seek(u32 offset, int from);
-    Handle getRawHandle(void);
+    Handle getRawHandle();
 
 private:
     Handle mHandle;
-    u32 mSize;
-    u32 mOffset;
+    u64 mSize;
+    u64 mOffset;
     Result mResult;
     bool mGood;
 };
