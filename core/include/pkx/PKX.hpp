@@ -56,6 +56,8 @@ protected:
     u8* data;
 
 public:
+    static constexpr int PKSM_MAX_SPECIES = 809;
+
     virtual u8* rawData(void) { return data; }
     void decrypt(void);
     void encrypt(void);

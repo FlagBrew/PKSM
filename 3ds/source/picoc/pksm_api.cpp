@@ -1228,7 +1228,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
             break;
     }
 
-    if (pkm->species() == 0)
+    if (pkm->species() == 0 || pkm->species() > PKX::PKSM_MAX_SPECIES)
     {
         ReturnValue->Val->Integer = 0;
     }
