@@ -410,6 +410,43 @@ static void cartScan(void*)
 #endif
 }
 
+bool showLogo = true;
+void drawLogo(void)
+{
+    int xPos = 179;
+    int yPos = 96;
+
+    int xDir = randomNumbers() % 3 + 1;
+    if(randomNumbers() % 2) xDir *= -1;
+
+    int yDir = randomNumbers() % 3 + 1;
+    if(randomNumbers() % 2) yDir *= -1;
+
+    while (showLogo)
+    {
+        int x = 0;
+        int y = 0;
+        u16 w, h;
+        std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
+        for (auto& line : bootSplash)
+        {
+            std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (xPos + x++) * 3 * 240 + (yPos + y) * 3);
+        }
+
+        if (yPos > 189 || yPos < 3)
+            yDir *= -1;
+        yPos += yDir;
+
+        if (xPos > 349 || xPos < 3)
+            xDir *= -1;
+        xPos += xDir;
+
+        gfxFlushBuffers();
+        gfxSwapBuffersGpu();
+        gspWaitForVBlank();
+    }
+}
+
 Result App::init(const std::string& execPath)
 {
     Result res;
@@ -417,14 +454,9 @@ Result App::init(const std::string& execPath)
     hidInit();
     gfxInitDefault();
 
-    int x = 176;
-    int y = 96;
-    u16 w, h;
-    for (auto& line : bootSplash)
-    {
-        std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + x++ * 3 * 240 + y * 3);
-    }
-    gfxSwapBuffersGpu();
+    randomNumbers.seed(osGetTime());
+
+    Threads::create((ThreadFunc)drawLogo);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
@@ -465,6 +497,8 @@ Result App::init(const std::string& execPath)
     i18n::init();
     Configuration::getInstance();
 
+    showLogo = false;
+
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
         Result res = -1;
@@ -502,8 +536,6 @@ Result App::init(const std::string& execPath)
 
     doCartScan.test_and_set();
     Threads::create((ThreadFunc)cartScan);
-
-    randomNumbers.seed(osGetTime());
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
