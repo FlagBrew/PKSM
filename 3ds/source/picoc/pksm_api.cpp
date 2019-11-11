@@ -29,6 +29,8 @@
 #include "Configuration.hpp"
 #include "FortyChoice.hpp"
 #include "PB7.hpp"
+#include "PGF.hpp"
+#include "PGT.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
@@ -36,6 +38,10 @@
 #include "STDirectory.hpp"
 #include "Sav4.hpp"
 #include "ThirtyChoice.hpp"
+#include "WB7.hpp"
+#include "WC4.hpp"
+#include "WC6.hpp"
+#include "WC7.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
@@ -2111,5 +2117,49 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
         ret[data.size()]                  = '\0';
         ReturnValue->Val->UnsignedInteger = (u32)ret;
     }
+}
+
+void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    Generation gen       = Generation(Param[1]->Val->Integer);
+    int slot             = Param[2]->Val->Integer;
+    bool alternateFormat = (bool)(Param[3]->Val->Integer);
+    checkGen(Parser, gen);
+
+    std::shared_ptr<WCX> wcx = nullptr;
+
+    switch (gen)
+    {
+        case Generation::FOUR:
+            if (alternateFormat)
+            {
+                wcx = std::make_shared<WC4>(data);
+            }
+            else
+            {
+                wcx = std::make_shared<PGT>(data);
+            }
+            break;
+        case Generation::FIVE:
+            wcx = std::make_shared<PGF>(data);
+            break;
+        case Generation::SIX:
+            wcx = std::make_shared<WC6>(data, alternateFormat);
+            break;
+        case Generation::SEVEN:
+            wcx = std::make_shared<WC7>(data, alternateFormat);
+            break;
+        case Generation::LGPE:
+            wcx = std::make_shared<WB7>(data, alternateFormat);
+            break;
+    }
+
+    TitleLoader::save->mysteryGift(*wcx, slot);
+}
+
+void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = TitleLoader::save->emptyGiftLocation();
 }
 }

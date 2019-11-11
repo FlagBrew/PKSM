@@ -22,6 +22,8 @@ struct LibraryFunction UnixFunctions[] =
     { sav_boxEncrypt,       "void sav_box_encrypt();" },
     { sav_get_pkx,          "void sav_get_pkx(char* data, int box, int slot);" },
     { sav_inject_pkx,       "void sav_inject_pkx(char* data, enum Generation type, int box, int slot, int doTradeEdits);" },
+    { sav_inject_wcx,       "void sav_inject_wcx(char* data, enum Generation type, int slot, int alternateFormat);" },
+    { sav_wcx_free_slot,    "int sav_wcx_free_slot();" },
     { sav_get_value,        "int sav_get_value(enum SAV_Field field, ...);" },
     { sav_get_max,          "int sav_get_max(enum SAV_MaxField field, ...);" },
     { sav_get_string,       "char* sav_get_string(unsigned int offset, unsigned int codepoints);" },
