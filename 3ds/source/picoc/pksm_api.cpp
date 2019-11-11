@@ -95,6 +95,7 @@ static void checkGen(struct ParseState* Parser, Generation gen)
         case Generation::SIX:
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             break;
         default:
             scriptFail(Parser, "Generation is not possible!");
@@ -234,10 +235,7 @@ void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct
         ret->data   = (char**)malloc(sizeof(char*) * directory.count());
         for (size_t i = 0; i < directory.count(); i++)
         {
-            std::string item          = dir + "/" + directory.item(i);
-            ret->data[i]              = (char*)malloc(sizeof(char) * (item.size() + 1));
-            ret->data[i][item.size()] = '\0';
-            strcpy(ret->data[i], item.data());
+            ret->data[i] = (char*)strToRet(dir + '/' + directory.item(i));
         }
     }
     else

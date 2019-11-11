@@ -45,6 +45,8 @@ const char* genToCstring(Generation gen)
             return "6";
         case Generation::SEVEN:
             return "7";
+        case Generation::EIGHT:
+            return "8";
         default:
             return "INVALID";
     }
@@ -74,6 +76,10 @@ Generation stringToGen(const std::string& str)
     {
         return Generation::LGPE;
     }
+    else if (str == "8")
+    {
+        return Generation::EIGHT;
+    }
     return Generation::UNUSED;
 }
 
@@ -102,7 +108,15 @@ bool operator<(Generation g1, Generation g2)
                 return true;
             }
         case Generation::LGPE:
-            return g2 == Generation::UNUSED;
+            if (g2 == Generation::EIGHT)
+            {
+                return true;
+            }
+        case Generation::EIGHT:
+            if (g2 == Generation::UNUSED)
+            {
+                return true;
+            }
         case Generation::UNUSED:
         default:
             return false;

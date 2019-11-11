@@ -37,6 +37,7 @@ enum class Generation : u32
     SIX,
     SEVEN,
     LGPE,
+    EIGHT,
     UNUSED = 0xFF
 };
 
