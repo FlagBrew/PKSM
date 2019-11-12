@@ -100,8 +100,8 @@ bool receiveSaveFromBridge(void)
 
     lastIPAddr = servaddr.sin_addr;
 
-    size_t size = 0x100000;
-    char* data  = new char[size];
+    size_t size                = 0x100000;
+    std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[size]);
 
     size_t total = 0;
     size_t chunk = 1024;
@@ -109,7 +109,7 @@ bool receiveSaveFromBridge(void)
     while (total < size)
     {
         size_t torecv = size - total > chunk ? chunk : size - total;
-        n             = recv(fdconn, data + total, torecv, 0);
+        n             = recv(fdconn, &data[total], torecv, 0);
         total += n;
         if (n <= 0)
         {
@@ -123,7 +123,7 @@ bool receiveSaveFromBridge(void)
 
     if (n == 0 || total == size)
     {
-        if (TitleLoader::load((u8*)data, total))
+        if (TitleLoader::load(data, total))
         {
             saveFromBridge = true;
             Gui::setScreen(std::make_unique<MainMenu>());
@@ -134,7 +134,6 @@ bool receiveSaveFromBridge(void)
         Gui::error(i18n::localize("DATA_RECEIVE_FAIL"), errno);
     }
 
-    delete[] data;
     return true;
 }
 
@@ -168,7 +167,7 @@ bool sendSaveToBridge(void)
     while (total < size)
     {
         size_t tosend = size - total > chunk ? chunk : size - total;
-        n             = send(fd, TitleLoader::save->rawData() + total, tosend, 0);
+        n             = send(fd, TitleLoader::save->rawData().get() + total, tosend, 0);
         if (n == -1)
         {
             break;
@@ -201,7 +200,7 @@ void backupBridgeChanges()
     FSStream out     = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
-        out.write(TitleLoader::save->rawData(), TitleLoader::save->getLength());
+        out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     }
     out.close();
 }

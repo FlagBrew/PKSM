@@ -32,7 +32,7 @@
 class SavPT : public Sav4
 {
 public:
-    SavPT(u8* dt);
+    SavPT(std::shared_ptr<u8[]> dt);
     virtual ~SavPT(){};
 
     std::map<Pouch, std::vector<int>> validItems(void) const override;

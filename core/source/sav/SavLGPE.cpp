@@ -32,15 +32,13 @@
 #include "utils.hpp"
 #include <algorithm>
 
-SavLGPE::SavLGPE(u8* dt)
+SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt)
 {
     length  = 0x100000;
     boxes   = 34; // Ish
     game    = Game::LGPE;
     PokeDex = 0x2A00;
-
-    data = new u8[length]{0};
-    std::copy(dt, dt + 0xB8800, data);
+    data    = dt;
 }
 
 SavLGPE::~SavLGPE() {}
@@ -52,12 +50,12 @@ u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 
 u16 SavLGPE::partyBoxSlot(u8 slot) const
 {
-    return *(u16*)(data + 0x5A00 + slot * 2);
+    return *(u16*)(&data[0x5A00 + slot * 2]);
 }
 
 void SavLGPE::partyBoxSlot(u8 slot, u16 v)
 {
-    *(u16*)(data + 0x5A00 + slot * 2) = v;
+    *(u16*)(&data[0x5A00 + slot * 2]) = v;
 }
 
 u32 SavLGPE::partyOffset(u8 slot) const
@@ -72,22 +70,22 @@ u32 SavLGPE::partyOffset(u8 slot) const
 
 u16 SavLGPE::boxedPkm() const
 {
-    return *(u16*)(data + 0x5A00 + 14);
+    return *(u16*)(&data[0x5A00 + 14]);
 }
 
 void SavLGPE::boxedPkm(u16 v)
 {
-    *(u16*)(data + 0x5A00 + 14) = v;
+    *(u16*)(&data[0x5A00 + 14]) = v;
 }
 
 u16 SavLGPE::followPkm() const
 {
-    return *(u16*)(data + 0x5A00 + 12);
+    return *(u16*)(&data[0x5A00 + 12]);
 }
 
 void SavLGPE::followPkm(u16 v)
 {
-    *(u16*)(data + 0x5A00 + 12) = v;
+    *(u16*)(&data[0x5A00 + 12]) = v;
 }
 
 u8 SavLGPE::partyCount() const
@@ -137,19 +135,19 @@ void SavLGPE::compressBox()
     for (u16 i = 0; i < 1000; i++)
     {
         u32 offset = boxOffset(i / 30, i % 30);
-        if (emptyIndex == 1001 && !isPKM(data + offset))
+        if (emptyIndex == 1001 && !isPKM(&data[offset]))
         {
             emptyIndex = i;
         }
         else if (emptyIndex != 1001)
         {
-            if (isPKM(data + offset))
+            if (isPKM(&data[offset]))
             {
                 u32 emptyOffset = boxOffset(emptyIndex / 30, emptyIndex % 30);
                 // Swap the two slots
-                std::copy(data + emptyOffset, data + emptyOffset + 260, emptyData);
-                std::copy(data + offset, data + offset + 260, data + emptyOffset);
-                std::copy(emptyData, emptyData + 260, data + offset);
+                std::copy(&data[emptyOffset], &data[emptyOffset + 260], emptyData);
+                std::copy(&data[offset], &data[offset + 260], &data[emptyOffset]);
+                std::copy(emptyData, emptyData + 260, &data[offset]);
                 for (int j = 0; j < partyCount(); j++)
                 {
                     if (partyBoxSlot(j) == i)
@@ -185,8 +183,8 @@ void SavLGPE::resign()
 
     for (u8 i = 0; i < blockCount; i++)
     {
-        std::copy(data + chkofs[i], data + chkofs[i] + chklen[i], tmp);
-        *(u16*)(data + csoff + i * 8) = check16(tmp, *(u16*)(data + csoff + i * 8 - 2), chklen[i]);
+        std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
+        *(u16*)(&data[csoff + i * 8]) = check16(tmp, *(u16*)(&data[csoff + i * 8 - 2]), chklen[i]);
     }
 
     delete[] tmp;
@@ -194,72 +192,72 @@ void SavLGPE::resign()
 
 u16 SavLGPE::TID() const
 {
-    return *(u16*)(data + 0x1000);
+    return *(u16*)(&data[0x1000]);
 }
 
 void SavLGPE::TID(u16 v)
 {
-    *(u16*)(data + 0x1000) = v;
+    *(u16*)(&data[0x1000]) = v;
 }
 
 u16 SavLGPE::SID() const
 {
-    return *(u16*)(data + 0x1002);
+    return *(u16*)(&data[0x1002]);
 }
 
 void SavLGPE::SID(u16 v)
 {
-    *(u16*)(data + 0x1002) = v;
+    *(u16*)(&data[0x1002]) = v;
 }
 
 u8 SavLGPE::version() const
 {
-    return *(data + 0x1004);
+    return data[0x1004];
 }
 
 void SavLGPE::version(u8 v)
 {
-    *(data + 0x1004) = v;
+    data[0x1004] = v;
 }
 
 u8 SavLGPE::gender() const
 {
-    return *(data + 0x1005);
+    return data[0x1005];
 }
 
 void SavLGPE::gender(u8 v)
 {
-    *(data + 0x1005) = v;
+    data[0x1005] = v;
 }
 
 Language SavLGPE::language() const
 {
-    return Language(*(data + 0x1035));
+    return Language(data[0x1035]);
 }
 
 void SavLGPE::language(Language v)
 {
-    *(data + 0x1035) = u8(v);
+    data[0x1035] = u8(v);
 }
 
 std::string SavLGPE::otName() const
 {
-    return StringUtils::getString(data, 0x1000 + 0x38, 13);
+    return StringUtils::getString(data.get(), 0x1000 + 0x38, 13);
 }
 
 void SavLGPE::otName(const std::string& v)
 {
-    StringUtils::setString(data, v, 0x1000 + 0x38, 13);
+    StringUtils::setString(data.get(), v, 0x1000 + 0x38, 13);
 }
 
 u32 SavLGPE::money() const
 {
-    return *(u32*)(data + 0x4C04);
+    return *(u32*)(&data[0x4C04]);
 }
 
 void SavLGPE::money(u32 v)
 {
-    *(u32*)(data + 0x4C04) = v;
+    *(u32*)(&data[0x4C04]) = v;
 }
 
 u8 SavLGPE::badges() const
@@ -277,38 +275,38 @@ u8 SavLGPE::badges() const
         u8 b8 : 1;
         u8 unimportant2 : 4;
     } badgeBits;
-    std::copy(data + 0x21b1, data + 0x21b1 + 2, (u8*)&badgeBits);
+    std::copy(&data[0x21b1], &data[0x21b1 + 2], (u8*)&badgeBits);
     return badgeBits.b1 + badgeBits.b2 + badgeBits.b3 + badgeBits.b4 + badgeBits.b5 + badgeBits.b6 + badgeBits.b7 + badgeBits.b8;
 }
 
 u16 SavLGPE::playedHours(void) const
 {
-    return *(u16*)(data + 0x45400);
+    return *(u16*)(&data[0x45400]);
 }
 
 void SavLGPE::playedHours(u16 v)
 {
-    *(u16*)(data + 0x45400) = v;
+    *(u16*)(&data[0x45400]) = v;
 }
 
 u8 SavLGPE::playedMinutes(void) const
 {
-    return *(data + 0x45402);
+    return data[0x45402];
 }
 
 void SavLGPE::playedMinutes(u8 v)
 {
-    *(data + 0x45402) = v;
+    data[0x45402] = v;
 }
 
 u8 SavLGPE::playedSeconds(void) const
 {
-    return *(data + 0x45403);
+    return data[0x45403];
 }
 
 void SavLGPE::playedSeconds(u8 v)
 {
-    *(data + 0x45403) = v;
+    data[0x45403] = v;
 }
 
 std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
@@ -316,7 +314,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
     u32 off = partyOffset(slot);
     if (off != 0)
     {
-        return std::make_shared<PB7>(data + off);
+        return std::make_shared<PB7>(&data[off]);
     }
     else
     {
@@ -326,7 +324,7 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 slot) const
 
 std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
 {
-    return std::make_shared<PB7>(data + boxOffset(box, slot), ekx);
+    return std::make_shared<PB7>(&data[boxOffset(box, slot)], ekx);
 }
 
 bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -338,7 +336,7 @@ bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
         {
             trade(pk);
         }
-        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + boxOffset(box, slot));
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[boxOffset(box, slot)]);
     }
     return (bool)pk;
 }
@@ -351,7 +349,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
     {
         if (off != 0)
         {
-            std::fill_n(data + off, 260, 0);
+            std::fill_n(&data[off], 260, 0);
         }
         partyBoxSlot(slot, 1001);
         return;
@@ -360,7 +358,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
     {
         for (int i = 999; i >= 0; i--)
         {
-            if (!isPKM(data + 0x5C00 + i * 260))
+            if (!isPKM(&data[0x5C00 + i * 260]))
             {
                 off     = boxOffset(i / 30, i % 30);
                 newSlot = i;
@@ -374,7 +372,7 @@ void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
         }
     }
 
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), data + off);
+    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
     partyBoxSlot(slot, newSlot);
 }
 
@@ -522,7 +520,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(data + PokeDex + 0x8E8 + shift * 4) = pk->encryptionConstant();
+            *(u32*)(&data[PokeDex + 0x8E8 + shift * 4]) = pk->encryptionConstant();
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -616,7 +614,7 @@ void SavLGPE::cryptBoxData(bool crypted)
             {
                 return;
             }
-            std::unique_ptr<PKX> pb7 = std::make_unique<PB7>(data + boxOffset(box, slot), crypted, true);
+            std::unique_ptr<PKX> pb7 = std::make_unique<PB7>(&data[boxOffset(box, slot)], crypted, true);
             if (!crypted)
             {
                 pb7->encrypt();
@@ -986,7 +984,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::Medicine:
             if (slot < 60)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[slot * 4]);
             }
             else
             {
@@ -996,7 +994,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::TM:
             if (slot < 108)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0xF0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0xF0 + slot * 4]);
             }
             else
             {
@@ -1006,7 +1004,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::Candy:
             if (slot < 200)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x2A0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0x2A0 + slot * 4]);
             }
             else
             {
@@ -1016,7 +1014,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::ZCrystals:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x5C0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0x5C0 + slot * 4]);
             }
             else
             {
@@ -1026,7 +1024,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::Ball:
             if (slot < 50)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x818 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0x818 + slot * 4]);
             }
             else
             {
@@ -1036,7 +1034,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::Battle:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0x8E0 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0x8E0 + slot * 4]);
             }
             else
             {
@@ -1047,7 +1045,7 @@ void SavLGPE::item(const Item& item, Pouch pouch, u16 slot)
         case Pouch::NormalItem:
             if (slot < 150)
             {
-                std::copy(writeData.first, writeData.first + writeData.second, data + 0xB38 + slot * 4);
+                std::copy(writeData.first, writeData.first + writeData.second, &data[0xB38 + slot * 4]);
             }
             else
             {
@@ -1065,20 +1063,20 @@ std::unique_ptr<Item> SavLGPE::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case Pouch::Medicine:
-            return std::make_unique<Item7b>(data + slot * 4);
+            return std::make_unique<Item7b>(&data[slot * 4]);
         case Pouch::TM:
-            return std::make_unique<Item7b>(data + 0xF0 + slot * 4);
+            return std::make_unique<Item7b>(&data[0xF0 + slot * 4]);
         case Pouch::Candy:
-            return std::make_unique<Item7b>(data + 0x2A0 + slot * 4);
+            return std::make_unique<Item7b>(&data[0x2A0 + slot * 4]);
         case Pouch::ZCrystals:
-            return std::make_unique<Item7b>(data + 0x5C0 + slot * 4);
+            return std::make_unique<Item7b>(&data[0x5C0 + slot * 4]);
         case Pouch::Ball:
-            return std::make_unique<Item7b>(data + 0x818 + slot * 4);
+            return std::make_unique<Item7b>(&data[0x818 + slot * 4]);
         case Pouch::Battle:
-            return std::make_unique<Item7b>(data + 0x8E0 + slot * 4);
+            return std::make_unique<Item7b>(&data[0x8E0 + slot * 4]);
         case Pouch::KeyItem:
         case Pouch::NormalItem:
-            return std::make_unique<Item7b>(data + 0xB38 + slot * 4);
+            return std::make_unique<Item7b>(&data[0xB38 + slot * 4]);
         default:
             return nullptr;
     }

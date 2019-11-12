@@ -57,7 +57,7 @@ private:
         0x23F72, 0x23F74, 0x23F76, 0x23F78, 0x23F7A, 0x23F7C, 0x23F7E, 0x23F80, 0x23F82, 0x23F84, 0x23F86, 0x23F88, 0x23F9A};
 
 public:
-    SavBW(u8* dt);
+    SavBW(std::shared_ptr<u8[]> dt);
     virtual ~SavBW();
 
     void resign(void) override;

@@ -43,7 +43,7 @@ protected:
         0x00308, 0x00618, 0x0025C, 0x00834, 0x00318, 0x007D0, 0x00C48, 0x00078, 0x00200, 0x00C84, 0x00628, 0x34AD0, 0x0E058};
 
 public:
-    SavXY(u8* dt);
+    SavXY(std::shared_ptr<u8[]> dt);
     virtual ~SavXY(){};
 
     void resign(void) override;

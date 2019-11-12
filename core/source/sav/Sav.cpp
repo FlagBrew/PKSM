@@ -37,11 +37,6 @@
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
 
-Sav::~Sav()
-{
-    delete[] data;
-}
-
 u16 Sav::ccitt16(const u8* buf, u32 len)
 {
     u16 crc = 0xFFFF;
@@ -59,7 +54,7 @@ u16 Sav::ccitt16(const u8* buf, u32 len)
     return crc;
 }
 
-std::unique_ptr<Sav> Sav::getSave(u8* dt, size_t length)
+std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
 {
     switch (length)
     {
@@ -81,16 +76,16 @@ std::unique_ptr<Sav> Sav::getSave(u8* dt, size_t length)
     }
 }
 
-bool Sav::isValidDSSave(u8* dt)
+bool Sav::isValidDSSave(std::shared_ptr<u8[]> dt)
 {
-    u16 chk1    = *(u16*)(dt + 0x24000 - 0x100 + 0x8C + 0xE);
-    u16 actual1 = ccitt16(dt + 0x24000 - 0x100, 0x8C);
+    u16 chk1    = *(u16*)(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
+    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
     if (chk1 == actual1)
     {
         return true;
     }
-    u16 chk2    = *(u16*)(dt + 0x26000 - 0x100 + 0x94 + 0xE);
-    u16 actual2 = ccitt16(dt + 0x26000 - 0x100, 0x94);
+    u16 chk2    = *(u16*)(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
+    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
     if (chk2 == actual2)
     {
         return true;
@@ -117,16 +112,16 @@ bool Sav::isValidDSSave(u8* dt)
     return false;
 }
 
-std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
+std::unique_ptr<Sav> Sav::checkDSType(std::shared_ptr<u8[]> dt)
 {
-    u16 chk1    = *(u16*)(dt + 0x24000 - 0x100 + 0x8C + 0xE);
-    u16 actual1 = ccitt16(dt + 0x24000 - 0x100, 0x8C);
+    u16 chk1    = *(u16*)(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
+    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
     if (chk1 == actual1)
     {
         return std::make_unique<SavBW>(dt);
     }
-    u16 chk2    = *(u16*)(dt + 0x26000 - 0x100 + 0x94 + 0xE);
-    u16 actual2 = ccitt16(dt + 0x26000 - 0x100, 0x94);
+    u16 chk2    = *(u16*)(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
+    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
     if (chk2 == actual2)
     {
         return std::make_unique<SavB2W2>(dt);
@@ -153,17 +148,17 @@ std::unique_ptr<Sav> Sav::checkDSType(u8* dt)
     return nullptr;
 }
 
-bool Sav::validSequence(u8* dt, size_t offset)
+bool Sav::validSequence(std::shared_ptr<u8[]> dt, size_t offset)
 {
     static constexpr u32 DATE_INTERNATIONAL = 0x20060623;
     static constexpr u32 DATE_KOREAN        = 0x20070903;
 
-    if (*(u32*)(dt + offset - 0xC) != (offset & 0xFFFF))
+    if (*(u32*)(&dt[offset - 0xC]) != (offset & 0xFFFF))
     {
         return false;
     }
 
-    return *(u32*)(dt + offset - 0x8) == DATE_INTERNATIONAL || *(u32*)(dt + offset - 0x8) == DATE_KOREAN;
+    return *(u32*)(&dt[offset - 0x8]) == DATE_INTERNATIONAL || *(u32*)(&dt[offset - 0x8]) == DATE_KOREAN;
 }
 
 std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)

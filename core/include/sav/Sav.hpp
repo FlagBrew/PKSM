@@ -72,12 +72,12 @@ protected:
         0x4F40, 0x8D01, 0x4DC0, 0x4C80, 0x8C41, 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641, 0x8201, 0x42C0, 0x4380, 0x8341,
         0x4100, 0x81C1, 0x8081, 0x4040};
 
-    u8* data;
+    std::shared_ptr<u8[]> data;
     u32 length = 0;
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
-    static std::unique_ptr<Sav> checkDSType(u8* dt);
-    static bool validSequence(u8* dt, size_t offset);
+    static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
+    static bool validSequence(std::shared_ptr<u8[]> dt, size_t offset);
 
     virtual int maxSpecies(void) const = 0;
     virtual int maxMove(void) const    = 0;
@@ -125,11 +125,11 @@ public:
 
     u8 boxes = 0;
 
-    virtual ~Sav();
+    virtual ~Sav() {}
     virtual void resign(void) = 0;
 
-    static bool isValidDSSave(u8* dt);
-    static std::unique_ptr<Sav> getSave(u8* dt, size_t length);
+    static bool isValidDSSave(std::shared_ptr<u8[]> dt);
+    static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
 
     virtual u16 TID(void) const               = 0;
     virtual void TID(u16 v)                   = 0;
@@ -208,7 +208,7 @@ public:
     virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
     u32 getLength() { return length; }
-    u8* rawData() { return data; }
+    std::shared_ptr<u8[]> rawData() { return data; }
 
     // Personal interface
     virtual u8 formCount(u16 species) const = 0;

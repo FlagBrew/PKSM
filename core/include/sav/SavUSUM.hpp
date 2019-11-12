@@ -61,7 +61,7 @@ protected:
     int dexFormCount(int species) const override;
 
 public:
-    SavUSUM(u8* dt);
+    SavUSUM(std::shared_ptr<u8[]> dt);
     virtual ~SavUSUM(){};
 
     void resign(void) override;
