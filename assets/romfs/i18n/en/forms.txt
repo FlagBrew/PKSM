@@ -181,3 +181,20 @@ School
 Sunny
 Rainy
 Snowy
+Galarian
+Gigantamax
+Gulping
+Gorging
+Low Key
+Ruby Cream
+Matcha Cream
+Mint Cream
+Lemon Cream
+Salted Cream
+Ruby Swirl
+Caramel Swirl
+Rainbow Swirl
+Noice Face
+Hangry Mode
+Crowned Sword
+Eternamax
