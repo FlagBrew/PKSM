@@ -170,29 +170,7 @@ const std::string& LanguageStrings::ball(u8 v) const
 const std::string& LanguageStrings::form(u16 species, u8 form, Generation generation) const
 {
     std::string sSpecies = std::to_string((int)species);
-    if (!formJson().contains(sSpecies))
-    {
-        // Not sure how the json sorts it, so just do a linear search. Aren't that many (only 44) anyways
-        for (int i : formJson()["megas"])
-        {
-            if (i == species)
-            {
-                if (form == 1)
-                {
-                    return forms.at(146);
-                }
-                else if (form == 0)
-                {
-                    return forms.at(0);
-                }
-                else
-                {
-                    return localize("INVALID_FORM");
-                }
-            }
-        }
-    }
-    else
+    if (formJson().contains(sSpecies))
     {
         std::vector<int> formIndices;
         if (formJson()[sSpecies].is_object())
