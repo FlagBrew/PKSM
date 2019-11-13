@@ -163,11 +163,11 @@ void PB7::experience(u32 v)
     *(u32*)(data + 0x10) = v;
 }
 
-u8 PB7::ability(void) const
+u16 PB7::ability(void) const
 {
     return data[0x14];
 }
-void PB7::ability(u8 v)
+void PB7::ability(u16 v)
 {
     data[0x14] = v;
 }
@@ -241,11 +241,11 @@ void PB7::gender(u8 v)
     data[0x1D] = u8((data[0x1D] & ~0x06) | (v << 1));
 }
 
-u8 PB7::alternativeForm(void) const
+u16 PB7::alternativeForm(void) const
 {
     return data[0x1D] >> 3;
 }
-void PB7::alternativeForm(u8 v)
+void PB7::alternativeForm(u16 v)
 {
     data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3));
 }

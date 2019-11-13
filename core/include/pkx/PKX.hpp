@@ -63,7 +63,7 @@ public:
     void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) const = 0;
     virtual ~PKX(){};
-    static std::shared_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false);
+    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
 
     virtual Generation generation(void) const = 0;
@@ -95,8 +95,8 @@ public:
     virtual void SID(u16 v)                         = 0;
     virtual u32 experience(void) const              = 0;
     virtual void experience(u32 v)                  = 0;
-    virtual u8 ability(void) const                  = 0;
-    virtual void ability(u8 v)                      = 0;
+    virtual u16 ability(void) const                 = 0;
+    virtual void ability(u16 v)                     = 0;
     virtual u8 abilityNumber(void) const            = 0;
     virtual void abilityNumber(u8 v)                = 0;
     virtual void setAbility(u8 abilityNumber)       = 0;
@@ -110,8 +110,8 @@ public:
     virtual void fatefulEncounter(bool v)           = 0;
     virtual u8 gender(void) const                   = 0;
     virtual void gender(u8 g)                       = 0;
-    virtual u8 alternativeForm(void) const          = 0;
-    virtual void alternativeForm(u8 v)              = 0;
+    virtual u16 alternativeForm(void) const         = 0;
+    virtual void alternativeForm(u16 v)             = 0;
     virtual u8 ev(Stat ev) const                    = 0;
     virtual void ev(Stat ev, u8 v)                  = 0;
     virtual u8 contest(u8 contest) const            = 0;

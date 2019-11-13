@@ -227,11 +227,11 @@ void PK5::otFriendship(u8 v)
     data[0x14] = v;
 }
 
-u8 PK5::ability(void) const
+u16 PK5::ability(void) const
 {
     return data[0x15];
 }
-void PK5::ability(u8 v)
+void PK5::ability(u16 v)
 {
     data[0x15] = v;
 }
@@ -399,11 +399,11 @@ void PK5::gender(u8 g)
     }
 }
 
-u8 PK5::alternativeForm(void) const
+u16 PK5::alternativeForm(void) const
 {
     return data[0x40] >> 3;
 }
-void PK5::alternativeForm(u8 v)
+void PK5::alternativeForm(u16 v)
 {
     data[0x40] = u8((data[0x40] & 0x07) | (v << 3));
 }

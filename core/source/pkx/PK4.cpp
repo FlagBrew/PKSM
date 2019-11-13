@@ -223,11 +223,11 @@ void PK4::otFriendship(u8 v)
     data[0x14] = v;
 }
 
-u8 PK4::ability(void) const
+u16 PK4::ability(void) const
 {
     return data[0x15];
 }
-void PK4::ability(u8 v)
+void PK4::ability(u16 v)
 {
     data[0x15] = v;
 }
@@ -395,11 +395,11 @@ void PK4::gender(u8 g)
     }
 }
 
-u8 PK4::alternativeForm(void) const
+u16 PK4::alternativeForm(void) const
 {
     return data[0x40] >> 3;
 }
-void PK4::alternativeForm(u8 v)
+void PK4::alternativeForm(u16 v)
 {
     data[0x40] = u8((data[0x40] & 0x07) | (v << 3));
 }

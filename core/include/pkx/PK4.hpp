@@ -88,8 +88,8 @@ public:
     void experience(u32 v) override;
     u8 otFriendship(void) const override;
     void otFriendship(u8 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
     Language language(void) const override;
@@ -119,8 +119,8 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 shinyLeaf(void) const;
     void shinyLeaf(u8 v);
     u8 nature(void) const override;

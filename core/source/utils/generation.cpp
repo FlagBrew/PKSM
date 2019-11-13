@@ -47,9 +47,10 @@ const char* genToCstring(Generation gen)
             return "7";
         case Generation::EIGHT:
             return "8";
-        default:
+        case Generation::UNUSED:
             return "INVALID";
     }
+    return "INVALID";
 }
 
 #pragma GCC diagnostic push

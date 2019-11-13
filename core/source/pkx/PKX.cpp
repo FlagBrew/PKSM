@@ -30,6 +30,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "PKFilter.hpp"
 #include "random.hpp"
 
@@ -347,9 +348,16 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
             genderTypeFinder = PersonalXYORAS::gender;
             break;
         case Generation::SEVEN:
-        default:
             genderTypeFinder = PersonalSMUSUM::gender;
             break;
+        case Generation::LGPE:
+            genderTypeFinder = PersonalLGPE::gender;
+            break;
+        case Generation::EIGHT:
+            genderTypeFinder = PersonalSWSH::gender;
+            break;
+        case Generation::UNUSED:
+            return 0;
     }
 
     u8 genderType = genderTypeFinder(species);
@@ -429,42 +437,57 @@ u32 PKX::formatTID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return TID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 u32 PKX::formatSID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return SID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 
-std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
+std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party, bool directAccess)
 {
     switch (gen)
     {
         case Generation::FOUR:
-            return std::make_shared<PK4>(data, ekx, party);
+            return std::make_unique<PK4>(data, ekx, party, directAccess);
         case Generation::FIVE:
-            return std::make_shared<PK5>(data, ekx, party);
+            return std::make_unique<PK5>(data, ekx, party, directAccess);
         case Generation::SIX:
-            return std::make_shared<PK6>(data, ekx, party);
+            return std::make_unique<PK6>(data, ekx, party, directAccess);
         case Generation::SEVEN:
-            return std::make_shared<PK7>(data, ekx, party);
+            return std::make_unique<PK7>(data, ekx, party, directAccess);
         case Generation::LGPE:
-            return std::make_shared<PB7>(data, ekx);
-        default:
+            return std::make_unique<PB7>(data, ekx, directAccess);
+        case Generation::EIGHT:
+            return std::make_unique<PK8>(data, ekx, party, directAccess);
+        case Generation::UNUSED:
             return nullptr;
     }
+    return nullptr;
 }
 
 bool PKX::operator==(const PKFilter& filter) const
@@ -521,31 +544,13 @@ bool PKX::operator==(const PKFilter& filter) const
         }
         if (filter.relearnMoveEnabled(i))
         {
-            switch (generation())
+            if (generation() == Generation::FOUR || generation() == Generation::FIVE)
             {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                    return false;
-                case Generation::SIX:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                case Generation::SEVEN:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                case Generation::LGPE:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
+                return false;
+            }
+            else if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != relearnMove(i)))
+            {
+                return false;
             }
         }
     }

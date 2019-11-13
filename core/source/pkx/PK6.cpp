@@ -177,11 +177,11 @@ void PK6::experience(u32 v)
     *(u32*)(data + 0x10) = v;
 }
 
-u8 PK6::ability(void) const
+u16 PK6::ability(void) const
 {
     return data[0x14];
 }
-void PK6::ability(u8 v)
+void PK6::ability(u16 v)
 {
     data[0x14] = v;
 }
@@ -264,11 +264,11 @@ void PK6::gender(u8 v)
     data[0x1D] = u8((data[0x1D] & ~0x06) | (v << 1));
 }
 
-u8 PK6::alternativeForm(void) const
+u16 PK6::alternativeForm(void) const
 {
     return data[0x1D] >> 3;
 }
-void PK6::alternativeForm(u8 v)
+void PK6::alternativeForm(u16 v)
 {
     data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3));
 }

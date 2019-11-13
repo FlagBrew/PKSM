@@ -76,8 +76,8 @@ public:
     void SID(u16 v) override;
     u32 experience(void) const override;
     void experience(u32 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -93,8 +93,8 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 ev(Stat ev) const override;
     void ev(Stat ev, u8 v) override;
     u8 contest(u8 contest) const override;
@@ -163,6 +163,9 @@ public:
     void fullness(u8 v);
     u8 enjoyment(void) const;
     void enjoyment(u8 v);
+    // TODO
+    // u32 formDuration(void) const;
+    // void formDuration(u32 v);
 
     std::string otName(void) const override;
     void otName(const std::string& v) override;

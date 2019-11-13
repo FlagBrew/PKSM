@@ -24,13 +24,13 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef PK7_HPP
-#define PK7_HPP
+#ifndef PK8_HPP
+#define PK8_HPP
 
 #include "PKX.hpp"
 #include "personal.hpp"
 
-class PK7 : public PKX
+class PK8 : public PKX
 {
 protected:
     static constexpr u16 hyperTrainLookup[6] = {0, 1, 2, 5, 3, 4};
@@ -39,15 +39,15 @@ protected:
     void crypt(void) override;
 
 public:
-    PK7()
+    PK8()
     {
         directAccess = false;
-        length       = 232;
+        length       = 0x148;
         data         = new u8[length];
         std::fill_n(data, length, 0);
     }
-    PK7(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK7()
+    PK8(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    virtual ~PK8()
     {
         if (!directAccess)
         {
@@ -80,10 +80,16 @@ public:
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
+    bool favorite(void) const;
+    void favorite(bool v) const;
+    bool canGiga(void) const;
+    void canGiga(bool v) const;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
     u32 PID(void) const override;
     void PID(u32 v) override;
+    u8 origNature(void) const;
+    void origNature(u8 v);
     u8 nature(void) const override;
     void nature(u8 v) override;
     bool fatefulEncounter(void) const override;
@@ -97,9 +103,6 @@ public:
     u8 contest(u8 contest) const override;
     void contest(u8 contest, u8 v) override;
 
-    u8 pelagoEventStatus(void) const;
-    void pelagoEventStatus(u8 v);
-
     u8 pkrs(void) const override;
     void pkrs(u8 v) override;
     u8 pkrsDays(void) const override;
@@ -108,6 +111,14 @@ public:
     void pkrsStrain(u8 v) override;
     bool ribbon(u8 ribcat, u8 ribnum) const override;
     void ribbon(u8 ribcat, u8 ribnum, u8 v) override;
+    u8 ribbonCountContest(void) const;
+    void ribbonCountContest(u8 v);
+    u8 ribbonCountBattle(void) const;
+    void ribbonCountBattle(u8 v);
+    u8 height(void) const;
+    void height(u8 v);
+    u8 weight(void) const;
+    void weight(u8 v);
 
     std::string nickname(void) const override;
     void nickname(const std::string& v) override;
@@ -119,8 +130,12 @@ public:
     void PPUp(u8 move, u8 v) override;
     u16 relearnMove(u8 move) const override;
     void relearnMove(u8 move, u16 v) override;
+    int partyCurrHP(void) const override;
+    void partyCurrHP(u16 v) override;
     u8 iv(Stat iv) const override;
     void iv(Stat iv, u8 v) override;
+    u8 dynamaxLevel(void) const;
+    void dynamaxLevel(u8 v);
 
     bool egg(void) const override;
     void egg(bool v) override;
@@ -133,14 +148,11 @@ public:
     void htGender(u8 v);
     u8 currentHandler(void) const override;
     void currentHandler(u8 v) override;
-    u8 geoRegion(u8 region) const;
-    void geoRegion(u8 region, u8 v);
-    u8 geoCountry(u8 country) const;
-    void geoCountry(u8 country, u8 v);
+    // Unused
+    u16 htID(void) const;
+    void htID(u16 v);
     u8 htFriendship(void) const;
     void htFriendship(u8 v);
-    u8 htAffection(void) const;
-    void htAffection(u8 v);
     u8 htIntensity(void) const;
     void htIntensity(u8 v);
     u8 htMemory(void) const;
@@ -153,9 +165,20 @@ public:
     void fullness(u8 v);
     u8 enjoyment(void) const;
     void enjoyment(u8 v);
-    // TODO
-    // u32 formDuration(void) const;
-    // void formDuration(u32 v);
+    u8 version(void) const override;
+    void version(u8 v) override;
+    u8 country(void) const;
+    void country(u8 v);
+    u8 region(void) const;
+    void region(u8 v);
+    u8 consoleRegion(void) const;
+    void consoleRegion(u8 v);
+    Language language(void) const override;
+    void language(Language v) override;
+    u32 formDuration(void) const;
+    void formDuration(u32 v);
+    s8 favRibbon(void) const;
+    void favRibbon(s8 v);
 
     std::string otName(void) const override;
     void otName(const std::string& v) override;
@@ -196,17 +219,15 @@ public:
 
     bool hyperTrain(u8 num) const;
     void hyperTrain(u8 num, bool v);
+    bool moveRecordFlag(u8 index) const;
+    void moveRecordFlag(u8 index, bool v);
 
-    u8 version(void) const override;
-    void version(u8 v) override;
-    u8 country(void) const;
-    void country(u8 v);
-    u8 region(void) const;
-    void region(u8 v);
-    u8 consoleRegion(void) const;
-    void consoleRegion(u8 v);
-    Language language(void) const override;
-    void language(Language v) override;
+    int partyStat(Stat stat) const override;
+    void partyStat(Stat stat, u16 v) override;
+    int partyLevel(void) const override;
+    void partyLevel(u8 v) override;
+    u16 dynamaxType(void) const;
+    void dynamaxType(u16 v);
 
     u8 currentFriendship(void) const override;
     void currentFriendship(u8 v) override;
@@ -224,28 +245,21 @@ public:
     u16 formSpecies(void) const override;
     u16 stat(Stat stat) const override;
 
-    int partyCurrHP(void) const override;
-    void partyCurrHP(u16 v) override;
-    int partyStat(Stat stat) const override;
-    void partyStat(Stat stat, u16 v) override;
-    int partyLevel() const override;
-    void partyLevel(u8 v) override;
+    // std::shared_ptr<PKX> previous(Sav& save) const override;
 
-    std::shared_ptr<PKX> previous(Sav& save) const override;
-
-    inline u8 baseHP(void) const override { return PersonalSMUSUM::baseHP(formSpecies()); }
-    inline u8 baseAtk(void) const override { return PersonalSMUSUM::baseAtk(formSpecies()); }
-    inline u8 baseDef(void) const override { return PersonalSMUSUM::baseDef(formSpecies()); }
-    inline u8 baseSpe(void) const override { return PersonalSMUSUM::baseSpe(formSpecies()); }
-    inline u8 baseSpa(void) const override { return PersonalSMUSUM::baseSpa(formSpecies()); }
-    inline u8 baseSpd(void) const override { return PersonalSMUSUM::baseSpd(formSpecies()); }
-    inline u8 type1(void) const override { return PersonalSMUSUM::type1(formSpecies()); }
-    inline u8 type2(void) const override { return PersonalSMUSUM::type2(formSpecies()); }
-    inline u8 genderType(void) const override { return PersonalSMUSUM::gender(formSpecies()); }
-    inline u8 baseFriendship(void) const override { return PersonalSMUSUM::baseFriendship(formSpecies()); }
-    inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
-    inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
+    inline u8 baseHP(void) const override { return PersonalSWSH::baseHP(formSpecies()); }
+    inline u8 baseAtk(void) const override { return PersonalSWSH::baseAtk(formSpecies()); }
+    inline u8 baseDef(void) const override { return PersonalSWSH::baseDef(formSpecies()); }
+    inline u8 baseSpe(void) const override { return PersonalSWSH::baseSpe(formSpecies()); }
+    inline u8 baseSpa(void) const override { return PersonalSWSH::baseSpa(formSpecies()); }
+    inline u8 baseSpd(void) const override { return PersonalSWSH::baseSpd(formSpecies()); }
+    inline u8 type1(void) const override { return PersonalSWSH::type1(formSpecies()); }
+    inline u8 type2(void) const override { return PersonalSWSH::type2(formSpecies()); }
+    inline u8 genderType(void) const override { return PersonalSWSH::gender(formSpecies()); }
+    inline u8 baseFriendship(void) const override { return PersonalSWSH::baseFriendship(formSpecies()); }
+    inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
+    inline u8 abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
+    inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
 
 private:
     bool directAccess;
