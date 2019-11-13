@@ -68,6 +68,7 @@ public:
     void captureThread();
     void handler(QRMode mode, std::vector<u8>& out);
     bool done() { return finished; }
+    bool cancelled() { return cancel; }
 
 private:
     void buffToImage();
@@ -81,6 +82,7 @@ private:
     static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
     std::atomic<bool> finished                = false;
     bool capturing                            = false;
+    bool cancel                               = false;
 };
 
 static void drawHelp(void* arg)
@@ -238,6 +240,7 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
     hidScanInput();
     if (hidKeysDown() & KEY_B)
     {
+        cancel = true;
         finish();
         return;
     }
@@ -427,7 +430,7 @@ std::vector<u8> QRScanner::scan(QRMode mode)
         data->handler(mode, out);
     }
     aptSetHomeAllowed(true);
-    if (out.empty())
+    if (!data->cancelled() && out.empty())
     {
         Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
     }
