@@ -62,8 +62,8 @@ private:
     struct BankHeader
     {
         const char MAGIC[8];
-        int version;
-        int boxes;
+        u32 version;
+        u32 boxes;
     };
     struct BankEntry
     {

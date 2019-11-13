@@ -70,7 +70,7 @@ void Bank::load(int maxBoxes)
             Gui::waitFrame(i18n::localize("BANK_LOAD"));
             BankHeader h{"BAD_MGC", 0, 0};
             size = in.size();
-            in.read((char*)&h, sizeof(BankHeader) - sizeof(int));
+            in.read((char*)&h, sizeof(BankHeader) - sizeof(u32));
             if (memcmp(&h, BANK_MAGIC.data(), 8))
             {
                 Gui::warn(i18n::localize("BANK_CORRUPT"));
@@ -83,19 +83,19 @@ void Bank::load(int maxBoxes)
                 // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
                 if (h.version == 1)
                 {
-                    h.boxes  = (size - (sizeof(BankHeader) - sizeof(int))) / sizeof(BankEntry) / 30;
+                    h.boxes  = (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(BankEntry) / 30;
                     maxBoxes = h.boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
                     Banks::saveJson();
-                    data      = new u8[size = size + sizeof(int)];
+                    data      = new u8[size = size + sizeof(u32)];
                     h.version = BANK_VERSION;
                     needSave  = true;
                 }
                 else
                 {
                     data = new u8[size];
-                    in.read(&h.boxes, sizeof(int));
+                    in.read(&h.boxes, sizeof(u32));
                 }
                 std::copy((char*)&h, (char*)(&h + 1), data);
                 in.read(data + sizeof(BankHeader), size - sizeof(BankHeader));
