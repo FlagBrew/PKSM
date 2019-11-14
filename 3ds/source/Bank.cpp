@@ -361,7 +361,6 @@ bool Bank::hasChanged() const
 
 void Bank::convertFromBankBin()
 {
-    bool deleteOld = true;
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
     FSStream stream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
     size_t oldSize = stream.size();
@@ -442,11 +441,10 @@ void Bank::convertFromBankBin()
 
     delete[] oldData;
 
-    if (deleteOld)
+    if (save())
     {
         Archive::deleteFile(Archive::sd(), u"/3ds/PKSM/bank/bank.bin");
     }
-    save();
 }
 
 const std::string& Bank::name() const
