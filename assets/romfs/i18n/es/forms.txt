@@ -181,3 +181,20 @@ Banco
 Sol
 Lluvia
 Nieve
+Galar
+Gigamax
+Tragatodo
+Engulletodo
+Grave
+Rosa
+de Té
+de Menta
+de Limón
+Salada
+Rosa
+Caramelo
+Tres Sabores
+Cara Deshielo
+Voraz
+Suprema
+Infinito
