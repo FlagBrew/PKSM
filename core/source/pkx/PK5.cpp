@@ -1031,6 +1031,7 @@ std::shared_ptr<PKX> PK5::previous(Sav& save) const
 
     // Clear nature field
     pk4->rawData()[0x41] = 0;
+    pk4->nature(nature());
 
     // Force normal Arceus form
     if (pk4->species() == 493)
