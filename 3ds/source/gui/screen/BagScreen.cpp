@@ -488,7 +488,6 @@ void BagScreen::editCount(bool up, int selected)
                 case Generation::FOUR:
                 case Generation::FIVE:
                 case Generation::SIX:
-                default:
                     if (item->count() < 0xFFFF)
                     {
                         item->count(item->count() + 1);
@@ -518,6 +517,8 @@ void BagScreen::editCount(bool up, int selected)
                         item->count(1);
                     }
                     break;
+                case Generation::UNUSED:
+                    break;
             }
         }
         else
@@ -533,7 +534,6 @@ void BagScreen::editCount(bool up, int selected)
                     case Generation::FOUR:
                     case Generation::FIVE:
                     case Generation::SIX:
-                    default:
                         item->count(0xFFFF);
                         break;
                     case Generation::SEVEN:
@@ -541,6 +541,8 @@ void BagScreen::editCount(bool up, int selected)
                         break;
                     case Generation::LGPE:
                         item->count(0x7FFF);
+                        break;
+                    case Generation::UNUSED:
                         break;
                 }
             }
@@ -595,7 +597,6 @@ void BagScreen::setCount(int selected)
                 case Generation::FOUR:
                 case Generation::FIVE:
                 case Generation::SIX:
-                default:
                     item->count(std::min(0xFFFF, newCount));
                     break;
                 case Generation::SEVEN:
@@ -603,6 +604,8 @@ void BagScreen::setCount(int selected)
                     break;
                 case Generation::LGPE:
                     item->count(std::min(0x7FFF, newCount));
+                    break;
+                case Generation::UNUSED:
                     break;
             }
             TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selected);

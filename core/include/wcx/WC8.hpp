@@ -24,22 +24,13 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef Game_HPP
-#define Game_HPP
+#ifndef WC8_HPP
+#define WC8_HPP
 
-enum class Game
+#include "WCX.hpp"
+
+class WC8 : public WCX
 {
-    DP,
-    Pt,
-    HGSS,
-    BW,
-    B2W2,
-    XY,
-    ORAS,
-    SM,
-    USUM,
-    LGPE,
-    SWSH
 };
 
 #endif

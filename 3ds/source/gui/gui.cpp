@@ -1032,7 +1032,7 @@ void Gui::format(const PKX& pkm, int x, int y)
         case Generation::LGPE:
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
-        default:
+        case Generation::UNUSED:
             break;
     }
 }

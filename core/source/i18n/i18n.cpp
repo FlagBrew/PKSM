@@ -77,7 +77,7 @@ void i18n::exit(void)
     delete ru;
 }
 
-const std::string& i18n::ability(Language lang, u8 val)
+const std::string& i18n::ability(Language lang, u16 val)
 {
     switch (lang)
     {
@@ -143,7 +143,7 @@ const std::string& i18n::ball(Language lang, u8 val)
     }
 }
 
-const std::string& i18n::form(Language lang, u16 species, u8 form, Generation generation)
+const std::string& i18n::form(Language lang, u16 species, u16 form, Generation generation)
 {
     switch (lang)
     {

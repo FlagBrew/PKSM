@@ -50,6 +50,7 @@ class Sav
     friend class PK6;
     friend class PK7;
     friend class PB7;
+    friend class PK8;
 
 protected:
     int Box, Party, PokeDex, WondercardData, WondercardFlags;

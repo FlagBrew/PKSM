@@ -1553,7 +1553,9 @@ void HexEditScreen::drawMeaning() const
                         case Generation::LGPE:
                             country = ((PB7*)pkm.get())->country();
                             break;
-                        default:
+                        case Generation::FOUR:
+                        case Generation::FIVE:
+                        case Generation::UNUSED:
                             break;
                     }
                     Gui::text(i18n::country(Configuration::getInstance().language(), country), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
@@ -1578,7 +1580,9 @@ void HexEditScreen::drawMeaning() const
                             country = ((PB7*)pkm.get())->country();
                             region  = ((PB7*)pkm.get())->region();
                             break;
-                        default:
+                        case Generation::FOUR:
+                        case Generation::FIVE:
+                        case Generation::UNUSED:
                             break;
                     }
                     Gui::text(i18n::subregion(Configuration::getInstance().language(), country, region), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1599,7 +1603,9 @@ void HexEditScreen::drawMeaning() const
                         case Generation::LGPE:
                             consoleRegion = ((PB7*)pkm.get())->consoleRegion();
                             break;
-                        default:
+                        case Generation::FOUR:
+                        case Generation::FIVE:
+                        case Generation::UNUSED:
                             break;
                     }
                     std::string data;
@@ -1635,7 +1641,7 @@ void HexEditScreen::drawMeaning() const
                 break;
             }
             break;
-        default:
+        case Generation::UNUSED:
             break;
     }
 }

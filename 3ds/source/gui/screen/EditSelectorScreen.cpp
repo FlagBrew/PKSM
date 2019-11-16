@@ -103,9 +103,11 @@ bool EditSelectorScreen::doQR()
             initMode = QRMode::PK6;
             break;
         case Generation::SEVEN:
-        default:
             initMode = QRMode::PK7;
             break;
+        case Generation::UNUSED:
+        case Generation::EIGHT:
+            return false;
     }
 
     std::vector<u8> data = QRScanner::scan(initMode);

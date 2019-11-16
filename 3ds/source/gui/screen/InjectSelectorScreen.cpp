@@ -405,6 +405,9 @@ void InjectSelectorScreen::dumpCard(void) const
         case Generation::LGPE:
             path += ".wb7";
             break;
+        case Generation::EIGHT:
+            path += ".wc8";
+            break;
         case Generation::UNUSED:
             Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("REPORT_THIS"));
             return;

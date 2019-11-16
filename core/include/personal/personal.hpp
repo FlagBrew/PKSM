@@ -120,4 +120,23 @@ namespace PersonalDPPtHGSS
     u8 formCount(u16 species);
 }
 
+namespace PersonalSWSH
+{
+    inline u8 baseHP(u16 species) { return 0; }
+    inline u8 baseAtk(u16 species) { return 0; }
+    inline u8 baseDef(u16 species) { return 0; }
+    inline u8 baseSpe(u16 species) { return 0; }
+    inline u8 baseSpa(u16 species) { return 0; }
+    inline u8 baseSpd(u16 species) { return 0; }
+    inline u8 type1(u16 species) { return 0; }
+    inline u8 type2(u16 species) { return 0; }
+    inline u8 baseExp(u8 species) { return 0; }
+    inline u8 gender(u16 species) { return 0; }
+    inline u8 baseFriendship(u16 species) { return 0; }
+    inline u8 expType(u16 species) { return 0; }
+    inline u8 ability(u16 species, u8 n) { return 0; }
+    inline u16 formStatIndex(u16 species) { return 0; }
+    inline u8 formCount(u16 species) { return 0; }
+}
+
 #endif

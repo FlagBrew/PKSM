@@ -46,14 +46,14 @@ namespace i18n
     const std::map<u8, std::string>& rawSubregions(Language lang, u8 country);
     size_t numGameStrings(Language lang);
 
-    const std::string& ability(Language lang, u8 value);
+    const std::string& ability(Language lang, u16 value);
     const std::string& ball(Language lang, u8 value);
     const std::string& hp(Language lang, u8 value);
     const std::string& item(Language lang, u16 value);
     const std::string& move(Language lang, u16 value);
     const std::string& nature(Language lang, u8 value);
     const std::string& species(Language lang, u16 value);
-    const std::string& form(Language lang, u16 species, u8 form, Generation generation);
+    const std::string& form(Language lang, u16 species, u16 form, Generation generation);
     const std::string& location(Language lang, u16 value, Generation generation);
     const std::string& location(Language lang, u16 value, u8 originGame);
     const std::string& game(Language lang, u8 value);

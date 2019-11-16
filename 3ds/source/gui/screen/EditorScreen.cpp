@@ -184,7 +184,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 break;
             case Generation::LGPE:
                 break; // Always a party Pokemon
-            default:
+            case Generation::UNUSED:
                 Gui::warn(i18n::localize("THE_FUCK"));
         }
 

@@ -965,7 +965,7 @@ void CloudScreen::shareReceive()
                     case Generation::LGPE:
                         targetLength = 261;
                         break;
-                    default:
+                    case Generation::UNUSED:
                         break;
                 }
                 if (retData.size() != targetLength)
@@ -974,7 +974,7 @@ void CloudScreen::shareReceive()
                     return;
                 }
 
-                auto pkm = PKX::getPKM(gen, retData.data());
+                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data());
 
                 if (!cloudChosen && cursorIndex != 0)
                 {

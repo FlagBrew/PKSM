@@ -193,7 +193,7 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
             case Generation::LGPE:
                 targetLength = 261;
                 break;
-            default:
+            case Generation::UNUSED:
                 break;
         }
         if (targetLength != retData.size())
@@ -238,7 +238,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
             case Generation::LGPE:
                 targetLength = 261;
                 break;
-            default:
+            case Generation::UNUSED:
                 break;
         }
         if (targetLength != retData.size())

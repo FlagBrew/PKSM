@@ -210,22 +210,34 @@ u32 Sav::displayTID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return TID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 
 u32 Sav::displaySID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return SID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
