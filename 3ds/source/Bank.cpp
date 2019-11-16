@@ -32,6 +32,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
@@ -81,25 +82,65 @@ void Bank::load(int maxBoxes)
             else
             {
                 // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
+                struct OldEntry
+                {
+                    Generation gen;
+                    u8 data[260];
+                };
                 if (h.version == 1)
                 {
-                    h.boxes  = (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(BankEntry) / 30;
+                    h.boxes  = (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(OldEntry) / 30;
                     maxBoxes = h.boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
                     Banks::saveJson();
-                    data      = new u8[size = size + sizeof(u32)];
+                    size      = sizeof(BankHeader) + h.boxes * 30 * sizeof(BankEntry);
+                    data      = new u8[size];
                     h.version = BANK_VERSION;
                     needSave  = true;
+
+                    std::copy((char*)&h, (char*)(&h + 1), data);
+                    for (size_t i = 0; i < h.boxes * 30; i++)
+                    {
+                        in.read(data + sizeof(BankHeader) + sizeof(BankEntry) * i, sizeof(OldEntry));
+                        std::fill_n(data + sizeof(BankHeader) + sizeof(BankEntry) * i + sizeof(OldEntry), sizeof(BankEntry) - sizeof(OldEntry), 0xFF);
+                    }
+                    in.close();
                 }
-                else
+                else if (h.version == 2)
+                {
+                    in.read(&h.boxes, sizeof(u32));
+                    size      = sizeof(BankHeader) + sizeof(BankEntry) * h.boxes;
+                    data      = new u8[size];
+                    h.version = BANK_VERSION;
+                    needSave  = true;
+
+                    std::copy((char*)&h, (char*)(&h + 1), data);
+                    for (size_t i = 0; i < h.boxes * 30; i++)
+                    {
+                        in.read(data + sizeof(BankHeader) + sizeof(BankEntry) * i, sizeof(OldEntry));
+                        std::fill_n(data + sizeof(BankHeader) + sizeof(BankEntry) * i + sizeof(OldEntry), sizeof(BankEntry) - sizeof(OldEntry), 0xFF);
+                    }
+                    in.close();
+                }
+                else if (h.version == BANK_VERSION)
                 {
                     data = new u8[size];
                     in.read(&h.boxes, sizeof(u32));
+
+                    std::copy((char*)&h, (char*)(&h + 1), data);
+                    in.read(data + sizeof(BankHeader), size - sizeof(BankHeader));
+                    in.close();
                 }
-                std::copy((char*)&h, (char*)(&h + 1), data);
-                in.read(data + sizeof(BankHeader), size - sizeof(BankHeader));
-                in.close();
+                else
+                {
+                    Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
+                    Gui::waitFrame(i18n::localize("BANK_CREATE"));
+                    in.close();
+                    createBank(maxBoxes);
+                    needSave = true;
+                    create   = true;
+                }
             }
         }
         else
@@ -262,10 +303,12 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
             return std::make_shared<PK7>(bank[index].data, false, false);
         case Generation::LGPE:
             return std::make_shared<PB7>(bank[index].data, false);
+        case Generation::EIGHT:
+            return std::make_shared<PK8>(bank[index].data, false, false);
         case Generation::UNUSED:
-        default:
             return std::make_shared<PK7>();
     }
+    return nullptr;
 }
 
 void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
@@ -282,9 +325,9 @@ void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
     }
     newEntry.gen = pkm->generation();
     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), newEntry.data);
-    if (pkm->getLength() < 260)
+    if (pkm->getLength() < sizeof(BankEntry::data))
     {
-        std::fill_n(newEntry.data + pkm->getLength(), 260 - pkm->getLength(), 0xFF);
+        std::fill_n(newEntry.data + pkm->getLength(), sizeof(BankEntry::data) - pkm->getLength(), 0xFF);
     }
     bank[index] = newEntry;
     needsCheck  = true;
@@ -378,6 +421,7 @@ void Bank::convertFromBankBin()
     }
     stream.close();
 
+    // ANOTHER CONVERSION SECTION
     data = new u8[size = sizeof(BankHeader) + sizeof(BankEntry) * oldSize / 232];
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), data);
     ((BankHeader*)data)->version = BANK_VERSION;
