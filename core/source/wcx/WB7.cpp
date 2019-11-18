@@ -255,7 +255,7 @@ u16 WB7::ability(void) const
     else
         abilitynum = 0;
 
-    return PersonalSMUSUM::ability(species(), abilitynum);
+    return PersonalLGPE::ability(species(), abilitynum);
 }
 
 u8 WB7::abilityType(void) const
@@ -398,12 +398,12 @@ u16 WB7::formSpecies(void) const
 {
     u16 tmpSpecies = species();
     u8 form        = alternativeForm();
-    u8 formcount   = PersonalSMUSUM::formCount(tmpSpecies); // TODO: PersonalLGPE
+    u8 formcount   = PersonalLGPE::formCount(tmpSpecies);
 
     if (form && form < formcount)
     {
         u16 backSpecies = tmpSpecies;
-        tmpSpecies      = PersonalSMUSUM::formStatIndex(tmpSpecies);
+        tmpSpecies      = PersonalLGPE::formStatIndex(tmpSpecies);
         if (!tmpSpecies)
         {
             tmpSpecies = backSpecies;

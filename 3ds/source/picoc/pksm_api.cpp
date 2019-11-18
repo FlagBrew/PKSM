@@ -1920,8 +1920,9 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
     else
     {
-        std::string data = StringUtils::getString(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
-        char* ret        = (char*)malloc(data.size() + 1);
+        std::string data = StringUtils::getString(
+            TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
+        char* ret = (char*)malloc(data.size() + 1);
         std::copy(data.begin(), data.end(), ret);
         ret[data.size()]                  = '\0';
         ReturnValue->Val->UnsignedInteger = (u32)ret;
@@ -1963,7 +1964,7 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
             wcx = std::make_unique<WB7>(data, alternateFormat);
             break;
         case Generation::EIGHT:
-            // wcx = std::make_unique<WC8>(data, alternateFormat);
+            wcx = std::make_unique<WC8>(data);
             break;
         case Generation::UNUSED:
             break;
