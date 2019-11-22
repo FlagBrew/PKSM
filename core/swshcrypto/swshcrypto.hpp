@@ -96,10 +96,9 @@ private:
             case SCBlockType::Single10:
                 return baseSize + arrayEntrySize(type);
             default:
-                break;
+                //! CHECK WHY THIS HAPPENS
+                std::abort();
         }
-        //! CHECK WHY THIS HAPPENS
-        std::abort();
     }
 
     static void xorshiftAdvance(u32& key)
@@ -125,7 +124,7 @@ private:
         return (u32)((key * h01) >> 56);
     }
 
-    static constexpr size_t arrayEntrySize(SCBlockType type)
+    static size_t arrayEntrySize(SCBlockType type)
     {
         switch (type)
         {
@@ -145,7 +144,8 @@ private:
             case SCBlockType::Single10:
                 return 8;
             default:
-                return 0;
+                //! CHECK WHY THIS HAPPENS
+                std::abort();
         }
     }
 };
