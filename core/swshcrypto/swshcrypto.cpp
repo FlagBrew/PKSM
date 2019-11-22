@@ -79,7 +79,7 @@ static void computeHash(u8* hash, u8* data, size_t length)
 bool swshcrypto_hashValid(u8* data, size_t length)
 {
     u8 hash[SHA256_BLOCK_SIZE];
-    computeHash(hash, data, length);
+    computeHash(hash, data, length - SHA256_BLOCK_SIZE);
     for (size_t i = 0; i < SHA256_BLOCK_SIZE; i++)
     {
         if (hash[i] != data[length - SHA256_BLOCK_SIZE + i])
@@ -112,7 +112,7 @@ void swshcrypto_encrypt(SCBlockList& blocks)
 
     applyStaticXorpad(blocks.associatedData, blocks.length);
 
-    computeHash(blocks.associatedData.get() + blocks.length - SHA256_BLOCK_SIZE, blocks.associatedData.get(), blocks.length);
+    computeHash(blocks.associatedData.get() + blocks.length - SHA256_BLOCK_SIZE, blocks.associatedData.get(), blocks.length - SHA256_BLOCK_SIZE);
 }
 
 void SCBlock::cryptBytes(u8* data, size_t inputOffset, size_t start, size_t size)
