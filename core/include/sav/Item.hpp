@@ -202,7 +202,7 @@ public:
             itemData = {0, 0, 0, 0};
         }
     }
-    Generation generation(void) const override { return Generation::SEVEN; }
+    Generation generation(void) const override { return Generation::LGPE; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
     u16 count(void) const override { return itemData.count; }
