@@ -51,6 +51,7 @@ FORMATSOURCES	:=	../common/source \
 					../core/source/sav \
 					../core/source/utils \
 					../core/source/wcx \
+					../core/swshcrypto \
 					source \
 					source/gui \
 					source/gui/overlay \
@@ -80,6 +81,7 @@ FORMATINCLUDES	:=	../common/include \
 					../core/include/sav \
 					../core/include/utils \
 					../core/include/wcx \
+					../core/swshcrypto \
 					include \
 					include/gui \
 					include/gui/overlay \

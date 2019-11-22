@@ -95,7 +95,11 @@ private:
             case SCBlockType::Single9:
             case SCBlockType::Single10:
                 return baseSize + arrayEntrySize(type);
+            default:
+                break;
         }
+        //! CHECK WHY THIS HAPPENS
+        std::abort();
     }
 
     static void xorshiftAdvance(u32& key)
@@ -140,8 +144,9 @@ private:
             case SCBlockType::Single8:
             case SCBlockType::Single10:
                 return 8;
+            default:
+                return 0;
         }
-        return 0;
     }
 };
 

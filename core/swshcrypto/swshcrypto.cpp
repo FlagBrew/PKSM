@@ -134,7 +134,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
         xorshiftAdvance(key);
     }
 
-    int ofs = 0;
+    size_t ofs = 0;
     while (ofs + 4 < start)
     {
         xorshiftAdvance(key);
@@ -145,7 +145,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     if (ofs < start)
     {
         int cur_size = std::min(size, 4 - (start - ofs));
-        memcpy(((u8*)&key) + start - ofs, ret.data(), cur_size);
+        memcpy(ret.data(), ((u8*)&key) + start - ofs, cur_size);
         // std::copy(((u8*)&key) + start - ofs, ((u8*)(&key)) + 4 - (start - ofs), ret.data()); ?
         ofs = cur_size;
         xorshiftAdvance(key);
@@ -154,7 +154,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     while (ofs < size)
     {
         int cur_size = std::min(size - ofs, (size_t)4);
-        memcpy(((u8*)&key) + start - ofs, ret.data() + ofs, cur_size);
+        memcpy(ret.data() + ofs, ((u8*)&key) + start - ofs, cur_size);
         // std::copy(((u8*)&key), ((u8*)&key) + cur_size, ret.data() + ofs); ?
         ofs += cur_size;
         xorshiftAdvance(key);
