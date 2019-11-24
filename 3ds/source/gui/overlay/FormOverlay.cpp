@@ -33,7 +33,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 
-FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount)
+FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u16 formCount)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(30, 6), formCount(formCount)
 {
     hid.update(30);

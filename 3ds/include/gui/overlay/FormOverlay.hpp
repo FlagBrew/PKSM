@@ -39,7 +39,7 @@ class PKFilter;
 class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u8 formCount);
+    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u16 formCount);
     virtual ~FormOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -49,7 +49,7 @@ public:
 private:
     std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
     HidHorizontal hid;
-    u8 formCount;
+    u16 formCount;
 };
 
 #endif
