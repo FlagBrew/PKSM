@@ -1186,6 +1186,7 @@ void StorageScreen::pickup()
                         }
                         TitleLoader::save->pkm(
                             bankMon, selectDimensions.first, selectDimensions.second, Configuration::getInstance().transferEdit() && fromStorage);
+                        TitleLoader::save->dex(bankMon);
                         Banks::bank->pkm(saveMon, storageBox, cursorIndex - 1);
                     }
                     else
@@ -1200,6 +1201,7 @@ void StorageScreen::pickup()
                             }
                         }
                         TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1, Configuration::getInstance().transferEdit() && fromStorage);
+                        TitleLoader::save->dex(bankMon);
                         Banks::bank->pkm(saveMon, selectDimensions.first, selectDimensions.second);
                     }
                     moveMon.clear();
