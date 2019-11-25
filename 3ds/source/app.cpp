@@ -51,6 +51,8 @@ int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
 static Handle hbldrHandle;
+static std::atomic_flag moveIcon = ATOMIC_FLAG_INIT;
+static std::atomic_flag doCartScan;
 
 struct asset
 {
@@ -126,6 +128,7 @@ static Result downloadAdditionalAssets(void)
 
 static Result consoleDisplayError(const std::string& message, Result res)
 {
+    moveIcon.clear();
     consoleInit(GFX_TOP, nullptr);
     printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     printf("\x1b[5;1HError during startup: \x1b[31m0x%08lX\x1b[0m", res);
@@ -171,6 +174,7 @@ static bool update(std::string execPath)
     {
         if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, true, &retString, nullptr, "code=" + patronCode))
         {
+            moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
             CURLcode res = fetch->perform();
             if (res != CURLE_OK)
@@ -214,6 +218,7 @@ static bool update(std::string execPath)
     }
     else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
     {
+        moveIcon.clear();
         Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
         CURLcode res = fetch->perform();
         if (res != CURLE_OK)
@@ -363,8 +368,6 @@ static bool update(std::string execPath)
     return false;
 }
 
-static std::atomic_flag doCartScan;
-
 static void cartScan(void*)
 {
 #if !CITRA_DEBUG
@@ -410,21 +413,63 @@ static void cartScan(void*)
 #endif
 }
 
+static void iconThread(void*)
+{
+    int x = 176, y = 96;
+    u16 w, h;
+    bool up   = randomNumbers() % 2 ? true : false;
+    bool left = randomNumbers() % 2 ? true : false;
+    while (moveIcon.test_and_set())
+    {
+        int xOff = 0;
+        std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
+        for (auto& line : bootSplash)
+        {
+            std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
+        }
+
+        if (up)
+        {
+            y--;
+        }
+        else
+        {
+            y++;
+        }
+        if (y >= 240 - 48 || y <= 0)
+        {
+            up = !up;
+        }
+
+        if (left)
+        {
+            x--;
+        }
+        else
+        {
+            x++;
+        }
+        if (x >= 400 - 48 || x <= 0)
+        {
+            left = !left;
+        }
+
+        gfxFlushBuffers();
+        gfxSwapBuffersGpu();
+        gspWaitForVBlank();
+    }
+}
+
 Result App::init(const std::string& execPath)
 {
     Result res;
 
     hidInit();
     gfxInitDefault();
+    randomNumbers.seed(osGetTime());
 
-    int x = 176;
-    int y = 96;
-    u16 w, h;
-    for (auto& line : bootSplash)
-    {
-        std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + x++ * 3 * 240 + y * 3);
-    }
-    gfxSwapBuffersGpu();
+    moveIcon.test_and_set();
+    Threads::createDetached((ThreadFunc)&iconThread);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
@@ -492,6 +537,7 @@ Result App::init(const std::string& execPath)
         return -1;
     }
 
+    moveIcon.clear();
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
 
@@ -503,8 +549,6 @@ Result App::init(const std::string& execPath)
     doCartScan.test_and_set();
     Threads::create((ThreadFunc)cartScan);
 
-    randomNumbers.seed(osGetTime());
-
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
     // consoleDebugInit(debugDevice_SVC);
@@ -514,6 +558,7 @@ Result App::init(const std::string& execPath)
 
 Result App::exit(void)
 {
+    moveIcon.clear();
     svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
