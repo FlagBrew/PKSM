@@ -108,7 +108,7 @@ private:
         key ^= (key << 13);
     }
 
-    static u32 popcount(u32 key)
+    static u32 popcount(u64 key)
     {
         // https://en.wikipedia.org/wiki/Hamming_weight#Efficient_implementation
         constexpr u64 m1 = 0x5555555555555555;

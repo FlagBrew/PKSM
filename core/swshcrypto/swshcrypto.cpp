@@ -25,6 +25,7 @@
  */
 
 #include "swshcrypto.hpp"
+#include "endian.hpp"
 #include "sha256.h"
 #include <string.h>
 
@@ -141,12 +142,12 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
         ofs += 4;
     }
 
-    //! I THINK THIS IS CORRECT, BUT CHECK IT
     if (ofs < start)
     {
         int cur_size = std::min(size, 4 - (start - ofs));
-        memcpy(ret.data(), ((u8*)&key) + start - ofs, cur_size);
-        // std::copy(((u8*)&key) + start - ofs, ((u8*)(&key)) + 4 - (start - ofs), ret.data()); ?
+        u8 leKeyData[4];
+        Endian::convertFrom(leKeyData, key);
+        std::copy(leKeyData + start - ofs, leKeyData + 4, ret.begin());
         ofs = cur_size;
         xorshiftAdvance(key);
     }
@@ -154,8 +155,9 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     while (ofs < size)
     {
         int cur_size = std::min(size - ofs, (size_t)4);
-        memcpy(ret.data() + ofs, ((u8*)&key) + start - ofs, cur_size);
-        // std::copy(((u8*)&key), ((u8*)&key) + cur_size, ret.data() + ofs); ?
+        u8 leKeyData[4];
+        Endian::convertFrom(leKeyData, key);
+        std::copy(leKeyData, leKeyData + cur_size, ret.begin() + ofs);
         ofs += cur_size;
         xorshiftAdvance(key);
     }
@@ -166,7 +168,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
 SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
 {
     SCBlock block;
-    memcpy(&block.key, data + offset, 4);
+    block.key = Endian::convertTo<u32>(data + offset);
     offset += 4;
 
     block.cryptBytes(data, offset, 0, 1);
@@ -184,7 +186,7 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
         case SCBlockType::Data:
         {
             block.cryptBytes(data, offset, 1, 4);
-            memcpy(&block.dataLength, data + offset + 1, 4);
+            block.dataLength = Endian::convertTo<u32>(data + offset + 1);
             block.cryptBytes(data, offset, 5, block.dataLength);
             block.data = data + offset;
             offset += 5 + block.dataLength;
@@ -193,7 +195,7 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
         case SCBlockType::Array:
         {
             block.cryptBytes(data, offset, 1, 4);
-            block.dataLength = *(u32*)(data + offset + 1);
+            block.dataLength = Endian::convertTo<u32>(data + offset + 1);
             block.cryptBytes(data, offset, 5, 1);
             block.subtype = SCBlockType(*(data + offset + 5));
             switch (block.subtype)
@@ -251,19 +253,18 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
 
 void SCBlock::encrypt()
 {
-    memcpy(data, &key, 4);
-    // *(u32*)(data) = key;
+    Endian::convertFrom(data, key);
     data[4]       = u8(type);
     size_t outOfs = 5;
 
     if (type == SCBlockType::Data)
     {
-        memcpy(data + outOfs, &dataLength, 4);
+        Endian::convertFrom(data + outOfs, dataLength);
         outOfs += 4;
     }
     else if (type == SCBlockType::Array)
     {
-        memcpy(data + outOfs, &dataLength, 4);
+        Endian::convertFrom(data + outOfs, dataLength);
         data[outOfs + 4] = u8(subtype);
         outOfs += 5;
     }
