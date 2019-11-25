@@ -34,11 +34,11 @@
 namespace Endian
 {
     // Endianness checking found in https://stackoverflow.com/questions/4239993/determining-endianness-at-compile-time
-    // Only works with integral types
+    // Only works with arithmetic types
     template <typename T>
     void convertFrom(u8* dest, const T& orig)
     {
-        static_assert(std::is_integral_v<T>);
+        static_assert(std::is_arithmetic_v<T>);
 #if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
     defined(__MIBSEB__)
@@ -62,7 +62,7 @@ namespace Endian
     template <typename T>
     T convertTo(u8* from)
     {
-        static_assert(std::is_integral_v<T>);
+        static_assert(std::is_arithmetic_v<T>);
         T dest;
 #if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ ||                    \
     defined(__BIG_ENDIAN__) || defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__) || defined(_MIBSEB) || defined(__MIBSEB) ||      \
