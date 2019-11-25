@@ -419,6 +419,8 @@ static void iconThread(void*)
     u16 w, h;
     bool up   = randomNumbers() % 2 ? true : false;
     bool left = randomNumbers() % 2 ? true : false;
+    u8 yMag = randomNumbers() % 2 + 1;
+    u8 xMag = randomNumbers() % 2 + 1;
     while (moveIcon.test_and_set())
     {
         int xOff = 0;
@@ -430,27 +432,29 @@ static void iconThread(void*)
 
         if (up)
         {
-            y--;
+            y -= yMag;
         }
         else
         {
-            y++;
+            y += yMag;
         }
         if (y >= 240 - 48 || y <= 0)
         {
+            yMag = randomNumbers() % 2 + 1;
             up = !up;
         }
 
         if (left)
         {
-            x--;
+            x -= xMag;
         }
         else
         {
-            x++;
+            x += xMag;
         }
         if (x >= 400 - 48 || x <= 0)
         {
+            xMag = randomNumbers() % 2 + 1;
             left = !left;
         }
 
