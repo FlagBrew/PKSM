@@ -37,10 +37,10 @@ class Bank
 {
 public:
     Bank(const std::string& name, int maxBoxes);
-    ~Bank() { delete[] data; }
+    ~Bank();
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
-    void resize(size_t boxes);
+    void resize(int boxes);
     void load(int maxBoxes);
     bool save() const;
     bool saveWithoutBackup() const;
@@ -61,7 +61,7 @@ private:
     void convertFromBankBin();
     struct BankHeader
     {
-        const char MAGIC[8];
+        char MAGIC[8];
         u32 version;
         u32 boxes;
     };
@@ -75,8 +75,8 @@ private:
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     std::string bankName;
-    size_t size;
-    u8* data                = nullptr;
+    BankHeader header;
+    BankEntry* entries      = nullptr;
     mutable bool needsCheck = false;
 };
 

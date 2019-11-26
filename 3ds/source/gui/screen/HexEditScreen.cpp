@@ -947,7 +947,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 }
                 else if (buttons[i][j]->isMark())
                 {
-                    buttons[i][j]->setColor((*(u16*)(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
+                    buttons[i][j]->setColor((Endian::convertTo<u16>(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
                 }
             }
             return true;
