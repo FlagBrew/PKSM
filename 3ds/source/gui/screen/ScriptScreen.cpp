@@ -33,6 +33,7 @@
 #include "ScrollingTextScreen.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
+#include "endian.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "picoc.h"
@@ -309,9 +310,9 @@ void ScriptScreen::applyScript()
     size_t index = MAGIC.size();
     while (index < scriptData.size())
     {
-        u32 offset = *(u32*)(scriptData.data() + index);
-        u32 length = *(u32*)(scriptData.data() + index + 4);
-        u32 repeat = *(u32*)(scriptData.data() + index + 8 + length);
+        u32 offset = Endian::convertTo<u32>(scriptData.data() + index);
+        u32 length = Endian::convertTo<u32>(scriptData.data() + index + 4);
+        u32 repeat = Endian::convertTo<u32>(scriptData.data() + index + 8 + length);
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {

@@ -32,6 +32,7 @@
 #include "PK7.hpp"
 #include "PK8.hpp"
 #include "PKFilter.hpp"
+#include "endian.hpp"
 #include "random.hpp"
 
 u32 PKX::expTable(u8 row, u8 col) const
@@ -262,7 +263,8 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
 {
     if (length == 136)
     {
-        if (*(u16*)(data + 4) == 0 && (*(u16*)(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) && *(u16*)(data + 0x46) == 0)
+        if (Endian::convertTo<u16>(data + 4) == 0 && (Endian::convertTo<u16>(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) &&
+            Endian::convertTo<u16>(data + 0x46) == 0)
         {
             return 5;
         }

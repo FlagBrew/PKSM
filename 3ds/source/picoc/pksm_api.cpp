@@ -758,6 +758,9 @@ void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct V
         case Generation::LGPE:
             ReturnValue->Val->Integer = 260;
             break;
+        case Generation::EIGHT:
+            ReturnValue->Val->Integer = 0x148;
+            break;
         case Generation::UNUSED:
             break;
     }
@@ -780,6 +783,9 @@ void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct
         case Generation::SEVEN:
         case Generation::LGPE:
             ReturnValue->Val->Integer = 260;
+            break;
+        case Generation::EIGHT:
+            ReturnValue->Val->Integer = 0x158;
             break;
         case Generation::UNUSED:
             break;

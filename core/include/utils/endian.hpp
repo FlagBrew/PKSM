@@ -60,7 +60,7 @@ namespace Endian
     }
 
     template <typename T>
-    T convertTo(u8* from)
+    T convertTo(const u8* from)
     {
         static_assert(std::is_arithmetic_v<T>);
         T dest;

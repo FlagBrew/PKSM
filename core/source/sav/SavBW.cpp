@@ -25,6 +25,7 @@
  */
 
 #include "SavBW.hpp"
+#include "endian.hpp"
 #include <algorithm>
 
 SavBW::SavBW(std::shared_ptr<u8[]> dt)
@@ -62,9 +63,9 @@ void SavBW::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[blockOfs[i]], &data[blockOfs[i] + lengths[i]], tmp);
-        cs                           = ccitt16(tmp, lengths[i]);
-        *(u16*)(&data[chkMirror[i]]) = cs;
-        *(u16*)(&data[chkofs[i]])    = cs;
+        cs = ccitt16(tmp, lengths[i]);
+        Endian::convertFrom<u16>(&data[chkMirror[i]], cs);
+        Endian::convertFrom<u16>(&data[chkofs[i]], cs);
     }
 
     delete[] tmp;

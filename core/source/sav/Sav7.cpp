@@ -27,6 +27,7 @@
 #include "Sav7.hpp"
 #include "PK7.hpp"
 #include "WC7.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -48,20 +49,20 @@ u16 Sav7::check16(u8* buf, u32 blockID, u32 len) const
 
 u16 Sav7::TID(void) const
 {
-    return *(u16*)(&data[TrainerCard]);
+    return Endian::convertTo<u16>(&data[TrainerCard]);
 }
 void Sav7::TID(u16 v)
 {
-    *(u16*)(&data[TrainerCard]) = v;
+    Endian::convertFrom<u16>(&data[TrainerCard], v);
 }
 
 u16 Sav7::SID(void) const
 {
-    return *(u16*)(&data[TrainerCard + 2]);
+    return Endian::convertTo<u16>(&data[TrainerCard + 2]);
 }
 void Sav7::SID(u16 v)
 {
-    *(u16*)(&data[TrainerCard + 2]) = v;
+    Endian::convertFrom<u16>(&data[TrainerCard + 2], v);
 }
 
 u8 Sav7::version(void) const
@@ -129,25 +130,25 @@ void Sav7::otName(const std::string& v)
 
 u32 Sav7::money(void) const
 {
-    return *(u32*)(&data[Misc + 0x4]);
+    return Endian::convertTo<u32>(&data[Misc + 0x4]);
 }
 void Sav7::money(u32 v)
 {
-    *(u32*)(&data[Misc + 0x4]) = v > 9999999 ? 9999999 : v;
+    Endian::convertFrom<u32>(&data[Misc + 0x4], v > 9999999 ? 9999999 : v);
 }
 
 u32 Sav7::BP(void) const
 {
-    return *(u32*)(&data[Misc + 0x11C]);
+    return Endian::convertTo<u32>(&data[Misc + 0x11C]);
 }
 void Sav7::BP(u32 v)
 {
-    *(u32*)(&data[Misc + 0x11C]) = v > 9999 ? 9999 : v;
+    Endian::convertFrom<u32>(&data[Misc + 0x11C], v > 9999 ? 9999 : v);
 }
 
 u8 Sav7::badges(void) const
 {
-    u32 badgeBits = (*(u32*)(&data[Misc + 0x8]) << 13) >> 17;
+    u32 badgeBits = (Endian::convertTo<u32>(&data[Misc + 0x8]) << 13) >> 17;
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
@@ -158,11 +159,11 @@ u8 Sav7::badges(void) const
 
 u16 Sav7::playedHours(void) const
 {
-    return *(u16*)(&data[PlayTime]);
+    return Endian::convertTo<u16>(&data[PlayTime]);
 }
 void Sav7::playedHours(u16 v)
 {
-    *(u16*)(&data[PlayTime]) = v;
+    Endian::convertFrom<u16>(&data[PlayTime], v);
 }
 
 u8 Sav7::playedMinutes(void) const
@@ -403,7 +404,7 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(&data[PokeDex + 0x8E8 + shift * 4]) = pk->encryptionConstant();
+            Endian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk->encryptionConstant());
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)
@@ -556,8 +557,9 @@ std::vector<Sav::giftData> Sav7::currentGifts(void) const
     {
         if (*(wonderCards + i * WC7::length + 0x51) == 0)
         {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC7::length + 0x82),
-                *(wonderCards + i * WC7::length + 0x84), *(wonderCards + i * WC7::length + 0xA1));
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC7::length, 0x2, 36), "",
+                Endian::convertTo<u16>(wonderCards + i * WC7::length + 0x82), *(wonderCards + i * WC7::length + 0x84),
+                *(wonderCards + i * WC7::length + 0xA1));
         }
         else
         {

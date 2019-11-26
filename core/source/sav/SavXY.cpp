@@ -25,6 +25,7 @@
  */
 
 #include "SavXY.hpp"
+#include "endian.hpp"
 #include <algorithm>
 
 SavXY::SavXY(std::shared_ptr<u8[]> dt)
@@ -62,7 +63,7 @@ void SavXY::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        *(u16*)(&data[csoff + i * 8]) = ccitt16(tmp, chklen[i]);
+        Endian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
     }
 
     delete[] tmp;

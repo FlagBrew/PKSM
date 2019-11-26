@@ -26,6 +26,7 @@
 
 #include "WC8.hpp"
 #include "Configuration.hpp"
+#include "endian.hpp"
 #include "personal.hpp"
 #include "utils.hpp"
 
@@ -50,7 +51,7 @@ Generation WC8::generation() const
 
 u16 WC8::ID() const
 {
-    return *(u16*)(data + 8);
+    return Endian::convertTo<u16>(data + 8);
 }
 
 std::string WC8::title() const
@@ -111,7 +112,7 @@ u16 WC8::object(void) const
 
 u16 WC8::object(int index) const
 {
-    return *(u16*)(data + 0x20 + index * 4);
+    return Endian::convertTo<u16>(data + 0x20 + index * 4);
 }
 
 int WC8::items(void) const
@@ -126,12 +127,12 @@ u16 WC8::objectQuantity(void) const
 
 u16 WC8::objectQuantity(int index) const
 {
-    return *(u16*)(data + 0x22 + index * 4);
+    return Endian::convertTo<u16>(data + 0x22 + index * 4);
 }
 
 u8 WC8::PIDType(void) const
 {
-    return *(u8*)(data + 0x248);
+    return data[0x248];
 }
 
 bool WC8::shiny(void) const
@@ -141,82 +142,82 @@ bool WC8::shiny(void) const
 
 u16 WC8::TID(void) const
 {
-    return *(u16*)(data + 0x20);
+    return Endian::convertTo<u16>(data + 0x20);
 }
 
 u16 WC8::SID(void) const
 {
-    return *(u16*)(data + 0x22);
+    return Endian::convertTo<u16>(data + 0x22);
 }
 
 u8 WC8::version(void) const
 {
-    return *(u32*)(data + 0x24);
+    return Endian::convertTo<u32>(data + 0x24);
 }
 
 u32 WC8::encryptionConstant(void) const
 {
-    return *(u32*)(data + 0x28);
+    return Endian::convertTo<u32>(data + 0x28);
 }
 
 u32 WC8::PID(void) const
 {
-    return *(u32*)(data + 0x2C);
+    return Endian::convertTo<u32>(data + 0x2C);
 }
 
 u8 WC8::ball(void) const
 {
-    return *(u8*)(data + 0x22C);
+    return data[0x22C];
 }
 
 u16 WC8::heldItem(void) const
 {
-    return *(u16*)(data + 0x22E);
+    return Endian::convertTo<u16>(data + 0x22E);
 }
 
 u16 WC8::move(u8 m) const
 {
-    return *(u16*)(data + 0x230 + m * 2);
+    return Endian::convertTo<u16>(data + 0x230 + m * 2);
 }
 
 u16 WC8::relearnMove(u8 index) const
 {
-    return *(u16*)(data + 0x238 + index * 2);
+    return Endian::convertTo<u16>(data + 0x238 + index * 2);
 }
 
 u16 WC8::species(void) const
 {
-    return *(u16*)(data + 0x240);
+    return Endian::convertTo<u16>(data + 0x240);
 }
 
 u8 WC8::alternativeForm(void) const
 {
-    return *(u8*)(data + 0x242);
+    return data[0x242];
 }
 
 u8 WC8::gender(void) const
 {
-    return *(u8*)(data + 0x243);
+    return data[0x243];
 }
 
 u8 WC8::level(void) const
 {
-    return *(u8*)(data + 0x244);
+    return data[0x244];
 }
 
 bool WC8::egg(void) const
 {
-    return *(u8*)(data + 0x245) == 1;
+    return data[0x245] == 1;
 }
 
 u8 WC8::nature(void) const
 {
-    return *(u8*)(data + 0x246);
+    return data[0x246];
 }
 
 u8 WC8::abilityType(void) const
 {
-    return *(u8*)(data + 0x247);
+    return data[0x247];
 }
 
 u16 WC8::ability(void) const
@@ -235,7 +236,7 @@ u16 WC8::ability(void) const
 
 u8 WC8::metLevel(void) const
 {
-    return *(u8*)(data + 0x249);
+    return data[0x249];
 }
 
 u8 WC8::dynamaxLevel(void) const
@@ -255,47 +256,47 @@ u8 WC8::ribbonValue(int index) const
 
 u8 WC8::iv(Stat index) const
 {
-    return *(u8*)(data + 0x26C + u8(index));
+    return data[0x26C + u8(index)];
 }
 
 u8 WC8::otGender(void) const
 {
-    return *(u8*)(data + 0x272);
+    return data[0x272];
 }
 
 u8 WC8::ev(Stat index) const
 {
-    return *(u8*)(data + 0x273 + u8(index));
+    return data[0x273 + u8(index)];
 }
 
 u8 WC8::otIntensity(void) const
 {
-    return *(u8*)(data + 0x279);
+    return data[0x279];
 }
 
 u8 WC8::otMemory(void) const
 {
-    return *(u8*)(data + 0x27A);
+    return data[0x27A];
 }
 
 u8 WC8::otFeeling(void) const
 {
-    return *(u8*)(data + 0x27B);
+    return data[0x27B];
 }
 
 u16 WC8::otTextvar(void) const
 {
-    return *(u16*)(data + 0x27C);
+    return Endian::convertTo<u16>(data + 0x27C);
 }
 
 u16 WC8::eggLocation(void) const
 {
-    return *(u16*)(data + 0x228);
+    return Endian::convertTo<u16>(data + 0x228);
 }
 
 u16 WC8::metLocation(void) const
 {
-    return *(u16*)(data + 0x22A);
+    return Endian::convertTo<u16>(data + 0x22A);
 }
 
 bool WC8::ribbon(u8 category, u8 index) const

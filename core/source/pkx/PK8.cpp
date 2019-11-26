@@ -25,6 +25,7 @@
  */
 
 #include "PK8.hpp"
+#include "endian.hpp"
 #include "utils.hpp"
 
 void PK8::shuffleArray(u8 sv)
@@ -47,18 +48,18 @@ void PK8::crypt(void)
     u32 seed = encryptionConstant();
     for (int i = 0x08; i < 0x148; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
     for (u32 i = 0x148; i < length; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
 }
 
@@ -94,83 +95,83 @@ Generation PK8::generation(void) const
 
 u32 PK8::encryptionConstant(void) const
 {
-    return *(u32*)(data);
+    return Endian::convertTo<u32>(data);
 }
 void PK8::encryptionConstant(u32 v)
 {
-    *(u32*)(data) = v;
+    Endian::convertFrom<u32>(data, v);
 }
 
 u16 PK8::sanity(void) const
 {
-    return *(u16*)(data + 0x04);
+    return Endian::convertTo<u16>(data + 0x04);
 }
 void PK8::sanity(u16 v)
 {
-    *(u16*)(data + 0x04) = v;
+    Endian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK8::checksum(void) const
 {
-    return *(u16*)(data + 0x06);
+    return Endian::convertTo<u16>(data + 0x06);
 }
 void PK8::checksum(u16 v)
 {
-    *(u16*)(data + 0x06) = v;
+    Endian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK8::species(void) const
 {
-    return *(u16*)(data + 0x08);
+    return Endian::convertTo<u16>(data + 0x08);
 }
 void PK8::species(u16 v)
 {
-    *(u16*)(data + 0x08) = v;
+    Endian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK8::heldItem(void) const
 {
-    return *(u16*)(data + 0x0A);
+    return Endian::convertTo<u16>(data + 0x0A);
 }
 void PK8::heldItem(u16 v)
 {
-    *(u16*)(data + 0x0A) = v;
+    Endian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK8::TID(void) const
 {
-    return *(u16*)(data + 0x0C);
+    return Endian::convertTo<u16>(data + 0x0C);
 }
 void PK8::TID(u16 v)
 {
-    *(u16*)(data + 0x0C) = v;
+    Endian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK8::SID(void) const
 {
-    return *(u16*)(data + 0x0E);
+    return Endian::convertTo<u16>(data + 0x0E);
 }
 void PK8::SID(u16 v)
 {
-    *(u16*)(data + 0x0E) = v;
+    Endian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK8::experience(void) const
 {
-    return *(u32*)(data + 0x10);
+    return Endian::convertTo<u32>(data + 0x10);
 }
 void PK8::experience(u32 v)
 {
-    *(u32*)(data + 0x10) = v;
+    Endian::convertFrom<u32>(data + 0x10, v);
 }
 
 u16 PK8::ability(void) const
 {
-    return *(u16*)(data + 0x14);
+    return Endian::convertTo<u16>(data + 0x14);
 }
 void PK8::ability(u16 v)
 {
-    *(u16*)(data + 0x14) = v;
+    Endian::convertFrom<u16>(data + 0x14, v);
 }
 
 void PK8::setAbility(u8 v)
@@ -217,20 +218,20 @@ void PK8::canGiga(bool v) const
 
 u16 PK8::markValue(void) const
 {
-    return *(u16*)(data + 0x18);
+    return Endian::convertTo<u16>(data + 0x18);
 }
 void PK8::markValue(u16 v)
 {
-    *(u16*)(data + 0x18) = v;
+    Endian::convertFrom<u16>(data + 0x18, v);
 }
 
 u32 PK8::PID(void) const
 {
-    return *(u32*)(data + 0x1C);
+    return Endian::convertTo<u32>(data + 0x1C);
 }
 void PK8::PID(u32 v)
 {
-    *(u32*)(data + 0x1C) = v;
+    Endian::convertFrom<u32>(data + 0x1C, v);
 }
 
 u8 PK8::origNature(void) const
@@ -282,11 +283,11 @@ void PK8::gender(u8 v)
 
 u16 PK8::alternativeForm(void) const
 {
-    return *(u16*)(data + 0x24);
+    return Endian::convertTo<u16>(data + 0x24);
 }
 void PK8::alternativeForm(u16 v)
 {
-    *(u16*)(data + 0x24) = v;
+    Endian::convertFrom<u16>(data + 0x24, v);
 }
 
 u8 PK8::ev(Stat ev) const
@@ -418,11 +419,11 @@ void PK8::nickname(const std::string& v)
 
 u16 PK8::move(u8 m) const
 {
-    return *(u16*)(data + 0x72 + m * 2);
+    return Endian::convertTo<u16>(data + 0x72 + m * 2);
 }
 void PK8::move(u8 m, u16 v)
 {
-    *(u16*)(data + 0x72 + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x72 + m * 2, v);
 }
 
 u8 PK8::PP(u8 m) const
@@ -445,51 +446,51 @@ void PK8::PPUp(u8 m, u8 v)
 
 u16 PK8::relearnMove(u8 m) const
 {
-    return *(u16*)(data + 0x82 + m * 2);
+    return Endian::convertTo<u16>(data + 0x82 + m * 2);
 }
 void PK8::relearnMove(u8 m, u16 v)
 {
-    *(u16*)(data + 0x82 + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x82 + m * 2, v);
 }
 
 int PK8::partyCurrHP(void) const
 {
-    return *(u16*)(data + 0x8A);
+    return Endian::convertTo<u16>(data + 0x8A);
 }
 void PK8::partyCurrHP(u16 v)
 {
-    *(u16*)(data + 0x8A) = v;
+    Endian::convertFrom<u16>(data + 0x8A, v);
 }
 
 u8 PK8::iv(Stat stat) const
 {
-    u32 buffer = *(u32*)(data + 0x8C);
+    u32 buffer = Endian::convertTo<u32>(data + 0x8C);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 void PK8::iv(Stat stat, u8 v)
 {
-    u32 buffer = *(u32*)(data + 0x8C);
+    u32 buffer = Endian::convertTo<u32>(data + 0x8C);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    *(u32*)(data + 0x8C) = buffer;
+    Endian::convertFrom<u32>(data + 0x8C, buffer);
 }
 
 bool PK8::egg(void) const
 {
-    return ((*(u32*)(data + 0x8C) >> 30) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x8C) >> 30) & 0x1) == 1;
 }
 void PK8::egg(bool v)
 {
-    *(u32*)(data + 0x8C) = (u32)((*(u32*)(data + 0x8C) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+    Endian::convertFrom<u32>(data + 0x8C, (u32)((Endian::convertTo<u32>(data + 0x8C) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK8::nicknamed(void) const
 {
-    return ((*(u32*)(data + 0x8C) >> 31) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x8C) >> 31) & 0x1) == 1;
 }
 void PK8::nicknamed(bool v)
 {
-    *(u32*)(data + 0x8C) = (*(u32*)(data + 0x8C) & 0x7FFFFFFF) | (v ? 0x80000000 : 0);
+    Endian::convertFrom<u32>(data + 0x8C, (Endian::convertTo<u32>(data + 0x8C) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 u8 PK8::dynamaxLevel(void) const
@@ -530,11 +531,11 @@ void PK8::currentHandler(u8 v)
 
 u16 PK8::htID(void) const
 {
-    return *(u16*)(data + 0xC6);
+    return Endian::convertTo<u16>(data + 0xC6);
 }
 void PK8::htID(u16 v)
 {
-    *(u16*)(data + 0xC6) = v;
+    Endian::convertFrom<u16>(data + 0xC6, v);
 }
 
 u8 PK8::htFriendship(void) const
@@ -575,11 +576,11 @@ void PK8::htFeeling(u8 v)
 
 u16 PK8::htTextVar(void) const
 {
-    return *(u16*)(data + 0xCC);
+    return Endian::convertTo<u16>(data + 0xCC);
 }
 void PK8::htTextVar(u16 v)
 {
-    *(u16*)(data + 0xCC) = v;
+    Endian::convertFrom<u16>(data + 0xCC, v);
 }
 
 u8 PK8::fullness(void) const
@@ -647,11 +648,11 @@ void PK8::language(Language v)
 
 u32 PK8::formDuration(void) const
 {
-    return *(u32*)(data + 0xE4);
+    return Endian::convertTo<u32>(data + 0xE4);
 }
 void PK8::formDuration(u32 v)
 {
-    *(u32*)(data + 0xE4) = v;
+    Endian::convertFrom<u32>(data + 0xE4, v);
 }
 
 s8 PK8::favRibbon(void) const
@@ -701,11 +702,11 @@ void PK8::otMemory(u8 v)
 
 u16 PK8::otTextVar(void) const
 {
-    return *(u16*)(data + 0x116);
+    return Endian::convertTo<u16>(data + 0x116);
 }
 void PK8::otTextVar(u16 v)
 {
-    *(u16*)(data + 0x116) = v;
+    Endian::convertFrom<u16>(data + 0x116, v);
 }
 
 u8 PK8::otFeeling(void) const
@@ -773,20 +774,20 @@ void PK8::metDay(u8 v)
 
 u16 PK8::eggLocation(void) const
 {
-    return *(u16*)(data + 0x120);
+    return Endian::convertTo<u16>(data + 0x120);
 }
 void PK8::eggLocation(u16 v)
 {
-    *(u16*)(data + 0x120) = v;
+    Endian::convertFrom<u16>(data + 0x120, v);
 }
 
 u16 PK8::metLocation(void) const
 {
-    return *(u16*)(data + 0x122);
+    return Endian::convertTo<u16>(data + 0x122);
 }
 void PK8::metLocation(u16 v)
 {
-    *(u16*)(data + 0x122) = v;
+    Endian::convertFrom<u16>(data + 0x122, v);
 }
 
 u8 PK8::ball(void) const
@@ -840,14 +841,14 @@ int PK8::partyStat(Stat stat) const
     {
         return -1;
     }
-    return *(u16*)(data + 0x14A + u8(stat) * 2);
+    return Endian::convertTo<u16>(data + 0x14A + u8(stat) * 2);
 }
 
 void PK8::partyStat(Stat stat, u16 v)
 {
     if (length == 0x158)
     {
-        *(u16*)(data + 0x14A + u8(stat) * 2) = v;
+        Endian::convertFrom<u16>(data + 0x14A + u8(stat) * 2, v);
     }
 }
 
@@ -870,11 +871,11 @@ void PK8::partyLevel(u8 v)
 
 u16 PK8::dynamaxType(void) const
 {
-    return *(u16*)(data + 0x156);
+    return Endian::convertTo<u16>(data + 0x156);
 }
 void PK8::dynamaxType(u16 v)
 {
-    *(u16*)(data + 0x156) = v;
+    Endian::convertFrom<u16>(data + 0x156, v);
 }
 
 u8 PK8::currentFriendship(void) const
@@ -906,7 +907,7 @@ void PK8::refreshChecksum(void)
     u16 chk = 0;
     for (int i = 8; i < 0x148; i += 2)
     {
-        chk += *(u16*)(data + i);
+        chk += Endian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }

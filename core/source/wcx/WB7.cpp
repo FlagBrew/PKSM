@@ -26,6 +26,7 @@
 
 #include "WB7.hpp"
 #include "Configuration.hpp"
+#include "endian.hpp"
 #include "personal.hpp"
 #include "utils.hpp"
 
@@ -51,7 +52,7 @@ Generation WB7::generation() const
 
 u16 WB7::ID() const
 {
-    return *(u16*)(data);
+    return Endian::convertTo<u16>(data);
 }
 
 std::string WB7::title() const
@@ -61,11 +62,11 @@ std::string WB7::title() const
 
 u32 WB7::rawDate() const
 {
-    return *(u32*)(data + 0x4C);
+    return Endian::convertTo<u32>(data + 0x4C);
 }
 void WB7::rawDate(u32 date)
 {
-    *(u32*)(data + 0x4C) = date;
+    Endian::convertFrom<u32>(data + 0x4C, date);
 }
 
 u32 WB7::year() const
@@ -156,7 +157,7 @@ u16 WB7::object(void) const
 
 u16 WB7::object(int index) const
 {
-    return *(u16*)(data + 0x68 + index * 4);
+    return Endian::convertTo<u16>(data + 0x68 + index * 4);
 }
 
 int WB7::items(void) const
@@ -171,7 +172,7 @@ u16 WB7::objectQuantity(void) const
 
 u16 WB7::objectQuantity(int index) const
 {
-    return *(u16*)(data + 0x6A + index * 4);
+    return Endian::convertTo<u16>(data + 0x6A + index * 4);
 }
 
 bool WB7::pokemon(void) const
@@ -181,7 +182,7 @@ bool WB7::pokemon(void) const
 
 u8 WB7::PIDType(void) const
 {
-    return *(u8*)(data + 0xA3);
+    return data[0xA3];
 }
 
 bool WB7::shiny(void) const
@@ -191,57 +192,57 @@ bool WB7::shiny(void) const
 
 u16 WB7::TID(void) const
 {
-    return *(u16*)(data + 0x68);
+    return Endian::convertTo<u16>(data + 0x68);
 }
 
 u16 WB7::SID(void) const
 {
-    return *(u16*)(data + 0x6A);
+    return Endian::convertTo<u16>(data + 0x6A);
 }
 
 u8 WB7::version(void) const
 {
-    return *(u8*)(data + 0x6C);
+    return data[0x6C];
 }
 
 u32 WB7::encryptionConstant(void) const
 {
-    return *(u32*)(data + 0x70);
+    return Endian::convertTo<u32>(data + 0x70);
 }
 
 u8 WB7::ball(void) const
 {
-    return *(u8*)(data + 0x76);
+    return data[0x76];
 }
 
 u16 WB7::heldItem(void) const
 {
-    return *(u16*)(data + 0x78);
+    return Endian::convertTo<u16>(data + 0x78);
 }
 
 u16 WB7::move(u8 m) const
 {
-    return *(u16*)(data + 0x7A + m * 2);
+    return Endian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
 u16 WB7::species(void) const
 {
-    return *(u16*)(data + 0x82);
+    return Endian::convertTo<u16>(data + 0x82);
 }
 
 u8 WB7::alternativeForm(void) const
 {
-    return *(u8*)(data + 0x84);
+    return data[0x84];
 }
 
 u8 WB7::nature(void) const
 {
-    return *(u8*)(data + 0xA0);
+    return data[0xA0];
 }
 
 u8 WB7::gender(void) const
 {
-    return *(u8*)(data + 0xA1);
+    return data[0xA1];
 }
 
 u16 WB7::ability(void) const
@@ -260,87 +261,87 @@ u16 WB7::ability(void) const
 
 u8 WB7::abilityType(void) const
 {
-    return *(u8*)(data + 0xA2);
+    return data[0xA2];
 }
 
 u8 WB7::metLevel(void) const
 {
-    return *(u8*)(data + 0xA8);
+    return data[0xA8];
 }
 
 u8 WB7::level(void) const
 {
-    return *(u8*)(data + 0xD0);
+    return data[0xD0];
 }
 
 bool WB7::egg(void) const
 {
-    return *(u8*)(data + 0xD1) == 1;
+    return data[0xD1] == 1;
 }
 
 u16 WB7::eggLocation(void) const
 {
-    return *(u16*)(data + 0xA4);
+    return Endian::convertTo<u16>(data + 0xA4);
 }
 
 u16 WB7::metLocation(void) const
 {
-    return *(u16*)(data + 0xA6);
+    return Endian::convertTo<u16>(data + 0xA6);
 }
 
 u8 WB7::awakened(Stat index) const
 {
-    return *(u8*)(data + 0xA9 + u8(index));
+    return data[0xA9 + u8(index)];
 }
 
 u8 WB7::iv(Stat index) const
 {
-    return *(u8*)(data + 0xAF + u8(index));
+    return data[0xAF + u8(index)];
 }
 
 u8 WB7::otGender(void) const
 {
-    return *(u8*)(data + 0xB5);
+    return data[0xB5];
 }
 
 u16 WB7::additionalItem(void) const
 {
-    return *(u16*)(data + 0xD2);
+    return Endian::convertTo<u16>(data + 0xD2);
 }
 
 u32 WB7::PID(void) const
 {
-    return *(u32*)(data + 0xD4);
+    return Endian::convertTo<u32>(data + 0xD4);
 }
 
 u16 WB7::relearnMove(u8 index) const
 {
-    return *(u16*)(data + 0xD8 + index * 2);
+    return Endian::convertTo<u16>(data + 0xD8 + index * 2);
 }
 
 u8 WB7::otIntensity(void) const
 {
-    return *(u8*)(data + 0xE0);
+    return data[0xE0];
 }
 
 u8 WB7::otMemory(void) const
 {
-    return *(u8*)(data + 0xE1);
+    return data[0xE1];
 }
 
 u16 WB7::otTextvar(void) const
 {
-    return *(u8*)(data + 0xE2);
+    return data[0xE2];
 }
 
 u8 WB7::otFeeling(void) const
 {
-    return *(u8*)(data + 0xE4);
+    return data[0xE4];
 }
 
 u8 WB7::ev(Stat index) const
 {
-    return *(u8*)(data + 0xE5 + u8(index));
+    return data[0xE5 + u8(index)];
 }
 
 bool WB7::ribbon(u8 category, u8 index) const

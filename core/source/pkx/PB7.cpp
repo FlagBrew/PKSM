@@ -25,6 +25,7 @@
  */
 
 #include "PB7.hpp"
+#include "endian.hpp"
 #include "utils.hpp"
 
 void PB7::shuffleArray(u8 sv)
@@ -47,18 +48,18 @@ void PB7::crypt(void)
     u32 seed = encryptionConstant();
     for (int i = 0x08; i < 232; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
     for (u32 i = 232; i < length; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
 }
 
@@ -93,74 +94,74 @@ Generation PB7::generation(void) const
 
 u32 PB7::encryptionConstant(void) const
 {
-    return *(u32*)(data);
+    return Endian::convertTo<u32>(data);
 }
 void PB7::encryptionConstant(u32 v)
 {
-    *(u32*)(data) = v;
+    Endian::convertFrom<u32>(data, v);
 }
 
 u16 PB7::sanity(void) const
 {
-    return *(u16*)(data + 0x04);
+    return Endian::convertTo<u16>(data + 0x04);
 }
 void PB7::sanity(u16 v)
 {
-    *(u16*)(data + 0x04) = v;
+    Endian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PB7::checksum(void) const
 {
-    return *(u16*)(data + 0x06);
+    return Endian::convertTo<u16>(data + 0x06);
 }
 void PB7::checksum(u16 v)
 {
-    *(u16*)(data + 0x06) = v;
+    Endian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PB7::species(void) const
 {
-    return *(u16*)(data + 0x08);
+    return Endian::convertTo<u16>(data + 0x08);
 }
 void PB7::species(u16 v)
 {
-    *(u16*)(data + 0x08) = v;
+    Endian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PB7::heldItem(void) const
 {
-    return *(u16*)(data + 0x0A);
+    return Endian::convertTo<u16>(data + 0x0A);
 }
 void PB7::heldItem(u16 v)
 {
-    *(u16*)(data + 0x0A) = v;
+    Endian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PB7::TID(void) const
 {
-    return *(u16*)(data + 0x0C);
+    return Endian::convertTo<u16>(data + 0x0C);
 }
 void PB7::TID(u16 v)
 {
-    *(u16*)(data + 0x0C) = v;
+    Endian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PB7::SID(void) const
 {
-    return *(u16*)(data + 0x0E);
+    return Endian::convertTo<u16>(data + 0x0E);
 }
 void PB7::SID(u16 v)
 {
-    *(u16*)(data + 0x0E) = v;
+    Endian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PB7::experience(void) const
 {
-    return *(u32*)(data + 0x10);
+    return Endian::convertTo<u32>(data + 0x10);
 }
 void PB7::experience(u32 v)
 {
-    *(u32*)(data + 0x10) = v;
+    Endian::convertFrom<u32>(data + 0x10, v);
 }
 
 u16 PB7::ability(void) const
@@ -198,20 +199,20 @@ void PB7::abilityNumber(u8 v)
 
 u16 PB7::markValue(void) const
 {
-    return *(u16*)(data + 0x16);
+    return Endian::convertTo<u16>(data + 0x16);
 }
 void PB7::markValue(u16 v)
 {
-    *(u16*)(data + 0x16) = v;
+    Endian::convertFrom<u16>(data + 0x16, v);
 }
 
 u32 PB7::PID(void) const
 {
-    return *(u32*)(data + 0x18);
+    return Endian::convertTo<u32>(data + 0x18);
 }
 void PB7::PID(u32 v)
 {
-    *(u32*)(data + 0x18) = v;
+    Endian::convertFrom<u32>(data + 0x18, v);
 }
 
 u8 PB7::nature(void) const
@@ -324,11 +325,11 @@ void PB7::nickname(const std::string& v)
 
 u16 PB7::move(u8 m) const
 {
-    return *(u16*)(data + 0x5A + m * 2);
+    return Endian::convertTo<u16>(data + 0x5A + m * 2);
 }
 void PB7::move(u8 m, u16 v)
 {
-    *(u16*)(data + 0x5A + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x5A + m * 2, v);
 }
 
 u8 PB7::PP(u8 m) const
@@ -351,43 +352,43 @@ void PB7::PPUp(u8 m, u8 v)
 
 u16 PB7::relearnMove(u8 m) const
 {
-    return *(u16*)(data + 0x6A + m * 2);
+    return Endian::convertTo<u16>(data + 0x6A + m * 2);
 }
 void PB7::relearnMove(u8 m, u16 v)
 {
-    *(u16*)(data + 0x6A + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x6A + m * 2, v);
 }
 
 u8 PB7::iv(Stat stat) const
 {
-    u32 buffer = *(u32*)(data + 0x74);
+    u32 buffer = Endian::convertTo<u32>(data + 0x74);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PB7::iv(Stat stat, u8 v)
 {
-    u32 buffer = *(u32*)(data + 0x74);
+    u32 buffer = Endian::convertTo<u32>(data + 0x74);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    *(u32*)(data + 0x74) = buffer;
+    Endian::convertFrom<u32>(data + 0x74, buffer);
 }
 
 bool PB7::egg(void) const
 {
-    return ((*(u32*)(data + 0x74) >> 30) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1;
 }
 void PB7::egg(bool v)
 {
-    *(u32*)(data + 0x74) = (u32)((*(u32*)(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+    Endian::convertFrom<u32>(data + 0x74, (Endian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
 }
 
 bool PB7::nicknamed(void) const
 {
-    return ((*(u32*)(data + 0x74) >> 31) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1;
 }
 void PB7::nicknamed(bool v)
 {
-    *(u32*)(data + 0x74) = (*(u32*)(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0);
+    Endian::convertFrom<u32>(data + 0x74, (Endian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 std::string PB7::htName(void) const
@@ -482,11 +483,11 @@ void PB7::htFeeling(u8 v)
 
 u16 PB7::htTextVar(void) const
 {
-    return *(u16*)(data + 0xA8);
+    return Endian::convertTo<u16>(data + 0xA8);
 }
 void PB7::htTextVar(u16 v)
 {
-    *(u16*)(data + 0xA8) = v;
+    Endian::convertFrom<u16>(data + 0xA8, v);
 }
 
 u8 PB7::fullness(void) const
@@ -554,11 +555,11 @@ void PB7::otMemory(u8 v)
 
 u16 PB7::otTextVar(void) const
 {
-    return *(u16*)(data + 0xCE);
+    return Endian::convertTo<u16>(data + 0xCE);
 }
 void PB7::otTextVar(u16 v)
 {
-    *(u16*)(data + 0xCE) = v;
+    Endian::convertFrom<u16>(data + 0xCE, v);
 }
 
 u8 PB7::otFeeling(void) const
@@ -626,20 +627,20 @@ void PB7::metDay(u8 v)
 
 u16 PB7::eggLocation(void) const
 {
-    return *(u16*)(data + 0xD8);
+    return Endian::convertTo<u16>(data + 0xD8);
 }
 void PB7::eggLocation(u16 v)
 {
-    *(u16*)(data + 0xD8) = v;
+    Endian::convertFrom<u16>(data + 0xD8, v);
 }
 
 u16 PB7::metLocation(void) const
 {
-    return *(u16*)(data + 0xDA);
+    return Endian::convertTo<u16>(data + 0xDA);
 }
 void PB7::metLocation(u16 v)
 {
-    *(u16*)(data + 0xDA) = v;
+    Endian::convertFrom<u16>(data + 0xDA, v);
 }
 
 u8 PB7::ball(void) const
@@ -752,7 +753,7 @@ void PB7::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < 232; i += 2)
     {
-        chk += *(u16*)(data + i);
+        chk += Endian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -903,14 +904,14 @@ int PB7::partyCurrHP(void) const
     {
         return -1;
     }
-    return *(u16*)(data + 0xF0);
+    return Endian::convertTo<u16>(data + 0xF0);
 }
 
 void PB7::partyCurrHP(u16 v)
 {
     if (length != 232)
     {
-        *(u16*)(data + 0xF0) = v;
+        Endian::convertFrom<u16>(data + 0xF0, v);
     }
 }
 
@@ -920,14 +921,14 @@ int PB7::partyStat(Stat stat) const
     {
         return -1;
     }
-    return *(u16*)(data + 0xF2 + u8(stat) * 2);
+    return Endian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
 }
 
 void PB7::partyStat(Stat stat, u16 v)
 {
     if (length != 232)
     {
-        *(u16*)(data + 0xF2 + u8(stat) * 2) = v;
+        Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
     }
 }
 
@@ -950,12 +951,12 @@ void PB7::partyLevel(u8 v)
 
 u16 PB7::partyCP() const
 {
-    return *(u16*)(data + 0xFE);
+    return Endian::convertTo<u16>(data + 0xFE);
 }
 
 void PB7::partyCP(u16 v)
 {
-    *(u16*)(data + 0xFE) = v;
+    Endian::convertFrom<u16>(data + 0xFE, v);
 }
 
 u16 PB7::CP() const

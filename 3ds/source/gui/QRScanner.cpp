@@ -37,6 +37,7 @@
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "base64.hpp"
+#include "endian.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "quirc/quirc.h"
@@ -371,9 +372,9 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
                         return;
                     }
 
-                    u32 box    = *(u32*)(scan_data.payload + 8);
-                    u32 slot   = *(u32*)(scan_data.payload + 12);
-                    u32 copies = *(u32*)(scan_data.payload + 16);
+                    u32 box    = Endian::convertTo<u32>(scan_data.payload + 8);
+                    u32 slot   = Endian::convertTo<u32>(scan_data.payload + 12);
+                    u32 copies = Endian::convertTo<u32>(scan_data.payload + 16);
 
                     if (box > 31)
                     {

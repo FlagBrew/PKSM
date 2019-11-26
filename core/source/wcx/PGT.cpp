@@ -27,6 +27,7 @@
 #include "PGT.hpp"
 #include "Language.hpp"
 #include "PK4.hpp"
+#include "endian.hpp"
 
 PGT::PGT(u8* pgt, bool fromWC4)
 {
@@ -89,7 +90,7 @@ Generation PGT::generation(void) const
 
 u8 PGT::type(void) const
 {
-    return *(u8*)(data);
+    return data[0];
 }
 
 bool PGT::bean(void) const
@@ -131,12 +132,12 @@ u16 PGT::object(void) const
     {
         return 467;
     }
-    return *(u16*)(data + 0x4);
+    return Endian::convertTo<u16>(data + 0x4);
 }
 
 u8 PGT::flags(void) const
 {
-    return *(u8*)(data + 0x3);
+    return data[3];
 }
 
 bool PGT::multiObtainable(void) const

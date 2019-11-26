@@ -32,6 +32,7 @@
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "Sav.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "utils.hpp"
@@ -1648,7 +1649,7 @@ void HexEditScreen::drawMeaning() const
 
 bool HexEditScreen::rotateMark(u8 mark)
 {
-    u16 markData = *(u16*)(pkm->rawData() + 0x16);
+    u16 markData = Endian::convertTo<u16>(pkm->rawData() + 0x16);
     switch ((markData >> (mark * 2)) & 0x3)
     {
         case 0:
@@ -1664,6 +1665,6 @@ bool HexEditScreen::rotateMark(u8 mark)
             markData &= (0xFFFF ^ (0x3 << (mark * 2)));
             break;
     }
-    *(u16*)(pkm->rawData() + 0x16) = markData;
+    Endian::convertFrom<u16>(pkm->rawData() + 0x16, markData);
     return false;
 }

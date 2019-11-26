@@ -27,25 +27,26 @@
 #include "Sav5.hpp"
 #include "PGF.hpp"
 #include "PK5.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
 u16 Sav5::TID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x14]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x14]);
 }
 void Sav5::TID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x14]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x14], v);
 }
 
 u16 Sav5::SID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x16]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x16]);
 }
 void Sav5::SID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x16]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x16], v);
 }
 
 u8 Sav5::version(void) const
@@ -113,20 +114,20 @@ void Sav5::otName(const std::string& v)
 
 u32 Sav5::money(void) const
 {
-    return *(u32*)(&data[Trainer2]);
+    return Endian::convertTo<u32>(&data[Trainer2]);
 }
 void Sav5::money(u32 v)
 {
-    *(u32*)(&data[Trainer2]) = v;
+    Endian::convertFrom<u32>(&data[Trainer2], v);
 }
 
 u32 Sav5::BP(void) const
 {
-    return *(u16*)(&data[BattleSubway]);
+    return Endian::convertTo<u16>(&data[BattleSubway]);
 }
 void Sav5::BP(u32 v)
 {
-    *(u16*)(&data[BattleSubway]) = v;
+    Endian::convertFrom<u32>(&data[BattleSubway], v);
 }
 
 u8 Sav5::badges(void) const
@@ -142,11 +143,11 @@ u8 Sav5::badges(void) const
 
 u16 Sav5::playedHours(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x24]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x24]);
 }
 void Sav5::playedHours(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x24]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x24], v);
 }
 
 u8 Sav5::playedMinutes(void) const
@@ -484,7 +485,8 @@ std::vector<Sav::giftData> Sav5::currentGifts(void) const
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
             ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
-                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35));
+                Endian::convertTo<u16>(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C),
+                *(wonderCards + i * PGF::length + 0x35));
         }
         else
         {
@@ -496,11 +498,11 @@ std::vector<Sav::giftData> Sav5::currentGifts(void) const
 
 void Sav5::cryptMysteryGiftData()
 {
-    u32 seed = *(u32*)(&data[0x1D290]);
+    u32 seed = Endian::convertTo<u32>(&data[0x1D290]);
     for (int i = 0; i < 0xA90; i += 2)
     {
         seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(&data[WondercardFlags + i]) ^= (seed >> 16);
+        Endian::convertFrom<u16>(&data[WondercardFlags + i], Endian::convertTo<u16>(&data[WondercardFlags + i]) & (seed >> 16));
     }
 }
 

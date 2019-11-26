@@ -146,7 +146,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     {
         int cur_size = std::min(size, 4 - (start - ofs));
         u8 leKeyData[4];
-        Endian::convertFrom(leKeyData, key);
+        Endian::convertFrom<u32>(leKeyData, key);
         std::copy(leKeyData + start - ofs, leKeyData + 4, ret.begin());
         ofs = cur_size;
         xorshiftAdvance(key);
@@ -156,7 +156,7 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     {
         int cur_size = std::min(size - ofs, (size_t)4);
         u8 leKeyData[4];
-        Endian::convertFrom(leKeyData, key);
+        Endian::convertFrom<u32>(leKeyData, key);
         std::copy(leKeyData, leKeyData + cur_size, ret.begin() + ofs);
         ofs += cur_size;
         xorshiftAdvance(key);
@@ -253,18 +253,18 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
 
 void SCBlock::encrypt()
 {
-    Endian::convertFrom(data, key);
+    Endian::convertFrom<u32>(data, key);
     data[4]       = u8(type);
     size_t outOfs = 5;
 
     if (type == SCBlockType::Data)
     {
-        Endian::convertFrom(data + outOfs, dataLength);
+        Endian::convertFrom<u32>(data + outOfs, dataLength);
         outOfs += 4;
     }
     else if (type == SCBlockType::Array)
     {
-        Endian::convertFrom(data + outOfs, dataLength);
+        Endian::convertFrom<u32>(data + outOfs, dataLength);
         data[outOfs + 4] = u8(subtype);
         outOfs += 5;
     }

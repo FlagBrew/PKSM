@@ -25,6 +25,7 @@
  */
 
 #include "SavUSUM.hpp"
+#include "endian.hpp"
 #include "memecrypto.h"
 #include "sha256.h"
 #include <algorithm>
@@ -65,7 +66,7 @@ void SavUSUM::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        *(u16*)(&data[csoff + i * 8]) = check16(tmp, *(u16*)(&data[csoff + i * 8 - 2]), chklen[i]);
+        Endian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, Endian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
 
     delete[] tmp;
