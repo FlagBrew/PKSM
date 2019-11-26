@@ -52,7 +52,7 @@ Bank::~Bank()
 {
     if (entries)
     {
-        delete entries;
+        delete[] entries;
     }
 }
 
