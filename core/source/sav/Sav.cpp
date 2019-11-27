@@ -115,19 +115,6 @@ bool Sav::isValidDSSave(std::shared_ptr<u8[]> dt)
 
 std::unique_ptr<Sav> Sav::checkDSType(std::shared_ptr<u8[]> dt)
 {
-    u16 chk1    = Endian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
-    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
-    if (chk1 == actual1)
-    {
-        return std::make_unique<SavBW>(dt);
-    }
-    u16 chk2    = Endian::convertTo<u16>(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
-    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
-    if (chk2 == actual2)
-    {
-        return std::make_unique<SavB2W2>(dt);
-    }
-
     // Check for block identifiers
     static constexpr size_t DP_OFFSET   = 0xC100;
     static constexpr size_t PT_OFFSET   = 0xCF2C;
@@ -146,6 +133,20 @@ std::unique_ptr<Sav> Sav::checkDSType(std::shared_ptr<u8[]> dt)
         return std::make_unique<SavPT>(dt);
     if (validSequence(dt, HGSS_OFFSET + 0x40000))
         return std::make_unique<SavHGSS>(dt);
+
+    // Check for BW/B2W2 checksums
+    u16 chk1    = Endian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
+    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
+    if (chk1 == actual1)
+    {
+        return std::make_unique<SavBW>(dt);
+    }
+    u16 chk2    = Endian::convertTo<u16>(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
+    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
+    if (chk2 == actual2)
+    {
+        return std::make_unique<SavB2W2>(dt);
+    }
     return nullptr;
 }
 
