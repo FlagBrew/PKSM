@@ -49,6 +49,8 @@ public:
     void drawBottom() const override;
 
 private:
+    static constexpr PKSM_Color COLOR_GREEN_HIGHLIGHT = PKSM_Color(0x50, 0xC0, 0x40, 0xC0);
+
     bool swapBoxWithStorage();
     bool showViewer();
     bool clearBox();
@@ -64,6 +66,13 @@ private:
     bool clickBottomIndex(int index);
     void setBoxName(bool storage);
     void pickup();
+    void pickupSwap();
+    void pickupMulti();
+    void pickupSingle();
+    void postPickup();
+    void putDownSwap();
+    void putDownNonSwap();
+    bool checkPutDownBounds();
     bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
     void scrunchSelection();
     void grabSelection(bool remove);

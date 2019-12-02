@@ -236,7 +236,7 @@ void StorageScreen::drawBottom() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
@@ -275,9 +275,9 @@ void StorageScreen::drawBottom() const
             {
                 int x = 97 + (i % selectDimensions.first) * 34;
                 int y = 10 + dy + (i / selectDimensions.first) * 30;
-                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                if (pickupMode == MULTI && (selectDimensions.first > 1 || selectDimensions.second > 1))
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
                 }
                 if (moveMon[i])
                 {
@@ -308,9 +308,9 @@ void StorageScreen::drawBottom() const
             {
                 int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
-                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                if (pickupMode == MULTI && (selectDimensions.first > 1 || selectDimensions.second > 1))
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
                 }
                 if (moveMon[i])
                 {
@@ -366,7 +366,7 @@ void StorageScreen::drawTop() const
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
             {
-                Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pkm->species() > 0)
@@ -396,9 +396,9 @@ void StorageScreen::drawTop() const
             {
                 int x = 138 + (i % selectDimensions.first) * 34;
                 int y = 16 + dy + (i / selectDimensions.first) * 30;
-                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                if (pickupMode == MULTI && (selectDimensions.first > 1 || selectDimensions.second > 1))
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
                 }
                 if (moveMon[i])
                 {
@@ -429,9 +429,9 @@ void StorageScreen::drawTop() const
             {
                 int x = 53 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
                 int y = 65 + yMod + (i / selectDimensions.first) * 30;
-                if (selectDimensions.first > 1 || selectDimensions.second > 1)
+                if (pickupMode == MULTI && (selectDimensions.first > 1 || selectDimensions.second > 1))
                 {
-                    Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(0x50, 0xC0, 0x40, 0xC0));
+                    Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
                 }
                 if (moveMon[i])
                 {
@@ -580,7 +580,7 @@ void StorageScreen::update(touchPosition* touch)
     {
         if (currentlySelecting)
         {
-            grabSelection(false);
+            duplicate();
         }
         else
         {
@@ -964,261 +964,352 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     return true;
 }
 
-void StorageScreen::pickup()
+void StorageScreen::pickupSwap()
 {
-    bool acceptGenChange = Configuration::getInstance().transferEdit();
-    bool checkedWithUser = Configuration::getInstance().transferEdit();
-    if (moveMon.empty())
+    if (storageChosen)
     {
-        if (pickupMode == MULTI)
+        moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
+        partyNum.push_back(-1);
+        Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+    }
+    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    {
+        partyNum.push_back(-1);
+        if (TitleLoader::save->generation() == Generation::LGPE)
         {
-            if (currentlySelecting)
+            SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+            for (int i = 0; i < TitleLoader::save->partyCount(); i++)
             {
-                grabSelection(true);
+                if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                {
+                    partyNum[0] = i;
+                    break;
+                }
             }
-            else
+        }
+        moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
+        TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
+    }
+    else
+    {
+        return;
+    }
+
+    fromStorage      = storageChosen;
+    selectDimensions = std::pair{storageChosen ? storageBox : boxBox, cursorIndex - 1};
+
+    if (moveMon.back()->species() == 0)
+    {
+        moveMon.back() = nullptr;
+    }
+}
+
+void StorageScreen::pickupSingle()
+{
+    if (storageChosen)
+    {
+        moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
+        partyNum.push_back(-1);
+        Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+        fromStorage = true;
+    }
+    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    {
+        partyNum.push_back(-1);
+        if (TitleLoader::save->generation() == Generation::LGPE)
+        {
+            SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+            for (int i = 0; i < TitleLoader::save->partyCount(); i++)
             {
-                selectDimensions.first  = (cursorIndex - 1) % 6;
-                selectDimensions.second = (cursorIndex - 1) / 6;
-                currentlySelecting      = true;
+                if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                {
+                    partyNum[0] = i;
+                    break;
+                }
             }
+        }
+        moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
+        TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
+        fromStorage = false;
+    }
+    else
+    {
+        return;
+    }
+
+    fromStorage      = storageChosen;
+    selectDimensions = std::pair{1, 1};
+
+    if (moveMon.back()->species() == 0)
+    {
+        moveMon.back() = nullptr;
+    }
+}
+
+void StorageScreen::pickupMulti()
+{
+    if (currentlySelecting)
+    {
+        grabSelection(true);
+    }
+    else
+    {
+        selectDimensions.first  = (cursorIndex - 1) % 6;
+        selectDimensions.second = (cursorIndex - 1) / 6;
+        currentlySelecting      = true;
+    }
+}
+
+void StorageScreen::postPickup()
+{
+    if (pickupMode == MULTI && currentlySelecting)
+    {
+        return;
+    }
+    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
+    {
+        moveMon.clear();
+        partyNum.clear();
+        selectDimensions = std::pair{0, 0};
+    }
+    else if (pickupMode == MULTI)
+    {
+        scrunchSelection();
+    }
+}
+
+bool StorageScreen::checkPutDownBounds()
+{
+    if (pickupMode == SWAP)
+    {
+        return storageChosen || boxBox * 30 + cursorIndex <= TitleLoader::save->maxSlot();
+    }
+    else
+    {
+        if (storageChosen)
+        {
+            return cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
+                   && (cursorIndex - 1) % 6 + selectDimensions.first <= 6;                              // Checks X bounds
         }
         else
         {
+            return boxBox * 30 + cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
+                       TitleLoader::save->maxSlot()                                                        // Checks full bounds
+                   && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
+                   && (cursorIndex - 1) % 6 + selectDimensions.first <= 6;                                 // Checks X bounds
+        }
+    }
+}
+
+void StorageScreen::putDownSwap()
+{
+    if (storageChosen && fromStorage)
+    {
+        Banks::bank->pkm(Banks::bank->pkm(storageBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
+        Banks::bank->pkm(moveMon[0], storageBox, cursorIndex - 1);
+        moveMon.clear();
+        partyNum.clear();
+    }
+    else if (!storageChosen && !fromStorage)
+    {
+        TitleLoader::save->pkm(TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second, false);
+        TitleLoader::save->pkm(moveMon[0], boxBox, cursorIndex - 1, false);
+        if (TitleLoader::save->generation() == Generation::LGPE)
+        {
+            SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
+            if (partyNum[0] != -1)
+            {
+                save->partyBoxSlot(partyNum[0], boxBox * 30 + cursorIndex - 1);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
+                {
+                    save->partyBoxSlot(i, selectDimensions.first * 30 + selectDimensions.second);
+                    break;
+                }
+            }
+        }
+        moveMon.clear();
+        partyNum.clear();
+    }
+    else
+    {
+        std::shared_ptr<PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
+        std::shared_ptr<PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        if (!isValidTransfer(bankMon))
+        {
+            return;
+        }
+        if (bankMon->species() == 0)
+        {
+            bankMon = TitleLoader::save->emptyPkm();
+        }
+        bankMon = TitleLoader::save->transfer(bankMon);
+        if (!bankMon)
+        {
+            Gui::warn(StringUtils::format(
+                i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())));
+            return;
+        }
+        if (bankMon->species() == 0 || (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
+            Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
+        {
             if (storageChosen)
             {
-                moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
-                partyNum.push_back(-1);
-                Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
-                fromStorage = true;
-            }
-            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
-            {
-                partyNum.push_back(-1);
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (partyNum[0] != -1)
                 {
-                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
-                    for (int i = 0; i < TitleLoader::save->partyCount(); i++)
+                    ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
+                    TitleLoader::save->fixParty();
+                }
+                TitleLoader::save->pkm(
+                    bankMon, selectDimensions.first, selectDimensions.second, Configuration::getInstance().transferEdit() && fromStorage);
+                TitleLoader::save->dex(bankMon);
+                Banks::bank->pkm(saveMon, storageBox, cursorIndex - 1);
+            }
+            else
+            {
+                SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
+                for (int i = 0; i < 6; i++)
+                {
+                    if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
                     {
-                        if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
-                        {
-                            partyNum[0] = i;
-                            break;
-                        }
+                        save->partyBoxSlot(i, selectDimensions.first * 30 + selectDimensions.second);
+                        break;
                     }
                 }
-                moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
-                fromStorage = false;
+                TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1, Configuration::getInstance().transferEdit() && fromStorage);
+                TitleLoader::save->dex(bankMon);
+                Banks::bank->pkm(saveMon, selectDimensions.first, selectDimensions.second);
             }
-            else
-            {
-                return;
-            }
-            if (pickupMode == SINGLE)
-            {
-                selectDimensions = std::pair{1, 1};
-            }
-            else
-            {
-                selectDimensions = std::pair{storageChosen ? storageBox : boxBox, cursorIndex - 1};
-            }
+            moveMon.clear();
+            partyNum.clear();
+            fromStorage = !fromStorage;
+        }
+    }
+}
 
-            if (moveMon.back()->species() == 0)
+void StorageScreen::putDownNonSwap()
+{
+    bool acceptGenChange = Configuration::getInstance().transferEdit();
+    bool checkedWithUser = Configuration::getInstance().transferEdit();
+    if (storageChosen)
+    {
+        fromStorage = false;
+        for (int y = 0; y < selectDimensions.second; y++)
+        {
+            for (int x = 0; x < selectDimensions.first; x++)
             {
-                moveMon.clear();
-                partyNum.clear();
-                selectDimensions = std::pair{0, 0};
+                int index                   = x + y * selectDimensions.first;
+                std::shared_ptr<PKX> temPkm = Banks::bank->pkm(storageBox, cursorIndex - 1 + x + y * 6);
+                if (moveMon[index])
+                {
+                    Banks::bank->pkm(moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
+                }
+                else
+                {
+                    Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1 + x + y * 6);
+                }
+                moveMon[index] = temPkm;
+
+                if (moveMon[index] && moveMon[index]->species() > 0)
+                {
+                    fromStorage = true;
+                }
+                else
+                {
+                    moveMon[index] = nullptr;
+                }
             }
         }
     }
     else
     {
-        if (pickupMode != SWAP && storageChosen &&
-            cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
-            && (cursorIndex - 1) % 6 + selectDimensions.first <= 6)                              // Checks X bounds
+        for (int y = 0; y < selectDimensions.second; y++)
         {
-            fromStorage = false;
-            for (int y = 0; y < selectDimensions.second; y++)
+            for (int x = 0; x < selectDimensions.first; x++)
             {
-                for (int x = 0; x < selectDimensions.first; x++)
+                int index = x + y * selectDimensions.first;
+                if (!isValidTransfer(moveMon[index], moveMon.size() > 1))
                 {
-                    int index                   = x + y * selectDimensions.first;
-                    std::shared_ptr<PKX> temPkm = Banks::bank->pkm(storageBox, cursorIndex - 1 + x + y * 6);
-                    if (moveMon[index])
+                    continue;
+                }
+                if (moveMon[index]->species() == 0)
+                {
+                    moveMon[index] = TitleLoader::save->emptyPkm();
+                }
+                if (!TitleLoader::save->transfer(moveMon[index]))
+                {
+                    if (moveMon.size() == 1)
                     {
-                        Banks::bank->pkm(moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
+                        Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
+                            genToCstring(TitleLoader::save->generation())));
                     }
-                    else
+                    continue;
+                }
+                if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
+                {
+                    checkedWithUser = true;
+                    acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
+                }
+                std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
+                if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
+                {
+                    TitleLoader::save->pkm(
+                        moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
+                    TitleLoader::save->dex(moveMon[index]);
+                    if (partyNum[index] != -1)
                     {
-                        Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1 + x + y * 6);
+                        ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
                     }
-                    moveMon[index] = temPkm;
-
-                    if (moveMon[index] && moveMon[index]->species() > 0)
-                    {
-                        fromStorage = true;
-                    }
-                    else
+                    if (temPkm->species() == 0)
                     {
                         moveMon[index] = nullptr;
                     }
+                    else
+                    {
+                        moveMon[index] = temPkm;
+                    }
                 }
             }
         }
-        else if (pickupMode != SWAP && !storageChosen &&
-                 boxBox * 30 + cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
-                     TitleLoader::save->maxSlot()                                                        // Checks full bounds
-                 && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <= 30 // Checks Y bounds
-                 && (cursorIndex - 1) % 6 + selectDimensions.first <= 6)                                 // Checks X bounds
+        fromStorage = false;
+    }
+}
+
+void StorageScreen::pickup()
+{
+    if (moveMon.empty())
+    {
+        switch (pickupMode)
         {
-            for (int y = 0; y < selectDimensions.second; y++)
-            {
-                for (int x = 0; x < selectDimensions.first; x++)
-                {
-                    int index = x + y * selectDimensions.first;
-                    if (!isValidTransfer(moveMon[index], moveMon.size() > 1))
-                    {
-                        continue;
-                    }
-                    if (moveMon[index]->species() == 0)
-                    {
-                        moveMon[index] = TitleLoader::save->emptyPkm();
-                    }
-                    if (!TitleLoader::save->transfer(moveMon[index]))
-                    {
-                        if (moveMon.size() == 1)
-                        {
-                            Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
-                                genToCstring(TitleLoader::save->generation())));
-                        }
-                        continue;
-                    }
-                    if (!checkedWithUser && moveMon[index]->generation() != TitleLoader::save->generation())
-                    {
-                        checkedWithUser = true;
-                        acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
-                    }
-                    std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
-                    if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
-                    {
-                        TitleLoader::save->pkm(
-                            moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
-                        TitleLoader::save->dex(moveMon[index]);
-                        if (partyNum[index] != -1)
-                        {
-                            ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
-                        }
-                        if (temPkm->species() == 0)
-                        {
-                            moveMon[index] = nullptr;
-                        }
-                        else
-                        {
-                            moveMon[index] = temPkm;
-                        }
-                    }
-                }
-            }
-            fromStorage = false;
+            case SWAP:
+                pickupSwap();
+                break;
+            case MULTI:
+                pickupMulti();
+                break;
+            case SINGLE:
+                pickupSingle();
+                break;
         }
-        else if (pickupMode == SWAP && (storageChosen || boxBox * 30 + cursorIndex <= TitleLoader::save->maxSlot()))
+    }
+    else
+    {
+        if (checkPutDownBounds())
         {
-            if (storageChosen && fromStorage)
+            if (pickupMode == SWAP)
             {
-                Banks::bank->pkm(Banks::bank->pkm(storageBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second);
-                Banks::bank->pkm(moveMon[0], storageBox, cursorIndex - 1);
-                moveMon.clear();
-                partyNum.clear();
-            }
-            else if (!storageChosen && !fromStorage)
-            {
-                TitleLoader::save->pkm(TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second, false);
-                TitleLoader::save->pkm(moveMon[0], boxBox, cursorIndex - 1, false);
-                if (TitleLoader::save->generation() == Generation::LGPE)
-                {
-                    SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
-                    if (partyNum[0] != -1)
-                    {
-                        save->partyBoxSlot(partyNum[0], boxBox * 30 + cursorIndex - 1);
-                    }
-                    for (int i = 0; i < 6; i++)
-                    {
-                        if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
-                        {
-                            save->partyBoxSlot(i, selectDimensions.first * 30 + selectDimensions.second);
-                            break;
-                        }
-                    }
-                }
-                moveMon.clear();
-                partyNum.clear();
+                putDownSwap();
             }
             else
             {
-                std::shared_ptr<PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
-                std::shared_ptr<PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                if (!isValidTransfer(bankMon))
-                {
-                    return;
-                }
-                if (bankMon->species() == 0)
-                {
-                    bankMon = TitleLoader::save->emptyPkm();
-                }
-                bankMon = TitleLoader::save->transfer(bankMon);
-                if (!bankMon)
-                {
-                    Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()),
-                        genToCstring(TitleLoader::save->generation())));
-                    return;
-                }
-                if (bankMon->species() == 0 ||
-                    (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
-                    Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
-                {
-                    if (storageChosen)
-                    {
-                        if (partyNum[0] != -1)
-                        {
-                            ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
-                            TitleLoader::save->fixParty();
-                        }
-                        TitleLoader::save->pkm(
-                            bankMon, selectDimensions.first, selectDimensions.second, Configuration::getInstance().transferEdit() && fromStorage);
-                        TitleLoader::save->dex(bankMon);
-                        Banks::bank->pkm(saveMon, storageBox, cursorIndex - 1);
-                    }
-                    else
-                    {
-                        SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
-                        for (int i = 0; i < 6; i++)
-                        {
-                            if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
-                            {
-                                save->partyBoxSlot(i, selectDimensions.first * 30 + selectDimensions.second);
-                                break;
-                            }
-                        }
-                        TitleLoader::save->pkm(bankMon, boxBox, cursorIndex - 1, Configuration::getInstance().transferEdit() && fromStorage);
-                        TitleLoader::save->dex(bankMon);
-                        Banks::bank->pkm(saveMon, selectDimensions.first, selectDimensions.second);
-                    }
-                    moveMon.clear();
-                    partyNum.clear();
-                    fromStorage = !fromStorage;
-                }
+                putDownNonSwap();
             }
         }
-        if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
-        {
-            moveMon.clear();
-            partyNum.clear();
-            selectDimensions   = std::pair{0, 0};
-            currentlySelecting = false;
-        }
-        scrunchSelection();
     }
+
+    postPickup();
 }
 
 bool StorageScreen::dumpPkm()
@@ -1294,26 +1385,34 @@ bool StorageScreen::duplicate()
 {
     if (moveMon.empty() && cursorIndex > 0)
     {
-        if (storageChosen)
+        if (pickupMode == MULTI)
         {
-            moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
+            grabSelection(false);
+            postPickup();
         }
         else
         {
-            if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+            if (storageChosen)
             {
-                return false;
+                moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
             }
-            moveMon.emplace_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone());
-        }
-        if (moveMon.back()->species() == 0)
-        {
-            moveMon.clear();
-        }
-        else
-        {
-            partyNum.push_back(-1);
-            selectDimensions = std::pair{1, 1};
+            else
+            {
+                if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+                {
+                    return false;
+                }
+                moveMon.emplace_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone());
+            }
+            if (moveMon.back()->species() == 0)
+            {
+                moveMon.clear();
+            }
+            else
+            {
+                partyNum.push_back(-1);
+                selectDimensions = std::pair{1, 1};
+            }
         }
     }
     return false;
