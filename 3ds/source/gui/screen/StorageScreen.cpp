@@ -1445,7 +1445,7 @@ bool StorageScreen::swapBoxWithStorage()
             temPkm = TitleLoader::save->transfer(temPkm);
             if (temPkm)
             {
-                if (isValidTransfer(temPkm, true))
+                if (isValidTransfer(temPkm, true) || temPkm->species() == 0)
                 {
                     auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
                     TitleLoader::save->pkm(temPkm, boxBox, i, Configuration::getInstance().transferEdit());
