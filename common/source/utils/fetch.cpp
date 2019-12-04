@@ -145,10 +145,10 @@ void MultiFetch::multiMainThread()
         if (mc == CURLM_OK)
         {
             int numFDs;
-            mc = curl_multi_wait(multiHandle, nullptr, 0, 100, &numFDs);
+            mc = curl_multi_wait(multiHandle, nullptr, 0, 1, &numFDs);
             if (numFDs == 0)
             {
-                usleep(100000);
+                usleep(1000);
             }
         }
 
