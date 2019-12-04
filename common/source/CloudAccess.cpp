@@ -87,10 +87,14 @@ CloudAccess::CloudAccess() : pageNumber(1)
 
 void CloudAccess::refreshPages()
 {
-    current = std::make_shared<Page>();
-    if (current)
+    current            = std::make_shared<Page>();
+    current->data      = grabPage(pageNumber);
+    current->available = true;
+    isGood             = !current->data.is_discarded() && current->data.size() > 0;
+    if (pageNumber >= pages())
     {
-        current->data      = grabPage(pageNumber);
+        current->data      = grabPage(pages());
+        pageNumber         = pages();
         current->available = true;
         isGood             = !current->data.is_discarded() && current->data.size() > 0;
     }
