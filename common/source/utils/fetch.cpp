@@ -40,8 +40,7 @@ static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* 
     return size * nmemb;
 }
 
-std::shared_ptr<Fetch> Fetch::init(
-    const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
+std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
 {
     auto fetch  = std::shared_ptr<Fetch>(new Fetch);
     fetch->curl = std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
@@ -58,7 +57,7 @@ std::shared_ptr<Fetch> Fetch::init(
             fetch->setopt(CURLOPT_WRITEDATA, writeData);
             fetch->setopt(CURLOPT_WRITEFUNCTION, string_write_callback);
         }
-        if (post)
+        if (!postdata.empty())
         {
             fetch->setopt(CURLOPT_POSTFIELDSIZE, postdata.length());
             fetch->setopt(CURLOPT_COPYPOSTFIELDS, postdata.data());
@@ -86,7 +85,7 @@ Result Fetch::download(
     }
 
     bool doPost = !postData.empty();
-    if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
+    if (auto fetch = Fetch::init(url, doPost, nullptr, nullptr, postData))
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
         fetch->setopt(CURLOPT_WRITEDATA, file);

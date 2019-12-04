@@ -55,7 +55,7 @@ static Generation numToGen(int num)
 void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal)
 {
     std::string* retData = new std::string;
-    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal), false, true, retData, nullptr, "");
+    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal), true, retData, nullptr, "");
     MultiFetch::getInstance().add(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
@@ -126,7 +126,7 @@ void CloudAccess::refreshPages()
 nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
-    auto fetch = Fetch::init(makeURL(num, sort, ascend, legal), false, true, &retData, nullptr, "");
+    auto fetch = Fetch::init(makeURL(num, sort, ascend, legal), true, &retData, nullptr, "");
     auto res   = MultiFetch::getInstance().execute(fetch);
     if (res.index() == 0)
     {
@@ -247,7 +247,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
         }
 
         if (auto fetch = Fetch::init(
-                "https://flagbrew.org/gpss/download/" + current->data["results"][slot]["code"].get<std::string>(), false, true, nullptr, nullptr, ""))
+                "https://flagbrew.org/gpss/download/" + current->data["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
         {
             MultiFetch::getInstance().add(fetch);
         }
@@ -372,7 +372,7 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

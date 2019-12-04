@@ -839,7 +839,7 @@ void CloudScreen::shareSend()
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", false, true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -911,7 +911,7 @@ void CloudScreen::shareReceive()
     {
         const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
         std::string retB64Data = "";
-        if (auto fetch = Fetch::init(url, false, true, &retB64Data, nullptr, ""))
+        if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
         {
             long status_code = 0;
             Generation gen   = Generation::UNUSED;

@@ -172,7 +172,7 @@ static bool update(std::string execPath)
     const std::string patronCode = Configuration::getInstance().patronCode();
     if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
     {
-        if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, true, &retString, nullptr, "code=" + patronCode))
+        if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, &retString, nullptr, "code=" + patronCode))
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -219,7 +219,7 @@ static bool update(std::string execPath)
             }
         }
     }
-    else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", false, true, &retString, nullptr, ""))
+    else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true, &retString, nullptr, ""))
     {
         moveIcon.clear();
         Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));

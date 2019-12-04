@@ -46,7 +46,7 @@ class Fetch
 
 public:
     [[nodiscard]] static std::shared_ptr<Fetch> init(
-        const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+        const std::string& url, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
     static Result download(const std::string& url, const std::string& path, const std::string& postData = "",
         curl_xferinfo_callback progress = nullptr, void* progressInfo = nullptr);
 
