@@ -278,6 +278,13 @@ bool CloudAccess::nextPage()
         // Download next page in the background
         int nextPage = (pageNumber % pages()) + 1;
         downloadCloudPage(next, nextPage, sort, ascend, legal);
+
+        // If there's a mon number desync, also download the previous page again
+        if (current->data["total_pkm"] != prev->data["total_pkm"])
+        {
+            int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+            downloadCloudPage(prev, prevPage, sort, ascend, legal);
+        }
     }
     else if (pages() == 2)
     {
@@ -319,6 +326,13 @@ bool CloudAccess::prevPage()
         // Download the next page in the background
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
         downloadCloudPage(prev, prevPage, sort, ascend, legal);
+
+        // If there's a mon number desync, also download the next page again
+        if (current->data["total_pkm"] != next->data["total_pkm"])
+        {
+            int nextPage = (pageNumber % pages()) + 1;
+            downloadCloudPage(next, nextPage, sort, ascend, legal);
+        }
     }
     else if (pages() == 2)
     {
