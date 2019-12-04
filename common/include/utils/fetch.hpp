@@ -64,6 +64,8 @@ public:
 
 private:
     Fetch() : curl(nullptr, &curl_easy_cleanup) {}
+    Fetch(const Fetch&) = delete;
+    void operator=(const Fetch&) = delete;
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
 };
 
@@ -82,8 +84,8 @@ public:
 
 private:
     MultiFetch();
-    MultiFetch(MultiFetch const&) = delete;
-    void operator=(MultiFetch const&) = delete;
+    MultiFetch(const MultiFetch&) = delete;
+    void operator=(const MultiFetch&) = delete;
     void multiMainThread();
 
     struct MultiFetchRecord
