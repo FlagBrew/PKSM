@@ -168,7 +168,8 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
 SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
 {
     SCBlock block;
-    block.key = Endian::convertTo<u32>(data + offset);
+    block.key  = Endian::convertTo<u32>(data + offset);
+    block.data = data;
     offset += 4;
 
     block.cryptBytes(data, offset, 0, 1);
@@ -188,7 +189,6 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
             block.cryptBytes(data, offset, 1, 4);
             block.dataLength = Endian::convertTo<u32>(data + offset + 1);
             block.cryptBytes(data, offset, 5, block.dataLength);
-            block.data = data + offset;
             offset += 5 + block.dataLength;
         }
         break;
@@ -269,5 +269,10 @@ void SCBlock::encrypt()
         outOfs += 5;
     }
 
+    cryptBytes(data, 4, 0, encryptedDataSize() - 4);
+}
+
+void SCBlock::decrypt()
+{
     cryptBytes(data, 4, 0, encryptedDataSize() - 4);
 }

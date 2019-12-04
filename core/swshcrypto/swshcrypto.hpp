@@ -60,6 +60,11 @@ public:
     };
     static SCBlock decryptFromOffset(u8* data, size_t& offset);
     void encrypt();
+    // Default state is decrypted; use this after encrypt() to get it back to editable data
+    void decrypt();
+
+    // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
+    u8* rawData() { return data + headerSize(type); }
 
 private:
     u32 key;
@@ -146,6 +151,33 @@ private:
             default:
                 //! CHECK WHY THIS HAPPENS
                 std::abort();
+        }
+    }
+
+    static size_t headerSize(SCBlockType type)
+    {
+        switch (type)
+        {
+            case SCBlockType::Common1:
+            case SCBlockType::Common2:
+            case SCBlockType::Common3:
+            case SCBlockType::Single1:
+            case SCBlockType::Single2:
+            case SCBlockType::Single3:
+            case SCBlockType::Single4:
+            case SCBlockType::Single5:
+            case SCBlockType::Single6:
+            case SCBlockType::Single7:
+            case SCBlockType::Single8:
+            case SCBlockType::Single9:
+            case SCBlockType::Single10:
+                return 5;
+            case SCBlockType::Data:
+                return 9;
+            case SCBlockType::Array:
+                return 10;
+            default:
+                std::abort(); //! CHECK WHY THIS HAPPENS
         }
     }
 };
