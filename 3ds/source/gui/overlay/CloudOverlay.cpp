@@ -60,7 +60,7 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : Replac
     tbutton = std::make_unique<ToggleButton>(106, 144, 108, 28,
         [this]() {
             access.filterLegal(!access.filterLegal());
-            return access.sortAscending();
+            return access.filterLegal();
         },
         ui_sheet_button_editor_idx, i18n::localize("LEGALITY_LEGAL"), FONT_SIZE_12, COLOR_BLACK, ui_sheet_button_editor_idx,
         i18n::localize("LEGALITY_ANY"), FONT_SIZE_12, COLOR_BLACK, nullptr, true);
