@@ -25,13 +25,13 @@
  */
 
 #include "fetch.hpp"
+#include "random.hpp"
+#include "thread.hpp"
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
-
-#define SPEED_TOO_SLOW 300
-#define CALLS_TOO_SLOW 100
+#include <unistd.h>
 
 static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
 {
@@ -40,10 +40,10 @@ static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* 
     return size * nmemb;
 }
 
-std::unique_ptr<Fetch> Fetch::init(
+std::shared_ptr<Fetch> Fetch::init(
     const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
 {
-    auto fetch  = std::unique_ptr<Fetch>(new Fetch);
+    auto fetch  = std::shared_ptr<Fetch>(new Fetch);
     fetch->curl = std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
     if (fetch->curl)
     {
@@ -76,42 +76,6 @@ std::unique_ptr<Fetch> Fetch::init(
     return fetch;
 }
 
-CURLcode Fetch::perform()
-{
-    return curl_easy_perform(curl.get());
-}
-
-struct callbackWrapper
-{
-    curl_xferinfo_callback progress;
-    void* progressInfo;
-};
-
-static int down_callback_wrap(void* wrapper, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
-{
-    callbackWrapper* data            = (callbackWrapper*)wrapper;
-    thread_local curl_off_t oldDlNow = dlnow;
-    thread_local int timesTooSlow    = 0;
-    if (oldDlNow + SPEED_TOO_SLOW >= dlnow)
-    {
-        timesTooSlow++;
-        oldDlNow = dlnow;
-    }
-    if (timesTooSlow >= CALLS_TOO_SLOW)
-    {
-        return 1;
-    }
-    else
-    {
-        if (timesTooSlow > 0)
-        {
-            timesTooSlow--;
-        }
-        oldDlNow = dlnow;
-        return data->progress(data->progressInfo, dltotal, dlnow, ultotal, ulnow);
-    }
-}
-
 Result Fetch::download(
     const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
 {
@@ -121,8 +85,7 @@ Result Fetch::download(
         return -errno;
     }
 
-    bool doPost             = !postData.empty();
-    callbackWrapper wrapper = {progress, progressInfo};
+    bool doPost = !postData.empty();
     if (auto fetch = Fetch::init(url, doPost, true, nullptr, nullptr, postData))
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
@@ -130,19 +93,25 @@ Result Fetch::download(
         if (progress)
         {
             fetch->setopt(CURLOPT_NOPROGRESS, 0L);
-            fetch->setopt(CURLOPT_XFERINFOFUNCTION, down_callback_wrap);
-            fetch->setopt(CURLOPT_XFERINFODATA, &wrapper);
-            fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 0L);
-            fetch->setopt(CURLOPT_LOW_SPEED_TIME, 0L);
+            fetch->setopt(CURLOPT_XFERINFOFUNCTION, progress);
+            fetch->setopt(CURLOPT_XFERINFODATA, progressInfo);
         }
-        CURLcode cres = fetch->perform();
+        fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
+        fetch->setopt(CURLOPT_LOW_SPEED_TIME, 30);
+
+        auto res = MultiFetch::getInstance().execute(fetch);
 
         fclose(file);
 
-        if (cres != CURLE_OK)
+        if (res.index() == 0)
         {
             remove(path.c_str());
-            return -cres;
+            return -std::get<0>(res);
+        }
+        else if (std::get<1>(res) != CURLE_OK)
+        {
+            remove(path.c_str());
+            return -(std::get<1>(res) + 100);
         }
     }
     else
@@ -160,4 +129,132 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
         return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(curl_mime_init(curl.get()), &curl_mime_free);
     }
     return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
+}
+
+void MultiFetch::multiMainThread()
+{
+    int lastActive = INT_MIN;
+    while (multiThreadInfo)
+    {
+        CURLMcode mc;
+        int active;
+
+        __lock_acquire(multiHandleMutex);
+        mc = curl_multi_perform(multiHandle, &active);
+        __lock_release(multiHandleMutex);
+        if (mc == CURLM_OK)
+        {
+            int numFDs;
+            mc = curl_multi_wait(multiHandle, nullptr, 0, 100, &numFDs);
+            if (numFDs == 0)
+            {
+                usleep(100000);
+            }
+        }
+
+        if (active < lastActive)
+        {
+            int msgs;
+            __lock_acquire(multiHandleMutex);
+            auto msg = curl_multi_info_read(multiHandle, &msgs);
+            __lock_release(multiHandleMutex);
+            while (msg != nullptr)
+            {
+                // Find the done handle
+                __lock_acquire(fetchesMutex);
+                auto it = std::find_if(
+                    fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) { return record.fetch->curl.get() == msg->easy_handle; });
+                // And delete it
+                if (it != fetches.end())
+                {
+                    if (it->function)
+                    {
+                        it->function(msg->data.result, it->fetch);
+                    }
+                    __lock_acquire(multiHandleMutex);
+                    curl_multi_remove_handle(multiHandle, it->fetch->curl.get());
+                    __lock_release(multiHandleMutex);
+                    fetches.erase(it);
+                }
+                __lock_release(fetchesMutex);
+
+                __lock_acquire(multiHandleMutex);
+                msg = curl_multi_info_read(multiHandle, &msgs);
+                __lock_release(multiHandleMutex);
+            }
+        }
+
+        lastActive = active;
+
+        // Terrible things have happened, but I don't know what to do
+    }
+
+    multiThreadInfo = true;
+}
+
+MultiFetch::MultiFetch()
+{
+    __lock_init(fetchesMutex);
+    __lock_init(multiHandleMutex);
+    multiHandle     = curl_multi_init();
+    multiThreadInfo = true;
+    Threads::create([](void* arg) { ((MultiFetch*)arg)->multiMainThread(); }, this);
+}
+
+void MultiFetch::exit()
+{
+    multiThreadInfo = false; // Stop multi thread
+    while (!multiThreadInfo) // Wait for it to be done
+    {
+        usleep(100);
+    }
+    // And finally clean up
+    __lock_acquire(fetchesMutex);
+    __lock_acquire(multiHandleMutex);
+    for (auto& i : fetches)
+    {
+        curl_multi_remove_handle(multiHandle, i.fetch->curl.get());
+    }
+    fetches.clear();
+    __lock_release(fetchesMutex);
+    __lock_close(fetchesMutex);
+    curl_multi_cleanup(multiHandle);
+    __lock_release(multiHandleMutex);
+    __lock_close(multiHandleMutex);
+}
+
+CURLMcode MultiFetch::add(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
+{
+    __lock_acquire(multiHandleMutex);
+    CURLMcode res = curl_multi_add_handle(multiHandle, fetch->curl.get());
+    __lock_release(multiHandleMutex);
+    if (res == CURLM_OK)
+    {
+        __lock_acquire(fetchesMutex);
+        fetches.emplace_back(fetch, onComplete);
+        __lock_release(fetchesMutex);
+    }
+    return res;
+}
+
+std::variant<CURLMcode, CURLcode> MultiFetch::execute(std::shared_ptr<Fetch> fetch)
+{
+    CURLcode cres;
+    std::atomic_flag wait;
+    wait.test_and_set();
+    CURLMcode mRes = MultiFetch::getInstance().add(fetch, [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>) {
+        cres = code;
+        wait.clear();
+    });
+    if (mRes != CURLM_OK)
+    {
+        return mRes;
+    }
+
+    while (wait.test_and_set())
+    {
+        usleep(100);
+    }
+
+    return cres;
 }

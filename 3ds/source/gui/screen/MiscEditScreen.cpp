@@ -658,10 +658,14 @@ void MiscEditScreen::validate()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        CURLcode res = fetch->perform();
-        if (res != CURLE_OK)
+        auto res = MultiFetch::getInstance().execute(fetch);
+        if (res.index() == 0)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
+        }
+        else if (std::get<1>(res) != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
         }
         else
         {

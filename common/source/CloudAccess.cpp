@@ -32,6 +32,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "thread.hpp"
+#include <unistd.h>
 
 static Generation numToGen(int num)
 {
@@ -51,32 +52,32 @@ static Generation numToGen(int num)
     return Generation::UNUSED;
 }
 
-void downloadCloudPage(CloudAccess::PageDownloadInfo* info)
+void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal)
 {
-    if (info)
-    {
-        std::string retData;
-        auto fetch = Fetch::init(CloudAccess::makeURL(info->number, info->type, info->ascend, info->legal), false, true, &retData, nullptr, "");
-        if (fetch && fetch->perform() == CURLE_OK)
+    std::string* retData = new std::string;
+    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal), false, true, retData, nullptr, "");
+    MultiFetch::getInstance().add(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
+        if (code == CURLE_OK)
         {
             long status_code;
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
             switch (status_code)
             {
                 case 200:
+                    page->data = nlohmann::json::parse(*retData, nullptr, false);
                     break;
                 default:
-                    info->page->data = {};
+                    page->data = {};
+                    break;
             }
-            info->page->data = nlohmann::json::parse(retData, nullptr, false);
         }
         else
         {
-            info->page->data = {};
+            page->data = {};
         }
-        info->page->available = true;
-        delete info;
-    }
+        delete retData;
+        page->available = true;
+    });
 }
 
 CloudAccess::CloudAccess() : pageNumber(1)
@@ -93,13 +94,41 @@ void CloudAccess::refreshPages()
         current->available = true;
         isGood             = !current->data.is_discarded() && current->data.size() > 0;
     }
+    if (isGood)
+    {
+        if (pages() > 1)
+        {
+            int page = (pageNumber % pages()) + 1;
+            next     = std::make_shared<Page>();
+            downloadCloudPage(next, page, sort, ascend, legal);
+            if (pages() > 2)
+            {
+                page = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+                prev = std::make_shared<Page>();
+                downloadCloudPage(prev, page, sort, ascend, legal);
+            }
+            else
+            {
+                prev = next;
+            }
+        }
+        else
+        {
+            next = prev = current;
+        }
+    }
 }
 
 nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
     auto fetch = Fetch::init(makeURL(num, sort, ascend, legal), false, true, &retData, nullptr, "");
-    if (fetch && fetch->perform() == CURLE_OK)
+    auto res   = MultiFetch::getInstance().execute(fetch);
+    if (res.index() == 0)
+    {
+        return {};
+    }
+    else if (std::get<1>(res) == CURLE_OK)
     {
         long status_code;
         fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
@@ -112,7 +141,10 @@ nlohmann::json CloudAccess::grabPage(int num)
         }
         return nlohmann::json::parse(retData, nullptr, false);
     }
-    return {};
+    else
+    {
+        return {};
+    }
 }
 
 static std::string sortTypeToString(CloudAccess::SortType type)
@@ -179,18 +211,6 @@ bool CloudAccess::isLegal(size_t slot) const
     return false;
 }
 
-void incrementPkmDownloadCount(std::string* num)
-{
-    if (num)
-    {
-        if (auto fetch = Fetch::init("https://flagbrew.org/gpss/download/" + *num, false, true, nullptr, nullptr, ""))
-        {
-            fetch->perform();
-        }
-        delete num;
-    }
-}
-
 std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 {
     if (slot < current->data["results"].size())
@@ -225,7 +245,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
         if (auto fetch = Fetch::init(
                 "https://flagbrew.org/gpss/download/" + current->data["results"][slot]["code"].get<std::string>(), false, true, nullptr, nullptr, ""))
         {
-            fetch->perform();
+            MultiFetch::getInstance().add(fetch);
         }
 
         return PKX::getPKM(gen, retData.data());
@@ -235,29 +255,84 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 
 bool CloudAccess::nextPage()
 {
-    if (current->data["pages"].get<int>() > 1)
+    if (pages() > 2)
     {
-        pageNumber    = (pageNumber % current->data["pages"].get<int>()) + 1;
-        current->data = grabPage(pageNumber);
-        if (current->data.is_discarded() || current->data.size() == 0)
+        while (!next->available)
         {
-            isGood = false;
+            usleep(100);
         }
+        if (next->data.empty() || next->data.is_discarded())
+        {
+            return isGood = false;
+        }
+        // Update data
+        pageNumber = (pageNumber % pages()) + 1;
+        prev       = current;
+        current    = next;
+        next       = std::make_shared<Page>();
+
+        // Download next page in the background
+        int nextPage = (pageNumber % pages()) + 1;
+        downloadCloudPage(next, nextPage, sort, ascend, legal);
     }
+    else if (pages() == 2)
+    {
+        while (!next->available)
+        {
+            usleep(100);
+        }
+        if (next->data.empty() || next->data.is_discarded())
+        {
+            return isGood = false;
+        }
+
+        prev    = current;
+        current = next;
+        next    = prev;
+    }
+    // Otherwise there's only one page, so no necessary action
     return isGood;
 }
 
 bool CloudAccess::prevPage()
 {
-    if (current->data["pages"].get<int>() > 1)
+    if (pages() > 2)
     {
-        pageNumber    = pageNumber - 1 == 0 ? current->data["pages"].get<int>() : pageNumber - 1;
-        current->data = grabPage(pageNumber);
-        if (current->data.is_discarded() || current->data.size() == 0)
+        while (!prev->available)
         {
-            isGood = false;
+            usleep(100);
         }
+        if (prev->data.empty() || prev->data.is_discarded())
+        {
+            return isGood = false;
+        }
+        // Update data
+        pageNumber = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+        next       = current;
+        current    = prev;
+        prev       = std::make_shared<Page>();
+
+        // Download the next page in the background
+        int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+        downloadCloudPage(prev, prevPage, sort, ascend, legal);
     }
+    else if (pages() == 2)
+    {
+        while (!prev->available)
+        {
+            usleep(100);
+        }
+        if (prev->data.empty() || prev->data.is_discarded())
+        {
+            return isGood = false;
+        }
+
+        // Swap pages around
+        next    = current;
+        current = prev;
+        prev    = next;
+    }
+    // Otherwise, there's only one page, so no action is necessary
     return isGood;
 }
 
@@ -288,8 +363,8 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        CURLcode res = fetch->perform();
-        if (res == CURLE_OK)
+        auto res = MultiFetch::getInstance().execute(fetch);
+        if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
             if (ret == 201)

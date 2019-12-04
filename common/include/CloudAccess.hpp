@@ -28,6 +28,7 @@
 #define CLOUDACCESS_HPP
 
 #include "json.hpp"
+#include <atomic>
 #include <memory>
 
 class PKX;
@@ -84,30 +85,17 @@ public:
 private:
     struct Page
     {
-        nlohmann::json data = {};
-        bool available      = false;
-    };
-    struct PageDownloadInfo
-    {
-        PageDownloadInfo(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal)
-            : page(page), number(number), type(type), ascend(ascend), legal(legal)
-        {
-        }
-        std::shared_ptr<Page> page;
-        int number;
-        SortType type;
-        bool ascend, legal;
+        nlohmann::json data         = {};
+        std::atomic<bool> available = false;
     };
     void refreshPages();
-    std::shared_ptr<Page> current;
+    static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal);
+    std::shared_ptr<Page> current, next, prev;
     int pageNumber;
     SortType sort = LATEST;
     bool isGood   = false;
     bool ascend   = true;
     bool legal    = false;
-
-    friend void incrementPkmDownloadCount(std::string* num);
-    friend void downloadCloudPage(CloudAccess::PageDownloadInfo* di);
 };
 
 #endif

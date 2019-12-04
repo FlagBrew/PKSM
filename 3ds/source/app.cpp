@@ -176,42 +176,45 @@ static bool update(std::string execPath)
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-            CURLcode res = fetch->perform();
-            if (res != CURLE_OK)
+            auto res = MultiFetch::getInstance().execute(fetch);
+            if (res.index() == 1)
             {
-                Gui::error(i18n::localize("CURL_ERROR"), abs(res));
-            }
-            else
-            {
-                long status_code;
-                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                switch (status_code)
+                if (std::get<1>(res) != CURLE_OK)
                 {
-                    case 200:
-                        if (retString.substr(0, 8) != GIT_REV)
-                        {
-                            url = "https://flagbrew.org/patron/downloadLatest/";
-                            if (execPath.empty())
+                    Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
+                }
+                else
+                {
+                    long status_code;
+                    fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                    switch (status_code)
+                    {
+                        case 200:
+                            if (retString.substr(0, 8) != GIT_REV)
                             {
-                                url += "cia";
-                                path = "/3ds/PKSM/PKSM.cia";
+                                url = "https://flagbrew.org/patron/downloadLatest/";
+                                if (execPath.empty())
+                                {
+                                    url += "cia";
+                                    path = "/3ds/PKSM/PKSM.cia";
+                                }
+                                else
+                                {
+                                    url += "3dsx";
+                                    path = execPath + ".new";
+                                }
                             }
-                            else
-                            {
-                                url += "3dsx";
-                                path = execPath + ".new";
-                            }
-                        }
-                        break;
-                    case 401:
-                        Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
-                        break;
-                    case 502:
-                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        break;
-                    default:
-                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        break;
+                            break;
+                        case 401:
+                            Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
+                            break;
+                        case 502:
+                            Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                            break;
+                        default:
+                            Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                            break;
+                    }
                 }
             }
         }
@@ -220,46 +223,50 @@ static bool update(std::string execPath)
     {
         moveIcon.clear();
         Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-        CURLcode res = fetch->perform();
-        if (res != CURLE_OK)
+        auto res = MultiFetch::getInstance().execute(fetch);
+        if (res.index() == 1)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
-        }
-        else
-        {
-            long status_code;
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
+            if (std::get<1>(res) != CURLE_OK)
             {
-                case 200:
+                Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
+            }
+            else
+            {
+                long status_code;
+                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                switch (status_code)
                 {
-                    nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
-                    if (retJson.is_discarded())
+                    case 200:
                     {
-                        Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
-                    }
-                    else if (retJson["tag_name"].get<std::string>() > StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
-                    {
-                        url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
-                        if (execPath != "")
+                        nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
+                        if (retJson.is_discarded())
                         {
-                            url += ".3dsx";
-                            path = execPath + ".new";
+                            Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                         }
-                        else
+                        else if (retJson["tag_name"].get<std::string>() >
+                                 StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
                         {
-                            url += ".cia";
-                            path = "/3ds/PKSM/PKSM.cia";
+                            url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
+                            if (execPath != "")
+                            {
+                                url += ".3dsx";
+                                path = execPath + ".new";
+                            }
+                            else
+                            {
+                                url += ".cia";
+                                path = "/3ds/PKSM/PKSM.cia";
+                            }
                         }
+                        break;
                     }
-                    break;
+                    case 502:
+                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                        break;
+                    default:
+                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                        break;
                 }
-                case 502:
-                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                    break;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    break;
             }
         }
     }
@@ -419,8 +426,8 @@ static void iconThread(void*)
     u16 w, h;
     bool up   = randomNumbers() % 2 ? true : false;
     bool left = randomNumbers() % 2 ? true : false;
-    u8 yMag = randomNumbers() % 2 + 1;
-    u8 xMag = randomNumbers() % 2 + 1;
+    u8 yMag   = randomNumbers() % 2 + 1;
+    u8 xMag   = randomNumbers() % 2 + 1;
     while (moveIcon.test_and_set())
     {
         int xOff = 0;
@@ -441,7 +448,7 @@ static void iconThread(void*)
         if (y >= 240 - 48 || y <= 0)
         {
             yMag = randomNumbers() % 2 + 1;
-            up = !up;
+            up   = !up;
         }
 
         if (left)
@@ -505,6 +512,8 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("socInit failed.", -1);
     }
 
+    MultiFetch::getInstance();
+
     if (R_FAILED(res = downloadAdditionalAssets()))
         return consoleDisplayError(
             "Additional assets download failed.\n\nAlways make sure you're connected to the internet and on the lastest version.", res);
@@ -566,6 +575,7 @@ Result App::exit(void)
     svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
+    MultiFetch::getInstance().exit();
     socExit();
     acExit();
     doCartScan.clear();

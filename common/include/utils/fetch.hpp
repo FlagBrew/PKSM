@@ -27,22 +27,29 @@
 #ifndef FETCH_HPP
 #define FETCH_HPP
 
+extern "C" {
+#include <sys/lock.h>
+}
 #include "types.h"
+#include <atomic>
 #include <curl/curl.h>
 #include <functional>
 #include <memory>
 #include <string>
+#include <variant>
+#include <vector>
 
 // This should theoretically be thread-safe, but on the 3DS it is not, because SOC stuff is not thread safe. Whee
 class Fetch
 {
+    friend class MultiFetch;
+
 public:
-    [[nodiscard]] static std::unique_ptr<Fetch> init(
+    [[nodiscard]] static std::shared_ptr<Fetch> init(
         const std::string& url, bool post, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
     static Result download(const std::string& url, const std::string& path, const std::string& postData = "",
         curl_xferinfo_callback progress = nullptr, void* progressInfo = nullptr);
 
-    CURLcode perform();
     template <typename T>
     CURLcode setopt(CURLoption opt, T data)
     {
@@ -58,6 +65,42 @@ public:
 private:
     Fetch() : curl(nullptr, &curl_easy_cleanup) {}
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
+};
+
+class MultiFetch
+{
+public:
+    static MultiFetch& getInstance()
+    {
+        static MultiFetch mFetch;
+        return mFetch;
+    }
+    void exit(); // Basically the destructor; don't call until end of program
+    CURLMcode add(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete = nullptr);
+
+    std::variant<CURLMcode, CURLcode> execute(std::shared_ptr<Fetch> fetch);
+
+private:
+    MultiFetch();
+    MultiFetch(MultiFetch const&) = delete;
+    void operator=(MultiFetch const&) = delete;
+    void multiMainThread();
+
+    struct MultiFetchRecord
+    {
+        MultiFetchRecord(std::shared_ptr<Fetch> fetch = nullptr, std::function<void(CURLcode, std::shared_ptr<Fetch>)> function = nullptr)
+            : fetch(fetch), function(function)
+        {
+        }
+        std::shared_ptr<Fetch> fetch;
+        std::function<void(CURLcode, std::shared_ptr<Fetch>)> function;
+    };
+
+    std::atomic<bool> multiThreadInfo = false;
+    std::vector<MultiFetchRecord> fetches;
+    _LOCK_T fetchesMutex;
+    CURLM* multiHandle = nullptr;
+    _LOCK_T multiHandleMutex;
 };
 
 #endif

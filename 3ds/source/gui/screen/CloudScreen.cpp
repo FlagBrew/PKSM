@@ -848,10 +848,14 @@ void CloudScreen::shareSend()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        CURLcode res = fetch->perform();
-        if (res != CURLE_OK)
+        auto res = MultiFetch::getInstance().execute(fetch);
+        if (res.index() == 0)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
+        }
+        else if (std::get<1>(res) != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
         }
         else
         {
@@ -893,7 +897,6 @@ void CloudScreen::shareReceive()
     char input[11]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[10]       = '\0';
-    CURLcode res;
     if (ret == SWKBD_BUTTON_MIDDLE)
     {
         std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
@@ -914,10 +917,15 @@ void CloudScreen::shareReceive()
             Generation gen   = Generation::UNUSED;
             fetch->setopt(CURLOPT_HEADERDATA, &gen);
             fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
-            res = fetch->perform();
-            if (res != CURLE_OK)
+
+            auto res = MultiFetch::getInstance().execute(fetch);
+            if (res.index() == 0)
             {
-                Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+                Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
+            }
+            else if (std::get<1>(res) != CURLE_OK)
+            {
+                Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
             }
             else
             {
