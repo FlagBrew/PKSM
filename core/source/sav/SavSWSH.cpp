@@ -334,12 +334,12 @@ void SavSWSH::partyCount(u8 count)
 std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
-    return std::make_shared<PK8>(const_cast<u8*>(blocks[Box].rawData() + offset), true, true);
+    return std::make_shared<PK8>(const_cast<u8*>(blocks[Party].rawData() + offset), true, true);
 }
 std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot, bool ekx) const
 {
     u32 offset = boxOffset(box, slot);
-    return std::make_shared<PK8>(const_cast<u8*>(blocks[Party].rawData() + offset), ekx, true);
+    return std::make_shared<PK8>(const_cast<u8*>(blocks[Box].rawData() + offset), ekx, true);
 }
 
 bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -388,4 +388,24 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
 
     pk8->encrypt();
     std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Party].rawData() + partyOffset(slot));
+}
+
+void SavSWSH::cryptBoxData(bool crypted)
+{
+    for (u8 box = 0; box < maxBoxes(); box++)
+    {
+        for (u8 slot = 0; slot < 30; slot++)
+        {
+            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(blocks[Box].rawData() + boxOffset(box, slot), crypted, true, true);
+            if (!crypted)
+            {
+                pk8->encrypt();
+            }
+        }
+    }
+}
+
+std::unique_ptr<WCX> SavSWSH::mysteryGift(int pos) const
+{
+    return nullptr;
 }

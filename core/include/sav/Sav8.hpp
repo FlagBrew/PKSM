@@ -50,7 +50,7 @@ public:
     void encrypt(void) override { blocks.encrypt(); }
     void decrypt(void) override { blocks.decrypt(); }
 
-    void trade(std::shared_ptr<PKX> pk) override; // TODO
+    void trade(std::shared_ptr<PKX> pk) override;
     std::shared_ptr<PKX> emptyPkm() const override;
 
     const std::set<int>& availableItems(void) const override;

@@ -76,3 +76,29 @@ const std::set<int>& Sav8::availableBalls(void) const
     }
     return balls;
 }
+
+void Sav8::trade(std::shared_ptr<PKX> pk)
+{
+    if (pk->egg())
+    {
+        if (pk->otName() != otName() || pk->TID() != TID() || pk->SID() != SID() || pk->gender() != gender())
+        {
+            pk->metLocation(30002);
+        }
+    }
+    else
+    {
+        if (pk->otName() != otName() || pk->TID() != TID() || pk->SID() != SID() || pk->gender() != gender())
+        {
+            pk->currentHandler(0);
+        }
+        else
+        {
+            pk->currentHandler(1);
+            ((PK8*)pk.get())->htName(otName());
+            ((PK8*)pk.get())->currentFriendship(pk->baseFriendship());
+            ((PK8*)pk.get())->htGender(gender());
+            ((PK8*)pk.get())->htLanguage(language());
+        }
+    }
+}

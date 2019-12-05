@@ -101,12 +101,15 @@ public:
     bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
-    void dex(std::shared_ptr<PKX> pk) override;
-    int dexSeen(void) const override;
-    int dexCaught(void) const override;
-    void mysteryGift(WCX& wc, int& pos) override;
-    std::unique_ptr<WCX> mysteryGift(int pos) const override;
     void cryptBoxData(bool crypted) override;
+
+    // TODO
+    void dex(std::shared_ptr<PKX> pk) override {}
+    int dexSeen(void) const override { return 0; }
+    int dexCaught(void) const override { return 0; }
+    // Check whether gifts are stored, or whether some disgusting record system is used
+    void mysteryGift(WCX& wc, int& pos) override {}
+    std::unique_ptr<WCX> mysteryGift(int pos) const override;
 
     u8 formCount(u16 species) const override { return PersonalSWSH::formCount(species); }
 };

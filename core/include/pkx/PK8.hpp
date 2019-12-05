@@ -146,6 +146,8 @@ public:
     void htName(const std::string& v);
     u8 htGender(void) const;
     void htGender(u8 v);
+    Language htLanguage(void) const;
+    void htLanguage(Language lang);
     u8 currentHandler(void) const override;
     void currentHandler(u8 v) override;
     // Unused
@@ -260,6 +262,10 @@ public:
     inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
+    inline u16 baseWeight(void) const { return PersonalSWSH::baseWeight(formSpecies()); }
+    inline u16 baseHeight(void) const { return PersonalSWSH::baseHeight(formSpecies()); }
+    inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
+    inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }
 
 private:
     bool directAccess;

@@ -111,7 +111,6 @@ namespace PersonalDPPtHGSS
     u8 baseSpd(u16 species);
     u8 type1(u16 species);
     u8 type2(u16 species);
-    u8 baseExp(u8 species);
     u8 gender(u16 species);
     u8 baseFriendship(u16 species);
     u8 expType(u16 species);
@@ -130,13 +129,16 @@ namespace PersonalSWSH
     inline u8 baseSpd(u16 species) { return 0; }
     inline u8 type1(u16 species) { return 0; }
     inline u8 type2(u16 species) { return 0; }
-    inline u8 baseExp(u8 species) { return 0; }
     inline u8 gender(u16 species) { return 0; }
     inline u8 baseFriendship(u16 species) { return 0; }
     inline u8 expType(u16 species) { return 0; }
     inline u8 ability(u16 species, u8 n) { return 0; }
     inline u16 formStatIndex(u16 species) { return 0; }
     inline u8 formCount(u16 species) { return 0; }
+    inline u16 baseHeight(u16 formSpecies) { return 0; }
+    inline u16 baseWeight(u16 formSpecies) { return 0; }
+    inline u16 pokedexIndex(u16 formSpecies) { return 0; }
+    inline bool canLearnTR(u16 formSpecies, u8 trID) { return 0; }
 }
 
 #endif

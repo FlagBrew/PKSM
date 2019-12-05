@@ -520,6 +520,15 @@ void PK8::htGender(u8 v)
     data[0xC2] = v;
 }
 
+Language PK8::htLanguage(void) const
+{
+    return Language(data[0xC3]);
+}
+void PK8::htLanguage(Language lang)
+{
+    data[0xC3] = u8(lang);
+}
+
 u8 PK8::currentHandler(void) const
 {
     return data[0xC4];
