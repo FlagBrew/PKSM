@@ -649,7 +649,7 @@ void MiscEditScreen::validate()
     headers                    = curl_slist_append(headers, version.c_str());
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(Configuration::getInstance().legalEndpoint(), false, true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(Configuration::getInstance().legalEndpoint(), true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -658,10 +658,14 @@ void MiscEditScreen::validate()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        CURLcode res = fetch->perform();
-        if (res != CURLE_OK)
+        auto res = MultiFetch::getInstance().execute(fetch);
+        if (res.index() == 0)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), abs(res));
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
+        }
+        else if (std::get<1>(res) != CURLE_OK)
+        {
+            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
         }
         else
         {
