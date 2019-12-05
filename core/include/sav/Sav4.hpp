@@ -55,7 +55,9 @@ protected:
     int maxBall(void) const override { return 0x18; }
 
 public:
-    void resign(void) override;
+    void resign(void);
+    void encrypt(void) override { resign(); }
+    void decrypt(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;
@@ -131,7 +133,7 @@ public:
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
-    virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
+    std::map<Pouch, std::vector<int>> validItems(void) const override;
     std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalDPPtHGSS::formCount(species); }

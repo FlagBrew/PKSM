@@ -65,6 +65,7 @@ public:
 
     // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
     u8* rawData() { return data + headerSize(type); }
+    const u8* rawData() const { return data + headerSize(type); }
 
 private:
     u32 key;
@@ -184,18 +185,17 @@ private:
 
 class SCBlockList : public std::vector<SCBlock>
 {
-    friend void swshcrypto_encrypt(SCBlockList& list);
-
 public:
-    SCBlockList(std::shared_ptr<u8[]> data, size_t length) : associatedData(data), length(length) {}
+    static SCBlockList init(std::shared_ptr<u8[]> data, size_t length);
+    void encrypt();
+    void decrypt();
 
 private:
+    SCBlockList(std::shared_ptr<u8[]> data, size_t length) : associatedData(data), length(length) {}
     std::shared_ptr<u8[]> associatedData;
     size_t length;
 };
 
 bool swshcrypto_hashValid(u8* data, size_t length);
-SCBlockList swshcrypto_decrypt(std::shared_ptr<u8[]> dataIn, size_t length);
-void swshcrypto_encrypt(SCBlockList& blocks);
 
 #endif

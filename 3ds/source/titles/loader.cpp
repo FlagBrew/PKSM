@@ -572,7 +572,7 @@ void TitleLoader::saveToTitle(bool ask)
 
 void TitleLoader::saveChanges()
 {
-    save->resign();
+    save->encrypt();
     if (saveIsFile)
     {
         // No need to check size; if it was read successfully, that means that it has the correct size
@@ -588,6 +588,7 @@ void TitleLoader::saveChanges()
     {
         saveToTitle(false);
     }
+    save->decrypt();
 }
 
 void TitleLoader::exit()

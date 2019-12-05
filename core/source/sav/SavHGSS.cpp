@@ -30,7 +30,6 @@
 SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt)
 {
     length = 0x80000;
-    boxes  = 18;
     game   = Game::HGSS;
     data   = dt;
 

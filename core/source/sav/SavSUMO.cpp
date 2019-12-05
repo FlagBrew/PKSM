@@ -33,7 +33,6 @@
 SavSUMO::SavSUMO(std::shared_ptr<u8[]> dt)
 {
     length = 0x6BE00;
-    boxes  = 32;
     game   = Game::SM;
     data   = dt;
 

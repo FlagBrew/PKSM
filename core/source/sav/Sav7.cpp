@@ -225,7 +225,6 @@ void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk7->encrypt();
-    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
     std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), &data[partyOffset(slot)]);
 }
 
@@ -279,7 +278,7 @@ void Sav7::trade(std::shared_ptr<PKX> pk)
 
 void Sav7::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {

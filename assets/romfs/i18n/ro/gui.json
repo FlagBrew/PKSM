@@ -1,4 +1,4 @@
-{ 
+{
     "3DS_REGION": "Regiune 3DS",
     "3DS_REGION_ID": "ID Regiune 3DS",
     "A_ADD_SAVE": "\uE000: Adaugă Un Save",
@@ -295,6 +295,7 @@
     "HYPER_SPEED": "Hyper Antrenament Speed",
     "HYPER_TRAIN_FLAGS": "Hyper Antrenament Steaguri",
     "INCIDENT_LOGGED": "Acest incident este păstrat.",
+    "INGREDIENTS": "Ingredients",
     "INJECT_TO_SLOT": "Injectează în slot",
     "INVALID_ABILITY": "Abilitate Invalidă",
     "INVALID_BALL": "Minge Invalidă",
@@ -586,6 +587,7 @@
     "TRAINER_NAME": "Nume Trainer: %s",
     "TRAINING_BAG_HITS_LEFT": "Bagaj training dă în stânga",
     "TRAINING_RIBBON": "Panglică Antrenament",
+    "TREASURES": "Treasures",
     "TRIANGLE": "Triunghi",
     "TWN": "Taiwan",
     "TYPE": "Tip",

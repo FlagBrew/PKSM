@@ -34,6 +34,7 @@
 #include "SavORAS.hpp"
 #include "SavPT.hpp"
 #include "SavSUMO.hpp"
+#include "SavSWSH.hpp"
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
 #include "endian.hpp"
@@ -72,6 +73,8 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
         case 0xB8800:
         case 0x100000:
             return std::make_unique<SavLGPE>(dt);
+        case 0x1716B3:
+            return std::make_unique<SavSWSH>(dt);
         default:
             return std::unique_ptr<Sav>(nullptr);
     }

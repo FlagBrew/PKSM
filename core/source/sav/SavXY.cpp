@@ -31,7 +31,6 @@
 SavXY::SavXY(std::shared_ptr<u8[]> dt)
 {
     length = 0x65600;
-    boxes  = 31;
     game   = Game::XY;
     data   = dt;
 

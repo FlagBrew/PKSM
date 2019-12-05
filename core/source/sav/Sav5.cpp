@@ -208,7 +208,6 @@ void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk5->encrypt();
-    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
     std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
 }
 
@@ -242,7 +241,7 @@ void Sav5::trade(std::shared_ptr<PKX> pk)
 
 void Sav5::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {

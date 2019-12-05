@@ -318,7 +318,7 @@ void ScriptScreen::applyScript()
         {
             u32 sbo = ((Sav4*)TitleLoader::save.get())->getSBO();
             u32 gbo = ((Sav4*)TitleLoader::save.get())->getGBO();
-            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
+            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->maxBoxes(), 0) - sbo >= offset)
             {
                 offset += sbo;
             }

@@ -31,7 +31,6 @@
 SavORAS::SavORAS(std::shared_ptr<u8[]> dt)
 {
     length = 0x76000;
-    boxes  = 31;
     game   = Game::ORAS;
     data   = dt;
 

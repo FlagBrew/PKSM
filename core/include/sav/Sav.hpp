@@ -108,7 +108,9 @@ public:
         Ball,
         Battle,
         Candy,
-        ZCrystals
+        ZCrystals,
+        Treasure,
+        Ingredient
     };
 
     struct giftData
@@ -124,10 +126,11 @@ public:
         int gender;
     };
 
-    u8 boxes = 0;
-
     virtual ~Sav() {}
-    virtual void resign(void) = 0;
+    // Should be used before writing
+    virtual void encrypt(void) = 0;
+    // Should only be used after encrypt() was used
+    virtual void decrypt(void) = 0;
 
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);

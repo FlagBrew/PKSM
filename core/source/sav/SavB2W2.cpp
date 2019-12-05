@@ -31,7 +31,6 @@
 SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt)
 {
     length = 0x80000;
-    boxes  = 24;
     game   = Game::B2W2;
     data   = dt;
 

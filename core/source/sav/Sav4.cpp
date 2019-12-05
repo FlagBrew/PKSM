@@ -323,7 +323,7 @@ void Sav4::trade(std::shared_ptr<PKX> pk)
 
 void Sav4::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {

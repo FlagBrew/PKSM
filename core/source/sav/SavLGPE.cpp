@@ -36,7 +36,6 @@
 SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt)
 {
     length  = 0x100000;
-    boxes   = 34; // Ish
     game    = Game::LGPE;
     PokeDex = 0x2A00;
     data    = dt;

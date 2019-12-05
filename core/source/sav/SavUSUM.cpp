@@ -33,7 +33,6 @@
 SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt)
 {
     length = 0x6CC00;
-    boxes  = 32;
     game   = Game::USUM;
     data   = dt;
 

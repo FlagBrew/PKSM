@@ -92,7 +92,7 @@ bool swshcrypto_hashValid(u8* data, size_t length)
 }
 
 // SCBlockList is associated to dataIn!
-SCBlockList swshcrypto_decrypt(std::shared_ptr<u8[]> dataIn, size_t length)
+SCBlockList SCBlockList::init(std::shared_ptr<u8[]> dataIn, size_t length)
 {
     SCBlockList blocks{dataIn, length};
     applyStaticXorpad(dataIn, length);
@@ -104,16 +104,26 @@ SCBlockList swshcrypto_decrypt(std::shared_ptr<u8[]> dataIn, size_t length)
     return blocks;
 }
 
-void swshcrypto_encrypt(SCBlockList& blocks)
+void SCBlockList::encrypt()
 {
-    for (auto block : blocks)
+    for (auto block : *this)
     {
         block.encrypt();
     }
 
-    applyStaticXorpad(blocks.associatedData, blocks.length);
+    applyStaticXorpad(associatedData, length);
 
-    computeHash(blocks.associatedData.get() + blocks.length - SHA256_BLOCK_SIZE, blocks.associatedData.get(), blocks.length - SHA256_BLOCK_SIZE);
+    computeHash(associatedData.get() + length - SHA256_BLOCK_SIZE, associatedData.get(), length - SHA256_BLOCK_SIZE);
+}
+
+void SCBlockList::decrypt()
+{
+    applyStaticXorpad(associatedData, length);
+
+    for (auto block : *this)
+    {
+        block.decrypt();
+    }
 }
 
 void SCBlock::cryptBytes(u8* data, size_t inputOffset, size_t start, size_t size)

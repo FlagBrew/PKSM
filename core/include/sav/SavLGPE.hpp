@@ -57,7 +57,9 @@ public:
     ~SavLGPE();
 
     u16 check16(u8* buf, u32 blockID, u32 len) const;
-    void resign(void) override;
+    void resign(void);
+    void encrypt(void) override { resign(); }
+    void decrypt(void) override {}
 
     u16 boxedPkm(void) const;
     void boxedPkm(u16 v);
