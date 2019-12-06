@@ -65,7 +65,7 @@ public:
 
     // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
     u8* rawData() { return data + headerSize(type); }
-    const u8* rawData() const { return data + headerSize(type); }
+    u8* rawData() const { return data + headerSize(type); }
 
 private:
     u32 key;

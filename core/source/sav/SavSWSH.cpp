@@ -206,23 +206,23 @@ std::unique_ptr<Item> SavSWSH::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case Medicine:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 4 * slot);
         case Ball:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0xF0 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0xF0 + 4 * slot);
         case Battle:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0x168 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0x168 + 4 * slot);
         case Berry:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0x1B8 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0x1B8 + 4 * slot);
         case NormalItem:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0x2F8 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0x2F8 + 4 * slot);
         case TM:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0xB90 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0xB90 + 4 * slot);
         case Treasure:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0xED8 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0xED8 + 4 * slot);
         case Ingredient:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0x1068 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0x1068 + 4 * slot);
         case KeyItem:
-            return std::make_unique<Item8>(const_cast<u8*>(blocks[Items].rawData() + 0x11F8 + 4 * slot));
+            return std::make_unique<Item8>(blocks[Items].rawData() + 0x11F8 + 4 * slot);
         default:
             return std::make_unique<Item8>();
     }
@@ -334,12 +334,12 @@ void SavSWSH::partyCount(u8 count)
 std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
-    return std::make_shared<PK8>(const_cast<u8*>(blocks[Party].rawData() + offset), true, true);
+    return std::make_shared<PK8>(blocks[Party].rawData() + offset, true, true);
 }
 std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot, bool ekx) const
 {
     u32 offset = boxOffset(box, slot);
-    return std::make_shared<PK8>(const_cast<u8*>(blocks[Box].rawData() + offset), ekx, true);
+    return std::make_shared<PK8>(blocks[Box].rawData() + offset, ekx, true);
 }
 
 bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
