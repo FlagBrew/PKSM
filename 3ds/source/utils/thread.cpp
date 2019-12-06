@@ -25,30 +25,63 @@
  */
 
 #include "thread.hpp"
+#include <3ds.h>
+#include <list>
 
-static std::vector<Thread> threads;
+struct ThreadRecord
+{
+    ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread) : entrypoint(entrypoint), arg(arg), thread(thread) {}
+    void (*entrypoint)(void*);
+    void* arg;
+    Thread thread;
+    std::list<ThreadRecord>::iterator listPos;
+};
 
-Thread Threads::createDetached(ThreadFunc entrypoint, void* arg)
+static std::list<ThreadRecord> threads;
+LightLock listLock;
+
+void Threads::init()
+{
+    LightLock_Init(&listLock);
+}
+
+static void threadWrap(void* arg)
+{
+    ThreadRecord* record = (ThreadRecord*)arg;
+    record->entrypoint(record->arg);
+    LightLock_Lock(&listLock);
+    std::list<ThreadRecord>::iterator it = record->listPos;
+    threads.erase(it);
+    LightLock_Unlock(&listLock);
+}
+
+bool Threads::create(void (*entrypoint)(void*), void* arg)
 {
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    return threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, true);
-}
-
-void Threads::create(ThreadFunc entrypoint, void* arg)
-{
-    s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    Thread thread = threadCreate((ThreadFunc)entrypoint, arg, 4 * 1024, prio - 1, -2, false);
-    threads.push_back(thread);
-}
-
-void Threads::destroy(void)
-{
-    for (u32 i = 0; i < threads.size(); i++)
+    LightLock_Lock(&listLock);
+    threads.emplace_front(entrypoint, arg, nullptr);
+    threads.front().listPos = threads.begin();
+    threads.front().thread  = threadCreate(threadWrap, (void*)&threads.front(), 4 * 1024, prio - 1, -2, true);
+    if (!threads.front().thread)
     {
-        threadJoin(threads.at(i), U64_MAX);
-        threadFree(threads.at(i));
+        threads.erase(threads.begin());
+        LightLock_Unlock(&listLock);
+        return false;
     }
-    threads.clear();
+    else
+    {
+        LightLock_Unlock(&listLock);
+        return true;
+    }
+}
+
+void Threads::exit(void)
+{
+    while (!threads.empty())
+    {
+        threadJoin(threads.back().thread, U64_MAX);
+        // All detached, so no deallocation necessary
+    }
+    // All remove themselves, so no extra removal necessary
 }

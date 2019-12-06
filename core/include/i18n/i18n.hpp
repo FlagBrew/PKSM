@@ -36,7 +36,7 @@
 
 namespace i18n
 {
-    void init(void);
+    void init(Language lang);
     void exit(void);
 
     const std::vector<std::string>& rawItems(Language lang);

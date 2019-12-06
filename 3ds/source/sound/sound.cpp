@@ -258,7 +258,7 @@ static void bgmControlThread(void*)
                 {
                     return;
                 }
-                bgmDone = !Threads::createDetached(&bgmPlayThread);
+                bgmDone = !Threads::create(&bgmPlayThread);
             }
             else
             {
@@ -394,7 +394,7 @@ void Sound::playEffect(const std::string& effectName)
                 effectThreads.emplace_back(decoder, (s16*)linearAlloc((decoder->bufferSize() * sizeof(u16)) * 2), freeChannels.back());
                 freeChannels.pop_back();
 
-                if (!Threads::createDetached(&playEffectThread, (void*)&effectThreads.back()))
+                if (!Threads::create(&playEffectThread, (void*)&effectThreads.back()))
                 {
                     effectThreads.back().inUse.clear();
                 }

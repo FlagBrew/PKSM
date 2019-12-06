@@ -27,14 +27,11 @@
 #ifndef THREAD_HPP
 #define THREAD_HPP
 
-#include "platform.h"
-#include <vector>
-
 namespace Threads
 {
-    Thread createDetached(ThreadFunc entrypoint, void* arg = nullptr);
-    void create(ThreadFunc entrypoint, void* arg = nullptr);
-    void destroy(void);
+    void init(void);
+    bool create(void (*entrypoint)(void*), void* arg = nullptr);
+    void exit(void);
 }
 
 #endif

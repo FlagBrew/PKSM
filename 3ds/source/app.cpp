@@ -477,10 +477,11 @@ Result App::init(const std::string& execPath)
 
     hidInit();
     gfxInitDefault();
+    Threads::init();
     randomNumbers.seed(osGetTime());
 
     moveIcon.test_and_set();
-    Threads::createDetached((ThreadFunc)&iconThread);
+    Threads::create((ThreadFunc)&iconThread);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
@@ -520,8 +521,17 @@ Result App::init(const std::string& execPath)
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
 
-    i18n::init();
     Configuration::getInstance();
+    i18n::init(Configuration::getInstance().language());
+
+    Threads::create([](void*) {
+        constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO,
+            Language::ZH, Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
+        for (auto& i : languages)
+        {
+            i18n::init(i);
+        }
+    });
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -556,7 +566,8 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    Threads::create((ThreadFunc)TitleLoader::scanTitles);
+    if (!Threads::create((ThreadFunc)TitleLoader::scanTitles))
+        return consoleDisplayError("TitleLoader::scanTitles failed to start", -1);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
@@ -579,7 +590,7 @@ Result App::exit(void)
     socExit();
     acExit();
     doCartScan.clear();
-    Threads::destroy();
+    Threads::exit();
     i18n::exit();
     amExit();
     pxiDevExit();
