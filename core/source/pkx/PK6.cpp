@@ -957,52 +957,63 @@ u16 PK6::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK6::next(Sav& save) const
+int PK6::partyCurrHP(void) const
 {
-    std::shared_ptr<PK7> pk7 = std::make_shared<PK7>();
-    std::copy(data, data + 232, pk7->rawData());
-
-    // markvalue field moved, clear old gen 6 data
-    pk7->rawData()[0x2A] = 0;
-
-    // Bank Data clearing
-    for (int i = 0x94; i < 0x9E; i++)
-        pk7->rawData()[i] = 0; // Geolocations
-    for (int i = 0xAA; i < 0xB0; i++)
-        pk7->rawData()[i] = 0; // Amie fullness/enjoyment
-    for (int i = 0xE4; i < 0xE8; i++)
-        pk7->rawData()[i] = 0;    // unused
-    pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
-    pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
-
-    pk7->markValue(markValue());
-
-    switch (abilityNumber())
+    if (length == 232)
     {
-        case 1:
-        case 2:
-        case 4:
-            u8 index = abilityNumber() >> 1;
-            if (abilities(index) == ability())
-            {
-                pk7->ability(pk7->abilities(index));
-            }
+        return -1;
     }
-
-    pk7->htMemory(4);
-    pk7->htTextVar(0);
-    pk7->htIntensity(1);
-    pk7->htFeeling(randomNumbers() % 10);
-    pk7->geoCountry(0, save.country());
-    pk7->geoRegion(0, save.subRegion());
-
-    pk7->currentHandler(1);
-
-    pk7->refreshChecksum();
-    return pk7;
+    return Endian::convertTo<u16>(data + 0xF0);
 }
 
-std::shared_ptr<PKX> PK6::previous(Sav& save) const
+void PK6::partyCurrHP(u16 v)
+{
+    if (length != 232)
+    {
+        Endian::convertFrom<u16>(data + 0xF0, v);
+    }
+}
+
+int PK6::partyStat(Stat stat) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
+}
+
+void PK6::partyStat(Stat stat, u16 v)
+{
+    if (length != 232)
+    {
+        Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
+    }
+}
+
+int PK6::partyLevel() const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(data + 0xEC);
+}
+
+void PK6::partyLevel(u8 v)
+{
+    if (length != 232)
+    {
+        *(data + 0xEC) = v;
+    }
+}
+
+std::shared_ptr<PKX> PK6::convertToG4(Sav& save) const
+{
+    return save.transfer(convertToG5(save));
+}
+
+std::shared_ptr<PKX> PK6::convertToG5(Sav& save) const
 {
     std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
 
@@ -1118,53 +1129,47 @@ std::shared_ptr<PKX> PK6::previous(Sav& save) const
     return pk5;
 }
 
-int PK6::partyCurrHP(void) const
+std::shared_ptr<PKX> PK6::convertToG7(Sav& save) const
 {
-    if (length == 232)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0xF0);
-}
+    std::shared_ptr<PK7> pk7 = std::make_shared<PK7>();
+    std::copy(data, data + 232, pk7->rawData());
 
-void PK6::partyCurrHP(u16 v)
-{
-    if (length != 232)
-    {
-        Endian::convertFrom<u16>(data + 0xF0, v);
-    }
-}
+    // markvalue field moved, clear old gen 6 data
+    pk7->rawData()[0x2A] = 0;
 
-int PK6::partyStat(Stat stat) const
-{
-    if (length == 232)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
-}
+    // Bank Data clearing
+    for (int i = 0x94; i < 0x9E; i++)
+        pk7->rawData()[i] = 0; // Geolocations
+    for (int i = 0xAA; i < 0xB0; i++)
+        pk7->rawData()[i] = 0; // Amie fullness/enjoyment
+    for (int i = 0xE4; i < 0xE8; i++)
+        pk7->rawData()[i] = 0;    // unused
+    pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
+    pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
-void PK6::partyStat(Stat stat, u16 v)
-{
-    if (length != 232)
-    {
-        Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
-    }
-}
+    pk7->markValue(markValue());
 
-int PK6::partyLevel() const
-{
-    if (length == 232)
+    switch (abilityNumber())
     {
-        return -1;
+        case 1:
+        case 2:
+        case 4:
+            u8 index = abilityNumber() >> 1;
+            if (abilities(index) == ability())
+            {
+                pk7->ability(pk7->abilities(index));
+            }
     }
-    return *(data + 0xEC);
-}
 
-void PK6::partyLevel(u8 v)
-{
-    if (length != 232)
-    {
-        *(data + 0xEC) = v;
-    }
+    pk7->htMemory(4);
+    pk7->htTextVar(0);
+    pk7->htIntensity(1);
+    pk7->htFeeling(randomNumbers() % 10);
+    pk7->geoCountry(0, save.country());
+    pk7->geoRegion(0, save.subRegion());
+
+    pk7->currentHandler(1);
+
+    pk7->refreshChecksum();
+    return pk7;
 }

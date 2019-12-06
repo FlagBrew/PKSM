@@ -902,7 +902,17 @@ u16 PK7::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK7::previous(Sav& save) const
+std::shared_ptr<PKX> PK7::convertToG4(Sav& save) const
+{
+    return save.transfer(convertToG5(save));
+}
+
+std::shared_ptr<PKX> PK7::convertToG5(Sav& save) const
+{
+    return save.transfer(convertToG6(save));
+}
+
+std::shared_ptr<PKX> PK7::convertToG6(Sav& save) const
 {
     std::shared_ptr<PK6> pk6 = std::make_shared<PK6>();
     std::copy(data, data + 232, pk6->rawData());

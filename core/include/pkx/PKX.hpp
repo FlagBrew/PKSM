@@ -41,6 +41,8 @@ class PKFilter;
 
 class PKX
 {
+    friend class Sav;
+
 protected:
     u32 expTable(u8 row, u8 col) const;
     u8 blockPosition(u8 index) const;
@@ -50,6 +52,13 @@ protected:
 
     virtual void crypt(void)         = 0;
     virtual void shuffleArray(u8 sv) = 0;
+
+    virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG7(Sav& save) const { return generation() == Generation::SEVEN ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToLGPE(Sav& save) const { return generation() == Generation::LGPE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
 
     u32 length = 0;
 
@@ -62,7 +71,10 @@ public:
     void decrypt(void);
     void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) const = 0;
-    virtual ~PKX(){};
+    virtual ~PKX() {}
+    PKX() {}
+    PKX(const PKX& pk) = delete;
+    PKX& operator=(const PKX& pk) = delete;
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
 
@@ -217,9 +229,6 @@ public:
     virtual void partyStat(Stat stat, u16 v) = 0;
     virtual int partyLevel(void) const       = 0;
     virtual void partyLevel(u8 v)            = 0;
-
-    virtual std::shared_ptr<PKX> previous(Sav& save) const { return nullptr; }
-    virtual std::shared_ptr<PKX> next(Sav& save) const { return nullptr; }
 
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);

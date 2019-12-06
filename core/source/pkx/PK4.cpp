@@ -26,6 +26,7 @@
 
 #include "PK4.hpp"
 #include "PK5.hpp"
+#include "Sav.hpp"
 #include "endian.hpp"
 #include "utils.hpp"
 #include <algorithm>
@@ -804,7 +805,58 @@ u16 PK4::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK4::next(Sav& save) const
+int PK4::partyCurrHP(void) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x8E);
+}
+
+void PK4::partyCurrHP(u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x8E, v);
+    }
+}
+
+int PK4::partyStat(Stat stat) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
+}
+
+void PK4::partyStat(Stat stat, u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
+    }
+}
+
+int PK4::partyLevel() const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(data + 0x8C);
+}
+
+void PK4::partyLevel(u8 v)
+{
+    if (length != 136)
+    {
+        *(data + 0x8C) = v;
+    }
+}
+
+std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
 {
     std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
     std::copy(data, data + 136, pk5->rawData());
@@ -863,53 +915,12 @@ std::shared_ptr<PKX> PK4::next(Sav& save) const
     return pk5;
 }
 
-int PK4::partyCurrHP(void) const
+std::shared_ptr<PKX> PK4::convertToG6(Sav& save) const
 {
-    if (length == 136)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0x8E);
+    return save.transfer(convertToG5(save));
 }
 
-void PK4::partyCurrHP(u16 v)
+std::shared_ptr<PKX> PK4::convertToG7(Sav& save) const
 {
-    if (length != 136)
-    {
-        Endian::convertFrom<u16>(data + 0x8E, v);
-    }
-}
-
-int PK4::partyStat(Stat stat) const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
-}
-
-void PK4::partyStat(Stat stat, u16 v)
-{
-    if (length != 136)
-    {
-        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
-    }
-}
-
-int PK4::partyLevel() const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return *(data + 0x8C);
-}
-
-void PK4::partyLevel(u8 v)
-{
-    if (length != 136)
-    {
-        *(data + 0x8C) = v;
-    }
+    return save.transfer(convertToG6(save));
 }

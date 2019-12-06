@@ -127,11 +127,15 @@ public:
     };
 
     virtual ~Sav() {}
+    Sav() {}
+    Sav(const Sav& save) = delete;
+    Sav& operator=(const Sav& save) = delete;
     // Should be used before writing
     virtual void encrypt(void) = 0;
     // Should only be used after encrypt() was used
     virtual void decrypt(void) = 0;
 
+    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
 
@@ -177,9 +181,8 @@ public:
     virtual void pkm(std::shared_ptr<PKX> pk, u8 slot)                          = 0;
     virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const   = 0;
     virtual bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
-    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
-    virtual void trade(std::shared_ptr<PKX> pk)   = 0; // Look into bank boolean parameter
-    virtual std::shared_ptr<PKX> emptyPkm() const = 0;
+    virtual void trade(std::shared_ptr<PKX> pk)                                 = 0; // Look into bank boolean parameter
+    virtual std::shared_ptr<PKX> emptyPkm() const                               = 0;
 
     virtual void dex(std::shared_ptr<PKX> pk)                   = 0;
     virtual int dexSeen(void) const                             = 0;

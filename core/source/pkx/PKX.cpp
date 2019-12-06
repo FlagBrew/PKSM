@@ -270,6 +270,14 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
         }
         return 4;
     }
+    else if (length == 236)
+    {
+        return 4;
+    }
+    else if (length == 220)
+    {
+        return 5;
+    }
     else if (length == 232)
     {
         PK6 test(data, ekx);
@@ -306,6 +314,10 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
         }
         return 6;
     }
+    else if (length == 0x148 || length == 0x158)
+    {
+        return 8;
+    }
     return 0;
 }
 
@@ -337,7 +349,7 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
         return randomNumbers();
     }
 
-    u8 (*genderTypeFinder)(u16 species);
+    u8 (*genderTypeFinder)(u16 species) = nullptr;
     switch (gen)
     {
         case Generation::FOUR:
@@ -360,6 +372,10 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
             break;
         case Generation::UNUSED:
             return 0;
+    }
+    if (!genderTypeFinder)
+    {
+        return 0;
     }
 
     u8 genderType = genderTypeFinder(species);

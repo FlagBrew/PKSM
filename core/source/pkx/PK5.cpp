@@ -832,7 +832,92 @@ static void fixString(std::u16string& fixString)
     }
 }
 
-std::shared_ptr<PKX> PK5::next(Sav& save) const
+int PK5::partyCurrHP(void) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x8E);
+}
+
+void PK5::partyCurrHP(u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x8E, v);
+    }
+}
+
+int PK5::partyStat(Stat stat) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
+}
+
+void PK5::partyStat(Stat stat, u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
+    }
+}
+
+int PK5::partyLevel() const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(data + 0x8C);
+}
+
+void PK5::partyLevel(u8 v)
+{
+    if (length != 136)
+    {
+        *(data + 0x8C) = v;
+    }
+}
+
+std::shared_ptr<PKX> PK5::convertToG4(Sav& save) const
+{
+    std::shared_ptr<PK4> pk4 = std::make_shared<PK4>();
+    std::copy(data, data + 136, pk4->rawData());
+
+    // Clear nature field
+    pk4->rawData()[0x41] = 0;
+    pk4->nature(nature());
+
+    // Force normal Arceus form
+    if (pk4->species() == 493)
+    {
+        pk4->alternativeForm(0);
+    }
+
+    pk4->nickname(nickname());
+    pk4->otName(otName());
+    pk4->heldItem(0);
+    pk4->otFriendship(70);
+    pk4->ball(ball());
+    // met location ???
+    for (int i = 0; i < 4; i++)
+    {
+        if (pk4->move(i) > save.maxMove())
+        {
+            pk4->move(i, 0);
+        }
+    }
+    pk4->fixMoves();
+
+    pk4->refreshChecksum();
+    return pk4;
+}
+
+std::shared_ptr<PKX> PK5::convertToG6(Sav& save) const
 {
     std::shared_ptr<PK6> pk6 = std::make_shared<PK6>();
 
@@ -1025,87 +1110,7 @@ std::shared_ptr<PKX> PK5::next(Sav& save) const
     return pk6;
 }
 
-std::shared_ptr<PKX> PK5::previous(Sav& save) const
+std::shared_ptr<PKX> PK5::convertToG7(Sav& save) const
 {
-    std::shared_ptr<PK4> pk4 = std::make_shared<PK4>();
-    std::copy(data, data + 136, pk4->rawData());
-
-    // Clear nature field
-    pk4->rawData()[0x41] = 0;
-    pk4->nature(nature());
-
-    // Force normal Arceus form
-    if (pk4->species() == 493)
-    {
-        pk4->alternativeForm(0);
-    }
-
-    pk4->nickname(nickname());
-    pk4->otName(otName());
-    pk4->heldItem(0);
-    pk4->otFriendship(70);
-    pk4->ball(ball());
-    // met location ???
-    for (int i = 0; i < 4; i++)
-    {
-        if (pk4->move(i) > save.maxMove())
-        {
-            pk4->move(i, 0);
-        }
-    }
-    pk4->fixMoves();
-
-    pk4->refreshChecksum();
-    return pk4;
-}
-
-int PK5::partyCurrHP(void) const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0x8E);
-}
-
-void PK5::partyCurrHP(u16 v)
-{
-    if (length != 136)
-    {
-        Endian::convertFrom<u16>(data + 0x8E, v);
-    }
-}
-
-int PK5::partyStat(Stat stat) const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
-}
-
-void PK5::partyStat(Stat stat, u16 v)
-{
-    if (length != 136)
-    {
-        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
-    }
-}
-
-int PK5::partyLevel() const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return *(data + 0x8C);
-}
-
-void PK5::partyLevel(u8 v)
-{
-    if (length != 136)
-    {
-        *(data + 0x8C) = v;
-    }
+    return save.transfer(convertToG6(save));
 }

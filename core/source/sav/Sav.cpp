@@ -168,23 +168,27 @@ bool Sav::validSequence(std::shared_ptr<u8[]> dt, size_t offset)
 
 std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
 {
-    std::shared_ptr<PKX> ret = pk;
-    while (ret->generation() != generation())
+    if (pk)
     {
-        if (ret->generation() > generation())
+        switch (generation())
         {
-            ret = ret->previous(*this);
-        }
-        else
-        {
-            ret = ret->next(*this);
-        }
-        if (ret == nullptr) // Untransferrable
-        {
-            return nullptr;
+            case Generation::FOUR:
+                return pk->convertToG4(*this);
+            case Generation::FIVE:
+                return pk->convertToG5(*this);
+            case Generation::SIX:
+                return pk->convertToG6(*this);
+            case Generation::SEVEN:
+                return pk->convertToG7(*this);
+            case Generation::LGPE:
+                return pk->convertToLGPE(*this);
+            case Generation::EIGHT:
+                return pk->convertToG8(*this);
+            case Generation::UNUSED:
+                return nullptr;
         }
     }
-    return ret;
+    return nullptr;
 }
 
 void Sav::fixParty()

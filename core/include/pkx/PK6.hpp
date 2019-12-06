@@ -36,6 +36,12 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+    std::shared_ptr<PKX> convertToG4(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG5(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG7(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+
 public:
     PK6()
     {
@@ -239,9 +245,6 @@ public:
     void partyStat(Stat stat, u16 v) override;
     int partyLevel() const override;
     void partyLevel(u8 v) override;
-
-    std::shared_ptr<PKX> next(Sav& save) const override;
-    std::shared_ptr<PKX> previous(Sav& save) const override;
 
     inline u8 baseHP(void) const override { return PersonalXYORAS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalXYORAS::baseAtk(formSpecies()); }
