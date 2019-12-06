@@ -102,11 +102,7 @@ public:
     void dex(std::shared_ptr<PKX> pk) override;
     int dexSeen(void) const override;
     int dexCaught(void) const override;
-    const std::set<int>& availableItems(void) const override;
-    const std::set<int>& availableMoves(void) const override;
     const std::set<int>& availableSpecies(void) const override;
-    const std::set<int>& availableAbilities(void) const override;
-    const std::set<int>& availableBalls(void) const override;
 
     // TODO
     // Check whether gifts are stored, or whether some disgusting record system is used
