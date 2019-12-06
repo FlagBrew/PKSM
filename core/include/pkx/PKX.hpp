@@ -42,6 +42,12 @@ class PKFilter;
 class PKX
 {
     friend class Sav;
+    friend class PK4;
+    friend class PK5;
+    friend class PK6;
+    friend class PK7;
+    friend class PK8;
+    friend class PB7;
 
 protected:
     u32 expTable(u8 row, u8 col) const;

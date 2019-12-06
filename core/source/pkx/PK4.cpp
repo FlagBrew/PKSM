@@ -917,10 +917,21 @@ std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
 
 std::shared_ptr<PKX> PK4::convertToG6(Sav& save) const
 {
-    return save.transfer(convertToG5(save));
+    if (auto pk5 = convertToG5(save))
+    {
+        return pk5->convertToG6(save);
+    }
+    return nullptr;
 }
 
 std::shared_ptr<PKX> PK4::convertToG7(Sav& save) const
 {
-    return save.transfer(convertToG6(save));
+    if (auto pk5 = convertToG5(save))
+    {
+        if (auto pk6 = pk5->convertToG6(save))
+        {
+            return pk6->convertToG7(save);
+        }
+    }
+    return nullptr;
 }

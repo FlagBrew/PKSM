@@ -904,12 +904,23 @@ u16 PK7::stat(Stat stat) const
 
 std::shared_ptr<PKX> PK7::convertToG4(Sav& save) const
 {
-    return save.transfer(convertToG5(save));
+    if (auto pk6 = convertToG6(save))
+    {
+        if (auto pk5 = pk6->convertToG5(save))
+        {
+            return pk5->convertToG4(save);
+        }
+    }
+    return nullptr;
 }
 
 std::shared_ptr<PKX> PK7::convertToG5(Sav& save) const
 {
-    return save.transfer(convertToG6(save));
+    if (auto pk6 = convertToG6(save))
+    {
+        return pk6->convertToG5(save);
+    }
+    return nullptr;
 }
 
 std::shared_ptr<PKX> PK7::convertToG6(Sav& save) const

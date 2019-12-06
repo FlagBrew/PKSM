@@ -1112,5 +1112,9 @@ std::shared_ptr<PKX> PK5::convertToG6(Sav& save) const
 
 std::shared_ptr<PKX> PK5::convertToG7(Sav& save) const
 {
-    return save.transfer(convertToG6(save));
+    if (auto pk6 = convertToG6(save))
+    {
+        return pk6->convertToG7(save);
+    }
+    return nullptr;
 }

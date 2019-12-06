@@ -1010,7 +1010,11 @@ void PK6::partyLevel(u8 v)
 
 std::shared_ptr<PKX> PK6::convertToG4(Sav& save) const
 {
-    return save.transfer(convertToG5(save));
+    if (auto pk5 = convertToG5(save))
+    {
+        return pk5->convertToG4(save);
+    }
+    return nullptr;
 }
 
 std::shared_ptr<PKX> PK6::convertToG5(Sav& save) const
