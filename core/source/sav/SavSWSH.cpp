@@ -473,16 +473,16 @@ DexEntry Endian::convertTo<DexEntry>(const u8* data)
 template <>
 void Endian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
 {
-    u64 w64 = entry.seenNonShinyMale | (entry.seenNonShinyMaleGiga << 63);
+    u64 w64 = entry.seenNonShinyMale | (u64(entry.seenNonShinyMaleGiga) << 63);
     Endian::convertFrom<u64>(data, w64);
 
-    w64 = entry.seenNonShinyFemale | (entry.seenNonShinyFemaleGiga << 63);
+    w64 = entry.seenNonShinyFemale | (u64(entry.seenNonShinyFemaleGiga) << 63);
     Endian::convertFrom<u64>(data + 8, w64);
 
-    w64 = entry.seenShinyMale | (entry.seenShinyMaleGiga << 63);
+    w64 = entry.seenShinyMale | (u64(entry.seenShinyMaleGiga) << 63);
     Endian::convertFrom<u64>(data + 16, w64);
 
-    w64 = entry.seenShinyFemale | (entry.seenShinyFemaleGiga << 63);
+    w64 = entry.seenShinyFemale | (u64(entry.seenShinyFemaleGiga) << 63);
     Endian::convertFrom<u64>(data + 24, w64);
 
     u32 w32 = entry.owned | (entry.ownedGiga << 1) | (entry.languages << 2) | (entry.displayFormID << 15) | (entry.displayGiga << 28) |
@@ -611,4 +611,5 @@ int SavSWSH::dexCaught() const
             ret++;
         }
     }
+    return ret;
 }
