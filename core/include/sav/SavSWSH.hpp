@@ -31,13 +31,9 @@
 
 class SavSWSH : public Sav8
 {
-protected:
-    int dexFormIndex(int species, int formct, int start) const;
-    int dexFormCount(int species) const;
-
 private:
-    void setDexFlags(int index, int gender, int shiny, int baseSpecies);
-    bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
+    static constexpr std::array<u16, 25> gigaSpecies = {
+        6, 12, 25, 52, 68, 94, 99, 131, 133, 143, 569, 823, 826, 834, 839, 841, 842, 844, 851, 858, 861, 869, 879, 884, 890};
 
 public:
     SavSWSH(std::shared_ptr<u8[]> dt);
@@ -103,10 +99,16 @@ public:
 
     void cryptBoxData(bool crypted) override;
 
+    void dex(std::shared_ptr<PKX> pk) override;
+    int dexSeen(void) const override;
+    int dexCaught(void) const override;
+    const std::set<int>& availableItems(void) const override;
+    const std::set<int>& availableMoves(void) const override;
+    const std::set<int>& availableSpecies(void) const override;
+    const std::set<int>& availableAbilities(void) const override;
+    const std::set<int>& availableBalls(void) const override;
+
     // TODO
-    void dex(std::shared_ptr<PKX> pk) override {}
-    int dexSeen(void) const override { return 0; }
-    int dexCaught(void) const override { return 0; }
     // Check whether gifts are stored, or whether some disgusting record system is used
     void mysteryGift(WCX& wc, int& pos) override {}
     std::unique_ptr<WCX> mysteryGift(int pos) const override;
