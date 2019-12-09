@@ -90,7 +90,7 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    QRMode initMode;
+    QRMode initMode = QRMode::PK4;
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
