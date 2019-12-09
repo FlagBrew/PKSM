@@ -42,6 +42,7 @@ class Item
 public:
     virtual ~Item() {}
     virtual Generation generation(void) const     = 0;
+    virtual u16 maxCount(void) const              = 0;
     virtual u16 id(void) const                    = 0;
     virtual u16 count(void) const                 = 0;
     virtual std::pair<u8*, int> bytes(void) const = 0;
@@ -77,6 +78,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::FOUR; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -106,6 +108,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::FIVE; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -135,6 +138,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::SIX; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -167,6 +171,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
+    u16 maxCount(void) const override { return 0x3FF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x3FF); }
     u16 count(void) const override { return itemData.count; }
@@ -206,6 +211,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::LGPE; }
+    u16 maxCount(void) const override { return 0x7FFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
     u16 count(void) const override { return itemData.count; }
@@ -243,6 +249,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
+    u16 maxCount(void) const override { return 0x7FFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
     u16 count(void) const override { return itemData.count; }

@@ -46,6 +46,8 @@ static Generation numToGen(int num)
             return Generation::SIX;
         case 7:
             return Generation::SEVEN;
+        case 8:
+            return Generation::EIGHT;
         case 254:
             return Generation::LGPE;
     }
@@ -193,6 +195,9 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
             case Generation::LGPE:
                 targetLength = 261;
                 break;
+            case Generation::EIGHT:
+                targetLength = 345;
+                break;
             case Generation::UNUSED:
                 break;
         }
@@ -237,6 +242,9 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
                 break;
             case Generation::LGPE:
                 targetLength = 261;
+                break;
+            case Generation::EIGHT:
+                targetLength = 345;
                 break;
             case Generation::UNUSED:
                 break;
