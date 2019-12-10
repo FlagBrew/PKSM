@@ -66,6 +66,7 @@ void EditSelectorScreen::changeBoxName()
         break;
         case Generation::SIX:
         case Generation::SEVEN:
+        case Generation::EIGHT:
         {
             SwkbdState state;
             swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
@@ -107,6 +108,7 @@ bool EditSelectorScreen::doQR()
             break;
         case Generation::UNUSED:
         case Generation::EIGHT:
+        case Generation::LGPE:
             return false;
     }
 

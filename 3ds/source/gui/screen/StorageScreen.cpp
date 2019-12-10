@@ -94,6 +94,7 @@ void StorageScreen::setBoxName(bool storage)
             break;
             case Generation::SIX:
             case Generation::SEVEN:
+            case Generation::EIGHT:
             {
                 SwkbdState state;
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);

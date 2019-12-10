@@ -239,4 +239,10 @@ void MainMenu::update(touchPosition* touch)
         Gui::screenBack();
         return;
     }
+    if (TitleLoader::save->generation() == Generation::EIGHT)
+    {
+        Gui::warn("Gen 8 support is fairly experimental!\nProceed at your own risk.");
+        // Gui::screenBack();
+        return;
+    }
 }

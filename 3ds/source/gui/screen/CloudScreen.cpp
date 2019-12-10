@@ -965,6 +965,8 @@ void CloudScreen::shareReceive()
                     case Generation::LGPE:
                         targetLength = 261;
                         break;
+                    case Generation::EIGHT:
+                        targetLength = 345;
                     case Generation::UNUSED:
                         break;
                 }
