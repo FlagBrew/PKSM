@@ -39,6 +39,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "PkmItemOverlay.hpp"
 #include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
@@ -59,6 +60,74 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
     addOverlay<ViewOverlay>(pkm, false);
+
+    if (this->box == 0xFFFF)
+    {
+        switch (pkm->generation())
+        {
+            case Generation::FOUR:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[236] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK4>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::FIVE:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[220] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK5>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+                if (pkm->getLength() == 232)
+                {
+                    u8 pkmData[260] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    if (pkm->generation() == Generation::SIX)
+                    {
+                        pkm = std::make_shared<PK6>(pkmData, false, true);
+                    }
+                    else
+                    {
+                        pkm = std::make_shared<PK7>(pkmData, false, true);
+                    }
+                    partyUpdate();
+                }
+                break;
+            case Generation::EIGHT:
+                if (pkm->getLength() == 0x148)
+                {
+                    u8 pkmData[0x158] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK8>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::LGPE:
+                break; // Always a party Pokemon
+            case Generation::UNUSED:
+                Gui::warn(i18n::localize("THE_FUCK"));
+        }
+
+        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        for (int i = 0; i < 6; i++)
+        {
+            origPartyStats[i] = pkm->partyStat(stats[i]);
+        }
+        origPartyLevel  = pkm->partyLevel();
+        origPartyCurrHP = pkm->partyCurrHP();
+        if (pkm->generation() == Generation::LGPE)
+        {
+            origPartyCP = ((PB7*)pkm.get())->partyCP();
+        }
+    }
+
     if (!pkm || pkm->species() == 0)
     {
         pkm = TitleLoader::save->emptyPkm();
@@ -138,67 +207,6 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         addOverlay<SpeciesOverlay>(pkm);
-    }
-
-    if (this->box == 0xFF)
-    {
-        switch (pkm->generation())
-        {
-            case Generation::FOUR:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[236] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK4>(pkmData, false, true);
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::FIVE:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[220] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK5>(pkmData, false, true);
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                if (pkm->getLength() == 232)
-                {
-                    u8 pkmData[260] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    if (pkm->generation() == Generation::SIX)
-                    {
-                        pkm = std::make_shared<PK6>(pkmData, false, true);
-                    }
-                    else
-                    {
-                        pkm = std::make_shared<PK7>(pkmData, false, true);
-                    }
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::LGPE:
-                break; // Always a party Pokemon
-            case Generation::UNUSED:
-                Gui::warn(i18n::localize("THE_FUCK"));
-        }
-
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
-        for (int i = 0; i < 6; i++)
-        {
-            origPartyStats[i] = pkm->partyStat(stats[i]);
-        }
-        origPartyLevel  = pkm->partyLevel();
-        origPartyCurrHP = pkm->partyCurrHP();
-        if (pkm->generation() == Generation::LGPE)
-        {
-            origPartyCP = ((PB7*)pkm.get())->partyCP();
-        }
     }
 
     buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
