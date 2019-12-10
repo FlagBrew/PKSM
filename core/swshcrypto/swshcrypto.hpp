@@ -68,7 +68,10 @@ public:
     u8* rawData() const { return data + headerSize(type); }
 
 private:
-    u32 key;
+    SCBlock(u8* data) : data(data) {}
+
+    u32 key() const;
+    void key(u32 v);
     u32 dataLength;
     SCBlockType type;
     SCBlockType subtype;
