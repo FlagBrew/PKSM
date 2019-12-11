@@ -28,6 +28,7 @@
 #define ENDIAN_HPP
 
 #include "coretypes.h"
+#include <array>
 #include <string.h>
 #include <type_traits>
 
@@ -57,6 +58,15 @@ namespace Endian
 #else
 #error "I don't know what architecture this is!"
 #endif
+    }
+
+    // Same as above, just with automatic handling of data lifetime
+    template <typename T>
+    auto convertFrom(const T& orig) -> std::array<u8, sizeof(T)>
+    {
+        std::array<u8, sizeof(T)> ret;
+        convertFrom(ret.data(), orig);
+        return ret;
     }
 
     template <typename T>

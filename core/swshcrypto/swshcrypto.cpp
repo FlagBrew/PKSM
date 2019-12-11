@@ -131,7 +131,7 @@ void SCBlock::cryptBytes(u8* data, size_t inputOffset, size_t start, size_t size
     auto keyStream = getKeyStream(start, size);
     for (size_t i = 0; i < size; i++)
     {
-        data[inputOffset + i] ^= keyStream[i];
+        data[inputOffset + i + start] ^= keyStream[i];
     }
 }
 
@@ -155,9 +155,10 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     if (ofs < start)
     {
         int cur_size = std::min(size, 4 - (start - ofs));
-        u8 leKeyData[4];
-        Endian::convertFrom<u32>(leKeyData, key);
-        std::copy(leKeyData + start - ofs, leKeyData + 4, ret.begin());
+        auto keyData = Endian::convertFrom<u32>(key);
+        auto begin   = keyData.begin() + start - ofs;
+        auto end     = begin + cur_size;
+        std::copy(begin, end, ret.begin());
         ofs = cur_size;
         xorshiftAdvance(key);
     }
@@ -165,9 +166,8 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     while (ofs < size)
     {
         int cur_size = std::min(size - ofs, (size_t)4);
-        u8 leKeyData[4];
-        Endian::convertFrom<u32>(leKeyData, key);
-        std::copy(leKeyData, leKeyData + cur_size, ret.begin() + ofs);
+        auto keyData = Endian::convertFrom<u32>(key);
+        std::copy(keyData.begin(), keyData.begin() + cur_size, ret.begin() + ofs);
         ofs += cur_size;
         xorshiftAdvance(key);
     }

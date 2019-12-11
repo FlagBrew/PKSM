@@ -353,7 +353,9 @@ void TitleLoader::backupSave(const std::string& id)
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
+        TitleLoader::save->encrypt();
         out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        TitleLoader::save->decrypt();
         if (Configuration::getInstance().showBackups())
         {
             sdSaves[id].emplace_back(path);

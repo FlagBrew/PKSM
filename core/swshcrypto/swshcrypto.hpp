@@ -113,7 +113,7 @@ private:
     static void xorshiftAdvance(u32& key)
     {
         key ^= (key << 2);
-        key ^= (key >> 16);
+        key ^= (key >> 15);
         key ^= (key << 13);
     }
 

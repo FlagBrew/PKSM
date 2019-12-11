@@ -45,7 +45,11 @@ protected:
     int maxBall(void) const override { return 0x1A; }
 
 public:
-    Sav8(std::shared_ptr<u8[]> dt, size_t length) : blocks(SCBlockList::init(dt, length)) { this->length = length; }
+    Sav8(std::shared_ptr<u8[]> dt, size_t length) : blocks(std::move(SCBlockList::init(dt, length)))
+    {
+        this->length = length;
+        this->data   = dt;
+    }
 
     void encrypt(void) override { blocks.encrypt(); }
     void decrypt(void) override { blocks.decrypt(); }
