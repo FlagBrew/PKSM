@@ -33,6 +33,25 @@
 #include <time.h>
 #include <unistd.h>
 
+namespace
+{
+    struct MultiFetchRecord
+    {
+        MultiFetchRecord(std::shared_ptr<Fetch> fetch = nullptr, std::function<void(CURLcode, std::shared_ptr<Fetch>)> function = nullptr)
+            : fetch(fetch), function(function)
+        {
+        }
+        std::shared_ptr<Fetch> fetch;
+        std::function<void(CURLcode, std::shared_ptr<Fetch>)> function;
+    };
+    std::atomic<bool> multiThreadInfo = false;
+    std::vector<MultiFetchRecord> fetches;
+    _LOCK_T fetchesMutex;
+    CURLM* multiHandle = nullptr;
+    _LOCK_T multiHandleMutex;
+    bool multiInitialized = false;
+}
+
 static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
 {
     std::string* str = (std::string*)userdata;
@@ -98,7 +117,7 @@ Result Fetch::download(
         fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
         fetch->setopt(CURLOPT_LOW_SPEED_TIME, 30);
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
 
         fclose(file);
 
@@ -130,7 +149,7 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
     return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
 }
 
-void MultiFetch::multiMainThread()
+void Fetch::multiMainThread(void*)
 {
     int lastActive = INT_MIN;
     while (multiThreadInfo)
@@ -191,69 +210,92 @@ void MultiFetch::multiMainThread()
     multiThreadInfo = true;
 }
 
-MultiFetch::MultiFetch()
+Result Fetch::initMulti()
 {
     __lock_init(fetchesMutex);
     __lock_init(multiHandleMutex);
     multiHandle     = curl_multi_init();
     multiThreadInfo = true;
-    Threads::create([](void* arg) { ((MultiFetch*)arg)->multiMainThread(); }, this);
+    if (!Threads::create(Fetch::multiMainThread))
+    {
+        multiInitialized = false;
+        return -1;
+    }
+    multiInitialized = true;
+    return 0;
 }
 
-void MultiFetch::exit()
+void Fetch::exitMulti()
 {
     multiThreadInfo = false; // Stop multi thread
-    while (!multiThreadInfo) // Wait for it to be done
+    if (multiInitialized)
     {
-        usleep(100);
-    }
-    // And finally clean up
-    __lock_acquire(fetchesMutex);
-    __lock_acquire(multiHandleMutex);
-    for (auto& i : fetches)
-    {
-        curl_multi_remove_handle(multiHandle, i.fetch->curl.get());
-    }
-    fetches.clear();
-    __lock_release(fetchesMutex);
-    __lock_close(fetchesMutex);
-    curl_multi_cleanup(multiHandle);
-    __lock_release(multiHandleMutex);
-    __lock_close(multiHandleMutex);
-}
-
-CURLMcode MultiFetch::add(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
-{
-    __lock_acquire(multiHandleMutex);
-    CURLMcode res = curl_multi_add_handle(multiHandle, fetch->curl.get());
-    __lock_release(multiHandleMutex);
-    if (res == CURLM_OK)
-    {
+        while (!multiThreadInfo) // Wait for it to be done
+        {
+            usleep(100);
+        }
+        // And finally clean up
         __lock_acquire(fetchesMutex);
-        fetches.emplace_back(fetch, onComplete);
+        __lock_acquire(multiHandleMutex);
+        for (auto& i : fetches)
+        {
+            curl_multi_remove_handle(multiHandle, i.fetch->curl.get());
+        }
+        fetches.clear();
         __lock_release(fetchesMutex);
+        __lock_close(fetchesMutex);
+        curl_multi_cleanup(multiHandle);
+        __lock_release(multiHandleMutex);
+        __lock_close(multiHandleMutex);
     }
-    return res;
 }
 
-std::variant<CURLMcode, CURLcode> MultiFetch::execute(std::shared_ptr<Fetch> fetch)
+CURLMcode Fetch::performAsync(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
 {
-    CURLcode cres;
-    std::atomic_flag wait;
-    wait.test_and_set();
-    CURLMcode mRes = MultiFetch::getInstance().add(fetch, [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>) {
-        cres = code;
-        wait.clear();
-    });
-    if (mRes != CURLM_OK)
+    if (multiInitialized)
     {
-        return mRes;
+        __lock_acquire(multiHandleMutex);
+        CURLMcode res = curl_multi_add_handle(multiHandle, fetch->curl.get());
+        __lock_release(multiHandleMutex);
+        if (res == CURLM_OK)
+        {
+            __lock_acquire(fetchesMutex);
+            fetches.emplace_back(fetch, onComplete);
+            __lock_release(fetchesMutex);
+        }
+        return res;
     }
-
-    while (wait.test_and_set())
+    else
     {
-        usleep(100);
+        return CURLM_LAST;
     }
+}
 
-    return cres;
+std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
+{
+    if (multiInitialized)
+    {
+        CURLcode cres;
+        std::atomic_flag wait;
+        wait.test_and_set();
+        CURLMcode mRes = performAsync(fetch, [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>) {
+            cres = code;
+            wait.clear();
+        });
+        if (mRes != CURLM_OK)
+        {
+            return mRes;
+        }
+
+        while (wait.test_and_set())
+        {
+            usleep(100);
+        }
+
+        return cres;
+    }
+    else
+    {
+        return CURLM_LAST;
+    }
 }

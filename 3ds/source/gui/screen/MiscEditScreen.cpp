@@ -700,7 +700,7 @@ void MiscEditScreen::validate()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 0)
         {
             Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));

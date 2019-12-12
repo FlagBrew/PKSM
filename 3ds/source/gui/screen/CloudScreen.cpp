@@ -848,7 +848,7 @@ void CloudScreen::shareSend()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 0)
         {
             Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
@@ -922,7 +922,7 @@ void CloudScreen::shareReceive()
             fetch->setopt(CURLOPT_HEADERDATA, &gen);
             fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
 
-            auto res = MultiFetch::getInstance().execute(fetch);
+            auto res = Fetch::perform(fetch);
             if (res.index() == 0)
             {
                 Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));

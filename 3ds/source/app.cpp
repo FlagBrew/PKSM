@@ -176,7 +176,7 @@ static bool update(std::string execPath)
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-            auto res = MultiFetch::getInstance().execute(fetch);
+            auto res = Fetch::perform(fetch);
             if (res.index() == 1)
             {
                 if (std::get<1>(res) != CURLE_OK)
@@ -223,7 +223,7 @@ static bool update(std::string execPath)
     {
         moveIcon.clear();
         Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 1)
         {
             if (std::get<1>(res) != CURLE_OK)
@@ -513,7 +513,7 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("socInit failed.", -1);
     }
 
-    MultiFetch::getInstance();
+    Fetch::initMulti();
 
     if (R_FAILED(res = downloadAdditionalAssets()))
         return consoleDisplayError(
@@ -586,7 +586,7 @@ Result App::exit(void)
     svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
-    MultiFetch::getInstance().exit();
+    Fetch::exitMulti();
     socExit();
     acExit();
     doCartScan.clear();

@@ -58,7 +58,7 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
 {
     std::string* retData = new std::string;
     auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal), true, retData, nullptr, "");
-    MultiFetch::getInstance().add(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
             long status_code;
@@ -129,7 +129,7 @@ nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
     auto fetch = Fetch::init(makeURL(num, sort, ascend, legal), true, &retData, nullptr, "");
-    auto res   = MultiFetch::getInstance().execute(fetch);
+    auto res   = Fetch::perform(fetch);
     if (res.index() == 0)
     {
         return {};
@@ -257,7 +257,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
         if (auto fetch = Fetch::init(
                 "https://flagbrew.org/gpss/download/" + current->data["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
         {
-            MultiFetch::getInstance().add(fetch);
+            Fetch::performAsync(fetch);
         }
 
         return PKX::getPKM(gen, retData.data());
@@ -389,7 +389,7 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
