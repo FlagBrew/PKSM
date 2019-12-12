@@ -79,10 +79,10 @@ private:
     u8* rawData() const { return data.get() + myOffset + headerSize(type); }
     u32 key() const;
     void key(u32 v);
-    // Points to the beginning of the block data: *(u32*)(data) == key
+    // data.get() + myOffset points to the beginning of the block data: *(u32*)(data.get() + myOffset) == key
     std::shared_ptr<u8[]> data = nullptr;
-    u32 myOffset;
-    u32 dataLength;
+    size_t myOffset;
+    size_t dataLength;
     SCBlockType type;
     SCBlockType subtype;
     bool currentlyEncrypted = false;
