@@ -46,7 +46,6 @@ protected:
 
 public:
     SavORAS(std::shared_ptr<u8[]> dt);
-    virtual ~SavORAS(){};
 
     void resign(void) override;
 

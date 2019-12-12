@@ -49,6 +49,8 @@ private:
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
 
 public:
+    Sav7(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+    virtual ~Sav7() {}
     u16 check16(u8* buf, u32 blockID, u32 len) const;
     virtual void resign(void) = 0;
     void encrypt(void) override { resign(); }

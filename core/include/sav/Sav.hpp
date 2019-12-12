@@ -73,8 +73,8 @@ protected:
         0x4F40, 0x8D01, 0x4DC0, 0x4C80, 0x8C41, 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641, 0x8201, 0x42C0, 0x4380, 0x8341,
         0x4100, 0x81C1, 0x8081, 0x4040};
 
-    std::shared_ptr<u8[]> data;
-    u32 length = 0;
+    const std::shared_ptr<u8[]> data;
+    const u32 length;
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
@@ -127,7 +127,7 @@ public:
     };
 
     virtual ~Sav() {}
-    Sav() {}
+    Sav(std::shared_ptr<u8[]> data, u32 length) : data(data), length(length) {}
     Sav(const Sav& save) = delete;
     Sav& operator=(const Sav& save) = delete;
     // Should be used before writing

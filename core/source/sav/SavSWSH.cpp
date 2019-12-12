@@ -33,7 +33,8 @@
 
 SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x1716B3)
 {
-    game           = Game::SWSH;
+    game = Game::SWSH;
+
     Box            = 143;
     WondercardData = 186;
     Party          = 428;
@@ -48,121 +49,121 @@ SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x1716B3)
 
 u16 SavSWSH::TID(void) const
 {
-    return Endian::convertTo<u16>(blocks[Status].rawData() + 0xA0);
+    return Endian::convertTo<u16>(blocks[Status]->decryptedData() + 0xA0);
 }
 void SavSWSH::TID(u16 v)
 {
-    Endian::convertFrom<u16>(blocks[Status].rawData() + 0xA0, v);
-    Endian::convertFrom<u32>(blocks[TrainerCard].rawData() + 0x1C, displayTID());
+    Endian::convertFrom<u16>(blocks[Status]->decryptedData() + 0xA0, v);
+    Endian::convertFrom<u32>(blocks[TrainerCard]->decryptedData() + 0x1C, displayTID());
 }
 
 u16 SavSWSH::SID(void) const
 {
-    return Endian::convertTo<u16>(blocks[Status].rawData() + 0xA2);
+    return Endian::convertTo<u16>(blocks[Status]->decryptedData() + 0xA2);
 }
 void SavSWSH::SID(u16 v)
 {
-    Endian::convertFrom<u16>(blocks[Status].rawData() + 0xA2, v);
-    Endian::convertFrom<u32>(blocks[TrainerCard].rawData() + 0x1C, displayTID());
+    Endian::convertFrom<u16>(blocks[Status]->decryptedData() + 0xA2, v);
+    Endian::convertFrom<u32>(blocks[TrainerCard]->decryptedData() + 0x1C, displayTID());
 }
 
 u8 SavSWSH::version(void) const
 {
-    return blocks[Status].rawData()[0xA4];
+    return blocks[Status]->decryptedData()[0xA4];
 }
 void SavSWSH::version(u8 v)
 {
-    blocks[Status].rawData()[0xA4] = v;
+    blocks[Status]->decryptedData()[0xA4] = v;
 }
 
 u8 SavSWSH::gender(void) const
 {
-    return blocks[Status].rawData()[0xA5];
+    return blocks[Status]->decryptedData()[0xA5];
 }
 void SavSWSH::gender(u8 v)
 {
-    blocks[Status].rawData()[0xA5] = v;
+    blocks[Status]->decryptedData()[0xA5] = v;
 }
 
 Language SavSWSH::language(void) const
 {
-    return Language(blocks[Status].rawData()[0xA7]);
+    return Language(blocks[Status]->decryptedData()[0xA7]);
 }
 void SavSWSH::language(Language v)
 {
-    blocks[Status].rawData()[0xA7] = u8(v);
+    blocks[Status]->decryptedData()[0xA7] = u8(v);
 }
 
 std::string SavSWSH::otName(void) const
 {
-    return StringUtils::getString(blocks[Status].rawData(), 0xB0, 13);
+    return StringUtils::getString(blocks[Status]->decryptedData(), 0xB0, 13);
 }
 void SavSWSH::otName(const std::string& v)
 {
-    StringUtils::setString(blocks[Status].rawData(), v, 0xB0, 13);
-    StringUtils::setString(blocks[TrainerCard].rawData(), v, 0, 13);
+    StringUtils::setString(blocks[Status]->decryptedData(), v, 0xB0, 13);
+    StringUtils::setString(blocks[TrainerCard]->decryptedData(), v, 0, 13);
 }
 
 std::string SavSWSH::jerseyNum(void) const
 {
-    return std::string((char*)blocks[TrainerCard].rawData() + 0x39, 3);
+    return std::string((char*)blocks[TrainerCard]->decryptedData() + 0x39, 3);
 }
 void SavSWSH::jerseyNum(const std::string& v)
 {
     for (size_t i = 0; i < std::min(v.size(), (size_t)3); i++)
     {
-        blocks[TrainerCard].rawData()[0x39 + i] = v[i];
+        blocks[TrainerCard]->decryptedData()[0x39 + i] = v[i];
     }
 }
 
 u32 SavSWSH::money(void) const
 {
-    return Endian::convertTo<u32>(blocks[Misc].rawData());
+    return Endian::convertTo<u32>(blocks[Misc]->decryptedData());
 }
 void SavSWSH::money(u32 v)
 {
-    Endian::convertFrom<u32>(blocks[Misc].rawData(), v);
+    Endian::convertFrom<u32>(blocks[Misc]->decryptedData(), v);
 }
 
 u32 SavSWSH::BP(void) const
 {
-    return Endian::convertTo<u32>(blocks[Misc].rawData() + 4);
+    return Endian::convertTo<u32>(blocks[Misc]->decryptedData() + 4);
 }
 void SavSWSH::BP(u32 v)
 {
-    Endian::convertFrom<u32>(blocks[Misc].rawData() + 4, v);
+    Endian::convertFrom<u32>(blocks[Misc]->decryptedData() + 4, v);
 }
 
 u8 SavSWSH::badges(void) const
 {
-    return blocks[Misc].rawData()[0x11C];
+    return blocks[Misc]->decryptedData()[0x11C];
 }
 
 u16 SavSWSH::playedHours(void) const
 {
-    return Endian::convertTo<u16>(blocks[PlayTime].rawData());
+    return Endian::convertTo<u16>(blocks[PlayTime]->decryptedData());
 }
 void SavSWSH::playedHours(u16 v)
 {
-    Endian::convertFrom<u16>(blocks[PlayTime].rawData(), v);
+    Endian::convertFrom<u16>(blocks[PlayTime]->decryptedData(), v);
 }
 
 u8 SavSWSH::playedMinutes(void) const
 {
-    return blocks[PlayTime].rawData()[2];
+    return blocks[PlayTime]->decryptedData()[2];
 }
 void SavSWSH::playedMinutes(u8 v)
 {
-    blocks[PlayTime].rawData()[2] = v;
+    blocks[PlayTime]->decryptedData()[2] = v;
 }
 
 u8 SavSWSH::playedSeconds(void) const
 {
-    return blocks[PlayTime].rawData()[3];
+    return blocks[PlayTime]->decryptedData()[3];
 }
 void SavSWSH::playedSeconds(u8 v)
 {
-    blocks[PlayTime].rawData()[3] = v;
+    blocks[PlayTime]->decryptedData()[3] = v;
 }
 
 void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
@@ -171,31 +172,31 @@ void SavSWSH::item(const Item& item, Pouch pouch, u16 slot)
     switch (pouch)
     {
         case Medicine:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 4 * slot);
             break;
         case Ball:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0xF0 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0xF0 + 4 * slot);
             break;
         case Battle:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0x168 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0x168 + 4 * slot);
             break;
         case Berry:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0x1B8 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0x1B8 + 4 * slot);
             break;
         case NormalItem:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0x2F8 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0x2F8 + 4 * slot);
             break;
         case TM:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0xB90 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0xB90 + 4 * slot);
             break;
         case Treasure:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0xED8 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0xED8 + 4 * slot);
             break;
         case Ingredient:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0x1068 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0x1068 + 4 * slot);
             break;
         case KeyItem:
-            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items].rawData() + 0x11F8 + 4 * slot);
+            std::copy(bytes.first, bytes.first + bytes.second, blocks[Items]->decryptedData() + 0x11F8 + 4 * slot);
             break;
         default:
             break;
@@ -206,23 +207,23 @@ std::unique_ptr<Item> SavSWSH::item(Pouch pouch, u16 slot) const
     switch (pouch)
     {
         case Medicine:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 4 * slot);
         case Ball:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0xF0 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0xF0 + 4 * slot);
         case Battle:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0x168 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0x168 + 4 * slot);
         case Berry:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0x1B8 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0x1B8 + 4 * slot);
         case NormalItem:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0x2F8 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0x2F8 + 4 * slot);
         case TM:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0xB90 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0xB90 + 4 * slot);
         case Treasure:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0xED8 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0xED8 + 4 * slot);
         case Ingredient:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0x1068 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0x1068 + 4 * slot);
         case KeyItem:
-            return std::make_unique<Item8>(blocks[Items].rawData() + 0x11F8 + 4 * slot);
+            return std::make_unique<Item8>(blocks[Items]->decryptedData() + 0x11F8 + 4 * slot);
         default:
             return std::make_unique<Item8>();
     }
@@ -306,11 +307,11 @@ std::string SavSWSH::pouchName(Language lang, Pouch pouch) const
 
 std::string SavSWSH::boxName(u8 box) const
 {
-    return StringUtils::getString(blocks[BoxLayout].rawData(), box * 0x22, 17);
+    return StringUtils::getString(blocks[BoxLayout]->decryptedData(), box * 0x22, 17);
 }
 void SavSWSH::boxName(u8 box, const std::string& name)
 {
-    StringUtils::setString(blocks[BoxLayout].rawData(), name, box * 0x22, 17);
+    StringUtils::setString(blocks[BoxLayout]->decryptedData(), name, box * 0x22, 17);
 }
 
 u32 SavSWSH::boxOffset(u8 box, u8 slot) const
@@ -324,22 +325,22 @@ u32 SavSWSH::partyOffset(u8 slot) const
 
 u8 SavSWSH::partyCount(void) const
 {
-    return blocks[Party].rawData()[0x158 * 6];
+    return blocks[Party]->decryptedData()[0x158 * 6];
 }
 void SavSWSH::partyCount(u8 count)
 {
-    blocks[Party].rawData()[0x158 * 6] = count;
+    blocks[Party]->decryptedData()[0x158 * 6] = count;
 }
 
 std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
-    return std::make_shared<PK8>(blocks[Party].rawData() + offset, true, true);
+    return std::make_shared<PK8>(blocks[Party]->decryptedData() + offset, true, true);
 }
 std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot, bool ekx) const
 {
     u32 offset = boxOffset(box, slot);
-    return std::make_shared<PK8>(blocks[Box].rawData() + offset, ekx, true);
+    return std::make_shared<PK8>(blocks[Box]->decryptedData() + offset, ekx, true);
 }
 
 bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -366,7 +367,7 @@ bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
             pk8->partyCurrHP(pk8->stat(Stat::HP));
         }
 
-        std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Box].rawData() + boxOffset(box, slot));
+        std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Box]->decryptedData() + boxOffset(box, slot));
     }
     return (bool)pk;
 }
@@ -387,7 +388,7 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 
     pk8->encrypt();
-    std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Party].rawData() + partyOffset(slot));
+    std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Party]->decryptedData() + partyOffset(slot));
 }
 
 void SavSWSH::cryptBoxData(bool crypted)
@@ -396,7 +397,7 @@ void SavSWSH::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(blocks[Box].rawData() + boxOffset(box, slot), crypted, true, true);
+            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(blocks[Box]->decryptedData() + boxOffset(box, slot), crypted, true, true);
             if (!crypted)
             {
                 pk8->encrypt();
@@ -550,7 +551,7 @@ void SavSWSH::dex(std::shared_ptr<PKX> pk)
 {
     if (u16 index = ((PK8*)pk.get())->pokedexIndex())
     {
-        u8* entryAddr  = blocks[PokeDex].rawData() + sizeof(DexEntry) * index;
+        u8* entryAddr  = blocks[PokeDex]->decryptedData() + sizeof(DexEntry) * index;
         DexEntry entry = Endian::convertTo<DexEntry>(entryAddr);
 
         u16 form = pk->alternativeForm();
@@ -586,7 +587,7 @@ int SavSWSH::dexSeen() const
     for (auto i : availableSpecies())
     {
         u16 index       = PersonalSWSH::pokedexIndex(i);
-        u8* entryOffset = blocks[PokeDex].rawData() + index * sizeof(DexEntry);
+        u8* entryOffset = blocks[PokeDex]->decryptedData() + index * sizeof(DexEntry);
         for (size_t j = 0; j < 0x20; j++) // Entire seen region size
         {
             if (entryOffset[j])
@@ -605,7 +606,7 @@ int SavSWSH::dexCaught() const
     for (auto i : availableSpecies())
     {
         u16 index       = PersonalSWSH::pokedexIndex(i);
-        u8* entryOffset = blocks[PokeDex].rawData() + index * sizeof(DexEntry);
+        u8* entryOffset = blocks[PokeDex]->decryptedData() + index * sizeof(DexEntry);
         if (entryOffset[0x20] & 3)
         {
             ret++;

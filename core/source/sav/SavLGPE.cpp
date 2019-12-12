@@ -33,15 +33,11 @@
 #include "utils.hpp"
 #include <algorithm>
 
-SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt)
+SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt) : Sav(dt, 0x100000)
 {
-    length  = 0x100000;
     game    = Game::LGPE;
     PokeDex = 0x2A00;
-    data    = dt;
 }
-
-SavLGPE::~SavLGPE() {}
 
 u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 {

@@ -30,11 +30,9 @@
 #include "sha256.h"
 #include <algorithm>
 
-SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt)
+SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt) : Sav7(dt, 0x6CC00)
 {
-    length = 0x6CC00;
-    game   = Game::USUM;
-    data   = dt;
+    game = Game::USUM;
 
     TrainerCard          = 0x1400;
     Misc                 = 0x4400;

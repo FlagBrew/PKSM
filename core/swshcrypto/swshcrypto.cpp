@@ -59,14 +59,6 @@ static constexpr u8 hashEnd[HASH_PAD_LENGTH] = {
 };
 // clang-format on
 
-static void applyStaticXorpad(std::shared_ptr<u8[]> data, size_t length)
-{
-    for (size_t i = 0; i < length - SHA256_BLOCK_SIZE; i++)
-    {
-        data[i] ^= xorpad[i % XORPAD_LENGTH];
-    }
-}
-
 static void computeHash(u8* hash, u8* data, size_t length)
 {
     SHA256_CTX ctx;
@@ -77,10 +69,30 @@ static void computeHash(u8* hash, u8* data, size_t length)
     sha256_final(&ctx, hash);
 }
 
-bool swshcrypto_hashValid(u8* data, size_t length)
+void swshcrypto_applyXor(std::shared_ptr<u8[]> data, size_t length)
 {
+    for (size_t i = 0; i < length - SHA256_BLOCK_SIZE; i++)
+    {
+        data[i] ^= xorpad[i % XORPAD_LENGTH];
+    }
+}
+
+void swshcrypto_sign(std::shared_ptr<u8[]> data, size_t length)
+{
+    if (length > SHA256_BLOCK_SIZE)
+    {
+        computeHash(data.get() + length - SHA256_BLOCK_SIZE, data.get(), length - SHA256_BLOCK_SIZE);
+    }
+}
+
+bool swshcrypto_verify(std::shared_ptr<u8[]> data, size_t length)
+{
+    if (length <= SHA256_BLOCK_SIZE)
+    {
+        return false;
+    }
     u8 hash[SHA256_BLOCK_SIZE];
-    computeHash(hash, data, length - SHA256_BLOCK_SIZE);
+    computeHash(hash, data.get(), length - SHA256_BLOCK_SIZE);
     for (size_t i = 0; i < SHA256_BLOCK_SIZE; i++)
     {
         if (hash[i] != data[length - SHA256_BLOCK_SIZE + i])
@@ -91,42 +103,19 @@ bool swshcrypto_hashValid(u8* data, size_t length)
     return true;
 }
 
-// SCBlockList is associated to dataIn!
-SCBlockList SCBlockList::init(std::shared_ptr<u8[]> dataIn, size_t length)
+std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length)
 {
-    SCBlockList blocks{dataIn, length};
-    applyStaticXorpad(dataIn, length);
+    std::vector<std::unique_ptr<SCBlock>> ret;
     size_t offset = 0;
     while (offset < length - SHA256_BLOCK_SIZE)
     {
-        blocks.emplace_back(SCBlock::decryptFromOffset(dataIn.get(), offset));
-    }
-    return blocks;
-}
-
-void SCBlockList::encrypt()
-{
-    for (auto& block : *this)
-    {
-        block.encrypt();
+        ret.emplace_back(std::unique_ptr<SCBlock>(new SCBlock(data, offset)));
     }
 
-    applyStaticXorpad(associatedData, length);
-
-    computeHash(associatedData.get() + length - SHA256_BLOCK_SIZE, associatedData.get(), length - SHA256_BLOCK_SIZE);
+    return ret;
 }
 
-void SCBlockList::decrypt()
-{
-    applyStaticXorpad(associatedData, length);
-
-    for (auto& block : *this)
-    {
-        block.decrypt();
-    }
-}
-
-void SCBlock::cryptBytes(u8* data, size_t inputOffset, size_t start, size_t size)
+void SCBlock::cryptBytes(size_t inputOffset, size_t start, size_t size)
 {
     auto keyStream = getKeyStream(start, size);
     for (size_t i = 0; i < size; i++)
@@ -175,17 +164,16 @@ std::vector<u8> SCBlock::getKeyStream(size_t start, size_t size)
     return ret;
 }
 
-SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
+SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOffset(offset)
 {
-    SCBlock block{data + offset};
     // Key size
     offset += 4;
 
-    block.cryptBytes(data, offset, 0, 1);
+    cryptBytes(offset, 0, 1);
 
-    block.type = SCBlockType(*(data + offset));
+    type = SCBlockType(data[offset]);
 
-    switch (block.type)
+    switch (type)
     {
         case SCBlockType::Common1:
         case SCBlockType::Common2:
@@ -195,24 +183,24 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
             break;
         case SCBlockType::Data:
         {
-            block.cryptBytes(data, offset, 1, 4);
-            block.dataLength = Endian::convertTo<u32>(data + offset + 1);
-            block.cryptBytes(data, offset, 5, block.dataLength);
-            offset += 5 + block.dataLength;
+            cryptBytes(offset, 1, 4);
+            dataLength = Endian::convertTo<u32>(data.get() + offset + 1);
+            cryptBytes(offset, 5, dataLength);
+            offset += 5 + dataLength;
         }
         break;
         case SCBlockType::Array:
         {
-            block.cryptBytes(data, offset, 1, 4);
-            block.dataLength = Endian::convertTo<u32>(data + offset + 1);
-            block.cryptBytes(data, offset, 5, 1);
-            block.subtype = SCBlockType(*(data + offset + 5));
-            switch (block.subtype)
+            cryptBytes(offset, 1, 4);
+            dataLength = Endian::convertTo<u32>(data.get() + offset + 1);
+            cryptBytes(offset, 5, 1);
+            subtype = SCBlockType(data[offset + 5]);
+            switch (subtype)
             {
                 case SCBlockType::Common3:
                     // An array of booleans
-                    block.cryptBytes(data, offset, 6, block.dataLength);
-                    offset += 6 + block.dataLength;
+                    cryptBytes(offset, 6, dataLength);
+                    offset += 6 + dataLength;
                     break;
                 case SCBlockType::Single1:
                 case SCBlockType::Single2:
@@ -225,9 +213,9 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
                 case SCBlockType::Single9:
                 case SCBlockType::Single10:
                 {
-                    size_t entrySize = arrayEntrySize(block.subtype);
-                    block.cryptBytes(data, offset, 6, block.dataLength * entrySize);
-                    offset += 6 + (block.dataLength * entrySize);
+                    size_t entrySize = arrayEntrySize(subtype);
+                    cryptBytes(offset, 6, dataLength * entrySize);
+                    offset += 6 + (dataLength * entrySize);
                 }
                 break;
                 default:
@@ -247,8 +235,8 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
         case SCBlockType::Single9:
         case SCBlockType::Single10:
         {
-            size_t entrySize = arrayEntrySize(block.type);
-            block.cryptBytes(data, offset, 1, entrySize);
+            size_t entrySize = arrayEntrySize(type);
+            cryptBytes(offset, 1, entrySize);
             offset += 1 + entrySize;
         }
         break;
@@ -256,40 +244,33 @@ SCBlock SCBlock::decryptFromOffset(u8* data, size_t& offset)
             //! CHECK WHY THIS HAPPENED IF IT DOES
             std::abort();
     }
-
-    return block;
 }
 
 void SCBlock::encrypt()
 {
-    data[4]       = u8(type);
-    size_t outOfs = 5;
-
-    if (type == SCBlockType::Data)
+    if (!currentlyEncrypted)
     {
-        Endian::convertFrom<u32>(data + outOfs, dataLength);
-        outOfs += 4;
-    }
-    else if (type == SCBlockType::Array)
-    {
-        Endian::convertFrom<u32>(data + outOfs, dataLength);
-        data[outOfs + 4] = u8(subtype);
-        outOfs += 5;
-    }
+        cryptBytes(myOffset + 4, 0, encryptedDataSize() - 4);
 
-    cryptBytes(data, 4, 0, encryptedDataSize() - 4);
+        currentlyEncrypted = true;
+    }
 }
 
 void SCBlock::decrypt()
 {
-    cryptBytes(data, 4, 0, encryptedDataSize() - 4);
+    if (currentlyEncrypted)
+    {
+        cryptBytes(myOffset + 4, 0, encryptedDataSize() - 4);
+
+        currentlyEncrypted = false;
+    }
 }
 
 u32 SCBlock::key() const
 {
-    return Endian::convertTo<u32>(data);
+    return Endian::convertTo<u32>(&data[myOffset]);
 }
 void SCBlock::key(u32 v)
 {
-    Endian::convertFrom<u32>(data, v);
+    Endian::convertFrom<u32>(&data[myOffset], v);
 }

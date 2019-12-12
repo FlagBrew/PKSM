@@ -65,7 +65,9 @@ public:
 private:
     Fetch() : curl(nullptr, &curl_easy_cleanup) {}
     Fetch(const Fetch&) = delete;
-    void operator=(const Fetch&) = delete;
+    Fetch(Fetch&&)      = default;
+    Fetch& operator=(const Fetch&) = delete;
+    Fetch& operator=(Fetch&&) = default;
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
 };
 

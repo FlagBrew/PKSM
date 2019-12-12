@@ -33,6 +33,8 @@
 
 class SCBlock
 {
+    friend std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
+
 public:
     enum class SCBlockType : u8
     {
@@ -58,27 +60,34 @@ public:
         Single9  = 16,
         Single10 = 17,
     };
-    static SCBlock decryptFromOffset(u8* data, size_t& offset);
+    // Nop if in proper state
     void encrypt();
-    // Default state is decrypted; use this after encrypt() to get it back to editable data
     void decrypt();
 
-    // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
-    u8* rawData() { return data + headerSize(type); }
-    u8* rawData() const { return data + headerSize(type); }
+    u8* decryptedData()
+    {
+        decrypt();
+        return rawData();
+    }
 
 private:
-    SCBlock(u8* data) : data(data) {}
+    SCBlock(std::shared_ptr<u8[]> data, size_t& offset);
+    SCBlock(const SCBlock&) = delete;
+    SCBlock& operator=(const SCBlock&) = delete;
 
+    // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
+    u8* rawData() const { return data.get() + myOffset + headerSize(type); }
     u32 key() const;
     void key(u32 v);
+    // Points to the beginning of the block data: *(u32*)(data) == key
+    std::shared_ptr<u8[]> data = nullptr;
+    u32 myOffset;
     u32 dataLength;
     SCBlockType type;
     SCBlockType subtype;
-    // Points to the beginning of the block data: *(u32*)(data) == key
-    u8* data = nullptr;
+    bool currentlyEncrypted = false;
 
-    void cryptBytes(u8* data, size_t inputOffset, size_t start, size_t size);
+    void cryptBytes(size_t inputOffset, size_t start, size_t size);
     std::vector<u8> getKeyStream(size_t start, size_t size);
     size_t encryptedDataSize()
     {
@@ -186,19 +195,10 @@ private:
     }
 };
 
-class SCBlockList : public std::vector<SCBlock>
-{
-public:
-    static SCBlockList init(std::shared_ptr<u8[]> data, size_t length);
-    void encrypt();
-    void decrypt();
-
-private:
-    SCBlockList(std::shared_ptr<u8[]> data, size_t length) : associatedData(data), length(length) {}
-    std::shared_ptr<u8[]> associatedData;
-    size_t length;
-};
-
-bool swshcrypto_hashValid(u8* data, size_t length);
+void swshcrypto_applyXor(std::shared_ptr<u8[]> data, size_t length);
+void swshcrypto_sign(std::shared_ptr<u8[]> data, size_t length);
+bool swshcrypto_verify(std::shared_ptr<u8[]> data, size_t length);
+// Takes deXor'd data
+std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
 
 #endif

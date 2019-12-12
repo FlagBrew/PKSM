@@ -62,7 +62,6 @@ protected:
 
 public:
     SavUSUM(std::shared_ptr<u8[]> dt);
-    virtual ~SavUSUM(){};
 
     void resign(void) override;
 

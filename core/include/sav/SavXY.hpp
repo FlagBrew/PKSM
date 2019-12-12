@@ -44,7 +44,6 @@ protected:
 
 public:
     SavXY(std::shared_ptr<u8[]> dt);
-    virtual ~SavXY(){};
 
     void resign(void) override;
 

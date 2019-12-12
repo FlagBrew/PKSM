@@ -34,7 +34,7 @@
 class Sav8 : public Sav
 {
 protected:
-    SCBlockList blocks;
+    std::vector<std::unique_ptr<SCBlock>> blocks;
 
     int Items, BoxLayout, Misc, Party, TrainerCard, PlayTime, Status;
 
@@ -45,14 +45,11 @@ protected:
     int maxBall(void) const override { return 0x1A; }
 
 public:
-    Sav8(std::shared_ptr<u8[]> dt, size_t length) : blocks(std::move(SCBlockList::init(dt, length)))
-    {
-        this->length = length;
-        this->data   = dt;
-    }
+    Sav8(std::shared_ptr<u8[]> dt, size_t length);
+    virtual ~Sav8() {}
 
-    void encrypt(void) override { blocks.encrypt(); }
-    void decrypt(void) override { blocks.decrypt(); }
+    void encrypt(void) override;
+    void decrypt(void) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
     std::shared_ptr<PKX> emptyPkm() const override;

@@ -44,6 +44,8 @@ private:
     int dexFormIndex(int species, int formct) const;
 
 public:
+    Sav6(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+    virtual ~Sav6() {}
     virtual void resign(void) = 0;
     void encrypt(void) override { resign(); }
     void decrypt(void) override {}

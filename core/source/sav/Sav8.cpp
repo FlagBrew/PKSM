@@ -27,6 +27,12 @@
 #include "Sav8.hpp"
 #include "PK8.hpp"
 
+Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
+{
+    swshcrypto_applyXor(dt, length);
+    blocks = swshcrypto_getBlockList(dt, length);
+}
+
 std::shared_ptr<PKX> Sav8::emptyPkm() const
 {
     return std::make_shared<PK8>();
@@ -101,4 +107,22 @@ void Sav8::trade(std::shared_ptr<PKX> pk)
             ((PK8*)pk.get())->htLanguage(language());
         }
     }
+}
+
+void Sav8::encrypt()
+{
+    for (auto& block : blocks)
+    {
+        block->encrypt();
+    }
+
+    swshcrypto_applyXor(data, length);
+    swshcrypto_sign(data, length);
+}
+
+void Sav8::decrypt()
+{
+    swshcrypto_applyXor(data, length);
+
+    // I could decrypt every block here, but why not just let them be done on the fly via the functions that need them?
 }

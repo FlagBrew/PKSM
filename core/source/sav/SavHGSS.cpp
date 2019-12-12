@@ -27,11 +27,9 @@
 #include "SavHGSS.hpp"
 #include "PGT.hpp"
 
-SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt)
+SavHGSS::SavHGSS(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {
-    length = 0x80000;
-    game   = Game::HGSS;
-    data   = dt;
+    game = Game::HGSS;
 
     GBOOffset = 0xF618;
     SBOOffset = 0x21A00;

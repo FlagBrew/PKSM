@@ -28,11 +28,9 @@
 #include "endian.hpp"
 #include <algorithm>
 
-SavORAS::SavORAS(std::shared_ptr<u8[]> dt)
+SavORAS::SavORAS(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x76000)
 {
-    length = 0x76000;
-    game   = Game::ORAS;
-    data   = dt;
+    game = Game::ORAS;
 
     TrainerCard          = 0x14000;
     Trainer2             = 0x04200;

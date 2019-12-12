@@ -28,11 +28,9 @@
 #include "endian.hpp"
 #include <algorithm>
 
-SavXY::SavXY(std::shared_ptr<u8[]> dt)
+SavXY::SavXY(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x65600)
 {
-    length = 0x65600;
-    game   = Game::XY;
-    data   = dt;
+    game = Game::XY;
 
     TrainerCard          = 0x14000;
     Trainer2             = 0x4200;

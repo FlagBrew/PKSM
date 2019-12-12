@@ -28,11 +28,9 @@
 #include "endian.hpp"
 #include <algorithm>
 
-SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt)
+SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
 {
-    length = 0x80000;
-    game   = Game::B2W2;
-    data   = dt;
+    game = Game::B2W2;
 
     PCLayout             = 0x0;
     Trainer1             = 0x19400;
@@ -50,8 +48,6 @@ SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt)
     PouchBerry           = 0x18C98;
     Box                  = 0x400;
 }
-
-SavB2W2::~SavB2W2() {}
 
 void SavB2W2::resign(void)
 {
