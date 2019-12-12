@@ -254,10 +254,8 @@ public:
     inline u8 genderType(void) const override { return PersonalSWSH::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalSWSH::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalSWSH::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalSWSH::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSWSH::formStatIndex(formSpecies()); }
-    inline u16 baseWeight(void) const { return PersonalSWSH::baseWeight(formSpecies()); }
-    inline u16 baseHeight(void) const { return PersonalSWSH::baseHeight(formSpecies()); }
     inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
     inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }
 };

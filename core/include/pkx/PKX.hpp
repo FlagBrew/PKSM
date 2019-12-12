@@ -253,7 +253,7 @@ public:
     virtual u8 genderType(void) const     = 0;
     virtual u8 baseFriendship(void) const = 0;
     virtual u8 expType(void) const        = 0;
-    virtual u8 abilities(u8 n) const      = 0;
+    virtual u16 abilities(u8 n) const      = 0;
     virtual u16 formStatIndex(void) const = 0;
 };
 

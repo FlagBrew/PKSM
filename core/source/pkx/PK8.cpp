@@ -179,7 +179,7 @@ void PK8::setAbility(u8 v)
 
 u8 PK8::abilityNumber(void) const
 {
-    return (data[0x16] & 0x7) == 1;
+    return data[0x16] & 0x7;
 }
 void PK8::abilityNumber(u8 v)
 {
@@ -188,7 +188,7 @@ void PK8::abilityNumber(u8 v)
 
 bool PK8::favorite(void) const
 {
-    return (data[0x16] & 8) == 1;
+    return (data[0x16] & 8) != 0;
 }
 void PK8::favorite(bool v) const
 {
@@ -197,7 +197,7 @@ void PK8::favorite(bool v) const
 
 bool PK8::canGiga(void) const
 {
-    return (data[0x16] & 16) == 1;
+    return (data[0x16] & 16) != 0;
 }
 void PK8::canGiga(bool v) const
 {

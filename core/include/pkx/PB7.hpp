@@ -245,7 +245,7 @@ public:
     inline u8 genderType(void) const override { return PersonalLGPE::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalLGPE::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalLGPE::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalLGPE::formStatIndex(formSpecies()); }
 };
 

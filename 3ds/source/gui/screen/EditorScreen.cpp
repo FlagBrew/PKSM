@@ -763,7 +763,7 @@ bool EditorScreen::selectAbility()
                 break;
         }
     }
-    else if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
+    else
     {
         switch (pkm->abilityNumber() >> 1)
         {

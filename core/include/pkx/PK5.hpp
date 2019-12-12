@@ -187,7 +187,7 @@ public:
     inline u8 genderType(void) const override { return PersonalBWB2W2::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalBWB2W2::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
 };
 

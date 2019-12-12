@@ -193,7 +193,7 @@ public:
     inline u8 genderType(void) const override { return PersonalDPPtHGSS::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalDPPtHGSS::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
 };
 

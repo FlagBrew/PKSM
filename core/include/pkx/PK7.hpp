@@ -236,7 +236,7 @@ public:
     inline u8 genderType(void) const override { return PersonalSMUSUM::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalSMUSUM::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
 };
 
