@@ -82,10 +82,6 @@ static bool goToScreen(int buttonNum)
 
 MainMenu::MainMenu()
 {
-    if (TitleLoader::save->generation() == Generation::EIGHT)
-    {
-        Gui::warn("Gen 8 support is fairly experimental!\nProceed at your own risk.");
-    }
     oldLang = Configuration::getInstance().language();
     makeButtons();
 }
