@@ -343,10 +343,9 @@ std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK8>(blocks[Box]->decryptedData() + offset, ekx, true);
 }
 
-bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::EIGHT)
     {
         if (applyTrade)
         {
@@ -369,26 +368,28 @@ bool SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Box]->decryptedData() + boxOffset(box, slot));
     }
-    return (bool)pk;
 }
 void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[0x158] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, false, true, true);
-
-    if (pk->getLength() != 0x158)
+    if (pk->generation() == Generation::EIGHT)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk8->partyStat(Stat(i), pk8->stat(Stat(i)));
-        }
-        pk8->partyLevel(pk8->level());
-        pk8->partyCurrHP(pk8->stat(Stat::HP));
-    }
+        u8 buf[0x158] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, false, true, true);
 
-    pk8->encrypt();
-    std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Party]->decryptedData() + partyOffset(slot));
+        if (pk->getLength() != 0x158)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk8->partyStat(Stat(i), pk8->stat(Stat(i)));
+            }
+            pk8->partyLevel(pk8->level());
+            pk8->partyCurrHP(pk8->stat(Stat::HP));
+        }
+
+        pk8->encrypt();
+        std::copy(pk8->rawData(), pk8->rawData() + pk8->getLength(), blocks[Party]->decryptedData() + partyOffset(slot));
+    }
 }
 
 void SavSWSH::cryptBoxData(bool crypted)

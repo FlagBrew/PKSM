@@ -210,22 +210,25 @@ std::shared_ptr<PKX> Sav7::pkm(u8 slot) const
 
 void Sav7::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[260] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true, true);
-
-    if (pk->getLength() != 260)
+    if (pk->generation() == Generation::SEVEN)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk7->partyStat(Stat(i), pk7->stat(Stat(i)));
-        }
-        pk7->partyLevel(pk7->level());
-        pk7->partyCurrHP(pk7->stat(Stat::HP));
-    }
+        u8 buf[260] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK7> pk7 = std::make_unique<PK7>(buf, false, true, true);
 
-    pk7->encrypt();
-    std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), &data[partyOffset(slot)]);
+        if (pk->getLength() != 260)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk7->partyStat(Stat(i), pk7->stat(Stat(i)));
+            }
+            pk7->partyLevel(pk7->level());
+            pk7->partyCurrHP(pk7->stat(Stat::HP));
+        }
+
+        pk7->encrypt();
+        std::copy(pk7->rawData(), pk7->rawData() + pk7->getLength(), &data[partyOffset(slot)]);
+    }
 }
 
 std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
@@ -233,10 +236,9 @@ std::shared_ptr<PKX> Sav7::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_unique<PK7>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::SEVEN)
     {
         if (applyTrade)
         {
@@ -245,7 +247,6 @@ bool Sav7::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 232, &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void Sav7::trade(std::shared_ptr<PKX> pk)

@@ -1086,6 +1086,10 @@ void Gui::generation(const PKX& pkm, int x, int y)
         case 41: // cr
             Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
             break;
+        case 42: // lgp
+        case 43: // lge
+        case 44: // sw
+        case 45: // sh
         default:
             break;
     }

@@ -193,22 +193,25 @@ std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[220] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
-
-    if (pk->getLength() != 220)
+    if (pk->generation() == Generation::FIVE)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk5->partyStat(Stat(i), pk5->stat(Stat(i)));
-        }
-        pk5->partyLevel(pk5->level());
-        pk5->partyCurrHP(pk5->stat(Stat::HP));
-    }
+        u8 buf[220] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
 
-    pk5->encrypt();
-    std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
+        if (pk->getLength() != 220)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk5->partyStat(Stat(i), pk5->stat(Stat(i)));
+            }
+            pk5->partyLevel(pk5->level());
+            pk5->partyCurrHP(pk5->stat(Stat::HP));
+        }
+
+        pk5->encrypt();
+        std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
+    }
 }
 
 std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
@@ -216,10 +219,9 @@ std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK5>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::FIVE)
     {
         if (applyTrade)
         {
@@ -228,7 +230,6 @@ bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 136, &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void Sav5::trade(std::shared_ptr<PKX> pk)

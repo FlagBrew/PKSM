@@ -1256,8 +1256,8 @@ void StorageScreen::putDownNonSwap()
                 std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                 if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
                 {
-                    TitleLoader::save->pkm(
-                        moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
+                    TitleLoader::save->pkm(TitleLoader::save->transfer(moveMon[index]), boxBox, cursorIndex - 1 + x + y * 6,
+                        Configuration::getInstance().transferEdit() && fromStorage);
                     TitleLoader::save->dex(moveMon[index]);
                     if (partyNum[index] != -1)
                     {

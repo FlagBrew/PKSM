@@ -461,6 +461,8 @@ u32 PKX::versionTID() const
         case 33:
         case 42: // LGPE
         case 43:
+        case 44: // SWSH
+        case 45:
             return (u32)(SID() << 16 | TID()) % 1000000;
     }
 }
@@ -477,6 +479,8 @@ u32 PKX::versionSID() const
         case 33:
         case 42: // LGPE
         case 43:
+        case 44: // SWSH
+        case 45:
             return (u32)(SID() << 16 | TID()) / 1000000;
     }
 }

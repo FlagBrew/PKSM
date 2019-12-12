@@ -182,6 +182,10 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             case 43:
                 pkm->metLocation(0x0003); // Route 1, LGPE
                 break;
+            case 44:
+            case 45:
+                pkm->metLocation(0x000C); // Route 1, SWSH
+                break;
         }
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
@@ -669,7 +673,7 @@ bool EditorScreen::save()
     {
         if (box != 0xFF)
         {
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (TitleLoader::save->generation() == Generation::LGPE || TitleLoader::save->generation() == Generation::EIGHT)
             {
                 partyUpdate();
             }

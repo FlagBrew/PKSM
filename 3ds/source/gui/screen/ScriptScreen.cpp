@@ -76,6 +76,9 @@ namespace
             case 42:
             case 43:
                 return "/scripts/lgpe";
+            case 44:
+            case 45:
+                return "/scripts/swsh";
             default:
                 return "/scripts/" + std::to_string(version);
         }

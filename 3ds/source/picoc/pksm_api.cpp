@@ -281,65 +281,54 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     if (pkm)
     {
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        pkm = TitleLoader::save->transfer(pkm);
+        if (!pkm)
         {
-            if (pkm->generation() == Generation::LGPE)
+            Gui::warn(
+                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            return;
+        }
+        bool moveBad = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
             {
-                TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-                TitleLoader::save->dex(pkm);
+                moveBad = true;
+                break;
+            }
+            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
+            {
+                moveBad = true;
+                break;
             }
         }
-        else
+        if (moveBad)
         {
-            pkm = TitleLoader::save->transfer(pkm);
-            if (!pkm)
-            {
-                Gui::warn(
-                    StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
-                return;
-            }
-            bool moveBad = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-            }
-            if (moveBad)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-            {
-                return;
-            }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-            {
-                return;
-            }
-            TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-            TitleLoader::save->dex(pkm);
+            return;
         }
+        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+        {
+            return;
+        }
+        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
+        {
+            return;
+        }
+        TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
+        TitleLoader::save->dex(pkm);
     }
 }
 
@@ -678,65 +667,54 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
 
     if (pkm)
     {
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        pkm = TitleLoader::save->transfer(pkm);
+        if (!pkm)
         {
-            if (pkm->generation() == Generation::LGPE)
+            Gui::warn(
+                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            return;
+        }
+        bool moveBad = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
             {
-                TitleLoader::save->pkm(pkm, slot);
-                TitleLoader::save->dex(pkm);
+                moveBad = true;
+                break;
+            }
+            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
+            {
+                moveBad = true;
+                break;
             }
         }
-        else
+        if (moveBad)
         {
-            pkm = TitleLoader::save->transfer(pkm);
-            if (!pkm)
-            {
-                Gui::warn(
-                    StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
-                return;
-            }
-            bool moveBad = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-            }
-            if (moveBad)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-            {
-                return;
-            }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-            {
-                return;
-            }
-            TitleLoader::save->pkm(pkm, slot);
-            TitleLoader::save->dex(pkm);
+            return;
         }
+        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+        {
+            return;
+        }
+        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
+        {
+            return;
+        }
+        TitleLoader::save->pkm(pkm, slot);
+        TitleLoader::save->dex(pkm);
     }
 }
 
@@ -873,6 +851,10 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         case 42:
         case 43:
             pkm->metLocation(0x0003); // Route 1, LGPE
+            break;
+        case 44:
+        case 45:
+            pkm->metLocation(0x000C); // Route 1, SWSH
             break;
     }
     pkm->fixMoves();

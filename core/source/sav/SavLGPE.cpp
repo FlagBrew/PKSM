@@ -323,10 +323,9 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PB7>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::LGPE)
     {
         if (applyTrade)
         {
@@ -334,42 +333,44 @@ bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
         }
         std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u32 off     = partyOffset(slot);
-    u16 newSlot = partyBoxSlot(slot);
-    if (pk->species() == 0)
+    if (pk->generation() == Generation::LGPE)
     {
-        if (off != 0)
+        u32 off     = partyOffset(slot);
+        u16 newSlot = partyBoxSlot(slot);
+        if (pk->species() == 0)
         {
-            std::fill_n(&data[off], 260, 0);
-        }
-        partyBoxSlot(slot, 1001);
-        return;
-    }
-    if (off == 0)
-    {
-        for (int i = 999; i >= 0; i--)
-        {
-            if (!isPKM(&data[0x5C00 + i * 260]))
+            if (off != 0)
             {
-                off     = boxOffset(i / 30, i % 30);
-                newSlot = i;
-                break;
+                std::fill_n(&data[off], 260, 0);
             }
+            partyBoxSlot(slot, 1001);
+            return;
         }
         if (off == 0)
         {
-            // Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
-            return;
+            for (int i = 999; i >= 0; i--)
+            {
+                if (!isPKM(&data[0x5C00 + i * 260]))
+                {
+                    off     = boxOffset(i / 30, i % 30);
+                    newSlot = i;
+                    break;
+                }
+            }
+            if (off == 0)
+            {
+                // Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
+                return;
+            }
         }
-    }
 
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
-    partyBoxSlot(slot, newSlot);
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
+        partyBoxSlot(slot, newSlot);
+    }
 }
 
 void SavLGPE::trade(std::shared_ptr<PKX> pk)
