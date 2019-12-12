@@ -918,8 +918,8 @@ std::shared_ptr<PKX> PK5::convertToG6(Sav& save) const
     pk6->PID(PID());
     pk6->ability(ability());
 
-    u8 pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
-    u8 abilVal         = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
+    u16 pkmAbilities[3] = {abilities(0), abilities(1), abilities(2)};
+    u8 abilVal          = std::distance(pkmAbilities, std::find(pkmAbilities, pkmAbilities + 3, ability()));
     if (abilVal < 3 && pkmAbilities[abilVal] == pkmAbilities[2] && hiddenAbility())
     {
         abilVal = 2; // HA shared by normal ability
