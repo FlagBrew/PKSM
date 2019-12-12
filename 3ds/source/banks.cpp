@@ -95,7 +95,14 @@ Result Banks::init()
         i = g_banks.begin();
     }
     loadBank(i.key(), i.value());
-    return 0;
+    if (bank)
+    {
+        return 0;
+    }
+    else
+    {
+        return -2;
+    }
 }
 
 bool Banks::loadBank(const std::string& name, const std::optional<int>& maxBoxes)

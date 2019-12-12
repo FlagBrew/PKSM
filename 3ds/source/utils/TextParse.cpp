@@ -362,17 +362,12 @@ namespace TextParse
         {
             std::shared_ptr<Text> tmp = std::make_shared<Text>();
             tmp->lineWidths.push_back(0.0f);
-            size_t offset = 0;
-            auto it       = str.begin();
+            auto strIt = str.begin();
             do
             {
-                auto word = parseWord(it, maxWidth);
+                auto word = parseWord(strIt, maxWidth);
                 tmp->addWord(std::move(word), maxWidth);
-                if (offset >= str.size())
-                {
-                    break;
-                }
-                auto whitespace = parseWhitespace(it);
+                auto whitespace = parseWhitespace(strIt);
                 if (whitespace.index() == 0)
                 {
                     if (maxWidth != 0.0f && tmp->lineWidths.back() + std::get<0>(whitespace) > maxWidth)
@@ -391,7 +386,7 @@ namespace TextParse
                         tmp->lineWidths.push_back(0.0f);
                     }
                 }
-            } while (it != str.end());
+            } while (strIt != str.end());
 
             tmp->maxLineWidth = *std::max_element(tmp->lineWidths.begin(), tmp->lineWidths.end());
 
