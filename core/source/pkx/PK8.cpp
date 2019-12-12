@@ -63,20 +63,8 @@ void PK8::crypt(void)
     }
 }
 
-PK8::PK8(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK8::PK8(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x148, direct)
 {
-    length = party ? 0x158 : 0x148;
-
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();

@@ -45,21 +45,9 @@ protected:
     // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
 
 public:
-    PK7()
-    {
-        directAccess = false;
-        length       = 232;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PK7() : PKX(nullptr, 232) {}
     PK7(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK7()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PK7() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
@@ -250,9 +238,6 @@ public:
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
     inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

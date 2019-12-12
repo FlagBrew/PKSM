@@ -49,6 +49,9 @@ class PKX
     friend class PK8;
     friend class PB7;
 
+private:
+    bool directAccess;
+
 protected:
     u32 expTable(u8 row, u8 col) const;
     u8 blockPosition(u8 index) const;
@@ -67,7 +70,6 @@ protected:
     virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
 
     u32 length = 0;
-
     u8* data;
 
 public:
@@ -77,8 +79,8 @@ public:
     void decrypt(void);
     void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) const = 0;
-    virtual ~PKX() {}
-    PKX() {}
+    virtual ~PKX();
+    PKX(u8* data, size_t length, bool directAccess = false);
     PKX(const PKX& pk) = delete;
     PKX& operator=(const PKX& pk) = delete;
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false, bool directAccess = false);

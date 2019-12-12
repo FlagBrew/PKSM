@@ -69,19 +69,8 @@ void PK5::crypt(void)
     }
 }
 
-PK5::PK5(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK5::PK5(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 220 : 136, direct)
 {
-    length = party ? 220 : 136;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();

@@ -45,21 +45,9 @@ protected:
     // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
 
 public:
-    PK8()
-    {
-        directAccess = false;
-        length       = 0x148;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PK8() : PKX(nullptr, 0x148) {}
     PK8(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK8()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PK8() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
@@ -272,9 +260,6 @@ public:
     inline u16 baseHeight(void) const { return PersonalSWSH::baseHeight(formSpecies()); }
     inline u16 pokedexIndex(void) const { return PersonalSWSH::pokedexIndex(formSpecies()); }
     inline bool canLearnTR(u8 trID) const { return PersonalSWSH::canLearnTR(formSpecies(), trID); }
-
-private:
-    bool directAccess;
 };
 
 #endif

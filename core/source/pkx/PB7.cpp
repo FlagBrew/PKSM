@@ -63,19 +63,8 @@ void PB7::crypt(void)
     }
 }
 
-PB7::PB7(u8* dt, bool ekx, bool direct) : directAccess(direct)
+PB7::PB7(u8* dt, bool ekx, bool direct) : PKX(dt, 260, direct)
 {
-    length = 260;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();

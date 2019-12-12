@@ -35,6 +35,36 @@
 #include "endian.hpp"
 #include "random.hpp"
 
+PKX::PKX(u8* data, size_t length, bool directAccess) : directAccess(directAccess), length(length)
+{
+    if (data)
+    {
+        if (directAccess)
+        {
+            this->data = data;
+        }
+        else
+        {
+            this->data = new u8[length];
+            std::copy(data, data + length, this->data);
+        }
+    }
+    else
+    {
+        this->data = new u8[length];
+        std::fill_n(data, length, 0);
+        this->directAccess = false;
+    }
+}
+
+PKX::~PKX()
+{
+    if (!directAccess && data)
+    {
+        delete[] data;
+    }
+}
+
 u32 PKX::expTable(u8 row, u8 col) const
 {
     static constexpr u32 table[100][6] = {{0, 0, 0, 0, 0, 0}, {8, 15, 4, 9, 6, 10}, {27, 52, 13, 57, 21, 33}, {64, 122, 32, 96, 51, 80},

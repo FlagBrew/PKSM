@@ -66,19 +66,8 @@ void PK4::crypt(void)
     }
 }
 
-PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
 {
-    length = party ? 236 : 136;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();
