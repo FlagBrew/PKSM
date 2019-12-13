@@ -163,7 +163,9 @@ void Fetch::multiMainThread(void*)
         if (mc == CURLM_OK)
         {
             int numFDs;
+            __lock_acquire(multiHandleMutex);
             mc = curl_multi_wait(multiHandle, nullptr, 0, 1, &numFDs);
+            __lock_release(multiHandleMutex);
             if (numFDs == 0)
             {
                 usleep(1000);
@@ -175,7 +177,6 @@ void Fetch::multiMainThread(void*)
             int msgs;
             __lock_acquire(multiHandleMutex);
             auto msg = curl_multi_info_read(multiHandle, &msgs);
-            __lock_release(multiHandleMutex);
             while (msg != nullptr)
             {
                 // Find the done handle
@@ -189,17 +190,14 @@ void Fetch::multiMainThread(void*)
                     {
                         it->function(msg->data.result, it->fetch);
                     }
-                    __lock_acquire(multiHandleMutex);
                     curl_multi_remove_handle(multiHandle, it->fetch->curl.get());
-                    __lock_release(multiHandleMutex);
                     fetches.erase(it);
                 }
                 __lock_release(fetchesMutex);
 
-                __lock_acquire(multiHandleMutex);
                 msg = curl_multi_info_read(multiHandle, &msgs);
-                __lock_release(multiHandleMutex);
             }
+            __lock_release(multiHandleMutex);
         }
 
         lastActive = active;
