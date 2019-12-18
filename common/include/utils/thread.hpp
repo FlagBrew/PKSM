@@ -27,10 +27,13 @@
 #ifndef THREAD_HPP
 #define THREAD_HPP
 
+#include <optional>
+
 namespace Threads
 {
     void init(void);
-    bool create(void (*entrypoint)(void*), void* arg = nullptr);
+    // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN MIND IF YOU ARE PORTING
+    bool create(void (*entrypoint)(void*), void* arg = nullptr, std::optional<size_t> stackSize = std::nullopt);
     void exit(void);
 }
 

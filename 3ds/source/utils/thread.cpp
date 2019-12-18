@@ -55,14 +55,14 @@ static void threadWrap(void* arg)
     LightLock_Unlock(&listLock);
 }
 
-bool Threads::create(void (*entrypoint)(void*), void* arg)
+bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
 {
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
     LightLock_Lock(&listLock);
     threads.emplace_front(entrypoint, arg, nullptr);
     threads.front().listPos = threads.begin();
-    threads.front().thread  = threadCreate(threadWrap, (void*)&threads.front(), 4 * 1024, prio - 1, -2, true);
+    threads.front().thread  = threadCreate(threadWrap, (void*)&threads.front(), stackSize.value_or(4 * 1024), prio - 1, -2, true);
     if (!threads.front().thread)
     {
         threads.erase(threads.begin());

@@ -52,8 +52,9 @@ int __stacksize__ = 64 * 1024;
 
 static u32 old_time_limit;
 static Handle hbldrHandle;
-static std::atomic_flag moveIcon = ATOMIC_FLAG_INIT;
-static std::atomic_flag doCartScan;
+static std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
+static std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
+static std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
 
 struct asset
 {
@@ -472,6 +473,23 @@ static void iconThread(void*)
     }
 }
 
+static void i18nThread(void*)
+{
+    constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO, Language::ZH,
+        Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
+    for (auto& i : languages)
+    {
+        if (continueI18N.test_and_set())
+        {
+            i18n::init(i);
+        }
+        else
+        {
+            return;
+        }
+    }
+}
+
 Result App::init(const std::string& execPath)
 {
     Result res;
@@ -482,7 +500,7 @@ Result App::init(const std::string& execPath)
     randomNumbers.seed(osGetTime());
 
     moveIcon.test_and_set();
-    Threads::create((ThreadFunc)&iconThread);
+    Threads::create((ThreadFunc)&iconThread, nullptr, 256);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
@@ -525,14 +543,8 @@ Result App::init(const std::string& execPath)
     Configuration::getInstance();
     i18n::init(Configuration::getInstance().language());
 
-    Threads::create([](void*) {
-        constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO,
-            Language::ZH, Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
-        for (auto& i : languages)
-        {
-            i18n::init(i);
-        }
-    });
+    continueI18N.test_and_set();
+    Threads::create(i18nThread, nullptr, 1024);
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -567,12 +579,12 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    if (!Threads::create((ThreadFunc)TitleLoader::scanTitles))
+    if (!Threads::create((ThreadFunc)TitleLoader::scanTitles, nullptr, 1024))
         return consoleDisplayError("TitleLoader::scanTitles failed to start", -1);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create((ThreadFunc)cartScan);
+    Threads::create((ThreadFunc)cartScan, nullptr, 256);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB

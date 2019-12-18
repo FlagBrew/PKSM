@@ -215,7 +215,7 @@ Result Fetch::initMulti()
     __lock_init(multiHandleMutex);
     multiHandle     = curl_multi_init();
     multiThreadInfo = true;
-    if (!Threads::create(Fetch::multiMainThread))
+    if (!Threads::create(Fetch::multiMainThread, nullptr, 8 * 1024))
     {
         multiInitialized = false;
         return -1;
