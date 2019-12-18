@@ -29,6 +29,7 @@
 #include "banks.hpp"
 #include "gui.hpp"
 #include "utils.hpp"
+#include <algorithm>
 
 BankChoice::BankChoice() : RunnableScreen(nullptr), hid(40, 2), strings(Banks::bankNames())
 {

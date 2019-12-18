@@ -38,6 +38,7 @@
 #include "loader.hpp"
 #include "picoc.h"
 #undef min // Get rid of picoc's min function
+#include <algorithm>
 
 static constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
@@ -248,7 +249,7 @@ void ScriptScreen::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second) {
+    std::sort(currFiles.begin(), currFiles.end(), [this](const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
         if ((first.second && second.second) || (!first.second && !second.second))
         {
             return first.first < second.first;
@@ -375,7 +376,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         {
             Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
             show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
-            Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
+            Gui::setScreen(std::make_unique<ScrollingTextScreen>(show, nullptr));
         }
     }
 

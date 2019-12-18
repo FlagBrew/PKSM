@@ -57,20 +57,20 @@ void FormOverlay::drawTop() const
 {
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
-    int x  = (hid.index() % 6) * 67;
-    int y  = (hid.index() / 6) * 48;
-    int dx = 66;
-    int dy = 47;
-    if (x == 335)
+    int selectorX = (hid.index() % 6) * 67;
+    int selectorY = (hid.index() / 6) * 48;
+    int dx        = 66;
+    int dy        = 47;
+    if (selectorX == 335)
     {
         dx -= 1;
     }
     // Selector
-    Gui::drawSolidRect(x, y, dx, dy, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, dx, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, dy, COLOR_YELLOW);
-    Gui::drawSolidRect(x + dx - 1, y, 1, dy, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + dy - 1, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, dx, dy, COLOR_MASKBLACK);
+    Gui::drawSolidRect(selectorX, selectorY, dx, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX + dx - 1, selectorY, 1, dy, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY + dy - 1, dx, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {

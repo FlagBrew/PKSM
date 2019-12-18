@@ -227,12 +227,12 @@ void StorageScreen::drawBottom() const
         }
     }
 
-    u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 4;
+        u16 y = 45 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x = 4 + column * 34;
             if (currentlySelecting && !storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
@@ -260,9 +260,7 @@ void StorageScreen::drawBottom() const
                     }
                 }
             }
-            x += 34;
         }
-        y += 30;
     }
 
     Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -1012,7 +1010,6 @@ void StorageScreen::pickupSingle()
         moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
         partyNum.push_back(-1);
         Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
-        fromStorage = true;
     }
     else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
@@ -1031,7 +1028,6 @@ void StorageScreen::pickupSingle()
         }
         moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
         TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
-        fromStorage = false;
     }
     else
     {

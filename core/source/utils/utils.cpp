@@ -164,16 +164,14 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
 {
     std::string output;
     len *= 2;
-    u16 temp;
-    u16 codepoint;
     char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
-        temp = Endian::convertTo<u16>(data + ofs + i);
+        u16 temp = Endian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        u16 index = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
-        codepoint = G4Chars[index];
+        u16 index     = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
+        u16 codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
         if (codepoint < 0x0080)
@@ -586,10 +584,7 @@ std::string StringUtils::transString45(const std::string& str)
 std::u16string StringUtils::transString45(const std::u16string& str)
 {
     std::u16string ret = str;
-    for (auto& codepoint : ret)
-    {
-        codepoint = swapCodepoints45(codepoint);
-    }
+    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints45(chr); });
     return ret;
 }
 
@@ -668,9 +663,6 @@ std::string StringUtils::transString67(const std::string& str)
 std::u16string StringUtils::transString67(const std::u16string& str)
 {
     std::u16string ret = str;
-    for (auto& codepoint : ret)
-    {
-        codepoint = swapCodepoints67(codepoint);
-    }
+    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
     return ret;
 }

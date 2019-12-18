@@ -134,6 +134,7 @@ Result Fetch::download(
     }
     else
     {
+        fclose(file);
         return -1;
     }
 

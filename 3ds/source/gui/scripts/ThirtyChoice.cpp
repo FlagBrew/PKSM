@@ -31,14 +31,14 @@ void ThirtyChoice::drawTop() const
 {
     Gui::sprite(ui_sheet_part_mtx_5x6_idx, 0, 0);
 
-    int x = (hid.index() % 6) * 67;
-    int y = (hid.index() / 6) * 48;
+    int selectorX = (hid.index() % 6) * 67;
+    int selectorY = (hid.index() / 6) * 48;
     // Selector
-    Gui::drawSolidRect(x, y, 66, 47, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, 66, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 65, y, 1, 47, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 46, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, 66, 47, COLOR_MASKBLACK);
+    Gui::drawSolidRect(selectorX, selectorY, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX + 65, selectorY, 1, 47, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY + 46, 66, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {

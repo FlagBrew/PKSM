@@ -89,8 +89,8 @@ public:
     u8 ev(Stat ev) const override;
     void ev(Stat ev, u8 v) override;
     // Stubbed; data no longer exists
-    u8 contest(u8 contest) const { return 0; };
-    void contest(u8 contest, u8 v) { (void)contest, (void)v; };
+    u8 contest(u8 contest) const override { return 0; };
+    void contest(u8 contest, u8 v) override { (void)contest, (void)v; };
     // Replaced by
     u8 awakened(Stat stat) const;
     void awakened(Stat stat, u8 v);

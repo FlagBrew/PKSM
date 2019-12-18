@@ -29,7 +29,8 @@
 
 #include "Language.hpp"
 #include "coretypes.h"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
+#include <memory>
 
 class Configuration
 {
@@ -42,110 +43,110 @@ public:
         return config;
     }
 
-    Language language(void) const { return Language(mJson["language"].get<u8>()); }
+    Language language(void) const;
 
-    bool autoBackup(void) const { return mJson["autoBackup"]; }
+    bool autoBackup(void) const;
 
-    bool transferEdit(void) const { return mJson["transferEdit"]; }
+    bool transferEdit(void) const;
 
-    bool useExtData(void) const { return mJson["useExtData"]; }
+    bool useExtData(void) const;
 
-    u32 defaultTID(void) const { return mJson["defaults"]["tid"]; }
+    u32 defaultTID(void) const;
 
-    u32 defaultSID(void) const { return mJson["defaults"]["sid"]; }
+    u32 defaultSID(void) const;
 
-    std::string defaultOT(void) const { return mJson["defaults"]["ot"]; }
+    std::string defaultOT(void) const;
 
-    int nationality(void) const { return mJson["defaults"]["nationality"]; }
+    int nationality(void) const;
 
-    int day(void) const { return mJson["defaults"]["date"]["day"]; }
+    int day(void) const;
 
-    int month(void) const { return mJson["defaults"]["date"]["month"]; }
+    int month(void) const;
 
-    int year(void) const { return mJson["defaults"]["date"]["year"]; }
+    int year(void) const;
 
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;
 
-    bool writeFileSave(void) const { return mJson["writeFileSave"]; }
+    bool writeFileSave(void) const;
 
-    bool useSaveInfo(void) const { return mJson["useSaveInfo"]; }
+    bool useSaveInfo(void) const;
 
-    bool randomMusic(void) const { return mJson["randomMusic"]; }
+    bool randomMusic(void) const;
 
-    int defaultRegion(void) const { return mJson["defaults"]["region"]; }
+    int defaultRegion(void) const;
 
-    int defaultCountry(void) const { return mJson["defaults"]["country"]; }
+    int defaultCountry(void) const;
 
-    bool showBackups(void) const { return mJson["showBackups"]; }
+    bool showBackups(void) const;
 
-    std::string legalEndpoint(void) const { return mJson["legalEndpoint"]; }
+    std::string legalEndpoint(void) const;
 
-    std::string patronCode(void) const { return mJson["patronCode"]; }
+    std::string patronCode(void) const;
 
-    bool alphaChannel(void) const { return mJson["alphaChannel"]; }
+    bool alphaChannel(void) const;
 
-    bool autoUpdate(void) const { return mJson["autoUpdate"]; }
+    bool autoUpdate(void) const;
 
-    void language(Language lang) { mJson["language"] = u8(lang); }
+    void language(Language lang);
 
-    void autoBackup(bool backup) { mJson["autoBackup"] = backup; }
+    void autoBackup(bool backup);
 
-    void transferEdit(bool edit) { mJson["transferEdit"] = edit; }
+    void transferEdit(bool edit);
 
-    void useExtData(bool use) { mJson["useExtData"] = use; }
+    void useExtData(bool use);
 
-    void defaultTID(u32 tid) { mJson["defaults"]["tid"] = tid; }
+    void defaultTID(u32 tid);
 
-    void defaultSID(u32 sid) { mJson["defaults"]["sid"] = sid; }
+    void defaultSID(u32 sid);
 
-    void defaultOT(const std::string& ot) { mJson["defaults"]["ot"] = ot; }
+    void defaultOT(const std::string& ot);
 
-    void nationality(int nation) { mJson["defaults"]["nationality"] = nation; }
+    void nationality(int nation);
 
-    void day(int day) { mJson["defaults"]["date"]["day"] = day; }
+    void day(int day);
 
-    void month(int month) { mJson["defaults"]["date"]["month"] = month; }
+    void month(int month);
 
-    void year(int year) { mJson["defaults"]["date"]["year"] = year; }
+    void year(int year);
 
     // This assumes that we'll have a way to set them in the config screen, something that I'm not sure about
     // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
     // I implemented it just in case
     void extraSaves(const std::string& id, std::vector<std::string>& saves);
 
-    void writeFileSave(bool write) { mJson["writeFileSave"] = write; }
+    void writeFileSave(bool write);
 
-    void useSaveInfo(bool saveInfo) { mJson["useSaveInfo"] = saveInfo; }
+    void useSaveInfo(bool saveInfo);
 
-    void randomMusic(bool random) { mJson["randomMusic"] = random; }
+    void randomMusic(bool random);
 
-    void defaultRegion(u8 value) { mJson["defaults"]["region"] = value; }
+    void defaultRegion(u8 value);
 
-    void defaultCountry(u8 value) { mJson["defaults"]["country"] = value; }
+    void defaultCountry(u8 value);
 
-    void showBackups(bool value) { mJson["showBackups"] = value; }
+    void showBackups(bool value);
 
-    void legalEndpoint(const std::string& value) { mJson["legalEndpoint"] = value; }
+    void legalEndpoint(const std::string& value);
 
-    void patronCode(const std::string& value) { mJson["patronCode"] = value; }
+    void patronCode(const std::string& value);
 
-    void alphaChannel(bool value) { mJson["alphaChannel"] = value; }
+    void alphaChannel(bool value);
 
-    void autoUpdate(bool value) { mJson["autoUpdate"] = value; }
+    void autoUpdate(bool value);
 
     void save(void);
 
 private:
     Configuration(void);
-    ~Configuration(void) {}
+    ~Configuration(void);
 
-    Configuration(Configuration const&) = delete;
-    void operator=(Configuration const&) = delete;
+    Configuration(const Configuration&) = delete;
+    void operator=(const Configuration&) = delete;
 
     void loadFromRomfs(void);
 
-    nlohmann::json mJson;
+    std::unique_ptr<nlohmann::json> mJson;
 
     size_t oldSize = 0;
 };

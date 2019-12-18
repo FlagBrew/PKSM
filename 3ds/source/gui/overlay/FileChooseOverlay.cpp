@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
+#include <algorithm>
 
 FileChooseOverlay::FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
@@ -100,7 +101,7 @@ void FileChooseOverlay::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second) {
+    std::sort(currFiles.begin(), currFiles.end(), [this](const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
         if ((first.second && second.second) || (!first.second && !second.second))
         {
             return first.first < second.first;

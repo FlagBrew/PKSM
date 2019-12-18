@@ -53,12 +53,11 @@ void SavB2W2::resign(void)
 {
     const u8 blockCount = 74;
     u8* tmp             = new u8[*std::max_element(lengths, lengths + blockCount)];
-    u16 cs;
 
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[blockOfs[i]], &data[blockOfs[i] + lengths[i]], tmp);
-        cs = ccitt16(tmp, lengths[i]);
+        u16 cs = ccitt16(tmp, lengths[i]);
         Endian::convertFrom<u16>(&data[chkMirror[i]], cs);
         Endian::convertFrom<u16>(&data[chkofs[i]], cs);
     }

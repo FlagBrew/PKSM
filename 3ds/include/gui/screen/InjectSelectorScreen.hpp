@@ -30,7 +30,7 @@
 #include "HidHorizontal.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include <memory>
 #include <string>
 #include <vector>

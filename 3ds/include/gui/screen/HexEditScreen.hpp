@@ -54,7 +54,8 @@ private:
     class HexEditButton : public Button
     {
     public:
-        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image, std::string text, bool toggle, u8 bit, bool mark = false)
+        HexEditButton(
+            int x, int y, int w, int h, std::function<bool()> callback, int image, const std::string& text, bool toggle, u8 bit, bool mark = false)
             : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle), mark(mark), bitVal(bit)
         {
         }
@@ -154,8 +155,8 @@ private:
         u8 bit() { return bitVal; }
 
     private:
-        int clickedTime;
-        int timer = 0;
+        int clickedTime = 0;
+        int timer       = 0;
         bool toggle;
         bool mark;
         u8 bitVal;

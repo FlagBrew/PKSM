@@ -816,10 +816,9 @@ bool EditorScreen::selectForm()
 {
     static constexpr std::array<u16, 2> noChange = {
         716, 717}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    for (auto& bad : noChange)
+    if (std::any_of(noChange.begin(), noChange.end(), [this](const u16& badSpecies) { return badSpecies == pkm->species(); }))
     {
-        if (bad == pkm->species())
-            return false;
+        return false;
     }
     u8 count = TitleLoader::save->formCount(pkm->species());
     if (pkm->species() == 664 || pkm->species() == 665)

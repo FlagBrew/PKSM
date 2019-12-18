@@ -36,7 +36,7 @@ class Sav8 : public Sav
 protected:
     std::vector<std::unique_ptr<SCBlock>> blocks;
 
-    int Items, BoxLayout, Misc, Party, TrainerCard, PlayTime, Status;
+    int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
 
     int maxSpecies(void) const override { return 890; }
     int maxMove(void) const override { return 796; }

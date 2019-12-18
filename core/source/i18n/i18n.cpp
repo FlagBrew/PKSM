@@ -587,6 +587,9 @@ const std::string& i18n::location(Language lang, u16 v, u8 originGame)
         case 42:
         case 43:
             return location(lang, v, Generation::LGPE);
+        case 44:
+        case 45:
+            return location(lang, v, Generation::EIGHT);
     }
     return emptyString;
 }

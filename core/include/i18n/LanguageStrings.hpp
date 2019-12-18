@@ -31,7 +31,7 @@
 #include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 #include <algorithm>
 #include <stdio.h>
 #include <string>

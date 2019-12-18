@@ -50,6 +50,7 @@
 #include "loader.hpp"
 #include "random.hpp"
 #include "utils.hpp"
+#include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>

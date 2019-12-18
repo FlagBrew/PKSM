@@ -136,7 +136,7 @@ u8 Sav5::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & (1 << i) ? 1 : 0;
+        ret += (badgeBits & (1 << i)) ? 1 : 0;
     }
     return ret;
 }

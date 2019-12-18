@@ -28,7 +28,7 @@
 #define BANK_HPP
 
 #include "generation.hpp"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "sha256.h"
 
 class PKX;
@@ -71,7 +71,7 @@ private:
         u8 data[0x148];
         u8 padding[4]; // Pad to 8 bytes
     };
-    nlohmann::json boxNames;
+    std::unique_ptr<nlohmann::json> boxNames;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     std::string bankName;

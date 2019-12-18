@@ -65,7 +65,7 @@ public:
     void TID(u16 v) override;
     u16 SID(void) const override;
     void SID(u16 v) override;
-    u8 version(void) const;
+    u8 version(void) const override;
     void version(u8 v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
@@ -91,9 +91,9 @@ public:
     u8 playedSeconds(void) const override;
     void playedSeconds(u8 v) override;
 
-    u8 currentBox(void) const;
-    void currentBox(u8 v);
-    u32 boxOffset(u8 box, u8 slot) const;
+    u8 currentBox(void) const override;
+    void currentBox(u8 v) override;
+    u32 boxOffset(u8 box, u8 slot) const override;
     u32 partyOffset(u8 slot) const override;
 
     std::shared_ptr<PKX> pkm(u8 slot) const override;

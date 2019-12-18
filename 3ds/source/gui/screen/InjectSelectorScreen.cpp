@@ -41,6 +41,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "mysterygift.hpp"
+#include "nlohmann/json.hpp"
 #include <sys/stat.h>
 
 static constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};

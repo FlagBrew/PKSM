@@ -31,6 +31,7 @@
 #include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "nlohmann/json.hpp"
 #include "utils.hpp"
 
 static nlohmann::json mysteryGiftSheet;

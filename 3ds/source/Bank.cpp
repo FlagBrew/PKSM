@@ -37,6 +37,7 @@
 #include "banks.hpp"
 #include "gui.hpp"
 #include "io.hpp"
+#include "nlohmann/json.hpp"
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second
@@ -162,17 +163,17 @@ void Bank::load(int maxBoxes)
             in.read(jsonData, jsonSize);
             in.close();
             jsonData[jsonSize] = '\0';
-            boxNames           = nlohmann::json::parse(jsonData, nullptr, false);
-            if (boxNames.is_discarded())
+            boxNames           = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
+            if (boxNames->is_discarded())
             {
                 createJSON();
                 needSave = true;
             }
             else
             {
-                for (int i = boxNames.size(); i < boxes(); i++)
+                for (int i = boxNames->size(); i < boxes(); i++)
                 {
-                    boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+                    (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
                     if (!needSave)
                     {
                         needSave = true;
@@ -206,7 +207,7 @@ void Bank::load(int maxBoxes)
         else
         {
             sha256(prevHash.data(), (u8*)entries, sizeof(BankEntry) * boxes() * 30);
-            std::string nameData = boxNames.dump(2);
+            std::string nameData = boxNames->dump(2);
             sha256(prevNameHash.data(), (u8*)nameData.data(), nameData.size());
         }
     }
@@ -224,7 +225,7 @@ bool Bank::saveWithoutBackup() const
         out.write(entries, sizeof(BankEntry) * boxes() * 30);
         out.close();
 
-        std::string jsonData = boxNames.dump(2);
+        std::string jsonData = boxNames->dump(2);
         Archive::deleteFile(ARCHIVE, JSON(paths));
         out = FSStream(ARCHIVE, JSON(paths), FS_OPEN_WRITE, jsonData.size());
         if (out.good())
@@ -279,9 +280,9 @@ void Bank::resize(int boxes)
 
         header.boxes = boxes;
 
-        for (int i = boxNames.size(); i < boxes; i++)
+        for (int i = boxNames->size(); i < boxes; i++)
         {
-            boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+            (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
         }
 
         save();
@@ -349,20 +350,20 @@ bool Bank::backup() const
 
 std::string Bank::boxName(int box) const
 {
-    return boxNames[box].get<std::string>();
+    return (*boxNames)[box].get<std::string>();
 }
 
 void Bank::boxName(std::string name, int box)
 {
-    boxNames[box] = name;
+    (*boxNames)[box] = name;
 }
 
 void Bank::createJSON()
 {
-    boxNames = nlohmann::json::array();
+    boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
     for (int i = 0; i < boxes(); i++)
     {
-        boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+        (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
     }
 }
 
@@ -391,7 +392,7 @@ bool Bank::hasChanged() const
     {
         return true;
     }
-    std::string jsonData = boxNames.dump(2);
+    std::string jsonData = boxNames->dump(2);
     sha256(hash, (u8*)jsonData.data(), jsonData.size());
     if (memcmp(hash, prevNameHash.data(), SHA256_BLOCK_SIZE))
     {
@@ -475,7 +476,7 @@ void Bank::convertFromBankBin()
 
     for (int i = 0; i < boxes(); i++)
     {
-        boxNames[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+        (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
     }
 
     stream = FSStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);

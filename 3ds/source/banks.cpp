@@ -28,7 +28,7 @@
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "archive.hpp"
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 
 nlohmann::json g_banks;
 

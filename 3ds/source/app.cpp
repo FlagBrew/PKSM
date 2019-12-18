@@ -37,6 +37,7 @@
 #include "i18n.hpp"
 #include "io.hpp"
 #include "loader.hpp"
+#include "nlohmann/json.hpp"
 #include "random.hpp"
 #include "revision.h"
 #include "sha256.h"

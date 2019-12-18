@@ -207,14 +207,14 @@ u8 Sav4::badges(void) const
     u8 ret       = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & (1 << i) ? 1 : 0;
+        ret += (badgeBits & (1 << i)) ? 1 : 0;
     }
     if (game == Game::HGSS)
     {
         badgeBits = data[Trainer1 + 0x1F];
         for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
         {
-            ret += badgeBits & (1 << i) ? 1 : 0;
+            ret += (badgeBits & (1 << i)) ? 1 : 0;
         }
     }
     return ret;
@@ -636,7 +636,7 @@ std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
 void Sav4::setForms(std::vector<u8> forms, u16 species)
 {
     static constexpr u8 brSize = 0x40;
-    if (species == 386)
+    if (species == 386) // Deoxys
     {
         u32 newval                           = setDexFormValues(forms, 4, 4);
         data[PokeDex + 0x4 + 1 * brSize - 1] = (u8)(newval & 0xFF);
@@ -679,11 +679,10 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     {
         case 479: // Rotom
         {
-            u32 num    = setDexFormValues(forms, 3, 6);
-            u8* values = (u8*)&num;
-            for (int i = formOffset2; i < formOffset2 + 6; i++)
+            auto values = Endian::convertFrom(setDexFormValues(forms, 3, 6));
+            for (int i = 0; i < values.size(); i++)
             {
-                data[i] = values[i - formOffset2];
+                data[formOffset2 + i] = values[i];
             }
             return;
         }

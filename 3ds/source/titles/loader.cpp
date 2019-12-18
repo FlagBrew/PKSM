@@ -524,7 +524,7 @@ void TitleLoader::saveToTitle(bool ask)
             }
             else
             {
-                Result res   = 0;
+                res          = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
@@ -648,13 +648,13 @@ bool TitleLoader::scanCard()
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
                 ret                            = true;
-                CardType cardType              = title->SPICardType();
-                u32 saveSize                   = SPIGetCapacity(cardType);
+                CardType spiCardType           = title->SPICardType();
+                u32 saveSize                   = SPIGetCapacity(spiCardType);
                 u32 sectorSize                 = (saveSize < 0x10000) ? saveSize : 0x10000;
                 std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
                 for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
-                    res = SPIReadSaveData(cardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
+                    res = SPIReadSaveData(spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
                     if (R_FAILED(res))
                     {
                         break;

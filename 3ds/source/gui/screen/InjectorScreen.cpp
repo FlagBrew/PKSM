@@ -33,6 +33,7 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "mysterygift.hpp"
+#include "nlohmann/json.hpp"
 #include "utils.hpp"
 
 static constexpr std::string_view languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "UNUSED", "SPA", "KOR", "CHS", "CHT"};
@@ -42,28 +43,31 @@ bool InjectorScreen::setLanguage(Language language)
     if (isLangAvailable(language))
     {
         lang       = language;
-        wondercard = MysteryGift::wondercard(ids[i18n::langString(lang)]);
+        wondercard = MysteryGift::wondercard((*ids)[i18n::langString(lang)]);
 
         changeDate();
     }
     return false;
 }
 
-InjectorScreen::InjectorScreen(nlohmann::json ids)
-    : hid(40, 8), ids(ids), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
+InjectorScreen::InjectorScreen(nlohmann::json myIds)
+    : hid(40, 8),
+      ids(std::make_unique<nlohmann::json>(myIds)),
+      gifts(TitleLoader::save->currentGifts()),
+      emptySlot(TitleLoader::save->emptyGiftLocation())
 {
     const std::string& langString = i18n::langString(Configuration::getInstance().language());
-    if (ids.find(langString) != ids.end())
+    if (ids->find(langString) != ids->end())
     {
-        wondercard = MysteryGift::wondercard(ids[langString]);
-        game       = MysteryGift::wondercardInfo(ids[langString]).game;
+        wondercard = MysteryGift::wondercard((*ids)[langString]);
+        game       = MysteryGift::wondercardInfo((*ids)[langString]).game;
         lang       = Configuration::getInstance().language();
     }
     else
     {
-        wondercard = MysteryGift::wondercard(*ids.begin());
-        game       = MysteryGift::wondercardInfo(*ids.begin()).game;
-        lang       = i18n::langFromString(ids.begin().key());
+        wondercard = MysteryGift::wondercard(*ids->begin());
+        game       = MysteryGift::wondercardInfo(*ids->begin()).game;
+        lang       = i18n::langFromString(ids->begin().key());
     }
 
     slot          = emptySlot + 1;
@@ -122,7 +126,7 @@ InjectorScreen::InjectorScreen(nlohmann::json ids)
 }
 
 InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
-    : wondercard(std::move(wcx)), hid(40, 8), ids({}), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
+    : wondercard(std::move(wcx)), hid(40, 8), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
 {
     lang = Language::UNUSED;
 
@@ -188,6 +192,8 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 }
+
+InjectorScreen::~InjectorScreen() {}
 
 void InjectorScreen::drawBottom() const
 {
@@ -541,7 +547,7 @@ void InjectorScreen::update(touchPosition* touch)
 
 bool InjectorScreen::isLangAvailable(Language l) const
 {
-    return ids.find(i18n::langString(l)) != ids.end();
+    return ids && ids->find(i18n::langString(l)) != ids->end();
 }
 
 void InjectorScreen::changeDate()

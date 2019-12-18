@@ -52,7 +52,7 @@ public:
 
     std::shared_ptr<PKX> clone(void) const override;
 
-    Generation generation(void) const;
+    Generation generation(void) const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
