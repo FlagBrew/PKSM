@@ -52,7 +52,7 @@ PKX::PKX(u8* data, size_t length, bool directAccess) : directAccess(directAccess
     else
     {
         this->data = new u8[length];
-        std::fill_n(data, length, 0);
+        std::fill_n(this->data, length, 0);
         this->directAccess = false;
     }
 }
