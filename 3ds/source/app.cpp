@@ -500,7 +500,7 @@ Result App::init(const std::string& execPath)
     randomNumbers.seed(osGetTime());
 
     moveIcon.test_and_set();
-    Threads::create((ThreadFunc)&iconThread, nullptr, 256);
+    Threads::create(iconThread, nullptr, 256);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
@@ -579,12 +579,12 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    if (!Threads::create((ThreadFunc)TitleLoader::scanTitles, nullptr, 1024))
+    if (!Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 1024))
         return consoleDisplayError("TitleLoader::scanTitles failed to start", -1);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create((ThreadFunc)cartScan, nullptr, 256);
+    Threads::create(cartScan, nullptr, 256);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
