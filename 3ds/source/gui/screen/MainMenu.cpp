@@ -96,6 +96,8 @@ MainMenu::MainMenu()
     makeInstructions();
 }
 
+MainMenu::~MainMenu() {}
+
 void MainMenu::makeButtons()
 {
     buttons[0] = std::make_unique<MainMenuButton>(
@@ -127,26 +129,6 @@ void MainMenu::makeInstructions()
     instructions.addBox(false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
     instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
-}
-
-MainMenu::~MainMenu()
-{
-    if (isLoadedSaveFromBridge())
-    {
-        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
-        {
-            bool sent = sendSaveToBridge();
-            if (!sent)
-            {
-                // save a copy of the modified save to the SD card
-                backupBridgeChanges();
-            }
-        }
-        else
-        {
-            setLoadedSaveFromBridge(false);
-        }
-    }
 }
 
 void MainMenu::drawTop() const
@@ -253,6 +235,7 @@ void MainMenu::update(touchPosition* touch)
     {
         if (!needsSave() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
         {
+            setLoadedSaveFromBridge(false);
             Gui::screenBack();
             return;
         }
@@ -282,10 +265,6 @@ void MainMenu::save()
                 // save a copy of the modified save to the SD card
                 backupBridgeChanges();
             }
-        }
-        else
-        {
-            setLoadedSaveFromBridge(false);
         }
     }
     else
