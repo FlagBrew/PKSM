@@ -28,31 +28,34 @@
 #include <3ds.h>
 #include <list>
 
-struct ThreadRecord
+namespace
 {
-    ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread) : entrypoint(entrypoint), arg(arg), thread(thread) {}
-    void (*entrypoint)(void*);
-    void* arg;
-    Thread thread;
-    std::list<ThreadRecord>::iterator listPos;
-};
+    struct ThreadRecord
+    {
+        ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread) : entrypoint(entrypoint), arg(arg), thread(thread) {}
+        void (*entrypoint)(void*);
+        void* arg;
+        Thread thread;
+        std::list<ThreadRecord>::iterator listPos;
+    };
 
-static std::list<ThreadRecord> threads;
-LightLock listLock;
+    std::list<ThreadRecord> threads;
+    LightLock listLock;
+
+    void threadWrap(void* arg)
+    {
+        ThreadRecord* record = (ThreadRecord*)arg;
+        record->entrypoint(record->arg);
+        LightLock_Lock(&listLock);
+        std::list<ThreadRecord>::iterator it = record->listPos;
+        threads.erase(it);
+        LightLock_Unlock(&listLock);
+    }
+}
 
 void Threads::init()
 {
     LightLock_Init(&listLock);
-}
-
-static void threadWrap(void* arg)
-{
-    ThreadRecord* record = (ThreadRecord*)arg;
-    record->entrypoint(record->arg);
-    LightLock_Lock(&listLock);
-    std::list<ThreadRecord>::iterator it = record->listPos;
-    threads.erase(it);
-    LightLock_Unlock(&listLock);
 }
 
 bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)

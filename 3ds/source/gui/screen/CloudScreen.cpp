@@ -46,6 +46,39 @@
 #include "loader.hpp"
 #include <sys/stat.h>
 
+namespace
+{
+    size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
+    {
+        std::string tmp(buffer, size * nitems);
+        if (tmp.find("Generation:") == 0)
+        {
+            tmp = tmp.substr(12);
+            if (tmp.find("4") == 0)
+            {
+                *(Generation*)(userdata) = Generation::FOUR;
+            }
+            else if (tmp.find("5") == 0)
+            {
+                *(Generation*)(userdata) = Generation::FIVE;
+            }
+            else if (tmp.find("6") == 0)
+            {
+                *(Generation*)(userdata) = Generation::SIX;
+            }
+            else if (tmp.find("7") == 0)
+            {
+                *(Generation*)(userdata) = Generation::SEVEN;
+            }
+            else if (tmp.find("LGPE") == 0)
+            {
+                *(Generation*)(userdata) = Generation::LGPE;
+            }
+        }
+        return nitems * size;
+    }
+}
+
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
              i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
@@ -789,36 +822,6 @@ bool CloudScreen::clickBottomIndex(int index)
         cloudChosen = false;
     }
     return false;
-}
-
-static size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
-{
-    std::string tmp(buffer, size * nitems);
-    if (tmp.find("Generation:") == 0)
-    {
-        tmp = tmp.substr(12);
-        if (tmp.find("4") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FOUR;
-        }
-        else if (tmp.find("5") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FIVE;
-        }
-        else if (tmp.find("6") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SIX;
-        }
-        else if (tmp.find("7") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SEVEN;
-        }
-        else if (tmp.find("LGPE") == 0)
-        {
-            *(Generation*)(userdata) = Generation::LGPE;
-        }
-    }
-    return nitems * size;
 }
 
 void CloudScreen::shareSend()

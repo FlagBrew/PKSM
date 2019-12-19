@@ -34,8 +34,11 @@
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 
-static nlohmann::json mysteryGiftSheet;
-static u8* mysteryGiftData;
+namespace
+{
+    nlohmann::json mysteryGiftSheet;
+    u8* mysteryGiftData;
+}
 
 void MysteryGift::init(Generation g)
 {

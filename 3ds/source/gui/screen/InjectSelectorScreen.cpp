@@ -44,7 +44,10 @@
 #include "nlohmann/json.hpp"
 #include <sys/stat.h>
 
-static constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
+namespace
+{
+    constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
+}
 
 InjectSelectorScreen::InjectSelectorScreen()
     : Screen(

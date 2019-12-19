@@ -56,60 +56,59 @@
 #include <netdb.h>
 #include <sys/socket.h>
 
-static void* strToRet(const std::string& str)
-{
-    char* ret = (char*)malloc(str.size() + 1);
-    std::copy(str.begin(), str.end(), ret);
-    ret[str.size()] = '\0';
-    return (void*)ret;
-}
-
-static void* strToRet(const std::u16string& str)
-{
-    u16* ret = (u16*)malloc((str.size() + 1) * 2);
-    std::copy(str.begin(), str.end(), ret);
-    ret[str.size()] = u'\0';
-    return (void*)ret;
-}
-
 #include "picoc.h"
-[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str)
-{
-    ProgramFail(Parser, str.c_str());
-    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
-}
 
-template <typename... Ts>
-[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args)
+namespace
 {
-    ProgramFail(Parser, str.c_str(), args...);
-    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    void* strToRet(const std::string& str)
+    {
+        char* ret = (char*)malloc(str.size() + 1);
+        std::copy(str.begin(), str.end(), ret);
+        ret[str.size()] = '\0';
+        return (void*)ret;
+    }
+
+    void* strToRet(const std::u16string& str)
+    {
+        u16* ret = (u16*)malloc((str.size() + 1) * 2);
+        std::copy(str.begin(), str.end(), ret);
+        ret[str.size()] = u'\0';
+        return (void*)ret;
+    }
+
+    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str) {
+        ProgramFail(Parser, str.c_str());
+        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    }
+
+    template <typename... Ts>
+    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args) {
+        ProgramFail(Parser, str.c_str(), args...);
+        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    }
+
+    void checkGen(struct ParseState* Parser, Generation gen)
+    {
+        switch (gen)
+        {
+            case Generation::FOUR:
+            case Generation::FIVE:
+            case Generation::SIX:
+            case Generation::SEVEN:
+            case Generation::LGPE:
+            case Generation::EIGHT:
+                return;
+            case Generation::UNUSED:
+                break;
+        }
+        scriptFail(Parser, "Generation is not possible!");
+    }
+
+    struct Value* getNextVarArg(struct Value* arg) { return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg))); }
 }
 
 extern "C" {
 #include "pksm_api.h"
-
-static void checkGen(struct ParseState* Parser, Generation gen)
-{
-    switch (gen)
-    {
-        case Generation::FOUR:
-        case Generation::FIVE:
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        case Generation::EIGHT:
-            return;
-        case Generation::UNUSED:
-            break;
-    }
-    scriptFail(Parser, "Generation is not possible!");
-}
-
-static struct Value* getNextVarArg(struct Value* arg)
-{
-    return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg)));
-}
 
 void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {

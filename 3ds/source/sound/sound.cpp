@@ -36,47 +36,286 @@
 #include <list>
 #include <unordered_map>
 
-struct EffectThreadArg
+namespace
 {
-    EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem, int channel) : decoder(decoder), linearMem(linearMem), channel(channel)
+    struct EffectThreadArg
     {
-        inUse.test_and_set();
+        EffectThreadArg(std::shared_ptr<Decoder> decoder, s16* linearMem, int channel) : decoder(decoder), linearMem(linearMem), channel(channel)
+        {
+            inUse.test_and_set();
+        }
+        std::shared_ptr<Decoder> decoder;
+        s16* linearMem;
+        int channel;
+        std::atomic_flag inUse;
+    };
+
+    std::unordered_map<std::string, std::string> effects; // effect name to file name
+    std::shared_ptr<Decoder> currentBGM = nullptr;
+    std::vector<std::string> bgm;
+    std::list<EffectThreadArg> effectThreads;
+    size_t currentSong            = 0;
+    ndspWaveBuf bgmBuffers[2]     = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+    s16* bgmData                  = nullptr;
+    std::atomic<bool> sizeGood    = false;
+    std::atomic<bool> playMusic   = false;
+    std::atomic<bool> bgmDone     = true;
+    std::atomic<bool> exitBGM     = false;
+    u8 currentVolume              = 0;
+    std::vector<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+
+    void clearDoneEffects()
+    {
+        auto i = effectThreads.begin();
+        while (i != effectThreads.end())
+        {
+            if (!i->inUse.test_and_set())
+            {
+                freeChannels.push_back(i->channel);
+                linearFree(i->linearMem);
+                i = effectThreads.erase(i);
+            }
+            else
+            {
+                i++;
+            }
+        }
     }
-    std::shared_ptr<Decoder> decoder;
-    s16* linearMem;
-    int channel;
-    std::atomic_flag inUse;
-};
-
-static std::unordered_map<std::string, std::string> effects; // effect name to file name
-static std::shared_ptr<Decoder> currentBGM = nullptr;
-static std::vector<std::string> bgm;
-static std::list<EffectThreadArg> effectThreads;
-static size_t currentSong            = 0;
-static ndspWaveBuf bgmBuffers[2]     = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
-static s16* bgmData                  = nullptr;
-static std::atomic<bool> sizeGood    = false;
-static std::atomic<bool> playMusic   = false;
-static std::atomic<bool> bgmDone     = true;
-static std::atomic<bool> exitBGM     = false;
-static u8 currentVolume              = 0;
-static std::vector<int> freeChannels = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-
-static void clearDoneEffects()
-{
-    auto i = effectThreads.begin();
-    while (i != effectThreads.end())
+    void bgmPlayThread(void*)
     {
-        if (!i->inUse.test_and_set())
+        ndspChnReset(0);
+        ndspChnWaveBufClear(0);
+        ndspChnSetInterp(0, currentBGM->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
+        ndspChnSetRate(0, currentBGM->sampleRate());
+        ndspChnSetFormat(0, currentBGM->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
+
+        bgmBuffers[0].data_pcm16 = bgmData;
+        bgmBuffers[1].data_pcm16 = bgmData + currentBGM->bufferSize();
+        bool lastBuf             = false;
+        for (auto& buf : bgmBuffers)
         {
-            freeChannels.push_back(i->channel);
-            linearFree(i->linearMem);
-            i = effectThreads.erase(i);
+            buf.nsamples = currentBGM->decode((void*)buf.data_pcm16);
+            if (currentBGM->stereo())
+            {
+                buf.nsamples /= 2;
+            }
+            if (buf.nsamples > 0)
+            {
+                DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
+                ndspChnWaveBufAdd(0, &buf);
+            }
+            else
+            {
+                buf.status = NDSP_WBUF_DONE;
+                lastBuf    = true;
+            }
         }
-        else
+
+        for (int i = 0; !ndspChnIsPlaying(0); i++)
         {
-            i++;
+            svcSleepThread(1000000); // About one millisecond.
+            if (i > 5 * 1000)        // Timeout in about 5 seconds.
+            {
+                bgmDone = true;
+                return;
+            }
         }
+
+        while (playMusic)
+        {
+            svcSleepThread(12500000);
+
+            if (exitBGM)
+            {
+                break;
+            }
+            if (lastBuf == true)
+            {
+                if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
+                {
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            for (auto& buf : bgmBuffers)
+            {
+                if (buf.status == NDSP_WBUF_DONE)
+                {
+                    buf.nsamples = currentBGM->decode((void*)buf.data_pcm16);
+                    if (currentBGM->stereo())
+                    {
+                        buf.nsamples /= 2;
+                    }
+                    if (buf.nsamples <= 0)
+                    {
+                        lastBuf = true;
+                        break;
+                    }
+
+                    DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
+                    ndspChnWaveBufAdd(0, &buf);
+                }
+            }
+        }
+        ndspChnWaveBufClear(0);
+        bgmDone = true;
+    }
+    void bgmControlThread(void*)
+    {
+        if (bgm.empty())
+        {
+            return;
+        }
+        while (playMusic)
+        {
+            HIDUSER_GetSoundVolume(&currentVolume);
+            if (bgmDone || (currentVolume == 0 && bgm.size() > 1))
+            {
+                if (currentBGM)
+                {
+                    exitBGM = true;
+                    while (!bgmDone)
+                    {
+                        svcSleepThread(125000000);
+                    }
+                    currentBGM = nullptr;
+                    exitBGM    = false;
+                }
+                if (Configuration::getInstance().randomMusic())
+                {
+                    currentSong = randomNumbers() % bgm.size();
+                }
+                else
+                {
+                    currentSong = (currentSong + 1) % bgm.size();
+                }
+                currentBGM = Decoder::get(bgm[currentSong]);
+                if (currentBGM)
+                {
+                    sizeGood = false;
+                    while (playMusic && !sizeGood)
+                    {
+                        svcSleepThread(125000000); // Yield execution
+                    }
+                    if (!playMusic) // Make sure to not create a new thread if we're exiting
+                    {
+                        return;
+                    }
+                    bgmDone = !Threads::create(&bgmPlayThread);
+                }
+                else
+                {
+                    bgm.erase(bgm.begin() + currentSong);
+                }
+            }
+            if (currentVolume == 0)
+            {
+                ndspChnSetPaused(0, true);
+            }
+            while (currentVolume == 0 && playMusic)
+            {
+                HIDUSER_GetSoundVolume(&currentVolume);
+                svcSleepThread(250000000);
+            }
+            if (ndspChnIsPaused(0) && playMusic)
+            {
+                ndspChnSetPaused(0, false);
+            }
+            if (playMusic)
+            {
+                svcSleepThread(250000000);
+            }
+        }
+        bgmDone = true;
+    }
+    void playEffectThread(void* rawArg)
+    {
+        EffectThreadArg* arg = (EffectThreadArg*)rawArg;
+        if (arg->linearMem) // Did the linearAlloc work properly?
+        {
+            ndspChnReset(arg->channel);
+            ndspChnWaveBufClear(arg->channel);
+            ndspChnSetInterp(arg->channel, arg->decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
+            ndspChnSetRate(arg->channel, arg->decoder->sampleRate());
+            ndspChnSetFormat(arg->channel, arg->decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
+
+            ndspWaveBuf effectBuffer[2] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+            effectBuffer[0].data_pcm16  = arg->linearMem;
+            effectBuffer[1].data_pcm16  = arg->linearMem + arg->decoder->bufferSize();
+            bool lastBuf                = false;
+            for (auto& buf : effectBuffer)
+            {
+                buf.nsamples = arg->decoder->decode((void*)buf.data_pcm16);
+                if (arg->decoder->stereo())
+                {
+                    buf.nsamples /= 2;
+                }
+                if (buf.nsamples > 0)
+                {
+                    DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
+                    ndspChnWaveBufAdd(arg->channel, &buf);
+                }
+                else
+                {
+                    buf.status = NDSP_WBUF_DONE;
+                    lastBuf    = true;
+                }
+            }
+
+            for (int i = 0; !ndspChnIsPlaying(arg->channel); i++)
+            {
+                svcSleepThread(1000000); // About one millisecond.
+                if (i > 5 * 1000)        // Timeout in about 5 seconds.
+                {
+                    arg->inUse.clear();
+                    return;
+                }
+            }
+
+            while (playMusic)
+            {
+                svcSleepThread(125000000);
+
+                if (lastBuf == true)
+                {
+                    if (effectBuffer[0].status == NDSP_WBUF_DONE && effectBuffer[1].status == NDSP_WBUF_DONE)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                for (auto& buf : effectBuffer)
+                {
+                    if (buf.status == NDSP_WBUF_DONE)
+                    {
+                        buf.nsamples = arg->decoder->decode((void*)buf.data_pcm16);
+                        if (arg->decoder->stereo())
+                        {
+                            buf.nsamples /= 2;
+                        }
+                        if (buf.nsamples <= 0)
+                        {
+                            lastBuf = true;
+                            break;
+                        }
+
+                        DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
+                        ndspChnWaveBufAdd(arg->channel, &buf);
+                    }
+                }
+            }
+            ndspChnWaveBufClear(arg->channel);
+            ndspChnReset(arg->channel);
+        }
+        arg->inUse.clear();
     }
 }
 
@@ -133,251 +372,12 @@ void Sound::exit()
     ndspExit();
 }
 
-static void bgmPlayThread(void*)
-{
-    ndspChnReset(0);
-    ndspChnWaveBufClear(0);
-    ndspChnSetInterp(0, currentBGM->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
-    ndspChnSetRate(0, currentBGM->sampleRate());
-    ndspChnSetFormat(0, currentBGM->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
-
-    bgmBuffers[0].data_pcm16 = bgmData;
-    bgmBuffers[1].data_pcm16 = bgmData + currentBGM->bufferSize();
-    bool lastBuf             = false;
-    for (auto& buf : bgmBuffers)
-    {
-        buf.nsamples = currentBGM->decode((void*)buf.data_pcm16);
-        if (currentBGM->stereo())
-        {
-            buf.nsamples /= 2;
-        }
-        if (buf.nsamples > 0)
-        {
-            DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
-            ndspChnWaveBufAdd(0, &buf);
-        }
-        else
-        {
-            buf.status = NDSP_WBUF_DONE;
-            lastBuf    = true;
-        }
-    }
-
-    for (int i = 0; !ndspChnIsPlaying(0); i++)
-    {
-        svcSleepThread(1000000); // About one millisecond.
-        if (i > 5 * 1000)        // Timeout in about 5 seconds.
-        {
-            bgmDone = true;
-            return;
-        }
-    }
-
-    while (playMusic)
-    {
-        svcSleepThread(12500000);
-
-        if (exitBGM)
-        {
-            break;
-        }
-        if (lastBuf == true)
-        {
-            if (bgmBuffers[0].status == NDSP_WBUF_DONE && bgmBuffers[1].status == NDSP_WBUF_DONE)
-            {
-                break;
-            }
-            else
-            {
-                continue;
-            }
-        }
-
-        for (auto& buf : bgmBuffers)
-        {
-            if (buf.status == NDSP_WBUF_DONE)
-            {
-                buf.nsamples = currentBGM->decode((void*)buf.data_pcm16);
-                if (currentBGM->stereo())
-                {
-                    buf.nsamples /= 2;
-                }
-                if (buf.nsamples <= 0)
-                {
-                    lastBuf = true;
-                    break;
-                }
-
-                DSP_FlushDataCache(buf.data_pcm16, currentBGM->bufferSize() * sizeof(u16));
-                ndspChnWaveBufAdd(0, &buf);
-            }
-        }
-    }
-    ndspChnWaveBufClear(0);
-    bgmDone = true;
-}
-
-static void bgmControlThread(void*)
-{
-    if (bgm.empty())
-    {
-        return;
-    }
-    while (playMusic)
-    {
-        HIDUSER_GetSoundVolume(&currentVolume);
-        if (bgmDone || (currentVolume == 0 && bgm.size() > 1))
-        {
-            if (currentBGM)
-            {
-                exitBGM = true;
-                while (!bgmDone)
-                {
-                    svcSleepThread(125000000);
-                }
-                currentBGM = nullptr;
-                exitBGM    = false;
-            }
-            if (Configuration::getInstance().randomMusic())
-            {
-                currentSong = randomNumbers() % bgm.size();
-            }
-            else
-            {
-                currentSong = (currentSong + 1) % bgm.size();
-            }
-            currentBGM = Decoder::get(bgm[currentSong]);
-            if (currentBGM)
-            {
-                sizeGood = false;
-                while (playMusic && !sizeGood)
-                {
-                    svcSleepThread(125000000); // Yield execution
-                }
-                if (!playMusic) // Make sure to not create a new thread if we're exiting
-                {
-                    return;
-                }
-                bgmDone = !Threads::create(&bgmPlayThread);
-            }
-            else
-            {
-                bgm.erase(bgm.begin() + currentSong);
-            }
-        }
-        if (currentVolume == 0)
-        {
-            ndspChnSetPaused(0, true);
-        }
-        while (currentVolume == 0 && playMusic)
-        {
-            HIDUSER_GetSoundVolume(&currentVolume);
-            svcSleepThread(250000000);
-        }
-        if (ndspChnIsPaused(0) && playMusic)
-        {
-            ndspChnSetPaused(0, false);
-        }
-        if (playMusic)
-        {
-            svcSleepThread(250000000);
-        }
-    }
-    bgmDone = true;
-}
-
 void Sound::startBGM()
 {
     if (!bgm.empty())
     {
         Threads::create(&bgmControlThread);
     }
-}
-
-static void playEffectThread(void* rawArg)
-{
-    EffectThreadArg* arg = (EffectThreadArg*)rawArg;
-    if (arg->linearMem) // Did the linearAlloc work properly?
-    {
-        ndspChnReset(arg->channel);
-        ndspChnWaveBufClear(arg->channel);
-        ndspChnSetInterp(arg->channel, arg->decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
-        ndspChnSetRate(arg->channel, arg->decoder->sampleRate());
-        ndspChnSetFormat(arg->channel, arg->decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
-
-        ndspWaveBuf effectBuffer[2] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
-        effectBuffer[0].data_pcm16  = arg->linearMem;
-        effectBuffer[1].data_pcm16  = arg->linearMem + arg->decoder->bufferSize();
-        bool lastBuf                = false;
-        for (auto& buf : effectBuffer)
-        {
-            buf.nsamples = arg->decoder->decode((void*)buf.data_pcm16);
-            if (arg->decoder->stereo())
-            {
-                buf.nsamples /= 2;
-            }
-            if (buf.nsamples > 0)
-            {
-                DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
-                ndspChnWaveBufAdd(arg->channel, &buf);
-            }
-            else
-            {
-                buf.status = NDSP_WBUF_DONE;
-                lastBuf    = true;
-            }
-        }
-
-        for (int i = 0; !ndspChnIsPlaying(arg->channel); i++)
-        {
-            svcSleepThread(1000000); // About one millisecond.
-            if (i > 5 * 1000)        // Timeout in about 5 seconds.
-            {
-                arg->inUse.clear();
-                return;
-            }
-        }
-
-        while (playMusic)
-        {
-            svcSleepThread(125000000);
-
-            if (lastBuf == true)
-            {
-                if (effectBuffer[0].status == NDSP_WBUF_DONE && effectBuffer[1].status == NDSP_WBUF_DONE)
-                {
-                    break;
-                }
-                else
-                {
-                    continue;
-                }
-            }
-
-            for (auto& buf : effectBuffer)
-            {
-                if (buf.status == NDSP_WBUF_DONE)
-                {
-                    buf.nsamples = arg->decoder->decode((void*)buf.data_pcm16);
-                    if (arg->decoder->stereo())
-                    {
-                        buf.nsamples /= 2;
-                    }
-                    if (buf.nsamples <= 0)
-                    {
-                        lastBuf = true;
-                        break;
-                    }
-
-                    DSP_FlushDataCache(buf.data_pcm16, arg->decoder->bufferSize() * sizeof(u16));
-                    ndspChnWaveBufAdd(arg->channel, &buf);
-                }
-            }
-        }
-        ndspChnWaveBufClear(arg->channel);
-        ndspChnReset(arg->channel);
-    }
-    arg->inUse.clear();
 }
 
 void Sound::playEffect(const std::string& effectName)

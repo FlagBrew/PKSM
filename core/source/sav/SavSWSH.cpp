@@ -31,6 +31,145 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace
+{
+    struct DexEntry
+    {
+        u64 seenNonShinyMale : 63;
+        u64 seenNonShinyMaleGiga : 1;
+        u64 seenNonShinyFemale : 63;
+        u64 seenNonShinyFemaleGiga : 1;
+        u64 seenShinyMale : 63;
+        u64 seenShinyMaleGiga : 1;
+        u64 seenShinyFemale : 63;
+        u64 seenShinyFemaleGiga : 1;
+        // Obtained info
+        u32 owned : 1;
+        u32 ownedGiga : 1;
+        u32 languages : 13;     // flags
+        u32 displayFormID : 13; // value
+        u32 displayGiga : 1;
+        u32 displayGender : 2;
+        u32 displayShiny : 1;
+
+        u32 battled : 32;
+        u32 unk1 : 32;
+        u32 unk2 : 32;
+    };
+
+    void setProperLocation(DexEntry& entry, u16 form, bool shiny, u8 gender)
+    {
+        if (gender == 1)
+        {
+            if (shiny)
+            {
+                entry.seenShinyFemale |= 1 << form;
+            }
+            else
+            {
+                entry.seenNonShinyFemale |= 1 << form;
+            }
+        }
+        else
+        {
+            if (shiny)
+            {
+                entry.seenShinyMale |= 1 << form;
+            }
+            else
+            {
+                entry.seenNonShinyMale |= 1 << form;
+            }
+        }
+    }
+
+    void setProperGiga(DexEntry& entry, bool giga, bool shiny, u8 gender)
+    {
+        if (gender == 1)
+        {
+            if (shiny)
+            {
+                entry.seenShinyFemaleGiga = giga ? 1 : 0;
+            }
+            else
+            {
+                entry.seenNonShinyFemaleGiga = giga ? 1 : 0;
+            }
+        }
+        else
+        {
+            if (shiny)
+            {
+                entry.seenShinyMaleGiga = giga ? 1 : 0;
+            }
+            else
+            {
+                entry.seenNonShinyMaleGiga = giga ? 1 : 0;
+            }
+        }
+    }
+}
+
+template <>
+DexEntry Endian::convertTo<DexEntry>(const u8* data)
+{
+    DexEntry ret;
+    u64 v64                  = Endian::convertTo<u64>(data);
+    ret.seenNonShinyMale     = v64;
+    ret.seenNonShinyMaleGiga = v64 >> 63;
+
+    v64                        = Endian::convertTo<u64>(data + 8);
+    ret.seenNonShinyFemale     = v64;
+    ret.seenNonShinyFemaleGiga = v64 >> 63;
+
+    v64                   = Endian::convertTo<u64>(data + 16);
+    ret.seenShinyMale     = v64;
+    ret.seenShinyMaleGiga = v64 >> 63;
+
+    v64                     = Endian::convertTo<u64>(data + 24);
+    ret.seenShinyFemale     = v64;
+    ret.seenShinyFemaleGiga = v64 >> 63;
+
+    u32 v32           = Endian::convertTo<u32>(data + 32);
+    ret.owned         = v32 & 1;
+    ret.ownedGiga     = (v32 >> 1) & 1;
+    ret.languages     = (v32 >> 2) & 0x1FFF;
+    ret.displayFormID = (v32 >> 15) & 0x1FFF;
+    ret.displayGiga   = (v32 >> 28) & 1;
+    ret.displayGender = (v32 >> 29) & 3;
+    ret.displayShiny  = v32 >> 31;
+
+    ret.battled = Endian::convertTo<u32>(data + 36);
+    ret.unk1    = Endian::convertTo<u32>(data + 40);
+    ret.unk2    = Endian::convertTo<u32>(data + 44);
+
+    return ret;
+}
+
+template <>
+void Endian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
+{
+    u64 w64 = entry.seenNonShinyMale | (u64(entry.seenNonShinyMaleGiga) << 63);
+    Endian::convertFrom<u64>(data, w64);
+
+    w64 = entry.seenNonShinyFemale | (u64(entry.seenNonShinyFemaleGiga) << 63);
+    Endian::convertFrom<u64>(data + 8, w64);
+
+    w64 = entry.seenShinyMale | (u64(entry.seenShinyMaleGiga) << 63);
+    Endian::convertFrom<u64>(data + 16, w64);
+
+    w64 = entry.seenShinyFemale | (u64(entry.seenShinyFemaleGiga) << 63);
+    Endian::convertFrom<u64>(data + 24, w64);
+
+    u32 w32 = entry.owned | (entry.ownedGiga << 1) | (entry.languages << 2) | (entry.displayFormID << 15) | (entry.displayGiga << 28) |
+              (entry.displayGender << 29) | (entry.displayShiny << 31);
+    Endian::convertFrom<u32>(data + 32, w32);
+
+    Endian::convertFrom<u32>(data + 36, entry.battled);
+    Endian::convertFrom<u32>(data + 40, entry.unk1);
+    Endian::convertFrom<u32>(data + 44, entry.unk2);
+}
+
 SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x1716B3)
 {
     game = Game::SWSH;
@@ -410,142 +549,6 @@ void SavSWSH::cryptBoxData(bool crypted)
 std::unique_ptr<WCX> SavSWSH::mysteryGift(int pos) const
 {
     return nullptr;
-}
-
-struct DexEntry
-{
-    u64 seenNonShinyMale : 63;
-    u64 seenNonShinyMaleGiga : 1;
-    u64 seenNonShinyFemale : 63;
-    u64 seenNonShinyFemaleGiga : 1;
-    u64 seenShinyMale : 63;
-    u64 seenShinyMaleGiga : 1;
-    u64 seenShinyFemale : 63;
-    u64 seenShinyFemaleGiga : 1;
-    // Obtained info
-    u32 owned : 1;
-    u32 ownedGiga : 1;
-    u32 languages : 13;     // flags
-    u32 displayFormID : 13; // value
-    u32 displayGiga : 1;
-    u32 displayGender : 2;
-    u32 displayShiny : 1;
-
-    u32 battled : 32;
-    u32 unk1 : 32;
-    u32 unk2 : 32;
-};
-
-template <>
-DexEntry Endian::convertTo<DexEntry>(const u8* data)
-{
-    DexEntry ret;
-    u64 v64                  = Endian::convertTo<u64>(data);
-    ret.seenNonShinyMale     = v64;
-    ret.seenNonShinyMaleGiga = v64 >> 63;
-
-    v64                        = Endian::convertTo<u64>(data + 8);
-    ret.seenNonShinyFemale     = v64;
-    ret.seenNonShinyFemaleGiga = v64 >> 63;
-
-    v64                   = Endian::convertTo<u64>(data + 16);
-    ret.seenShinyMale     = v64;
-    ret.seenShinyMaleGiga = v64 >> 63;
-
-    v64                     = Endian::convertTo<u64>(data + 24);
-    ret.seenShinyFemale     = v64;
-    ret.seenShinyFemaleGiga = v64 >> 63;
-
-    u32 v32           = Endian::convertTo<u32>(data + 32);
-    ret.owned         = v32 & 1;
-    ret.ownedGiga     = (v32 >> 1) & 1;
-    ret.languages     = (v32 >> 2) & 0x1FFF;
-    ret.displayFormID = (v32 >> 15) & 0x1FFF;
-    ret.displayGiga   = (v32 >> 28) & 1;
-    ret.displayGender = (v32 >> 29) & 3;
-    ret.displayShiny  = v32 >> 31;
-
-    ret.battled = Endian::convertTo<u32>(data + 36);
-    ret.unk1    = Endian::convertTo<u32>(data + 40);
-    ret.unk2    = Endian::convertTo<u32>(data + 44);
-
-    return ret;
-}
-
-template <>
-void Endian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
-{
-    u64 w64 = entry.seenNonShinyMale | (u64(entry.seenNonShinyMaleGiga) << 63);
-    Endian::convertFrom<u64>(data, w64);
-
-    w64 = entry.seenNonShinyFemale | (u64(entry.seenNonShinyFemaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 8, w64);
-
-    w64 = entry.seenShinyMale | (u64(entry.seenShinyMaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 16, w64);
-
-    w64 = entry.seenShinyFemale | (u64(entry.seenShinyFemaleGiga) << 63);
-    Endian::convertFrom<u64>(data + 24, w64);
-
-    u32 w32 = entry.owned | (entry.ownedGiga << 1) | (entry.languages << 2) | (entry.displayFormID << 15) | (entry.displayGiga << 28) |
-              (entry.displayGender << 29) | (entry.displayShiny << 31);
-    Endian::convertFrom<u32>(data + 32, w32);
-
-    Endian::convertFrom<u32>(data + 36, entry.battled);
-    Endian::convertFrom<u32>(data + 40, entry.unk1);
-    Endian::convertFrom<u32>(data + 44, entry.unk2);
-}
-
-static void setProperLocation(DexEntry& entry, u16 form, bool shiny, u8 gender)
-{
-    if (gender == 1)
-    {
-        if (shiny)
-        {
-            entry.seenShinyFemale |= 1 << form;
-        }
-        else
-        {
-            entry.seenNonShinyFemale |= 1 << form;
-        }
-    }
-    else
-    {
-        if (shiny)
-        {
-            entry.seenShinyMale |= 1 << form;
-        }
-        else
-        {
-            entry.seenNonShinyMale |= 1 << form;
-        }
-    }
-}
-
-static void setProperGiga(DexEntry& entry, bool giga, bool shiny, u8 gender)
-{
-    if (gender == 1)
-    {
-        if (shiny)
-        {
-            entry.seenShinyFemaleGiga = giga ? 1 : 0;
-        }
-        else
-        {
-            entry.seenNonShinyFemaleGiga = giga ? 1 : 0;
-        }
-    }
-    else
-    {
-        if (shiny)
-        {
-            entry.seenShinyMaleGiga = giga ? 1 : 0;
-        }
-        else
-        {
-            entry.seenNonShinyMaleGiga = giga ? 1 : 0;
-        }
-    }
 }
 
 void SavSWSH::dex(std::shared_ptr<PKX> pk)

@@ -30,7 +30,10 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-static constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
+namespace
+{
+    constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
+}
 
 NatureOverlay::NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)

@@ -41,8 +41,6 @@
 #include "utils.hpp"
 #include <memory>
 
-static bool dirtyBack = true;
-
 void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
@@ -149,8 +147,12 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
 {
     addOverlay<ViewOverlay>(infoMon, false);
 
-    buttons.push_back(
-        std::make_unique<ClickButton>(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            justSwitched = true;
+            return goBack();
+        },
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     buttons.push_back(
         std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
@@ -403,24 +405,7 @@ void EditSelectorScreen::update(touchPosition* touch)
 
     if (menu)
     {
-        if (!dirtyBack)
-        {
-            if (buttons[0]->clicked(touch))
-            {
-                dirtyBack = true;
-            }
-            if (buttons[0]->update(touch))
-            {
-                return;
-            }
-        }
-        else
-        {
-            if (!buttons[0]->clicked(touch))
-            {
-                dirtyBack = false;
-            }
-        }
+        buttons[0]->update(touch);
         for (size_t i = 0; i < viewerButtons.size(); i++)
         {
             viewerButtons[i]->update(touch);
@@ -448,31 +433,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         for (size_t i = 0; i < buttons.size(); i++)
         {
-            if (i == 0)
-            {
-                if (!dirtyBack)
-                {
-                    if (buttons[i]->clicked(touch))
-                    {
-                        dirtyBack = true;
-                    }
-                    if (buttons[i]->update(touch))
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!buttons[i]->clicked(touch))
-                    {
-                        dirtyBack = false;
-                    }
-                }
-            }
-            else
-            {
-                buttons[i]->update(touch);
-            }
+            buttons[i]->update(touch);
         }
 
         for (auto& button : pkmButtons)

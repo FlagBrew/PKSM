@@ -35,24 +35,39 @@
 #include "thread.hpp"
 #include <unistd.h>
 
-static Generation numToGen(int num)
+namespace
 {
-    switch (num)
+    Generation numToGen(int num)
     {
-        case 4:
-            return Generation::FOUR;
-        case 5:
-            return Generation::FIVE;
-        case 6:
-            return Generation::SIX;
-        case 7:
-            return Generation::SEVEN;
-        case 8:
-            return Generation::EIGHT;
-        case 254:
-            return Generation::LGPE;
+        switch (num)
+        {
+            case 4:
+                return Generation::FOUR;
+            case 5:
+                return Generation::FIVE;
+            case 6:
+                return Generation::SIX;
+            case 7:
+                return Generation::SEVEN;
+            case 8:
+                return Generation::EIGHT;
+            case 254:
+                return Generation::LGPE;
+        }
+        return Generation::UNUSED;
     }
-    return Generation::UNUSED;
+
+    std::string sortTypeToString(CloudAccess::SortType type)
+    {
+        switch (type)
+        {
+            case CloudAccess::SortType::LATEST:
+                return "latest";
+            case CloudAccess::SortType::POPULAR:
+                return "popular";
+        }
+        return "";
+    }
 }
 
 CloudAccess::Page::~Page() {}
@@ -149,18 +164,6 @@ nlohmann::json CloudAccess::grabPage(int num)
     {
         return {};
     }
-}
-
-static std::string sortTypeToString(CloudAccess::SortType type)
-{
-    switch (type)
-    {
-        case CloudAccess::SortType::LATEST:
-            return "latest";
-        case CloudAccess::SortType::POPULAR:
-            return "popular";
-    }
-    return "";
 }
 
 std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal)

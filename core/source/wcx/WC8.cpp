@@ -30,6 +30,25 @@
 #include "personal.hpp"
 #include "utils.hpp"
 
+namespace
+{
+    int langIndex(Language lang)
+    {
+        if (lang > Language::UNUSED)
+        {
+            return u8(lang) - 2;
+        }
+        else if (lang == Language::UNUSED)
+        {
+            return 2 - 1; // English
+        }
+        else
+        {
+            return u8(lang) - 1;
+        }
+    }
+}
+
 WC8::WC8(u8* dt)
 {
     std::copy(dt, dt + length, data);
@@ -302,22 +321,6 @@ u16 WC8::metLocation(void) const
 bool WC8::ribbon(u8 category, u8 index) const
 {
     return (*(data + 0x74 + category) & (1 << index));
-}
-
-static int langIndex(Language lang)
-{
-    if (lang > Language::UNUSED)
-    {
-        return u8(lang) - 2;
-    }
-    else if (lang == Language::UNUSED)
-    {
-        return 2 - 1; // English
-    }
-    else
-    {
-        return u8(lang) - 1;
-    }
 }
 
 bool WC8::nicknamed(Language lang) const

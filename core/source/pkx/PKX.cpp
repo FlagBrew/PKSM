@@ -35,6 +35,30 @@
 #include "endian.hpp"
 #include "random.hpp"
 
+namespace
+{
+    inline u8 genderFromRatio(u32 pid, u8 gt)
+    {
+        switch (gt)
+        {
+            case 0xFF:
+                return 2;
+            case 0xFE:
+                return 1;
+            case 0:
+                return 0;
+            default:
+                return (pid & 0xFF) < gt ? 1 : 0;
+        }
+    }
+
+    inline u8 getUnownForm(u32 pid)
+    {
+        u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
+        return val % 28;
+    }
+}
+
 PKX::PKX(u8* data, size_t length, bool directAccess) : directAccess(directAccess), length(length)
 {
     if (data)
@@ -349,27 +373,6 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
         return 8;
     }
     return 0;
-}
-
-static inline u8 genderFromRatio(u32 pid, u8 gt)
-{
-    switch (gt)
-    {
-        case 0xFF:
-            return 2;
-        case 0xFE:
-            return 1;
-        case 0:
-            return 0;
-        default:
-            return (pid & 0xFF) < gt ? 1 : 0;
-    }
-}
-
-static inline u8 getUnownForm(u32 pid)
-{
-    u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
-    return val % 28;
 }
 
 u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)

@@ -50,13 +50,13 @@ namespace
     CURLM* multiHandle = nullptr;
     _LOCK_T multiHandleMutex;
     bool multiInitialized = false;
-}
 
-static size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
-{
-    std::string* str = (std::string*)userdata;
-    str->append(ptr, size * nmemb);
-    return size * nmemb;
+    size_t string_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
+    {
+        std::string* str = (std::string*)userdata;
+        str->append(ptr, size * nmemb);
+        return size * nmemb;
+    }
 }
 
 std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)

@@ -28,6 +28,31 @@
 #include <algorithm>
 #include <type_traits>
 
+namespace
+{
+    Tex3DS_SubTexture _select_box(const Tex3DS_SubTexture& texIn, int x, int y, int endX, int endY)
+    {
+        Tex3DS_SubTexture tex = texIn;
+        if (x != endX)
+        {
+            int deltaX  = endX - x;
+            float texRL = tex.left - tex.right;
+            tex.left    = tex.left - (float)texRL / tex.width * x;
+            tex.right   = tex.left - (float)texRL / tex.width * deltaX;
+            tex.width   = deltaX;
+        }
+        if (y != endY)
+        {
+            float texTB = tex.top - tex.bottom;
+            int deltaY  = endY - y;
+            tex.top     = tex.top - (float)texTB / tex.height * y;
+            tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
+            tex.height  = deltaY;
+        }
+        return tex;
+    }
+}
+
 namespace TextParse
 {
     void Text::addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth)
@@ -114,28 +139,6 @@ namespace TextParse
         ret->maxLineWidth = *std::max_element(ret->lineWidths.begin(), ret->lineWidths.end());
 
         return ret;
-    }
-
-    static Tex3DS_SubTexture _select_box(const Tex3DS_SubTexture& texIn, int x, int y, int endX, int endY)
-    {
-        Tex3DS_SubTexture tex = texIn;
-        if (x != endX)
-        {
-            int deltaX  = endX - x;
-            float texRL = tex.left - tex.right;
-            tex.left    = tex.left - (float)texRL / tex.width * x;
-            tex.right   = tex.left - (float)texRL / tex.width * deltaX;
-            tex.width   = deltaX;
-        }
-        if (y != endY)
-        {
-            float texTB = tex.top - tex.bottom;
-            int deltaY  = endY - y;
-            tex.top     = tex.top - (float)texTB / tex.height * y;
-            tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
-            tex.height  = deltaY;
-        }
-        return tex;
     }
 
     std::shared_ptr<Text> Text::slice(float maxWidth, float offset) const

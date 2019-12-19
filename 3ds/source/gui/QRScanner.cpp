@@ -86,16 +86,19 @@ private:
     bool cancel                               = false;
 };
 
-static void drawHelp(void* arg)
+namespace
 {
-    QRData* data = (QRData*)arg;
-    data->drawThread();
-}
+    void drawHelp(void* arg)
+    {
+        QRData* data = (QRData*)arg;
+        data->drawThread();
+    }
 
-static void captureHelp(void* arg)
-{
-    QRData* data = (QRData*)arg;
-    data->captureThread();
+    void captureHelp(void* arg)
+    {
+        QRData* data = (QRData*)arg;
+        data->captureThread();
+    }
 }
 
 void QRData::buffToImage()

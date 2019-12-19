@@ -36,8 +36,18 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-static bool saveFromBridge = false;
-static struct in_addr lastIPAddr;
+namespace
+{
+    bool saveFromBridge = false;
+    struct in_addr lastIPAddr;
+
+    char* getHostId()
+    {
+        static sockaddr_in addr;
+        addr.sin_addr.s_addr = gethostid();
+        return inet_ntoa(addr.sin_addr);
+    }
+}
 
 bool isLoadedSaveFromBridge(void)
 {
@@ -46,13 +56,6 @@ bool isLoadedSaveFromBridge(void)
 void setLoadedSaveFromBridge(bool v)
 {
     saveFromBridge = false;
-}
-
-static char* getHostId()
-{
-    static sockaddr_in addr;
-    addr.sin_addr.s_addr = gethostid();
-    return inet_ntoa(addr.sin_addr);
 }
 
 bool receiveSaveFromBridge(void)

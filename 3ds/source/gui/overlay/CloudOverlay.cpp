@@ -32,6 +32,21 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
+namespace
+{
+    std::string sortTypeToString(CloudAccess::SortType type)
+    {
+        switch (type)
+        {
+            case CloudAccess::SortType::LATEST:
+                return "LATEST";
+            case CloudAccess::SortType::POPULAR:
+                return "POPULAR";
+        }
+        return "";
+    }
+}
+
 CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : ReplaceableScreen(&screen), access(acc)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 82, 108, 28,
@@ -77,18 +92,6 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : Replac
 void CloudOverlay::drawTop() const
 {
     dim();
-}
-
-static std::string sortTypeToString(CloudAccess::SortType type)
-{
-    switch (type)
-    {
-        case CloudAccess::SortType::LATEST:
-            return "LATEST";
-        case CloudAccess::SortType::POPULAR:
-            return "POPULAR";
-    }
-    return "";
 }
 
 void CloudOverlay::drawBottom() const

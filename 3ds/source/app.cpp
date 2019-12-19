@@ -50,131 +50,180 @@
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
 
-static u32 old_time_limit;
-static Handle hbldrHandle;
-static std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
-static std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
-static std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
-
-struct asset
+namespace
 {
-    std::string url;
-    std::string path;
-    unsigned char hash[SHA256_BLOCK_SIZE];
-};
+    u32 old_time_limit;
+    Handle hbldrHandle;
+    std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
+    std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
+    std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
 
-static bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
-{
-    bool match = false;
-    FSStream in(Archive::sd(), path, FS_OPEN_READ);
-    if (in.good())
+    struct asset
     {
-        size_t size = in.size();
-        char* data  = new char[size];
-        in.read(data, size);
-        char hash[SHA256_BLOCK_SIZE];
-        sha256((unsigned char*)hash, (unsigned char*)data, size);
-        delete[] data;
-        match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
-    }
-    in.close();
-    return match;
-}
+        std::string url;
+        std::string path;
+        unsigned char hash[SHA256_BLOCK_SIZE];
+    };
 
-static Result downloadAdditionalAssets(void)
-{
-    Result res      = 0;
-    asset assets[2] = {
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
-            {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f,
-                0xe0, 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48}},
-        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x",
-            "/3ds/PKSM/assets/types_spritesheet.t3x",
-            {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d,
-                0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
-
-    for (auto item : assets)
+    bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
     {
-        bool downloadAsset = true;
-        if (io::exists(item.path))
+        bool match = false;
+        FSStream in(Archive::sd(), path, FS_OPEN_READ);
+        if (in.good())
         {
-            if (matchSha256HashFromFile(item.path, item.hash))
-            {
-                downloadAsset = false;
-            }
-            else
-            {
-                std::remove(item.path.c_str());
-            }
+            size_t size = in.size();
+            char* data  = new char[size];
+            in.read(data, size);
+            char hash[SHA256_BLOCK_SIZE];
+            sha256((unsigned char*)hash, (unsigned char*)data, size);
+            delete[] data;
+            match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
         }
-        if (downloadAsset)
+        in.close();
+        return match;
+    }
+
+    Result downloadAdditionalAssets(void)
+    {
+        Result res      = 0;
+        asset assets[2] = {{"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x",
+                               "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+                               {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08, 0xe8, 0x69, 0xc0,
+                                   0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48}},
+            {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x",
+                "/3ds/PKSM/assets/types_spritesheet.t3x",
+                {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb,
+                    0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
+
+        for (auto item : assets)
         {
+            bool downloadAsset = true;
+            if (io::exists(item.path))
+            {
+                if (matchSha256HashFromFile(item.path, item.hash))
+                {
+                    downloadAsset = false;
+                }
+                else
+                {
+                    std::remove(item.path.c_str());
+                }
+            }
+            if (downloadAsset)
+            {
 #if !CITRA_DEBUG
-            u32 status;
-            ACU_GetWifiStatus(&status);
-            if (status == 0)
-                return -1;
+                u32 status;
+                ACU_GetWifiStatus(&status);
+                if (status == 0)
+                    return -1;
 #endif
-            Result res1 = Fetch::download(item.url, item.path);
-            if (R_FAILED(res1))
-                return res1;
-            if (!matchSha256HashFromFile(item.path, item.hash))
-            {
-                std::remove(item.path.c_str());
-                return -1;
+                Result res1 = Fetch::download(item.url, item.path);
+                if (R_FAILED(res1))
+                    return res1;
+                if (!matchSha256HashFromFile(item.path, item.hash))
+                {
+                    std::remove(item.path.c_str());
+                    return -1;
+                }
             }
         }
+        return res;
     }
-    return res;
-}
 
-static Result consoleDisplayError(const std::string& message, Result res)
-{
-    moveIcon.clear();
-    consoleInit(GFX_TOP, nullptr);
-    printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    printf("\x1b[5;1HError during startup: \x1b[31m0x%08lX\x1b[0m", res);
-    printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message.c_str());
-    printf("\x1b[29;16HPress START to exit.");
-    gfxFlushBuffers();
-    gfxSwapBuffers();
-    gspWaitForVBlank();
-    while (aptMainLoop() && !(hidKeysDown() & KEY_START))
+    Result consoleDisplayError(const std::string& message, Result res)
     {
-        hidScanInput();
+        moveIcon.clear();
+        consoleInit(GFX_TOP, nullptr);
+        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        printf("\x1b[5;1HError during startup: \x1b[31m0x%08lX\x1b[0m", res);
+        printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message.c_str());
+        printf("\x1b[29;16HPress START to exit.");
+        gfxFlushBuffers();
+        gfxSwapBuffers();
+        gspWaitForVBlank();
+        while (aptMainLoop() && !(hidKeysDown() & KEY_START))
+        {
+            hidScanInput();
+        }
+        return res;
     }
-    return res;
-}
 
-static Result HBLDR_SetTarget(const char* path)
-{
-    u32 pathLen = strlen(path) + 1;
-    u32* cmdbuf = getThreadCommandBuffer();
-
-    cmdbuf[0] = IPC_MakeHeader(2, 0, 2); // 0x20002
-    cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
-    cmdbuf[2] = (u32)path;
-
-    Result rc = svcSendSyncRequest(hbldrHandle);
-    if (R_SUCCEEDED(rc))
-        rc = cmdbuf[1];
-    return rc;
-}
-
-static bool update(std::string execPath)
-{
-    u32 status;
-    ACU_GetWifiStatus(&status);
-    if (status == 0)
+    Result HBLDR_SetTarget(const char* path)
     {
-        return false;
+        u32 pathLen = strlen(path) + 1;
+        u32* cmdbuf = getThreadCommandBuffer();
+
+        cmdbuf[0] = IPC_MakeHeader(2, 0, 2); // 0x20002
+        cmdbuf[1] = IPC_Desc_StaticBuffer(pathLen, 0);
+        cmdbuf[2] = (u32)path;
+
+        Result rc = svcSendSyncRequest(hbldrHandle);
+        if (R_SUCCEEDED(rc))
+            rc = cmdbuf[1];
+        return rc;
     }
-    execPath        = execPath.substr(execPath.find(':') + 1);
-    std::string url = "", path = "", retString = "";
-    const std::string patronCode = Configuration::getInstance().patronCode();
-    if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
+
+    bool update(std::string execPath)
     {
-        if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, &retString, nullptr, "code=" + patronCode))
+        u32 status;
+        ACU_GetWifiStatus(&status);
+        if (status == 0)
+        {
+            return false;
+        }
+        execPath        = execPath.substr(execPath.find(':') + 1);
+        std::string url = "", path = "", retString = "";
+        const std::string patronCode = Configuration::getInstance().patronCode();
+        if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
+        {
+            if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, &retString, nullptr, "code=" + patronCode))
+            {
+                moveIcon.clear();
+                Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
+                auto res = Fetch::perform(fetch);
+                if (res.index() == 1)
+                {
+                    if (std::get<1>(res) != CURLE_OK)
+                    {
+                        Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
+                    }
+                    else
+                    {
+                        long status_code;
+                        fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                        switch (status_code)
+                        {
+                            case 200:
+                                if (retString.substr(0, 8) != GIT_REV)
+                                {
+                                    url = "https://flagbrew.org/patron/downloadLatest/";
+                                    if (execPath.empty())
+                                    {
+                                        url += "cia";
+                                        path = "/3ds/PKSM/PKSM.cia";
+                                    }
+                                    else
+                                    {
+                                        url += "3dsx";
+                                        path = execPath + ".new";
+                                    }
+                                }
+                                break;
+                            case 401:
+                                Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
+                                break;
+                            case 502:
+                                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                                break;
+                            default:
+                                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true, &retString, nullptr, ""))
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -192,24 +241,29 @@ static bool update(std::string execPath)
                     switch (status_code)
                     {
                         case 200:
-                            if (retString.substr(0, 8) != GIT_REV)
+                        {
+                            nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
+                            if (retJson.is_discarded())
                             {
-                                url = "https://flagbrew.org/patron/downloadLatest/";
-                                if (execPath.empty())
+                                Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
+                            }
+                            else if (retJson["tag_name"].get<std::string>() >
+                                     StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
+                            {
+                                url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
+                                if (execPath != "")
                                 {
-                                    url += "cia";
-                                    path = "/3ds/PKSM/PKSM.cia";
+                                    url += ".3dsx";
+                                    path = execPath + ".new";
                                 }
                                 else
                                 {
-                                    url += "3dsx";
-                                    path = execPath + ".new";
+                                    url += ".cia";
+                                    path = "/3ds/PKSM/PKSM.cia";
                                 }
                             }
                             break;
-                        case 401:
-                            Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
-                            break;
+                        }
                         case 502:
                             Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                             break;
@@ -220,272 +274,221 @@ static bool update(std::string execPath)
                 }
             }
         }
-    }
-    else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true, &retString, nullptr, ""))
-    {
-        moveIcon.clear();
-        Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 1)
+        if (!url.empty())
         {
-            if (std::get<1>(res) != CURLE_OK)
+            Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
+            std::string fileName = path.substr(path.find_last_of('/') + 1);
+            Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
+                [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
+                    Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
+                    return 0;
+                },
+                &fileName);
+            if (R_FAILED(res))
             {
-                Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-            }
-            else
-            {
-                long status_code;
-                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                switch (status_code)
-                {
-                    case 200:
-                    {
-                        nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
-                        if (retJson.is_discarded())
-                        {
-                            Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
-                        }
-                        else if (retJson["tag_name"].get<std::string>() >
-                                 StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
-                        {
-                            url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
-                            if (execPath != "")
-                            {
-                                url += ".3dsx";
-                                path = execPath + ".new";
-                            }
-                            else
-                            {
-                                url += ".cia";
-                                path = "/3ds/PKSM/PKSM.cia";
-                            }
-                        }
-                        break;
-                    }
-                    case 502:
-                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        break;
-                    default:
-                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        break;
-                }
-            }
-        }
-    }
-    if (!url.empty())
-    {
-        Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
-        std::string fileName = path.substr(path.find_last_of('/') + 1);
-        Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
-            [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
-                Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
-                return 0;
-            },
-            &fileName);
-        if (R_FAILED(res))
-        {
-            Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
-            Archive::deleteFile(Archive::sd(), path);
-            return false;
-        }
-
-        Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
-        if (execPath != "")
-        {
-            Archive::deleteFile(Archive::sd(), execPath);
-            Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
-            return true;
-        }
-        else
-        {
-            // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
-            AM_TitleEntry title;
-            Handle dstHandle;
-            FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
-            if (ciaFile.good())
-            {
-                if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
-                {
-                    Gui::error(i18n::localize("BAD_CIA_FILE"), res);
-                    ciaFile.close();
-                    return false;
-                }
-
-                if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
-                {
-                    Gui::error(i18n::localize("CIA_INSTALL_START_FAIL"), res);
-                    ciaFile.close();
-                    return false;
-                }
-
-                u8 buf[0x1000];
-                u32 bytesWritten, bytesRead;
-                u64 offset          = 0;
-                bool ciaInstallGood = true;
-                do
-                {
-                    memset(buf, 0, 0x1000);
-
-                    bytesRead = ciaFile.read(buf, 0x1000);
-                    if (R_FAILED(ciaFile.result()))
-                    {
-                        Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile.result());
-                        ciaFile.close();
-                        FSFILE_Close(dstHandle);
-                        return false;
-                    }
-
-                    if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
-                    {
-                        Gui::error(i18n::localize("CIA_UPDATE_WRITE_FAIL"), res);
-                        ciaFile.close();
-                        FSFILE_Close(dstHandle);
-                        return false;
-                    }
-
-                    if (bytesWritten != bytesRead)
-                    {
-                        ciaInstallGood = false;
-                    }
-
-                    offset += bytesRead;
-                } while (offset < ciaFile.size() && ciaInstallGood);
-
-                if (!ciaInstallGood)
-                {
-                    AM_CancelCIAInstall(dstHandle);
-                    ciaFile.close();
-                    Gui::warn("Bytes written doesn't match bytes read:\n" + std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
-                    return false;
-                }
-
-                if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
-                {
-                    Gui::error(i18n::localize("CIA_INSTALL_FINISH_FAIL"), res);
-                    ciaFile.close();
-                    return false;
-                }
-
-                ciaFile.close();
-
+                Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
                 Archive::deleteFile(Archive::sd(), path);
+                return false;
+            }
 
+            Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
+            if (execPath != "")
+            {
+                Archive::deleteFile(Archive::sd(), execPath);
+                Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
                 return true;
             }
-        }
-    }
-    return false;
-}
-
-static void cartScan(void*)
-{
-#if !CITRA_DEBUG
-    bool oldCardIn;
-    FSUSER_CardSlotIsInserted(&oldCardIn);
-
-    while (doCartScan.test_and_set())
-    {
-        bool cardIn = false;
-
-        FSUSER_CardSlotIsInserted(&cardIn);
-        if (cardIn != oldCardIn)
-        {
-            bool power;
-            FSUSER_CardSlotGetCardIFPowerStatus(&power);
-            if (cardIn)
+            else
             {
-                if (!power)
+                // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
+                AM_TitleEntry title;
+                Handle dstHandle;
+                FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
+                if (ciaFile.good())
                 {
-                    FSUSER_CardSlotPowerOn(&power);
-                }
-                while (!power && doCartScan.test_and_set())
-                {
-                    FSUSER_CardSlotGetCardIFPowerStatus(&power);
-                }
-                svcSleepThread(500'000'000);
-                for (size_t i = 0; i < 10; i++)
-                {
-                    if ((oldCardIn = TitleLoader::scanCard()))
+                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
                     {
-                        break;
+                        Gui::error(i18n::localize("BAD_CIA_FILE"), res);
+                        ciaFile.close();
+                        return false;
+                    }
+
+                    if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
+                    {
+                        Gui::error(i18n::localize("CIA_INSTALL_START_FAIL"), res);
+                        ciaFile.close();
+                        return false;
+                    }
+
+                    u8 buf[0x1000];
+                    u32 bytesWritten, bytesRead;
+                    u64 offset          = 0;
+                    bool ciaInstallGood = true;
+                    do
+                    {
+                        memset(buf, 0, 0x1000);
+
+                        bytesRead = ciaFile.read(buf, 0x1000);
+                        if (R_FAILED(ciaFile.result()))
+                        {
+                            Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile.result());
+                            ciaFile.close();
+                            FSFILE_Close(dstHandle);
+                            return false;
+                        }
+
+                        if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
+                        {
+                            Gui::error(i18n::localize("CIA_UPDATE_WRITE_FAIL"), res);
+                            ciaFile.close();
+                            FSFILE_Close(dstHandle);
+                            return false;
+                        }
+
+                        if (bytesWritten != bytesRead)
+                        {
+                            ciaInstallGood = false;
+                        }
+
+                        offset += bytesRead;
+                    } while (offset < ciaFile.size() && ciaInstallGood);
+
+                    if (!ciaInstallGood)
+                    {
+                        AM_CancelCIAInstall(dstHandle);
+                        ciaFile.close();
+                        Gui::warn("Bytes written doesn't match bytes read:\n" + std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
+                        return false;
+                    }
+
+                    if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
+                    {
+                        Gui::error(i18n::localize("CIA_INSTALL_FINISH_FAIL"), res);
+                        ciaFile.close();
+                        return false;
+                    }
+
+                    ciaFile.close();
+
+                    Archive::deleteFile(Archive::sd(), path);
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void cartScan(void*)
+    {
+#if !CITRA_DEBUG
+        bool oldCardIn;
+        FSUSER_CardSlotIsInserted(&oldCardIn);
+
+        while (doCartScan.test_and_set())
+        {
+            bool cardIn = false;
+
+            FSUSER_CardSlotIsInserted(&cardIn);
+            if (cardIn != oldCardIn)
+            {
+                bool power;
+                FSUSER_CardSlotGetCardIFPowerStatus(&power);
+                if (cardIn)
+                {
+                    if (!power)
+                    {
+                        FSUSER_CardSlotPowerOn(&power);
+                    }
+                    while (!power && doCartScan.test_and_set())
+                    {
+                        FSUSER_CardSlotGetCardIFPowerStatus(&power);
+                    }
+                    svcSleepThread(500'000'000);
+                    for (size_t i = 0; i < 10; i++)
+                    {
+                        if ((oldCardIn = TitleLoader::scanCard()))
+                        {
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    FSUSER_CardSlotPowerOff(&power);
+                    TitleLoader::scanCard();
+                    oldCardIn = false;
+                }
+            }
+        }
+#endif
+    }
+
+    void iconThread(void*)
+    {
+        int x = 176, y = 96;
+        u16 w, h;
+        bool up   = randomNumbers() % 2 ? true : false;
+        bool left = randomNumbers() % 2 ? true : false;
+        u8 yMag   = randomNumbers() % 2 + 1;
+        u8 xMag   = randomNumbers() % 2 + 1;
+        while (moveIcon.test_and_set())
+        {
+            int xOff = 0;
+            std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
+            for (auto& line : bootSplash)
+            {
+                std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
+            }
+
+            if (up)
+            {
+                y -= yMag;
             }
             else
             {
-                FSUSER_CardSlotPowerOff(&power);
-                TitleLoader::scanCard();
-                oldCardIn = false;
+                y += yMag;
             }
+            if (y >= 240 - 48 || y <= 0)
+            {
+                yMag = randomNumbers() % 2 + 1;
+                up   = !up;
+            }
+
+            if (left)
+            {
+                x -= xMag;
+            }
+            else
+            {
+                x += xMag;
+            }
+            if (x >= 400 - 48 || x <= 0)
+            {
+                xMag = randomNumbers() % 2 + 1;
+                left = !left;
+            }
+
+            gfxFlushBuffers();
+            gfxSwapBuffersGpu();
+            gspWaitForVBlank();
         }
     }
-#endif
-}
 
-static void iconThread(void*)
-{
-    int x = 176, y = 96;
-    u16 w, h;
-    bool up   = randomNumbers() % 2 ? true : false;
-    bool left = randomNumbers() % 2 ? true : false;
-    u8 yMag   = randomNumbers() % 2 + 1;
-    u8 xMag   = randomNumbers() % 2 + 1;
-    while (moveIcon.test_and_set())
+    void i18nThread(void*)
     {
-        int xOff = 0;
-        std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
-        for (auto& line : bootSplash)
+        constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO,
+            Language::ZH, Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
+        for (auto& i : languages)
         {
-            std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
-        }
-
-        if (up)
-        {
-            y -= yMag;
-        }
-        else
-        {
-            y += yMag;
-        }
-        if (y >= 240 - 48 || y <= 0)
-        {
-            yMag = randomNumbers() % 2 + 1;
-            up   = !up;
-        }
-
-        if (left)
-        {
-            x -= xMag;
-        }
-        else
-        {
-            x += xMag;
-        }
-        if (x >= 400 - 48 || x <= 0)
-        {
-            xMag = randomNumbers() % 2 + 1;
-            left = !left;
-        }
-
-        gfxFlushBuffers();
-        gfxSwapBuffersGpu();
-        gspWaitForVBlank();
-    }
-}
-
-static void i18nThread(void*)
-{
-    constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO, Language::ZH,
-        Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
-    for (auto& i : languages)
-    {
-        if (continueI18N.test_and_set())
-        {
-            i18n::init(i);
-        }
-        else
-        {
-            return;
+            if (continueI18N.test_and_set())
+            {
+                i18n::init(i);
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

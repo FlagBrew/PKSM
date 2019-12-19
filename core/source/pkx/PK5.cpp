@@ -34,6 +34,92 @@
 #include "utils.hpp"
 #include <algorithm>
 
+namespace
+{
+    void fixString(std::u16string& fixString)
+    {
+        for (size_t i = 0; i < fixString.size(); i++)
+        {
+            if (fixString[i] == u'\u2467')
+            {
+                fixString[i] = u'\u00d7';
+            }
+            else if (fixString[i] == u'\u2468')
+            {
+                fixString[i] = u'\u00f7';
+            }
+            else if (fixString[i] == u'\u246c')
+            {
+                fixString[i] = u'\u2026';
+            }
+            else if (fixString[i] == u'\u246d')
+            {
+                fixString[i] = u'\uE08E';
+            }
+            else if (fixString[i] == u'\u246e')
+            {
+                fixString[i] = u'\uE08F';
+            }
+            else if (fixString[i] == u'\u246f')
+            {
+                fixString[i] = u'\uE090';
+            }
+            else if (fixString[i] == u'\u2470')
+            {
+                fixString[i] = u'\uE091';
+            }
+            else if (fixString[i] == u'\u2471')
+            {
+                fixString[i] = u'\uE092';
+            }
+            else if (fixString[i] == u'\u2472')
+            {
+                fixString[i] = u'\uE093';
+            }
+            else if (fixString[i] == u'\u2473')
+            {
+                fixString[i] = u'\uE094';
+            }
+            else if (fixString[i] == u'\u2474')
+            {
+                fixString[i] = u'\uE095';
+            }
+            else if (fixString[i] == u'\u2475')
+            {
+                fixString[i] = u'\uE096';
+            }
+            else if (fixString[i] == u'\u2476')
+            {
+                fixString[i] = u'\uE097';
+            }
+            else if (fixString[i] == u'\u2477')
+            {
+                fixString[i] = u'\uE098';
+            }
+            else if (fixString[i] == u'\u2478')
+            {
+                fixString[i] = u'\uE099';
+            }
+            else if (fixString[i] == u'\u2479')
+            {
+                fixString[i] = u'\uE09A';
+            }
+            else if (fixString[i] == u'\u247a')
+            {
+                fixString[i] = u'\uE09B';
+            }
+            else if (fixString[i] == u'\u247b')
+            {
+                fixString[i] = u'\uE09C';
+            }
+            else if (fixString[i] == u'\u247d')
+            {
+                fixString[i] = u'\uE09D';
+            }
+        }
+    }
+}
+
 void PK5::shuffleArray(u8 sv)
 {
     static constexpr int blockLength = 32;
@@ -736,89 +822,6 @@ u16 PK5::stat(Stat stat) const
     if (nature() % 5 + 1 == u8(stat))
         mult--;
     return calc * mult / 10;
-}
-
-static void fixString(std::u16string& fixString)
-{
-    for (size_t i = 0; i < fixString.size(); i++)
-    {
-        if (fixString[i] == u'\u2467')
-        {
-            fixString[i] = u'\u00d7';
-        }
-        else if (fixString[i] == u'\u2468')
-        {
-            fixString[i] = u'\u00f7';
-        }
-        else if (fixString[i] == u'\u246c')
-        {
-            fixString[i] = u'\u2026';
-        }
-        else if (fixString[i] == u'\u246d')
-        {
-            fixString[i] = u'\uE08E';
-        }
-        else if (fixString[i] == u'\u246e')
-        {
-            fixString[i] = u'\uE08F';
-        }
-        else if (fixString[i] == u'\u246f')
-        {
-            fixString[i] = u'\uE090';
-        }
-        else if (fixString[i] == u'\u2470')
-        {
-            fixString[i] = u'\uE091';
-        }
-        else if (fixString[i] == u'\u2471')
-        {
-            fixString[i] = u'\uE092';
-        }
-        else if (fixString[i] == u'\u2472')
-        {
-            fixString[i] = u'\uE093';
-        }
-        else if (fixString[i] == u'\u2473')
-        {
-            fixString[i] = u'\uE094';
-        }
-        else if (fixString[i] == u'\u2474')
-        {
-            fixString[i] = u'\uE095';
-        }
-        else if (fixString[i] == u'\u2475')
-        {
-            fixString[i] = u'\uE096';
-        }
-        else if (fixString[i] == u'\u2476')
-        {
-            fixString[i] = u'\uE097';
-        }
-        else if (fixString[i] == u'\u2477')
-        {
-            fixString[i] = u'\uE098';
-        }
-        else if (fixString[i] == u'\u2478')
-        {
-            fixString[i] = u'\uE099';
-        }
-        else if (fixString[i] == u'\u2479')
-        {
-            fixString[i] = u'\uE09A';
-        }
-        else if (fixString[i] == u'\u247a')
-        {
-            fixString[i] = u'\uE09B';
-        }
-        else if (fixString[i] == u'\u247b')
-        {
-            fixString[i] = u'\uE09C';
-        }
-        else if (fixString[i] == u'\u247d')
-        {
-            fixString[i] = u'\uE09D';
-        }
-    }
 }
 
 int PK5::partyCurrHP(void) const

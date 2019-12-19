@@ -33,6 +33,18 @@
 #include "utils.hpp"
 #include <algorithm>
 
+namespace
+{
+    bool isPKM(u8* pkmData)
+    {
+        if (Endian::convertTo<u16>(pkmData + 8) == 0)
+        {
+            return false;
+        }
+        return true;
+    }
+}
+
 SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt) : Sav(dt, 0x100000)
 {
     game    = Game::LGPE;
@@ -113,15 +125,6 @@ void SavLGPE::fixParty()
             i = -1;
         }
     }
-}
-
-static bool isPKM(u8* pkmData)
-{
-    if (Endian::convertTo<u16>(pkmData + 8) == 0)
-    {
-        return false;
-    }
-    return true;
 }
 
 void SavLGPE::compressBox()

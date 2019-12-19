@@ -29,37 +29,202 @@
 #include <atomic>
 #include <unistd.h>
 
-static LanguageStrings* jp = nullptr;
-std::atomic_flag jpInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* en = nullptr;
-std::atomic_flag enInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* fr = nullptr;
-std::atomic_flag frInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* it = nullptr;
-std::atomic_flag itInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* de = nullptr;
-std::atomic_flag deInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* es = nullptr;
-std::atomic_flag esInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* ko = nullptr;
-std::atomic_flag koInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* zh = nullptr;
-std::atomic_flag zhInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* tw = nullptr;
-std::atomic_flag twInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* nl = nullptr;
-std::atomic_flag nlInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* pt = nullptr;
-std::atomic_flag ptInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* ru = nullptr;
-std::atomic_flag ruInit    = ATOMIC_FLAG_INIT;
-static LanguageStrings* ro = nullptr;
-std::atomic_flag roInit    = ATOMIC_FLAG_INIT;
+namespace
+{
+    LanguageStrings* jp     = nullptr;
+    std::atomic_flag jpInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* en     = nullptr;
+    std::atomic_flag enInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* fr     = nullptr;
+    std::atomic_flag frInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* it     = nullptr;
+    std::atomic_flag itInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* de     = nullptr;
+    std::atomic_flag deInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* es     = nullptr;
+    std::atomic_flag esInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* ko     = nullptr;
+    std::atomic_flag koInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* zh     = nullptr;
+    std::atomic_flag zhInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* tw     = nullptr;
+    std::atomic_flag twInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* nl     = nullptr;
+    std::atomic_flag nlInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* pt     = nullptr;
+    std::atomic_flag ptInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* ru     = nullptr;
+    std::atomic_flag ruInit = ATOMIC_FLAG_INIT;
+    LanguageStrings* ro     = nullptr;
+    std::atomic_flag roInit = ATOMIC_FLAG_INIT;
 
-static const std::string emptyString                = "";
-static const std::vector<std::string> emptyVector   = {};
-static const std::map<u16, std::string> emptyU16Map = {};
-static const std::map<u8, std::string> emptyU8Map   = {};
+    LanguageStrings* stringsFor(Language lang)
+    {
+        switch (lang)
+        {
+            case Language::JP:
+                if (!jpInit.test_and_set())
+                {
+                    jpInit.clear();
+                    i18n::init(lang);
+                }
+                while (!jp)
+                {
+                    usleep(100);
+                }
+                return jp;
+            case Language::EN:
+                if (!enInit.test_and_set())
+                {
+                    enInit.clear();
+                    i18n::init(lang);
+                }
+                while (!en)
+                {
+                    usleep(100);
+                }
+                return en;
+            case Language::FR:
+                if (!frInit.test_and_set())
+                {
+                    frInit.clear();
+                    i18n::init(lang);
+                }
+                while (!fr)
+                {
+                    usleep(100);
+                }
+                return fr;
+            case Language::IT:
+                if (!itInit.test_and_set())
+                {
+                    itInit.clear();
+                    i18n::init(lang);
+                }
+                while (!it)
+                {
+                    usleep(100);
+                }
+                return it;
+            case Language::DE:
+                if (!deInit.test_and_set())
+                {
+                    deInit.clear();
+                    i18n::init(lang);
+                }
+                while (!de)
+                {
+                    usleep(100);
+                }
+                return de;
+            case Language::ES:
+                if (!esInit.test_and_set())
+                {
+                    esInit.clear();
+                    i18n::init(lang);
+                }
+                while (!es)
+                {
+                    usleep(100);
+                }
+                return es;
+            case Language::KO:
+                if (!koInit.test_and_set())
+                {
+                    koInit.clear();
+                    i18n::init(lang);
+                }
+                while (!ko)
+                {
+                    usleep(100);
+                }
+                return ko;
+            case Language::ZH:
+                if (!zhInit.test_and_set())
+                {
+                    zhInit.clear();
+                    i18n::init(lang);
+                }
+                while (!zh)
+                {
+                    usleep(100);
+                }
+                return zh;
+            case Language::TW:
+                if (!twInit.test_and_set())
+                {
+                    twInit.clear();
+                    i18n::init(lang);
+                }
+                while (!tw)
+                {
+                    usleep(100);
+                }
+                return tw;
+            case Language::NL:
+                if (!nlInit.test_and_set())
+                {
+                    nlInit.clear();
+                    i18n::init(lang);
+                }
+                while (!nl)
+                {
+                    usleep(100);
+                }
+                return nl;
+            case Language::PT:
+                if (!ptInit.test_and_set())
+                {
+                    ptInit.clear();
+                    i18n::init(lang);
+                }
+                while (!pt)
+                {
+                    usleep(100);
+                }
+                return pt;
+            case Language::RU:
+                if (!ruInit.test_and_set())
+                {
+                    ruInit.clear();
+                    i18n::init(lang);
+                }
+                while (!ru)
+                {
+                    usleep(100);
+                }
+                return ru;
+            case Language::RO:
+                if (!roInit.test_and_set())
+                {
+                    roInit.clear();
+                    i18n::init(lang);
+                }
+                while (!ro)
+                {
+                    usleep(100);
+                }
+                return ro;
+            case Language::UNUSED:
+                break;
+        }
+        if (!enInit.test_and_set())
+        {
+            enInit.clear();
+            i18n::init(lang);
+        }
+        while (!en)
+        {
+            usleep(100);
+        }
+        return en;
+    }
+
+    const std::string emptyString                = "";
+    const std::vector<std::string> emptyVector   = {};
+    const std::map<u16, std::string> emptyU16Map = {};
+    const std::map<u8, std::string> emptyU8Map   = {};
+}
 
 void i18n::init(Language lang)
 {
@@ -258,168 +423,6 @@ void i18n::exit(void)
         delete ru;
         ruInit.clear();
     }
-}
-
-static LanguageStrings* stringsFor(Language lang)
-{
-    switch (lang)
-    {
-        case Language::JP:
-            if (!jpInit.test_and_set())
-            {
-                jpInit.clear();
-                i18n::init(lang);
-            }
-            while (!jp)
-            {
-                usleep(100);
-            }
-            return jp;
-        case Language::EN:
-            if (!enInit.test_and_set())
-            {
-                enInit.clear();
-                i18n::init(lang);
-            }
-            while (!en)
-            {
-                usleep(100);
-            }
-            return en;
-        case Language::FR:
-            if (!frInit.test_and_set())
-            {
-                frInit.clear();
-                i18n::init(lang);
-            }
-            while (!fr)
-            {
-                usleep(100);
-            }
-            return fr;
-        case Language::IT:
-            if (!itInit.test_and_set())
-            {
-                itInit.clear();
-                i18n::init(lang);
-            }
-            while (!it)
-            {
-                usleep(100);
-            }
-            return it;
-        case Language::DE:
-            if (!deInit.test_and_set())
-            {
-                deInit.clear();
-                i18n::init(lang);
-            }
-            while (!de)
-            {
-                usleep(100);
-            }
-            return de;
-        case Language::ES:
-            if (!esInit.test_and_set())
-            {
-                esInit.clear();
-                i18n::init(lang);
-            }
-            while (!es)
-            {
-                usleep(100);
-            }
-            return es;
-        case Language::KO:
-            if (!koInit.test_and_set())
-            {
-                koInit.clear();
-                i18n::init(lang);
-            }
-            while (!ko)
-            {
-                usleep(100);
-            }
-            return ko;
-        case Language::ZH:
-            if (!zhInit.test_and_set())
-            {
-                zhInit.clear();
-                i18n::init(lang);
-            }
-            while (!zh)
-            {
-                usleep(100);
-            }
-            return zh;
-        case Language::TW:
-            if (!twInit.test_and_set())
-            {
-                twInit.clear();
-                i18n::init(lang);
-            }
-            while (!tw)
-            {
-                usleep(100);
-            }
-            return tw;
-        case Language::NL:
-            if (!nlInit.test_and_set())
-            {
-                nlInit.clear();
-                i18n::init(lang);
-            }
-            while (!nl)
-            {
-                usleep(100);
-            }
-            return nl;
-        case Language::PT:
-            if (!ptInit.test_and_set())
-            {
-                ptInit.clear();
-                i18n::init(lang);
-            }
-            while (!pt)
-            {
-                usleep(100);
-            }
-            return pt;
-        case Language::RU:
-            if (!ruInit.test_and_set())
-            {
-                ruInit.clear();
-                i18n::init(lang);
-            }
-            while (!ru)
-            {
-                usleep(100);
-            }
-            return ru;
-        case Language::RO:
-            if (!roInit.test_and_set())
-            {
-                roInit.clear();
-                i18n::init(lang);
-            }
-            while (!ro)
-            {
-                usleep(100);
-            }
-            return ro;
-        case Language::UNUSED:
-            break;
-    }
-    if (!enInit.test_and_set())
-    {
-        enInit.clear();
-        i18n::init(lang);
-    }
-    while (!en)
-    {
-        usleep(100);
-    }
-    return en;
 }
 
 const std::string& i18n::ability(Language lang, u16 val)

@@ -30,7 +30,39 @@
 #include "archive.hpp"
 #include "nlohmann/json.hpp"
 
+// Public on purpose: banks being converted need to set their size
 nlohmann::json g_banks;
+
+namespace
+{
+    Result createJson()
+    {
+        g_banks           = nlohmann::json::object();
+        g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
+        return Banks::saveJson();
+    }
+
+    Result read()
+    {
+        std::string path = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
+        FSStream in(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_READ);
+        if (in.good())
+        {
+            size_t size = in.size();
+            char data[size + 1];
+            in.read(data, size);
+            data[size] = '\0';
+            in.close();
+            g_banks = nlohmann::json::parse(data, nullptr, false);
+        }
+        else
+        {
+            in.close();
+            return createJson();
+        }
+        return 0;
+    }
+}
 
 Result Banks::saveJson()
 {
@@ -50,34 +82,6 @@ Result Banks::saveJson()
         out.close();
         return ret;
     }
-}
-
-static Result createJson()
-{
-    g_banks           = nlohmann::json::object();
-    g_banks["pksm_1"] = BANK_DEFAULT_SIZE;
-    return Banks::saveJson();
-}
-
-static Result read()
-{
-    std::string path = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
-    FSStream in(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_READ);
-    if (in.good())
-    {
-        size_t size = in.size();
-        char data[size + 1];
-        in.read(data, size);
-        data[size] = '\0';
-        in.close();
-        g_banks = nlohmann::json::parse(data, nullptr, false);
-    }
-    else
-    {
-        in.close();
-        return createJson();
-    }
-    return 0;
 }
 
 Result Banks::init()

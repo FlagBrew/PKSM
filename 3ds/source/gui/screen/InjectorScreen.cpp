@@ -36,7 +36,10 @@
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 
-static constexpr std::string_view languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "UNUSED", "SPA", "KOR", "CHS", "CHT"};
+namespace
+{
+    constexpr std::string_view languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "UNUSED", "SPA", "KOR", "CHS", "CHT"};
+}
 
 bool InjectorScreen::setLanguage(Language language)
 {

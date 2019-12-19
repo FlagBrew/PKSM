@@ -30,6 +30,25 @@
 #include "personal.hpp"
 #include "utils.hpp"
 
+namespace
+{
+    int langIndex(Language lang)
+    {
+        if (lang > Language::UNUSED)
+        {
+            return u8(lang) - 2;
+        }
+        else if (lang == Language::UNUSED)
+        {
+            return 2 - 1; // English
+        }
+        else
+        {
+            return u8(lang) - 1;
+        }
+    }
+}
+
 WB7::WB7(u8* dt, bool full)
 {
     u16 ofs = full ? 0x208 : 0;
@@ -347,22 +366,6 @@ u8 WB7::ev(Stat index) const
 bool WB7::ribbon(u8 category, u8 index) const
 {
     return (*(data + 0x74 + category) & (1 << index));
-}
-
-static int langIndex(Language lang)
-{
-    if (lang > Language::UNUSED)
-    {
-        return u8(lang) - 2;
-    }
-    else if (lang == Language::UNUSED)
-    {
-        return 2 - 1; // English
-    }
-    else
-    {
-        return u8(lang) - 1;
-    }
 }
 
 std::string WB7::nickname(Language lang) const

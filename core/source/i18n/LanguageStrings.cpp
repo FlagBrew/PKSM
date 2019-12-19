@@ -28,24 +28,27 @@
 #include "io.hpp"
 #include "utils.hpp"
 
-static nlohmann::json& formJson()
+namespace
 {
-    static nlohmann::json forms;
-    static bool first = true;
-    if (first)
+    nlohmann::json& formJson()
     {
-        FILE* in = fopen("romfs:/i18n/forms.json", "rt");
-        if (in)
+        static nlohmann::json forms;
+        static bool first = true;
+        if (first)
         {
-            if (!ferror(in))
+            FILE* in = fopen("romfs:/i18n/forms.json", "rt");
+            if (in)
             {
-                forms = nlohmann::json::parse(in, nullptr, false);
+                if (!ferror(in))
+                {
+                    forms = nlohmann::json::parse(in, nullptr, false);
+                }
+                fclose(in);
             }
-            fclose(in);
+            first = false;
         }
-        first = false;
+        return forms;
     }
-    return forms;
 }
 
 std::string LanguageStrings::folder(Language lang)

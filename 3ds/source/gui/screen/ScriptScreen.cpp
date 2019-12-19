@@ -40,10 +40,10 @@
 #undef min // Get rid of picoc's min function
 #include <algorithm>
 
-static constexpr std::string_view MAGIC = "PKSMSCRIPT";
-
 namespace
 {
+    constexpr std::string_view MAGIC = "PKSMSCRIPT";
+
     std::string getScriptDir(int version)
     {
         switch (version)
@@ -90,6 +90,28 @@ namespace
         static Picoc picoc;
         PicocInitialise(&picoc, PICOC_STACKSIZE);
         return &picoc;
+    }
+
+    std::vector<u8> scriptRead(const std::string& path)
+    {
+        std::vector<u8> ret;
+        size_t size = 0;
+        FILE* in    = fopen(path.c_str(), "rb");
+        fseek(in, 0, SEEK_END);
+        if (!ferror(in))
+        {
+            size = ftell(in);
+            fseek(in, 0, SEEK_SET);
+            ret = std::vector<u8>(size);
+            fread(ret.data(), 1, size, in);
+        }
+        else
+        {
+            Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
+        }
+        fclose(in);
+
+        return ret;
     }
 }
 
@@ -263,28 +285,6 @@ void ScriptScreen::updateEntries()
             return false;
         }
     });
-}
-
-static std::vector<u8> scriptRead(const std::string& path)
-{
-    std::vector<u8> ret;
-    size_t size = 0;
-    FILE* in    = fopen(path.c_str(), "rb");
-    fseek(in, 0, SEEK_END);
-    if (!ferror(in))
-    {
-        size = ftell(in);
-        fseek(in, 0, SEEK_SET);
-        ret = std::vector<u8>(size);
-        fread(ret.data(), 1, size, in);
-    }
-    else
-    {
-        Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
-    }
-    fclose(in);
-
-    return ret;
 }
 
 void ScriptScreen::applyScript()

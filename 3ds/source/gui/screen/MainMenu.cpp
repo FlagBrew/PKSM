@@ -39,45 +39,48 @@
 #include "revision.h"
 #include "utils.hpp"
 
-static bool goToScreen(int buttonNum)
+namespace
 {
-    switch (buttonNum)
+    bool goToScreen(int buttonNum)
     {
-        case 0:
-            if (TitleLoader::save->partyCount() < 1)
-            {
-                Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
-                return false;
-            }
-            Gui::setScreen(std::make_unique<StorageScreen>());
-            return true;
-        case 1:
-            if (TitleLoader::save->partyCount() < 1)
-            {
-                Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
-                return false;
-            }
-            Gui::setScreen(std::make_unique<EditSelectorScreen>());
-            return true;
-        case 2:
-            if (TitleLoader::save->generation() == Generation::LGPE)
-            {
-                Gui::warn(i18n::localize("NO_WONDERCARDS"));
-                return false;
-            }
-            Gui::setScreen(std::make_unique<InjectSelectorScreen>());
-            return true;
-        case 3:
-            Gui::setScreen(std::make_unique<ScriptScreen>());
-            return true;
-        case 4:
-            Gui::setScreen(std::make_unique<BagScreen>());
-            return true;
-        case 5:
-            Gui::setScreen(std::make_unique<ConfigScreen>());
-            return true;
+        switch (buttonNum)
+        {
+            case 0:
+                if (TitleLoader::save->partyCount() < 1)
+                {
+                    Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
+                    return false;
+                }
+                Gui::setScreen(std::make_unique<StorageScreen>());
+                return true;
+            case 1:
+                if (TitleLoader::save->partyCount() < 1)
+                {
+                    Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
+                    return false;
+                }
+                Gui::setScreen(std::make_unique<EditSelectorScreen>());
+                return true;
+            case 2:
+                if (TitleLoader::save->generation() == Generation::LGPE)
+                {
+                    Gui::warn(i18n::localize("NO_WONDERCARDS"));
+                    return false;
+                }
+                Gui::setScreen(std::make_unique<InjectSelectorScreen>());
+                return true;
+            case 3:
+                Gui::setScreen(std::make_unique<ScriptScreen>());
+                return true;
+            case 4:
+                Gui::setScreen(std::make_unique<BagScreen>());
+                return true;
+            case 5:
+                Gui::setScreen(std::make_unique<ConfigScreen>());
+                return true;
+        }
+        return true;
     }
-    return true;
 }
 
 MainMenu::MainMenu()
