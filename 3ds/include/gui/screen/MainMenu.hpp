@@ -29,6 +29,7 @@
 
 #include "Language.hpp"
 #include "Screen.hpp"
+#include "sha256.h"
 #include <array>
 
 class Button;
@@ -43,12 +44,15 @@ public:
     void drawBottom() const override;
     void setTimer(bool time) { doTimer = time; }
     void makeButtons();
+    void save();
+    bool needsSave();
 
 private:
-    std::array<std::unique_ptr<Button>, 6> buttons;
+    std::array<std::unique_ptr<Button>, 7> buttons;
     Language oldLang;
     bool justSwitched = true;
     bool doTimer      = false;
+    std::array<u8, SHA256_BLOCK_SIZE> oldHash;
 };
 
 #endif

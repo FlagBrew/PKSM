@@ -26,6 +26,7 @@
 
 #include "MainMenu.hpp"
 #include "BagScreen.hpp"
+#include "ClickButton.hpp"
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "EditSelectorScreen.hpp"
@@ -86,15 +87,16 @@ namespace
 MainMenu::MainMenu()
 {
     oldLang = Configuration::getInstance().language();
+    if (TitleLoader::save->generation() == Generation::FIVE)
+    {
+        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+    }
+    sha256(oldHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     makeButtons();
 }
 
 void MainMenu::makeButtons()
 {
-    if (TitleLoader::save->generation() == Generation::FIVE)
-    {
-        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-    }
     buttons[0] = std::make_unique<MainMenuButton>(
         15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
     buttons[1] = std::make_unique<MainMenuButton>(
@@ -107,6 +109,15 @@ void MainMenu::makeButtons()
         15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, i18n::localize("BAG"), FONT_SIZE_15, COLOR_WHITE, 157);
     buttons[5] = std::make_unique<MainMenuButton>(
         165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, i18n::localize("SETTINGS"), FONT_SIZE_15, COLOR_WHITE, 160);
+    buttons[6] = std::make_unique<ClickButton>(289, 211, 28, 28,
+        [this]() {
+            if (needsSave())
+            {
+                save();
+            }
+            return false;
+        },
+        ui_sheet_button_save_idx, "", 0, COLOR_BLACK);
 }
 
 MainMenu::~MainMenu()
@@ -230,16 +241,55 @@ void MainMenu::update(touchPosition* touch)
     }
     if (keysDown() & KEY_B)
     {
-        if (Gui::showChoiceMessage(
-                i18n::localize("SAVE_CHANGES_1") + '\n' + i18n::localize("SAVE_CHANGES_2"), doTimer ? 250000000 : 0)) // Half second
+        if (!needsSave() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
         {
-            if (TitleLoader::save->generation() == Generation::FIVE)
-            {
-                ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-            }
-            TitleLoader::saveChanges();
+            Gui::screenBack();
+            return;
         }
-        Gui::screenBack();
-        return;
     }
+}
+
+bool MainMenu::needsSave()
+{
+    std::array<u8, SHA256_BLOCK_SIZE> newHash;
+    sha256(newHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    if (memcmp(newHash.data(), oldHash.data(), SHA256_BLOCK_SIZE))
+    {
+        return true;
+    }
+    return false;
+}
+
+void MainMenu::save()
+{
+    if (isLoadedSaveFromBridge())
+    {
+        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
+        {
+            bool sent = sendSaveToBridge();
+            if (!sent)
+            {
+                // save a copy of the modified save to the SD card
+                backupBridgeChanges();
+            }
+        }
+        else
+        {
+            setLoadedSaveFromBridge(false);
+        }
+    }
+    else
+    {
+        Gui::waitFrame(i18n::localize("SAVING"));
+        if (TitleLoader::save->generation() == Generation::FIVE)
+        {
+            ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+        TitleLoader::saveChanges();
+        if (TitleLoader::save->generation() == Generation::FIVE)
+        {
+            ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+    }
+    sha256(oldHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
 }

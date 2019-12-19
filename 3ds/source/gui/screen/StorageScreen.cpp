@@ -53,8 +53,6 @@
 #include <sys/stat.h>
 #include <variant>
 
-extern std::stack<std::unique_ptr<Screen>> screens;
-
 void StorageScreen::setBoxName(bool storage)
 {
     if (storage)
@@ -832,7 +830,6 @@ bool StorageScreen::backButton()
                 }
             }
             Gui::screenBack();
-            ((MainMenu*)screens.top().get())->setTimer(timer);
         }
     }
     return true;
