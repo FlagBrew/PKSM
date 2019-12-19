@@ -93,6 +93,7 @@ MainMenu::MainMenu()
     }
     sha256(oldHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     makeButtons();
+    makeInstructions();
 }
 
 void MainMenu::makeButtons()
@@ -118,6 +119,14 @@ void MainMenu::makeButtons()
             return false;
         },
         ui_sheet_button_save_idx, "", 0, COLOR_BLACK);
+}
+
+void MainMenu::makeInstructions()
+{
+    instructions = Instructions(i18n::localize("B_BACK"));
+    instructions.addBox(false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
+    instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
+    instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
 }
 
 MainMenu::~MainMenu()
@@ -222,6 +231,7 @@ void MainMenu::update(touchPosition* touch)
     {
         oldLang = Configuration::getInstance().language();
         makeButtons();
+        makeInstructions();
     }
     if (justSwitched)
     {

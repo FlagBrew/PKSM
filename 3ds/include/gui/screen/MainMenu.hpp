@@ -42,16 +42,15 @@ public:
     void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;
-    void setTimer(bool time) { doTimer = time; }
     void makeButtons();
     void save();
     bool needsSave();
+    void makeInstructions();
 
 private:
     std::array<std::unique_ptr<Button>, 7> buttons;
     Language oldLang;
     bool justSwitched = true;
-    bool doTimer      = false;
     std::array<u8, SHA256_BLOCK_SIZE> oldHash;
 };
 
