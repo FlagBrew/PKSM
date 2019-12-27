@@ -169,17 +169,15 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
-    u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 4;
+        u16 y = 45 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x                        = 4 + column * 34;
             pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
-            x += 34;
         }
-        y += 30;
     }
     for (int i = 0; i < 6; i++)
     {

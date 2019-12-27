@@ -353,12 +353,12 @@ void StorageScreen::drawTop() const
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
 
-    int y = 66;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 45;
+        u16 y = 66 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x = 45 + column * 34;
             if (currentlySelecting && storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
@@ -371,9 +371,7 @@ void StorageScreen::drawTop() const
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
-            x += 34;
         }
-        y += 30;
     }
 
     Gui::sprite(ui_sheet_stripe_separator_idx, 274, 97);
