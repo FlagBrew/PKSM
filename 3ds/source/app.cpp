@@ -599,6 +599,7 @@ Result App::init(const std::string& execPath)
 Result App::exit(void)
 {
     moveIcon.clear();
+    continueI18N.clear();
     svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
     Gui::exit();
