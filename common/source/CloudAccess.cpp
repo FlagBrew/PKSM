@@ -37,26 +37,6 @@
 
 namespace
 {
-    Generation numToGen(int num)
-    {
-        switch (num)
-        {
-            case 4:
-                return Generation::FOUR;
-            case 5:
-                return Generation::FIVE;
-            case 6:
-                return Generation::SIX;
-            case 7:
-                return Generation::SEVEN;
-            case 8:
-                return Generation::EIGHT;
-            case 254:
-                return Generation::LGPE;
-        }
-        return Generation::UNUSED;
-    }
-
     std::string sortTypeToString(CloudAccess::SortType type)
     {
         switch (type)
@@ -168,9 +148,9 @@ nlohmann::json CloudAccess::grabPage(int num)
 
 std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal)
 {
-    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
-           "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) + "&legal_only=" + (legal ? std::string("yes") : std::string("no")) +
-           "&page=" + std::to_string(num);
+    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&min_gen=4&max_gen=7&lgpe=yes&sort=" + sortTypeToString(type) +
+           "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
+           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num);
 }
 
 std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
@@ -178,7 +158,7 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
     if (slot < (*current->data)["results"].size())
     {
         std::string b64Data = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        Generation gen      = numToGen((*current->data)["results"][slot]["generation"].get<int>());
+        Generation gen      = stringToGen((*current->data)["results"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
@@ -226,7 +206,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
     if (slot < (*current->data)["results"].size())
     {
         std::string b64Data = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        Generation gen      = numToGen((*current->data)["results"][slot]["generation"].get<int>());
+        Generation gen      = stringToGen((*current->data)["results"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
