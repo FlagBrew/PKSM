@@ -547,7 +547,7 @@ Result App::init(const std::string& execPath)
     i18n::init(Configuration::getInstance().language());
 
     continueI18N.test_and_set();
-    Threads::create(i18nThread, nullptr, 1024);
+    Threads::create(i18nThread, nullptr, 16 * 1024);
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -582,12 +582,12 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    if (!Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 1024))
+    if (!Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024))
         return consoleDisplayError("TitleLoader::scanTitles failed to start", -1);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create(cartScan, nullptr, 256);
+    Threads::create(cartScan, nullptr, 16 * 256);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
