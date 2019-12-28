@@ -25,7 +25,7 @@
  */
 
 #include "CloudAccess.hpp"
-// #include "Configuration.hpp"
+#include "Configuration.hpp"
 #include "PK7.hpp"
 #include "PKX.hpp"
 #include "app.hpp"
@@ -367,7 +367,7 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
 {
     long ret            = 0;
     std::string version = "Generation: " + genToString(mon->generation());
-    std::string code    = ""; // Configuration::getInstance().patronCode();
+    std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
     {
         code = "PC: " + code;
