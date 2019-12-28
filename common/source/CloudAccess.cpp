@@ -196,7 +196,7 @@ bool CloudAccess::isLegal(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
-        return (*current->data)["results"][slot]["pokemon"]["legal"].get<bool>();
+        return (*current->data)["results"][slot]["legal"].get<bool>();
     }
     return false;
 }
