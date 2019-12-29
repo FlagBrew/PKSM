@@ -78,8 +78,10 @@ public:
         }
     }
     bool filterLegal() const { return legal; }
+    void filterToGen(Generation g);
+    void removeGenFilter();
     bool good() const { return isGood; }
-    static std::string makeURL(int page, SortType type, bool ascend, bool legal);
+    static std::string makeURL(int page, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
 
 private:
@@ -90,13 +92,17 @@ private:
         std::atomic<bool> available = false;
     };
     void refreshPages();
-    static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal);
+    static void downloadCloudPage(
+        std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;
-    SortType sort = LATEST;
-    bool isGood   = false;
-    bool ascend   = true;
-    bool legal    = false;
+    SortType sort      = LATEST;
+    bool isGood        = false;
+    bool ascend        = true;
+    bool legal         = false;
+    Generation lowGen  = Generation::FOUR;
+    Generation highGen = Generation::SEVEN;
+    bool showLGPE      = true;
 };
 
 #endif
