@@ -52,10 +52,11 @@ namespace
 
 CloudAccess::Page::~Page() {}
 
-void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal)
+void CloudAccess::downloadCloudPage(
+    std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
-    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal), true, retData, nullptr, "");
+    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal, low, high, LGPE), true, retData, nullptr, "");
     Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
@@ -99,12 +100,12 @@ void CloudAccess::refreshPages()
         {
             int page = (pageNumber % pages()) + 1;
             next     = std::make_shared<Page>();
-            downloadCloudPage(next, page, sort, ascend, legal);
+            downloadCloudPage(next, page, sort, ascend, legal, lowGen, highGen, showLGPE);
             if (pages() > 2)
             {
                 page = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
                 prev = std::make_shared<Page>();
-                downloadCloudPage(prev, page, sort, ascend, legal);
+                downloadCloudPage(prev, page, sort, ascend, legal, lowGen, highGen, showLGPE);
             }
             else
             {
@@ -121,7 +122,7 @@ void CloudAccess::refreshPages()
 nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
-    auto fetch = Fetch::init(makeURL(num, sort, ascend, legal), true, &retData, nullptr, "");
+    auto fetch = Fetch::init(makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE), true, &retData, nullptr, "");
     auto res   = Fetch::perform(fetch);
     if (res.index() == 0)
     {
@@ -146,11 +147,12 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
 }
 
-std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal)
+std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&min_gen=4&max_gen=7&lgpe=yes&sort=" + sortTypeToString(type) +
+    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
-           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num);
+           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + genToString(low) +
+           "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
 }
 
 std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
@@ -266,13 +268,13 @@ bool CloudAccess::nextPage()
 
         // Download next page in the background
         int nextPage = (pageNumber % pages()) + 1;
-        downloadCloudPage(next, nextPage, sort, ascend, legal);
+        downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
 
         // If there's a mon number desync, also download the previous page again
         if ((*current->data)["total_pkm"] != (*prev->data)["total_pkm"])
         {
             int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
-            downloadCloudPage(prev, prevPage, sort, ascend, legal);
+            downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
         }
     }
     else if (pages() == 2)
@@ -314,13 +316,13 @@ bool CloudAccess::prevPage()
 
         // Download the next page in the background
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
-        downloadCloudPage(prev, prevPage, sort, ascend, legal);
+        downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
 
         // If there's a mon number desync, also download the next page again
         if ((*current->data)["total_pkm"] != (*next->data)["total_pkm"])
         {
             int nextPage = (pageNumber % pages()) + 1;
-            downloadCloudPage(next, nextPage, sort, ascend, legal);
+            downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
         }
     }
     else if (pages() == 2)
@@ -387,4 +389,26 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
 int CloudAccess::pages() const
 {
     return (*current->data)["pages"].get<int>();
+}
+
+void CloudAccess::filterToGen(Generation g)
+{
+    if (g != Generation::LGPE)
+    {
+        lowGen = highGen = g;
+        showLGPE         = false;
+    }
+    else
+    {
+        lowGen   = Generation::EIGHT;
+        highGen  = Generation::FOUR;
+        showLGPE = true;
+    }
+}
+
+void CloudAccess::removeGenFilter()
+{
+    lowGen   = Generation::FOUR;
+    highGen  = Generation::SEVEN;
+    showLGPE = true;
 }
