@@ -68,7 +68,7 @@ namespace
         SwkbdState state;
         swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
         swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
-        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
         char input[25]  = {0};
         SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
         input[24]       = '\0';
