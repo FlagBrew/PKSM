@@ -213,7 +213,7 @@ public:
 
             if constexpr (std::is_same_v<Mode, PK8>)
             {
-                if (decoded.size() != 0x148 && decoded.size() != 0x158) // TODO: Figure out which one of these is actually used
+                if (decoded.size() != 0x148)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
