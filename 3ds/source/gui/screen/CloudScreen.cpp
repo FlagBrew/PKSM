@@ -902,14 +902,14 @@ void CloudScreen::shareReceive()
     input[10]       = '\0';
     if (ret == SWKBD_BUTTON_MIDDLE)
     {
-        std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
-        if (!data.empty() && data.size() < 12 && data.size() >= 10)
+        std::string data = QRScanner<std::string>::scan();
+        if (data.length() == 10)
         {
             std::copy(data.begin(), data.end(), input);
             input[10] = '\0';
             ret       = SWKBD_BUTTON_CONFIRM;
         }
-        else
+        else if (!data.empty())
         {
             Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
         }

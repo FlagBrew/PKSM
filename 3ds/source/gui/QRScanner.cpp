@@ -25,69 +25,54 @@
  */
 
 #include "QRScanner.hpp"
-#include "Configuration.hpp"
-#include "PGF.hpp"
-#include "PGT.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "Sav.hpp"
-#include "WC4.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
-#include "base64.hpp"
-#include "endian.hpp"
-#include "gui.hpp"
-#include "loader.hpp"
 #include "quirc/quirc.h"
 #include <atomic>
 
-class QRData
-{
-public:
-    QRData() : image{new C3D_Tex, &subtex}, data(quirc_new())
-    {
-        std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
-        C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
-        C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
-        image.tex->border = 0xFFFFFFFF;
-        C3D_TexSetWrap(image.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
-        LightLock_Init(&bufferLock);
-        LightLock_Init(&imageLock);
-        svcCreateEvent(&exitEvent, RESET_STICKY);
-        quirc_resize(data, 400, 240);
-    }
-    ~QRData()
-    {
-        C3D_TexDelete(image.tex);
-        delete image.tex;
-        quirc_destroy(data);
-        svcCloseHandle(exitEvent);
-    }
-    void drawThread();
-    void captureThread();
-    void handler(QRMode mode, std::vector<u8>& out);
-    bool done() { return finished; }
-    bool cancelled() { return cancel; }
-
-private:
-    void buffToImage();
-    void finish();
-    std::array<u16, 400 * 240> cameraBuffer;
-    LightLock bufferLock;
-    C2D_Image image;
-    LightLock imageLock;
-    quirc* data;
-    Handle exitEvent;
-    static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
-    std::atomic<bool> finished                = false;
-    bool capturing                            = false;
-    bool cancel                               = false;
-};
-
 namespace
 {
+    class QRData
+    {
+    public:
+        QRData() : image{new C3D_Tex, &subtex}, data(quirc_new())
+        {
+            std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
+            C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
+            C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
+            image.tex->border = 0xFFFFFFFF;
+            C3D_TexSetWrap(image.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
+            LightLock_Init(&bufferLock);
+            LightLock_Init(&imageLock);
+            svcCreateEvent(&exitEvent, RESET_STICKY);
+            quirc_resize(data, 400, 240);
+        }
+        ~QRData()
+        {
+            C3D_TexDelete(image.tex);
+            delete image.tex;
+            quirc_destroy(data);
+            svcCloseHandle(exitEvent);
+        }
+        void drawThread();
+        void captureThread();
+        void handler(std::vector<u8>& out);
+        bool done() { return finished; }
+        bool cancelled() { return cancel; }
+
+    private:
+        void buffToImage();
+        void finish();
+        std::array<u16, 400 * 240> cameraBuffer;
+        LightLock bufferLock;
+        C2D_Image image;
+        LightLock imageLock;
+        quirc* data;
+        Handle exitEvent;
+        static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
+        std::atomic<bool> finished                = false;
+        bool capturing                            = false;
+        bool cancel                               = false;
+    };
+
     void drawHelp(void* arg)
     {
         QRData* data = (QRData*)arg;
@@ -239,7 +224,7 @@ void QRData::captureThread()
     finished = true;
 }
 
-void QRData::handler(QRMode mode, std::vector<u8>& out)
+void QRData::handler(std::vector<u8>& out)
 {
     hidScanInput();
     if (hidKeysDown() & KEY_B)
@@ -289,141 +274,13 @@ void QRData::handler(QRMode mode, std::vector<u8>& out)
         if (!quirc_decode(&code, &scan_data))
         {
             finish();
-            switch (mode)
-            {
-                case QRMode::WC4:
-                {
-                    static constexpr int wcHeader = 6; // strlen("null/#")
-                    out                           = base64_decode(scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                    if (out.size() != PGT::length && out.size() != WC4::length)
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::WC5:
-                {
-                    static constexpr int wcHeader = 6; // strlen("null/#")
-                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                    if (out.size() != PGF::length)
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::WC6:
-                {
-                    static constexpr int wcHeader = 38; // strlen("http://lunarcookies.github.io/wc.html#")
-                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                    if (out.size() != WC6::length && out.size() != WC6::lengthFull)
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::WC7:
-                {
-                    static constexpr int wcHeader = 6; // strlen("null/#")
-                    out                           = base64_decode((const char*)scan_data.payload + wcHeader, scan_data.payload_len - wcHeader);
-
-                    if (out.size() != WC7::length && out.size() != WC7::lengthFull)
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::PK4:
-                {
-                    static constexpr int pkHeader = 6; // strlen("null/#")
-                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                    if (out.size() != 136) // PK4/5 length
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::PK5:
-                {
-                    static constexpr int pkHeader = 6; // strlen("null/#")
-                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                    if (out.size() != 136) // PK4/5 length
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::PK6:
-                {
-                    static constexpr int pkHeader = 40; // strlen("http://lunarcookies.github.io/b1s1.html#")
-                    out                           = base64_decode((const char*)scan_data.payload + pkHeader, scan_data.payload_len - pkHeader);
-
-                    if (PKX::genFromBytes(out.data(), out.size(), true) != 6) // PK6 length
-                    {
-                        out.clear();
-                    }
-                }
-                break;
-                case QRMode::PK7:
-                {
-                    if (scan_data.payload_len != 0x1A2)
-                    {
-                        return;
-                    }
-
-                    u32 box    = Endian::convertTo<u32>(scan_data.payload + 8);
-                    u32 slot   = Endian::convertTo<u32>(scan_data.payload + 12);
-                    u32 copies = Endian::convertTo<u32>(scan_data.payload + 16);
-
-                    if (box > 31)
-                    {
-                        box = 31;
-                    }
-                    if (slot > 29)
-                    {
-                        slot = 29;
-                    }
-
-                    if (copies > 1)
-                    {
-                        if ((int)box < TitleLoader::save->maxBoxes() && slot < 30)
-                        {
-                            std::shared_ptr<PKX> pkx = std::make_shared<PK7>(scan_data.payload + 0x30, true);
-                            for (u32 i = 0; i < copies; i++)
-                            {
-                                u32 tmpSlot = (slot + i) % 30;
-                                u32 tmpBox  = box + (slot + i) / 30;
-                                if ((int)tmpBox < TitleLoader::save->maxBoxes() && tmpSlot < 30)
-                                {
-                                    TitleLoader::save->pkm(pkx, tmpBox, tmpSlot, false);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        out.resize(232);
-                        std::copy(scan_data.payload + 0x30, scan_data.payload + 0x30 + 232, out.begin());
-                    }
-                }
-                break;
-                case QRMode::TEXT:
-                {
-                    out.resize(scan_data.payload_len + 1);
-                    std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
-                    out[scan_data.payload_len] = '\0';
-                }
-                break;
-            }
+            out.resize(scan_data.payload_len);
+            std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
         }
     }
 }
 
-std::vector<u8> QRScanner::scan(QRMode mode)
+std::vector<u8> QR_Internal::scan()
 {
     std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
@@ -431,12 +288,8 @@ std::vector<u8> QRScanner::scan(QRMode mode)
     threadCreate((ThreadFunc)&drawHelp, data.get(), 0x10000, 0x1A, 1, true);
     while (!data->done())
     {
-        data->handler(mode, out);
+        data->handler(out);
     }
     aptSetHomeAllowed(true);
-    if (!data->cancelled() && out.empty())
-    {
-        Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
-    }
     return out;
 }

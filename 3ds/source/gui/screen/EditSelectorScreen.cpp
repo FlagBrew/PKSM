@@ -89,58 +89,36 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    QRMode initMode = QRMode::PK4;
+    std::shared_ptr<PKX> pkm;
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            initMode = QRMode::PK4;
+            pkm = QRScanner<PK4>::scan();
             break;
         case Generation::FIVE:
-            initMode = QRMode::PK5;
+            pkm = QRScanner<PK5>::scan();
             break;
         case Generation::SIX:
-            initMode = QRMode::PK6;
+            pkm = QRScanner<PK6>::scan();
             break;
         case Generation::SEVEN:
-            initMode = QRMode::PK7;
+            pkm = QRScanner<PK7>::scan();
+            break;
+        case Generation::EIGHT:
+            pkm = QRScanner<PK8>::scan();
             break;
         case Generation::UNUSED:
-        case Generation::EIGHT:
         case Generation::LGPE:
             return false;
     }
 
-    std::vector<u8> data = QRScanner::scan(initMode);
-
-    if (!data.empty())
+    if (pkm)
     {
-        std::shared_ptr<PKX> pkm = nullptr;
-
-        switch (TitleLoader::save->generation())
-        {
-            case Generation::FOUR:
-                pkm = std::make_shared<PK4>(data.data(), true);
-                break;
-            case Generation::FIVE:
-                pkm = std::make_shared<PK5>(data.data(), true);
-                break;
-            case Generation::SIX:
-                pkm = std::make_shared<PK6>(data.data(), true);
-                break;
-            case Generation::SEVEN:
-                pkm = std::make_shared<PK7>(data.data(), true);
-                break;
-            default:
-                break;
-        }
-
-        if (pkm) // Should be true, but just make sure
-        {
-            int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
-            TitleLoader::save->pkm(pkm, box, slot, false);
-        }
+        int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
+        TitleLoader::save->pkm(pkm, box, slot, false);
+        return true;
     }
-    return true;
+    return false;
 }
 
 EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))

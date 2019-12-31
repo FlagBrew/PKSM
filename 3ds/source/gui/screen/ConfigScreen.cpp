@@ -92,12 +92,16 @@ namespace
         input[44]       = '\0';
         if (ret == SWKBD_BUTTON_MIDDLE)
         {
-            std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
-            if (!data.empty() && data.size() == 22)
+            std::string data = QRScanner<std::string>::scan();
+            if (data.length() == 22)
             {
                 std::copy(data.begin(), data.end(), input);
-                input[21] = '\0';
+                input[22] = '\0';
                 ret       = SWKBD_BUTTON_CONFIRM;
+            }
+            else if (!data.empty())
+            {
+                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
             }
         }
         if (ret == SWKBD_BUTTON_CONFIRM)

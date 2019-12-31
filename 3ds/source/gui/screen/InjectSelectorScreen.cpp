@@ -326,55 +326,33 @@ void InjectSelectorScreen::drawTop() const
 
 bool InjectSelectorScreen::doQR()
 {
-    QRMode initMode;
+    std::unique_ptr<WCX> wcx;
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            initMode = QRMode::WC4;
+            wcx = QRScanner<WC4>::scan();
             break;
         case Generation::FIVE:
-            initMode = QRMode::WC5;
+            wcx = QRScanner<PGF>::scan();
             break;
         case Generation::SIX:
-            initMode = QRMode::WC6;
+            wcx = QRScanner<WC6>::scan();
             break;
         case Generation::SEVEN:
-            initMode = QRMode::WC7;
+            wcx = QRScanner<WC7>::scan();
+            break;
+        case Generation::EIGHT:
+            wcx = QRScanner<WC8>::scan();
             break;
         default:
             return false;
     }
 
-    std::vector<u8> data = QRScanner::scan(initMode);
-
-    if (!data.empty())
+    if (wcx)
     {
-        std::unique_ptr<WCX> wcx = nullptr;
-
-        switch (TitleLoader::save->generation())
-        {
-            case Generation::FOUR:
-                wcx = std::make_unique<PGT>(data.data());
-                break;
-            case Generation::FIVE:
-                wcx = std::make_unique<PGF>(data.data());
-                break;
-            case Generation::SIX:
-                wcx = std::make_unique<WC6>(data.data());
-                break;
-            case Generation::SEVEN:
-                wcx = std::make_unique<WC7>(data.data());
-                break;
-            default:
-                break;
-        }
-
-        if (wcx)
-        {
-            Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
-            updateGifts = true;
-            return true;
-        }
+        Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
+        updateGifts = true;
+        return true;
     }
     return false;
 }

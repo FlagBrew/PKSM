@@ -34,7 +34,6 @@
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "PK4.hpp"
-#include "QRScanner.hpp"
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
