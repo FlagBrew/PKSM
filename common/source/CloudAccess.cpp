@@ -250,98 +250,61 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 
 bool CloudAccess::nextPage()
 {
-    if (pages() > 2)
+    while (!next->available)
     {
-        while (!next->available)
-        {
-            usleep(100);
-        }
-        if (!next->data || next->data->is_discarded())
-        {
-            return isGood = false;
-        }
-        // Update data
-        pageNumber = (pageNumber % pages()) + 1;
-        prev       = current;
-        current    = next;
-        next       = std::make_shared<Page>();
-
-        // Download next page in the background
-        int nextPage = (pageNumber % pages()) + 1;
-        downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
-
-        // If there's a mon number desync, also download the previous page again
-        if ((*current->data)["total_pkm"] != (*prev->data)["total_pkm"])
-        {
-            int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
-            downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
-        }
+        usleep(100);
     }
-    else if (pages() == 2)
+    if (!next->data || next->data->is_discarded())
     {
-        while (!next->available)
-        {
-            usleep(100);
-        }
-        if (!next->data || next->data->is_discarded())
-        {
-            return isGood = false;
-        }
-
-        prev    = current;
-        current = next;
-        next    = prev;
+        return isGood = false;
     }
-    // Otherwise there's only one page, so no necessary action
+    // Update data
+    pageNumber = (pageNumber % pages()) + 1;
+    prev       = current;
+    current    = next;
+    next       = std::make_shared<Page>();
+
+    // Download next page in the background
+    int nextPage = (pageNumber % pages()) + 1;
+    downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
+
+    // If there's a mon number desync, also download the previous page again
+    if ((*current->data)["total_pkm"] != (*prev->data)["total_pkm"])
+    {
+        int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+        downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
+    }
+
     return isGood;
 }
 
 bool CloudAccess::prevPage()
 {
-    if (pages() > 2)
+    while (!prev->available)
     {
-        while (!prev->available)
-        {
-            usleep(100);
-        }
-        if (!prev->data || prev->data->is_discarded())
-        {
-            return isGood = false;
-        }
-        // Update data
-        pageNumber = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
-        next       = current;
-        current    = prev;
-        prev       = std::make_shared<Page>();
-
-        // Download the next page in the background
-        int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
-        downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
-
-        // If there's a mon number desync, also download the next page again
-        if ((*current->data)["total_pkm"] != (*next->data)["total_pkm"])
-        {
-            int nextPage = (pageNumber % pages()) + 1;
-            downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
-        }
+        usleep(100);
     }
-    else if (pages() == 2)
+    if (!prev->data || prev->data->is_discarded())
     {
-        while (!prev->available)
-        {
-            usleep(100);
-        }
-        if (!prev->data || prev->data->is_discarded())
-        {
-            return isGood = false;
-        }
-
-        // Swap pages around
-        next    = current;
-        current = prev;
-        prev    = next;
+        return isGood = false;
     }
-    // Otherwise, there's only one page, so no action is necessary
+    // Update data
+    pageNumber = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+    next       = current;
+    current    = prev;
+    prev       = std::make_shared<Page>();
+
+    // Download the next page in the background
+    int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
+    downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
+
+    // If there's a mon number desync, also download the next page again
+    if ((*current->data)["total_pkm"] != (*next->data)["total_pkm"])
+    {
+        int nextPage = (pageNumber % pages()) + 1;
+        downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
+    }
+
     return isGood;
 }
 
