@@ -288,47 +288,16 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
                 StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
             return;
         }
-        bool moveBad = false;
-        for (int i = 0; i < 4; i++)
+        std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
+        if (!invalidReasons.empty())
         {
-            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-            {
-                moveBad = true;
-                break;
-            }
-            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-            {
-                moveBad = true;
-                break;
-            }
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
         }
-        if (moveBad)
+        else
         {
-            return;
+            TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
+            TitleLoader::save->dex(pkm);
         }
-        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-        {
-            return;
-        }
-        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-        {
-            return;
-        }
-        TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-        TitleLoader::save->dex(pkm);
     }
 }
 
@@ -674,47 +643,16 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
                 StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
             return;
         }
-        bool moveBad = false;
-        for (int i = 0; i < 4; i++)
+        std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
+        if (!invalidReasons.empty())
         {
-            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-            {
-                moveBad = true;
-                break;
-            }
-            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-            {
-                moveBad = true;
-                break;
-            }
+            Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
         }
-        if (moveBad)
+        else
         {
-            return;
+            TitleLoader::save->pkm(pkm, slot);
+            TitleLoader::save->dex(pkm);
         }
-        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-        {
-            return;
-        }
-        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-        {
-            return;
-        }
-        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-        {
-            return;
-        }
-        TitleLoader::save->pkm(pkm, slot);
-        TitleLoader::save->dex(pkm);
     }
 }
 
