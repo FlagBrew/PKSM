@@ -24,15 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "CloudScreen.hpp"
+#include "GroupCloudScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
-#include "CloudOverlay.hpp"
+#include "CloudScreen.hpp"
 #include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
-#include "GroupCloudScreen.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
 #include "QRScanner.hpp"
@@ -45,50 +44,15 @@
 #include "i18n.hpp"
 #include "io.hpp"
 #include "loader.hpp"
+#include "nlohmann/json.hpp"
+#include <algorithm>
 #include <sys/stat.h>
 
-namespace
-{
-    size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
-    {
-        std::string tmp(buffer, size * nitems);
-        if (tmp.find("Generation:") == 0)
-        {
-            tmp = tmp.substr(12);
-            if (tmp.find("4") == 0)
-            {
-                *(Generation*)(userdata) = Generation::FOUR;
-            }
-            else if (tmp.find("5") == 0)
-            {
-                *(Generation*)(userdata) = Generation::FIVE;
-            }
-            else if (tmp.find("6") == 0)
-            {
-                *(Generation*)(userdata) = Generation::SIX;
-            }
-            else if (tmp.find("7") == 0)
-            {
-                *(Generation*)(userdata) = Generation::SEVEN;
-            }
-            else if (tmp.find("LGPE") == 0)
-            {
-                *(Generation*)(userdata) = Generation::LGPE;
-            }
-            else if (tmp.find("8") == 0)
-            {
-                *(Generation*)(userdata) = Generation::EIGHT;
-            }
-        }
-        return nitems * size;
-    }
-}
-
-CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
+GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
-             i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
+             i18n::localize("START_FILTER_LEGAL") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
-      filter(filter == nullptr ? std::make_shared<PKFilter>() : filter),
+      filter(filter ? filter : std::make_shared<PKFilter>()),
       storageBox(storageBox)
 {
     mainButtons[0] = std::make_unique<ClickButton>(212, 78, 108, 28,
@@ -127,7 +91,7 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
         std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
 }
 
-void CloudScreen::drawBottom() const
+void GroupCloudScreen::drawBottom() const
 {
     if (!access.good())
     {
@@ -153,36 +117,40 @@ void CloudScreen::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            if (saveChosen && storageBox * 30 + row * 6 + column > TitleLoader::save->maxSlot())
-            {
-                break;
-            }
-            std::shared_ptr<PKX> pokemon =
-                saveChosen ? TitleLoader::save->pkm(storageBox, row * 6 + column) : Banks::bank->pkm(storageBox, row * 6 + column);
+            std::shared_ptr<PKX> pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
             if (pokemon->species() > 0)
             {
                 float blend = *pokemon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
+            }
+            for (size_t i = 0; i < toSend.size(); i++)
+            {
+                if (toSend[i].first == storageBox && toSend[i].second == row * 6 + column)
+                {
+                    Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + i, x + 26, y + 24);
+                }
             }
             x += 34;
         }
         y += 30;
     }
 
-    std::string showMe = saveChosen ? TitleLoader::save->boxName(storageBox) : Banks::bank->boxName(storageBox);
-
-    Gui::text(showMe, 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!cloudChosen)
     {
         if (cursorIndex == 0)
         {
             int dy = Gui::pointerBob();
-            if (moveMon)
+            if (!groupPkm.empty())
             {
-                float blend = *moveMon == *filter ? 0.0f : 0.5f;
-                Gui::pkm(*moveMon, 97, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 94, 5 + dy, 1.0f, COLOR_BLACK, blend);
+                int x = 97 - 34;
+                for (size_t i = groupPkm.size(); i > 0; i--)
+                {
+                    float blend = *groupPkm[i - 1] == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(*groupPkm[i - 1], x += 34, 10 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*groupPkm[i - 1], x - 3, 5 + dy, 1.0f, COLOR_BLACK, blend);
+                }
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
         }
@@ -190,18 +158,22 @@ void CloudScreen::drawBottom() const
         {
             int tempIndex = cursorIndex - 1;
             int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
-            if (moveMon)
+            if (!groupPkm.empty())
             {
-                float blend = *moveMon == *filter ? 0.0f : 0.5f;
-                Gui::pkm(*moveMon, 12 + (tempIndex % 6) * 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod, 1.0f, COLOR_BLACK, blend);
+                int x = 12 + (tempIndex % 6) * 34 - 34;
+                for (size_t i = groupPkm.size(); i > 0; i--)
+                {
+                    float blend = *groupPkm[i - 1] == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(*groupPkm[i - 1], x += 34, 44 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*groupPkm[i - 1], x - 3, 39 + yMod, 1.0f, COLOR_BLACK, blend);
+                }
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
         }
     }
 }
 
-void CloudScreen::drawTop() const
+void GroupCloudScreen::drawTop() const
 {
     if (!access.good())
     {
@@ -217,7 +189,7 @@ void CloudScreen::drawTop() const
 
     if (cloudChosen && infoMon)
     {
-        if (access.isLegal(cursorIndex - 1))
+        if (access.isLegal((cursorIndex - 1) / 6, (cursorIndex - 1) % 6))
         {
             Gui::sprite(ui_sheet_textbox_legal_idx, 261, 34);
             Gui::text(i18n::localize("LEGALITY_LEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
@@ -246,7 +218,7 @@ void CloudScreen::drawTop() const
         u16 x = 45;
         for (u8 column = 0; column < 6; column++)
         {
-            auto pkm = access.pkm(row * 6 + column);
+            auto pkm = access.pkm(row, column);
             if (pkm->species() > 0)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
@@ -270,11 +242,15 @@ void CloudScreen::drawTop() const
         if (cursorIndex == 0)
         {
             int dy = Gui::pointerBob();
-            if (moveMon)
+            if (!groupPkm.empty())
             {
-                float blend = *moveMon == *filter ? 0.0f : 0.5f;
-                Gui::pkm(*moveMon, 138, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 135, 11 + dy, 1.0f, COLOR_BLACK, blend);
+                int x = 138 - 34;
+                for (size_t i = groupPkm.size(); i > 0; i--)
+                {
+                    float blend = *groupPkm[i - 1] == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(*groupPkm[i - 1], x += 34, 16 + dy, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*groupPkm[i - 1], x - 3, 11 + dy, 1.0f, COLOR_BLACK, blend);
+                }
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 147, 2 + dy);
         }
@@ -282,11 +258,15 @@ void CloudScreen::drawTop() const
         {
             int tempIndex = cursorIndex - 1;
             int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
-            if (moveMon)
+            if (!groupPkm.empty())
             {
-                float blend = *moveMon == *filter ? 0.0f : 0.5f;
-                Gui::pkm(*moveMon, 53 + (tempIndex % 6) * 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(*moveMon, 50 + (tempIndex % 6) * 34, 60 + yMod, 1.0f, COLOR_BLACK, blend);
+                int x = 53 + (tempIndex % 6) * 34 - 34;
+                for (size_t i = groupPkm.size(); i > 0; i--)
+                {
+                    float blend = *groupPkm[i - 1] == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(*groupPkm[i - 1], x += 34, 65 + yMod, 1.0f, COLOR_GREY_BLEND, 1.0f);
+                    Gui::pkm(*groupPkm[i - 1], x - 3, 60 + yMod, 1.0f, COLOR_BLACK, blend);
+                }
             }
             Gui::sprite(ui_sheet_pointer_arrow_idx, 62 + (tempIndex % 6) * 34, 51 + yMod);
         }
@@ -356,7 +336,7 @@ void CloudScreen::drawTop() const
     }
 }
 
-void CloudScreen::update(touchPosition* touch)
+void GroupCloudScreen::update(touchPosition* touch)
 {
     if (!access.good())
     {
@@ -385,36 +365,6 @@ void CloudScreen::update(touchPosition* touch)
         return;
     }
 
-    if (kDown & KEY_X)
-    {
-        if (infoMon && !cloudChosen)
-        {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-            {
-                return;
-            }
-            shareSend();
-        }
-        else
-        {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-            {
-                return;
-            }
-            shareReceive();
-        }
-    }
-
-    if (kDown & KEY_Y)
-    {
-        std::unique_ptr<Screen> screen = std::make_unique<GroupCloudScreen>(storageBox, filter);
-        Gui::screenBack();
-        Gui::setScreen(std::move(screen));
-        return;
-        // saveChosen = !saveChosen;
-        // storageBox = 0;
-    }
-
     for (auto& button : mainButtons)
     {
         if (button->update(touch))
@@ -435,10 +385,35 @@ void CloudScreen::update(touchPosition* touch)
             pickup();
         }
     }
+    else if (kDown & KEY_Y)
+    {
+        std::unique_ptr<Screen> screen = std::make_unique<CloudScreen>(storageBox, filter);
+        Gui::screenBack();
+        Gui::setScreen(std::move(screen));
+        return;
+    }
+    else if (kDown & KEY_X)
+    {
+        if (toSend.size() > 1)
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+            {
+                return;
+            }
+            shareSend();
+        }
+        else if (groupPkm.empty())
+        {
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
+            {
+                return;
+            }
+            shareReceive();
+        }
+    }
     else if (kDown & KEY_START)
     {
-        addOverlay<CloudOverlay>(access);
-        justSwitched = true;
+        access.filterLegal(!access.filterLegal());
     }
     else if (buttonCooldown <= 0)
     {
@@ -566,11 +541,7 @@ void CloudScreen::update(touchPosition* touch)
     {
         if (cloudChosen)
         {
-            infoMon = access.pkm(cursorIndex - 1);
-        }
-        else if (saveChosen)
-        {
-            infoMon = TitleLoader::save->pkm(storageBox, cursorIndex - 1);
+            infoMon = access.pkm((cursorIndex - 1) / 6, (cursorIndex - 1) % 6);
         }
         else
         {
@@ -587,85 +558,54 @@ void CloudScreen::update(touchPosition* touch)
     }
 }
 
-void CloudScreen::pickup()
+void GroupCloudScreen::pickup()
 {
-    if (!moveMon)
+    if (groupPkm.empty())
     {
         if (cloudChosen)
         {
-            auto cloudMon = access.pkm(cursorIndex - 1);
-            if (cloudMon && cloudMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+            auto group = access.group((cursorIndex - 1) / 6);
+            if (!group.empty() && (size_t)(cursorIndex - 1) % 6 < group.size())
             {
-                moveMon = access.fetchPkm(cursorIndex - 1);
+                if (Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+                {
+                    auto temp = access.fetchGroup((cursorIndex - 1) / 6);
+                    for (auto it = temp.rbegin(); it != temp.rend(); ++it)
+                    {
+                        groupPkm.emplace_back(*it);
+                    }
+                }
             }
-            else
-            {
-                moveMon = nullptr;
-            }
-        }
-        else if (saveChosen)
-        {
-            moveMon = TitleLoader::save->pkm(storageBox, cursorIndex - 1);
         }
         else
         {
-            moveMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        }
-
-        if (moveMon && moveMon->species() == 0)
-        {
-            moveMon = nullptr;
+            std::pair<int, int> thisPair = {storageBox, cursorIndex - 1};
+            auto it                      = std::find(toSend.begin(), toSend.end(), thisPair);
+            if (it == toSend.end())
+            {
+                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != 0)
+                {
+                    toSend.push_back(thisPair);
+                    if (toSend.size() == 6 && Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
+                    {
+                        shareSend();
+                    }
+                }
+            }
+            else
+            {
+                toSend.erase(it);
+            }
         }
     }
-    else
+    else if (!cloudChosen && Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == 0)
     {
-        if (cloudChosen && Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
-        {
-            switch (long status_code = access.pkm(moveMon))
-            {
-                case 200:
-                case 201:
-                    break;
-                case 400:
-                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
-                    break;
-                case 401:
-                    Gui::warn(i18n::localize("GPSS_BANNED"));
-                    break;
-                case 503:
-                    Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
-                    break;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    break;
-            }
-            moveMon = nullptr;
-        }
-        else if (!cloudChosen)
-        {
-            auto oldMon       = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
-            bool goodTransfer = !saveChosen || isValidTransfer(moveMon);
-            if (saveChosen && goodTransfer)
-            {
-                TitleLoader::save->pkm(moveMon, storageBox, cursorIndex - 1, false);
-            }
-            else if (!saveChosen)
-            {
-                Banks::bank->pkm(moveMon, storageBox, cursorIndex - 1);
-            }
-            if (oldMon && oldMon->species() == 0)
-            {
-                moveMon = nullptr;
-            }
-            else if (goodTransfer)
-            {
-                moveMon = oldMon;
-            }
-        }
+        Banks::bank->pkm(groupPkm.back(), storageBox, cursorIndex - 1);
+        groupPkm.pop_back();
     }
 }
 
-bool CloudScreen::prevBox(bool forceBottom)
+bool GroupCloudScreen::prevBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
@@ -681,13 +621,13 @@ bool CloudScreen::prevBox(bool forceBottom)
         storageBox--;
         if (storageBox == -1)
         {
-            storageBox = saveChosen ? TitleLoader::save->maxBoxes() - 1 : Banks::bank->boxes() - 1;
+            storageBox = Banks::bank->boxes() - 1;
         }
     }
     return false;
 }
 
-bool CloudScreen::prevBoxTop()
+bool GroupCloudScreen::prevBoxTop()
 {
     if (!access.prevPage())
     {
@@ -698,7 +638,7 @@ bool CloudScreen::prevBoxTop()
     return false;
 }
 
-bool CloudScreen::nextBox(bool forceBottom)
+bool GroupCloudScreen::nextBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
@@ -712,7 +652,7 @@ bool CloudScreen::nextBox(bool forceBottom)
     else
     {
         storageBox++;
-        if (storageBox == (saveChosen ? TitleLoader::save->maxBoxes() : Banks::bank->boxes()))
+        if (storageBox == Banks::bank->boxes())
         {
             storageBox = 0;
         }
@@ -720,7 +660,7 @@ bool CloudScreen::nextBox(bool forceBottom)
     return false;
 }
 
-bool CloudScreen::nextBoxTop()
+bool GroupCloudScreen::nextBoxTop()
 {
     if (!access.nextPage())
     {
@@ -731,18 +671,23 @@ bool CloudScreen::nextBoxTop()
     return false;
 }
 
-bool CloudScreen::backButton()
+bool GroupCloudScreen::backButton()
 {
-    if (moveMon)
+    if (!toSend.empty())
     {
-        moveMon = nullptr;
+        toSend.clear();
+        return false;
+    }
+    if (!groupPkm.empty())
+    {
+        groupPkm.pop_back();
         return false;
     }
     Gui::screenBack();
     return true;
 }
 
-bool CloudScreen::showViewer()
+bool GroupCloudScreen::showViewer()
 {
     if (cursorIndex == 0)
     {
@@ -757,32 +702,30 @@ bool CloudScreen::showViewer()
     return true;
 }
 
-bool CloudScreen::releasePkm()
+bool GroupCloudScreen::releasePkm()
 {
     if (!cloudChosen && cursorIndex != 0)
     {
-        auto pkm = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
+        auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
         if (pkm && pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
-            if (saveChosen)
+            auto it = std::find(toSend.begin(), toSend.end(), std::pair<int, int>{storageBox, cursorIndex - 1});
+            if (it != toSend.end())
             {
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1, false);
+                toSend.erase(it);
             }
-            else
-            {
-                Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
-            }
+            Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
             return false;
         }
     }
     return false;
 }
 
-bool CloudScreen::dumpPkm()
+bool GroupCloudScreen::dumpPkm()
 {
     if (!cloudChosen && cursorIndex != 0)
     {
-        auto dumpMon = saveChosen ? TitleLoader::save->pkm(storageBox, cursorIndex - 1) : Banks::bank->pkm(storageBox, cursorIndex - 1);
+        auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         if (dumpMon && dumpMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             char stringDate[12]   = {0};
@@ -819,7 +762,7 @@ bool CloudScreen::dumpPkm()
     return false;
 }
 
-bool CloudScreen::clickBottomIndex(int index)
+bool GroupCloudScreen::clickBottomIndex(int index)
 {
     if (cursorIndex == index && !cloudChosen && cursorIndex != 0)
     {
@@ -833,73 +776,38 @@ bool CloudScreen::clickBottomIndex(int index)
     return false;
 }
 
-void CloudScreen::shareSend()
+void GroupCloudScreen::shareSend()
 {
-    long status_code    = 0;
-    std::string version = "Generation: " + genToString(infoMon->generation());
-    std::string code    = Configuration::getInstance().patronCode();
-    if (!code.empty())
+    std::vector<std::shared_ptr<PKX>> sendMe;
+    for (auto& index : toSend)
     {
-        code = "PC: " + code;
+        sendMe.push_back(Banks::bank->pkm(index.first, index.second));
     }
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
-    headers                    = curl_slist_append(headers, version.c_str());
-    if (!code.empty())
+    long status_code = access.group(sendMe);
+    switch (status_code)
     {
-        headers = curl_slist_append(headers, code.c_str());
+        case 200:
+        case 201:
+            break;
+        case 400:
+            Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
+            break;
+        case 401:
+            Gui::warn(i18n::localize("GPSS_BANNED"));
+            break;
+        case 502:
+            Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+            break;
+        case 503:
+            Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
+            break;
+        default:
+            Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+            break;
     }
-
-    std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
-    {
-        auto mimeThing       = fetch->mimeInit();
-        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-        curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)infoMon->rawData(), infoMon->getLength());
-        curl_mime_filename(field, "pkmn");
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 0)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
-        }
-        else if (std::get<1>(res) != CURLE_OK)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-        }
-        else
-        {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
-            {
-                case 200:
-                case 201:
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + writeData);
-                    break;
-                case 400:
-                    Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
-                    break;
-                case 401:
-                    Gui::warn(i18n::localize("GPSS_BANNED"));
-                    break;
-                case 502:
-                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                    break;
-                case 503:
-                    Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
-                    break;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    break;
-            }
-        }
-    }
-    curl_slist_free_all(headers);
 }
 
-void CloudScreen::shareReceive()
+void GroupCloudScreen::shareReceive()
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
@@ -925,14 +833,11 @@ void CloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url  = "https://flagbrew.org/gpss/download/" + std::string(input);
-        std::string retB64Data = "";
-        if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
+        const std::string url = "https://flagbrew.org/gpss/download/bundle/" + std::string(input);
+        std::string jsonData  = "";
+        if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
         {
             long status_code = 0;
-            Generation gen   = Generation::UNUSED;
-            fetch->setopt(CURLOPT_HEADERDATA, &gen);
-            fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
 
             auto res = Fetch::perform(fetch);
             if (res.index() == 0)
@@ -961,72 +866,41 @@ void CloudScreen::shareReceive()
                         Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                         return;
                 }
-                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
+                nlohmann::json groupJson = nlohmann::json::parse(jsonData, nullptr, false);
 
-                size_t targetLength = 0;
-                switch (gen)
+                if (groupJson.is_object() && groupJson.contains("pokemon"))
                 {
-                    case Generation::FOUR:
-                    case Generation::FIVE:
-                        targetLength = 138;
-                        break;
-                    case Generation::SIX:
-                    case Generation::SEVEN:
-                        targetLength = 234;
-                        break;
-                    case Generation::LGPE:
-                        targetLength = 261;
-                        break;
-                    case Generation::EIGHT:
-                        targetLength = 345;
-                    case Generation::UNUSED:
-                        break;
-                }
-                if (retData.size() != targetLength)
-                {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
-                    return;
-                }
-
-                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data());
-
-                if (!cloudChosen && cursorIndex != 0)
-                {
-                    if (saveChosen)
+                    groupPkm.clear();
+                    std::string badVersions;
+                    std::vector<std::shared_ptr<PKX>> temPkm;
+                    for (auto& pkm : groupJson["pokemon"])
                     {
-                        if (isValidTransfer(pkm))
+                        Generation gen       = stringToGen(pkm["generation"].get<std::string>());
+                        std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
+
+                        if (gen != Generation::UNUSED)
                         {
-                            TitleLoader::save->pkm(pkm, storageBox, cursorIndex - 1, false);
+                            temPkm.push_back(PKX::getPKM(gen, data.data()));
                         }
                         else
                         {
-                            moveMon = pkm;
+                            badVersions += pkm["generation"].get<std::string>() + ", ";
                         }
                     }
-                    else
+
+                    for (auto it = temPkm.rbegin(); it != temPkm.rend(); ++it)
                     {
-                        Banks::bank->pkm(pkm, storageBox, cursorIndex - 1);
+                        groupPkm.push_back(*it);
                     }
-                }
-                else
-                {
-                    moveMon = pkm;
+
+                    if (!badVersions.empty())
+                    {
+                        badVersions.pop_back();
+                        badVersions.pop_back();
+                        Gui::warn(i18n::localize("UNSUPPORTED_FORMATS") + badVersions);
+                    }
                 }
             }
         }
-    }
-}
-
-bool CloudScreen::isValidTransfer(std::shared_ptr<PKX> moveMon)
-{
-    std::string invalidReasons = TitleLoader::save->invalidTransferReason(moveMon);
-    if (invalidReasons.empty())
-    {
-        return true;
-    }
-    else
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
-        return false;
     }
 }

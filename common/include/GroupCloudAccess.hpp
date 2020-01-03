@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef CLOUDACCESS_HPP
-#define CLOUDACCESS_HPP
+#ifndef GROUPCLOUDACCESS_HPP
+#define GROUPCLOUDACCESS_HPP
 
 #include "generation.hpp"
 #include "nlohmann/json_fwd.hpp"
@@ -34,42 +34,24 @@
 
 class PKX;
 
-class CloudAccess
+class GroupCloudAccess
 {
 public:
-    enum SortType
-    {
-        LATEST,
-        POPULAR
-    };
-    CloudAccess();
-    std::shared_ptr<PKX> pkm(size_t slot) const;
-    bool isLegal(size_t slot) const;
-    // Gets the Pokémon and increments the server-side download counter
-    std::shared_ptr<PKX> fetchPkm(size_t slot) const;
-    long pkm(std::shared_ptr<PKX> pk);
+    static constexpr int NUM_GROUPS = 5;
+    GroupCloudAccess();
+    std::vector<std::shared_ptr<PKX>> group(size_t groupIndex) const;
+    std::vector<std::shared_ptr<PKX>> fetchGroup(size_t groupIndex) const;
+    long group(std::vector<std::shared_ptr<PKX>> pokemon);
+    std::shared_ptr<PKX> pkm(size_t groupIndex, size_t pkm) const;
+    std::shared_ptr<PKX> fetchPkm(size_t groupIndex, size_t pkm) const;
+    bool isLegal(size_t groupIndex, size_t pkm) const;
+
     int pages() const;
     int page() const { return pageNumber; }
     bool nextPage();
     bool prevPage();
-    void sortType(SortType type)
-    {
-        if (sort != type)
-        {
-            sort = type;
-            refreshPages();
-        }
-    }
-    SortType sortType() const { return sort; }
-    void sortDir(bool ascend)
-    {
-        if (this->ascend != ascend)
-        {
-            this->ascend = ascend;
-            refreshPages();
-        }
-    }
-    bool sortAscending() const { return ascend; }
+
+    bool filterLegal() const { return legal; }
     void filterLegal(bool v)
     {
         if (v != legal)
@@ -78,12 +60,10 @@ public:
             refreshPages();
         }
     }
-    bool filterLegal() const { return legal; }
-    void filterToGen(Generation g);
-    void removeGenFilter();
+
     bool good() const { return isGood; }
-    static std::string makeURL(int page, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
+    static std::string makeURL(int page, bool legal, Generation low, Generation high, bool LGPE);
 
 private:
     struct Page
@@ -93,17 +73,15 @@ private:
         std::atomic<bool> available = false;
     };
     void refreshPages();
-    static void downloadCloudPage(
-        std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
+    static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, Generation low, Generation high, bool LGPE);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;
-    SortType sort      = LATEST;
-    bool isGood        = false;
-    bool ascend        = true;
-    bool legal         = false;
-    Generation lowGen  = Generation::FOUR;
-    Generation highGen = Generation::SEVEN;
-    bool showLGPE      = true;
+    bool isGood = false;
+    bool legal  = false;
+    // Currently not changeable
+    Generation high = Generation::EIGHT;
+    Generation low  = Generation::FOUR;
+    bool LGPE       = true;
 };
 
 #endif

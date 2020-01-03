@@ -138,6 +138,8 @@ public:
     std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
+    // If not empty, run through i18n::localize
+    std::string invalidTransferReason(std::shared_ptr<PKX> pk) const;
 
     virtual u16 TID(void) const               = 0;
     virtual void TID(u16 v)                   = 0;

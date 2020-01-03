@@ -24,21 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef CLOUDSCREEN_HPP
-#define CLOUDSCREEN_HPP
+#ifndef GROUPCLOUDSCREEN_HPP
+#define GROUPCLOUDSCREEN_HPP
 
-#include "CloudAccess.hpp"
+#include "GroupCloudAccess.hpp"
 #include "Screen.hpp"
-#include <array>
 
 class Button;
-class PKFilter;
 class PKX;
+class PKFilter;
 
-class CloudScreen : public Screen
+class GroupCloudScreen : public Screen
 {
 public:
-    CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter = nullptr);
+    GroupCloudScreen(int storageBox, std::shared_ptr<PKFilter> filter);
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
@@ -55,25 +54,26 @@ private:
     bool prevBoxTop();
     bool nextBoxTop();
     bool clickBottomIndex(int index);
-    // Clones from storage (bottom), clones and increments download counter (top), places in storage (bottom), or uploads (top)
+
     void pickup();
 
-    static bool isValidTransfer(std::shared_ptr<PKX> pkm);
-
+    // Will send Pokémon in toSend as a group, then clear it
     void shareSend();
+    // If toSend is empty and groupPkm is empty, grabs the group and sticks it in groupPkm
     void shareReceive();
 
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
     std::shared_ptr<PKX> infoMon = nullptr;
-    std::shared_ptr<PKX> moveMon;
-    CloudAccess access;
+    std::vector<std::shared_ptr<PKX>> groupPkm;
+    // box-index pairs
+    std::vector<std::pair<int, int>> toSend;
     std::shared_ptr<PKFilter> filter;
+    GroupCloudAccess access;
     int cursorIndex   = 0;
     int storageBox    = 0;
     bool justSwitched = true;
     bool cloudChosen  = false;
-    bool saveChosen   = false;
 };
 
 #endif
