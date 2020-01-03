@@ -396,7 +396,7 @@ void GroupCloudScreen::update(touchPosition* touch)
     {
         if (toSend.size() > 1)
         {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
+            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_GROUP_CONFIRM")))
             {
                 return;
             }
@@ -567,7 +567,7 @@ void GroupCloudScreen::pickup()
             auto group = access.group((cursorIndex - 1) / 6);
             if (!group.empty() && (size_t)(cursorIndex - 1) % 6 < group.size())
             {
-                if (Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+                if (Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD_GROUP")))
                 {
                     auto temp = access.fetchGroup((cursorIndex - 1) / 6);
                     for (auto it = temp.rbegin(); it != temp.rend(); ++it)
