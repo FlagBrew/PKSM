@@ -635,18 +635,18 @@ void EditorScreen::partyUpdate()
     constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {
-        if (pkm->partyStat(stats[i]) == origPartyStats[i])
+        if (pkm->partyStat(stats[i]) != origPartyStats[i])
         {
             pkm->partyStat(stats[i], pkm->stat(stats[i]));
             origPartyStats[i] = pkm->stat(stats[i]);
         }
     }
-    if (pkm->partyLevel() == origPartyLevel)
+    if (pkm->partyLevel() != origPartyLevel)
     {
         pkm->partyLevel(pkm->level());
         origPartyLevel = pkm->level();
     }
-    if (pkm->partyCurrHP() == origPartyCurrHP)
+    if (pkm->partyCurrHP() != origPartyCurrHP)
     {
         pkm->partyCurrHP(pkm->stat(Stat::HP));
         origPartyCurrHP = pkm->stat(Stat::HP);
@@ -654,7 +654,7 @@ void EditorScreen::partyUpdate()
     if (pkm->generation() == Generation::LGPE)
     {
         PB7* pb7 = (PB7*)pkm.get();
-        if (pb7->partyCP() == origPartyCP)
+        if (pb7->partyCP() != origPartyCP)
         {
             pb7->partyCP(pb7->CP());
             origPartyCP = pb7->CP();
