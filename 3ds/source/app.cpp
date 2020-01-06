@@ -175,6 +175,18 @@ namespace
         return rc;
     }
 
+    void backupExtData()
+    {
+        Archive::deleteDir(Archive::data(), u"/3ds/PKSM/extDataBackup");
+        Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
+    }
+
+    void backupBanks()
+    {
+        Archive::deleteDir(Archive::data(), u"/3ds/PKSM/banksBkp");
+        Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
+    }
+
     bool update(std::string execPath)
     {
         u32 status;
@@ -289,6 +301,8 @@ namespace
         if (!url.empty())
         {
             Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
+            backupExtData();
+            backupBanks();
             std::string fileName = path.substr(path.find_last_of('/') + 1);
             Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
                 [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {

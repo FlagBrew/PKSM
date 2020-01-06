@@ -43,8 +43,10 @@ namespace Archive
     Result createPKSMExtdataArchive(const std::string& execPath);
     Result moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest);
     Result moveFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
+    Result copyDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest);
     Result copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest);
     Result deleteFile(FS_Archive archive, const std::u16string& file);
+    Result deleteDir(FS_Archive archive, const std::u16string& dir);
     inline Result moveDir(FS_Archive src, const std::string& dir, FS_Archive dst, const std::string& dest)
     {
         return moveDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
@@ -53,11 +55,16 @@ namespace Archive
     {
         return moveFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
+    inline Result copyDir(FS_Archive src, const std::string& dir, FS_Archive dst, const std::string& dest)
+    {
+        return copyDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
+    }
     inline Result copyFile(FS_Archive src, const std::string& file, FS_Archive dst, const std::string& dest)
     {
         return copyFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
     inline Result deleteFile(FS_Archive archive, const std::string& file) { return deleteFile(archive, StringUtils::UTF8toUTF16(file)); }
+    inline Result deleteDir(FS_Archive archive, const std::string& dir) { return deleteDir(archive, StringUtils::UTF8toUTF16(dir)); }
 }
 
 #endif

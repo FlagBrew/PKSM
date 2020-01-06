@@ -80,8 +80,8 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() > CURRENT_VERSION)
             {
                 loadFromRomfs();
-                Gui::warn(
-                    i18n::localize((*mJson)["language"], "THE_FUCK") + '\n' + i18n::localize((*mJson)["language"], "DO_NOT_DOWNGRADE"), (*mJson)["language"]);
+                Gui::warn(i18n::localize((*mJson)["language"], "THE_FUCK") + '\n' + i18n::localize((*mJson)["language"], "DO_NOT_DOWNGRADE"),
+                    (*mJson)["language"]);
                 return;
             }
             if ((*mJson)["version"].get<int>() < 2)
@@ -324,86 +324,212 @@ void Configuration::loadFromRomfs()
     save();
 }
 
-Language Configuration::language(void) const { return Language((*mJson)["language"].get<u8>()); }
+Language Configuration::language(void) const
+{
+    return Language((*mJson)["language"].get<u8>());
+}
 
-bool Configuration::autoBackup(void) const { return (*mJson)["autoBackup"]; }
+bool Configuration::autoBackup(void) const
+{
+    return (*mJson)["autoBackup"];
+}
 
-bool Configuration::transferEdit(void) const { return (*mJson)["transferEdit"]; }
+bool Configuration::transferEdit(void) const
+{
+    return (*mJson)["transferEdit"];
+}
 
-bool Configuration::useExtData(void) const { return (*mJson)["useExtData"]; }
+bool Configuration::useExtData(void) const
+{
+    return (*mJson)["useExtData"];
+}
 
-u32 Configuration::defaultTID(void) const { return (*mJson)["defaults"]["tid"]; }
+u32 Configuration::defaultTID(void) const
+{
+    return (*mJson)["defaults"]["tid"];
+}
 
-u32 Configuration::defaultSID(void) const { return (*mJson)["defaults"]["sid"]; }
+u32 Configuration::defaultSID(void) const
+{
+    return (*mJson)["defaults"]["sid"];
+}
 
-std::string Configuration::defaultOT(void) const { return (*mJson)["defaults"]["ot"]; }
+std::string Configuration::defaultOT(void) const
+{
+    return (*mJson)["defaults"]["ot"];
+}
 
-int Configuration::nationality(void) const { return (*mJson)["defaults"]["nationality"]; }
+int Configuration::nationality(void) const
+{
+    return (*mJson)["defaults"]["nationality"];
+}
 
-int Configuration::day(void) const { return (*mJson)["defaults"]["date"]["day"]; }
+int Configuration::day(void) const
+{
+    return (*mJson)["defaults"]["date"]["day"];
+}
 
-int Configuration::month(void) const { return (*mJson)["defaults"]["date"]["month"]; }
+int Configuration::month(void) const
+{
+    return (*mJson)["defaults"]["date"]["month"];
+}
 
-int Configuration::year(void) const { return (*mJson)["defaults"]["date"]["year"]; }
+int Configuration::year(void) const
+{
+    return (*mJson)["defaults"]["date"]["year"];
+}
 
-bool Configuration::writeFileSave(void) const { return (*mJson)["writeFileSave"]; }
+bool Configuration::writeFileSave(void) const
+{
+    return (*mJson)["writeFileSave"];
+}
 
-bool Configuration::useSaveInfo(void) const { return (*mJson)["useSaveInfo"]; }
+bool Configuration::useSaveInfo(void) const
+{
+    return (*mJson)["useSaveInfo"];
+}
 
-bool Configuration::randomMusic(void) const { return (*mJson)["randomMusic"]; }
+bool Configuration::randomMusic(void) const
+{
+    return (*mJson)["randomMusic"];
+}
 
-int Configuration::defaultRegion(void) const { return (*mJson)["defaults"]["region"]; }
+int Configuration::defaultRegion(void) const
+{
+    return (*mJson)["defaults"]["region"];
+}
 
-int Configuration::defaultCountry(void) const { return (*mJson)["defaults"]["country"]; }
+int Configuration::defaultCountry(void) const
+{
+    return (*mJson)["defaults"]["country"];
+}
 
-bool Configuration::showBackups(void) const { return (*mJson)["showBackups"]; }
+bool Configuration::showBackups(void) const
+{
+    return (*mJson)["showBackups"];
+}
 
-std::string Configuration::legalEndpoint(void) const { return (*mJson)["legalEndpoint"]; }
+std::string Configuration::legalEndpoint(void) const
+{
+    return (*mJson)["legalEndpoint"];
+}
 
-std::string Configuration::patronCode(void) const { return (*mJson)["patronCode"]; }
+std::string Configuration::patronCode(void) const
+{
+    return (*mJson)["patronCode"];
+}
 
-bool Configuration::alphaChannel(void) const { return (*mJson)["alphaChannel"]; }
+bool Configuration::alphaChannel(void) const
+{
+    return (*mJson)["alphaChannel"];
+}
 
-bool Configuration::autoUpdate(void) const { return (*mJson)["autoUpdate"]; }
+bool Configuration::autoUpdate(void) const
+{
+    return (*mJson)["autoUpdate"];
+}
 
-void Configuration::language(Language lang) { (*mJson)["language"] = u8(lang); }
+void Configuration::language(Language lang)
+{
+    (*mJson)["language"] = u8(lang);
+}
 
-void Configuration::autoBackup(bool backup) { (*mJson)["autoBackup"] = backup; }
+void Configuration::autoBackup(bool backup)
+{
+    (*mJson)["autoBackup"] = backup;
+}
 
-void Configuration::transferEdit(bool edit) { (*mJson)["transferEdit"] = edit; }
+void Configuration::transferEdit(bool edit)
+{
+    (*mJson)["transferEdit"] = edit;
+}
 
-void Configuration::useExtData(bool use) { (*mJson)["useExtData"] = use; }
+void Configuration::useExtData(bool use)
+{
+    (*mJson)["useExtData"] = use;
+}
 
-void Configuration::defaultTID(u32 tid) { (*mJson)["defaults"]["tid"] = tid; }
+void Configuration::defaultTID(u32 tid)
+{
+    (*mJson)["defaults"]["tid"] = tid;
+}
 
-void Configuration::defaultSID(u32 sid) { (*mJson)["defaults"]["sid"] = sid; }
+void Configuration::defaultSID(u32 sid)
+{
+    (*mJson)["defaults"]["sid"] = sid;
+}
 
-void Configuration::defaultOT(const std::string& ot) { (*mJson)["defaults"]["ot"] = ot; }
+void Configuration::defaultOT(const std::string& ot)
+{
+    (*mJson)["defaults"]["ot"] = ot;
+}
 
-void Configuration::nationality(int nation) { (*mJson)["defaults"]["nationality"] = nation; }
+void Configuration::nationality(int nation)
+{
+    (*mJson)["defaults"]["nationality"] = nation;
+}
 
-void Configuration::day(int day) { (*mJson)["defaults"]["date"]["day"] = day; }
+void Configuration::day(int day)
+{
+    (*mJson)["defaults"]["date"]["day"] = day;
+}
 
-void Configuration::month(int month) { (*mJson)["defaults"]["date"]["month"] = month; }
+void Configuration::month(int month)
+{
+    (*mJson)["defaults"]["date"]["month"] = month;
+}
 
-void Configuration::year(int year) { (*mJson)["defaults"]["date"]["year"] = year; }
+void Configuration::year(int year)
+{
+    (*mJson)["defaults"]["date"]["year"] = year;
+}
 
-void Configuration::writeFileSave(bool write) { (*mJson)["writeFileSave"] = write; }
+void Configuration::writeFileSave(bool write)
+{
+    (*mJson)["writeFileSave"] = write;
+}
 
-void Configuration::useSaveInfo(bool saveInfo) { (*mJson)["useSaveInfo"] = saveInfo; }
+void Configuration::useSaveInfo(bool saveInfo)
+{
+    (*mJson)["useSaveInfo"] = saveInfo;
+}
 
-void Configuration::randomMusic(bool random) { (*mJson)["randomMusic"] = random; }
+void Configuration::randomMusic(bool random)
+{
+    (*mJson)["randomMusic"] = random;
+}
 
-void Configuration::defaultRegion(u8 value) { (*mJson)["defaults"]["region"] = value; }
+void Configuration::defaultRegion(u8 value)
+{
+    (*mJson)["defaults"]["region"] = value;
+}
 
-void Configuration::defaultCountry(u8 value) { (*mJson)["defaults"]["country"] = value; }
+void Configuration::defaultCountry(u8 value)
+{
+    (*mJson)["defaults"]["country"] = value;
+}
 
-void Configuration::showBackups(bool value) { (*mJson)["showBackups"] = value; }
+void Configuration::showBackups(bool value)
+{
+    (*mJson)["showBackups"] = value;
+}
 
-void Configuration::legalEndpoint(const std::string& value) { (*mJson)["legalEndpoint"] = value; }
+void Configuration::legalEndpoint(const std::string& value)
+{
+    (*mJson)["legalEndpoint"] = value;
+}
 
-void Configuration::patronCode(const std::string& value) { (*mJson)["patronCode"] = value; }
+void Configuration::patronCode(const std::string& value)
+{
+    (*mJson)["patronCode"] = value;
+}
 
-void Configuration::alphaChannel(bool value) { (*mJson)["alphaChannel"] = value; }
+void Configuration::alphaChannel(bool value)
+{
+    (*mJson)["alphaChannel"] = value;
+}
 
-void Configuration::autoUpdate(bool value) { (*mJson)["autoUpdate"] = value; }
+void Configuration::autoUpdate(bool value)
+{
+    (*mJson)["autoUpdate"] = value;
+}

@@ -228,6 +228,41 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
     return res;
 }
 
+Result Archive::copyDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
+{
+    Result res;
+    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
+        return res;
+    Directory d(src, dir);
+    std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
+    std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
+    if (d.loaded())
+    {
+        for (size_t i = 0; i < d.count(); i++)
+        {
+            if (d.folder(i))
+            {
+                if (R_FAILED(res = copyDir(src, srcDir + d.item(i), dst, dstDir + d.item(i))))
+                    return res;
+            }
+            else
+            {
+                if (R_FAILED(res = copyFile(src, srcDir + d.item(i), dst, dstDir + d.item(i))))
+                    return res;
+            }
+        }
+    }
+    else
+    {
+        return d.error();
+    }
+
+    if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+        return 0;
+
+    return res;
+}
+
 Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest)
 {
     Result res = 0;
@@ -275,6 +310,11 @@ Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive 
 Result Archive::deleteFile(FS_Archive archive, const std::u16string& file)
 {
     return FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, file.c_str()));
+}
+
+Result Archive::deleteDir(FS_Archive archive, const std::u16string& dir)
+{
+    return FSUSER_DeleteDirectoryRecursively(archive, fsMakePath(PATH_UTF16, dir.c_str()));
 }
 
 Result Archive::init(const std::string& execPath)
