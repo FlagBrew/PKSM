@@ -65,6 +65,15 @@ namespace
         unsigned char hash[SHA256_BLOCK_SIZE];
     };
 
+    asset assets[2] = {
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+            {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f,
+                0xe0, 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48}},
+        {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x",
+            "/3ds/PKSM/assets/types_spritesheet.t3x",
+            {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d,
+                0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
+
     bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
     {
         bool match = false;
@@ -83,17 +92,25 @@ namespace
         return match;
     }
 
+    bool assetsMatch(void)
+    {
+        for (auto& item : assets)
+        {
+            if (io::exists(item.path) && !matchSha256HashFromFile(item.path, item.hash))
+            {
+                return false;
+            }
+            else if (!io::exists(item.path))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     Result downloadAdditionalAssets(void)
     {
-        Result res      = 0;
-        asset assets[2] = {{"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/pkm_spritesheet.t3x",
-                               "/3ds/PKSM/assets/pkm_spritesheet.t3x",
-                               {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08, 0xe8, 0x69, 0xc0,
-                                   0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48}},
-            {"https://raw.githubusercontent.com/dsoldier/PKResources/master/additionalassets/types_spritesheet.t3x",
-                "/3ds/PKSM/assets/types_spritesheet.t3x",
-                {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb,
-                    0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
+        Result res = 0;
 
         for (auto item : assets)
         {
@@ -120,11 +137,6 @@ namespace
                 Result res1 = Fetch::download(item.url, item.path);
                 if (R_FAILED(res1))
                     return res1;
-                if (!matchSha256HashFromFile(item.path, item.hash))
-                {
-                    std::remove(item.path.c_str());
-                    return -1;
-                }
             }
         }
         return res;
@@ -491,6 +503,33 @@ namespace
             }
         }
     }
+
+    Result rebootToPKSM(const std::string& execPath)
+    {
+        Result res = -1;
+        if (execPath.empty())
+        {
+            u8 param[0x300];
+            u8 hmac[0x20];
+
+            if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
+            {
+                res = APT_DoApplicationJump(param, sizeof(param), hmac);
+            }
+        }
+        else
+        {
+#if !CITRA_DEBUG
+            std::string path = execPath.substr(execPath.find('/'));
+            res              = HBLDR_SetTarget(path.c_str());
+#endif
+        }
+        if (R_FAILED(res))
+        {
+            Gui::warn(i18n::localize("UPDATE_SUCCESS_1") + '\n' + i18n::localize("UPDATE_SUCCESS_2"));
+        }
+        return -1;
+    }
 }
 
 Result App::init(const std::string& execPath)
@@ -549,31 +588,23 @@ Result App::init(const std::string& execPath)
     continueI18N.test_and_set();
     Threads::create(i18nThread, nullptr, 16 * 1024);
 
-    if (Configuration::getInstance().autoUpdate() && update(execPath))
+    if (!assetsMatch())
     {
-        Result res = -1;
-        if (execPath.empty())
+        Gui::warn("Additional assets are not correct.\nPress A to start PKSM update...");
+        if (!update(execPath))
         {
-            u8 param[0x300];
-            u8 hmac[0x20];
-
-            if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
-            {
-                res = APT_DoApplicationJump(param, sizeof(param), hmac);
-            }
+            Gui::warn("PKSM update failed.\nTry downloading assets manually before restarting.");
+            return -1;
         }
         else
         {
-#if !CITRA_DEBUG
-            std::string path = execPath.substr(execPath.find('/'));
-            res              = HBLDR_SetTarget(path.c_str());
-#endif
+            return rebootToPKSM(execPath);
         }
-        if (R_FAILED(res))
-        {
-            Gui::warn(i18n::localize("UPDATE_SUCCESS_1") + '\n' + i18n::localize("UPDATE_SUCCESS_2"));
-        }
-        return -1;
+    }
+
+    if (Configuration::getInstance().autoUpdate() && update(execPath))
+    {
+        return rebootToPKSM(execPath);
     }
 
     moveIcon.clear();
