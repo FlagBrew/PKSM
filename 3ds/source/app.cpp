@@ -300,9 +300,10 @@ namespace
         }
         if (!url.empty())
         {
-            Gui::waitFrame(i18n::localize("UPDATE_FOUND"));
+            Gui::waitFrame(i18n::localize("UPDATE_FOUND_BACKUP"));
             backupExtData();
             backupBanks();
+            Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"));
             std::string fileName = path.substr(path.find_last_of('/') + 1);
             Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
                 [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
