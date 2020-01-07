@@ -169,17 +169,17 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
         {
             case Generation::FOUR:
             case Generation::FIVE:
-                targetLength = 138;
+                targetLength = 136;
                 break;
             case Generation::SIX:
             case Generation::SEVEN:
-                targetLength = 234;
+                targetLength = 232;
                 break;
             case Generation::LGPE:
-                targetLength = 261;
+                targetLength = 260;
                 break;
             case Generation::EIGHT:
-                targetLength = 345;
+                targetLength = 344;
                 break;
             case Generation::UNUSED:
                 break;
@@ -217,17 +217,17 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
         {
             case Generation::FOUR:
             case Generation::FIVE:
-                targetLength = 138;
+                targetLength = 136;
                 break;
             case Generation::SIX:
             case Generation::SEVEN:
-                targetLength = 234;
+                targetLength = 232;
                 break;
             case Generation::LGPE:
-                targetLength = 261;
+                targetLength = 260;
                 break;
             case Generation::EIGHT:
-                targetLength = 345;
+                targetLength = 344;
                 break;
             case Generation::UNUSED:
                 break;
