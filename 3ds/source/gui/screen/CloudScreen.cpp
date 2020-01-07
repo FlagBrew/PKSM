@@ -968,17 +968,17 @@ void CloudScreen::shareReceive()
                 {
                     case Generation::FOUR:
                     case Generation::FIVE:
-                        targetLength = 138;
+                        targetLength = 136;
                         break;
                     case Generation::SIX:
                     case Generation::SEVEN:
-                        targetLength = 234;
+                        targetLength = 232;
                         break;
                     case Generation::LGPE:
-                        targetLength = 261;
+                        targetLength = 260;
                         break;
                     case Generation::EIGHT:
-                        targetLength = 345;
+                        targetLength = 344;
                     case Generation::UNUSED:
                         break;
                 }
