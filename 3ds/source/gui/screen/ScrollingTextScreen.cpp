@@ -31,8 +31,8 @@
 
 ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_ptr<PKX> pk)
     : Screen(i18n::localize("UP_SCROLL_UP") + '\n' + i18n::localize("DOWN_SCROLL_DOWN") + '\n' + i18n::localize("B_BACK")),
-      text(Gui::parseText(text, FONT_SIZE_12, 300.0f)),
-      pkm(pk)
+      pkm(pk),
+      text(Gui::parseText(text, FONT_SIZE_12, 300.0f))
 {
     if (pkm)
     {
@@ -43,7 +43,7 @@ ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_pt
 void ScrollingTextScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    if (down & KEY_DOWN && lineOffset + SHOWN_LINES < text->lines())
+    if (down & KEY_DOWN && lineOffset + SHOWN_LINES < text->lines() + 2) // 2 to allow for a little bit of space at the end when fully scrolled down
     {
         lineOffset++;
     }

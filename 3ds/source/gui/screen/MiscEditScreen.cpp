@@ -28,13 +28,13 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
+#include "LegalInfoScreen.hpp"
 #include "LocationOverlay.hpp"
 #include "PB7.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PK8.hpp"
 #include "Sav.hpp"
-#include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
 #include "base64.hpp"
@@ -685,13 +685,13 @@ void MiscEditScreen::year()
 
 void MiscEditScreen::validate()
 {
-    std::string version        = "Generation: " + genToString(pkm->generation());
+    std::string generation     = "Generation: " + genToString(pkm->generation());
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
-    headers                    = curl_slist_append(headers, version.c_str());
+    headers                    = curl_slist_append(headers, generation.c_str());
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(Configuration::getInstance().legalEndpoint(), true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://flagbrew.org/pksm/legality/check", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -719,11 +719,8 @@ void MiscEditScreen::validate()
                     // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm->rawData());
                     if (writeData.size() > 0)
                     {
-                        Gui::setScreen(std::make_unique<ScrollingTextScreen>(writeData, pkm));
+                        Gui::setScreen(std::make_unique<LegalInfoScreen>(writeData, pkm));
                     }
-                    break;
-                case 400:
-                    Gui::error(i18n::localize("AUTO_LEGALIZE_ERROR"), abs(0x1337));
                     break;
                 case 502:
                     Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);

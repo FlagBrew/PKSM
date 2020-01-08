@@ -24,32 +24,23 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SCROLLINGTEXTSCREEN_HPP
-#define SCROLLINGTEXTSCREEN_HPP
+#ifndef LEGALINFOSCREEN_HPP
+#define LEGALINFOSCREEN_HPP
 
-#include "Screen.hpp"
+#include "ScrollingTextScreen.hpp"
 
-class PKX;
-namespace TextParse
-{
-    class Text;
-}
+class Button;
 
-class ScrollingTextScreen : public Screen
+class LegalInfoScreen : public ScrollingTextScreen
 {
 public:
-    ScrollingTextScreen(const std::string& text, std::shared_ptr<PKX> pkm);
+    LegalInfoScreen(const std::string& text, std::shared_ptr<PKX> pk);
     void update(touchPosition* touch) override;
-    void drawTop() const override;
     void drawBottom() const override;
 
-protected:
-    std::shared_ptr<PKX> pkm;
-
 private:
-    std::shared_ptr<TextParse::Text> text;
-    size_t lineOffset                   = 0;
-    static constexpr size_t SHOWN_LINES = 15;
+    void attemptLegalization();
+    std::unique_ptr<Button> legalButton;
 };
 
 #endif
