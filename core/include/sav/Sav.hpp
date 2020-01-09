@@ -214,8 +214,8 @@ public:
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
     virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
-    u32 getLength() { return length; }
-    std::shared_ptr<u8[]> rawData() { return data; }
+    u32 getLength() const { return length; }
+    std::shared_ptr<u8[]> rawData() const { return data; }
 
     // Personal interface
     virtual u8 formCount(u16 species) const = 0;

@@ -106,13 +106,13 @@ bool swshcrypto_verify(std::shared_ptr<u8[]> data, size_t length)
     return true;
 }
 
-std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length)
+std::vector<std::shared_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length)
 {
-    std::vector<std::unique_ptr<SCBlock>> ret;
+    std::vector<std::shared_ptr<SCBlock>> ret;
     size_t offset = 0;
     while (offset < length - SHA256_BLOCK_SIZE)
     {
-        ret.emplace_back(std::unique_ptr<SCBlock>(new SCBlock(data, offset)));
+        ret.emplace_back(std::shared_ptr<SCBlock>(new SCBlock(data, offset)));
     }
 
     return ret;

@@ -26,11 +26,22 @@
 
 #include "Sav8.hpp"
 #include "PK8.hpp"
+#include <algorithm>
 
 Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
 {
     swshcrypto_applyXor(dt, length);
     blocks = swshcrypto_getBlockList(dt, length);
+}
+
+std::shared_ptr<SCBlock> Sav8::getBlock(u32 key) const
+{
+    auto it = std::find_if(blocks.begin(), blocks.end(), [key](const std::shared_ptr<SCBlock>& block) { return block->key() == key; });
+    if (it != blocks.end())
+    {
+        return *it;
+    }
+    return nullptr;
 }
 
 std::shared_ptr<PKX> Sav8::emptyPkm() const

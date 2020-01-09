@@ -34,7 +34,7 @@
 class Sav8 : public Sav
 {
 protected:
-    std::vector<std::unique_ptr<SCBlock>> blocks;
+    std::vector<std::shared_ptr<SCBlock>> blocks;
 
     int Items, BoxLayout, Misc, TrainerCard, PlayTime, Status;
 
@@ -47,6 +47,8 @@ protected:
 public:
     Sav8(std::shared_ptr<u8[]> dt, size_t length);
     virtual ~Sav8() {}
+
+    std::shared_ptr<SCBlock> getBlock(u32 key) const;
 
     void encrypt(void) override;
     void decrypt(void) override;

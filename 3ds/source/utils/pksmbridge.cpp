@@ -103,7 +103,7 @@ bool receiveSaveFromBridge(void)
 
     lastIPAddr = servaddr.sin_addr;
 
-    size_t size                = 0x1716B3;
+    size_t size                = 0x17195E;
     std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[size]);
 
     size_t total = 0;

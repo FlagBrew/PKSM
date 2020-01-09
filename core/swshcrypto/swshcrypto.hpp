@@ -33,7 +33,7 @@
 
 class SCBlock
 {
-    friend std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
+    friend std::vector<std::shared_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
 
 public:
     enum class SCBlockType : u8
@@ -60,6 +60,7 @@ public:
         Single9  = 16,
         Single10 = 17,
     };
+    u32 key() const;
     // Nop if in proper state
     void encrypt();
     void decrypt();
@@ -77,7 +78,6 @@ private:
 
     // Returns pointer to data at the beginning of the block's data region, skipping block identifying information
     u8* rawData() const { return data.get() + myOffset + headerSize(type); }
-    u32 key() const;
     void key(u32 v);
     // data.get() + myOffset points to the beginning of the block data: *(u32*)(data.get() + myOffset) == key
     std::shared_ptr<u8[]> data = nullptr;
@@ -199,6 +199,6 @@ void swshcrypto_applyXor(std::shared_ptr<u8[]> data, size_t length);
 void swshcrypto_sign(std::shared_ptr<u8[]> data, size_t length);
 bool swshcrypto_verify(std::shared_ptr<u8[]> data, size_t length);
 // Takes deXor'd data
-std::vector<std::unique_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
+std::vector<std::shared_ptr<SCBlock>> swshcrypto_getBlockList(std::shared_ptr<u8[]> data, size_t length);
 
 #endif
