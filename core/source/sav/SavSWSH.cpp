@@ -170,7 +170,7 @@ void Endian::convertFrom<DexEntry>(u8* data, const DexEntry& entry)
     Endian::convertFrom<u32>(data + 44, entry.unk2);
 }
 
-SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt, u32 save_length) : Sav8(dt, save_length)
+SavSWSH::SavSWSH(std::shared_ptr<u8[]> dt) : Sav8(dt, 0x17195E)
 {
     game = Game::SWSH;
 
