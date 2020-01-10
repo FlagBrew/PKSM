@@ -216,33 +216,11 @@ std::shared_ptr<PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) 
             std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
             Generation gen       = stringToGen(poke["generation"].get<std::string>());
 
-            size_t targetLength = 0;
-            switch (gen)
+            auto ret = PKX::getPKM(gen, data.data(), data.size());
+            if (ret)
             {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                    targetLength = 136;
-                    break;
-                case Generation::SIX:
-                case Generation::SEVEN:
-                    targetLength = 232;
-                    break;
-                case Generation::LGPE:
-                    targetLength = 260;
-                    break;
-                case Generation::EIGHT:
-                    targetLength = 344;
-                    break;
-                case Generation::UNUSED:
-                    break;
+                return ret;
             }
-
-            if (data.size() != targetLength)
-            {
-                return std::make_shared<PK7>();
-            }
-
-            return PKX::getPKM(gen, data.data());
         }
     }
     return std::make_shared<PK7>();
@@ -268,42 +246,15 @@ std::shared_ptr<PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIn
         auto& group = (*current->data)["results"][groupIndex];
         if (pokeIndex < group["pokemon"].size())
         {
-            auto& poke           = group["pokemon"][pokeIndex];
-            std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
-            Generation gen       = stringToGen(poke["generation"].get<std::string>());
-
-            size_t targetLength = 0;
-            switch (gen)
-            {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                    targetLength = 136;
-                    break;
-                case Generation::SIX:
-                case Generation::SEVEN:
-                    targetLength = 232;
-                    break;
-                case Generation::LGPE:
-                    targetLength = 260;
-                    break;
-                case Generation::EIGHT:
-                    targetLength = 344;
-                    break;
-                case Generation::UNUSED:
-                    break;
-            }
-
-            if (data.size() != targetLength)
-            {
-                return std::make_shared<PK7>();
-            }
+            auto& poke = group["pokemon"][pokeIndex];
+            auto ret   = pkm(groupIndex, pokeIndex);
 
             if (auto fetch = Fetch::init("https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true, nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
             }
 
-            return PKX::getPKM(gen, data.data());
+            return ret;
         }
     }
     return std::make_shared<PK7>();
