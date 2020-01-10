@@ -164,32 +164,11 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
-        size_t targetLength = 0;
-        switch (gen)
+        auto ret = PKX::getPKM(gen, retData.data(), retData.size());
+        if (ret)
         {
-            case Generation::FOUR:
-            case Generation::FIVE:
-                targetLength = 136;
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                targetLength = 232;
-                break;
-            case Generation::LGPE:
-                targetLength = 260;
-                break;
-            case Generation::EIGHT:
-                targetLength = 344;
-                break;
-            case Generation::UNUSED:
-                break;
+            return ret;
         }
-        if (targetLength != retData.size())
-        {
-            return std::make_shared<PK7>();
-        }
-
-        return PKX::getPKM(gen, retData.data());
     }
     return std::make_shared<PK7>();
 }
@@ -207,35 +186,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
-        std::string b64Data = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        Generation gen      = stringToGen((*current->data)["results"][slot]["generation"].get<std::string>());
-        // Legal info: needs thought
-        auto retData = base64_decode(b64Data.data(), b64Data.size());
-
-        size_t targetLength = 0;
-        switch (gen)
-        {
-            case Generation::FOUR:
-            case Generation::FIVE:
-                targetLength = 136;
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                targetLength = 232;
-                break;
-            case Generation::LGPE:
-                targetLength = 260;
-                break;
-            case Generation::EIGHT:
-                targetLength = 344;
-                break;
-            case Generation::UNUSED:
-                break;
-        }
-        if (targetLength != retData.size())
-        {
-            return std::make_shared<PK7>();
-        }
+        auto ret = pkm(slot);
 
         if (auto fetch = Fetch::init(
                 "https://flagbrew.org/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
@@ -243,7 +194,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
             Fetch::performAsync(fetch);
         }
 
-        return PKX::getPKM(gen, retData.data());
+        return ret;
     }
     return std::make_shared<PK7>();
 }

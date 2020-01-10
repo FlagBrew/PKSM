@@ -69,6 +69,8 @@ public:
     PKX(const PKX& pk) = delete;
     PKX& operator=(const PKX& pk) = delete;
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
+    // Returns null if length is not valid for that generation, and a party Pokemon depending on length
+    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
 
     virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }

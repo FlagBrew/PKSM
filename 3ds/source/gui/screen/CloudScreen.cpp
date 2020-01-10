@@ -963,32 +963,13 @@ void CloudScreen::shareReceive()
                 }
                 auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
-                size_t targetLength = 0;
-                switch (gen)
-                {
-                    case Generation::FOUR:
-                    case Generation::FIVE:
-                        targetLength = 136;
-                        break;
-                    case Generation::SIX:
-                    case Generation::SEVEN:
-                        targetLength = 232;
-                        break;
-                    case Generation::LGPE:
-                        targetLength = 260;
-                        break;
-                    case Generation::EIGHT:
-                        targetLength = 344;
-                    case Generation::UNUSED:
-                        break;
-                }
-                if (retData.size() != targetLength)
+                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data(), retData.size());
+
+                if (!pkm)
                 {
                     Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
                     return;
                 }
-
-                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data());
 
                 if (!cloudChosen && cursorIndex != 0)
                 {

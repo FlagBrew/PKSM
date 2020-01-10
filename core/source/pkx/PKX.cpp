@@ -554,6 +554,52 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool dire
     return nullptr;
 }
 
+std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool directAccess)
+{
+    switch (gen)
+    {
+        case Generation::FOUR:
+            if (length == 136 || length == 236)
+            {
+                return getPKM(gen, data, length == 236, directAccess);
+            }
+            break;
+        case Generation::FIVE:
+            if (length == 136 || length == 220)
+            {
+                return getPKM(gen, data, length == 220, directAccess);
+            }
+            break;
+        case Generation::SIX:
+            if (length == 232 || length == 260)
+            {
+                return getPKM(gen, data, length == 260, directAccess);
+            }
+            break;
+        case Generation::SEVEN:
+            if (length == 232 || length == 260)
+            {
+                return getPKM(gen, data, length == 260, directAccess);
+            }
+            break;
+        case Generation::LGPE:
+            if (length == 260)
+            {
+                return getPKM(gen, data, length == 260, directAccess);
+            }
+            break;
+        case Generation::EIGHT:
+            if (length == 0x148 || length == 0x158)
+            {
+                return getPKM(gen, data, length == 0x158, directAccess);
+            }
+            break;
+        case Generation::UNUSED:
+            return nullptr;
+    }
+    return nullptr;
+}
+
 bool PKX::operator==(const PKFilter& filter) const
 {
     if (filter.generationEnabled() && (filter.generationInversed() != (generation() != filter.generation())))
