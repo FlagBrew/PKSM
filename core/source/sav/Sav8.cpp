@@ -36,11 +36,24 @@ Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)
 
 std::shared_ptr<SCBlock> Sav8::getBlock(u32 key) const
 {
-    auto it = std::find_if(blocks.begin(), blocks.end(), [key](const std::shared_ptr<SCBlock>& block) { return block->key() == key; });
-    if (it != blocks.end())
+    int index = -1, min = 0, mid = 0, max = blocks.size();
+    while (min <= max)
     {
-        return *it;
+        mid = min + (max - min) / 2;
+        if (blocks[mid]->key() == key)
+        {
+            return blocks[mid];
+        }
+        if (blocks[mid]->key() < key)
+        {
+            min = mid + 1;
+        }
+        else
+        {
+            max = mid - 1;
+        }
     }
+
     return nullptr;
 }
 
