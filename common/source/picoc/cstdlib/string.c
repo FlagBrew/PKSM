@@ -139,6 +139,16 @@ void StringStrtok_r(struct ParseState *Parser, struct Value *ReturnValue, struct
 }
 #endif
 
+void StringStrcasecmp(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = strcasecmp(Param[0]->Val->Pointer, Param[1]->Val->Pointer);
+}
+
+void StringStrncasecmp(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = strncasecmp(Param[0]->Val->Pointer, Param[1]->Val->Pointer, Param[2]->Val->Integer);
+}
+
 /* all string.h functions */
 struct LibraryFunction StringFunctions[] =
 {
@@ -172,6 +182,8 @@ struct LibraryFunction StringFunctions[] =
 	{ StringStrdup,        "char *strdup(char *);" },
     { StringStrtok_r,      "char *strtok_r(char *,char *,char **);" },
 #endif
+    { StringStrcasecmp,    "int strcasecmp(char *, char *);" },
+    { StringStrncasecmp,   "int strncasecmp(char *, char *, int);" },
     { NULL,             NULL }
 };
 

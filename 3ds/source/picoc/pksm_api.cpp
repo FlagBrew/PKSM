@@ -2114,7 +2114,10 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
             break;
     }
 
-    TitleLoader::save->mysteryGift(*wcx, slot);
+    if (gen == TitleLoader::save->generation())
+    {
+        TitleLoader::save->mysteryGift(*wcx, slot);
+    }
 }
 
 void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
