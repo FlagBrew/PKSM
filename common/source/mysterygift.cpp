@@ -31,19 +31,35 @@
 #include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "io.hpp"
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
 
 namespace
 {
-    nlohmann::json mysteryGiftSheet;
-    u8* mysteryGiftData;
+    nlohmann::json mysteryGiftSheet = nlohmann::json::object();
+    u8* mysteryGiftData             = nullptr;
 }
 
 void MysteryGift::init(Generation g)
 {
-    std::string path = StringUtils::format("romfs:/mg/sheet%s.json.bz2", genToCstring(g));
-    FILE* f          = fopen(path.c_str(), "rb");
+    // Just in case cleanup did not occur properly
+    mysteryGiftSheet.clear();
+    if (mysteryGiftData)
+    {
+        delete[] mysteryGiftData;
+        mysteryGiftData = nullptr;
+    }
+
+    std::string sheetPath = "/3ds/PKSM/mysterygift/sheet" + genToString(g) + ".json.bz2";
+    std::string dataPath  = "/3ds/PKSM/mysterygift/data" + genToString(g) + ".bin.bz2";
+    if (!io::exists(sheetPath) || !io::exists(dataPath))
+    {
+        sheetPath = "romfs:/mg/sheet" + genToString(g) + ".json.bz2";
+        dataPath  = "romfs:/mg/data" + genToString(g) + ".bin.bz2";
+    }
+
+    FILE* f = fopen(sheetPath.c_str(), "rb");
     if (f != NULL)
     {
         fseek(f, 0, SEEK_END);
@@ -62,6 +78,8 @@ void MysteryGift::init(Generation g)
 
         delete[] s;
         delete[] d;
+
+        fclose(f);
     }
 
     if (mysteryGiftSheet.is_discarded())
@@ -71,8 +89,7 @@ void MysteryGift::init(Generation g)
         mysteryGiftSheet["matches"] = nlohmann::json::array();
     }
 
-    path = StringUtils::format("romfs:/mg/data%s.bin.bz2", genToCstring(g));
-    f    = fopen(path.c_str(), "rb");
+    f = fopen(dataPath.c_str(), "rb");
     if (f != NULL)
     {
         fseek(f, 0, SEEK_END);
@@ -90,6 +107,8 @@ void MysteryGift::init(Generation g)
         }
 
         delete[] s;
+
+        fclose(f);
     }
 }
 
@@ -143,6 +162,7 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
 void MysteryGift::exit(void)
 {
     delete[] mysteryGiftData;
+    mysteryGiftData = nullptr;
     mysteryGiftSheet.clear();
 }
 

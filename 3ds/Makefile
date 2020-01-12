@@ -250,7 +250,7 @@ ifeq ($(OS),Windows_NT)
 else
 	@cd $(PACKER) && python3 packer.py
 endif
-	@cd $(PACKER) && mv out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
+	@cd $(PACKER) && cp out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
 ifeq ($(OS),Windows_NT)
 	@cd $(SCRIPTS) && py -3 genScripts.py
 else
