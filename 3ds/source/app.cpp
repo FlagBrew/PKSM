@@ -46,6 +46,7 @@
 #include <atomic>
 #include <malloc.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 // increase the stack in order to allow quirc to decode large qrs
 int __stacksize__ = 64 * 1024;
@@ -556,6 +557,293 @@ namespace
         }
         return -1;
     }
+
+    // Also checks modified time. If the checksum file is newer than the file, recalculate and write checksum
+    // If checksum file doesn't exist, calculate and write checksum
+    std::array<u8, SHA256_BLOCK_SIZE> readGiftChecksum(const std::string& fileName)
+    {
+        struct
+        {
+            bool exists;
+            struct stat myStat;
+        } fileInfo, checksumFileInfo;
+
+        std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
+        std::string checksumPath = path + ".sha";
+        std::array<u8, SHA256_BLOCK_SIZE> ret;
+
+        fileInfo.exists         = (stat(path.c_str(), &fileInfo.myStat) == 0);
+        checksumFileInfo.exists = (stat(checksumPath.c_str(), &checksumFileInfo.myStat) == 0);
+
+        // Either both exist and file was modified before checksum file, or checksum file exists and file doesn't
+        if (checksumFileInfo.exists && (!fileInfo.exists || (fileInfo.exists && fileInfo.myStat.st_ctime <= checksumFileInfo.myStat.st_ctime)))
+        {
+            FILE* correctSum = fopen(checksumPath.c_str(), "rb");
+            if (correctSum)
+            {
+                fread(ret.data(), 1, SHA256_BLOCK_SIZE, correctSum);
+                fclose(correctSum);
+                return ret;
+            }
+        }
+
+        if (!fileInfo.exists)
+        {
+            path = "romfs:/mg/" + fileName;
+        }
+
+        FILE* file = fopen(path.c_str(), "rb");
+        if (file)
+        {
+            fseek(file, 0, SEEK_END);
+            size_t size = ftell(file);
+            rewind(file);
+            u8* data = new u8[size];
+            fread(data, 1, size, file);
+            fclose(file);
+
+            sha256(ret.data(), data, size);
+
+            file = fopen(checksumPath.c_str(), "wb");
+            if (file)
+            {
+                fwrite(ret.data(), 1, ret.size(), file);
+                fclose(file);
+            }
+        }
+
+        return ret;
+    }
+
+    void updateGifts(void)
+    {
+#if !CITRA_DEBUG
+        u32 status;
+        ACU_GetWifiStatus(&status);
+        if (status == 0)
+            return;
+#endif
+        struct giftCurlData
+        {
+            giftCurlData(FILE* file, std::string fileName) : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
+            {
+                sha256_init(&shaContext);
+            }
+            std::string fileName;
+            FILE* file;
+            SHA256_CTX shaContext;
+            long response;
+            u32 prevDownload;
+            bool addedToTotal;
+        };
+
+        curl_write_callback giftWriteFunc = [](char* data, size_t size, size_t nitems, void* out) {
+            giftCurlData* writeMe = (giftCurlData*)out;
+
+            if (data)
+            {
+                sha256_update(&writeMe->shaContext, (u8*)data, size * nitems);
+
+                return fwrite(data, size, nitems, writeMe->file);
+            }
+            else
+            {
+                return size * nitems;
+            }
+        };
+
+        constexpr std::array<Generation, 4> mgGens = {Generation::FOUR, Generation::FIVE, Generation::SIX, Generation::SEVEN};
+
+        std::atomic<size_t> filesDone = 0;
+        size_t filesToDownload        = 0;
+        std::vector<giftCurlData> curlVars;
+        curlVars.reserve(mgGens.size() * 2);
+
+        Gui::waitFrame(i18n::localize("MYSTERY_GIFT_CHECK"));
+
+        for (auto& gen : mgGens)
+        {
+            for (const std::string& fileName : {"sheet" + genToString(gen) + ".json.bz2", "data" + genToString(gen) + ".bin.bz2"})
+            {
+                std::array<u8, SHA256_BLOCK_SIZE> checksum = readGiftChecksum(fileName);
+
+                std::vector<u8> recvChecksum;
+                if (auto fetch = Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
+                {
+                    fetch->setopt(CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size, size_t items, void* userThing) {
+                        std::vector<u8>* recv = (std::vector<u8>*)userThing;
+                        recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
+                        return size * items;
+                    });
+                    fetch->setopt(CURLOPT_WRITEDATA, &recvChecksum);
+
+                    Fetch::perform(fetch);
+
+                    long response;
+
+                    fetch->getinfo(CURLINFO_RESPONSE_CODE, &response);
+                    if (response == 200)
+                    {
+                        if (memcmp(recvChecksum.data(), checksum.data(), std::min(checksum.size(), recvChecksum.size())))
+                        {
+                            if (fetch = Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName, true, nullptr, nullptr, ""))
+                            {
+                                std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
+                                FILE* outFile       = fopen(outPath.c_str(), "wb");
+
+                                if (outFile)
+                                {
+                                    curlVars.emplace_back(outFile, outPath);
+                                    fetch->setopt(CURLOPT_WRITEFUNCTION, giftWriteFunc);
+                                    fetch->setopt(CURLOPT_WRITEDATA, &curlVars.back());
+
+                                    if (Fetch::performAsync(
+                                            fetch, [progress = curlVars.end() - 1, &filesDone](CURLcode code, std::shared_ptr<Fetch> fetch) {
+                                                filesDone++;
+                                                fclose(progress->file);
+                                                fetch->getinfo(CURLINFO_RESPONSE_CODE, &progress->response);
+                                            }) != CURLM_OK)
+                                    {
+                                        filesDone++;
+                                        fclose(outFile);
+                                    }
+                                    else
+                                    {
+                                        filesToDownload++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        while (filesDone != filesToDownload)
+        {
+            Gui::waitFrame(StringUtils::format(i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
+            svcSleepThread(50'000'000);
+        }
+
+        for (auto& info : curlVars)
+        {
+            std::string shaFile = info.fileName + ".sha";
+            if (info.response != 200)
+            {
+                remove(info.fileName.c_str());
+                remove(shaFile.c_str());
+            }
+            else
+            {
+                std::array<u8, SHA256_BLOCK_SIZE> checksum;
+                sha256_final(&info.shaContext, checksum.data());
+
+                FILE* f = fopen(shaFile.c_str(), "wb");
+                if (f)
+                {
+                    fwrite(checksum.data(), 1, checksum.size(), f);
+                    fclose(f);
+                }
+            }
+        }
+
+        /*std::string commitTxt = "/3ds/PKSM/mysterygift/commit.txt";
+        if (!io::exists(commitTxt))
+        {
+            commitTxt = "romfs:/mg/commit.txt";
+        }
+
+        FILE* f = fopen(commitTxt.c_str(), "rt");
+        // Can't really do anything if the commit file won't open, so don't even try
+        if (f)
+        {
+            fseek(f, 0, SEEK_END);
+            size_t size = ftell(f);
+            rewind(f);
+            char commit[size + 1] = {'\0'};
+            fread(commit, 1, size, f);
+            fclose(f);
+
+            std::string recvCommit;
+            if (auto fetch = Fetch::init("https://flagbrew.org/pksm/mysteryGiftCommit", true, &recvCommit, nullptr, ""))
+            {
+                Gui::waitFrame(i18n::localize("MYSTERY_GIFT_CHECK"));
+                auto res = Fetch::perform(fetch);
+                if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
+                {
+                    if (recvCommit != commit)
+                    {
+                        for (auto& gen : mgGens)
+                        {
+                            if (fetch = Fetch::init("https://flagbrew.org/pksm/mysteryGiftSheet" + genToString(gen), true, nullptr, nullptr, ""))
+                            {
+                                std::string path = "/3ds/PKSM/mysterygift/sheet" + genToString(gen) + ".json.bz2";
+                                FILE* sheet      = fopen(path.c_str(), "wb");
+
+                                progressVars.emplace_back(totalDownload, currentDownload);
+                                fetch->setopt(CURLOPT_NOPROGRESS, 0L);
+                                fetch->setopt(CURLOPT_PROGRESSDATA, &progressVars.back());
+                                fetch->setopt(CURLOPT_PROGRESSFUNCTION, giftProgressFunc);
+
+                                fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
+                                fetch->setopt(CURLOPT_WRITEDATA, sheet);
+
+                                if (Fetch::performAsync(fetch, [sheet, &filesDone](CURLcode code, std::shared_ptr<Fetch> fetch) {
+                                        filesDone++;
+                                        fclose(sheet);
+                                    }) != CURLM_OK)
+                                {
+                                    filesDone++;
+                                    fclose(sheet);
+                                }
+                            }
+                            else
+                            {
+                                // Make sure that there's no lock if this fails
+                                filesDone++;
+                            }
+                            if (fetch = Fetch::init("https://flagbrew.org/pksm/mysteryGiftData" + genToString(gen), true, nullptr, nullptr, ""))
+                            {
+                                std::string path = "/3ds/PKSM/mysterygift/data" + genToString(gen) + ".bin.bz2";
+                                FILE* data       = fopen(path.c_str(), "wb");
+
+                                progressVars.emplace_back(totalDownload, currentDownload);
+                                fetch->setopt(CURLOPT_NOPROGRESS, 0L);
+                                fetch->setopt(CURLOPT_PROGRESSDATA, &progressVars.back());
+                                fetch->setopt(CURLOPT_PROGRESSFUNCTION, giftProgressFunc);
+
+                                fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
+                                fetch->setopt(CURLOPT_WRITEDATA, data);
+
+                                if (Fetch::performAsync(fetch, [data, &filesDone](CURLcode code, std::shared_ptr<Fetch> fetch) {
+                                        filesDone++;
+                                        fclose(data);
+                                    }) != CURLM_OK)
+                                {
+                                    filesDone++;
+                                    fclose(data);
+                                }
+                            }
+                            else
+                            {
+                                // Make sure that there's no lock if this fails
+                                filesDone++;
+                            }
+                        }
+
+                        // Wait until done
+                        while (filesDone < mgGens.size() * 2)
+                        {
+                            Gui::showDownloadProgress(
+                                StringUtils::format(i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, mgGens.size() * 2),
+                                currentDownload / 1024, totalDownload / 1024);
+                            svcSleepThread(50'000'000);
+                        }
+                    }
+                }
+            }
+        }*/
+    }
 }
 
 Result App::init(const std::string& execPath)
@@ -614,6 +902,8 @@ Result App::init(const std::string& execPath)
     continueI18N.test_and_set();
     Threads::create(i18nThread, nullptr, 16 * 1024);
 
+    moveIcon.clear();
+
     if (!assetsMatch())
     {
         Gui::warn("Additional assets are not correct.\nPress A to start PKSM update...");
@@ -633,7 +923,8 @@ Result App::init(const std::string& execPath)
         return rebootToPKSM(execPath);
     }
 
-    moveIcon.clear();
+    updateGifts();
+
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
 
