@@ -355,12 +355,16 @@ def translateG4String(data):
         place = struct.unpack('<H', data[i:i+2])[0]
         if place == 0xFFFF:
             break
-        if 0 < place and place < len(G4Chars):
-            add = G4Chars[place - 2]
-        else:
-            add = G4Chars[len(G4Chars) - 1]
-        if add == 0xFFFF:
+        try:
+            index = G4Values.index(place)
+        except ValueError:
             break
-        ret += chr(add)
+        
+        if 0 < index and index < len(G4Chars):
+            char = G4Chars[index]
+        if char == 0xFFFF:
+            break
+        else:
+            ret += chr(char)
     
     return ret
