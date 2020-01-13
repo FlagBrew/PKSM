@@ -270,7 +270,7 @@ u32 Sav4::partyOffset(u8 slot) const
 
 std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 {
-    return std::make_shared<PK4>(&data[partyOffset(slot)], true, true);
+    return std::make_shared<PK4>(&data[partyOffset(slot)], true);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
@@ -279,7 +279,7 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
     {
         u8 buf[236] = {0};
         std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true, true);
+        std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, true, true);
 
         if (pk->getLength() != 236)
         {
@@ -296,9 +296,9 @@ void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
     }
 }
 
-std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot) const
 {
-    return std::make_shared<PK4>(&data[boxOffset(box, slot)], ekx);
+    return std::make_shared<PK4>(&data[boxOffset(box, slot)]);
 }
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -328,7 +328,7 @@ void Sav4::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk4 = std::make_unique<PK4>(&data[boxOffset(box, slot)], crypted, false, true);
+            std::unique_ptr<PKX> pk4 = std::make_unique<PK4>(&data[boxOffset(box, slot)], false, true);
             if (!crypted)
             {
                 pk4->encrypt();
@@ -759,7 +759,7 @@ std::vector<Sav::giftData> Sav4::currentGifts(void) const
     {
         if (*(wonderCards + i * PGT::length) == 1 || *(wonderCards + i * PGT::length) == 2)
         {
-            PK4 getData(wonderCards + i * PGT::length + 8, true);
+            PK4 getData(wonderCards + i * PGT::length + 8);
             ret.emplace_back("Wonder Card", "", getData.species(), getData.alternativeForm(), getData.gender());
         }
         else if (*(wonderCards + i * PGT::length) == 7)

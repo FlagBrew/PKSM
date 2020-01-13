@@ -474,12 +474,12 @@ void SavSWSH::partyCount(u8 count)
 std::shared_ptr<PKX> SavSWSH::pkm(u8 slot) const
 {
     u32 offset = partyOffset(slot);
-    return std::make_shared<PK8>(getBlock(Party)->decryptedData() + offset, true, true);
+    return std::make_shared<PK8>(getBlock(Party)->decryptedData() + offset, true);
 }
-std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot, bool ekx) const
+std::shared_ptr<PKX> SavSWSH::pkm(u8 box, u8 slot) const
 {
     u32 offset = boxOffset(box, slot);
-    return std::make_shared<PK8>(getBlock(Box)->decryptedData() + offset, ekx, true);
+    return std::make_shared<PK8>(getBlock(Box)->decryptedData() + offset, true);
 }
 
 void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
@@ -493,7 +493,7 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         u8 buf[0x158] = {0};
         std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, false, true, true);
+        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, true, true);
 
         if (pk->getLength() != 0x158)
         {
@@ -514,7 +514,7 @@ void SavSWSH::pkm(std::shared_ptr<PKX> pk, u8 slot)
     {
         u8 buf[0x158] = {0};
         std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, false, true, true);
+        std::unique_ptr<PK8> pk8 = std::make_unique<PK8>(buf, true, true);
 
         if (pk->getLength() != 0x158)
         {
@@ -537,7 +537,7 @@ void SavSWSH::cryptBoxData(bool crypted)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
-            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(getBlock(Box)->decryptedData() + boxOffset(box, slot), crypted, true, true);
+            std::unique_ptr<PKX> pk8 = std::make_unique<PK8>(getBlock(Box)->decryptedData() + boxOffset(box, slot), true, true);
             if (!crypted)
             {
                 pk8->encrypt();

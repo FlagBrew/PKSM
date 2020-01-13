@@ -155,9 +155,14 @@ void PK5::crypt(void)
     }
 }
 
-PK5::PK5(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 220 : 136, direct)
+bool PK5::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u32>(data + 0x64) != 0;
+}
+
+PK5::PK5(u8* dt, bool party, bool direct) : PKX(dt, party ? 220 : 136, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }
@@ -165,7 +170,7 @@ PK5::PK5(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 220 : 136,
 
 std::shared_ptr<PKX> PK5::clone(void) const
 {
-    return std::make_shared<PK5>(const_cast<u8*>(data), false, length == 236);
+    return std::make_shared<PK5>(const_cast<u8*>(data), length == 236);
 }
 
 Generation PK5::generation(void) const

@@ -66,9 +66,14 @@ void PK4::crypt(void)
     }
 }
 
-PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
+bool PK4::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u32>(data + 0x64) != 0;
+}
+
+PK4::PK4(u8* dt, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }
@@ -76,7 +81,7 @@ PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 236 : 136,
 
 std::shared_ptr<PKX> PK4::clone(void) const
 {
-    return std::make_shared<PK4>(const_cast<u8*>(data), false, length == 236);
+    return std::make_shared<PK4>(const_cast<u8*>(data), length == 236);
 }
 
 Generation PK4::generation(void) const

@@ -277,7 +277,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
     bool doTradeEdits = Param[4]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false);
+    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false);
 
     if (pkm)
     {
@@ -546,7 +546,7 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
 
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false, true);
+    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, true);
 
     Banks::bank->pkm(pkm, box, slot);
 }
@@ -630,8 +630,8 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
     checkGen(Parser, gen);
 
-    // With ekx flag, will automatically decrypt data
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, true, isParty, true);
+    // Will automatically decrypt data
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, isParty, true);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -642,7 +642,7 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, isParty, true);
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, isParty, true);
     pkm->encrypt();
 }
 
@@ -775,7 +775,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     u8* data    = (u8*)Param[0]->Val->Pointer;
     int species = Param[1]->Val->Integer;
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, false, true);
+    std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, true);
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
@@ -1105,7 +1105,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     Generation gen = Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false, true);
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, true);
 
     if (pkm->species() == 0 || pkm->species() > PKX::PKSM_MAX_SPECIES)
     {
@@ -1126,7 +1126,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     checkGen(Parser, gen);
 
     // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic repetition
-    PKX* pkm = PKX::getPKM(gen, data, false, false, true).release();
+    PKX* pkm = PKX::getPKM(gen, data, false, true).release();
 
     switch (field)
     {
@@ -1506,7 +1506,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    PKX* pkm = PKX::getPKM(gen, data, false, false, true).release();
+    PKX* pkm = PKX::getPKM(gen, data, false, true).release();
 
     switch (field)
     {

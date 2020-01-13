@@ -44,12 +44,13 @@ protected:
 
 public:
     PK6() : PKX(nullptr, 232) {}
-    PK6(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
+    PK6(u8* dt, bool party = false, bool directAccess = false);
     virtual ~PK6() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation(void) const override;
+    bool isEncrypted(void) const override;
 
     bool untraded(void) const;
     bool untradedEvent(void) const;

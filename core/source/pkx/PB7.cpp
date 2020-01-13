@@ -63,9 +63,14 @@ void PB7::crypt(void)
     }
 }
 
-PB7::PB7(u8* dt, bool ekx, bool direct) : PKX(dt, 260, direct)
+bool PB7::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
+}
+
+PB7::PB7(u8* dt, bool direct) : PKX(dt, 260, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }

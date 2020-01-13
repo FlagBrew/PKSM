@@ -67,9 +67,14 @@ void PK6::crypt(void)
     }
 }
 
-PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
+bool PK6::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
+}
+
+PK6::PK6(u8* dt, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }
@@ -77,7 +82,7 @@ PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 260 : 232,
 
 std::shared_ptr<PKX> PK6::clone(void) const
 {
-    return std::make_shared<PK6>(const_cast<u8*>(data), false, length == 260);
+    return std::make_shared<PK6>(const_cast<u8*>(data), length == 260);
 }
 
 Generation PK6::generation(void) const

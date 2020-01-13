@@ -41,14 +41,6 @@ class PKFilter;
 
 class PKX
 {
-    friend class Sav;
-    friend class PK4;
-    friend class PK5;
-    friend class PK6;
-    friend class PK7;
-    friend class PK8;
-    friend class PB7;
-
 private:
     bool directAccess;
 
@@ -61,13 +53,6 @@ protected:
 
     virtual void crypt(void)         = 0;
     virtual void shuffleArray(u8 sv) = 0;
-
-    virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG7(Sav& save) const { return generation() == Generation::SEVEN ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToLGPE(Sav& save) const { return generation() == Generation::LGPE ? clone() : nullptr; }
-    virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
 
     u32 length = 0;
     u8* data;
@@ -83,8 +68,17 @@ public:
     PKX(u8* data, size_t length, bool directAccess = false);
     PKX(const PKX& pk) = delete;
     PKX& operator=(const PKX& pk) = delete;
-    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false, bool directAccess = false);
+    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
+
+    virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG7(Sav& save) const { return generation() == Generation::SEVEN ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToLGPE(Sav& save) const { return generation() == Generation::LGPE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
+
+    virtual bool isEncrypted() const = 0;
 
     virtual Generation generation(void) const = 0;
     bool gen7(void) const;
@@ -239,7 +233,7 @@ public:
     virtual void partyLevel(u8 v)            = 0;
 
     u32 getLength(void) const { return length; }
-    static u8 genFromBytes(u8* data, size_t length, bool ekx = false);
+    static u8 genFromBytes(u8* data, size_t length);
 
     // Personal interface
     virtual u8 baseHP(void) const         = 0;

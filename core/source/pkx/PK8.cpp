@@ -63,9 +63,14 @@ void PK8::crypt(void)
     }
 }
 
-PK8::PK8(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x148, direct)
+bool PK8::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u16>(data + 0x70) != 0 && Endian::convertTo<u16>(data + 0xC0) != 0;
+}
+
+PK8::PK8(u8* dt, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x148, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }
@@ -73,7 +78,7 @@ PK8::PK8(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 0x158 : 0x
 
 std::shared_ptr<PKX> PK8::clone(void) const
 {
-    return std::make_shared<PK8>(const_cast<u8*>(data), false, length == 0x158);
+    return std::make_shared<PK8>(const_cast<u8*>(data), length == 0x158);
 }
 
 Generation PK8::generation(void) const
