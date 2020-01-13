@@ -375,11 +375,8 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else if (TitleLoader::nandTitles.size() < 5)
                 {
-                    if (selectedTitle < (int)TitleLoader::nandTitles.size() - 2)
-                    {
-                        selectedTitle++;
-                    }
-                    else
+                    selectedTitle++;
+                    if (selectedTitle == (int)TitleLoader::nandTitles.size())
                     {
                         if (TitleLoader::cardTitle)
                         {
