@@ -153,6 +153,7 @@ void BankSelectionScreen::renameBank()
         {
             if (hid.fullIndex() != strings.size() - 1)
             {
+                Gui::waitFrame(i18n::localize("RENAMING_BANK"));
                 Banks::renameBank(strings[hid.fullIndex()].first, string);
             }
             strings[hid.fullIndex()].first = string;
