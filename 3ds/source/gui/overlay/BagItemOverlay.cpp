@@ -108,13 +108,16 @@ void BagItemOverlay::update(touchPosition* touch)
     {
         if (hid.fullIndex() == 0)
         {
-            static Item4 emptyItem;
-            for (int i = slot; i < --firstEmpty; i++)
+            if (firstEmpty != slot)
             {
-                auto item = TitleLoader::save->item(pouch.first, i + 1);
-                TitleLoader::save->item(*item, pouch.first, i);
+                static Item4 emptyItem;
+                for (int i = slot; i < --firstEmpty; i++)
+                {
+                    auto item = TitleLoader::save->item(pouch.first, i + 1);
+                    TitleLoader::save->item(*item, pouch.first, i);
+                }
+                TitleLoader::save->item(emptyItem, pouch.first, firstEmpty);
             }
-            TitleLoader::save->item(emptyItem, pouch.first, firstEmpty);
         }
         else
         {
