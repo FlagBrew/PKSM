@@ -29,6 +29,7 @@
 #include "PKX.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
+#include <algorithm>
 
 VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {

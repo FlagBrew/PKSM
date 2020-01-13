@@ -36,58 +36,360 @@
 #include "utils.hpp"
 #include <stack>
 
-C3D_RenderTarget* g_renderTargetTop;
-C3D_RenderTarget* g_renderTargetBottom;
+namespace
+{
+    C3D_RenderTarget* g_renderTargetTop;
+    C3D_RenderTarget* g_renderTargetBottom;
 
-static C2D_SpriteSheet spritesheet_ui;
-static C2D_SpriteSheet spritesheet_pkm;
-static C2D_SpriteSheet spritesheet_types;
-static C2D_Image bgBoxes;
-static TextParse::TextBuf* textBuffer;
-static TextParse::ScreenText topText;
-static TextParse::ScreenText bottomText;
-static TextParse::ScreenText* currentText = nullptr;
+    C2D_SpriteSheet spritesheet_ui;
+    C2D_SpriteSheet spritesheet_pkm;
+    C2D_SpriteSheet spritesheet_types;
+    C2D_Image bgBoxes;
+    TextParse::TextBuf* textBuffer;
+    TextParse::ScreenText topText;
+    TextParse::ScreenText bottomText;
+    TextParse::ScreenText* currentText = nullptr;
 
-static std::vector<C2D_Font> fonts;
+    std::vector<C2D_Font> fonts;
 
-std::stack<std::unique_ptr<Screen>> screens;
+    std::stack<std::unique_ptr<Screen>> screens;
 
-constexpr u32 magicNumber = 0xC7D84AB9;
-static float noHomeAlpha  = 0.0f;
+    constexpr u32 magicNumber = 0xC7D84AB9;
+    float noHomeAlpha         = 0.0f;
 #define NOHOMEALPHA_ACCEL 0.001f
-static float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
+    float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
-bool textMode = false;
-bool inFrame  = false;
+    bool textMode = false;
+    bool inFrame  = false;
 
-struct ScrollingTextOffset
-{
-    int offset;
-    int pauseTime;
-    bool thisFrame;
-};
-static std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
-
-static Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
-{
-    Tex3DS_SubTexture tex = *image.subtex;
-    if (x != endX)
+    struct ScrollingTextOffset
     {
-        int deltaX  = endX - x;
-        float texRL = tex.left - tex.right;
-        tex.left    = tex.left - (float)texRL / tex.width * x;
-        tex.right   = tex.left - (float)texRL / tex.width * deltaX;
-        tex.width   = deltaX;
-    }
-    if (y != endY)
+        int offset;
+        int pauseTime;
+        bool thisFrame;
+    };
+    std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
+
+    Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
     {
-        float texTB = tex.top - tex.bottom;
-        int deltaY  = endY - y;
-        tex.top     = tex.top - (float)texTB / tex.height * y;
-        tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
-        tex.height  = deltaY;
+        Tex3DS_SubTexture tex = *image.subtex;
+        if (x != endX)
+        {
+            int deltaX  = endX - x;
+            float texRL = tex.left - tex.right;
+            tex.left    = tex.left - (float)texRL / tex.width * x;
+            tex.right   = tex.left - (float)texRL / tex.width * deltaX;
+            tex.width   = deltaX;
+        }
+        if (y != endY)
+        {
+            float texTB = tex.top - tex.bottom;
+            int deltaY  = endY - y;
+            tex.top     = tex.top - (float)texTB / tex.height * y;
+            tex.bottom  = tex.top - (float)texTB / tex.height * deltaY;
+            tex.height  = deltaY;
+        }
+        return tex;
     }
-    return tex;
+
+    void _draw_mirror_scale(int key, int x, int y, int off, int rep)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
+        // Left side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
+        // Right side
+        Gui::drawImageAt({sprite.tex, &tex}, x + off + rep, y, nullptr, -1.0f, 1.0f);
+        // Center
+        tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
+        Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, 1.0f);
+    }
+
+    void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
+        for (u8 row = 0; row < rows; row++)
+        {
+            for (u8 col = 0; col < cols; col++)
+            {
+                Gui::drawImageAt(sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height);
+            }
+        }
+    }
+
+    constexpr int getSpeciesOffset(int species)
+    {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+        int imageOffsetFromBack = 0;
+        switch (species)
+        {
+            // case NEXT_SPECIES_WITH_FORMS:
+            // imageOffsetFromBack += 1;
+            case 801:
+                imageOffsetFromBack += 3;
+            case 800:
+                imageOffsetFromBack += 1;
+            case 784:
+                imageOffsetFromBack += 1;
+            case 778:
+                imageOffsetFromBack += 1;
+            case 777:
+                imageOffsetFromBack += 7;
+            case 774:
+                imageOffsetFromBack += 1;
+            case 758:
+                imageOffsetFromBack += 1;
+            case 754:
+                imageOffsetFromBack += 1;
+            case 752:
+                imageOffsetFromBack += 1;
+            case 746:
+                imageOffsetFromBack += 2;
+            case 745:
+                imageOffsetFromBack += 1;
+            case 744:
+                imageOffsetFromBack += 1;
+            case 743:
+                imageOffsetFromBack += 3;
+            case 741:
+                imageOffsetFromBack += 1;
+            case 738:
+                imageOffsetFromBack += 1;
+            case 735:
+                imageOffsetFromBack += 1;
+            case 720:
+                imageOffsetFromBack += 1;
+            case 719:
+                imageOffsetFromBack += 4;
+            case 718:
+                imageOffsetFromBack += 1;
+            case 681:
+                imageOffsetFromBack += 1;
+            case 678:
+                imageOffsetFromBack += 9;
+            case 676:
+                imageOffsetFromBack += 4;
+            case 671:
+                imageOffsetFromBack += 5;
+            case 670:
+                imageOffsetFromBack += 4;
+            case 669:
+                imageOffsetFromBack += 19;
+            case 666:
+                imageOffsetFromBack += 2;
+            case 658:
+                imageOffsetFromBack += 1;
+            case 648:
+                imageOffsetFromBack += 1;
+            case 647:
+                imageOffsetFromBack += 2;
+            case 646:
+                imageOffsetFromBack += 1;
+            case 645:
+                imageOffsetFromBack += 1;
+            case 642:
+                imageOffsetFromBack += 1;
+            case 641:
+                imageOffsetFromBack += 3;
+            case 586:
+                imageOffsetFromBack += 3;
+            case 585:
+                imageOffsetFromBack += 1;
+            case 555:
+                imageOffsetFromBack += 1;
+            case 550:
+                imageOffsetFromBack += 1;
+            case 531:
+                imageOffsetFromBack += 1;
+            case 492:
+                imageOffsetFromBack += 1;
+            case 487:
+                imageOffsetFromBack += 5;
+            case 479:
+                imageOffsetFromBack += 1;
+            case 475:
+                imageOffsetFromBack += 1;
+            case 460:
+                imageOffsetFromBack += 1;
+            case 448:
+                imageOffsetFromBack += 1;
+            case 445:
+                imageOffsetFromBack += 1;
+            case 428:
+                imageOffsetFromBack += 1;
+            case 423:
+                imageOffsetFromBack += 1;
+            case 422:
+                imageOffsetFromBack += 1;
+            case 421:
+                imageOffsetFromBack += 2;
+            case 413:
+                imageOffsetFromBack += 2;
+            case 412:
+                imageOffsetFromBack += 3;
+            case 386:
+                imageOffsetFromBack += 1;
+            case 384:
+                imageOffsetFromBack += 1;
+            case 383:
+                imageOffsetFromBack += 1;
+            case 382:
+                imageOffsetFromBack += 1;
+            case 381:
+                imageOffsetFromBack += 1;
+            case 380:
+                imageOffsetFromBack += 1;
+            case 376:
+                imageOffsetFromBack += 1;
+            case 373:
+                imageOffsetFromBack += 1;
+            case 362:
+                imageOffsetFromBack += 1;
+            case 359:
+                imageOffsetFromBack += 1;
+            case 354:
+                imageOffsetFromBack += 3;
+            case 351:
+                imageOffsetFromBack += 1;
+            case 334:
+                imageOffsetFromBack += 1;
+            case 323:
+                imageOffsetFromBack += 1;
+            case 319:
+                imageOffsetFromBack += 1;
+            case 310:
+                imageOffsetFromBack += 1;
+            case 308:
+                imageOffsetFromBack += 1;
+            case 306:
+                imageOffsetFromBack += 1;
+            case 303:
+                imageOffsetFromBack += 1;
+            case 302:
+                imageOffsetFromBack += 1;
+            case 282:
+                imageOffsetFromBack += 1;
+            case 260:
+                imageOffsetFromBack += 1;
+            case 257:
+                imageOffsetFromBack += 1;
+            case 254:
+                imageOffsetFromBack += 1;
+            case 248:
+                imageOffsetFromBack += 1;
+            case 229:
+                imageOffsetFromBack += 1;
+            case 214:
+                imageOffsetFromBack += 1;
+            case 212:
+                imageOffsetFromBack += 1;
+            case 208:
+                imageOffsetFromBack += 1;
+            case 181:
+                imageOffsetFromBack += 1;
+            case 172:
+                imageOffsetFromBack += 2;
+            case 150:
+                imageOffsetFromBack += 1;
+            case 142:
+                imageOffsetFromBack += 1;
+            case 130:
+                imageOffsetFromBack += 1;
+            case 127:
+                imageOffsetFromBack += 1;
+            case 115:
+                imageOffsetFromBack += 2;
+            case 105:
+                imageOffsetFromBack += 1;
+            case 103:
+                imageOffsetFromBack += 1;
+            case 94:
+                imageOffsetFromBack += 1;
+            case 89:
+                imageOffsetFromBack += 1;
+            case 88:
+                imageOffsetFromBack += 1;
+            case 80:
+                imageOffsetFromBack += 1;
+            case 76:
+                imageOffsetFromBack += 1;
+            case 75:
+                imageOffsetFromBack += 1;
+            case 74:
+                imageOffsetFromBack += 1;
+            case 65:
+                imageOffsetFromBack += 1;
+            case 53:
+                imageOffsetFromBack += 1;
+            case 52:
+                imageOffsetFromBack += 1;
+            case 51:
+                imageOffsetFromBack += 1;
+            case 50:
+                imageOffsetFromBack += 1;
+            case 38:
+                imageOffsetFromBack += 1;
+            case 37:
+                imageOffsetFromBack += 1;
+            case 28:
+                imageOffsetFromBack += 1;
+            case 27:
+                imageOffsetFromBack += 1;
+            case 26:
+                imageOffsetFromBack += 13;
+            case 25:
+                imageOffsetFromBack += 2;
+            case 20:
+                imageOffsetFromBack += 1;
+            case 19:
+                imageOffsetFromBack += 1;
+            case 18:
+                imageOffsetFromBack += 1;
+            case 15:
+                imageOffsetFromBack += 1;
+            case 9:
+                imageOffsetFromBack += 2;
+            case 6:
+                imageOffsetFromBack += 1;
+            case 3:
+                imageOffsetFromBack += 0;
+        }
+#pragma GCC diagnostic pop
+
+        return imageOffsetFromBack;
+    }
+
+    C2D_Image typeImage(Language lang, u8 type)
+    {
+        if (type > 17)
+        {
+            type = 0;
+        }
+        switch (lang)
+        {
+            case Language::ES:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
+            case Language::DE:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
+            case Language::FR:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
+            case Language::IT:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
+            case Language::JP:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
+            case Language::KO:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
+            case Language::TW:
+            case Language::ZH:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
+            case Language::EN:
+            case Language::PT:
+            case Language::NL:
+            default:
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
+        }
+    }
 }
 
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
@@ -391,31 +693,6 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             }
         }
         break;
-    }
-}
-
-static void _draw_mirror_scale(int key, int x, int y, int off, int rep)
-{
-    C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
-    // Left side
-    Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
-    Gui::drawImageAt({sprite.tex, &tex}, x, y);
-    // Right side
-    Gui::drawImageAt({sprite.tex, &tex}, x + off + rep, y, nullptr, -1.0f, 1.0f);
-    // Center
-    tex = _select_box(sprite, off, 0, sprite.subtex->width, 0);
-    Gui::drawImageAt({sprite.tex, &tex}, x + off, y, nullptr, rep, 1.0f);
-}
-
-static void _draw_repeat(int key, int x, int y, u8 rows, u8 cols)
-{
-    C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
-    for (u8 row = 0; row < rows; row++)
-    {
-        for (u8 col = 0; col < cols; col++)
-        {
-            Gui::drawImageAt(sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height);
-        }
     }
 }
 
@@ -1032,7 +1309,7 @@ void Gui::format(const PKX& pkm, int x, int y)
         case Generation::LGPE:
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
-        default:
+        case Generation::UNUSED:
             break;
     }
 }
@@ -1086,6 +1363,10 @@ void Gui::generation(const PKX& pkm, int x, int y)
         case 41: // cr
             Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
             break;
+        case 42: // lgp
+        case 43: // lge
+        case 44: // sw
+        case 45: // sh
         default:
             break;
     }
@@ -1134,249 +1415,6 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, f
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, &tint);
     }
-}
-
-static constexpr int getSpeciesOffset(int species)
-{
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-    int imageOffsetFromBack = 0;
-    switch (species)
-    {
-        // case NEXT_SPECIES_WITH_FORMS:
-        // imageOffsetFromBack += 1;
-        case 801:
-            imageOffsetFromBack += 3;
-        case 800:
-            imageOffsetFromBack += 1;
-        case 784:
-            imageOffsetFromBack += 1;
-        case 778:
-            imageOffsetFromBack += 1;
-        case 777:
-            imageOffsetFromBack += 7;
-        case 774:
-            imageOffsetFromBack += 1;
-        case 758:
-            imageOffsetFromBack += 1;
-        case 754:
-            imageOffsetFromBack += 1;
-        case 752:
-            imageOffsetFromBack += 1;
-        case 746:
-            imageOffsetFromBack += 2;
-        case 745:
-            imageOffsetFromBack += 1;
-        case 744:
-            imageOffsetFromBack += 1;
-        case 743:
-            imageOffsetFromBack += 3;
-        case 741:
-            imageOffsetFromBack += 1;
-        case 738:
-            imageOffsetFromBack += 1;
-        case 735:
-            imageOffsetFromBack += 1;
-        case 720:
-            imageOffsetFromBack += 1;
-        case 719:
-            imageOffsetFromBack += 4;
-        case 718:
-            imageOffsetFromBack += 1;
-        case 681:
-            imageOffsetFromBack += 1;
-        case 678:
-            imageOffsetFromBack += 9;
-        case 676:
-            imageOffsetFromBack += 4;
-        case 671:
-            imageOffsetFromBack += 5;
-        case 670:
-            imageOffsetFromBack += 4;
-        case 669:
-            imageOffsetFromBack += 19;
-        case 666:
-            imageOffsetFromBack += 2;
-        case 658:
-            imageOffsetFromBack += 1;
-        case 648:
-            imageOffsetFromBack += 1;
-        case 647:
-            imageOffsetFromBack += 2;
-        case 646:
-            imageOffsetFromBack += 1;
-        case 645:
-            imageOffsetFromBack += 1;
-        case 642:
-            imageOffsetFromBack += 1;
-        case 641:
-            imageOffsetFromBack += 3;
-        case 586:
-            imageOffsetFromBack += 3;
-        case 585:
-            imageOffsetFromBack += 1;
-        case 555:
-            imageOffsetFromBack += 1;
-        case 550:
-            imageOffsetFromBack += 1;
-        case 531:
-            imageOffsetFromBack += 1;
-        case 492:
-            imageOffsetFromBack += 1;
-        case 487:
-            imageOffsetFromBack += 5;
-        case 479:
-            imageOffsetFromBack += 1;
-        case 475:
-            imageOffsetFromBack += 1;
-        case 460:
-            imageOffsetFromBack += 1;
-        case 448:
-            imageOffsetFromBack += 1;
-        case 445:
-            imageOffsetFromBack += 1;
-        case 428:
-            imageOffsetFromBack += 1;
-        case 423:
-            imageOffsetFromBack += 1;
-        case 422:
-            imageOffsetFromBack += 1;
-        case 421:
-            imageOffsetFromBack += 2;
-        case 413:
-            imageOffsetFromBack += 2;
-        case 412:
-            imageOffsetFromBack += 3;
-        case 386:
-            imageOffsetFromBack += 1;
-        case 384:
-            imageOffsetFromBack += 1;
-        case 383:
-            imageOffsetFromBack += 1;
-        case 382:
-            imageOffsetFromBack += 1;
-        case 381:
-            imageOffsetFromBack += 1;
-        case 380:
-            imageOffsetFromBack += 1;
-        case 376:
-            imageOffsetFromBack += 1;
-        case 373:
-            imageOffsetFromBack += 1;
-        case 362:
-            imageOffsetFromBack += 1;
-        case 359:
-            imageOffsetFromBack += 1;
-        case 354:
-            imageOffsetFromBack += 3;
-        case 351:
-            imageOffsetFromBack += 1;
-        case 334:
-            imageOffsetFromBack += 1;
-        case 323:
-            imageOffsetFromBack += 1;
-        case 319:
-            imageOffsetFromBack += 1;
-        case 310:
-            imageOffsetFromBack += 1;
-        case 308:
-            imageOffsetFromBack += 1;
-        case 306:
-            imageOffsetFromBack += 1;
-        case 303:
-            imageOffsetFromBack += 1;
-        case 302:
-            imageOffsetFromBack += 1;
-        case 282:
-            imageOffsetFromBack += 1;
-        case 260:
-            imageOffsetFromBack += 1;
-        case 257:
-            imageOffsetFromBack += 1;
-        case 254:
-            imageOffsetFromBack += 1;
-        case 248:
-            imageOffsetFromBack += 1;
-        case 229:
-            imageOffsetFromBack += 1;
-        case 214:
-            imageOffsetFromBack += 1;
-        case 212:
-            imageOffsetFromBack += 1;
-        case 208:
-            imageOffsetFromBack += 1;
-        case 181:
-            imageOffsetFromBack += 1;
-        case 172:
-            imageOffsetFromBack += 2;
-        case 150:
-            imageOffsetFromBack += 1;
-        case 142:
-            imageOffsetFromBack += 1;
-        case 130:
-            imageOffsetFromBack += 1;
-        case 127:
-            imageOffsetFromBack += 1;
-        case 115:
-            imageOffsetFromBack += 2;
-        case 105:
-            imageOffsetFromBack += 1;
-        case 103:
-            imageOffsetFromBack += 1;
-        case 94:
-            imageOffsetFromBack += 1;
-        case 89:
-            imageOffsetFromBack += 1;
-        case 88:
-            imageOffsetFromBack += 1;
-        case 80:
-            imageOffsetFromBack += 1;
-        case 76:
-            imageOffsetFromBack += 1;
-        case 75:
-            imageOffsetFromBack += 1;
-        case 74:
-            imageOffsetFromBack += 1;
-        case 65:
-            imageOffsetFromBack += 1;
-        case 53:
-            imageOffsetFromBack += 1;
-        case 52:
-            imageOffsetFromBack += 1;
-        case 51:
-            imageOffsetFromBack += 1;
-        case 50:
-            imageOffsetFromBack += 1;
-        case 38:
-            imageOffsetFromBack += 1;
-        case 37:
-            imageOffsetFromBack += 1;
-        case 28:
-            imageOffsetFromBack += 1;
-        case 27:
-            imageOffsetFromBack += 1;
-        case 26:
-            imageOffsetFromBack += 13;
-        case 25:
-            imageOffsetFromBack += 2;
-        case 20:
-            imageOffsetFromBack += 1;
-        case 19:
-            imageOffsetFromBack += 1;
-        case 18:
-            imageOffsetFromBack += 1;
-        case 15:
-            imageOffsetFromBack += 1;
-        case 9:
-            imageOffsetFromBack += 2;
-        case 6:
-            imageOffsetFromBack += 1;
-        case 3:
-            imageOffsetFromBack += 0;
-    }
-#pragma GCC diagnostic pop
-
-    return imageOffsetFromBack;
 }
 
 void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, PKSM_Color color, float blend)
@@ -1883,37 +1921,6 @@ void Gui::ball(size_t index, int x, int y)
     else
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y);
-    }
-}
-
-static C2D_Image typeImage(Language lang, u8 type)
-{
-    if (type > 17)
-    {
-        type = 0;
-    }
-    switch (lang)
-    {
-        case Language::ES:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
-        case Language::DE:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
-        case Language::FR:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
-        case Language::IT:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
-        case Language::JP:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
-        case Language::KO:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
-        case Language::TW:
-        case Language::ZH:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
-        case Language::EN:
-        case Language::PT:
-        case Language::NL:
-        default:
-            return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
     }
 }
 

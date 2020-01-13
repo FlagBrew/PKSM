@@ -35,12 +35,14 @@ class Item5;
 class Item6;
 class Item7;
 class Item7b;
+class Item8;
 
 class Item
 {
 public:
     virtual ~Item() {}
     virtual Generation generation(void) const     = 0;
+    virtual u16 maxCount(void) const              = 0;
     virtual u16 id(void) const                    = 0;
     virtual u16 count(void) const                 = 0;
     virtual std::pair<u8*, int> bytes(void) const = 0;
@@ -51,6 +53,7 @@ public:
     virtual operator Item6(void) const;
     virtual operator Item7(void) const;
     virtual operator Item7b(void) const;
+    virtual operator Item8(void) const;
 };
 
 class Item4 : public Item
@@ -75,6 +78,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::FOUR; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -104,6 +108,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::FIVE; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -133,6 +138,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::SIX; }
+    u16 maxCount(void) const override { return 0xFFFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = v; }
     u16 count(void) const override { return itemData.count; }
@@ -165,6 +171,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::SEVEN; }
+    u16 maxCount(void) const override { return 0x3FF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x3FF); }
     u16 count(void) const override { return itemData.count; }
@@ -177,6 +184,7 @@ public:
     void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
     std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
     operator Item7b(void) const override;
+    operator Item8(void) const override;
 };
 
 class Item7b : public Item
@@ -203,6 +211,7 @@ public:
         }
     }
     Generation generation(void) const override { return Generation::LGPE; }
+    u16 maxCount(void) const override { return 0x7FFF; }
     u16 id(void) const override { return itemData.id; }
     void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
     u16 count(void) const override { return itemData.count; }
@@ -213,6 +222,45 @@ public:
     void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
     std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
     operator Item7(void) const override;
+    operator Item8(void) const override;
+};
+
+class Item8 : public Item
+{
+private:
+    struct
+    {
+        unsigned int id : 15;
+        unsigned int count : 15;
+        unsigned int newFlag : 1;
+        unsigned int reserved : 1;
+    } itemData;
+
+public:
+    Item8(u8* data = nullptr)
+    {
+        if (data)
+        {
+            std::copy(data, data + 4, (u8*)&itemData);
+        }
+        else
+        {
+            itemData = {0, 0, 0, 0};
+        }
+    }
+    Generation generation(void) const override { return Generation::SEVEN; }
+    u16 maxCount(void) const override { return 0x7FFF; }
+    u16 id(void) const override { return itemData.id; }
+    void id(u16 v) override { itemData.id = std::min(v, (u16)0x7FFF); }
+    u16 count(void) const override { return itemData.count; }
+    void count(u16 v) override { itemData.count = std::min(v, (u16)0x7FFF); }
+    bool newFlag(void) const { return itemData.newFlag; }
+    void newFlag(bool v) { itemData.newFlag = v ? 1 : 0; }
+    bool reserved(void) const { return itemData.reserved; }
+    void reserved(bool v) { itemData.reserved = v ? 1 : 0; }
+    std::pair<u8*, int> bytes(void) const override { return {(u8*)&itemData, sizeof(itemData)}; }
+    operator Item7(void) const override;
+    operator Item7b(void) const override;
 };
 
 #endif

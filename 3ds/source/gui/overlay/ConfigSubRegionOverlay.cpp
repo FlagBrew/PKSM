@@ -73,7 +73,7 @@ void ConfigSubRegionOverlay::drawTop() const
     std::map<u8, std::string>::const_iterator locIt = subregions.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
     {
-        locIt++;
+        ++locIt;
     }
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
@@ -82,7 +82,7 @@ void ConfigSubRegionOverlay::drawTop() const
         {
             Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
-            locIt++;
+            ++locIt;
         }
         else
         {

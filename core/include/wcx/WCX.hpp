@@ -36,7 +36,10 @@
 class WCX
 {
 public:
-    virtual ~WCX(void){};
+    WCX() {}
+    WCX(const WCX&) = delete;
+    WCX& operator=(const WCX&) = delete;
+    virtual ~WCX(void) {}
 
     virtual Generation generation(void) const = 0;
     virtual bool bean(void) const             = 0;

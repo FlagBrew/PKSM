@@ -31,7 +31,7 @@
 #include "Language.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -44,6 +44,7 @@ class InjectorScreen : public Screen
 public:
     InjectorScreen(nlohmann::json ids);
     InjectorScreen(std::unique_ptr<WCX> card);
+    ~InjectorScreen();
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
@@ -57,7 +58,7 @@ private:
     std::unique_ptr<WCX> wondercard;
     std::string game;
     HidHorizontal hid;
-    nlohmann::json ids;
+    std::unique_ptr<nlohmann::json> ids;
     const std::vector<Sav::giftData> gifts;
     const int emptySlot;
     int slot;

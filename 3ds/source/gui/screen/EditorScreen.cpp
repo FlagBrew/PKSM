@@ -39,6 +39,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "PkmItemOverlay.hpp"
 #include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
@@ -59,6 +60,74 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
     addOverlay<ViewOverlay>(pkm, false);
+
+    if (this->box == 0xFFFF)
+    {
+        switch (pkm->generation())
+        {
+            case Generation::FOUR:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[236] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK4>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::FIVE:
+                if (pkm->getLength() == 136)
+                {
+                    u8 pkmData[220] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK5>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::SIX:
+            case Generation::SEVEN:
+                if (pkm->getLength() == 232)
+                {
+                    u8 pkmData[260] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    if (pkm->generation() == Generation::SIX)
+                    {
+                        pkm = std::make_shared<PK6>(pkmData, false, true);
+                    }
+                    else
+                    {
+                        pkm = std::make_shared<PK7>(pkmData, false, true);
+                    }
+                    partyUpdate();
+                }
+                break;
+            case Generation::EIGHT:
+                if (pkm->getLength() == 0x148)
+                {
+                    u8 pkmData[0x158] = {0};
+                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
+                    pkm = std::make_shared<PK8>(pkmData, false, true);
+                    partyUpdate();
+                }
+                break;
+            case Generation::LGPE:
+                break; // Always a party Pokemon
+            case Generation::UNUSED:
+                Gui::warn(i18n::localize("THE_FUCK"));
+        }
+
+        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        for (int i = 0; i < 6; i++)
+        {
+            origPartyStats[i] = pkm->partyStat(stats[i]);
+        }
+        origPartyLevel  = pkm->partyLevel();
+        origPartyCurrHP = pkm->partyCurrHP();
+        if (pkm->generation() == Generation::LGPE)
+        {
+            origPartyCP = ((PB7*)pkm.get())->partyCP();
+        }
+    }
+
     if (!pkm || pkm->species() == 0)
     {
         pkm = TitleLoader::save->emptyPkm();
@@ -113,6 +182,10 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             case 43:
                 pkm->metLocation(0x0003); // Route 1, LGPE
                 break;
+            case 44:
+            case 45:
+                pkm->metLocation(0x000C); // Route 1, SWSH
+                break;
         }
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
@@ -138,67 +211,6 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
         }
         addOverlay<SpeciesOverlay>(pkm);
-    }
-
-    if (this->box == 0xFF)
-    {
-        switch (pkm->generation())
-        {
-            case Generation::FOUR:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[236] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK4>(pkmData, false, true);
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::FIVE:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[220] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK5>(pkmData, false, true);
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                if (pkm->getLength() == 232)
-                {
-                    u8 pkmData[260] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    if (pkm->generation() == Generation::SIX)
-                    {
-                        pkm = std::make_shared<PK6>(pkmData, false, true);
-                    }
-                    else
-                    {
-                        pkm = std::make_shared<PK7>(pkmData, false, true);
-                    }
-                    partyUpdate();
-                    addOverlay<SpeciesOverlay>(pkm);
-                }
-                break;
-            case Generation::LGPE:
-                break; // Always a party Pokemon
-            default:
-                Gui::warn(i18n::localize("THE_FUCK"));
-        }
-
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
-        for (int i = 0; i < 6; i++)
-        {
-            origPartyStats[i] = pkm->partyStat(stats[i]);
-        }
-        origPartyLevel  = pkm->partyLevel();
-        origPartyCurrHP = pkm->partyCurrHP();
-        if (pkm->generation() == Generation::LGPE)
-        {
-            origPartyCP = ((PB7*)pkm.get())->partyCP();
-        }
     }
 
     buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
@@ -623,18 +635,18 @@ void EditorScreen::partyUpdate()
     constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {
-        if (pkm->partyStat(stats[i]) == origPartyStats[i])
+        if (pkm->partyStat(stats[i]) != origPartyStats[i])
         {
             pkm->partyStat(stats[i], pkm->stat(stats[i]));
             origPartyStats[i] = pkm->stat(stats[i]);
         }
     }
-    if (pkm->partyLevel() == origPartyLevel)
+    if (pkm->partyLevel() != origPartyLevel)
     {
         pkm->partyLevel(pkm->level());
         origPartyLevel = pkm->level();
     }
-    if (pkm->partyCurrHP() == origPartyCurrHP)
+    if (pkm->partyCurrHP() != origPartyCurrHP)
     {
         pkm->partyCurrHP(pkm->stat(Stat::HP));
         origPartyCurrHP = pkm->stat(Stat::HP);
@@ -642,7 +654,7 @@ void EditorScreen::partyUpdate()
     if (pkm->generation() == Generation::LGPE)
     {
         PB7* pb7 = (PB7*)pkm.get();
-        if (pb7->partyCP() == origPartyCP)
+        if (pb7->partyCP() != origPartyCP)
         {
             pb7->partyCP(pb7->CP());
             origPartyCP = pb7->CP();
@@ -661,7 +673,7 @@ bool EditorScreen::save()
     {
         if (box != 0xFF)
         {
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (TitleLoader::save->generation() == Generation::LGPE || TitleLoader::save->generation() == Generation::EIGHT)
             {
                 partyUpdate();
             }
@@ -755,7 +767,7 @@ bool EditorScreen::selectAbility()
                 break;
         }
     }
-    else if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN)
+    else
     {
         switch (pkm->abilityNumber() >> 1)
         {
@@ -804,10 +816,9 @@ bool EditorScreen::selectForm()
 {
     static constexpr std::array<u16, 2> noChange = {
         716, 717}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    for (auto& bad : noChange)
+    if (std::any_of(noChange.begin(), noChange.end(), [this](const u16& badSpecies) { return badSpecies == pkm->species(); }))
     {
-        if (bad == pkm->species())
-            return false;
+        return false;
     }
     u8 count = TitleLoader::save->formCount(pkm->species());
     if (pkm->species() == 664 || pkm->species() == 665)

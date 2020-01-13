@@ -26,14 +26,9 @@
 
 #include "STDirectory.hpp"
 
-STDirectory::STDirectory(const std::string& root)
+STDirectory::STDirectory(const std::string& root) : mError(0), mGood(false)
 {
-    mGood  = false;
-    mError = 0;
-    mList.clear();
-
     DIR* dir = opendir(root.c_str());
-    struct dirent* ent;
 
     if (dir == NULL)
     {
@@ -43,6 +38,7 @@ STDirectory::STDirectory(const std::string& root)
     }
     else
     {
+        struct dirent* ent;
         while ((ent = readdir(dir)))
         {
             mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);

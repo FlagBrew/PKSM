@@ -30,8 +30,64 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "PKFilter.hpp"
+#include "endian.hpp"
 #include "random.hpp"
+
+namespace
+{
+    inline u8 genderFromRatio(u32 pid, u8 gt)
+    {
+        switch (gt)
+        {
+            case 0xFF:
+                return 2;
+            case 0xFE:
+                return 1;
+            case 0:
+                return 0;
+            default:
+                return (pid & 0xFF) < gt ? 1 : 0;
+        }
+    }
+
+    inline u8 getUnownForm(u32 pid)
+    {
+        u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
+        return val % 28;
+    }
+}
+
+PKX::PKX(u8* data, size_t length, bool directAccess) : directAccess(directAccess), length(length)
+{
+    if (data)
+    {
+        if (directAccess)
+        {
+            this->data = data;
+        }
+        else
+        {
+            this->data = new u8[length];
+            std::copy(data, data + length, this->data);
+        }
+    }
+    else
+    {
+        this->data = new u8[length];
+        std::fill_n(this->data, length, 0);
+        this->directAccess = false;
+    }
+}
+
+PKX::~PKX()
+{
+    if (!directAccess && data)
+    {
+        delete[] data;
+    }
+}
 
 u32 PKX::expTable(u8 row, u8 col) const
 {
@@ -261,11 +317,20 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
 {
     if (length == 136)
     {
-        if (*(u16*)(data + 4) == 0 && (*(u16*)(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) && *(u16*)(data + 0x46) == 0)
+        if (Endian::convertTo<u16>(data + 4) == 0 && (Endian::convertTo<u16>(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) &&
+            Endian::convertTo<u16>(data + 0x46) == 0)
         {
             return 5;
         }
         return 4;
+    }
+    else if (length == 236)
+    {
+        return 4;
+    }
+    else if (length == 220)
+    {
+        return 5;
     }
     else if (length == 232)
     {
@@ -303,28 +368,11 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
         }
         return 6;
     }
-    return 0;
-}
-
-static inline u8 genderFromRatio(u32 pid, u8 gt)
-{
-    switch (gt)
+    else if (length == 0x148 || length == 0x158)
     {
-        case 0xFF:
-            return 2;
-        case 0xFE:
-            return 1;
-        case 0:
-            return 0;
-        default:
-            return (pid & 0xFF) < gt ? 1 : 0;
+        return 8;
     }
-}
-
-static inline u8 getUnownForm(u32 pid)
-{
-    u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
-    return val % 28;
+    return 0;
 }
 
 u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen)
@@ -334,7 +382,7 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
         return randomNumbers();
     }
 
-    u8 (*genderTypeFinder)(u16 species);
+    u8 (*genderTypeFinder)(u16 species) = nullptr;
     switch (gen)
     {
         case Generation::FOUR:
@@ -347,9 +395,20 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
             genderTypeFinder = PersonalXYORAS::gender;
             break;
         case Generation::SEVEN:
-        default:
             genderTypeFinder = PersonalSMUSUM::gender;
             break;
+        case Generation::LGPE:
+            genderTypeFinder = PersonalLGPE::gender;
+            break;
+        case Generation::EIGHT:
+            genderTypeFinder = PersonalSWSH::gender;
+            break;
+        case Generation::UNUSED:
+            return 0;
+    }
+    if (!genderTypeFinder)
+    {
+        return 0;
     }
 
     u8 genderType = genderTypeFinder(species);
@@ -405,6 +464,8 @@ u32 PKX::versionTID() const
         case 33:
         case 42: // LGPE
         case 43:
+        case 44: // SWSH
+        case 45:
             return (u32)(SID() << 16 | TID()) % 1000000;
     }
 }
@@ -421,6 +482,8 @@ u32 PKX::versionSID() const
         case 33:
         case 42: // LGPE
         case 43:
+        case 44: // SWSH
+        case 45:
             return (u32)(SID() << 16 | TID()) / 1000000;
     }
 }
@@ -429,42 +492,57 @@ u32 PKX::formatTID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return TID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 u32 PKX::formatSID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return SID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 
-std::shared_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party)
+std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party, bool directAccess)
 {
     switch (gen)
     {
         case Generation::FOUR:
-            return std::make_shared<PK4>(data, ekx, party);
+            return std::make_unique<PK4>(data, ekx, party, directAccess);
         case Generation::FIVE:
-            return std::make_shared<PK5>(data, ekx, party);
+            return std::make_unique<PK5>(data, ekx, party, directAccess);
         case Generation::SIX:
-            return std::make_shared<PK6>(data, ekx, party);
+            return std::make_unique<PK6>(data, ekx, party, directAccess);
         case Generation::SEVEN:
-            return std::make_shared<PK7>(data, ekx, party);
+            return std::make_unique<PK7>(data, ekx, party, directAccess);
         case Generation::LGPE:
-            return std::make_shared<PB7>(data, ekx);
-        default:
+            return std::make_unique<PB7>(data, ekx, directAccess);
+        case Generation::EIGHT:
+            return std::make_unique<PK8>(data, ekx, party, directAccess);
+        case Generation::UNUSED:
             return nullptr;
     }
+    return nullptr;
 }
 
 bool PKX::operator==(const PKFilter& filter) const
@@ -521,31 +599,13 @@ bool PKX::operator==(const PKFilter& filter) const
         }
         if (filter.relearnMoveEnabled(i))
         {
-            switch (generation())
+            if (generation() == Generation::FOUR || generation() == Generation::FIVE)
             {
-                case Generation::FOUR:
-                case Generation::FIVE:
-                    return false;
-                case Generation::SIX:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK6*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                case Generation::SEVEN:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PK7*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                case Generation::LGPE:
-                    if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != ((const PB7*)this)->relearnMove(i)))
-                    {
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
+                return false;
+            }
+            else if (filter.relearnMoveInversed(i) != (filter.relearnMove(i) != relearnMove(i)))
+            {
+                return false;
             }
         }
     }

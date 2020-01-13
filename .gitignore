@@ -16,3 +16,4 @@ common/EventsGalleryPacker/EventsGallery
 common/EventsGalleryPacker/out
 common/EventsGalleryPacker/__pycache__
 common/include/revision.h
+build.log

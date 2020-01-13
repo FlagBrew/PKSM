@@ -31,12 +31,117 @@
 #include "smdh.hpp"
 #include <sys/stat.h>
 
-static FS_Archive sdmc;
-static FS_Archive mData;
+namespace
+{
+    FS_Archive sdmc;
+    FS_Archive mData;
 
-static constexpr size_t MOVE_BUFFER_SIZE = 16 * 1024;
+    constexpr size_t MOVE_BUFFER_SIZE = 16 * 1024;
 
-static constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNIQUE_ID, 0};
+    constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNIQUE_ID, 0};
+
+    void moveOldBackups()
+    {
+        STDirectory d("/3ds/PKSM/backup");
+        if (d.good())
+        {
+            for (size_t i = 0; i < d.count(); i++)
+            {
+                std::string abbreviation = d.item(i).substr(0, d.item(i).find('_'));
+                if (abbreviation == "PT")
+                {
+                    abbreviation = "PL";
+                }
+                if (abbreviation.size() > 2)
+                {
+                    // This is not in the correct format, abort
+                    continue;
+                }
+                else if (abbreviation == "P" || abbreviation == "D" || abbreviation == "PL" || abbreviation == "HG" || abbreviation == "SS" ||
+                         abbreviation == "B" || abbreviation == "W" || abbreviation == "B2" || abbreviation == "W2")
+                {
+                    Archive::moveFile(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i) + "/main", Archive::sd(),
+                        "/3ds/PKSM/backup/" + d.item(i) + "/POKEMON " + abbreviation + ".sav");
+                }
+
+                std::string destFolder = "/3ds/PKSM/backups/";
+
+                if (abbreviation == "P")
+                {
+                    destFolder += "APAE";
+                }
+                else if (abbreviation == "D")
+                {
+                    destFolder += "ADAE";
+                }
+                else if (abbreviation == "PL")
+                {
+                    destFolder += "CPUE";
+                }
+                else if (abbreviation == "HG")
+                {
+                    destFolder += "IPKE";
+                }
+                else if (abbreviation == "SS")
+                {
+                    destFolder += "IPGE";
+                }
+                else if (abbreviation == "B")
+                {
+                    destFolder += "IRBO";
+                }
+                else if (abbreviation == "W")
+                {
+                    destFolder += "IRAO";
+                }
+                else if (abbreviation == "B2")
+                {
+                    destFolder += "IREO";
+                }
+                else if (abbreviation == "W2")
+                {
+                    destFolder += "IRDO";
+                }
+                else if (abbreviation == "X")
+                {
+                    destFolder += "0x0055D";
+                }
+                else if (abbreviation == "Y")
+                {
+                    destFolder += "0x0055E";
+                }
+                else if (abbreviation == "OR")
+                {
+                    destFolder += "0x011C4";
+                }
+                else if (abbreviation == "AS")
+                {
+                    destFolder += "0x011C5";
+                }
+                else if (abbreviation == "S")
+                {
+                    destFolder += "0x01648";
+                }
+                else if (abbreviation == "M")
+                {
+                    destFolder += "0x0175E";
+                }
+                else if (abbreviation == "US")
+                {
+                    destFolder += "0x01B50";
+                }
+                else if (abbreviation == "UM")
+                {
+                    destFolder += "0x01B51";
+                }
+
+                mkdir(destFolder.c_str(), 777);
+
+                Archive::moveDir(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i), Archive::sd(), destFolder + '/' + d.item(i));
+            }
+        }
+    }
+}
 
 Result Archive::moveDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
 {
@@ -123,6 +228,41 @@ Result Archive::moveFile(FS_Archive src, const std::u16string& file, FS_Archive 
     return res;
 }
 
+Result Archive::copyDir(FS_Archive src, const std::u16string& dir, FS_Archive dst, const std::u16string& dest)
+{
+    Result res;
+    if (R_FAILED(res = FSUSER_CreateDirectory(dst, fsMakePath(PATH_UTF16, dest.data()), 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
+        return res;
+    Directory d(src, dir);
+    std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
+    std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
+    if (d.loaded())
+    {
+        for (size_t i = 0; i < d.count(); i++)
+        {
+            if (d.folder(i))
+            {
+                if (R_FAILED(res = copyDir(src, srcDir + d.item(i), dst, dstDir + d.item(i))))
+                    return res;
+            }
+            else
+            {
+                if (R_FAILED(res = copyFile(src, srcDir + d.item(i), dst, dstDir + d.item(i))))
+                    return res;
+            }
+        }
+    }
+    else
+    {
+        return d.error();
+    }
+
+    if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+        return 0;
+
+    return res;
+}
+
 Result Archive::copyFile(FS_Archive src, const std::u16string& file, FS_Archive dst, const std::u16string& dest)
 {
     Result res = 0;
@@ -172,106 +312,9 @@ Result Archive::deleteFile(FS_Archive archive, const std::u16string& file)
     return FSUSER_DeleteFile(archive, fsMakePath(PATH_UTF16, file.c_str()));
 }
 
-static void moveOldBackups()
+Result Archive::deleteDir(FS_Archive archive, const std::u16string& dir)
 {
-    STDirectory d("/3ds/PKSM/backup");
-    if (d.good())
-    {
-        for (size_t i = 0; i < d.count(); i++)
-        {
-            std::string abbreviation = d.item(i).substr(0, d.item(i).find('_'));
-            if (abbreviation == "PT")
-            {
-                abbreviation = "PL";
-            }
-            if (abbreviation.size() > 2)
-            {
-                // This is not in the correct format, abort
-                continue;
-            }
-            else if (abbreviation == "P" || abbreviation == "D" || abbreviation == "PL" || abbreviation == "HG" || abbreviation == "SS" ||
-                     abbreviation == "B" || abbreviation == "W" || abbreviation == "B2" || abbreviation == "W2")
-            {
-                Archive::moveFile(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i) + "/main", Archive::sd(),
-                    "/3ds/PKSM/backup/" + d.item(i) + "/POKEMON " + abbreviation + ".sav");
-            }
-
-            std::string destFolder = "/3ds/PKSM/backups/";
-
-            if (abbreviation == "P")
-            {
-                destFolder += "APAE";
-            }
-            else if (abbreviation == "D")
-            {
-                destFolder += "ADAE";
-            }
-            else if (abbreviation == "PL")
-            {
-                destFolder += "CPUE";
-            }
-            else if (abbreviation == "HG")
-            {
-                destFolder += "IPKE";
-            }
-            else if (abbreviation == "SS")
-            {
-                destFolder += "IPGE";
-            }
-            else if (abbreviation == "B")
-            {
-                destFolder += "IRBO";
-            }
-            else if (abbreviation == "W")
-            {
-                destFolder += "IRAO";
-            }
-            else if (abbreviation == "B2")
-            {
-                destFolder += "IREO";
-            }
-            else if (abbreviation == "W2")
-            {
-                destFolder += "IRDO";
-            }
-            else if (abbreviation == "X")
-            {
-                destFolder += "0x0055D";
-            }
-            else if (abbreviation == "Y")
-            {
-                destFolder += "0x0055E";
-            }
-            else if (abbreviation == "OR")
-            {
-                destFolder += "0x011C4";
-            }
-            else if (abbreviation == "AS")
-            {
-                destFolder += "0x011C5";
-            }
-            else if (abbreviation == "S")
-            {
-                destFolder += "0x01648";
-            }
-            else if (abbreviation == "M")
-            {
-                destFolder += "0x0175E";
-            }
-            else if (abbreviation == "US")
-            {
-                destFolder += "0x01B50";
-            }
-            else if (abbreviation == "UM")
-            {
-                destFolder += "0x01B51";
-            }
-
-            mkdir(destFolder.c_str(), 777);
-
-            Archive::moveDir(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i), Archive::sd(), destFolder + '/' + d.item(i));
-        }
-    }
+    return FSUSER_DeleteDirectoryRecursively(archive, fsMakePath(PATH_UTF16, dir.c_str()));
 }
 
 Result Archive::init(const std::string& execPath)

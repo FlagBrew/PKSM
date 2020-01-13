@@ -35,6 +35,7 @@
 #include "PK5.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "STDirectory.hpp"
 #include "Sav4.hpp"
 #include "ThirtyChoice.hpp"
@@ -42,70 +43,72 @@
 #include "WC4.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "WC8.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "random.hpp"
 #include "utils.hpp"
+#include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
 #include <sys/socket.h>
 
-static void* strToRet(const std::string& str)
-{
-    char* ret = (char*)malloc(str.size() + 1);
-    std::copy(str.begin(), str.end(), ret);
-    ret[str.size()] = '\0';
-    return (void*)ret;
-}
-
-static void* strToRet(const std::u16string& str)
-{
-    u16* ret = (u16*)malloc((str.size() + 1) * 2);
-    std::copy(str.begin(), str.end(), ret);
-    ret[str.size()] = u'\0';
-    return (void*)ret;
-}
-
 #include "picoc.h"
-[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str)
-{
-    ProgramFail(Parser, str.c_str());
-    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
-}
 
-template <typename... Ts>
-[[noreturn]] static void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args)
+namespace
 {
-    ProgramFail(Parser, str.c_str(), args...);
-    std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    void* strToRet(const std::string& str)
+    {
+        char* ret = (char*)malloc(str.size() + 1);
+        std::copy(str.begin(), str.end(), ret);
+        ret[str.size()] = '\0';
+        return (void*)ret;
+    }
+
+    void* strToRet(const std::u16string& str)
+    {
+        u16* ret = (u16*)malloc((str.size() + 1) * 2);
+        std::copy(str.begin(), str.end(), ret);
+        ret[str.size()] = u'\0';
+        return (void*)ret;
+    }
+
+    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str) {
+        ProgramFail(Parser, str.c_str());
+        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    }
+
+    template <typename... Ts>
+    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args) {
+        ProgramFail(Parser, str.c_str(), args...);
+        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    }
+
+    void checkGen(struct ParseState* Parser, Generation gen)
+    {
+        switch (gen)
+        {
+            case Generation::FOUR:
+            case Generation::FIVE:
+            case Generation::SIX:
+            case Generation::SEVEN:
+            case Generation::LGPE:
+            case Generation::EIGHT:
+                return;
+            case Generation::UNUSED:
+                break;
+        }
+        scriptFail(Parser, "Generation is not possible!");
+    }
+
+    struct Value* getNextVarArg(struct Value* arg) { return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg))); }
 }
 
 extern "C" {
 #include "pksm_api.h"
-
-static void checkGen(struct ParseState* Parser, Generation gen)
-{
-    switch (gen)
-    {
-        case Generation::FOUR:
-        case Generation::FIVE:
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::LGPE:
-        case Generation::EIGHT:
-            break;
-        default:
-            scriptFail(Parser, "Generation is not possible!");
-    }
-}
-
-static struct Value* getNextVarArg(struct Value* arg)
-{
-    return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg)));
-}
 
 void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
@@ -182,7 +185,7 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
     swkbdSetHintText(&state, hint);
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     swkbdInputText(&state, out, numChars * 3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so
     out[numChars * 3 - 1] = '\0';
 }
@@ -274,89 +277,58 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
     bool doTradeEdits = Param[4]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = nullptr;
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_shared<PB7>(data, false);
-            break;
-    }
+    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false);
 
     if (pkm)
     {
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        pkm = TitleLoader::save->transfer(pkm);
+        if (!pkm)
         {
-            if (pkm->generation() == Generation::LGPE)
+            Gui::warn(
+                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            return;
+        }
+        bool moveBad = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
             {
-                TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-                TitleLoader::save->dex(pkm);
+                moveBad = true;
+                break;
+            }
+            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
+            {
+                moveBad = true;
+                break;
             }
         }
-        else
+        if (moveBad)
         {
-            pkm = TitleLoader::save->transfer(pkm);
-            if (!pkm)
-            {
-                Gui::warn(
-                    StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
-                return;
-            }
-            bool moveBad = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-            }
-            if (moveBad)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-            {
-                return;
-            }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-            {
-                return;
-            }
-            TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-            TitleLoader::save->dex(pkm);
+            return;
         }
+        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+        {
+            return;
+        }
+        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
+        {
+            return;
+        }
+        TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
+        TitleLoader::save->dex(pkm);
     }
 }
 
@@ -574,27 +546,7 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
 
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = nullptr;
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_shared<PB7>(data, false, true);
-            break;
-    }
+    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false, true);
 
     Banks::bank->pkm(pkm, box, slot);
 }
@@ -674,63 +626,23 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
-    int isParty    = Param[2]->Val->Integer;
+    bool isParty   = (bool)Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = nullptr;
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, true, (bool)isParty, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, true, (bool)isParty, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, true, (bool)isParty, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, true, (bool)isParty, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_shared<PB7>(data, true, true);
-            break;
-    }
+    // With ekx flag, will automatically decrypt data
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, true, isParty, true);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
     Generation gen = Generation(Param[1]->Val->Integer);
-    int isParty    = Param[2]->Val->Integer;
+    bool isParty   = (bool)Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = nullptr;
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false, (bool)isParty, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false, (bool)isParty, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false, (bool)isParty, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false, (bool)isParty, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_shared<PB7>(data, false, true);
-            break;
-    }
-
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, isParty, true);
     pkm->encrypt();
 }
 
@@ -751,89 +663,58 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
     int slot       = Param[2]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = nullptr;
-
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_shared<PK4>(data, false);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_shared<PK5>(data, false);
-            break;
-        case Generation::SIX:
-            pkm = std::make_shared<PK6>(data, false);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_shared<PK7>(data, false);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_shared<PB7>(data, false);
-            break;
-    }
+    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data);
 
     if (pkm)
     {
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        pkm = TitleLoader::save->transfer(pkm);
+        if (!pkm)
         {
-            if (pkm->generation() == Generation::LGPE)
+            Gui::warn(
+                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            return;
+        }
+        bool moveBad = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
             {
-                TitleLoader::save->pkm(pkm, slot);
-                TitleLoader::save->dex(pkm);
+                moveBad = true;
+                break;
+            }
+            if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
+            {
+                moveBad = true;
+                break;
             }
         }
-        else
+        if (moveBad)
         {
-            pkm = TitleLoader::save->transfer(pkm);
-            if (!pkm)
-            {
-                Gui::warn(
-                    StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
-                return;
-            }
-            bool moveBad = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (TitleLoader::save->availableMoves().count(pkm->move(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-                if (TitleLoader::save->availableMoves().count(pkm->relearnMove(i)) == 0)
-                {
-                    moveBad = true;
-                    break;
-                }
-            }
-            if (moveBad)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
-            {
-                return;
-            }
-            else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
-                     !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
-            {
-                return;
-            }
-            else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
-            {
-                return;
-            }
-            TitleLoader::save->pkm(pkm, slot);
-            TitleLoader::save->dex(pkm);
+            return;
         }
+        else if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+        {
+            return;
+        }
+        else if (pkm->alternativeForm() > TitleLoader::save->formCount(pkm->species()) &&
+                 !((pkm->species() == 664 || pkm->species() == 665) && pkm->alternativeForm() <= TitleLoader::save->formCount(666)))
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+        {
+            return;
+        }
+        else if (TitleLoader::save->availableBalls().count(pkm->ball()) == 0)
+        {
+            return;
+        }
+        TitleLoader::save->pkm(pkm, slot);
+        TitleLoader::save->dex(pkm);
     }
 }
 
@@ -853,8 +734,12 @@ void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct V
             ReturnValue->Val->Integer = 232;
             break;
         case Generation::LGPE:
-        default:
             ReturnValue->Val->Integer = 260;
+            break;
+        case Generation::EIGHT:
+            ReturnValue->Val->Integer = 0x148;
+            break;
+        case Generation::UNUSED:
             break;
     }
 }
@@ -875,39 +760,44 @@ void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct
         case Generation::SIX:
         case Generation::SEVEN:
         case Generation::LGPE:
-        default:
             ReturnValue->Val->Integer = 260;
+            break;
+        case Generation::EIGHT:
+            ReturnValue->Val->Integer = 0x158;
+            break;
+        case Generation::UNUSED:
             break;
     }
 }
 
 void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data                 = (u8*)Param[0]->Val->Pointer;
-    int species              = Param[1]->Val->Integer;
-    std::unique_ptr<PKX> pkm = nullptr;
+    u8* data    = (u8*)Param[0]->Val->Pointer;
+    int species = Param[1]->Val->Integer;
+
+    std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, false, true);
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
             std::fill_n(data, 136, 0);
-            pkm = std::make_unique<PK4>(data, false, false, true);
             break;
         case Generation::FIVE:
             std::fill_n(data, 136, 0);
-            pkm = std::make_unique<PK5>(data, false, false, true);
             break;
         case Generation::SIX:
             std::fill_n(data, 232, 0);
-            pkm = std::make_unique<PK6>(data, false, false, true);
             break;
         case Generation::SEVEN:
             std::fill_n(data, 232, 0);
-            pkm = std::make_unique<PK7>(data, false, false, true);
             break;
         case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
             std::fill_n(data, 260, 0);
+            break;
+        case Generation::EIGHT:
+            std::fill_n(data, 260, 0);
+            break;
+        // Should never happen
+        case Generation::UNUSED:
             break;
     }
 
@@ -961,6 +851,10 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         case 42:
         case 43:
             pkm->metLocation(0x0003); // Route 1, LGPE
+            break;
+        case 44:
+        case 45:
+            pkm->metLocation(0x000C); // Route 1, SWSH
             break;
     }
     pkm->fixMoves();
@@ -1211,26 +1105,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     Generation gen = Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = std::make_unique<PK4>(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = std::make_unique<PK5>(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = std::make_unique<PK6>(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = std::make_unique<PK7>(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = std::make_unique<PB7>(data, false, true);
-            break;
-    }
+    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, false, true);
 
     if (pkm->species() == 0 || pkm->species() > PKX::PKSM_MAX_SPECIES)
     {
@@ -1250,26 +1125,8 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    PKX* pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = new PK4(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = new PK5(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = new PK6(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = new PK7(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = new PB7(data, false, true);
-            break;
-    }
+    // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic repetition
+    PKX* pkm = PKX::getPKM(gen, data, false, false, true).release();
 
     switch (field)
     {
@@ -1649,26 +1506,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    PKX* pkm = nullptr;
-    switch (gen)
-    {
-        case Generation::FOUR:
-            pkm = new PK4(data, false, false, true);
-            break;
-        case Generation::FIVE:
-            pkm = new PK5(data, false, false, true);
-            break;
-        case Generation::SIX:
-            pkm = new PK6(data, false, false, true);
-            break;
-        case Generation::SEVEN:
-            pkm = new PK7(data, false, false, true);
-            break;
-        case Generation::LGPE:
-        default:
-            pkm = new PB7(data, false, true);
-            break;
-    }
+    PKX* pkm = PKX::getPKM(gen, data, false, false, true).release();
 
     switch (field)
     {
@@ -2070,8 +1908,9 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
     else
     {
-        std::string data = StringUtils::getString(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
-        char* ret        = (char*)malloc(data.size() + 1);
+        std::string data = StringUtils::getString(
+            TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
+        char* ret = (char*)malloc(data.size() + 1);
         std::copy(data.begin(), data.end(), ret);
         ret[data.size()]                  = '\0';
         ReturnValue->Val->UnsignedInteger = (u32)ret;
@@ -2086,31 +1925,36 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
     bool alternateFormat = (bool)(Param[3]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::shared_ptr<WCX> wcx = nullptr;
+    std::unique_ptr<WCX> wcx = nullptr;
 
     switch (gen)
     {
         case Generation::FOUR:
             if (alternateFormat)
             {
-                wcx = std::make_shared<WC4>(data);
+                wcx = std::make_unique<WC4>(data);
             }
             else
             {
-                wcx = std::make_shared<PGT>(data);
+                wcx = std::make_unique<PGT>(data);
             }
             break;
         case Generation::FIVE:
-            wcx = std::make_shared<PGF>(data);
+            wcx = std::make_unique<PGF>(data);
             break;
         case Generation::SIX:
-            wcx = std::make_shared<WC6>(data, alternateFormat);
+            wcx = std::make_unique<WC6>(data, alternateFormat);
             break;
         case Generation::SEVEN:
-            wcx = std::make_shared<WC7>(data, alternateFormat);
+            wcx = std::make_unique<WC7>(data, alternateFormat);
             break;
         case Generation::LGPE:
-            wcx = std::make_shared<WB7>(data, alternateFormat);
+            wcx = std::make_unique<WB7>(data, alternateFormat);
+            break;
+        case Generation::EIGHT:
+            wcx = std::make_unique<WC8>(data);
+            break;
+        case Generation::UNUSED:
             break;
     }
 

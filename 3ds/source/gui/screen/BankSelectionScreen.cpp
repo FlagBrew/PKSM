@@ -30,6 +30,7 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+#include <algorithm>
 
 BankSelectionScreen::BankSelectionScreen(int& storageBox) : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
 {
@@ -152,6 +153,7 @@ void BankSelectionScreen::renameBank()
         {
             if (hid.fullIndex() != strings.size() - 1)
             {
+                Gui::waitFrame(i18n::localize("RENAMING_BANK"));
                 Banks::renameBank(strings[hid.fullIndex()].first, string);
             }
             strings[hid.fullIndex()].first = string;

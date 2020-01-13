@@ -31,10 +31,12 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-static constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP",
-    "HIDDEN_POWER", "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};
-
-static constexpr std::array<float, 16> displayWidths = {75, 75, 75, 75, 75, 75, 75, 75, 110, 110, 60, 60, 60, 60, 60, 60};
+namespace
+{
+    constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP", "HIDDEN_POWER",
+        "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};
+    constexpr std::array<float, 16> displayWidths = {75, 75, 75, 75, 75, 75, 75, 75, 110, 110, 60, 60, 60, 60, 60, 60};
+}
 
 void ViewOverlay::drawTop() const
 {

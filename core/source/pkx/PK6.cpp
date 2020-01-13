@@ -28,6 +28,7 @@
 #include "PK5.hpp"
 #include "PK7.hpp"
 #include "Sav.hpp"
+#include "endian.hpp"
 #include "random.hpp"
 #include "utils.hpp"
 
@@ -51,34 +52,23 @@ void PK6::crypt(void)
     u32 seed = encryptionConstant();
     for (int i = 0x08; i < 232; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
     seed = encryptionConstant();
     for (u32 i = 232; i < length; i += 2)
     {
-        u16 temp = *(u16*)(data + i);
+        u16 temp = Endian::convertTo<u16>(data + i);
         seed     = seedStep(seed);
         temp ^= (seed >> 16);
-        *(u16*)(data + i) = temp;
+        Endian::convertFrom<u16>(data + i, temp);
     }
 }
 
-PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK6::PK6(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
 {
-    length = party ? 260 : 232;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();
@@ -107,81 +97,81 @@ bool PK6::untradedEvent(void) const
 
 u32 PK6::encryptionConstant(void) const
 {
-    return *(u32*)(data);
+    return Endian::convertTo<u32>(data);
 }
 void PK6::encryptionConstant(u32 v)
 {
-    *(u32*)(data) = v;
+    Endian::convertFrom<u32>(data, v);
 }
 
 u16 PK6::sanity(void) const
 {
-    return *(u16*)(data + 0x04);
+    return Endian::convertTo<u16>(data + 0x04);
 }
 void PK6::sanity(u16 v)
 {
-    *(u16*)(data + 0x04) = v;
+    Endian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK6::checksum(void) const
 {
-    return *(u16*)(data + 0x06);
+    return Endian::convertTo<u16>(data + 0x06);
 }
 void PK6::checksum(u16 v)
 {
-    *(u16*)(data + 0x06) = v;
+    Endian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK6::species(void) const
 {
-    return *(u16*)(data + 0x08);
+    return Endian::convertTo<u16>(data + 0x08);
 }
 void PK6::species(u16 v)
 {
-    *(u16*)(data + 0x08) = v;
+    Endian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK6::heldItem(void) const
 {
-    return *(u16*)(data + 0x0A);
+    return Endian::convertTo<u16>(data + 0x0A);
 }
 void PK6::heldItem(u16 v)
 {
-    *(u16*)(data + 0x0A) = v;
+    Endian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK6::TID(void) const
 {
-    return *(u16*)(data + 0x0C);
+    return Endian::convertTo<u16>(data + 0x0C);
 }
 void PK6::TID(u16 v)
 {
-    *(u16*)(data + 0x0C) = v;
+    Endian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK6::SID(void) const
 {
-    return *(u16*)(data + 0x0E);
+    return Endian::convertTo<u16>(data + 0x0E);
 }
 void PK6::SID(u16 v)
 {
-    *(u16*)(data + 0x0E) = v;
+    Endian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK6::experience(void) const
 {
-    return *(u32*)(data + 0x10);
+    return Endian::convertTo<u32>(data + 0x10);
 }
 void PK6::experience(u32 v)
 {
-    *(u32*)(data + 0x10) = v;
+    Endian::convertFrom<u32>(data + 0x10, v);
 }
 
-u8 PK6::ability(void) const
+u16 PK6::ability(void) const
 {
     return data[0x14];
 }
-void PK6::ability(u8 v)
+void PK6::ability(u16 v)
 {
     data[0x14] = v;
 }
@@ -230,11 +220,11 @@ void PK6::trainingBag(u8 v)
 
 u32 PK6::PID(void) const
 {
-    return *(u32*)(data + 0x18);
+    return Endian::convertTo<u32>(data + 0x18);
 }
 void PK6::PID(u32 v)
 {
-    *(u32*)(data + 0x18) = v;
+    Endian::convertFrom<u32>(data + 0x18, v);
 }
 
 u8 PK6::nature(void) const
@@ -264,11 +254,11 @@ void PK6::gender(u8 v)
     data[0x1D] = u8((data[0x1D] & ~0x06) | (v << 1));
 }
 
-u8 PK6::alternativeForm(void) const
+u16 PK6::alternativeForm(void) const
 {
     return data[0x1D] >> 3;
 }
-void PK6::alternativeForm(u8 v)
+void PK6::alternativeForm(u16 v)
 {
     data[0x1D] = u8((data[0x1D] & 0x07) | (v << 3));
 }
@@ -365,11 +355,11 @@ void PK6::nickname(const std::string& v)
 
 u16 PK6::move(u8 m) const
 {
-    return *(u16*)(data + 0x5A + m * 2);
+    return Endian::convertTo<u16>(data + 0x5A + m * 2);
 }
 void PK6::move(u8 m, u16 v)
 {
-    *(u16*)(data + 0x5A + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x5A + m * 2, v);
 }
 
 u8 PK6::PP(u8 m) const
@@ -392,11 +382,11 @@ void PK6::PPUp(u8 m, u8 v)
 
 u16 PK6::relearnMove(u8 m) const
 {
-    return *(u16*)(data + 0x6A + m * 2);
+    return Endian::convertTo<u16>(data + 0x6A + m * 2);
 }
 void PK6::relearnMove(u8 m, u16 v)
 {
-    *(u16*)(data + 0x6A + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x6A + m * 2, v);
 }
 
 bool PK6::secretSuperTrainingUnlocked(void) const
@@ -419,34 +409,34 @@ void PK6::secretSuperTrainingComplete(bool v)
 
 u8 PK6::iv(Stat stat) const
 {
-    u32 buffer = *(u32*)(data + 0x74);
+    u32 buffer = Endian::convertTo<u32>(data + 0x74);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PK6::iv(Stat stat, u8 v)
 {
-    u32 buffer = *(u32*)(data + 0x74);
+    u32 buffer = Endian::convertTo<u32>(data + 0x74);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    *(u32*)(data + 0x74) = buffer;
+    Endian::convertFrom<u32>(data + 0x74, buffer);
 }
 
 bool PK6::egg(void) const
 {
-    return ((*(u32*)(data + 0x74) >> 30) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x74) >> 30) & 0x1) == 1;
 }
 void PK6::egg(bool v)
 {
-    *(u32*)(data + 0x74) = (u32)((*(u32*)(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+    Endian::convertFrom<u32>(data + 0x74, (u32)((Endian::convertTo<u32>(data + 0x74) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK6::nicknamed(void) const
 {
-    return ((*(u32*)(data + 0x74) >> 31) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x74) >> 31) & 0x1) == 1;
 }
 void PK6::nicknamed(bool v)
 {
-    *(u32*)(data + 0x74) = (*(u32*)(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0);
+    Endian::convertFrom<u32>(data + 0x74, (Endian::convertTo<u32>(data + 0x74) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 std::string PK6::htName(void) const
@@ -541,11 +531,11 @@ void PK6::htFeeling(u8 v)
 
 u16 PK6::htTextVar(void) const
 {
-    return *(u16*)(data + 0xA8);
+    return Endian::convertTo<u16>(data + 0xA8);
 }
 void PK6::htTextVar(u16 v)
 {
-    *(u16*)(data + 0xA8) = v;
+    Endian::convertFrom<u16>(data + 0xA8, v);
 }
 
 u8 PK6::fullness(void) const
@@ -613,11 +603,11 @@ void PK6::otMemory(u8 v)
 
 u16 PK6::otTextVar(void) const
 {
-    return *(u16*)(data + 0xCE);
+    return Endian::convertTo<u16>(data + 0xCE);
 }
 void PK6::otTextVar(u16 v)
 {
-    *(u16*)(data + 0xCE) = v;
+    Endian::convertFrom<u16>(data + 0xCE, v);
 }
 
 u8 PK6::otFeeling(void) const
@@ -685,20 +675,20 @@ void PK6::metDay(u8 v)
 
 u16 PK6::eggLocation(void) const
 {
-    return *(u16*)(data + 0xD8);
+    return Endian::convertTo<u16>(data + 0xD8);
 }
 void PK6::eggLocation(u16 v)
 {
-    *(u16*)(data + 0xD8) = v;
+    Endian::convertFrom<u16>(data + 0xD8, v);
 }
 
 u16 PK6::metLocation(void) const
 {
-    return *(u16*)(data + 0xDA);
+    return Endian::convertTo<u16>(data + 0xDA);
 }
 void PK6::metLocation(u16 v)
 {
-    *(u16*)(data + 0xDA) = v;
+    Endian::convertFrom<u16>(data + 0xDA, v);
 }
 
 u8 PK6::ball(void) const
@@ -811,7 +801,7 @@ void PK6::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < 232; i += 2)
     {
-        chk += *(u16*)(data + i);
+        chk += Endian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -909,7 +899,7 @@ u16 PK6::formSpecies(void) const
         {
             tmpSpecies = backSpecies;
         }
-        else if (form < formcount)
+        else
         {
             tmpSpecies += form - 1;
         }
@@ -956,52 +946,67 @@ u16 PK6::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK6::next(Sav& save) const
+int PK6::partyCurrHP(void) const
 {
-    std::shared_ptr<PK7> pk7 = std::make_shared<PK7>();
-    std::copy(data, data + 232, pk7->rawData());
-
-    // markvalue field moved, clear old gen 6 data
-    pk7->rawData()[0x2A] = 0;
-
-    // Bank Data clearing
-    for (int i = 0x94; i < 0x9E; i++)
-        pk7->rawData()[i] = 0; // Geolocations
-    for (int i = 0xAA; i < 0xB0; i++)
-        pk7->rawData()[i] = 0; // Amie fullness/enjoyment
-    for (int i = 0xE4; i < 0xE8; i++)
-        pk7->rawData()[i] = 0;    // unused
-    pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
-    pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
-
-    pk7->markValue(markValue());
-
-    switch (abilityNumber())
+    if (length == 232)
     {
-        case 1:
-        case 2:
-        case 4:
-            u8 index = abilityNumber() >> 1;
-            if (abilities(index) == ability())
-            {
-                pk7->ability(pk7->abilities(index));
-            }
+        return -1;
     }
-
-    pk7->htMemory(4);
-    pk7->htTextVar(0);
-    pk7->htIntensity(1);
-    pk7->htFeeling(randomNumbers() % 10);
-    pk7->geoCountry(0, save.country());
-    pk7->geoRegion(0, save.subRegion());
-
-    pk7->currentHandler(1);
-
-    pk7->refreshChecksum();
-    return pk7;
+    return Endian::convertTo<u16>(data + 0xF0);
 }
 
-std::shared_ptr<PKX> PK6::previous(Sav& save) const
+void PK6::partyCurrHP(u16 v)
+{
+    if (length != 232)
+    {
+        Endian::convertFrom<u16>(data + 0xF0, v);
+    }
+}
+
+int PK6::partyStat(Stat stat) const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0xF2 + u8(stat) * 2);
+}
+
+void PK6::partyStat(Stat stat, u16 v)
+{
+    if (length != 232)
+    {
+        Endian::convertFrom<u16>(data + 0xF2 + u8(stat) * 2, v);
+    }
+}
+
+int PK6::partyLevel() const
+{
+    if (length == 232)
+    {
+        return -1;
+    }
+    return *(data + 0xEC);
+}
+
+void PK6::partyLevel(u8 v)
+{
+    if (length != 232)
+    {
+        *(data + 0xEC) = v;
+    }
+}
+
+std::shared_ptr<PKX> PK6::convertToG4(Sav& save) const
+{
+    if (auto pk5 = convertToG5(save))
+    {
+        return pk5->convertToG4(save);
+    }
+    return nullptr;
+}
+
+std::shared_ptr<PKX> PK6::convertToG5(Sav& save) const
 {
     std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
 
@@ -1117,53 +1122,47 @@ std::shared_ptr<PKX> PK6::previous(Sav& save) const
     return pk5;
 }
 
-int PK6::partyCurrHP(void) const
+std::shared_ptr<PKX> PK6::convertToG7(Sav& save) const
 {
-    if (length == 232)
-    {
-        return -1;
-    }
-    return *(u16*)(data + 0xF0);
-}
+    std::shared_ptr<PK7> pk7 = std::make_shared<PK7>();
+    std::copy(data, data + 232, pk7->rawData());
 
-void PK6::partyCurrHP(u16 v)
-{
-    if (length != 232)
-    {
-        *(u16*)(data + 0xF0) = v;
-    }
-}
+    // markvalue field moved, clear old gen 6 data
+    pk7->rawData()[0x2A] = 0;
 
-int PK6::partyStat(Stat stat) const
-{
-    if (length == 232)
-    {
-        return -1;
-    }
-    return *(u16*)(data + 0xF2 + u8(stat) * 2);
-}
+    // Bank Data clearing
+    for (int i = 0x94; i < 0x9E; i++)
+        pk7->rawData()[i] = 0; // Geolocations
+    for (int i = 0xAA; i < 0xB0; i++)
+        pk7->rawData()[i] = 0; // Amie fullness/enjoyment
+    for (int i = 0xE4; i < 0xE8; i++)
+        pk7->rawData()[i] = 0;    // unused
+    pk7->rawData()[0x72] &= 0xFC; // low 2 bits of super training
+    pk7->rawData()[0xDE] = 0;     // gen 4 encounter type
 
-void PK6::partyStat(Stat stat, u16 v)
-{
-    if (length != 232)
-    {
-        *(u16*)(data + 0xF2 + u8(stat) * 2) = v;
-    }
-}
+    pk7->markValue(markValue());
 
-int PK6::partyLevel() const
-{
-    if (length == 232)
+    switch (abilityNumber())
     {
-        return -1;
+        case 1:
+        case 2:
+        case 4:
+            u8 index = abilityNumber() >> 1;
+            if (abilities(index) == ability())
+            {
+                pk7->ability(pk7->abilities(index));
+            }
     }
-    return *(data + 0xEC);
-}
 
-void PK6::partyLevel(u8 v)
-{
-    if (length != 232)
-    {
-        *(data + 0xEC) = v;
-    }
+    pk7->htMemory(4);
+    pk7->htTextVar(0);
+    pk7->htIntensity(1);
+    pk7->htFeeling(randomNumbers() % 10);
+    pk7->geoCountry(0, save.country());
+    pk7->geoRegion(0, save.subRegion());
+
+    pk7->currentHandler(1);
+
+    pk7->refreshChecksum();
+    return pk7;
 }

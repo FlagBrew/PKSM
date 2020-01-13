@@ -44,7 +44,7 @@ public:
     bool replacesTop() const override { return true; }
     virtual void drawBottom() const override {}
     bool handlesUpdate() const override { return false; }
-    void update(touchPosition* touch) {}
+    void update(touchPosition* touch) override {}
 
 protected:
     std::shared_ptr<PKX>& pkm;

@@ -29,7 +29,7 @@
 
 #include "Sav.hpp"
 #include "WCX.hpp"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include <bzlib.h>
 
 namespace MysteryGift

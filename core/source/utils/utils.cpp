@@ -25,6 +25,7 @@
  */
 
 #include "utils.hpp"
+#include "endian.hpp"
 #include "g4text.h"
 #include <algorithm>
 #include <map>
@@ -36,6 +37,337 @@
 #elif defined(__SWITCH__)
 #include <switch.h>
 #endif
+
+namespace
+{
+    std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
+    {
+        std::string ret;
+        ret.reserve(size);
+        char addChar[4] = {0};
+        for (size_t i = 0; i < size; i++)
+        {
+            if (data[i] == delim)
+            {
+                return ret;
+            }
+            else if (data[i] < 0x0080)
+            {
+                addChar[0] = data[i];
+                addChar[1] = '\0';
+            }
+            else if (data[i] < 0x0800)
+            {
+                addChar[0] = 0xC0 | ((data[i] >> 6) & 0x1F);
+                addChar[1] = 0x80 | (data[i] & 0x3F);
+                addChar[2] = '\0';
+            }
+            else
+            {
+                addChar[0] = 0xE0 | ((data[i] >> 12) & 0x0F);
+                addChar[1] = 0x80 | ((data[i] >> 6) & 0x3F);
+                addChar[2] = 0x80 | (data[i] & 0x3F);
+                addChar[3] = '\0';
+            }
+            ret.append(addChar);
+        }
+        return ret;
+    }
+    u32 swapCodepoints45(u32 codepoint)
+    {
+        switch (codepoint)
+        {
+            case u'\u2227':
+                codepoint = u'\uE0A9';
+                break;
+            case u'\u2228':
+                codepoint = u'\uE0AA';
+                break;
+            case u'\u2460':
+                codepoint = u'\uE081';
+                break;
+            case u'\u2461':
+                codepoint = u'\uE082';
+                break;
+            case u'\u2462':
+                codepoint = u'\uE083';
+                break;
+            case u'\u2463':
+                codepoint = u'\uE084';
+                break;
+            case u'\u2464':
+                codepoint = u'\uE085';
+                break;
+            case u'\u2465':
+                codepoint = u'\uE086';
+                break;
+            case u'\u2466':
+                codepoint = u'\uE087';
+                break;
+            case u'\u2469':
+                codepoint = u'\uE068';
+                break;
+            case u'\u246A':
+                codepoint = u'\uE069';
+                break;
+            case u'\u246B':
+                codepoint = u'\uE0AB';
+                break;
+            case u'\u246C':
+                codepoint = u'\uE08D';
+                break;
+            case u'\u246D':
+                codepoint = u'\uE08E';
+                break;
+            case u'\u246E':
+                codepoint = u'\uE08F';
+                break;
+            case u'\u246F':
+                codepoint = u'\uE090';
+                break;
+            case u'\u2470':
+                codepoint = u'\uE091';
+                break;
+            case u'\u2471':
+                codepoint = u'\uE092';
+                break;
+            case u'\u2472':
+                codepoint = u'\uE093';
+                break;
+            case u'\u2473':
+                codepoint = u'\uE094';
+                break;
+            case u'\u2474':
+                codepoint = u'\uE095';
+                break;
+            case u'\u2475':
+                codepoint = u'\uE096';
+                break;
+            case u'\u2476':
+                codepoint = u'\uE097';
+                break;
+            case u'\u2477':
+                codepoint = u'\uE098';
+                break;
+            case u'\u2478':
+                codepoint = u'\uE099';
+                break;
+            case u'\u2479':
+                codepoint = u'\uE09A';
+                break;
+            case u'\u247A':
+                codepoint = u'\uE09B';
+                break;
+            case u'\u247B':
+                codepoint = u'\uE09C';
+                break;
+            case u'\u247C':
+                codepoint = u'\uE09D';
+                break;
+            case u'\u247D':
+                codepoint = u'\uE09E';
+                break;
+            case u'\u247E':
+                codepoint = u'\uE09F';
+                break;
+            case u'\u247F':
+                codepoint = u'\uE0A0';
+                break;
+            case u'\u2480':
+                codepoint = u'\uE0A1';
+                break;
+            case u'\u2481':
+                codepoint = u'\uE0A2';
+                break;
+            case u'\u2482':
+                codepoint = u'\uE0A3';
+                break;
+            case u'\u2483':
+                codepoint = u'\uE0A4';
+                break;
+            case u'\u2484':
+                codepoint = u'\uE0A5';
+                break;
+            case u'\u2485':
+                codepoint = u'\uE06A';
+                break;
+            case u'\u2486':
+                codepoint = u'\uE0A7';
+                break;
+            case u'\u2487':
+                codepoint = u'\uE0A8';
+                break;
+
+            case u'\uE0A9':
+                codepoint = u'\u2227';
+                break;
+            case u'\uE0AA':
+                codepoint = u'\u2228';
+                break;
+            case u'\uE081':
+                codepoint = u'\u2460';
+                break;
+            case u'\uE082':
+                codepoint = u'\u2461';
+                break;
+            case u'\uE083':
+                codepoint = u'\u2462';
+                break;
+            case u'\uE084':
+                codepoint = u'\u2463';
+                break;
+            case u'\uE085':
+                codepoint = u'\u2464';
+                break;
+            case u'\uE086':
+                codepoint = u'\u2465';
+                break;
+            case u'\uE087':
+                codepoint = u'\u2466';
+                break;
+            case u'\uE068':
+                codepoint = u'\u2469';
+                break;
+            case u'\uE069':
+                codepoint = u'\u246A';
+                break;
+            case u'\uE0AB':
+                codepoint = u'\u246B';
+                break;
+            case u'\uE08D':
+                codepoint = u'\u246C';
+                break;
+            case u'\uE08E':
+                codepoint = u'\u246D';
+                break;
+            case u'\uE08F':
+                codepoint = u'\u246E';
+                break;
+            case u'\uE090':
+                codepoint = u'\u246F';
+                break;
+            case u'\uE091':
+                codepoint = u'\u2470';
+                break;
+            case u'\uE092':
+                codepoint = u'\u2471';
+                break;
+            case u'\uE093':
+                codepoint = u'\u2472';
+                break;
+            case u'\uE094':
+                codepoint = u'\u2473';
+                break;
+            case u'\uE095':
+                codepoint = u'\u2474';
+                break;
+            case u'\uE096':
+                codepoint = u'\u2475';
+                break;
+            case u'\uE097':
+                codepoint = u'\u2476';
+                break;
+            case u'\uE098':
+                codepoint = u'\u2477';
+                break;
+            case u'\uE099':
+                codepoint = u'\u2478';
+                break;
+            case u'\uE09A':
+                codepoint = u'\u2479';
+                break;
+            case u'\uE09B':
+                codepoint = u'\u247A';
+                break;
+            case u'\uE09C':
+                codepoint = u'\u247B';
+                break;
+            case u'\uE09D':
+                codepoint = u'\u247C';
+                break;
+            case u'\uE09E':
+                codepoint = u'\u247D';
+                break;
+            case u'\uE09F':
+                codepoint = u'\u247E';
+                break;
+            case u'\uE0A0':
+                codepoint = u'\u247F';
+                break;
+            case u'\uE0A1':
+                codepoint = u'\u2480';
+                break;
+            case u'\uE0A2':
+                codepoint = u'\u2481';
+                break;
+            case u'\uE0A3':
+                codepoint = u'\u2482';
+                break;
+            case u'\uE0A4':
+                codepoint = u'\u2483';
+                break;
+            case u'\uE0A5':
+                codepoint = u'\u2484';
+                break;
+            case u'\uE06A':
+                codepoint = u'\u2485';
+                break;
+            case u'\uE0A7':
+                codepoint = u'\u2486';
+                break;
+            case u'\uE0A8':
+                codepoint = u'\u2487';
+                break;
+            default:
+                break;
+        }
+        return codepoint;
+    }
+    u32 swapCodepoints67(u32 codepoint)
+    {
+        switch (codepoint)
+        {
+            case u'\uE088':
+                codepoint = u'\u00D7';
+                break;
+            case u'\uE089':
+                codepoint = u'\u00F7';
+                break;
+            case u'\uE08A':
+                codepoint = u'\uE068';
+                break;
+            case u'\uE08B':
+                codepoint = u'\uE069';
+                break;
+            case u'\uE08C':
+                codepoint = u'\uE0AB';
+                break;
+            case u'\uE0A6':
+                codepoint = u'\uE06A';
+                break;
+
+            case u'\u00D7':
+                codepoint = u'\uE088';
+                break;
+            case u'\u00F7':
+                codepoint = u'\uE089';
+                break;
+            case u'\uE068':
+                codepoint = u'\uE08A';
+                break;
+            case u'\uE069':
+                codepoint = u'\uE08B';
+                break;
+            case u'\uE0AB':
+                codepoint = u'\uE08C';
+                break;
+            case u'\uE06A':
+                codepoint = u'\uE0A6';
+                break;
+        }
+        return codepoint;
+    }
+}
 
 std::string StringUtils::format(std::string fmt_str, ...)
 {
@@ -80,40 +412,6 @@ std::u16string StringUtils::UTF8toUTF16(const std::string& src)
     return ret;
 }
 
-static std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
-{
-    std::string ret;
-    ret.reserve(size);
-    char addChar[4] = {0};
-    for (size_t i = 0; i < size; i++)
-    {
-        if (data[i] == delim)
-        {
-            return ret;
-        }
-        else if (data[i] < 0x0080)
-        {
-            addChar[0] = data[i];
-            addChar[1] = '\0';
-        }
-        else if (data[i] < 0x0800)
-        {
-            addChar[0] = 0xC0 | ((data[i] >> 6) & 0x1F);
-            addChar[1] = 0x80 | (data[i] & 0x3F);
-            addChar[2] = '\0';
-        }
-        else
-        {
-            addChar[0] = 0xE0 | ((data[i] >> 12) & 0x0F);
-            addChar[1] = 0x80 | ((data[i] >> 6) & 0x3F);
-            addChar[2] = 0x80 | (data[i] & 0x3F);
-            addChar[3] = '\0';
-        }
-        ret.append(addChar);
-    }
-    return ret;
-}
-
 std::string StringUtils::UTF16toUTF8(const std::u16string& src)
 {
     return utf16DataToUtf8(src.data(), src.size());
@@ -145,12 +443,12 @@ void StringUtils::setString(u8* data, const std::u16string& v, int ofs, int len,
     int i = 0;
     for (; i < std::min(len - 1, (int)v.size()); i++) // len includes terminator
     {
-        *(u16*)(data + ofs + i * 2) = v[i];
+        Endian::convertFrom<char16_t>(data + ofs + i * 2, v[i]);
     }
-    *(u16*)(data + ofs + i++ * 2) = terminator; // Set terminator
+    Endian::convertFrom<char16_t>(data + ofs + i++ * 2, terminator); // Set terminator
     for (; i < len; i++)
     {
-        *(u16*)(data + ofs + i * 2) = padding; // Set final padding bytes
+        Endian::convertFrom<char16_t>(data + ofs + i * 2, padding); // Set final padding bytes
     }
 }
 
@@ -163,16 +461,14 @@ std::string StringUtils::getString4(const u8* data, int ofs, int len)
 {
     std::string output;
     len *= 2;
-    u16 temp;
-    u16 codepoint;
     char addChar[4];
     for (u8 i = 0; i < len; i += 2)
     {
-        temp = *(u16*)(data + ofs + i);
+        u16 temp = Endian::convertTo<u16>(data + ofs + i);
         if (temp == 0xFFFF)
             break;
-        u16 index = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
-        codepoint = G4Chars[index];
+        u16 index     = std::distance(G4Values, std::find(G4Values, G4Values + G4TEXT_LENGTH, temp));
+        u16 codepoint = G4Chars[index];
         if (codepoint == 0xFFFF)
             break;
         if (codepoint < 0x0080)
@@ -304,257 +600,6 @@ std::string& StringUtils::toLower(std::string& in)
     return in;
 }
 
-static u32 swapCodepoints45(u32 codepoint)
-{
-    switch (codepoint)
-    {
-        case u'\u2227':
-            codepoint = u'\uE0A9';
-            break;
-        case u'\u2228':
-            codepoint = u'\uE0AA';
-            break;
-        case u'\u2460':
-            codepoint = u'\uE081';
-            break;
-        case u'\u2461':
-            codepoint = u'\uE082';
-            break;
-        case u'\u2462':
-            codepoint = u'\uE083';
-            break;
-        case u'\u2463':
-            codepoint = u'\uE084';
-            break;
-        case u'\u2464':
-            codepoint = u'\uE085';
-            break;
-        case u'\u2465':
-            codepoint = u'\uE086';
-            break;
-        case u'\u2466':
-            codepoint = u'\uE087';
-            break;
-        case u'\u2469':
-            codepoint = u'\uE068';
-            break;
-        case u'\u246A':
-            codepoint = u'\uE069';
-            break;
-        case u'\u246B':
-            codepoint = u'\uE0AB';
-            break;
-        case u'\u246C':
-            codepoint = u'\uE08D';
-            break;
-        case u'\u246D':
-            codepoint = u'\uE08E';
-            break;
-        case u'\u246E':
-            codepoint = u'\uE08F';
-            break;
-        case u'\u246F':
-            codepoint = u'\uE090';
-            break;
-        case u'\u2470':
-            codepoint = u'\uE091';
-            break;
-        case u'\u2471':
-            codepoint = u'\uE092';
-            break;
-        case u'\u2472':
-            codepoint = u'\uE093';
-            break;
-        case u'\u2473':
-            codepoint = u'\uE094';
-            break;
-        case u'\u2474':
-            codepoint = u'\uE095';
-            break;
-        case u'\u2475':
-            codepoint = u'\uE096';
-            break;
-        case u'\u2476':
-            codepoint = u'\uE097';
-            break;
-        case u'\u2477':
-            codepoint = u'\uE098';
-            break;
-        case u'\u2478':
-            codepoint = u'\uE099';
-            break;
-        case u'\u2479':
-            codepoint = u'\uE09A';
-            break;
-        case u'\u247A':
-            codepoint = u'\uE09B';
-            break;
-        case u'\u247B':
-            codepoint = u'\uE09C';
-            break;
-        case u'\u247C':
-            codepoint = u'\uE09D';
-            break;
-        case u'\u247D':
-            codepoint = u'\uE09E';
-            break;
-        case u'\u247E':
-            codepoint = u'\uE09F';
-            break;
-        case u'\u247F':
-            codepoint = u'\uE0A0';
-            break;
-        case u'\u2480':
-            codepoint = u'\uE0A1';
-            break;
-        case u'\u2481':
-            codepoint = u'\uE0A2';
-            break;
-        case u'\u2482':
-            codepoint = u'\uE0A3';
-            break;
-        case u'\u2483':
-            codepoint = u'\uE0A4';
-            break;
-        case u'\u2484':
-            codepoint = u'\uE0A5';
-            break;
-        case u'\u2485':
-            codepoint = u'\uE06A';
-            break;
-        case u'\u2486':
-            codepoint = u'\uE0A7';
-            break;
-        case u'\u2487':
-            codepoint = u'\uE0A8';
-            break;
-
-        case u'\uE0A9':
-            codepoint = u'\u2227';
-            break;
-        case u'\uE0AA':
-            codepoint = u'\u2228';
-            break;
-        case u'\uE081':
-            codepoint = u'\u2460';
-            break;
-        case u'\uE082':
-            codepoint = u'\u2461';
-            break;
-        case u'\uE083':
-            codepoint = u'\u2462';
-            break;
-        case u'\uE084':
-            codepoint = u'\u2463';
-            break;
-        case u'\uE085':
-            codepoint = u'\u2464';
-            break;
-        case u'\uE086':
-            codepoint = u'\u2465';
-            break;
-        case u'\uE087':
-            codepoint = u'\u2466';
-            break;
-        case u'\uE068':
-            codepoint = u'\u2469';
-            break;
-        case u'\uE069':
-            codepoint = u'\u246A';
-            break;
-        case u'\uE0AB':
-            codepoint = u'\u246B';
-            break;
-        case u'\uE08D':
-            codepoint = u'\u246C';
-            break;
-        case u'\uE08E':
-            codepoint = u'\u246D';
-            break;
-        case u'\uE08F':
-            codepoint = u'\u246E';
-            break;
-        case u'\uE090':
-            codepoint = u'\u246F';
-            break;
-        case u'\uE091':
-            codepoint = u'\u2470';
-            break;
-        case u'\uE092':
-            codepoint = u'\u2471';
-            break;
-        case u'\uE093':
-            codepoint = u'\u2472';
-            break;
-        case u'\uE094':
-            codepoint = u'\u2473';
-            break;
-        case u'\uE095':
-            codepoint = u'\u2474';
-            break;
-        case u'\uE096':
-            codepoint = u'\u2475';
-            break;
-        case u'\uE097':
-            codepoint = u'\u2476';
-            break;
-        case u'\uE098':
-            codepoint = u'\u2477';
-            break;
-        case u'\uE099':
-            codepoint = u'\u2478';
-            break;
-        case u'\uE09A':
-            codepoint = u'\u2479';
-            break;
-        case u'\uE09B':
-            codepoint = u'\u247A';
-            break;
-        case u'\uE09C':
-            codepoint = u'\u247B';
-            break;
-        case u'\uE09D':
-            codepoint = u'\u247C';
-            break;
-        case u'\uE09E':
-            codepoint = u'\u247D';
-            break;
-        case u'\uE09F':
-            codepoint = u'\u247E';
-            break;
-        case u'\uE0A0':
-            codepoint = u'\u247F';
-            break;
-        case u'\uE0A1':
-            codepoint = u'\u2480';
-            break;
-        case u'\uE0A2':
-            codepoint = u'\u2481';
-            break;
-        case u'\uE0A3':
-            codepoint = u'\u2482';
-            break;
-        case u'\uE0A4':
-            codepoint = u'\u2483';
-            break;
-        case u'\uE0A5':
-            codepoint = u'\u2484';
-            break;
-        case u'\uE06A':
-            codepoint = u'\u2485';
-            break;
-        case u'\uE0A7':
-            codepoint = u'\u2486';
-            break;
-        case u'\uE0A8':
-            codepoint = u'\u2487';
-            break;
-        default:
-            break;
-    }
-    return codepoint;
-}
-
 std::string StringUtils::transString45(const std::string& str)
 {
     std::string ret = str;
@@ -585,56 +630,8 @@ std::string StringUtils::transString45(const std::string& str)
 std::u16string StringUtils::transString45(const std::u16string& str)
 {
     std::u16string ret = str;
-    for (auto& codepoint : ret)
-    {
-        codepoint = swapCodepoints45(codepoint);
-    }
+    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints45(chr); });
     return ret;
-}
-
-static u32 swapCodepoints67(u32 codepoint)
-{
-    switch (codepoint)
-    {
-        case u'\uE088':
-            codepoint = u'\u00D7';
-            break;
-        case u'\uE089':
-            codepoint = u'\u00F7';
-            break;
-        case u'\uE08A':
-            codepoint = u'\uE068';
-            break;
-        case u'\uE08B':
-            codepoint = u'\uE069';
-            break;
-        case u'\uE08C':
-            codepoint = u'\uE0AB';
-            break;
-        case u'\uE0A6':
-            codepoint = u'\uE06A';
-            break;
-
-        case u'\u00D7':
-            codepoint = u'\uE088';
-            break;
-        case u'\u00F7':
-            codepoint = u'\uE089';
-            break;
-        case u'\uE068':
-            codepoint = u'\uE08A';
-            break;
-        case u'\uE069':
-            codepoint = u'\uE08B';
-            break;
-        case u'\uE0AB':
-            codepoint = u'\uE08C';
-            break;
-        case u'\uE06A':
-            codepoint = u'\uE0A6';
-            break;
-    }
-    return codepoint;
 }
 
 std::string StringUtils::transString67(const std::string& str)
@@ -667,9 +664,6 @@ std::string StringUtils::transString67(const std::string& str)
 std::u16string StringUtils::transString67(const std::u16string& str)
 {
     std::u16string ret = str;
-    for (auto& codepoint : ret)
-    {
-        codepoint = swapCodepoints67(codepoint);
-    }
+    std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
     return ret;
 }

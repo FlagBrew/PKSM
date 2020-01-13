@@ -27,12 +27,9 @@
 #include "SavDP.hpp"
 #include "PGT.hpp"
 
-SavDP::SavDP(std::shared_ptr<u8[]> dt)
+SavDP::SavDP(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {
-    length = 0x80000;
-    boxes  = 18;
-    game   = Game::DP;
-    data   = dt;
+    game = Game::DP;
 
     GBOOffset = 0xC0F0;
     SBOOffset = 0x1E2D0;

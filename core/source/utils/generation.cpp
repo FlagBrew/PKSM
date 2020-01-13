@@ -47,13 +47,12 @@ const char* genToCstring(Generation gen)
             return "7";
         case Generation::EIGHT:
             return "8";
-        default:
+        case Generation::UNUSED:
             return "INVALID";
     }
+    return "INVALID";
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 Generation stringToGen(const std::string& str)
 {
     if (str == "4")
@@ -83,6 +82,8 @@ Generation stringToGen(const std::string& str)
     return Generation::UNUSED;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
 bool operator<(Generation g1, Generation g2)
 {
     switch (g1)

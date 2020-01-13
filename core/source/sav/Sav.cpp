@@ -34,8 +34,10 @@
 #include "SavORAS.hpp"
 #include "SavPT.hpp"
 #include "SavSUMO.hpp"
+#include "SavSWSH.hpp"
 #include "SavUSUM.hpp"
 #include "SavXY.hpp"
+#include "endian.hpp"
 
 u16 Sav::ccitt16(const u8* buf, u32 len)
 {
@@ -71,6 +73,8 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
         case 0xB8800:
         case 0x100000:
             return std::make_unique<SavLGPE>(dt);
+        case 0x17195E:
+            return std::make_unique<SavSWSH>(dt);
         default:
             return std::unique_ptr<Sav>(nullptr);
     }
@@ -78,13 +82,13 @@ std::unique_ptr<Sav> Sav::getSave(std::shared_ptr<u8[]> dt, size_t length)
 
 bool Sav::isValidDSSave(std::shared_ptr<u8[]> dt)
 {
-    u16 chk1    = *(u16*)(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
+    u16 chk1    = Endian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
     u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
     if (chk1 == actual1)
     {
         return true;
     }
-    u16 chk2    = *(u16*)(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
+    u16 chk2    = Endian::convertTo<u16>(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
     u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
     if (chk2 == actual2)
     {
@@ -114,19 +118,6 @@ bool Sav::isValidDSSave(std::shared_ptr<u8[]> dt)
 
 std::unique_ptr<Sav> Sav::checkDSType(std::shared_ptr<u8[]> dt)
 {
-    u16 chk1    = *(u16*)(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
-    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
-    if (chk1 == actual1)
-    {
-        return std::make_unique<SavBW>(dt);
-    }
-    u16 chk2    = *(u16*)(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
-    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
-    if (chk2 == actual2)
-    {
-        return std::make_unique<SavB2W2>(dt);
-    }
-
     // Check for block identifiers
     static constexpr size_t DP_OFFSET   = 0xC100;
     static constexpr size_t PT_OFFSET   = 0xCF2C;
@@ -145,6 +136,20 @@ std::unique_ptr<Sav> Sav::checkDSType(std::shared_ptr<u8[]> dt)
         return std::make_unique<SavPT>(dt);
     if (validSequence(dt, HGSS_OFFSET + 0x40000))
         return std::make_unique<SavHGSS>(dt);
+
+    // Check for BW/B2W2 checksums
+    u16 chk1    = Endian::convertTo<u16>(&dt[0x24000 - 0x100 + 0x8C + 0xE]);
+    u16 actual1 = ccitt16(&dt[0x24000 - 0x100], 0x8C);
+    if (chk1 == actual1)
+    {
+        return std::make_unique<SavBW>(dt);
+    }
+    u16 chk2    = Endian::convertTo<u16>(&dt[0x26000 - 0x100 + 0x94 + 0xE]);
+    u16 actual2 = ccitt16(&dt[0x26000 - 0x100], 0x94);
+    if (chk2 == actual2)
+    {
+        return std::make_unique<SavB2W2>(dt);
+    }
     return nullptr;
 }
 
@@ -153,33 +158,37 @@ bool Sav::validSequence(std::shared_ptr<u8[]> dt, size_t offset)
     static constexpr u32 DATE_INTERNATIONAL = 0x20060623;
     static constexpr u32 DATE_KOREAN        = 0x20070903;
 
-    if (*(u32*)(&dt[offset - 0xC]) != (offset & 0xFFFF))
+    if (Endian::convertTo<u32>(&dt[offset - 0xC]) != (offset & 0xFFFF))
     {
         return false;
     }
 
-    return *(u32*)(&dt[offset - 0x8]) == DATE_INTERNATIONAL || *(u32*)(&dt[offset - 0x8]) == DATE_KOREAN;
+    return Endian::convertTo<u32>(&dt[offset - 0x8]) == DATE_INTERNATIONAL || Endian::convertTo<u32>(&dt[offset - 0x8]) == DATE_KOREAN;
 }
 
 std::shared_ptr<PKX> Sav::transfer(std::shared_ptr<PKX> pk)
 {
-    std::shared_ptr<PKX> ret = pk;
-    while (ret->generation() != generation())
+    if (pk)
     {
-        if (ret->generation() > generation())
+        switch (generation())
         {
-            ret = ret->previous(*this);
-        }
-        else
-        {
-            ret = ret->next(*this);
-        }
-        if (ret == nullptr) // Untransferrable
-        {
-            return nullptr;
+            case Generation::FOUR:
+                return pk->convertToG4(*this);
+            case Generation::FIVE:
+                return pk->convertToG5(*this);
+            case Generation::SIX:
+                return pk->convertToG6(*this);
+            case Generation::SEVEN:
+                return pk->convertToG7(*this);
+            case Generation::LGPE:
+                return pk->convertToLGPE(*this);
+            case Generation::EIGHT:
+                return pk->convertToG8(*this);
+            case Generation::UNUSED:
+                return nullptr;
         }
     }
-    return ret;
+    return nullptr;
 }
 
 void Sav::fixParty()
@@ -210,22 +219,34 @@ u32 Sav::displayTID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return TID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) % 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }
 
 u32 Sav::displaySID() const
 {
     switch (generation())
     {
-        default:
+        case Generation::FOUR:
+        case Generation::FIVE:
+        case Generation::SIX:
             return SID();
         case Generation::SEVEN:
         case Generation::LGPE:
+        case Generation::EIGHT:
             return (u32)(SID() << 16 | TID()) / 1000000;
+        case Generation::UNUSED:
+            return 0;
     }
+    return 0;
 }

@@ -50,6 +50,7 @@ class Sav
     friend class PK6;
     friend class PK7;
     friend class PB7;
+    friend class PK8;
 
 protected:
     int Box, Party, PokeDex, WondercardData, WondercardFlags;
@@ -72,8 +73,8 @@ protected:
         0x4F40, 0x8D01, 0x4DC0, 0x4C80, 0x8C41, 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641, 0x8201, 0x42C0, 0x4380, 0x8341,
         0x4100, 0x81C1, 0x8081, 0x4040};
 
-    std::shared_ptr<u8[]> data;
-    u32 length = 0;
+    const std::shared_ptr<u8[]> data;
+    const u32 length;
     Game game;
     static u16 ccitt16(const u8* buf, u32 len);
     static std::unique_ptr<Sav> checkDSType(std::shared_ptr<u8[]> dt);
@@ -107,7 +108,9 @@ public:
         Ball,
         Battle,
         Candy,
-        ZCrystals
+        ZCrystals,
+        Treasure,
+        Ingredient
     };
 
     struct giftData
@@ -123,11 +126,16 @@ public:
         int gender;
     };
 
-    u8 boxes = 0;
-
     virtual ~Sav() {}
-    virtual void resign(void) = 0;
+    Sav(std::shared_ptr<u8[]> data, u32 length) : data(data), length(length) {}
+    Sav(const Sav& save) = delete;
+    Sav& operator=(const Sav& save) = delete;
+    // Should be used before writing
+    virtual void encrypt(void) = 0;
+    // Should only be used after encrypt() was used
+    virtual void decrypt(void) = 0;
 
+    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
     static bool isValidDSSave(std::shared_ptr<u8[]> dt);
     static std::unique_ptr<Sav> getSave(std::shared_ptr<u8[]> dt, size_t length);
 
@@ -172,10 +180,9 @@ public:
     virtual std::shared_ptr<PKX> pkm(u8 slot) const                             = 0;
     virtual void pkm(std::shared_ptr<PKX> pk, u8 slot)                          = 0;
     virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const   = 0;
-    virtual bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
-    std::shared_ptr<PKX> transfer(std::shared_ptr<PKX> pk);
-    virtual void trade(std::shared_ptr<PKX> pk)   = 0; // Look into bank boolean parameter
-    virtual std::shared_ptr<PKX> emptyPkm() const = 0;
+    virtual void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
+    virtual void trade(std::shared_ptr<PKX> pk)                                 = 0; // Look into bank boolean parameter
+    virtual std::shared_ptr<PKX> emptyPkm() const                               = 0;
 
     virtual void dex(std::shared_ptr<PKX> pk)                   = 0;
     virtual int dexSeen(void) const                             = 0;
@@ -207,8 +214,8 @@ public:
     virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
     virtual std::string pouchName(Language lang, Pouch pouch) const  = 0;
 
-    u32 getLength() { return length; }
-    std::shared_ptr<u8[]> rawData() { return data; }
+    u32 getLength() const { return length; }
+    std::shared_ptr<u8[]> rawData() const { return data; }
 
     // Personal interface
     virtual u8 formCount(u16 species) const = 0;

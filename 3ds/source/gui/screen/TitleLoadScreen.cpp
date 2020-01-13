@@ -31,6 +31,7 @@
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "MainMenu.hpp"
+#include "Sav.hpp"
 #include "SaveLoadScreen.hpp"
 #include "Title.hpp"
 #include "gui.hpp"
@@ -50,6 +51,10 @@ bool TitleLoadScreen::loadSave() const
     }
     if (status)
     {
+        if (TitleLoader::save->generation() == Generation::EIGHT)
+        {
+            Gui::warn("Gen 8 support is quite experimental!\nProceed at your own risk.");
+        }
         Gui::setScreen(std::make_unique<MainMenu>());
     }
 

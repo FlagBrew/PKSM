@@ -49,8 +49,12 @@ private:
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
 
 public:
+    Sav7(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+    virtual ~Sav7() {}
     u16 check16(u8* buf, u32 blockID, u32 len) const;
     virtual void resign(void) = 0;
+    void encrypt(void) override { resign(); }
+    void decrypt(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;
@@ -94,7 +98,7 @@ public:
     // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
@@ -125,7 +129,6 @@ public:
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
-    virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
     std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalSMUSUM::formCount(species); }

@@ -41,6 +41,17 @@ class PKFilter;
 
 class PKX
 {
+    friend class Sav;
+    friend class PK4;
+    friend class PK5;
+    friend class PK6;
+    friend class PK7;
+    friend class PK8;
+    friend class PB7;
+
+private:
+    bool directAccess;
+
 protected:
     u32 expTable(u8 row, u8 col) const;
     u8 blockPosition(u8 index) const;
@@ -51,19 +62,28 @@ protected:
     virtual void crypt(void)         = 0;
     virtual void shuffleArray(u8 sv) = 0;
 
-    u32 length = 0;
+    virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG7(Sav& save) const { return generation() == Generation::SEVEN ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToLGPE(Sav& save) const { return generation() == Generation::LGPE ? clone() : nullptr; }
+    virtual std::shared_ptr<PKX> convertToG8(Sav& save) const { return generation() == Generation::EIGHT ? clone() : nullptr; }
 
+    u32 length = 0;
     u8* data;
 
 public:
-    static constexpr int PKSM_MAX_SPECIES = 809;
+    static constexpr int PKSM_MAX_SPECIES = 890;
 
     virtual u8* rawData(void) { return data; }
     void decrypt(void);
     void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) const = 0;
-    virtual ~PKX(){};
-    static std::shared_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false);
+    virtual ~PKX();
+    PKX(u8* data, size_t length, bool directAccess = false);
+    PKX(const PKX& pk) = delete;
+    PKX& operator=(const PKX& pk) = delete;
+    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool ekx = false, bool party = false, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
 
     virtual Generation generation(void) const = 0;
@@ -95,8 +115,8 @@ public:
     virtual void SID(u16 v)                         = 0;
     virtual u32 experience(void) const              = 0;
     virtual void experience(u32 v)                  = 0;
-    virtual u8 ability(void) const                  = 0;
-    virtual void ability(u8 v)                      = 0;
+    virtual u16 ability(void) const                 = 0;
+    virtual void ability(u16 v)                     = 0;
     virtual u8 abilityNumber(void) const            = 0;
     virtual void abilityNumber(u8 v)                = 0;
     virtual void setAbility(u8 abilityNumber)       = 0;
@@ -110,8 +130,8 @@ public:
     virtual void fatefulEncounter(bool v)           = 0;
     virtual u8 gender(void) const                   = 0;
     virtual void gender(u8 g)                       = 0;
-    virtual u8 alternativeForm(void) const          = 0;
-    virtual void alternativeForm(u8 v)              = 0;
+    virtual u16 alternativeForm(void) const         = 0;
+    virtual void alternativeForm(u16 v)             = 0;
     virtual u8 ev(Stat ev) const                    = 0;
     virtual void ev(Stat ev, u8 v)                  = 0;
     virtual u8 contest(u8 contest) const            = 0;
@@ -218,9 +238,6 @@ public:
     virtual int partyLevel(void) const       = 0;
     virtual void partyLevel(u8 v)            = 0;
 
-    virtual std::shared_ptr<PKX> previous(Sav& save) const { return nullptr; }
-    virtual std::shared_ptr<PKX> next(Sav& save) const { return nullptr; }
-
     u32 getLength(void) const { return length; }
     static u8 genFromBytes(u8* data, size_t length, bool ekx = false);
 
@@ -236,7 +253,7 @@ public:
     virtual u8 genderType(void) const     = 0;
     virtual u8 baseFriendship(void) const = 0;
     virtual u8 expType(void) const        = 0;
-    virtual u8 abilities(u8 n) const      = 0;
+    virtual u16 abilities(u8 n) const     = 0;
     virtual u16 formStatIndex(void) const = 0;
 };
 

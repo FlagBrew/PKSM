@@ -105,16 +105,16 @@ void SpeciesOverlay::drawTop() const
 {
     Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
 
-    int x = (hid.index() % 8) * 50;
-    int y = (hid.index() / 8) * 48;
+    int selectorX = (hid.index() % 8) * 50;
+    int selectorY = (hid.index() / 8) * 48;
     // Selector
     if (dispPkm.size() > 0)
     {
-        Gui::drawSolidRect(x, y, 49, 47, COLOR_MASKBLACK);
-        Gui::drawSolidRect(x, y, 49, 1, COLOR_YELLOW);
-        Gui::drawSolidRect(x, y, 1, 47, COLOR_YELLOW);
-        Gui::drawSolidRect(x + 48, y, 1, 47, COLOR_YELLOW);
-        Gui::drawSolidRect(x, y + 46, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(selectorX, selectorY, 49, 47, COLOR_MASKBLACK);
+        Gui::drawSolidRect(selectorX, selectorY, 49, 1, COLOR_YELLOW);
+        Gui::drawSolidRect(selectorX, selectorY, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(selectorX + 48, selectorY, 1, 47, COLOR_YELLOW);
+        Gui::drawSolidRect(selectorX, selectorY + 46, 49, 1, COLOR_YELLOW);
     }
 
     for (int y = 0; y < 5; y++)

@@ -35,7 +35,7 @@ ExtraSavesScreen::ExtraSavesScreen() : Screen(i18n::localize("A_CHOOSE_GROUP") +
 
 ExtraSavesScreen::~ExtraSavesScreen()
 {
-    Threads::create((ThreadFunc)TitleLoader::scanSaves);
+    Threads::create([](void*) { TitleLoader::scanSaves(); });
 }
 
 void ExtraSavesScreen::drawBottom() const

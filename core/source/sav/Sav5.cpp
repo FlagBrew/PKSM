@@ -27,25 +27,26 @@
 #include "Sav5.hpp"
 #include "PGF.hpp"
 #include "PK5.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
 u16 Sav5::TID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x14]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x14]);
 }
 void Sav5::TID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x14]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x14], v);
 }
 
 u16 Sav5::SID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x16]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x16]);
 }
 void Sav5::SID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x16]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x16], v);
 }
 
 u8 Sav5::version(void) const
@@ -113,20 +114,20 @@ void Sav5::otName(const std::string& v)
 
 u32 Sav5::money(void) const
 {
-    return *(u32*)(&data[Trainer2]);
+    return Endian::convertTo<u32>(&data[Trainer2]);
 }
 void Sav5::money(u32 v)
 {
-    *(u32*)(&data[Trainer2]) = v;
+    Endian::convertFrom<u32>(&data[Trainer2], v);
 }
 
 u32 Sav5::BP(void) const
 {
-    return *(u16*)(&data[BattleSubway]);
+    return Endian::convertTo<u16>(&data[BattleSubway]);
 }
 void Sav5::BP(u32 v)
 {
-    *(u16*)(&data[BattleSubway]) = v;
+    Endian::convertFrom<u32>(&data[BattleSubway], v);
 }
 
 u8 Sav5::badges(void) const
@@ -135,18 +136,18 @@ u8 Sav5::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & (1 << i) ? 1 : 0;
+        ret += (badgeBits & (1 << i)) ? 1 : 0;
     }
     return ret;
 }
 
 u16 Sav5::playedHours(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x24]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x24]);
 }
 void Sav5::playedHours(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x24]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x24], v);
 }
 
 u8 Sav5::playedMinutes(void) const
@@ -192,23 +193,25 @@ std::shared_ptr<PKX> Sav5::pkm(u8 slot) const
 
 void Sav5::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[220] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
-
-    if (pk->getLength() != 220)
+    if (pk->generation() == Generation::FIVE)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk5->partyStat(Stat(i), pk5->stat(Stat(i)));
-        }
-        pk5->partyLevel(pk5->level());
-        pk5->partyCurrHP(pk5->stat(Stat::HP));
-    }
+        u8 buf[220] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK5> pk5 = std::make_unique<PK5>(buf, false, true, true);
 
-    pk5->encrypt();
-    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
-    std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
+        if (pk->getLength() != 220)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk5->partyStat(Stat(i), pk5->stat(Stat(i)));
+            }
+            pk5->partyLevel(pk5->level());
+            pk5->partyCurrHP(pk5->stat(Stat::HP));
+        }
+
+        pk5->encrypt();
+        std::copy(pk5->rawData(), pk5->rawData() + pk5->getLength(), &data[partyOffset(slot)]);
+    }
 }
 
 std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
@@ -216,10 +219,9 @@ std::shared_ptr<PKX> Sav5::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK5>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::FIVE)
     {
         if (applyTrade)
         {
@@ -228,7 +230,6 @@ bool Sav5::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 136, &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void Sav5::trade(std::shared_ptr<PKX> pk)
@@ -241,7 +242,7 @@ void Sav5::trade(std::shared_ptr<PKX> pk)
 
 void Sav5::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
@@ -484,7 +485,8 @@ std::vector<Sav::giftData> Sav5::currentGifts(void) const
         if (*(wonderCards + i * PGF::length + 0xB3) == 1)
         {
             ret.emplace_back(StringUtils::getString(wonderCards + i * PGF::length, 0x60, 37, u'\uFFFF'), "",
-                *(u16*)(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C), *(wonderCards + i * PGF::length + 0x35));
+                Endian::convertTo<u16>(wonderCards + i * PGF::length + 0x1A), *(wonderCards + i * PGF::length + 0x1C),
+                *(wonderCards + i * PGF::length + 0x35));
         }
         else
         {
@@ -496,11 +498,11 @@ std::vector<Sav::giftData> Sav5::currentGifts(void) const
 
 void Sav5::cryptMysteryGiftData()
 {
-    u32 seed = *(u32*)(&data[0x1D290]);
+    u32 seed = Endian::convertTo<u32>(&data[0x1D290]);
     for (int i = 0; i < 0xA90; i += 2)
     {
         seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        *(u16*)(&data[WondercardFlags + i]) ^= (seed >> 16);
+        Endian::convertFrom<u16>(&data[WondercardFlags + i], Endian::convertTo<u16>(&data[WondercardFlags + i]) & (seed >> 16));
     }
 }
 

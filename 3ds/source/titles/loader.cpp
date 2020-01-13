@@ -37,137 +37,190 @@
 #include <ctime>
 #include <sys/stat.h>
 
-static std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
-
-static constexpr char langIds[8] = {
-    'E', // USA
-    'S', // Spain
-    'K', // Korea
-    'J', // Japan
-    'I', // Italy
-    'D', // Germany
-    'F', // France
-    'O'  // Europe? Definitely some sort of English
-};
-
-static constexpr std::string_view dsIds[9] = {
-    "ADA", // Diamond
-    "APA", // Pearl
-    "CPU", // Platinum
-    "IPK", // HeartGold
-    "IPG", // SoulSilver
-    "IRB", // Black
-    "IRA", // White
-    "IRE", // Black 2
-    "IRD"  // White 2
-};
-
-static std::atomic<bool> cartWasUpdated = false;
-static std::atomic_flag continueScan;
-
-static std::string idToSaveName(const std::string& id)
+namespace
 {
-    if (id.size() == 3 || id.size() == 4)
+    std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
+
+    constexpr char langIds[8] = {
+        'E', // USA
+        'S', // Spain
+        'K', // Korea
+        'J', // Japan
+        'I', // Italy
+        'D', // Germany
+        'F', // France
+        'O'  // Europe? Definitely some sort of English
+    };
+
+    constexpr std::string_view dsIds[9] = {
+        "ADA", // Diamond
+        "APA", // Pearl
+        "CPU", // Platinum
+        "IPK", // HeartGold
+        "IPG", // SoulSilver
+        "IRB", // Black
+        "IRA", // White
+        "IRE", // Black 2
+        "IRD"  // White 2
+    };
+
+    std::atomic<bool> cartWasUpdated = false;
+    std::atomic_flag continueScan;
+
+    std::string idToSaveName(const std::string& id)
     {
-        if (id.substr(0, 3) == "ADA")
+        if (id.size() == 3 || id.size() == 4)
         {
-            return "POKEMON D.sav";
+            if (id.substr(0, 3) == "ADA")
+            {
+                return "POKEMON D.sav";
+            }
+            if (id.substr(0, 3) == "APA")
+            {
+                return "POKEMON P.sav";
+            }
+            if (id.substr(0, 3) == "CPU")
+            {
+                return "POKEMON PL.sav";
+            }
+            if (id.substr(0, 3) == "IPK")
+            {
+                return "POKEMON HG.sav";
+            }
+            if (id.substr(0, 3) == "IPG")
+            {
+                return "POKEMON SS.sav";
+            }
+            if (id.substr(0, 3) == "IRB")
+            {
+                return "POKEMON B.sav";
+            }
+            if (id.substr(0, 3) == "IRA")
+            {
+                return "POKEMON W.sav";
+            }
+            if (id.substr(0, 3) == "IRE")
+            {
+                return "POKEMON B2.sav";
+            }
+            if (id.substr(0, 3) == "IRD")
+            {
+                return "POKEMON W2.sav";
+            }
         }
-        if (id.substr(0, 3) == "APA")
-        {
-            return "POKEMON P.sav";
-        }
-        if (id.substr(0, 3) == "CPU")
-        {
-            return "POKEMON PL.sav";
-        }
-        if (id.substr(0, 3) == "IPK")
-        {
-            return "POKEMON HG.sav";
-        }
-        if (id.substr(0, 3) == "IPG")
-        {
-            return "POKEMON SS.sav";
-        }
-        if (id.substr(0, 3) == "IRB")
-        {
-            return "POKEMON B.sav";
-        }
-        if (id.substr(0, 3) == "IRA")
-        {
-            return "POKEMON W.sav";
-        }
-        if (id.substr(0, 3) == "IRE")
-        {
-            return "POKEMON B2.sav";
-        }
-        if (id.substr(0, 3) == "IRD")
-        {
-            return "POKEMON W2.sav";
-        }
+        return "main";
     }
-    return "main";
-}
 
-static std::string idToSaveName(const std::u16string& id)
-{
-    if (id.size() == 3 || id.size() == 4)
+    std::string idToSaveName(const std::u16string& id)
     {
-        if (id.substr(0, 3) == u"ADA")
+        if (id.size() == 3 || id.size() == 4)
         {
-            return "POKEMON D.sav";
+            if (id.substr(0, 3) == u"ADA")
+            {
+                return "POKEMON D.sav";
+            }
+            if (id.substr(0, 3) == u"APA")
+            {
+                return "POKEMON P.sav";
+            }
+            if (id.substr(0, 3) == u"CPU")
+            {
+                return "POKEMON PL.sav";
+            }
+            if (id.substr(0, 3) == u"IPK")
+            {
+                return "POKEMON HG.sav";
+            }
+            if (id.substr(0, 3) == u"IPG")
+            {
+                return "POKEMON SS.sav";
+            }
+            if (id.substr(0, 3) == u"IRB")
+            {
+                return "POKEMON B.sav";
+            }
+            if (id.substr(0, 3) == u"IRA")
+            {
+                return "POKEMON W.sav";
+            }
+            if (id.substr(0, 3) == u"IRE")
+            {
+                return "POKEMON B2.sav";
+            }
+            if (id.substr(0, 3) == u"IRD")
+            {
+                return "POKEMON W2.sav";
+            }
         }
-        if (id.substr(0, 3) == u"APA")
-        {
-            return "POKEMON P.sav";
-        }
-        if (id.substr(0, 3) == u"CPU")
-        {
-            return "POKEMON PL.sav";
-        }
-        if (id.substr(0, 3) == u"IPK")
-        {
-            return "POKEMON HG.sav";
-        }
-        if (id.substr(0, 3) == u"IPG")
-        {
-            return "POKEMON SS.sav";
-        }
-        if (id.substr(0, 3) == u"IRB")
-        {
-            return "POKEMON B.sav";
-        }
-        if (id.substr(0, 3) == u"IRA")
-        {
-            return "POKEMON W.sav";
-        }
-        if (id.substr(0, 3) == u"IRE")
-        {
-            return "POKEMON B2.sav";
-        }
-        if (id.substr(0, 3) == u"IRD")
-        {
-            return "POKEMON W2.sav";
-        }
+        return "main";
     }
-    return "main";
+
+    // known 3ds title ids
+    constexpr std::array<unsigned long long, 8> ctrTitleIds = {
+        0x0004000000055D00, // X
+        0x0004000000055E00, // Y
+        0x000400000011C400, // OR
+        0x000400000011C500, // AS
+        0x0004000000164800, // Sun
+        0x0004000000175E00, // Moon
+        0x00040000001B5000, // Ultrasun
+        0x00040000001B5100  // Ultramoon
+    };
+
+    bool saveIsFile;
+    std::string saveFileName;
+    std::shared_ptr<Title> loadedTitle;
+
+    std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
+    {
+        if (directories.count(dir) == 0)
+        {
+            directories.emplace(dir, std::make_shared<Directory>(Archive::sd(), dir));
+        }
+        else
+        {
+            // Attempt to re-read directory
+            if (!directories[dir]->loaded())
+            {
+                directories[dir] = std::make_shared<Directory>(Archive::sd(), dir);
+            }
+        }
+        std::vector<std::string> ret;
+        auto& directory = directories[dir];
+        if (directory->loaded())
+        {
+            for (size_t j = 0; j < directory->count(); j++)
+            {
+                if (directory->folder(j))
+                {
+                    std::u16string fileName = directory->item(j);
+                    if (fileName.substr(0, id.size()) == id)
+                    {
+                        Directory subdir(Archive::sd(), dir + u"/" + fileName);
+                        for (size_t k = 0; k < subdir.count(); k++)
+                        {
+                            if (subdir.folder(k))
+                            {
+                                std::string savePath =
+                                    StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir.item(k) + u"/") + idToSaveName(id);
+                                if (io::exists(savePath))
+                                {
+                                    ret.emplace_back(savePath);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
+    {
+        return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
+    }
 }
-
-// known 3ds title ids
-static constexpr std::array<unsigned long long, 8> ctrTitleIds = {
-    0x0004000000055D00, // X
-    0x0004000000055E00, // Y
-    0x000400000011C400, // OR
-    0x000400000011C500, // AS
-    0x0004000000164800, // Sun
-    0x0004000000175E00, // Moon
-    0x00040000001B5000, // Ultrasun
-    0x00040000001B5100  // Ultramoon
-};
-
-static bool saveIsFile;
-static std::string saveFileName;
-static std::shared_ptr<Title> loadedTitle;
 
 void TitleLoader::init(void)
 {
@@ -229,55 +282,6 @@ void TitleLoader::scanTitles(void)
 
     // sort the list alphabetically
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) { return l->ID() < r->ID(); });
-}
-
-static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
-{
-    if (directories.count(dir) == 0)
-    {
-        directories.emplace(dir, std::make_shared<Directory>(Archive::sd(), dir));
-    }
-    else
-    {
-        // Attempt to re-read directory
-        if (!directories[dir]->loaded())
-        {
-            directories[dir] = std::make_shared<Directory>(Archive::sd(), dir);
-        }
-    }
-    std::vector<std::string> ret;
-    auto& directory = directories[dir];
-    if (directory->loaded())
-    {
-        for (size_t j = 0; j < directory->count(); j++)
-        {
-            if (directory->folder(j))
-            {
-                std::u16string fileName = directory->item(j);
-                if (fileName.substr(0, id.size()) == id)
-                {
-                    Directory subdir(Archive::sd(), dir + u"/" + fileName);
-                    for (size_t k = 0; k < subdir.count(); k++)
-                    {
-                        if (subdir.folder(k))
-                        {
-                            std::string savePath = StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir.item(k) + u"/") + idToSaveName(id);
-                            if (io::exists(savePath))
-                            {
-                                ret.emplace_back(savePath);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return ret;
-}
-
-static std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
-{
-    return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
 }
 
 void TitleLoader::scanSaves(void)
@@ -353,7 +357,9 @@ void TitleLoader::backupSave(const std::string& id)
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
+        TitleLoader::save->encrypt();
         out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        TitleLoader::save->decrypt();
         if (Configuration::getInstance().showBackups())
         {
             sdSaves[id].emplace_back(path);
@@ -522,7 +528,7 @@ void TitleLoader::saveToTitle(bool ask)
             }
             else
             {
-                Result res   = 0;
+                res          = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
@@ -572,7 +578,7 @@ void TitleLoader::saveToTitle(bool ask)
 
 void TitleLoader::saveChanges()
 {
-    save->resign();
+    save->encrypt();
     if (saveIsFile)
     {
         // No need to check size; if it was read successfully, that means that it has the correct size
@@ -588,6 +594,7 @@ void TitleLoader::saveChanges()
     {
         saveToTitle(false);
     }
+    save->decrypt();
 }
 
 void TitleLoader::exit()
@@ -645,13 +652,13 @@ bool TitleLoader::scanCard()
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
                 ret                            = true;
-                CardType cardType              = title->SPICardType();
-                u32 saveSize                   = SPIGetCapacity(cardType);
+                CardType spiCardType           = title->SPICardType();
+                u32 saveSize                   = SPIGetCapacity(spiCardType);
                 u32 sectorSize                 = (saveSize < 0x10000) ? saveSize : 0x10000;
                 std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
                 for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
-                    res = SPIReadSaveData(cardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
+                    res = SPIReadSaveData(spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
                     if (R_FAILED(res))
                     {
                         break;

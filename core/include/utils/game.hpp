@@ -38,7 +38,8 @@ enum class Game
     ORAS,
     SM,
     USUM,
-    LGPE
+    LGPE,
+    SWSH
 };
 
 #endif

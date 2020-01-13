@@ -61,7 +61,6 @@ private:
 
 public:
     SavB2W2(std::shared_ptr<u8[]> dt);
-    virtual ~SavB2W2();
 
     void resign(void) override;
 

@@ -41,7 +41,7 @@ public:
     static constexpr u16 lengthFull = 784;
 
     WB7(u8* dt, bool full = false);
-    virtual ~WB7(){};
+    virtual ~WB7() {}
 
     Generation generation(void) const override;
     bool bean(void) const override;

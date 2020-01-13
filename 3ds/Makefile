@@ -51,6 +51,7 @@ FORMATSOURCES	:=	../common/source \
 					../core/source/sav \
 					../core/source/utils \
 					../core/source/wcx \
+					../core/swshcrypto \
 					source \
 					source/gui \
 					source/gui/overlay \
@@ -80,6 +81,7 @@ FORMATINCLUDES	:=	../common/include \
 					../core/include/sav \
 					../core/include/utils \
 					../core/include/wcx \
+					../core/swshcrypto \
 					include \
 					include/gui \
 					include/gui/overlay \
@@ -279,7 +281,7 @@ format:
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
 	@mkdir -p $(BUILD)
-	@cppcheck . --enable=all $(INCLUDE) --force 2> $(BUILD)/cppcheck.log
+	@cppcheck . ../core ../common --enable=all $(INCLUDE) -UJSON_CATCH_USER -U_Check_return_ -U_MSC_VER -U_Ret_notnull_ -U__INTEL_COMPILER -U__PGI -U__SUNPRO_CC -UJSON_INTERNAL_CATCH_USER -UJSON_THROW_USER -UJSON_TRY_USER -U__IBMCPP__ -U__SUNPRO_CC -D__GNUC__=9 -D__GNUC_MINOR__=1 -DNULL=nullptr --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
 #---------------------------------------------------------------------------------
 cppclean:

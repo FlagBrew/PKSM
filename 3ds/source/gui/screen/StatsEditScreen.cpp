@@ -33,7 +33,10 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-static constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
+namespace
+{
+    constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
+}
 
 StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 {

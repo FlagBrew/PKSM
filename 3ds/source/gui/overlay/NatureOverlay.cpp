@@ -30,7 +30,10 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 
-static constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
+namespace
+{
+    constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
+}
 
 NatureOverlay::NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
@@ -58,14 +61,14 @@ void NatureOverlay::drawTop() const
             std::string("+") + i18n::localize(std::string(stats[i])), 32, i * 40 + 52, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
-    int x = (hid.index() % 5) * 67 + 66;
-    int y = (hid.index() / 5) * 40 + 40;
+    int selectorX = (hid.index() % 5) * 67 + 66;
+    int selectorY = (hid.index() / 5) * 40 + 40;
     // Selector
-    Gui::drawSolidRect(x, y, 66, 39, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, 66, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 39, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 65, y, 1, 39, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 38, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, 66, 39, COLOR_MASKBLACK);
+    Gui::drawSolidRect(selectorX, selectorY, 66, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY, 1, 39, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX + 65, selectorY, 1, 39, COLOR_YELLOW);
+    Gui::drawSolidRect(selectorX, selectorY + 38, 66, 1, COLOR_YELLOW);
 
     for (int y = 0; y < 5; y++)
     {

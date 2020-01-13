@@ -27,6 +27,7 @@
 #include "Sav4.hpp"
 #include "PGT.hpp"
 #include "PK4.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -50,7 +51,7 @@ void Sav4::GBO(void)
         return;
     }
 
-    u16 c1 = *(u16*)(&data[ofs]), c2 = *(u16*)(&data[ofs + 0x40000]);
+    u16 c1 = Endian::convertTo<u16>(&data[ofs]), c2 = Endian::convertTo<u16>(&data[ofs + 0x40000]);
 
     gbo = (c1 >= c2) ? 0 : 0x40000;
 }
@@ -75,7 +76,7 @@ void Sav4::SBO(void)
         return;
     }
 
-    u16 c1 = *(u16*)(&data[ofs]), c2 = *(u16*)(&data[ofs + 0x40000]);
+    u16 c1 = Endian::convertTo<u16>(&data[ofs]), c2 = Endian::convertTo<u16>(&data[ofs + 0x40000]);
 
     sbo = (c1 >= c2) ? 0 : 0x40000;
 }
@@ -91,32 +92,32 @@ void Sav4::resign(void)
         game == Game::DP ? 0x1E2CC : game == Game::Pt ? 0x1F0FC : 0x21A00, game == Game::DP ? 0x1E2DE : game == Game::Pt ? 0x1F10E : 0x21A0E};
 
     std::copy(&data[gbo + general[0]], &data[gbo + general[1]], tmp);
-    cs                               = ccitt16(tmp, general[1] - general[0]);
-    *(u16*)(&data[gbo + general[2]]) = cs;
+    cs = ccitt16(tmp, general[1] - general[0]);
+    Endian::convertFrom<u16>(&data[gbo + general[2]], cs);
 
     std::copy(&data[sbo + storage[0]], &data[sbo + storage[1]], tmp);
-    cs                               = ccitt16(tmp, storage[1] - storage[0]);
-    *(u16*)(&data[sbo + storage[2]]) = cs;
+    cs = ccitt16(tmp, storage[1] - storage[0]);
+    Endian::convertFrom<u16>(&data[sbo + storage[2]], cs);
 
     delete[] tmp;
 }
 
 u16 Sav4::TID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x10]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x10]);
 }
 void Sav4::TID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x10]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x10], v);
 }
 
 u16 Sav4::SID(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x12]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x12]);
 }
 void Sav4::SID(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x12]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x12], v);
 }
 
 u8 Sav4::version(void) const
@@ -184,20 +185,20 @@ void Sav4::otName(const std::string& v)
 
 u32 Sav4::money(void) const
 {
-    return *(u32*)(&data[Trainer1 + 0x14]);
+    return Endian::convertTo<u32>(&data[Trainer1 + 0x14]);
 }
 void Sav4::money(u32 v)
 {
-    *(u32*)(&data[Trainer1 + 0x14]) = v;
+    Endian::convertFrom<u32>(&data[Trainer1 + 0x14], v);
 }
 
 u32 Sav4::BP(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x20]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x20]);
 } // Returns Coins @ Game Corner
 void Sav4::BP(u32 v)
 {
-    *(u16*)(&data[Trainer1 + 0x20]) = v;
+    Endian::convertFrom<u32>(&data[Trainer1 + 0x20], v);
 }
 
 u8 Sav4::badges(void) const
@@ -206,14 +207,14 @@ u8 Sav4::badges(void) const
     u8 ret       = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & (1 << i) ? 1 : 0;
+        ret += (badgeBits & (1 << i)) ? 1 : 0;
     }
     if (game == Game::HGSS)
     {
         badgeBits = data[Trainer1 + 0x1F];
         for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
         {
-            ret += badgeBits & (1 << i) ? 1 : 0;
+            ret += (badgeBits & (1 << i)) ? 1 : 0;
         }
     }
     return ret;
@@ -221,11 +222,11 @@ u8 Sav4::badges(void) const
 
 u16 Sav4::playedHours(void) const
 {
-    return *(u16*)(&data[Trainer1 + 0x22]);
+    return Endian::convertTo<u16>(&data[Trainer1 + 0x22]);
 }
 void Sav4::playedHours(u16 v)
 {
-    *(u16*)(&data[Trainer1 + 0x22]) = v;
+    Endian::convertFrom<u16>(&data[Trainer1 + 0x22], v);
 }
 
 u8 Sav4::playedMinutes(void) const
@@ -274,22 +275,25 @@ std::shared_ptr<PKX> Sav4::pkm(u8 slot) const
 
 void Sav4::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[236] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true, true);
-
-    if (pk->getLength() != 236)
+    if (pk->generation() == Generation::FOUR)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk4->partyStat(Stat(i), pk4->stat(Stat(i)));
-        }
-        pk4->partyLevel(pk4->level());
-        pk4->partyCurrHP(pk4->stat(Stat::HP));
-    }
+        u8 buf[236] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK4> pk4 = std::make_unique<PK4>(buf, false, true, true);
 
-    pk4->encrypt();
-    std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), &data[partyOffset(slot)]);
+        if (pk->getLength() != 236)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk4->partyStat(Stat(i), pk4->stat(Stat(i)));
+            }
+            pk4->partyLevel(pk4->level());
+            pk4->partyCurrHP(pk4->stat(Stat::HP));
+        }
+
+        pk4->encrypt();
+        std::copy(pk4->rawData(), pk4->rawData() + pk4->getLength(), &data[partyOffset(slot)]);
+    }
 }
 
 std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
@@ -297,10 +301,9 @@ std::shared_ptr<PKX> Sav4::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK4>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::FOUR)
     {
         if (applyTrade)
         {
@@ -309,7 +312,6 @@ bool Sav4::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 136, &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void Sav4::trade(std::shared_ptr<PKX> pk)
@@ -322,7 +324,7 @@ void Sav4::trade(std::shared_ptr<PKX> pk)
 
 void Sav4::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
@@ -343,9 +345,9 @@ void Sav4::mysteryGift(WCX& wc, int& pos)
     pos++;
     if (game == Game::DP)
     {
-        static constexpr size_t dpSlotActive = 0xEDB88320;
-        const int ofs                        = WondercardFlags + 0x100;
-        *(u32*)(&data[ofs + 4 * pos])        = dpSlotActive;
+        static constexpr u32 dpSlotActive = 0xEDB88320;
+        const int ofs                     = WondercardFlags + 0x100;
+        Endian::convertFrom<u32>(&data[ofs + 4 * pos], dpSlotActive);
     }
 }
 
@@ -599,7 +601,7 @@ std::vector<u8> Sav4::getForms(u16 species)
     switch (species)
     {
         case 479: // Rotom
-            return getDexFormValues(*(u32*)(data.get() + formOffset2), 3, 6);
+            return getDexFormValues(Endian::convertTo<u32>(data.get() + formOffset2), 3, 6);
         case 492: // Shaymin
             return getDexFormValues(data[formOffset2 + 4], 1, 2);
         case 487: // Giratina
@@ -634,7 +636,7 @@ std::vector<u8> Sav4::getDexFormValues(u32 v, u8 bitsPerForm, u8 readCt)
 void Sav4::setForms(std::vector<u8> forms, u16 species)
 {
     static constexpr u8 brSize = 0x40;
-    if (species == 386)
+    if (species == 386) // Deoxys
     {
         u32 newval                           = setDexFormValues(forms, 4, 4);
         data[PokeDex + 0x4 + 1 * brSize - 1] = (u8)(newval & 0xFF);
@@ -677,11 +679,10 @@ void Sav4::setForms(std::vector<u8> forms, u16 species)
     {
         case 479: // Rotom
         {
-            u32 num    = setDexFormValues(forms, 3, 6);
-            u8* values = (u8*)&num;
-            for (int i = formOffset2; i < formOffset2 + 6; i++)
+            auto values = Endian::convertFrom(setDexFormValues(forms, 3, 6));
+            for (int i = 0; i < values.size(); i++)
             {
-                data[i] = values[i - formOffset2];
+                data[formOffset2 + i] = values[i];
             }
             return;
         }

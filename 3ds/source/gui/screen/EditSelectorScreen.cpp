@@ -41,8 +41,6 @@
 #include "utils.hpp"
 #include <memory>
 
-static bool dirtyBack = true;
-
 void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
@@ -66,6 +64,7 @@ void EditSelectorScreen::changeBoxName()
         break;
         case Generation::SIX:
         case Generation::SEVEN:
+        case Generation::EIGHT:
         {
             SwkbdState state;
             swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
@@ -90,63 +89,48 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    QRMode initMode;
+    std::shared_ptr<PKX> pkm;
     switch (TitleLoader::save->generation())
     {
         case Generation::FOUR:
-            initMode = QRMode::PK4;
+            pkm = QRScanner<PK4>::scan();
             break;
         case Generation::FIVE:
-            initMode = QRMode::PK5;
+            pkm = QRScanner<PK5>::scan();
             break;
         case Generation::SIX:
-            initMode = QRMode::PK6;
+            pkm = QRScanner<PK6>::scan();
             break;
         case Generation::SEVEN:
-        default:
-            initMode = QRMode::PK7;
+            pkm = QRScanner<PK7>::scan();
             break;
+        case Generation::EIGHT:
+            pkm = QRScanner<PK8>::scan();
+            break;
+        case Generation::UNUSED:
+        case Generation::LGPE:
+            return false;
     }
 
-    std::vector<u8> data = QRScanner::scan(initMode);
-
-    if (!data.empty())
+    if (pkm)
     {
-        std::shared_ptr<PKX> pkm = nullptr;
-
-        switch (TitleLoader::save->generation())
-        {
-            case Generation::FOUR:
-                pkm = std::make_shared<PK4>(data.data(), true);
-                break;
-            case Generation::FIVE:
-                pkm = std::make_shared<PK5>(data.data(), true);
-                break;
-            case Generation::SIX:
-                pkm = std::make_shared<PK6>(data.data(), true);
-                break;
-            case Generation::SEVEN:
-                pkm = std::make_shared<PK7>(data.data(), true);
-                break;
-            default:
-                break;
-        }
-
-        if (pkm) // Should be true, but just make sure
-        {
-            int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
-            TitleLoader::save->pkm(pkm, box, slot, false);
-        }
+        int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
+        TitleLoader::save->pkm(pkm, box, slot, false);
+        return true;
     }
-    return true;
+    return false;
 }
 
 EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
 {
     addOverlay<ViewOverlay>(infoMon, false);
 
-    buttons.push_back(
-        std::make_unique<ClickButton>(283, 211, 34, 28, [this]() { return goBack(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+        [this]() {
+            justSwitched = true;
+            return goBack();
+        },
+        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
     buttons.push_back(
         std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
@@ -163,17 +147,15 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
-    u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 4;
+        u16 y = 45 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x                        = 4 + column * 34;
             pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
-            x += 34;
         }
-        y += 30;
     }
     for (int i = 0; i < 6; i++)
     {
@@ -262,12 +244,12 @@ void EditSelectorScreen::drawBottom() const
         }
     }
 
-    u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 4;
+        u16 y = 45 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x = 4 + column * 34;
             if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
@@ -288,9 +270,7 @@ void EditSelectorScreen::drawBottom() const
                     }
                 }
             }
-            x += 34;
         }
-        y += 30;
     }
 
     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
@@ -401,24 +381,7 @@ void EditSelectorScreen::update(touchPosition* touch)
 
     if (menu)
     {
-        if (!dirtyBack)
-        {
-            if (buttons[0]->clicked(touch))
-            {
-                dirtyBack = true;
-            }
-            if (buttons[0]->update(touch))
-            {
-                return;
-            }
-        }
-        else
-        {
-            if (!buttons[0]->clicked(touch))
-            {
-                dirtyBack = false;
-            }
-        }
+        buttons[0]->update(touch);
         for (size_t i = 0; i < viewerButtons.size(); i++)
         {
             viewerButtons[i]->update(touch);
@@ -446,31 +409,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         for (size_t i = 0; i < buttons.size(); i++)
         {
-            if (i == 0)
-            {
-                if (!dirtyBack)
-                {
-                    if (buttons[i]->clicked(touch))
-                    {
-                        dirtyBack = true;
-                    }
-                    if (buttons[i]->update(touch))
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!buttons[i]->clicked(touch))
-                    {
-                        dirtyBack = false;
-                    }
-                }
-            }
-            else
-            {
-                buttons[i]->update(touch);
-            }
+            buttons[i]->update(touch);
         }
 
         for (auto& button : pkmButtons)
@@ -860,7 +799,7 @@ bool EditSelectorScreen::editPokemon()
     else if (cursorPos > 30)
     {
         justSwitched = true;
-        Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - 31), 0xFF, cursorPos - 31));
+        Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - 31), 0xFFFF, cursorPos - 31));
         return true;
     }
 

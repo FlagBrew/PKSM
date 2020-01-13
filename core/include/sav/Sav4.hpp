@@ -55,13 +55,17 @@ protected:
     int maxBall(void) const override { return 0x18; }
 
 public:
-    void resign(void) override;
+    Sav4(std::shared_ptr<u8[]> data, u32 length) : Sav(data, length) {}
+    virtual ~Sav4() {}
+    void resign(void);
+    void encrypt(void) override { resign(); }
+    void decrypt(void) override {}
 
     u16 TID(void) const override;
     void TID(u16 v) override;
     u16 SID(void) const override;
     void SID(u16 v) override;
-    u8 version(void) const;
+    u8 version(void) const override;
     void version(u8 v) override;
     u8 gender(void) const override;
     void gender(u8 v) override;
@@ -87,9 +91,9 @@ public:
     u8 playedSeconds(void) const override;
     void playedSeconds(u8 v) override;
 
-    u8 currentBox(void) const;
-    void currentBox(u8 v);
-    u32 boxOffset(u8 box, u8 slot) const;
+    u8 currentBox(void) const override;
+    void currentBox(u8 v) override;
+    u32 boxOffset(u8 box, u8 slot) const override;
     u32 partyOffset(u8 slot) const override;
 
     std::shared_ptr<PKX> pkm(u8 slot) const override;
@@ -98,7 +102,7 @@ public:
     // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
     void trade(std::shared_ptr<PKX> pk) override;
@@ -131,7 +135,7 @@ public:
     void item(const Item& item, Pouch pouch, u16 slot) override;
     std::unique_ptr<Item> item(Pouch pouch, u16 slot) const override;
     std::vector<std::pair<Pouch, int>> pouches(void) const override;
-    virtual std::map<Pouch, std::vector<int>> validItems(void) const = 0;
+    std::map<Pouch, std::vector<int>> validItems(void) const override;
     std::string pouchName(Language lang, Pouch pouch) const override;
 
     u8 formCount(u16 species) const override { return PersonalDPPtHGSS::formCount(species); }

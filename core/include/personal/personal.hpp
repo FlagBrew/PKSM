@@ -111,13 +111,32 @@ namespace PersonalDPPtHGSS
     u8 baseSpd(u16 species);
     u8 type1(u16 species);
     u8 type2(u16 species);
-    u8 baseExp(u8 species);
     u8 gender(u16 species);
     u8 baseFriendship(u16 species);
     u8 expType(u16 species);
     u8 ability(u16 species, u8 n);
     u16 formStatIndex(u16 species);
     u8 formCount(u16 species);
+}
+
+namespace PersonalSWSH
+{
+    u8 baseHP(u16 species);
+    u8 baseAtk(u16 species);
+    u8 baseDef(u16 species);
+    u8 baseSpe(u16 species);
+    u8 baseSpa(u16 species);
+    u8 baseSpd(u16 species);
+    u8 type1(u16 species);
+    u8 type2(u16 species);
+    u8 gender(u16 species);
+    u8 baseFriendship(u16 species);
+    u8 expType(u16 species);
+    u16 ability(u16 species, u8 n);
+    u16 formStatIndex(u16 species);
+    u8 formCount(u16 species);
+    u16 pokedexIndex(u16 formSpecies);
+    bool canLearnTR(u16 formSpecies, u8 trID);
 }
 
 #endif

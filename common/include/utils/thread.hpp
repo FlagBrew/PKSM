@@ -27,14 +27,14 @@
 #ifndef THREAD_HPP
 #define THREAD_HPP
 
-#include "platform.h"
-#include <vector>
+#include <optional>
 
 namespace Threads
 {
-    Thread createDetached(ThreadFunc entrypoint, void* arg = nullptr);
-    void create(ThreadFunc entrypoint, void* arg = nullptr);
-    void destroy(void);
+    void init(void);
+    // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN MIND IF YOU ARE PORTING
+    bool create(void (*entrypoint)(void*), void* arg = nullptr, std::optional<size_t> stackSize = std::nullopt);
+    void exit(void);
 }
 
 #endif

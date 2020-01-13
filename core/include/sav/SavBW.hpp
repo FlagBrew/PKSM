@@ -58,7 +58,6 @@ private:
 
 public:
     SavBW(std::shared_ptr<u8[]> dt);
-    virtual ~SavBW();
 
     void resign(void) override;
 

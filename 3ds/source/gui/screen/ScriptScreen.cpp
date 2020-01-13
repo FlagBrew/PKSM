@@ -33,15 +33,17 @@
 #include "ScrollingTextScreen.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
+#include "endian.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "picoc.h"
 #undef min // Get rid of picoc's min function
-
-static constexpr std::string_view MAGIC = "PKSMSCRIPT";
+#include <algorithm>
 
 namespace
 {
+    constexpr std::string_view MAGIC = "PKSMSCRIPT";
+
     std::string getScriptDir(int version)
     {
         switch (version)
@@ -75,6 +77,9 @@ namespace
             case 42:
             case 43:
                 return "/scripts/lgpe";
+            case 44:
+            case 45:
+                return "/scripts/swsh";
             default:
                 return "/scripts/" + std::to_string(version);
         }
@@ -85,6 +90,28 @@ namespace
         static Picoc picoc;
         PicocInitialise(&picoc, PICOC_STACKSIZE);
         return &picoc;
+    }
+
+    std::vector<u8> scriptRead(const std::string& path)
+    {
+        std::vector<u8> ret;
+        size_t size = 0;
+        FILE* in    = fopen(path.c_str(), "rb");
+        fseek(in, 0, SEEK_END);
+        if (!ferror(in))
+        {
+            size = ftell(in);
+            fseek(in, 0, SEEK_SET);
+            ret = std::vector<u8>(size);
+            fread(ret.data(), 1, size, in);
+        }
+        else
+        {
+            Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
+        }
+        fclose(in);
+
+        return ret;
     }
 }
 
@@ -244,7 +271,7 @@ void ScriptScreen::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](std::pair<std::string, bool>& first, std::pair<std::string, bool>& second) {
+    std::sort(currFiles.begin(), currFiles.end(), [this](const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
         if ((first.second && second.second) || (!first.second && !second.second))
         {
             return first.first < second.first;
@@ -258,28 +285,6 @@ void ScriptScreen::updateEntries()
             return false;
         }
     });
-}
-
-static std::vector<u8> scriptRead(const std::string& path)
-{
-    std::vector<u8> ret;
-    size_t size = 0;
-    FILE* in    = fopen(path.c_str(), "rb");
-    fseek(in, 0, SEEK_END);
-    if (!ferror(in))
-    {
-        size = ftell(in);
-        fseek(in, 0, SEEK_SET);
-        ret = std::vector<u8>(size);
-        fread(ret.data(), 1, size, in);
-    }
-    else
-    {
-        Gui::error(i18n::localize("SCRIPTS_FAILED_OPEN"), errno);
-    }
-    fclose(in);
-
-    return ret;
 }
 
 void ScriptScreen::applyScript()
@@ -309,15 +314,15 @@ void ScriptScreen::applyScript()
     size_t index = MAGIC.size();
     while (index < scriptData.size())
     {
-        u32 offset = *(u32*)(scriptData.data() + index);
-        u32 length = *(u32*)(scriptData.data() + index + 4);
-        u32 repeat = *(u32*)(scriptData.data() + index + 8 + length);
+        u32 offset = Endian::convertTo<u32>(scriptData.data() + index);
+        u32 length = Endian::convertTo<u32>(scriptData.data() + index + 4);
+        u32 repeat = Endian::convertTo<u32>(scriptData.data() + index + 8 + length);
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {
             u32 sbo = ((Sav4*)TitleLoader::save.get())->getSBO();
             u32 gbo = ((Sav4*)TitleLoader::save.get())->getGBO();
-            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->boxes, 0) - sbo >= offset)
+            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->maxBoxes(), 0) - sbo >= offset)
             {
                 offset += sbo;
             }
@@ -371,7 +376,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         {
             Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
             show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
-            Gui::setScreen(std::make_unique<ScrollingTextScreen>(error, nullptr));
+            Gui::setScreen(std::make_unique<ScrollingTextScreen>(show, nullptr));
         }
     }
 

@@ -34,7 +34,6 @@
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "PK4.hpp"
-#include "QRScanner.hpp"
 #include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
@@ -52,8 +51,6 @@
 #include <stack>
 #include <sys/stat.h>
 #include <variant>
-
-extern std::stack<std::unique_ptr<Screen>> screens;
 
 void StorageScreen::setBoxName(bool storage)
 {
@@ -94,6 +91,7 @@ void StorageScreen::setBoxName(bool storage)
             break;
             case Generation::SIX:
             case Generation::SEVEN:
+            case Generation::EIGHT:
             {
                 SwkbdState state;
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
@@ -226,12 +224,12 @@ void StorageScreen::drawBottom() const
         }
     }
 
-    u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 4;
+        u16 y = 45 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x = 4 + column * 34;
             if (currentlySelecting && !storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
@@ -259,9 +257,7 @@ void StorageScreen::drawBottom() const
                     }
                 }
             }
-            x += 34;
         }
-        y += 30;
     }
 
     Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -356,12 +352,12 @@ void StorageScreen::drawTop() const
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
 
-    int y = 66;
     for (u8 row = 0; row < 5; row++)
     {
-        u16 x = 45;
+        u16 y = 66 + row * 30;
         for (u8 column = 0; column < 6; column++)
         {
+            u16 x = 45 + column * 34;
             if (currentlySelecting && storageChosen && column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
                 column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
                 row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) && row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
@@ -374,9 +370,7 @@ void StorageScreen::drawTop() const
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
-            x += 34;
         }
-        y += 30;
     }
 
     Gui::sprite(ui_sheet_stripe_separator_idx, 274, 97);
@@ -833,7 +827,6 @@ bool StorageScreen::backButton()
                 }
             }
             Gui::screenBack();
-            ((MainMenu*)screens.top().get())->setTimer(timer);
         }
     }
     return true;
@@ -1011,7 +1004,6 @@ void StorageScreen::pickupSingle()
         moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
         partyNum.push_back(-1);
         Banks::bank->pkm(TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
-        fromStorage = true;
     }
     else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
@@ -1030,7 +1022,6 @@ void StorageScreen::pickupSingle()
         }
         moveMon.push_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1));
         TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
-        fromStorage = false;
     }
     else
     {
@@ -1255,8 +1246,8 @@ void StorageScreen::putDownNonSwap()
                 std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                 if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
                 {
-                    TitleLoader::save->pkm(
-                        moveMon[index], boxBox, cursorIndex - 1 + x + y * 6, Configuration::getInstance().transferEdit() && fromStorage);
+                    TitleLoader::save->pkm(TitleLoader::save->transfer(moveMon[index]), boxBox, cursorIndex - 1 + x + y * 6,
+                        Configuration::getInstance().transferEdit() && fromStorage);
                     TitleLoader::save->dex(moveMon[index]);
                     if (partyNum[index] != -1)
                     {

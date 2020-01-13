@@ -25,6 +25,7 @@
  */
 
 #include "WC6.hpp"
+#include "endian.hpp"
 #include "personal.hpp"
 #include "utils.hpp"
 
@@ -41,7 +42,7 @@ Generation WC6::generation(void) const
 
 u16 WC6::ID(void) const
 {
-    return *(u16*)(data);
+    return Endian::convertTo<u16>(data);
 }
 
 std::string WC6::title(void) const
@@ -51,11 +52,11 @@ std::string WC6::title(void) const
 
 u32 WC6::rawDate(void) const
 {
-    return *(u32*)(data + 0x4C);
+    return Endian::convertTo<u32>(data + 0x4C);
 }
 void WC6::rawDate(u32 v)
 {
-    *(u32*)(data + 0x4C) = v;
+    Endian::convertFrom<u32>(data + 0x4C, v);
 }
 
 u32 WC6::year(void) const
@@ -101,17 +102,17 @@ void WC6::day(u32 v)
 
 u8 WC6::type(void) const
 {
-    return *(u8*)(data + 0x51);
+    return data[0x51];
 }
 
 u8 WC6::flags(void) const
 {
-    return *(u8*)(data + 0x52);
+    return data[0x52];
 }
 
 bool WC6::multiObtainable(void) const
 {
-    return *(u8*)(data + 0x53) == 1;
+    return data[0x53] == 1;
 }
 
 bool WC6::BP(void) const
@@ -136,12 +137,12 @@ bool WC6::power(void) const
 
 u16 WC6::object(void) const
 {
-    return *(u16*)(data + 0x68);
+    return Endian::convertTo<u16>(data + 0x68);
 }
 
 u16 WC6::objectQuantity(void) const
 {
-    return *(u16*)(data + 0x70);
+    return Endian::convertTo<u16>(data + 0x70);
 }
 
 bool WC6::pokemon(void) const
@@ -151,7 +152,7 @@ bool WC6::pokemon(void) const
 
 u8 WC6::PIDType(void) const
 {
-    return *(u8*)(data + 0xA3);
+    return data[0xA3];
 }
 
 bool WC6::shiny(void) const
@@ -161,67 +162,67 @@ bool WC6::shiny(void) const
 
 u16 WC6::TID(void) const
 {
-    return *(u16*)(data + 0x68);
+    return Endian::convertTo<u16>(data + 0x68);
 }
 
 u16 WC6::SID(void) const
 {
-    return *(u16*)(data + 0x6A);
+    return Endian::convertTo<u16>(data + 0x6A);
 }
 
 u8 WC6::version(void) const
 {
-    return *(u8*)(data + 0x6C);
+    return data[0x6C];
 }
 
 u32 WC6::encryptionConstant(void) const
 {
-    return *(u32*)(data + 0x70);
+    return Endian::convertTo<u32>(data + 0x70);
 }
 
 u8 WC6::ball(void) const
 {
-    return *(u8*)(data + 0x76);
+    return data[0x76];
 }
 
 u16 WC6::heldItem(void) const
 {
-    return *(u16*)(data + 0x78);
+    return Endian::convertTo<u16>(data + 0x78);
 }
 
 u16 WC6::move(u8 m) const
 {
-    return *(u16*)(data + 0x7A + m * 2);
+    return Endian::convertTo<u16>(data + 0x7A + m * 2);
 }
 
 u16 WC6::species(void) const
 {
-    return *(u16*)(data + 0x82);
+    return Endian::convertTo<u16>(data + 0x82);
 }
 
 u8 WC6::alternativeForm(void) const
 {
-    return *(u8*)(data + 0x84);
+    return data[0x84];
 }
 
 Language WC6::language(void) const
 {
-    return Language(*(u8*)(data + 0x85));
+    return Language(data[0x85]);
 }
 
 std::string WC6::nickname(void) const
 {
-    return *(u16*)(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
+    return Endian::convertTo<u16>(data + 0x86) != 0 ? StringUtils::getString(data, 0x86, 12) : "Pokemon Name";
 } // Localization::speciesName(species()); }
 
 u8 WC6::nature(void) const
 {
-    return *(u8*)(data + 0xA0);
+    return data[0xA0];
 }
 
 u8 WC6::gender(void) const
 {
-    return *(u8*)(data + 0xA1);
+    return data[0xA1];
 }
 
 u16 WC6::ability(void) const
@@ -240,92 +241,92 @@ u16 WC6::ability(void) const
 
 u8 WC6::abilityType(void) const
 {
-    return *(u8*)(data + 0xA2);
+    return data[0xA2];
 }
 
 u8 WC6::metLevel(void) const
 {
-    return *(u8*)(data + 0xA8);
+    return data[0xA8];
 }
 
 std::string WC6::otName(void) const
 {
-    return *(u16*)(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
+    return Endian::convertTo<u16>(data + 0xB6) != 0 ? StringUtils::getString(data, 0xB6, 12) : "Your OT Name";
 }
 
 u8 WC6::level(void) const
 {
-    return *(u8*)(data + 0xD0);
+    return data[0xD0];
 }
 
 bool WC6::egg(void) const
 {
-    return *(u8*)(data + 0xD1) == 1;
+    return data[0xD1] == 1;
 }
 
 u16 WC6::eggLocation(void) const
 {
-    return *(u16*)(data + 0xA4);
+    return Endian::convertTo<u16>(data + 0xA4);
 }
 
 u16 WC6::metLocation(void) const
 {
-    return *(u16*)(data + 0xA6);
+    return Endian::convertTo<u16>(data + 0xA6);
 }
 
 u8 WC6::contest(u8 index) const
 {
-    return *(u8*)(data + 0xA9 + index);
+    return data[0xA9 + index];
 }
 
 u8 WC6::iv(Stat index) const
 {
-    return *(u8*)(data + 0xAF + u8(index));
+    return data[0xAF + u8(index)];
 }
 
 u8 WC6::otGender(void) const
 {
-    return *(u8*)(data + 0xB5);
+    return data[0xB5];
 }
 
 u16 WC6::additionalItem(void) const
 {
-    return *(u16*)(data + 0xD2);
+    return Endian::convertTo<u16>(data + 0xD2);
 }
 
 u32 WC6::PID(void) const
 {
-    return *(u32*)(data + 0xD4);
+    return Endian::convertTo<u32>(data + 0xD4);
 }
 
 u16 WC6::relearnMove(u8 index) const
 {
-    return *(u16*)(data + 0xD8 + index * 2);
+    return Endian::convertTo<u16>(data + 0xD8 + index * 2);
 }
 
 u8 WC6::otIntensity(void) const
 {
-    return *(u8*)(data + 0xE0);
+    return data[0xE0];
 }
 
 u8 WC6::otMemory(void) const
 {
-    return *(u8*)(data + 0xE1);
+    return data[0xE1];
 }
 
 u16 WC6::otTextvar(void) const
 {
-    return *(u8*)(data + 0xE2);
+    return data[0xE2];
 }
 
 u8 WC6::otFeeling(void) const
 {
-    return *(u8*)(data + 0xE4);
+    return data[0xE4];
 }
 
 u8 WC6::ev(Stat index) const
 {
-    return *(u8*)(data + 0xE5 + u8(index));
+    return data[0xE5 + u8(index)];
 }
 
 bool WC6::ribbon(u8 category, u8 index) const
@@ -335,7 +336,7 @@ bool WC6::ribbon(u8 category, u8 index) const
 
 u8 WC6::cardLocation(void) const
 {
-    return *(u8*)(data + 0x50);
+    return data[0x50];
 }
 
 bool WC6::used(void) const
@@ -362,7 +363,7 @@ u16 WC6::formSpecies(void) const
         {
             tmpSpecies = backSpecies;
         }
-        else if (form < formcount)
+        else
         {
             tmpSpecies += form - 1;
         }

@@ -31,7 +31,7 @@
 #include "coretypes.h"
 #include "generation.hpp"
 #include "io.hpp"
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 #include <algorithm>
 #include <stdio.h>
 #include <string>
@@ -55,6 +55,7 @@ protected:
     std::map<u16, std::string> locations6;
     std::map<u16, std::string> locations7;
     std::map<u16, std::string> locationsLGPE;
+    std::map<u16, std::string> locations8;
     std::map<u8, std::string> countries;
     std::map<u8, std::map<u8, std::string>> subregions;
     nlohmann::json gui;
@@ -110,14 +111,14 @@ public:
     const std::map<u8, std::string>& rawSubregions(u8 country) const;
     size_t numGameStrings() const;
 
-    const std::string& ability(u8 v) const;
+    const std::string& ability(u16 v) const;
     const std::string& ball(u8 v) const;
     const std::string& hp(u8 v) const;
     const std::string& item(u16 v) const;
     const std::string& move(u16 v) const;
     const std::string& nature(u8 v) const;
     const std::string& species(u16 v) const;
-    const std::string& form(u16 species, u8 form, Generation generation) const;
+    const std::string& form(u16 species, u16 form, Generation generation) const;
     const std::string& location(u16 v, Generation generation) const;
     const std::string& game(u8 v) const;
     const std::string& subregion(u8 country, u8 v) const;

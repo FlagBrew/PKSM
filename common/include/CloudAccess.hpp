@@ -27,7 +27,7 @@
 #ifndef CLOUDACCESS_HPP
 #define CLOUDACCESS_HPP
 
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include <atomic>
 #include <memory>
 
@@ -47,7 +47,7 @@ public:
     // Gets the Pokémon and increments the server-side download counter
     std::shared_ptr<PKX> fetchPkm(size_t slot) const;
     long pkm(std::shared_ptr<PKX> pk);
-    int pages() const { return current->data["pages"].get<int>(); }
+    int pages() const;
     int page() const { return pageNumber; }
     bool nextPage();
     bool prevPage();
@@ -85,7 +85,8 @@ public:
 private:
     struct Page
     {
-        nlohmann::json data         = {};
+        ~Page();
+        std::unique_ptr<nlohmann::json> data;
         std::atomic<bool> available = false;
     };
     void refreshPages();

@@ -26,6 +26,8 @@
 
 #include "PK4.hpp"
 #include "PK5.hpp"
+#include "Sav.hpp"
+#include "endian.hpp"
 #include "utils.hpp"
 #include <algorithm>
 
@@ -64,19 +66,8 @@ void PK4::crypt(void)
     }
 }
 
-PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : directAccess(direct)
+PK4::PK4(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 236 : 136, direct)
 {
-    length = party ? 236 : 136;
-    if (directAccess)
-    {
-        data = dt;
-    }
-    else
-    {
-        data = new u8[length];
-        std::copy(dt, dt + length, data);
-    }
-
     if (ekx)
     {
         decrypt();
@@ -144,74 +135,74 @@ void PK4::abilityNumber(u8 v)
 
 u32 PK4::PID(void) const
 {
-    return *(u32*)(data);
+    return Endian::convertTo<u32>(data);
 }
 void PK4::PID(u32 v)
 {
-    *(u32*)(data) = v;
+    Endian::convertFrom<u32>(data, v);
 }
 
 u16 PK4::sanity(void) const
 {
-    return *(u16*)(data + 0x04);
+    return Endian::convertTo<u16>(data + 0x04);
 }
 void PK4::sanity(u16 v)
 {
-    *(u16*)(data + 0x04) = v;
+    Endian::convertFrom<u16>(data + 0x04, v);
 }
 
 u16 PK4::checksum(void) const
 {
-    return *(u16*)(data + 0x06);
+    return Endian::convertTo<u16>(data + 0x06);
 }
 void PK4::checksum(u16 v)
 {
-    *(u16*)(data + 0x06) = v;
+    Endian::convertFrom<u16>(data + 0x06, v);
 }
 
 u16 PK4::species(void) const
 {
-    return *(u16*)(data + 0x08);
+    return Endian::convertTo<u16>(data + 0x08);
 }
 void PK4::species(u16 v)
 {
-    *(u16*)(data + 0x08) = v;
+    Endian::convertFrom<u16>(data + 0x08, v);
 }
 
 u16 PK4::heldItem(void) const
 {
-    return *(u16*)(data + 0x0A);
+    return Endian::convertTo<u16>(data + 0x0A);
 }
 void PK4::heldItem(u16 v)
 {
-    *(u16*)(data + 0x0A) = v;
+    Endian::convertFrom<u16>(data + 0x0A, v);
 }
 
 u16 PK4::TID(void) const
 {
-    return *(u16*)(data + 0x0C);
+    return Endian::convertTo<u16>(data + 0x0C);
 }
 void PK4::TID(u16 v)
 {
-    *(u16*)(data + 0x0C) = v;
+    Endian::convertFrom<u16>(data + 0x0C, v);
 }
 
 u16 PK4::SID(void) const
 {
-    return *(u16*)(data + 0x0E);
+    return Endian::convertTo<u16>(data + 0x0E);
 }
 void PK4::SID(u16 v)
 {
-    *(u16*)(data + 0x0E) = v;
+    Endian::convertFrom<u16>(data + 0x0E, v);
 }
 
 u32 PK4::experience(void) const
 {
-    return *(u32*)(data + 0x10);
+    return Endian::convertTo<u32>(data + 0x10);
 }
 void PK4::experience(u32 v)
 {
-    *(u32*)(data + 0x10) = v;
+    Endian::convertFrom<u32>(data + 0x10, v);
 }
 
 u8 PK4::otFriendship(void) const
@@ -223,11 +214,11 @@ void PK4::otFriendship(u8 v)
     data[0x14] = v;
 }
 
-u8 PK4::ability(void) const
+u16 PK4::ability(void) const
 {
     return data[0x15];
 }
-void PK4::ability(u8 v)
+void PK4::ability(u16 v)
 {
     data[0x15] = v;
 }
@@ -297,11 +288,11 @@ void PK4::ribbon(u8 ribcat, u8 ribnum, u8 v)
 
 u16 PK4::move(u8 m) const
 {
-    return *(u16*)(data + 0x28 + m * 2);
+    return Endian::convertTo<u16>(data + 0x28 + m * 2);
 }
 void PK4::move(u8 m, u16 v)
 {
-    *(u16*)(data + 0x28 + m * 2) = v;
+    Endian::convertFrom<u16>(data + 0x28 + m * 2, v);
 }
 
 u16 PK4::relearnMove(u8 m) const
@@ -333,34 +324,34 @@ void PK4::PPUp(u8 m, u8 v)
 
 u8 PK4::iv(Stat stat) const
 {
-    u32 buffer = *(u32*)(data + 0x38);
+    u32 buffer = Endian::convertTo<u32>(data + 0x38);
     return (u8)((buffer >> 5 * u8(stat)) & 0x1F);
 }
 
 void PK4::iv(Stat stat, u8 v)
 {
-    u32 buffer = *(u32*)(data + 0x38);
+    u32 buffer = Endian::convertTo<u32>(data + 0x38);
     buffer &= ~(0x1F << 5 * u8(stat));
     buffer |= v << (5 * u8(stat));
-    *(u32*)(data + 0x38) = buffer;
+    Endian::convertFrom<u32>(data + 0x38, buffer);
 }
 
 bool PK4::egg(void) const
 {
-    return ((*(u32*)(data + 0x38) >> 30) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x38) >> 30) & 0x1) == 1;
 }
 void PK4::egg(bool v)
 {
-    *(u32*)(data + 0x38) = (u32)((*(u32*)(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0));
+    Endian::convertFrom<u32>(data + 0x38, (u32)((Endian::convertTo<u32>(data + 0x38) & ~0x40000000) | (u32)(v ? 0x40000000 : 0)));
 }
 
 bool PK4::nicknamed(void) const
 {
-    return ((*(u32*)(data + 0x38) >> 31) & 0x1) == 1;
+    return ((Endian::convertTo<u32>(data + 0x38) >> 31) & 0x1) == 1;
 }
 void PK4::nicknamed(bool v)
 {
-    *(u32*)(data + 0x38) = (*(u32*)(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0);
+    Endian::convertFrom<u32>(data + 0x38, (Endian::convertTo<u32>(data + 0x38) & 0x7FFFFFFF) | (v ? 0x80000000 : 0));
 }
 
 bool PK4::fatefulEncounter(void) const
@@ -395,11 +386,11 @@ void PK4::gender(u8 g)
     }
 }
 
-u8 PK4::alternativeForm(void) const
+u16 PK4::alternativeForm(void) const
 {
     return data[0x40] >> 3;
 }
-void PK4::alternativeForm(u8 v)
+void PK4::alternativeForm(u16 v)
 {
     data[0x40] = u8((data[0x40] & 0x07) | (v << 3));
 }
@@ -428,11 +419,11 @@ void PK4::nature(u8 v)
 
 u8 PK4::shinyLeaf(void) const
 {
-    return *(u8*)(data + 0x41);
+    return data[0x41];
 }
 void PK4::shinyLeaf(u8 v)
 {
-    *(u8*)(data + 0x41) = v;
+    data[0x41] = v;
 }
 
 std::string PK4::nickname(void) const
@@ -518,55 +509,55 @@ void PK4::metDay(u8 v)
 
 u16 PK4::eggLocation(void) const
 {
-    u16 hgssLoc = *(u16*)(data + 0x44);
+    u16 hgssLoc = Endian::convertTo<u16>(data + 0x44);
     if (hgssLoc != 0)
         return hgssLoc;
-    return *(u16*)(data + 0x7E);
+    return Endian::convertTo<u16>(data + 0x7E);
 }
 void PK4::eggLocation(u16 v)
 {
     if (v == 0)
     {
-        *(u16*)(data + 0x44) = v;
-        *(u16*)(data + 0x7E) = v;
+        Endian::convertFrom<u16>(data + 0x44, v);
+        Endian::convertFrom<u16>(data + 0x7E, v);
     }
     else if ((v < 2000 && v > 111) || (v < 3000 && v > 2010))
     {
-        *(u16*)(data + 0x44) = v;
-        *(u16*)(data + 0x7E) = 0xBBA;
+        Endian::convertFrom<u16>(data + 0x44, v);
+        Endian::convertFrom<u16>(data + 0x7E, 0xBBA);
     }
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        *(u16*)(data + 0x44) = (version() == 12 || version() == 7 || version() == 8) ? v : 0;
-        *(u16*)(data + 0x7E) = v;
+        Endian::convertFrom<u16>(data + 0x44, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        Endian::convertFrom<u16>(data + 0x7E, v);
     }
 }
 
 u16 PK4::metLocation(void) const
 {
-    u16 hgssLoc = *(u16*)(data + 0x46);
+    u16 hgssLoc = Endian::convertTo<u16>(data + 0x46);
     if (hgssLoc != 0)
         return hgssLoc;
-    return *(u16*)(data + 0x80);
+    return Endian::convertTo<u16>(data + 0x80);
 }
 void PK4::metLocation(u16 v)
 {
     if (v == 0)
     {
-        *(u16*)(data + 0x46) = v;
-        *(u16*)(data + 0x80) = v;
+        Endian::convertFrom<u16>(data + 0x46, v);
+        Endian::convertFrom<u16>(data + 0x80, v);
     }
     else if ((v < 2000 && v > 111) || (v < 3000 && v > 2010))
     {
-        *(u16*)(data + 0x46) = v;
-        *(u16*)(data + 0x80) = 0xBBA;
+        Endian::convertFrom<u16>(data + 0x46, v);
+        Endian::convertFrom<u16>(data + 0x80, 0xBBA);
     }
     else
     {
         // If this pokemon is from Platinum, HeartGold, or SoulSilver
-        *(u16*)(data + 0x46) = (version() == 12 || version() == 7 || version() == 8) ? v : 0;
-        *(u16*)(data + 0x80) = v;
+        Endian::convertFrom<u16>(data + 0x46, (version() == 12 || version() == 7 || version() == 8) ? v : 0);
+        Endian::convertFrom<u16>(data + 0x80, v);
     }
 }
 
@@ -657,7 +648,7 @@ void PK4::refreshChecksum(void)
     u16 chk = 0;
     for (u8 i = 8; i < 136; i += 2)
     {
-        chk += *(u16*)(data + i);
+        chk += Endian::convertTo<u16>(data + i);
     }
     checksum(chk);
 }
@@ -755,7 +746,7 @@ u16 PK4::formSpecies(void) const
         {
             tmpSpecies = backSpecies;
         }
-        else if (form < formcount)
+        else
         {
             tmpSpecies += form - 1;
         }
@@ -803,16 +794,67 @@ u16 PK4::stat(Stat stat) const
     return calc * mult / 10;
 }
 
-std::shared_ptr<PKX> PK4::next(Sav& save) const
+int PK4::partyCurrHP(void) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x8E);
+}
+
+void PK4::partyCurrHP(u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x8E, v);
+    }
+}
+
+int PK4::partyStat(Stat stat) const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return Endian::convertTo<u16>(data + 0x90 + u8(stat) * 2);
+}
+
+void PK4::partyStat(Stat stat, u16 v)
+{
+    if (length != 136)
+    {
+        Endian::convertFrom<u16>(data + 0x90 + u8(stat) * 2, v);
+    }
+}
+
+int PK4::partyLevel() const
+{
+    if (length == 136)
+    {
+        return -1;
+    }
+    return *(data + 0x8C);
+}
+
+void PK4::partyLevel(u8 v)
+{
+    if (length != 136)
+    {
+        *(data + 0x8C) = v;
+    }
+}
+
+std::shared_ptr<PKX> PK4::convertToG5(Sav& save) const
 {
     std::shared_ptr<PK5> pk5 = std::make_shared<PK5>();
     std::copy(data, data + 136, pk5->rawData());
 
     // Clear HGSS data
-    *(u16*)(pk5->rawData() + 0x86) = 0;
+    Endian::convertFrom<u16>(pk5->rawData() + 0x86, 0);
 
     // Clear PtHGSS met data
-    *(u32*)(pk5->rawData() + 0x44) = 0;
+    Endian::convertFrom<u32>(pk5->rawData() + 0x44, 0);
 
     time_t t              = time(NULL);
     struct tm* timeStruct = gmtime((const time_t*)&t);
@@ -862,53 +904,23 @@ std::shared_ptr<PKX> PK4::next(Sav& save) const
     return pk5;
 }
 
-int PK4::partyCurrHP(void) const
+std::shared_ptr<PKX> PK4::convertToG6(Sav& save) const
 {
-    if (length == 136)
+    if (auto pk5 = convertToG5(save))
     {
-        return -1;
+        return pk5->convertToG6(save);
     }
-    return *(u16*)(data + 0x8E);
+    return nullptr;
 }
 
-void PK4::partyCurrHP(u16 v)
+std::shared_ptr<PKX> PK4::convertToG7(Sav& save) const
 {
-    if (length != 136)
+    if (auto pk5 = convertToG5(save))
     {
-        *(u16*)(data + 0x8E) = v;
+        if (auto pk6 = pk5->convertToG6(save))
+        {
+            return pk6->convertToG7(save);
+        }
     }
-}
-
-int PK4::partyStat(Stat stat) const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return *(u16*)(data + 0x90 + u8(stat) * 2);
-}
-
-void PK4::partyStat(Stat stat, u16 v)
-{
-    if (length != 136)
-    {
-        *(u16*)(data + 0x90 + u8(stat) * 2) = v;
-    }
-}
-
-int PK4::partyLevel() const
-{
-    if (length == 136)
-    {
-        return -1;
-    }
-    return *(data + 0x8C);
-}
-
-void PK4::partyLevel(u8 v)
-{
-    if (length != 136)
-    {
-        *(data + 0x8C) = v;
-    }
+    return nullptr;
 }

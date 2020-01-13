@@ -25,14 +25,12 @@
  */
 
 #include "SavB2W2.hpp"
+#include "endian.hpp"
 #include <algorithm>
 
-SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt)
+SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
 {
-    length = 0x80000;
-    boxes  = 24;
-    game   = Game::B2W2;
-    data   = dt;
+    game = Game::B2W2;
 
     PCLayout             = 0x0;
     Trainer1             = 0x19400;
@@ -51,20 +49,17 @@ SavB2W2::SavB2W2(std::shared_ptr<u8[]> dt)
     Box                  = 0x400;
 }
 
-SavB2W2::~SavB2W2() {}
-
 void SavB2W2::resign(void)
 {
     const u8 blockCount = 74;
     u8* tmp             = new u8[*std::max_element(lengths, lengths + blockCount)];
-    u16 cs;
 
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[blockOfs[i]], &data[blockOfs[i] + lengths[i]], tmp);
-        cs                           = ccitt16(tmp, lengths[i]);
-        *(u16*)(&data[chkMirror[i]]) = cs;
-        *(u16*)(&data[chkofs[i]])    = cs;
+        u16 cs = ccitt16(tmp, lengths[i]);
+        Endian::convertFrom<u16>(&data[chkMirror[i]], cs);
+        Endian::convertFrom<u16>(&data[chkofs[i]], cs);
     }
 
     delete[] tmp;

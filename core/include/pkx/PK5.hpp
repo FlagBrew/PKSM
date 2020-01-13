@@ -36,22 +36,16 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+    std::shared_ptr<PKX> convertToG4(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG6(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG7(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+
 public:
-    PK5()
-    {
-        directAccess = false;
-        length       = 136;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PK5() : PK5(nullptr, 136) {}
     PK5(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK5()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PK5() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
@@ -85,8 +79,8 @@ public:
     void experience(u32 v) override;
     u8 otFriendship(void) const override;
     void otFriendship(u8 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
     Language language(void) const override;
@@ -116,8 +110,8 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 nature(void) const override;
     void nature(u8 v) override;
     bool hiddenAbility(void) const;
@@ -182,9 +176,6 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> next(Sav& save) const override;
-    std::shared_ptr<PKX> previous(Sav& save) const override;
-
     inline u8 baseHP(void) const override { return PersonalBWB2W2::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalBWB2W2::baseAtk(formSpecies()); }
     inline u8 baseDef(void) const override { return PersonalBWB2W2::baseDef(formSpecies()); }
@@ -196,11 +187,8 @@ public:
     inline u8 genderType(void) const override { return PersonalBWB2W2::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalBWB2W2::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalBWB2W2::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalBWB2W2::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalBWB2W2::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

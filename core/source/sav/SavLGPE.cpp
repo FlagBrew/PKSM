@@ -27,21 +27,29 @@
 #include "SavLGPE.hpp"
 #include "PB7.hpp"
 #include "WB7.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "random.hpp"
 #include "utils.hpp"
 #include <algorithm>
 
-SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt)
+namespace
 {
-    length  = 0x100000;
-    boxes   = 34; // Ish
-    game    = Game::LGPE;
-    PokeDex = 0x2A00;
-    data    = dt;
+    bool isPKM(u8* pkmData)
+    {
+        if (Endian::convertTo<u16>(pkmData + 8) == 0)
+        {
+            return false;
+        }
+        return true;
+    }
 }
 
-SavLGPE::~SavLGPE() {}
+SavLGPE::SavLGPE(std::shared_ptr<u8[]> dt) : Sav(dt, 0x100000)
+{
+    game    = Game::LGPE;
+    PokeDex = 0x2A00;
+}
 
 u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 {
@@ -50,12 +58,12 @@ u32 SavLGPE::boxOffset(u8 box, u8 slot) const
 
 u16 SavLGPE::partyBoxSlot(u8 slot) const
 {
-    return *(u16*)(&data[0x5A00 + slot * 2]);
+    return Endian::convertTo<u16>(&data[0x5A00 + slot * 2]);
 }
 
 void SavLGPE::partyBoxSlot(u8 slot, u16 v)
 {
-    *(u16*)(&data[0x5A00 + slot * 2]) = v;
+    Endian::convertFrom<u16>(&data[0x5A00 + slot * 2], v);
 }
 
 u32 SavLGPE::partyOffset(u8 slot) const
@@ -70,22 +78,22 @@ u32 SavLGPE::partyOffset(u8 slot) const
 
 u16 SavLGPE::boxedPkm() const
 {
-    return *(u16*)(&data[0x5A00 + 14]);
+    return Endian::convertTo<u16>(&data[0x5A00 + 14]);
 }
 
 void SavLGPE::boxedPkm(u16 v)
 {
-    *(u16*)(&data[0x5A00 + 14]) = v;
+    Endian::convertFrom<u16>(&data[0x5A00 + 14], v);
 }
 
 u16 SavLGPE::followPkm() const
 {
-    return *(u16*)(&data[0x5A00 + 12]);
+    return Endian::convertTo<u16>(&data[0x5A00 + 12]);
 }
 
 void SavLGPE::followPkm(u16 v)
 {
-    *(u16*)(&data[0x5A00 + 12]) = v;
+    Endian::convertFrom<u16>(&data[0x5A00 + 12], v);
 }
 
 u8 SavLGPE::partyCount() const
@@ -117,15 +125,6 @@ void SavLGPE::fixParty()
             i = -1;
         }
     }
-}
-
-static bool isPKM(u8* pkmData)
-{
-    if (*(u32*)(pkmData) == 0 && *(u16*)(pkmData + 8) == 0)
-    {
-        return false;
-    }
-    return true;
 }
 
 void SavLGPE::compressBox()
@@ -184,7 +183,7 @@ void SavLGPE::resign()
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        *(u16*)(&data[csoff + i * 8]) = check16(tmp, *(u16*)(&data[csoff + i * 8 - 2]), chklen[i]);
+        Endian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, Endian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
 
     delete[] tmp;
@@ -192,22 +191,22 @@ void SavLGPE::resign()
 
 u16 SavLGPE::TID() const
 {
-    return *(u16*)(&data[0x1000]);
+    return Endian::convertTo<u16>(&data[0x1000]);
 }
 
 void SavLGPE::TID(u16 v)
 {
-    *(u16*)(&data[0x1000]) = v;
+    Endian::convertFrom<u16>(&data[0x1000], v);
 }
 
 u16 SavLGPE::SID() const
 {
-    return *(u16*)(&data[0x1002]);
+    return Endian::convertTo<u16>(&data[0x1002]);
 }
 
 void SavLGPE::SID(u16 v)
 {
-    *(u16*)(&data[0x1002]) = v;
+    Endian::convertFrom<u16>(&data[0x1002], v);
 }
 
 u8 SavLGPE::version() const
@@ -252,12 +251,12 @@ void SavLGPE::otName(const std::string& v)
 
 u32 SavLGPE::money() const
 {
-    return *(u32*)(&data[0x4C04]);
+    return Endian::convertTo<u32>(&data[0x4C04]);
 }
 
 void SavLGPE::money(u32 v)
 {
-    *(u32*)(&data[0x4C04]) = v;
+    Endian::convertFrom<u32>(&data[0x4C04], v);
 }
 
 u8 SavLGPE::badges() const
@@ -281,12 +280,12 @@ u8 SavLGPE::badges() const
 
 u16 SavLGPE::playedHours(void) const
 {
-    return *(u16*)(&data[0x45400]);
+    return Endian::convertTo<u16>(&data[0x45400]);
 }
 
 void SavLGPE::playedHours(u16 v)
 {
-    *(u16*)(&data[0x45400]) = v;
+    Endian::convertFrom<u16>(&data[0x45400], v);
 }
 
 u8 SavLGPE::playedMinutes(void) const
@@ -327,10 +326,9 @@ std::shared_ptr<PKX> SavLGPE::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PB7>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::LGPE)
     {
         if (applyTrade)
         {
@@ -338,42 +336,44 @@ bool SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
         }
         std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void SavLGPE::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u32 off     = partyOffset(slot);
-    u16 newSlot = partyBoxSlot(slot);
-    if (pk->species() == 0)
+    if (pk->generation() == Generation::LGPE)
     {
-        if (off != 0)
+        u32 off     = partyOffset(slot);
+        u16 newSlot = partyBoxSlot(slot);
+        if (pk->species() == 0)
         {
-            std::fill_n(&data[off], 260, 0);
-        }
-        partyBoxSlot(slot, 1001);
-        return;
-    }
-    if (off == 0)
-    {
-        for (int i = 999; i >= 0; i--)
-        {
-            if (!isPKM(&data[0x5C00 + i * 260]))
+            if (off != 0)
             {
-                off     = boxOffset(i / 30, i % 30);
-                newSlot = i;
-                break;
+                std::fill_n(&data[off], 260, 0);
             }
+            partyBoxSlot(slot, 1001);
+            return;
         }
         if (off == 0)
         {
-            // Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
-            return;
+            for (int i = 999; i >= 0; i--)
+            {
+                if (!isPKM(&data[0x5C00 + i * 260]))
+                {
+                    off     = boxOffset(i / 30, i % 30);
+                    newSlot = i;
+                    break;
+                }
+            }
+            if (off == 0)
+            {
+                // Gui::warn(i18n::localize("LGPE_NO_PARTY_SLOT"));
+                return;
+            }
         }
-    }
 
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
-    partyBoxSlot(slot, newSlot);
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), &data[off]);
+        partyBoxSlot(slot, newSlot);
+    }
 }
 
 void SavLGPE::trade(std::shared_ptr<PKX> pk)
@@ -520,7 +520,7 @@ void SavLGPE::dex(std::shared_ptr<PKX> pk)
     {
         if ((data[PokeDex + 0x84] & (1 << (shift + 4))) != 0)
         { // Already 2
-            *(u32*)(&data[PokeDex + 0x8E8 + shift * 4]) = pk->encryptionConstant();
+            Endian::convertFrom<u32>(&data[PokeDex + 0x8E8 + shift * 4], pk->encryptionConstant());
             data[PokeDex + 0x84] |= (u8)(1 << shift);
         }
         else if ((data[PokeDex + 0x84] & (1 << shift)) == 0)

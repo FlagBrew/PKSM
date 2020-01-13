@@ -38,102 +38,138 @@
 #include "i18n.hpp"
 #include "loader.hpp"
 
-static constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
-    "Credits:", "piepie62 and Admiral-Fish for their dedication", "dsoldier for the gorgeous graphic work",
-    "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
-    "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
-    "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
-    "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
-
-static void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
+namespace
 {
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, digits);
-    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
-    swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
-    char input[digits + 1] = {0};
-    SwkbdButton ret        = swkbdInputText(&state, input, sizeof(input));
-    input[digits]          = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        int tid = std::stoi(input);
-        callback(std::min(maxValue, tid));
-    }
-}
+    constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
+        "Credits:", "piepie62 and Admiral-Fish for their dedication", "dsoldier for the gorgeous graphic work",
+        "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
+        "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
+        "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
+        "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
 
-static void inputOT()
-{
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
-    swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[25]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24]       = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
+    void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
     {
-        Configuration::getInstance().defaultOT(input);
-    }
-}
-
-static void inputPatronCode()
-{
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
-    swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
-    std::string patronCode = Configuration::getInstance().patronCode();
-    swkbdSetInitialText(&state, patronCode.c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
-    char input[45]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[44]       = '\0';
-    if (ret == SWKBD_BUTTON_MIDDLE)
-    {
-        std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
-        if (!data.empty() && data.size() == 22)
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, digits);
+        swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+        swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
+        char input[digits + 1] = {0};
+        SwkbdButton ret        = swkbdInputText(&state, input, sizeof(input));
+        input[digits]          = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
         {
-            std::copy(data.begin(), data.end(), input);
-            input[21] = '\0';
-            ret       = SWKBD_BUTTON_CONFIRM;
+            int tid = std::stoi(input);
+            callback(std::min(maxValue, tid));
         }
     }
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        Configuration::getInstance().patronCode(input);
-    }
-}
 
-static bool nationalityChoice()
-{
-    switch (Configuration::getInstance().nationality())
+    void inputOT()
     {
-        case 0:
-            Configuration::getInstance().nationality(1);
-            break;
-        case 1:
-            Configuration::getInstance().nationality(2);
-            break;
-        case 2:
-            Configuration::getInstance().nationality(3);
-            break;
-        case 3:
-            Configuration::getInstance().nationality(4);
-            break;
-        case 4:
-            Configuration::getInstance().nationality(5);
-            break;
-        case 5:
-            Configuration::getInstance().nationality(6);
-            break;
-        case 6:
-            Configuration::getInstance().nationality(0);
-            break;
-        default:
-            Configuration::getInstance().nationality(0);
-            break;
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
+        swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
+        char input[25]  = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[24]       = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
+        {
+            Configuration::getInstance().defaultOT(input);
+        }
     }
-    return false;
+
+    void inputPatronCode()
+    {
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
+        swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
+        std::string patronCode = Configuration::getInstance().patronCode();
+        swkbdSetInitialText(&state, patronCode.c_str());
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
+        char input[45]  = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[44]       = '\0';
+        if (ret == SWKBD_BUTTON_MIDDLE)
+        {
+            std::string data = QRScanner<std::string>::scan();
+            if (data.length() == 22)
+            {
+                std::copy(data.begin(), data.end(), input);
+                input[22] = '\0';
+                ret       = SWKBD_BUTTON_CONFIRM;
+            }
+            else if (!data.empty())
+            {
+                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
+            }
+        }
+        if (ret == SWKBD_BUTTON_CONFIRM)
+        {
+            Configuration::getInstance().patronCode(input);
+        }
+    }
+
+    bool nationalityChoice()
+    {
+        switch (Configuration::getInstance().nationality())
+        {
+            case 0:
+                Configuration::getInstance().nationality(1);
+                break;
+            case 1:
+                Configuration::getInstance().nationality(2);
+                break;
+            case 2:
+                Configuration::getInstance().nationality(3);
+                break;
+            case 3:
+                Configuration::getInstance().nationality(4);
+                break;
+            case 4:
+                Configuration::getInstance().nationality(5);
+                break;
+            case 5:
+                Configuration::getInstance().nationality(6);
+                break;
+            case 6:
+                Configuration::getInstance().nationality(0);
+                break;
+            default:
+                Configuration::getInstance().nationality(0);
+                break;
+        }
+        return false;
+    }
+
+    u8 getNextAlpha(int off)
+    {
+        static u8 retVals[14] = {190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
+        static bool up[14]    = {false, false, false, false, false, false, false, false, false, false, false, false, false};
+        static u8 timers[14]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+        if (timers[off] == 0)
+        {
+            if (retVals[off] < 105 && !up[off])
+            {
+                up[off] = true;
+            }
+            else if (retVals[off] == 255 && up[off])
+            {
+                up[off] = false;
+            }
+            else if (up[off])
+            {
+                retVals[off] += 5;
+            }
+            else
+            {
+                retVals[off] -= 5;
+            }
+            timers[off] = 3;
+        }
+        timers[off]--;
+        return retVals[off];
+    }
 }
 
 ConfigScreen::ConfigScreen()
@@ -677,35 +713,6 @@ void ConfigScreen::back()
         TitleLoader::scanSaves();
     }
     Gui::screenBack();
-}
-
-static u8 getNextAlpha(int off)
-{
-    static u8 retVals[14] = {190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
-    static bool up[14]    = {false, false, false, false, false, false, false, false, false, false, false, false, false};
-    static u8 timers[14]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
-    if (timers[off] == 0)
-    {
-        if (retVals[off] < 105 && !up[off])
-        {
-            up[off] = true;
-        }
-        else if (retVals[off] == 255 && up[off])
-        {
-            up[off] = false;
-        }
-        else if (up[off])
-        {
-            retVals[off] += 5;
-        }
-        else
-        {
-            retVals[off] -= 5;
-        }
-        timers[off] = 3;
-    }
-    timers[off]--;
-    return retVals[off];
 }
 
 void ConfigScreen::drawTop() const

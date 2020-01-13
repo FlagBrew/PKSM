@@ -25,16 +25,14 @@
  */
 
 #include "SavUSUM.hpp"
+#include "endian.hpp"
 #include "memecrypto.h"
 #include "sha256.h"
 #include <algorithm>
 
-SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt)
+SavUSUM::SavUSUM(std::shared_ptr<u8[]> dt) : Sav7(dt, 0x6CC00)
 {
-    length = 0x6CC00;
-    boxes  = 32;
-    game   = Game::USUM;
-    data   = dt;
+    game = Game::USUM;
 
     TrainerCard          = 0x1400;
     Misc                 = 0x4400;
@@ -65,7 +63,7 @@ void SavUSUM::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        *(u16*)(&data[csoff + i * 8]) = check16(tmp, *(u16*)(&data[csoff + i * 8 - 2]), chklen[i]);
+        Endian::convertFrom<u16>(&data[csoff + i * 8], check16(tmp, Endian::convertTo<u16>(&data[csoff + i * 8 - 2]), chklen[i]));
     }
 
     delete[] tmp;

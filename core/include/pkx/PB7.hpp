@@ -38,22 +38,16 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+    // std::shared_ptr<PKX> convertToG4(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG5(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG6(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG7(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+
 public:
-    PB7()
-    {
-        directAccess = false;
-        length       = 260;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PB7() : PKX(nullptr, 260) {}
     PB7(u8* dt, bool ekx = false, bool directAccess = false);
-    virtual ~PB7()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PB7() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
@@ -75,8 +69,8 @@ public:
     void SID(u16 v) override;
     u32 experience(void) const override;
     void experience(u32 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -90,13 +84,13 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 ev(Stat ev) const override;
     void ev(Stat ev, u8 v) override;
     // Stubbed; data no longer exists
-    u8 contest(u8 contest) const { return 0; };
-    void contest(u8 contest, u8 v) { (void)contest, (void)v; };
+    u8 contest(u8 contest) const override { return 0; };
+    void contest(u8 contest, u8 v) override { (void)contest, (void)v; };
     // Replaced by
     u8 awakened(Stat stat) const;
     void awakened(Stat stat, u8 v);
@@ -251,11 +245,8 @@ public:
     inline u8 genderType(void) const override { return PersonalLGPE::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalLGPE::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalLGPE::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalLGPE::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalLGPE::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

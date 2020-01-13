@@ -34,23 +34,26 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
-static constexpr std::string_view dsIds[9] = {
-    "ADA", // Diamond
-    "APA", // Pearl
-    "CPU", // Platinum
-    "IPK", // HeartGold
-    "IPG", // SoulSilver
-    "IRB", // Black
-    "IRA", // White
-    "IRE", // Black 2
-    "IRD"  // White 2
-};
+namespace
+{
+    constexpr std::string_view dsIds[9] = {
+        "ADA", // Diamond
+        "APA", // Pearl
+        "CPU", // Platinum
+        "IPK", // HeartGold
+        "IPG", // SoulSilver
+        "IRB", // Black
+        "IRA", // White
+        "IRE", // Black 2
+        "IRD"  // White 2
+    };
 
-static constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
+    constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
-static constexpr std::string_view ctrNames[] = {"XY", "ORAS", "SUMO", "USUM"};
+    constexpr std::string_view ctrNames[] = {"XY", "ORAS", "SUMO", "USUM"};
 
-static constexpr std::string_view dsNames[] = {"Pt", "DP", "HGSS", "BW", "B2W2"};
+    constexpr std::string_view dsNames[] = {"Pt", "DP", "HGSS", "BW", "B2W2"};
+}
 
 SaveLoadScreen::SaveLoadScreen()
     : Screen(

@@ -28,26 +28,29 @@
 #include <array>
 #include <string>
 
-// clang-format off
-static constexpr std::array<char, 64> encoding_table = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-    'w', 'x', 'y', 'z', '0', '1', '2', '3',
-    '4', '5', '6', '7', '8', '9', '+', '/'
-};
-// clang-format on
-static constexpr std::array<char, 256> decoding_table = []() {
-    std::array<char, 256> ret = {0};
-    for (size_t i = 0; i < encoding_table.size(); i++)
-    {
-        ret[encoding_table[i]] = i;
-    }
-    return ret;
-}();
+namespace
+{
+    // clang-format off
+    constexpr std::array<char, 64> encoding_table = {
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+        'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+        'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+        'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+        'w', 'x', 'y', 'z', '0', '1', '2', '3',
+        '4', '5', '6', '7', '8', '9', '+', '/'
+    };
+    // clang-format on
+    constexpr std::array<char, 256> decoding_table = []() {
+        std::array<char, 256> ret = {0};
+        for (size_t i = 0; i < encoding_table.size(); i++)
+        {
+            ret[encoding_table[i]] = i;
+        }
+        return ret;
+    }();
+}
 
 std::vector<unsigned char> base64_decode(const char* data, size_t input_length)
 {

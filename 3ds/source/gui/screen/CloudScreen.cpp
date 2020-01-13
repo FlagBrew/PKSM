@@ -46,6 +46,39 @@
 #include "loader.hpp"
 #include <sys/stat.h>
 
+namespace
+{
+    size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
+    {
+        std::string tmp(buffer, size * nitems);
+        if (tmp.find("Generation:") == 0)
+        {
+            tmp = tmp.substr(12);
+            if (tmp.find("4") == 0)
+            {
+                *(Generation*)(userdata) = Generation::FOUR;
+            }
+            else if (tmp.find("5") == 0)
+            {
+                *(Generation*)(userdata) = Generation::FIVE;
+            }
+            else if (tmp.find("6") == 0)
+            {
+                *(Generation*)(userdata) = Generation::SIX;
+            }
+            else if (tmp.find("7") == 0)
+            {
+                *(Generation*)(userdata) = Generation::SEVEN;
+            }
+            else if (tmp.find("LGPE") == 0)
+            {
+                *(Generation*)(userdata) = Generation::LGPE;
+            }
+        }
+        return nitems * size;
+    }
+}
+
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
              i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
@@ -791,36 +824,6 @@ bool CloudScreen::clickBottomIndex(int index)
     return false;
 }
 
-static size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
-{
-    std::string tmp(buffer, size * nitems);
-    if (tmp.find("Generation:") == 0)
-    {
-        tmp = tmp.substr(12);
-        if (tmp.find("4") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FOUR;
-        }
-        else if (tmp.find("5") == 0)
-        {
-            *(Generation*)(userdata) = Generation::FIVE;
-        }
-        else if (tmp.find("6") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SIX;
-        }
-        else if (tmp.find("7") == 0)
-        {
-            *(Generation*)(userdata) = Generation::SEVEN;
-        }
-        else if (tmp.find("LGPE") == 0)
-        {
-            *(Generation*)(userdata) = Generation::LGPE;
-        }
-    }
-    return nitems * size;
-}
-
 void CloudScreen::shareSend()
 {
     long status_code    = 0;
@@ -848,7 +851,7 @@ void CloudScreen::shareSend()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 0)
         {
             Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
@@ -899,14 +902,14 @@ void CloudScreen::shareReceive()
     input[10]       = '\0';
     if (ret == SWKBD_BUTTON_MIDDLE)
     {
-        std::vector<u8> data = QRScanner::scan(QRMode::TEXT);
-        if (!data.empty() && data.size() < 12 && data.size() >= 10)
+        std::string data = QRScanner<std::string>::scan();
+        if (data.length() == 10)
         {
             std::copy(data.begin(), data.end(), input);
             input[10] = '\0';
             ret       = SWKBD_BUTTON_CONFIRM;
         }
-        else
+        else if (!data.empty())
         {
             Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
         }
@@ -922,7 +925,7 @@ void CloudScreen::shareReceive()
             fetch->setopt(CURLOPT_HEADERDATA, &gen);
             fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
 
-            auto res = MultiFetch::getInstance().execute(fetch);
+            auto res = Fetch::perform(fetch);
             if (res.index() == 0)
             {
                 Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
@@ -965,7 +968,9 @@ void CloudScreen::shareReceive()
                     case Generation::LGPE:
                         targetLength = 261;
                         break;
-                    default:
+                    case Generation::EIGHT:
+                        targetLength = 345;
+                    case Generation::UNUSED:
                         break;
                 }
                 if (retData.size() != targetLength)
@@ -974,7 +979,7 @@ void CloudScreen::shareReceive()
                     return;
                 }
 
-                auto pkm = PKX::getPKM(gen, retData.data());
+                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data());
 
                 if (!cloudChosen && cursorIndex != 0)
                 {

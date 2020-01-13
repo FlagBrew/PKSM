@@ -32,6 +32,7 @@
 #include "PB7.hpp"
 #include "PK6.hpp"
 #include "PK7.hpp"
+#include "PK8.hpp"
 #include "Sav.hpp"
 #include "ScrollingTextScreen.hpp"
 #include "VersionOverlay.hpp"
@@ -133,16 +134,19 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
-        buttons.push_back(std::make_unique<AccelButton>(
-            94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
-        buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
-            [this]() {
-                setAffection();
-                return false;
-            },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-        buttons.push_back(std::make_unique<AccelButton>(
-            142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
+        if (pkm->generation() < Generation::EIGHT)
+        {
+            buttons.push_back(std::make_unique<AccelButton>(
+                94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
+            buttons.push_back(std::make_unique<Button>(109, 194, 31, 13,
+                [this]() {
+                    setAffection();
+                    return false;
+                },
+                ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+            buttons.push_back(std::make_unique<AccelButton>(
+                142, 194, 13, 13, [this]() { return this->changeAffection(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
+        }
     }
 
     addOverlay<ViewOverlay>(this->pkm, false);
@@ -186,8 +190,11 @@ void MiscEditScreen::drawBottom() const
             i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
         Gui::text(
             i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-        Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 87);
+        if (pkm->generation() < Generation::EIGHT)
+        {
+            Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+                TextWidthAction::SQUISH_OR_SCROLL, 87);
+        }
     }
 
     Gui::text(std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -216,6 +223,10 @@ void MiscEditScreen::drawBottom() const
         {
             print = ((PB7*)pkm.get())->enjoyment();
         }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            print = ((PK8*)pkm.get())->enjoyment();
+        }
         Gui::text(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         if (pkm->generation() == Generation::SIX)
         {
@@ -229,38 +240,45 @@ void MiscEditScreen::drawBottom() const
         {
             print = ((PB7*)pkm.get())->fullness();
         }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            print = ((PK8*)pkm.get())->fullness();
+        }
         Gui::text(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        if (otAndMet)
+        if (pkm->generation() < Generation::EIGHT)
         {
-            if (pkm->generation() == Generation::SIX)
+            if (otAndMet)
             {
-                print = ((PK6*)pkm.get())->otAffection();
+                if (pkm->generation() == Generation::SIX)
+                {
+                    print = ((PK6*)pkm.get())->otAffection();
+                }
+                else if (pkm->generation() == Generation::SEVEN)
+                {
+                    print = ((PK7*)pkm.get())->otAffection();
+                }
+                else if (pkm->generation() == Generation::LGPE)
+                {
+                    print = ((PB7*)pkm.get())->otAffection();
+                }
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else
             {
-                print = ((PK7*)pkm.get())->otAffection();
+                if (pkm->generation() == Generation::SIX)
+                {
+                    print = ((PK6*)pkm.get())->htAffection();
+                }
+                else if (pkm->generation() == Generation::SEVEN)
+                {
+                    print = ((PK7*)pkm.get())->htAffection();
+                }
+                else if (pkm->generation() == Generation::LGPE)
+                {
+                    print = ((PB7*)pkm.get())->htAffection();
+                }
             }
-            else if (pkm->generation() == Generation::LGPE)
-            {
-                print = ((PB7*)pkm.get())->otAffection();
-            }
+            Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
-        else
-        {
-            if (pkm->generation() == Generation::SIX)
-            {
-                print = ((PK6*)pkm.get())->htAffection();
-            }
-            else if (pkm->generation() == Generation::SEVEN)
-            {
-                print = ((PK7*)pkm.get())->htAffection();
-            }
-            else if (pkm->generation() == Generation::LGPE)
-            {
-                print = ((PB7*)pkm.get())->htAffection();
-            }
-        }
-        Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
@@ -431,6 +449,10 @@ bool MiscEditScreen::changeFullness(bool up)
         {
             ((PB7*)pkm.get())->fullness(((PB7*)pkm.get())->fullness() + 1);
         }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->fullness(((PK8*)pkm.get())->fullness() + 1);
+        }
     }
     else
     {
@@ -445,6 +467,10 @@ bool MiscEditScreen::changeFullness(bool up)
         else if (pkm->generation() == Generation::LGPE)
         {
             ((PB7*)pkm.get())->fullness(((PB7*)pkm.get())->fullness() - 1);
+        }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->fullness(((PK8*)pkm.get())->fullness() - 1);
         }
     }
     return false;
@@ -474,6 +500,10 @@ void MiscEditScreen::setFullness()
         {
             ((PB7*)pkm.get())->fullness(fullness);
         }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->fullness(fullness);
+        }
     }
 }
 
@@ -493,6 +523,10 @@ bool MiscEditScreen::changeEnjoyment(bool up)
         {
             ((PB7*)pkm.get())->enjoyment(((PB7*)pkm.get())->enjoyment() + 1);
         }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->enjoyment(((PK8*)pkm.get())->enjoyment() + 1);
+        }
     }
     else
     {
@@ -507,6 +541,10 @@ bool MiscEditScreen::changeEnjoyment(bool up)
         else if (pkm->generation() == Generation::LGPE)
         {
             ((PB7*)pkm.get())->enjoyment(((PB7*)pkm.get())->enjoyment() - 1);
+        }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->enjoyment(((PK8*)pkm.get())->enjoyment() - 1);
         }
     }
     return false;
@@ -535,6 +573,10 @@ void MiscEditScreen::setEnjoyment()
         else if (pkm->generation() == Generation::LGPE)
         {
             ((PB7*)pkm.get())->enjoyment(enjoyment);
+        }
+        else if (pkm->generation() == Generation::EIGHT)
+        {
+            ((PK8*)pkm.get())->enjoyment(enjoyment);
         }
     }
 }
@@ -658,7 +700,7 @@ void MiscEditScreen::validate()
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
-        auto res = MultiFetch::getInstance().execute(fetch);
+        auto res = Fetch::perform(fetch);
         if (res.index() == 0)
         {
             Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));

@@ -54,10 +54,11 @@ protected:
 
 public:
     SavLGPE(std::shared_ptr<u8[]> dt);
-    ~SavLGPE();
 
     u16 check16(u8* buf, u32 blockID, u32 len) const;
-    void resign(void) override;
+    void resign(void);
+    void encrypt(void) override { resign(); }
+    void decrypt(void) override {}
 
     u16 boxedPkm(void) const;
     void boxedPkm(u16 v);
@@ -110,7 +111,7 @@ public:
     // NOTICE: this sets a pkx into the savefile, not a pkx
     // that's because PKSM works with decrypted boxes and
     // crypts them back during resigning
-    bool pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
+    void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) override;
     void pkm(std::shared_ptr<PKX> pk, u8 slot) override;
 
     void trade(std::shared_ptr<PKX> pk) override;

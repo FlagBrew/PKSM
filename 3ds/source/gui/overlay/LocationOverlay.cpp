@@ -76,7 +76,7 @@ void LocationOverlay::drawTop() const
     std::map<u16, std::string>::const_iterator locIt = locations.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
     {
-        locIt++;
+        ++locIt;
     }
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
@@ -85,7 +85,7 @@ void LocationOverlay::drawTop() const
         {
             Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
-            locIt++;
+            ++locIt;
         }
         else
         {

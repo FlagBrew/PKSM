@@ -28,7 +28,7 @@
 #define BANK_HPP
 
 #include "generation.hpp"
-#include "json.hpp"
+#include "nlohmann/json_fwd.hpp"
 #include "sha256.h"
 
 class PKX;
@@ -37,10 +37,10 @@ class Bank
 {
 public:
     Bank(const std::string& name, int maxBoxes);
-    ~Bank() { delete[] data; }
+    ~Bank();
     std::shared_ptr<PKX> pkm(int box, int slot) const;
     void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
-    void resize(size_t boxes);
+    void resize(int boxes);
     void load(int maxBoxes);
     bool save() const;
     bool saveWithoutBackup() const;
@@ -54,28 +54,29 @@ public:
     bool setName(const std::string& name);
 
 private:
-    static constexpr int BANK_VERSION            = 2;
+    static constexpr int BANK_VERSION            = 3;
     static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
     void createJSON();
     void createBank(int maxBoxes);
     void convertFromBankBin();
     struct BankHeader
     {
-        const char MAGIC[8];
+        char MAGIC[8];
         u32 version;
         u32 boxes;
     };
     struct BankEntry
     {
         Generation gen;
-        u8 data[260];
+        u8 data[0x148];
+        u8 padding[4]; // Pad to 8 bytes
     };
-    nlohmann::json boxNames;
+    std::unique_ptr<nlohmann::json> boxNames;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
     mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
     std::string bankName;
-    size_t size;
-    u8* data                = nullptr;
+    BankHeader header;
+    BankEntry* entries      = nullptr;
     mutable bool needsCheck = false;
 };
 

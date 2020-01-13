@@ -39,26 +39,20 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+    std::shared_ptr<PKX> convertToG5(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG6(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG7(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+
 public:
-    PK4()
-    {
-        directAccess = false;
-        length       = 136;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PK4() : PKX(nullptr, 136) {}
     PK4(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK4()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PK4() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
-    Generation generation(void) const;
+    Generation generation(void) const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
@@ -88,8 +82,8 @@ public:
     void experience(u32 v) override;
     u8 otFriendship(void) const override;
     void otFriendship(u8 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u16 markValue(void) const override;
     void markValue(u16 v) override;
     Language language(void) const override;
@@ -119,8 +113,8 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 shinyLeaf(void) const;
     void shinyLeaf(u8 v);
     u8 nature(void) const override;
@@ -188,8 +182,6 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> next(Sav& save) const override;
-
     inline u8 baseHP(void) const override { return PersonalDPPtHGSS::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalDPPtHGSS::baseAtk(formSpecies()); }
     inline u8 baseDef(void) const override { return PersonalDPPtHGSS::baseDef(formSpecies()); }
@@ -201,11 +193,8 @@ public:
     inline u8 genderType(void) const override { return PersonalDPPtHGSS::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalDPPtHGSS::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalDPPtHGSS::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalDPPtHGSS::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalDPPtHGSS::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

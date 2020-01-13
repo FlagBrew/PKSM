@@ -25,14 +25,12 @@
  */
 
 #include "SavORAS.hpp"
+#include "endian.hpp"
 #include <algorithm>
 
-SavORAS::SavORAS(std::shared_ptr<u8[]> dt)
+SavORAS::SavORAS(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x76000)
 {
-    length = 0x76000;
-    boxes  = 31;
-    game   = Game::ORAS;
-    data   = dt;
+    game = Game::ORAS;
 
     TrainerCard          = 0x14000;
     Trainer2             = 0x04200;
@@ -62,7 +60,7 @@ void SavORAS::resign(void)
     for (u8 i = 0; i < blockCount; i++)
     {
         std::copy(&data[chkofs[i]], &data[chkofs[i] + chklen[i]], tmp);
-        *(u16*)(&data[csoff + i * 8]) = ccitt16(tmp, chklen[i]);
+        Endian::convertFrom<u16>(&data[csoff + i * 8], ccitt16(tmp, chklen[i]));
     }
 
     delete[] tmp;

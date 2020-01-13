@@ -25,6 +25,7 @@
  */
 
 #include "PGF.hpp"
+#include "endian.hpp"
 #include "personal.hpp"
 #include "utils.hpp"
 
@@ -40,7 +41,7 @@ Generation PGF::generation(void) const
 
 u16 PGF::ID(void) const
 {
-    return *(u16*)(data + 0xB0);
+    return Endian::convertTo<u16>(data + 0xB0);
 }
 
 std::string PGF::title(void) const
@@ -50,47 +51,47 @@ std::string PGF::title(void) const
 
 u8 PGF::type(void) const
 {
-    return *(u8*)(data + 0xB3);
+    return data[0xB3];
 }
 
 u32 PGF::rawDate(void) const
 {
-    return *(u32*)(data + 0xAC);
+    return Endian::convertTo<u32>(data + 0xAC);
 }
 
 void PGF::rawDate(u32 value)
 {
-    *(u32*)(data + 0xAC) = value;
+    Endian::convertFrom<u32>(data + 0xAC, value);
 }
 
 u32 PGF::year(void) const
 {
-    return (u32)(*(u16*)(data + 0xAE));
+    return Endian::convertTo<u16>(data + 0xAE);
 }
 
 u32 PGF::month(void) const
 {
-    return (u32)(*(u8*)(data + 0xAD));
+    return data[0xAD];
 }
 
 u32 PGF::day(void) const
 {
-    return (u32)(*(u8*)(data + 0xAC));
+    return data[0xAC];
 }
 
 void PGF::year(u32 v)
 {
-    *(u16*)(data + 0xAE) = v < 2000 ? (u16)v + 2000 : v;
+    Endian::convertFrom<u16>(data + 0xAE, v < 2000 ? (u16)v + 2000 : v);
 }
 
 void PGF::month(u32 v)
 {
-    *(u8*)(data + 0xAD) = (u8)v;
+    data[0xAD] = (u8)v;
 }
 
 void PGF::day(u32 v)
 {
-    *(u8*)(data + 0xAC) = (u8)v;
+    data[0xAC] = (u8)v;
 }
 
 bool PGF::item(void) const
@@ -100,7 +101,7 @@ bool PGF::item(void) const
 
 u16 PGF::object(void) const
 {
-    return *(u16*)(data);
+    return Endian::convertTo<u16>(data);
 }
 
 bool PGF::pokemon(void) const
@@ -125,12 +126,12 @@ bool PGF::BP(void) const
 
 u8 PGF::cardLocation(void) const
 {
-    return *(u8*)(data + 0xB2);
+    return data[0xB2];
 }
 
 u8 PGF::flags(void) const
 {
-    return *(u8*)(data + 0xB4);
+    return data[0xB4];
 }
 
 bool PGF::used(void) const
@@ -145,12 +146,12 @@ bool PGF::multiObtainable(void) const
 
 u8 PGF::ball(void) const
 {
-    return *(u8*)(data + 0x0E);
+    return data[0x0E];
 }
 
 u16 PGF::heldItem(void) const
 {
-    return *(u16*)(data + 0x10);
+    return Endian::convertTo<u16>(data + 0x10);
 }
 
 bool PGF::shiny(void) const
@@ -160,47 +161,48 @@ bool PGF::shiny(void) const
 
 u8 PGF::PIDType(void) const
 {
-    return *(u8*)(data + 0x37);
+    return data[0x37];
 }
 
 u16 PGF::TID(void) const
 {
-    return *(u16*)(data);
+    return Endian::convertTo<u16>(data);
 }
 
 u16 PGF::SID(void) const
 {
-    return *(u16*)(data + 0x02);
+    return Endian::convertTo<u16>(data + 0x02);
 }
 
 u16 PGF::move(u8 index) const
 {
-    return *(u16*)(data + 0x12 + index * 2);
+    return Endian::convertTo<u16>(data + 0x12 + index * 2);
 }
 
 u16 PGF::species(void) const
 {
-    return *(u16*)(data + 0x1A);
+    return Endian::convertTo<u16>(data + 0x1A);
 }
 
 u8 PGF::gender(void) const
 {
-    return *(u8*)(data + 0x35);
+    return data[0x35];
 }
 
 std::string PGF::otName(void) const
 {
-    return *((u16*)(data + 0x4A)) != 0xFFFF ? StringUtils::getString(data, 0x4A, 8, u'\uFFFF') : "Your OT Name";
+    char16_t firstChar = Endian::convertTo<char16_t>(data + 0x4A);
+    return firstChar != 0xFFFF ? StringUtils::getString(data, 0x4A, 8, u'\uFFFF') : "Your OT Name";
 }
 
 u8 PGF::level(void) const
 {
-    return *(u8*)(data + 0x5B);
+    return data[0x5B];
 }
 
 u32 PGF::PID(void) const
 {
-    return *(u32*)(data + 0x08);
+    return Endian::convertTo<u32>(data + 0x08);
 }
 
 bool PGF::ribbon(u8 category, u8 index) const
@@ -210,27 +212,28 @@ bool PGF::ribbon(u8 category, u8 index) const
 
 u8 PGF::alternativeForm(void) const
 {
-    return *(u8*)(data + 0x1C);
+    return data[0x1C];
 }
 
 Language PGF::language(void) const
 {
-    return Language(*(u8*)(data + 0x1D));
+    return Language(data[0x1D]);
 }
 
 std::string PGF::nickname(void) const
 {
-    return *((u16*)(data + 0x1E)) != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name";
+    char16_t firstChar = Endian::convertTo<char16_t>(data + 0x1E);
+    return firstChar != 0xFFFF ? StringUtils::getString(data, 0x1E, 11, u'\uFFFF') : "Pokemon Name";
 }
 
 u8 PGF::nature(void) const
 {
-    return *(u8*)(data + 0x34);
+    return data[0x34];
 }
 
 u8 PGF::abilityType(void) const
 {
-    return *(u8*)(data + 0x36);
+    return data[0x36];
 }
 
 u16 PGF::ability(void) const
@@ -249,32 +252,32 @@ u16 PGF::ability(void) const
 
 u16 PGF::eggLocation(void) const
 {
-    return *(u16*)(data + 0x38);
+    return Endian::convertTo<u16>(data + 0x38);
 }
 
 u16 PGF::metLocation(void) const
 {
-    return *(u16*)(data + 0x3A);
+    return Endian::convertTo<u16>(data + 0x3A);
 }
 
 u8 PGF::metLevel(void) const
 {
-    return *(u8*)(data + 0x3C);
+    return data[0x3C];
 }
 
 u8 PGF::contest(u8 index) const
 {
-    return *(u8*)(data + 0x3D + index);
+    return data[0x3D + index];
 }
 
 u8 PGF::iv(Stat index) const
 {
-    return *(u8*)(data + 0x43 + u8(index));
+    return data[0x43 + u8(index)];
 }
 
 bool PGF::egg(void) const
 {
-    return *(u8*)(data + 0x5C) == 1;
+    return data[0x5C] == 1;
 }
 
 u16 PGF::formSpecies(void) const
@@ -291,7 +294,7 @@ u16 PGF::formSpecies(void) const
         {
             tmpSpecies = backSpecies;
         }
-        else if (form < formcount)
+        else
         {
             tmpSpecies += form - 1;
         }

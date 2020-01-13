@@ -38,22 +38,16 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+    std::shared_ptr<PKX> convertToG4(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG5(Sav& save) const override;
+    std::shared_ptr<PKX> convertToG6(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToLGPE(Sav& save) const override;
+    // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
+
 public:
-    PK7()
-    {
-        directAccess = false;
-        length       = 232;
-        data         = new u8[length];
-        std::fill_n(data, length, 0);
-    }
+    PK7() : PKX(nullptr, 232) {}
     PK7(u8* dt, bool ekx = false, bool party = false, bool directAccess = false);
-    virtual ~PK7()
-    {
-        if (!directAccess)
-        {
-            delete[] data;
-        }
-    }
+    virtual ~PK7() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
@@ -75,8 +69,8 @@ public:
     void SID(u16 v) override;
     u32 experience(void) const override;
     void experience(u32 v) override;
-    u8 ability(void) const override;
-    void ability(u8 v) override;
+    u16 ability(void) const override;
+    void ability(u16 v) override;
     u8 abilityNumber(void) const override;
     void abilityNumber(u8 v) override;
     void setAbility(u8 abilityNumber) override;
@@ -90,8 +84,8 @@ public:
     void fatefulEncounter(bool v) override;
     u8 gender(void) const override;
     void gender(u8 g) override;
-    u8 alternativeForm(void) const override;
-    void alternativeForm(u8 v) override;
+    u16 alternativeForm(void) const override;
+    void alternativeForm(u16 v) override;
     u8 ev(Stat ev) const override;
     void ev(Stat ev, u8 v) override;
     u8 contest(u8 contest) const override;
@@ -153,6 +147,9 @@ public:
     void fullness(u8 v);
     u8 enjoyment(void) const;
     void enjoyment(u8 v);
+    // TODO
+    // u32 formDuration(void) const;
+    // void formDuration(u32 v);
 
     std::string otName(void) const override;
     void otName(const std::string& v) override;
@@ -228,8 +225,6 @@ public:
     int partyLevel() const override;
     void partyLevel(u8 v) override;
 
-    std::shared_ptr<PKX> previous(Sav& save) const override;
-
     inline u8 baseHP(void) const override { return PersonalSMUSUM::baseHP(formSpecies()); }
     inline u8 baseAtk(void) const override { return PersonalSMUSUM::baseAtk(formSpecies()); }
     inline u8 baseDef(void) const override { return PersonalSMUSUM::baseDef(formSpecies()); }
@@ -241,11 +236,8 @@ public:
     inline u8 genderType(void) const override { return PersonalSMUSUM::gender(formSpecies()); }
     inline u8 baseFriendship(void) const override { return PersonalSMUSUM::baseFriendship(formSpecies()); }
     inline u8 expType(void) const override { return PersonalSMUSUM::expType(formSpecies()); }
-    inline u8 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
+    inline u16 abilities(u8 n) const override { return PersonalSMUSUM::ability(formSpecies(), n); }
     inline u16 formStatIndex(void) const override { return PersonalSMUSUM::formStatIndex(formSpecies()); }
-
-private:
-    bool directAccess;
 };
 
 #endif

@@ -28,24 +28,27 @@
 #include "io.hpp"
 #include "utils.hpp"
 
-static nlohmann::json& formJson()
+namespace
 {
-    static nlohmann::json forms;
-    static bool first = true;
-    if (first)
+    nlohmann::json& formJson()
     {
-        FILE* in = fopen("romfs:/i18n/forms.json", "rt");
-        if (in)
+        static nlohmann::json forms;
+        static bool first = true;
+        if (first)
         {
-            if (!ferror(in))
+            FILE* in = fopen("romfs:/i18n/forms.json", "rt");
+            if (in)
             {
-                forms = nlohmann::json::parse(in, nullptr, false);
+                if (!ferror(in))
+                {
+                    forms = nlohmann::json::parse(in, nullptr, false);
+                }
+                fclose(in);
             }
-            fclose(in);
+            first = false;
         }
-        first = false;
+        return forms;
     }
-    return forms;
 }
 
 std::string LanguageStrings::folder(Language lang)
@@ -99,6 +102,7 @@ LanguageStrings::LanguageStrings(Language lang)
     load(lang, "/locations6.txt", locations6);
     load(lang, "/locations7.txt", locations7);
     load(lang, "/locationsLGPE.txt", locationsLGPE);
+    load(lang, "/locations8.txt", locations8);
     countries = {};
     load(lang, "/countries.txt", countries);
     for (auto i = countries.begin(); i != countries.end(); i++)
@@ -157,7 +161,7 @@ void LanguageStrings::load(Language lang, const std::string& name, nlohmann::jso
     }
 }
 
-const std::string& LanguageStrings::ability(u8 v) const
+const std::string& LanguageStrings::ability(u16 v) const
 {
     return v < abilities.size() ? abilities.at(v) : localize("INVALID_ABILITY");
 }
@@ -167,7 +171,7 @@ const std::string& LanguageStrings::ball(u8 v) const
     return v < balls.size() ? balls.at(v) : localize("INVALID_BALL");
 }
 
-const std::string& LanguageStrings::form(u16 species, u8 form, Generation generation) const
+const std::string& LanguageStrings::form(u16 species, u16 form, Generation generation) const
 {
     std::string sSpecies = std::to_string((int)species);
     if (formJson().contains(sSpecies))
@@ -301,7 +305,13 @@ const std::string& LanguageStrings::location(u16 v, Generation generation) const
                 return i->second;
             }
             break;
-        default:
+        case Generation::EIGHT:
+            if ((i = locations8.find(v)) != locations8.end())
+            {
+                return i->second;
+            }
+            break;
+        case Generation::UNUSED:
             break;
     }
     return localize("INVALID_LOCATION");
@@ -331,9 +341,12 @@ const std::map<u16, std::string>& LanguageStrings::locations(Generation g) const
             return locations7;
         case Generation::LGPE:
             return locationsLGPE;
-        default:
+        case Generation::EIGHT:
+            return locations8;
+        case Generation::UNUSED:
             return emptyMap;
     }
+    return emptyMap;
 }
 
 size_t LanguageStrings::numGameStrings() const

@@ -34,7 +34,8 @@
 class Button : public Clickable
 {
 public:
-    Button(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, std::string text, FontSize size, PKSM_Color textColor);
+    Button(
+        int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, FontSize size, PKSM_Color textColor);
     virtual ~Button(void) {}
 
     virtual void draw() const override;

@@ -27,26 +27,27 @@
 #include "Sav6.hpp"
 #include "PK6.hpp"
 #include "WC6.hpp"
+#include "endian.hpp"
 #include "i18n.hpp"
 #include "random.hpp"
 #include "utils.hpp"
 
 u16 Sav6::TID(void) const
 {
-    return *(u16*)(&data[TrainerCard]);
+    return Endian::convertTo<u16>(&data[TrainerCard]);
 }
 void Sav6::TID(u16 v)
 {
-    *(u16*)(&data[TrainerCard]) = v;
+    Endian::convertFrom<u16>(&data[TrainerCard], v);
 }
 
 u16 Sav6::SID(void) const
 {
-    return *(u16*)(&data[TrainerCard + 2]);
+    return Endian::convertTo<u16>(&data[TrainerCard + 2]);
 }
 void Sav6::SID(u16 v)
 {
-    *(u16*)(&data[TrainerCard + 2]) = v;
+    Endian::convertFrom<u16>(&data[TrainerCard + 2], v);
 }
 
 u8 Sav6::version(void) const
@@ -114,20 +115,20 @@ void Sav6::otName(const std::string& v)
 
 u32 Sav6::money(void) const
 {
-    return *(u32*)(&data[Trainer2 + 0x8]);
+    return Endian::convertTo<u32>(&data[Trainer2 + 0x8]);
 }
 void Sav6::money(u32 v)
 {
-    *(u32*)(&data[Trainer2 + 0x8]) = v;
+    Endian::convertFrom<u32>(&data[Trainer2 + 0x8], v);
 }
 
 u32 Sav6::BP(void) const
 {
-    return *(u32*)(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
+    return Endian::convertTo<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]);
 }
 void Sav6::BP(u32 v)
 {
-    *(u32*)(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)]) = v;
+    Endian::convertFrom<u32>(&data[Trainer2 + (game == Game::XY ? 0x3C : 0x30)], v);
 }
 
 u8 Sav6::badges(void) const
@@ -136,18 +137,18 @@ u8 Sav6::badges(void) const
     u8 ret        = 0;
     for (size_t i = 0; i < sizeof(badgeBits) * 8; i++)
     {
-        ret += badgeBits & (1 << i) ? 1 : 0;
+        ret += (badgeBits & (1 << i)) ? 1 : 0;
     }
     return ret;
 }
 
 u16 Sav6::playedHours(void) const
 {
-    return *(u16*)(&data[PlayTime]);
+    return Endian::convertTo<u16>(&data[PlayTime]);
 }
 void Sav6::playedHours(u16 v)
 {
-    *(u16*)(&data[PlayTime]) = v;
+    Endian::convertFrom<u16>(&data[PlayTime], v);
 }
 
 u8 Sav6::playedMinutes(void) const
@@ -194,23 +195,25 @@ std::shared_ptr<PKX> Sav6::pkm(u8 slot) const
 
 void Sav6::pkm(std::shared_ptr<PKX> pk, u8 slot)
 {
-    u8 buf[260] = {0};
-    std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
-    std::unique_ptr<PK6> pk6 = std::make_unique<PK6>(buf, false, true, true);
-
-    if (pk->getLength() != 260)
+    if (pk->generation() == Generation::SIX)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            pk6->partyStat(Stat(i), pk6->stat(Stat(i)));
-        }
-        pk6->partyLevel(pk6->level());
-        pk6->partyCurrHP(pk6->stat(Stat::HP));
-    }
+        u8 buf[260] = {0};
+        std::copy(pk->rawData(), pk->rawData() + pk->getLength(), buf);
+        std::unique_ptr<PK6> pk6 = std::make_unique<PK6>(buf, false, true, true);
 
-    pk6->encrypt();
-    std::fill(&data[partyOffset(slot)], &data[partyOffset(slot + 1)], (u8)0);
-    std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), &data[partyOffset(slot)]);
+        if (pk->getLength() != 260)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pk6->partyStat(Stat(i), pk6->stat(Stat(i)));
+            }
+            pk6->partyLevel(pk6->level());
+            pk6->partyCurrHP(pk6->stat(Stat::HP));
+        }
+
+        pk6->encrypt();
+        std::copy(pk6->rawData(), pk6->rawData() + pk6->getLength(), &data[partyOffset(slot)]);
+    }
 }
 
 std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
@@ -218,10 +221,9 @@ std::shared_ptr<PKX> Sav6::pkm(u8 box, u8 slot, bool ekx) const
     return std::make_shared<PK6>(&data[boxOffset(box, slot)], ekx);
 }
 
-bool Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
+void Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 {
-    pk = transfer(pk);
-    if (pk)
+    if (pk->generation() == Generation::SIX)
     {
         if (applyTrade)
         {
@@ -230,7 +232,6 @@ bool Sav6::pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade)
 
         std::copy(pk->rawData(), pk->rawData() + 232, &data[boxOffset(box, slot)]);
     }
-    return (bool)pk;
 }
 
 void Sav6::trade(std::shared_ptr<PKX> pk)
@@ -313,7 +314,7 @@ void Sav6::trade(std::shared_ptr<PKX> pk)
 
 void Sav6::cryptBoxData(bool crypted)
 {
-    for (u8 box = 0; box < boxes; box++)
+    for (u8 box = 0; box < maxBoxes(); box++)
     {
         for (u8 slot = 0; slot < 30; slot++)
         {
@@ -554,8 +555,8 @@ void Sav6::dex(std::shared_ptr<PKX> pk)
     data[PokeDexLanguageFlags + (bit * 7 + lang) / 8] |= (u8)(1 << ((bit * 7 + lang) % 8));
 
     // Set DexNav count (only if not encountered previously)
-    if (game == Game::ORAS && *(u16*)(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
-        *(u16*)(&data[EncounterCount + (pk->species() - 1) * 2]) = 1;
+    if (game == Game::ORAS && Endian::convertTo<u16>(&data[EncounterCount + (pk->species() - 1) * 2]) == 0)
+        Endian::convertFrom<u16>(&data[EncounterCount + (pk->species() - 1) * 2], 1);
 
     // Set Form flags
     int fc = PersonalXYORAS::formCount(pk->species());
@@ -625,8 +626,8 @@ void Sav6::mysteryGift(WCX& wc, int& pos)
     if (game == Game::ORAS && wc6->ID() == 2048 && wc6->object() == 726)
     {
         static constexpr u32 EON_MAGIC = 0x225D73C2;
-        *(u32*)(&data[0x319B8])        = EON_MAGIC;
-        *(u32*)(&data[0x319DE])        = EON_MAGIC;
+        Endian::convertFrom<u32>(&data[0x319B8], EON_MAGIC);
+        Endian::convertFrom<u32>(&data[0x319DE], EON_MAGIC);
     }
     pos = (pos + 1) % 24;
 }
@@ -689,8 +690,9 @@ std::vector<Sav::giftData> Sav6::currentGifts(void) const
     {
         if (*(wonderCards + i * WC6::length + 0x51) == 0)
         {
-            ret.emplace_back(StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), "", *(u16*)(wonderCards + i * WC6::length + 0x82),
-                *(wonderCards + i * WC6::length + 0x84), *(wonderCards + i * WC6::length + 0xA1));
+            ret.emplace_back(StringUtils::getString(wonderCards + i * WC6::length, 0x2, 36), "",
+                Endian::convertTo<u16>(wonderCards + i * WC6::length + 0x82), *(wonderCards + i * WC6::length + 0x84),
+                *(wonderCards + i * WC6::length + 0xA1));
         }
         else
         {

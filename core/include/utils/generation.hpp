@@ -38,7 +38,7 @@ enum class Generation : u32
     SEVEN,
     LGPE,
     EIGHT,
-    UNUSED = 0xFF
+    UNUSED = 0xFFFFFFFF
 };
 
 std::string genToString(Generation gen);
