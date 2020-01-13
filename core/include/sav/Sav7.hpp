@@ -93,7 +93,7 @@ public:
     u32 partyOffset(u8 slot) const override;
 
     std::shared_ptr<PKX> pkm(u8 slot) const override;
-    std::shared_ptr<PKX> pkm(u8 box, u8 slot, bool ekx = false) const override;
+    std::shared_ptr<PKX> pkm(u8 box, u8 slot) const override;
 
     // NOTICE: this sets a pkx into the savefile, not a ekx
     // that's because PKSM works with decrypted boxes and

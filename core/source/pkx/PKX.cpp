@@ -224,17 +224,23 @@ void PKX::reorderMoves(void)
 
 void PKX::decrypt(void)
 {
-    u8 sv = (encryptionConstant() >> 13) & 31;
-    crypt();
-    shuffleArray(sv);
+    if (isEncrypted())
+    {
+        u8 sv = (encryptionConstant() >> 13) & 31;
+        crypt();
+        shuffleArray(sv);
+    }
 }
 
 void PKX::encrypt(void)
 {
-    u8 sv = (encryptionConstant() >> 13) & 31;
-    refreshChecksum();
-    shuffleArray(blockPositionInvert(sv));
-    crypt();
+    if (!isEncrypted())
+    {
+        u8 sv = (encryptionConstant() >> 13) & 31;
+        refreshChecksum();
+        shuffleArray(blockPositionInvert(sv));
+        crypt();
+    }
 }
 
 bool PKX::gen7(void) const
@@ -313,12 +319,15 @@ void PKX::fixMoves(void)
     }
 }
 
-u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
+u8 PKX::genFromBytes(u8* data, size_t length)
 {
     if (length == 136)
     {
-        if (Endian::convertTo<u16>(data + 4) == 0 && (Endian::convertTo<u16>(data + 0x80) >= 0x3333 || data[0x5F] >= 0x10) &&
-            Endian::convertTo<u16>(data + 0x46) == 0)
+        // decrypt data if necessary
+        PK4 test(data);
+        if (Endian::convertTo<u16>(test.rawData() + 4) == 0 &&
+            (Endian::convertTo<u16>(test.rawData() + 0x80) >= 0x3333 || test.rawData()[0x5F] >= 0x10) &&
+            Endian::convertTo<u16>(test.rawData() + 0x46) == 0)
         {
             return 5;
         }
@@ -334,7 +343,7 @@ u8 PKX::genFromBytes(u8* data, size_t length, bool ekx)
     }
     else if (length == 232)
     {
-        PK6 test(data, ekx);
+        PK6 test(data);
         if (test.species() > 721 || test.version() > 27 || test.move(0) > 621 || test.move(1) > 621 || test.move(2) > 621 || test.move(3) > 621 ||
             test.relearnMove(0) > 621 || test.relearnMove(1) > 621 || test.relearnMove(2) > 621 || test.relearnMove(3) > 621 ||
             test.ability() > 191 || test.heldItem() > 775) // Invalid values for gen 6
@@ -523,22 +532,22 @@ u32 PKX::formatSID() const
     return 0;
 }
 
-std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool ekx, bool party, bool directAccess)
+std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool directAccess)
 {
     switch (gen)
     {
         case Generation::FOUR:
-            return std::make_unique<PK4>(data, ekx, party, directAccess);
+            return std::make_unique<PK4>(data, party, directAccess);
         case Generation::FIVE:
-            return std::make_unique<PK5>(data, ekx, party, directAccess);
+            return std::make_unique<PK5>(data, party, directAccess);
         case Generation::SIX:
-            return std::make_unique<PK6>(data, ekx, party, directAccess);
+            return std::make_unique<PK6>(data, party, directAccess);
         case Generation::SEVEN:
-            return std::make_unique<PK7>(data, ekx, party, directAccess);
+            return std::make_unique<PK7>(data, party, directAccess);
         case Generation::LGPE:
-            return std::make_unique<PB7>(data, ekx, directAccess);
+            return std::make_unique<PB7>(data, directAccess);
         case Generation::EIGHT:
-            return std::make_unique<PK8>(data, ekx, party, directAccess);
+            return std::make_unique<PK8>(data, party, directAccess);
         case Generation::UNUSED:
             return nullptr;
     }

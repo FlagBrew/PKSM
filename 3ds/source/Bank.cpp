@@ -295,17 +295,17 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
     switch (entries[index].gen)
     {
         case Generation::FOUR:
-            return std::make_shared<PK4>(entries[index].data, false, false);
+            return std::make_shared<PK4>(entries[index].data, false);
         case Generation::FIVE:
-            return std::make_shared<PK5>(entries[index].data, false, false);
+            return std::make_shared<PK5>(entries[index].data, false);
         case Generation::SIX:
-            return std::make_shared<PK6>(entries[index].data, false, false);
+            return std::make_shared<PK6>(entries[index].data, false);
         case Generation::SEVEN:
-            return std::make_shared<PK7>(entries[index].data, false, false);
+            return std::make_shared<PK7>(entries[index].data, false);
         case Generation::LGPE:
-            return std::make_shared<PB7>(entries[index].data, false);
+            return std::make_shared<PB7>(entries[index].data);
         case Generation::EIGHT:
-            return std::make_shared<PK8>(entries[index].data, false, false);
+            return std::make_shared<PK8>(entries[index].data, false);
         case Generation::UNUSED:
             return std::make_shared<PK7>();
     }
@@ -436,7 +436,7 @@ void Bank::convertFromBankBin()
         for (int slot = 0; slot < 30; slot++)
         {
             u8* pkmData              = oldData + box * (232 * 30) + slot * 232;
-            std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData, false);
+            std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData);
             if (pkm->species() == 0)
             {
                 this->pkm(pkm, box, slot);
@@ -458,7 +458,7 @@ void Bank::convertFromBankBin()
             }
             if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
             {
-                pkm = std::make_shared<PK7>(pkmData, false);
+                pkm = std::make_shared<PK7>(pkmData);
             }
             else if (((PK6*)pkm.get())->encounterType() != 0)
             {
@@ -466,7 +466,7 @@ void Bank::convertFromBankBin()
                 {
                     if (!pkm->gen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
                     {
-                        pkm = std::make_shared<PK7>(pkmData, false);
+                        pkm = std::make_shared<PK7>(pkmData);
                     }
                 }
             }

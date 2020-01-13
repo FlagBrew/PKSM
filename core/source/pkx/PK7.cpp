@@ -66,9 +66,14 @@ void PK7::crypt(void)
     }
 }
 
-PK7::PK7(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
+bool PK7::isEncrypted() const
 {
-    if (ekx)
+    return Endian::convertTo<u16>(data + 0xC8) != 0 && Endian::convertTo<u16>(data + 0x58) != 0;
+}
+
+PK7::PK7(u8* dt, bool party, bool direct) : PKX(dt, party ? 260 : 232, direct)
+{
+    if (isEncrypted())
     {
         decrypt();
     }
@@ -76,7 +81,7 @@ PK7::PK7(u8* dt, bool ekx, bool party, bool direct) : PKX(dt, party ? 260 : 232,
 
 std::shared_ptr<PKX> PK7::clone(void) const
 {
-    return std::make_shared<PK7>(const_cast<u8*>(data), false, length == 260);
+    return std::make_shared<PK7>(const_cast<u8*>(data), length == 260);
 }
 
 Generation PK7::generation(void) const

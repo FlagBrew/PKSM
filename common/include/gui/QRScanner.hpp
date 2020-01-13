@@ -197,7 +197,7 @@ public:
                     return nullptr;
                 }
 
-                return std::make_unique<Mode>(decoded.data(), true);
+                return std::make_unique<Mode>(decoded.data());
             }
 
             if constexpr (std::is_same_v<Mode, PK6>)
@@ -208,7 +208,7 @@ public:
                     return nullptr;
                 }
 
-                return std::make_unique<PK6>(decoded.data(), true);
+                return std::make_unique<PK6>(decoded.data());
             }
 
             if constexpr (std::is_same_v<Mode, PK8>)
@@ -219,7 +219,7 @@ public:
                     return nullptr;
                 }
 
-                return std::make_unique<PK8>(decoded.data(), true);
+                return std::make_unique<PK8>(decoded.data());
             }
 
             // Interchangeable, so has to be separate
@@ -273,7 +273,7 @@ public:
 
         if constexpr (std::is_same_v<Mode, PK7>)
         {
-            return std::make_unique<PK7>(data.data() + 0x30, true);
+            return std::make_unique<PK7>(data.data() + 0x30);
         }
 
         if constexpr (std::is_same_v<Mode, std::string>)

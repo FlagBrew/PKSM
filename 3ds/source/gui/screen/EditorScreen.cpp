@@ -70,7 +70,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 {
                     u8 pkmData[236] = {0};
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK4>(pkmData, false, true);
+                    pkm = std::make_shared<PK4>(pkmData, true);
                     partyUpdate();
                 }
                 break;
@@ -79,7 +79,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 {
                     u8 pkmData[220] = {0};
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK5>(pkmData, false, true);
+                    pkm = std::make_shared<PK5>(pkmData, true);
                     partyUpdate();
                 }
                 break;
@@ -91,11 +91,11 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
                     if (pkm->generation() == Generation::SIX)
                     {
-                        pkm = std::make_shared<PK6>(pkmData, false, true);
+                        pkm = std::make_shared<PK6>(pkmData, true);
                     }
                     else
                     {
-                        pkm = std::make_shared<PK7>(pkmData, false, true);
+                        pkm = std::make_shared<PK7>(pkmData, true);
                     }
                     partyUpdate();
                 }
@@ -105,7 +105,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
                 {
                     u8 pkmData[0x158] = {0};
                     std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK8>(pkmData, false, true);
+                    pkm = std::make_shared<PK8>(pkmData, true);
                     partyUpdate();
                 }
                 break;

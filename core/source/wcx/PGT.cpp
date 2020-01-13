@@ -34,7 +34,7 @@ PGT::PGT(u8* pgt, bool fromWC4)
     std::copy(pgt, pgt + length, data);
     u8 pk4Data[236];
     std::copy(pgt + 0x8, pgt + 0x8 + 236, pk4Data);
-    pokemonData = new PK4(pk4Data, !fromWC4, true);
+    pokemonData = new PK4(pk4Data, true);
     if (type() == 7)
     {
         // Set visible manaphy data

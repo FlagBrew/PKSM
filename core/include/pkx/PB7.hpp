@@ -46,12 +46,13 @@ protected:
 
 public:
     PB7() : PKX(nullptr, 260) {}
-    PB7(u8* dt, bool ekx = false, bool directAccess = false);
+    PB7(u8* dt, bool directAccess = false);
     virtual ~PB7() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 
     Generation generation() const override;
+    bool isEncrypted() const override;
 
     u32 encryptionConstant(void) const override;
     void encryptionConstant(u32 v) override;
