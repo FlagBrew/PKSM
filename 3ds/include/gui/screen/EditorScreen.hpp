@@ -45,6 +45,8 @@ public:
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
+    static constexpr int PARTY_MAGIC_NUM = 0xFFFF;
+
 private:
     bool changeLevel(bool up);
     void setLevel();

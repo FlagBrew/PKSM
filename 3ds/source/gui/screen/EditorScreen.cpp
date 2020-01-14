@@ -61,7 +61,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
 {
     addOverlay<ViewOverlay>(pkm, false);
 
-    if (this->box == 0xFFFF)
+    if (this->box == PARTY_MAGIC_NUM)
     {
         switch (pkm->generation())
         {
@@ -438,7 +438,7 @@ bool EditorScreen::advanceMon(bool forward)
         TitleLoader::save->fixParty();
         do
         {
-            if (box == 0xFF)
+            if (box == PARTY_MAGIC_NUM)
             {
                 if (forward)
                 {
@@ -671,7 +671,7 @@ bool EditorScreen::save()
     }
     else
     {
-        if (box != 0xFF)
+        if (box != PARTY_MAGIC_NUM)
         {
             if (TitleLoader::save->generation() == Generation::LGPE || TitleLoader::save->generation() == Generation::EIGHT)
             {
