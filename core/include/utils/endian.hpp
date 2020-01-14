@@ -31,6 +31,7 @@
 #include <array>
 #include <string.h>
 #include <type_traits>
+#include <vector>
 
 namespace Endian
 {
@@ -60,12 +61,69 @@ namespace Endian
 #endif
     }
 
+    // Array-based implementation
+    template <typename T, size_t N>
+    void convertFrom(u8* dest, const T (&array)[N])
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(dest, array[i]);
+            dest += sizeof(T);
+        }
+    }
+
+    // Another array-based implementation
+    template <typename T, size_t N>
+    void convertFrom(u8* dest, const std::array<T, N>& array)
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            convertFrom(dest, array[i]);
+            dest += sizeof(T);
+        }
+    }
+
+    // And now... vector
+    template <typename T>
+    void convertFrom(u8* dest, const std::vector<T>& vector)
+    {
+        for (size_t i = 0; i < vector.size(); i++)
+        {
+            convertFrom(dest, vector[i]);
+            dest += sizeof(T);
+        }
+    }
+
     // Same as above, just with automatic handling of data lifetime
     template <typename T>
     auto convertFrom(const T& orig) -> std::array<u8, sizeof(T)>
     {
         std::array<u8, sizeof(T)> ret;
         convertFrom(ret.data(), orig);
+        return ret;
+    }
+
+    template <typename T, size_t N>
+    auto convertFrom(const T (&array)[N]) -> std::array<u8, sizeof(T) * N>
+    {
+        std::array<u8, sizeof(T) * N> ret;
+        convertFrom(ret.data(), array);
+        return ret;
+    }
+
+    template <typename T, size_t N>
+    auto convertFrom(const std::array<T, N>& array) -> std::array<u8, sizeof(T) * N>
+    {
+        std::array<u8, sizeof(T) * N> ret;
+        convertFrom(ret.data(), array);
+        return ret;
+    }
+
+    template <typename T>
+    std::vector<u8> convertFrom(const std::vector<T>& vector)
+    {
+        std::vector<u8> ret(vector.size() * sizeof(T));
+        convertFrom(ret.data(), vector);
         return ret;
     }
 
@@ -92,6 +150,17 @@ namespace Endian
 #error "I don't know what architecture this is!"
 #endif
         return dest;
+    }
+
+    template <typename T, size_t N>
+    std::array<T, N> convertTo(const u8* from)
+    {
+        std::array<T, N> ret;
+        for (size_t i = 0; i < N; i++)
+        {
+            ret[i] = convertTo<T>(from + i * sizeof(T));
+        }
+        return ret;
     }
 }
 
