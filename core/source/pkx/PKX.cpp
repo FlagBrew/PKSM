@@ -26,6 +26,7 @@
 
 #include "PKX.hpp"
 #include "PB7.hpp"
+#include "PK3.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
@@ -50,12 +51,6 @@ namespace
             default:
                 return (pid & 0xFF) < gt ? 1 : 0;
         }
-    }
-
-    inline u8 getUnownForm(u32 pid)
-    {
-        u32 val = (pid & 0x3000000) >> 18 | (pid & 0x30000) >> 12 | (pid & 0x300) >> 6 | (pid & 0x3);
-        return val % 28;
     }
 }
 
@@ -321,7 +316,11 @@ void PKX::fixMoves(void)
 
 u8 PKX::genFromBytes(u8* data, size_t length)
 {
-    if (length == 136)
+    if (length == 80 || length == 100)
+    {
+        return 3;
+    }
+    else if (length == 136)
     {
         // decrypt data if necessary
         PK4 test(data);
@@ -394,6 +393,9 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
     u8 (*genderTypeFinder)(u16 species) = nullptr;
     switch (gen)
     {
+        case Generation::THREE:
+            genderTypeFinder = PersonalRSFRLGE::gender;
+            break;
         case Generation::FOUR:
             genderTypeFinder = PersonalDPPtHGSS::gender;
             break;
@@ -420,8 +422,9 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
         return 0;
     }
 
-    u8 genderType = genderTypeFinder(species);
-    bool g3unown  = originGame <= 5 && species == 201;
+    u8 genderType   = genderTypeFinder(species);
+    bool g3unown    = (originGame <= 5 || gen == Generation::THREE) && species == 201;
+    u32 abilityBits = oldPid & 0x00010001;
     while (true)
     {
         u32 possiblePID = randomNumbers();
@@ -432,21 +435,14 @@ u32 PKX::getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form,
 
         if (g3unown)
         {
-            if (getUnownForm(possiblePID) != form)
+            if (PK3::getUnownForm(possiblePID) != form)
             {
                 continue;
             }
         }
-        else if (abilityNum != 4)
+        else if (abilityBits != (possiblePID & 0x00010001))
         {
-            if (abilityNum == 1 && (possiblePID & (1 << (gen == Generation::FIVE ? 16 : 0))))
-            {
-                continue;
-            }
-            else if (abilityNum == 2 && !(possiblePID & (1 << (gen == Generation::FIVE ? 16 : 0))))
-            {
-                continue;
-            }
+            continue;
         }
 
         if (genderType == 255 || genderType == 254 || genderType == 0 || gender == 2)
@@ -501,6 +497,7 @@ u32 PKX::formatTID() const
 {
     switch (generation())
     {
+        case Generation::THREE:
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:
@@ -518,6 +515,7 @@ u32 PKX::formatSID() const
 {
     switch (generation())
     {
+        case Generation::THREE:
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:
@@ -536,6 +534,8 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, bool party, bool dire
 {
     switch (gen)
     {
+        case Generation::THREE:
+            return std::make_unique<PK3>(data, party, directAccess);
         case Generation::FOUR:
             return std::make_unique<PK4>(data, party, directAccess);
         case Generation::FIVE:
@@ -558,6 +558,12 @@ std::unique_ptr<PKX> PKX::getPKM(Generation gen, u8* data, size_t length, bool d
 {
     switch (gen)
     {
+        case Generation::THREE:
+            if (length == 80 || length == 100)
+            {
+                return getPKM(gen, data, length == 100, directAccess);
+            }
+            break;
         case Generation::FOUR:
             if (length == 136 || length == 236)
             {
@@ -654,7 +660,7 @@ bool PKX::operator==(const PKFilter& filter) const
         }
         if (filter.relearnMoveEnabled(i))
         {
-            if (generation() == Generation::FOUR || generation() == Generation::FIVE)
+            if (generation() < Generation::SIX)
             {
                 return false;
             }

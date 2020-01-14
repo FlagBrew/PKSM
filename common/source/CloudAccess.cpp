@@ -149,7 +149,7 @@ nlohmann::json CloudAccess::grabPage(int num)
 
 std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
+    return "https://d94a61c8.ngrok.io/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
            "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + genToString(low) +
            "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
@@ -188,8 +188,8 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
     {
         auto ret = pkm(slot);
 
-        if (auto fetch = Fetch::init(
-                "https://flagbrew.org/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true,
+                nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }
@@ -277,7 +277,7 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -322,7 +322,7 @@ void CloudAccess::filterToGen(Generation g)
 
 void CloudAccess::removeGenFilter()
 {
-    lowGen   = Generation::FOUR;
+    lowGen   = Generation::THREE;
     highGen  = Generation::SEVEN;
     showLGPE = true;
 }

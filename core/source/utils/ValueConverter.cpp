@@ -24,44 +24,48 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#include "ValueConverter.hpp"
+#include "g3values.h"
+#include <algorithm>
 
-#include "coretypes.h"
-#include <string>
-
-enum class Generation : u32
+u16 SpeciesConverter::g3ToNational(u16 v)
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE,
-    EIGHT,
-    THREE,
-    UNUSED = 0xFFFFFFFF
-};
-
-std::string genToString(Generation gen);
-const char* genToCstring(Generation gen);
-Generation stringToGen(const std::string& str);
-bool operator<(Generation g1, Generation g2);
-inline bool operator<=(Generation g1, Generation g2)
-{
-    if (g1 == g2)
+    if (v < g3ToSpecies.size())
     {
-        return true;
+        return g3ToSpecies[v];
     }
-    return g1 < g2;
-}
-bool operator>(Generation g1, Generation g2);
-inline bool operator>=(Generation g1, Generation g2)
-{
-    if (g1 == g2)
-    {
-        return true;
-    }
-    return g1 > g2;
+    return 0;
 }
 
-#endif
+u16 SpeciesConverter::nationalToG3(u16 v)
+{
+    if (v < speciesToG3.size())
+    {
+        return speciesToG3[v];
+    }
+    return 0;
+}
+
+u16 ItemConverter::g3ToNational(u16 v)
+{
+    if (v < g3ToItem.size())
+    {
+        return g3ToItem[v];
+    }
+    return 0;
+}
+
+u16 ItemConverter::nationalToG3(u16 v)
+{
+    if (v == 0)
+    {
+        return 0;
+    }
+
+    auto it = std::find(g3ToItem.begin(), g3ToItem.end(), v);
+    if (it == g3ToItem.end())
+    {
+        return 0;
+    }
+    return *it;
+}
