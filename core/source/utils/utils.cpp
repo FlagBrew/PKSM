@@ -26,6 +26,7 @@
 
 #include "utils.hpp"
 #include "endian.hpp"
+#include "g3text.hpp"
 #include "g4text.h"
 #include <algorithm>
 #include <map>
@@ -616,4 +617,46 @@ std::u16string StringUtils::transString67(const std::u16string& str)
     std::u16string ret = str;
     std::transform(str.begin(), str.end(), ret.begin(), [](const char16_t& chr) { return (char16_t)swapCodepoints67(chr); });
     return ret;
+}
+
+std::string StringUtils::getString3(const u8* data, int ofs, int len, bool jp)
+{
+    auto& characters = jp ? G3_JP : G3_EN;
+    std::u16string outString;
+
+    for (size_t i = 0; i < len; i++)
+    {
+        if (data[ofs + i] < characters.size())
+        {
+            outString += characters[data[ofs + i]];
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return StringUtils::UTF16toUTF8(outString);
+}
+
+void StringUtils::setString3(u8* data, const std::string& v, int ofs, int len, bool jp)
+{
+    auto& characters   = jp ? G3_JP : G3_EN;
+    std::u16string str = StringUtils::UTF8toUTF16(v);
+
+    size_t outPos;
+    for (outPos = 0; outPos < std::min((size_t)len, str.size()); outPos++)
+    {
+        auto it = std::find(characters.begin(), characters.end(), str[outPos]);
+        if (it != characters.end())
+        {
+            data[ofs + outPos] = (u8)std::distance(characters.begin(), it);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    data[outPos >= len ? len - 1 : outPos] = 0xFF;
 }

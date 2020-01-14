@@ -139,4 +139,20 @@ namespace PersonalSWSH
     bool canLearnTR(u16 formSpecies, u8 trID);
 }
 
+namespace PersonalRSFRLGE
+{
+    u8 baseHP(u16 species);
+    u8 baseAtk(u16 species);
+    u8 baseDef(u16 species);
+    u8 baseSpe(u16 species);
+    u8 baseSpa(u16 species);
+    u8 baseSpd(u16 species);
+    u8 type1(u16 species);
+    u8 type2(u16 species);
+    u8 gender(u16 species);
+    u8 baseFriendship(u16 species);
+    u8 expType(u16 species);
+    u8 ability(u16 species, u8 n);
+}
+
 #endif

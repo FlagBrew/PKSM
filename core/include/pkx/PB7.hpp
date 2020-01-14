@@ -38,16 +38,17 @@ protected:
     void shuffleArray(u8 sv) override;
     void crypt(void) override;
 
+public:
+    PB7() : PKX(nullptr, 260) {}
+    PB7(u8* dt, bool directAccess = false);
+    virtual ~PB7() {}
+
+    // std::shared_ptr<PKX> convertToG3(Sav& save) const override;
     // std::shared_ptr<PKX> convertToG4(Sav& save) const override;
     // std::shared_ptr<PKX> convertToG5(Sav& save) const override;
     // std::shared_ptr<PKX> convertToG6(Sav& save) const override;
     // std::shared_ptr<PKX> convertToG7(Sav& save) const override;
     // std::shared_ptr<PKX> convertToG8(Sav& save) const override;
-
-public:
-    PB7() : PKX(nullptr, 260) {}
-    PB7(u8* dt, bool directAccess = false);
-    virtual ~PB7() {}
 
     std::shared_ptr<PKX> clone(void) const override;
 

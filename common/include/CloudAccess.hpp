@@ -101,7 +101,7 @@ private:
     bool isGood        = false;
     bool ascend        = true;
     bool legal         = false;
-    Generation lowGen  = Generation::FOUR;
+    Generation lowGen  = Generation::THREE;
     Generation highGen = Generation::SEVEN;
     bool showLGPE      = true;
 };

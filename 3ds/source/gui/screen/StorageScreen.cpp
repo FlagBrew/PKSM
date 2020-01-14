@@ -480,7 +480,7 @@ void StorageScreen::drawTop() const
             TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
-        if (infoMon->generation() == Generation::FOUR)
+        if (infoMon->generation() < Generation::FIVE)
         {
             if (firstType > 8)
                 firstType--;

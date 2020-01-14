@@ -1291,9 +1291,9 @@ void Gui::format(const PKX& pkm, int x, int y)
         // case Generation::TWO:
         //     Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
         //     break;
-        // case Generation::THREE: // if this ever happens
-        //     Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
-        //     break;
+        case Generation::THREE:
+            Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+            break;
         case Generation::FOUR:
             Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
             break;
@@ -1309,6 +1309,9 @@ void Gui::format(const PKX& pkm, int x, int y)
         case Generation::LGPE:
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
+        // case Generation::EIGHT:
+        //    Gui::sprite(there_is_no_icon_right_now, x, y);
+        //    break;
         case Generation::UNUSED:
             break;
     }

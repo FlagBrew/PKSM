@@ -80,7 +80,7 @@ private:
     bool legal  = false;
     // Currently not changeable
     Generation high = Generation::EIGHT;
-    Generation low  = Generation::FOUR;
+    Generation low  = Generation::THREE;
     bool LGPE       = true;
 };
 

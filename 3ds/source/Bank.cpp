@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "PB7.hpp"
+#include "PK3.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
@@ -294,6 +295,8 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
     int index = box * 30 + slot;
     switch (entries[index].gen)
     {
+        case Generation::THREE:
+            return std::make_shared<PK3>(entries[index].data, false);
         case Generation::FOUR:
             return std::make_shared<PK4>(entries[index].data, false);
         case Generation::FIVE:

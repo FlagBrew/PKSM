@@ -24,44 +24,22 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef GENERATION_HPP
-#define GENERATION_HPP
+#ifndef VALUECONVERTER_HPP
+#define VALUECONVERTER_HPP
 
 #include "coretypes.h"
-#include <string>
 
-enum class Generation : u32
+namespace SpeciesConverter
 {
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    LGPE,
-    EIGHT,
-    THREE,
-    UNUSED = 0xFFFFFFFF
-};
-
-std::string genToString(Generation gen);
-const char* genToCstring(Generation gen);
-Generation stringToGen(const std::string& str);
-bool operator<(Generation g1, Generation g2);
-inline bool operator<=(Generation g1, Generation g2)
-{
-    if (g1 == g2)
-    {
-        return true;
-    }
-    return g1 < g2;
+    u16 g3ToNational(u16 v);
+    u16 nationalToG3(u16 v);
 }
-bool operator>(Generation g1, Generation g2);
-inline bool operator>=(Generation g1, Generation g2)
+
+namespace ItemConverter
 {
-    if (g1 == g2)
-    {
-        return true;
-    }
-    return g1 > g2;
+    constexpr u16 G3_NOT_CONVERTIBLE = 128;
+    u16 g3ToNational(u16 v);
+    u16 nationalToG3(u16 v);
 }
 
 #endif
