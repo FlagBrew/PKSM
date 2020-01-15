@@ -66,6 +66,32 @@ void CloudAccess::downloadCloudPage(
             {
                 case 200:
                     page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
+                    // clang-format off
+                    if (!page->data || !page->data->is_object() ||
+                        !page->data->contains("total_pkm") || !(*page->data)["total_pkm"].is_number_integer() ||
+                        !page->data->contains("results") || !(*page->data)["results"].is_array() ||
+                        !page->data->contains("pages") || !(*page->data)["pages"].is_number_integer())
+                    // clang-format on
+                    {
+                        page->data = nullptr;
+                    }
+                    else
+                    {
+                        for (auto& json : (*page->data)["results"])
+                        {
+                            // clang-format off
+                            if (!json.is_object() ||
+                                !json.contains("base_64") || !json["base_64"].is_string() ||
+                                !json.contains("generation") || !json["generation"].is_string() ||
+                                !json.contains("legal") || !json["legal"].is_boolean() ||
+                                !json.contains("code") || !json["code"].is_string())
+                            // clang-format on
+                            {
+                                page->data = nullptr;
+                                break;
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -149,7 +175,7 @@ nlohmann::json CloudAccess::grabPage(int num)
 
 std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
 {
-    return "https://d94a61c8.ngrok.io/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
+    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
            "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + genToString(low) +
            "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
@@ -188,8 +214,8 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
     {
         auto ret = pkm(slot);
 
-        if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true,
-                nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init(
+                "https://flagbrew.org/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }
@@ -277,7 +303,7 @@ long CloudAccess::pkm(std::shared_ptr<PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

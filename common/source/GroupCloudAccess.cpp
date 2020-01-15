@@ -52,6 +52,53 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
             {
                 case 200:
                     page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
+                    // clang-format off
+                    if (!page->data || !page->data->is_object() ||
+                        !page->data->contains("total_bundles") || !(*page->data)["total_bundles"].is_number_integer() ||
+                        !page->data->contains("pages") || !(*page->data)["pages"].is_number_integer() ||
+                        !page->data->contains("results") || !(*page->data)["results"].is_array())
+                    // clang-format on
+                    {
+                        page->data = nullptr;
+                    }
+                    else
+                    {
+                        for (auto& group : (*page->data)["results"])
+                        {
+                            // clang-format off
+                            if (!group.is_object() ||
+                                !group.contains("pokemon") || !group["pokemon"].is_array() ||
+                                !group.contains("code") || !group["code"].is_string())
+                            // clang-format on
+                            {
+                                page->data = nullptr;
+                                break;
+                            }
+                            else
+                            {
+                                bool shouldBreak = false;
+                                for (auto& pkm : group["pokemon"])
+                                {
+                                    // clang-format off
+                                    if (!pkm.is_object() ||
+                                        !pkm.contains("base_64") || !pkm["base_64"].is_string() ||
+                                        !pkm.contains("generation") || !pkm["generation"].is_string() ||
+                                        !pkm.contains("legal") || !pkm["legal"].is_boolean() ||
+                                        !pkm.contains("code") || !pkm["code"].is_string())
+                                    // clang-format on
+                                    {
+                                        page->data  = nullptr;
+                                        shouldBreak = true;
+                                        break;
+                                    }
+                                }
+                                if (shouldBreak)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -135,7 +182,7 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
 
 std::string GroupCloudAccess::makeURL(int num, bool legal, Generation low, Generation high, bool LGPE)
 {
-    return "https://d94a61c8.ngrok.io/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + genToString(low) +
+    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + genToString(low) +
            "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) + "&page=" + std::to_string(num) +
            (legal ? "&legal_only=yes" : "");
 }
@@ -161,7 +208,7 @@ bool GroupCloudAccess::nextPage()
     downloadGroupPage(next, nextPage, legal, low, high, LGPE);
 
     // If there's a mon number desync, also download the previous page again
-    if ((*current->data)["total_groups"] != (*prev->data)["total_groups"])
+    if ((*current->data)["total_bundles"] != (*prev->data)["total_bundles"])
     {
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
         downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
@@ -249,7 +296,7 @@ std::shared_ptr<PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIn
             auto& poke = group["pokemon"][pokeIndex];
             auto ret   = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/download/" + poke["code"].get<std::string>(), true, nullptr, nullptr, ""))
+            if (auto fetch = Fetch::init("https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true, nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
             }
@@ -312,7 +359,7 @@ long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
     }
 
     std::string writeData;
-    if (auto fetch = Fetch::init("https://d94a61c8.ngrok.io/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)

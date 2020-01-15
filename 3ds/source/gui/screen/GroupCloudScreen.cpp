@@ -868,23 +868,29 @@ void GroupCloudScreen::shareReceive()
                 }
                 nlohmann::json groupJson = nlohmann::json::parse(jsonData, nullptr, false);
 
-                if (groupJson.is_object() && groupJson.contains("pokemon"))
+                if (groupJson.is_object() && groupJson.contains("pokemon") && groupJson["pokemon"].is_array())
                 {
                     groupPkm.clear();
                     std::string badVersions;
                     std::vector<std::shared_ptr<PKX>> temPkm;
                     for (auto& pkm : groupJson["pokemon"])
                     {
-                        Generation gen       = stringToGen(pkm["generation"].get<std::string>());
-                        std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
+                        // clang-format off
+                        if (pkm.is_object() && pkm.contains("generation") && pkm["generation"].is_string() &&
+                            pkm.contains("base64") && pkm["base64"].is_string())
+                        {
+                            // clang-format on
+                            Generation gen       = stringToGen(pkm["generation"].get<std::string>());
+                            std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
 
-                        if (gen != Generation::UNUSED)
-                        {
-                            temPkm.push_back(PKX::getPKM(gen, data.data()));
-                        }
-                        else
-                        {
-                            badVersions += pkm["generation"].get<std::string>() + ", ";
+                            if (gen != Generation::UNUSED)
+                            {
+                                temPkm.push_back(PKX::getPKM(gen, data.data()));
+                            }
+                            else
+                            {
+                                badVersions += pkm["generation"].get<std::string>() + ", ";
+                            }
                         }
                     }
 
