@@ -191,7 +191,6 @@ void LegalInfoScreen::attemptLegalization()
                             return;
                         }
                     }
-                    Gui::warn("Bad JSON\n" + writeData);
                 }
                 // falls through
                 default:
