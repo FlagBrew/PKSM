@@ -467,8 +467,6 @@
     "R_ITEM": "\uE005: アイテムを選択",
     "R_PAGE_NEXT": "\uE005: 次のページ",
     "SANITY_PLACEHOLDER": "正気のプレースホルダー",
-    "SAVE_CHANGES_1": "変更を保存しますか?",
-    "SAVE_CHANGES_2": "",
     "SAVE_INFO": "ロード済みセーブ:",
     "SAVE_INVALID": "は有効なセーブデータではありません",
     "SAVE_OVERWRITE_1": "変更を",

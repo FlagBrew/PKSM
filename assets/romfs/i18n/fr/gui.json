@@ -467,8 +467,6 @@
     "R_ITEM": "\ue005: Selectionner l'objet",
     "R_PAGE_NEXT": "\ue005: Page suivante",
     "SANITY_PLACEHOLDER": "Sanity Placeholder",
-    "SAVE_CHANGES_1": "Voulez-vous sauvegarder",
-    "SAVE_CHANGES_2": "Vos modifications ?",
     "SAVE_INFO": "Sauv. Charg\u00e9e:",
     "SAVE_INVALID": "n'est pas un fichier de sauvegarde valide",
     "SAVE_OVERWRITE_1": "Voulez-vous sauvegarder les changements sur",

@@ -467,8 +467,6 @@
     "R_ITEM": "\uE005: 选择项目",
     "R_PAGE_NEXT": "\uE005: 下一页",
     "SANITY_PLACEHOLDER": "Sanity占位符",
-    "SAVE_CHANGES_1": "你想要保存",
-    "SAVE_CHANGES_2": "更改吗?",
     "SAVE_INFO": "Loaded Save:",
     "SAVE_INVALID": "不是一个有效的存档.",
     "SAVE_OVERWRITE_1": "你想要写入更改到",
