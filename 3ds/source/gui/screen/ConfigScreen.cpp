@@ -489,7 +489,7 @@ void ConfigScreen::drawBottom() const
         Gui::text("日本語", 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("English", 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Français", 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Deutsche", 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Deutsch", 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Italiano", 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Español", 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
