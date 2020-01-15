@@ -189,7 +189,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         }
         pkm->fixMoves();
         pkm->PID((u32)randomNumbers());
-        pkm->language(Configuration::getInstance().language());
+        pkm->language(getSafeLanguage(pkm->generation(), Configuration::getInstance().language()));
         const time_t current = time(NULL);
         pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
         pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);

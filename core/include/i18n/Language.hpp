@@ -47,4 +47,6 @@ enum class Language : u8
     RO
 };
 
+Language getSafeLanguage(enum Generation gen, Language originalLang);
+
 #endif

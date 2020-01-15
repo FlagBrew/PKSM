@@ -859,7 +859,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     pkm->fixMoves();
     pkm->PID((u32)randomNumbers());
-    pkm->language(Configuration::getInstance().language());
+    pkm->language(getSafeLanguage(pkm->generation(), Configuration::getInstance().language()));
     const time_t current = time(NULL);
     pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
     pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);
@@ -1168,7 +1168,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
-            pkm->language(Language(nextArg->Val->Integer));
+            pkm->language(getSafeLanguage(pkm->generation(), Language(nextArg->Val->Integer)));
             break;
         case MET_LOCATION:
             if (NumArgs != 4)
