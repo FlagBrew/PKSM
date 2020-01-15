@@ -343,7 +343,7 @@ void ConfigScreen::initButtons()
         case Language::PT:
             ((ToggleButton*)tabButtons[0][9].get())->setState(true);
             break;
-        case Language::RU:
+        case Language::RO:
             ((ToggleButton*)tabButtons[0][10].get())->setState(true);
             break;
         default:
