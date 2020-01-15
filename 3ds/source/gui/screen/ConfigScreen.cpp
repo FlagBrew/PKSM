@@ -304,7 +304,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 140, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::RU);
+            Configuration::getInstance().language(Language::RO);
             initButtons();
             return false;
         },
@@ -497,7 +497,7 @@ void ConfigScreen::drawBottom() const
         Gui::text("한국어", 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Nederlands", 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Português", 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("русский", 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Română", 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
