@@ -28,6 +28,7 @@
 #define LANGUAGE_HPP
 
 #include "coretypes.h"
+#include "generation.hpp"
 
 enum class Language : u8
 {
@@ -47,6 +48,6 @@ enum class Language : u8
     RO
 };
 
-Language getSafeLanguage(enum Generation gen, Language originalLang);
+Language getSafeLanguage(Generation gen, Language originalLang);
 
 #endif
