@@ -33,7 +33,7 @@
 class PCD : public PGT
 {
 public:
-    PCD(u8* pcd) : PGT(pcd, false), name(StringUtils::getString4(pcd, 0x104, 0x24)) {}
+    PCD(u8* pcd) : PGT(pcd), name(StringUtils::getString4(pcd, 0x104, 0x24)) {}
 
     static constexpr int length = 856;
     std::string title(void) const override { return name; };

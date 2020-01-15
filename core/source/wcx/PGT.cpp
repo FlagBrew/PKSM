@@ -29,7 +29,7 @@
 #include "PK4.hpp"
 #include "endian.hpp"
 
-PGT::PGT(u8* pgt, bool fromWC4)
+PGT::PGT(u8* pgt)
 {
     std::copy(pgt, pgt + length, data);
     u8 pk4Data[236];

@@ -265,23 +265,33 @@ namespace
                         case 200:
                         {
                             nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
-                            if (retJson.is_discarded())
+                            if (retJson.is_discarded() || !retJson.contains("tag_name") || !retJson["tag_name"].is_string())
                             {
                                 Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                             }
-                            else if (retJson["tag_name"].get<std::string>() >
-                                     StringUtils::format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO))
+                            else
                             {
-                                url = "https://github.com/FlagBrew/PKSM/releases/download/" + retJson["tag_name"].get<std::string>() + "/PKSM";
-                                if (execPath != "")
+                                std::string newVersion = retJson["tag_name"].get<std::string>();
+                                size_t pos             = 0;
+                                size_t pos2            = 0;
+                                int newMajor           = std::stoi(newVersion, &pos);
+                                int newMinor           = std::stoi(newVersion.substr(pos + 1), &pos2);
+                                int newMicro           = std::stoi(newVersion.substr(pos + pos2 + 2));
+
+                                if (newMajor > VERSION_MAJOR || (newMajor == VERSION_MAJOR && newMinor > VERSION_MINOR) ||
+                                    (newMajor == VERSION_MAJOR && newMinor == VERSION_MINOR && newMicro > VERSION_MICRO))
                                 {
-                                    url += ".3dsx";
-                                    path = execPath + ".new";
-                                }
-                                else
-                                {
-                                    url += ".cia";
-                                    path = "/3ds/PKSM/PKSM.cia";
+                                    url = "https://github.com/FlagBrew/PKSM/releases/download/" + newVersion + "/PKSM";
+                                    if (execPath != "")
+                                    {
+                                        url += ".3dsx";
+                                        path = execPath + ".new";
+                                    }
+                                    else
+                                    {
+                                        url += ".cia";
+                                        path = "/3ds/PKSM/PKSM.cia";
+                                    }
                                 }
                             }
                             break;

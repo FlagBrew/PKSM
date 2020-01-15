@@ -40,7 +40,7 @@ protected:
 public:
     static constexpr u16 length = 260;
 
-    PGT(u8* pgt, bool fromWC4 = false);
+    PGT(u8* pgt);
     ~PGT();
 
     Generation generation() const override;
