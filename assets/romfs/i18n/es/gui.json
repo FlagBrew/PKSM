@@ -467,8 +467,6 @@
     "R_ITEM": "\ue005: Seleccione objeto",
     "R_PAGE_NEXT": "\ue005: Siguiente página",
     "SANITY_PLACEHOLDER": "\u00abMarcador de posición de sanidad\u00bb",
-    "SAVE_CHANGES_1": "¿Quieres guardar",
-    "SAVE_CHANGES_2": "tus cambios?",
     "SAVE_INFO": "Este archivo de guardado:",
     "SAVE_INVALID": "no es un archivo de guardado válido.",
     "SAVE_OVERWRITE_1": "¿Quieres sobreescribir cambios a",
