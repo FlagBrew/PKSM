@@ -405,89 +405,84 @@ bool Bank::hasChanged() const
 void Bank::convertFromBankBin()
 {
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
-    FSStream stream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
-    size_t oldSize = stream.size();
-    u8* oldData    = new u8[oldSize];
-    if (stream.good())
+    FSStream inStream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
+    size_t oldSize = inStream.size();
+    FSStream outStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
+    if (inStream.good() && outStream.good() && oldSize % 232 == 0 && (oldSize / 232) % 30 == 0)
     {
-        stream.read(oldData, oldSize);
+        std::array<u8, 232> pkmData;
+        // ANOTHER CONVERSION SECTION
+        entries = new BankEntry[oldSize / 232];
+        std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
+        header.version = BANK_VERSION;
+        header.boxes   = oldSize / 232 / 30;
+        extern nlohmann::json g_banks;
+        g_banks["pksm_1"] = header.boxes;
+        std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
+        boxNames = nlohmann::json::array();
+
+        for (int box = 0; box < std::min((int)(oldSize / (232 * 30)), boxes()); box++)
+        {
+            for (int slot = 0; slot < 30; slot++)
+            {
+                inStream.read(pkmData.data(), pkmData.size());
+                outStream.write(pkmData.data(), pkmData.size());
+                std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData.data());
+                if (pkm->species() == 0)
+                {
+                    this->pkm(pkm, box, slot);
+                    continue;
+                }
+                bool badMove = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (pkm->move(i) > 621)
+                    {
+                        badMove = true;
+                        break;
+                    }
+                    if (pkm->relearnMove(i) > 621)
+                    {
+                        badMove = true;
+                        break;
+                    }
+                }
+                if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
+                {
+                    pkm = std::make_shared<PK7>(pkmData.data());
+                }
+                else if (((PK6*)pkm.get())->encounterType() != 0)
+                {
+                    if (((PK6*)pkm.get())->level() == 100) // Can be hyper trained
+                    {
+                        if (!pkm->gen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
+                        {
+                            pkm = std::make_shared<PK7>(pkmData.data());
+                        }
+                    }
+                }
+                this->pkm(pkm, box, slot);
+            }
+        }
+
+        inStream.close();
+        outStream.close();
+
+        for (int i = 0; i < boxes(); i++)
+        {
+            (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
+        }
+
+        if (save())
+        {
+            Archive::deleteFile(Archive::sd(), u"/3ds/PKSM/bank/bank.bin");
+        }
     }
     else
     {
-        Gui::error(i18n::localize("BANK_BAD_CONVERT"), stream.result());
-        delete[] oldData;
-        stream.close();
-        return;
-    }
-    stream.close();
-
-    // ANOTHER CONVERSION SECTION
-    entries = new BankEntry[oldSize / 232];
-    std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
-    header.version = BANK_VERSION;
-    header.boxes   = oldSize / 232 / 30;
-    extern nlohmann::json g_banks;
-    g_banks["pksm_1"] = header.boxes;
-    std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
-    boxNames = nlohmann::json::array();
-
-    for (int box = 0; box < std::min((int)(oldSize / (232 * 30)), boxes()); box++)
-    {
-        for (int slot = 0; slot < 30; slot++)
-        {
-            u8* pkmData              = oldData + box * (232 * 30) + slot * 232;
-            std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData);
-            if (pkm->species() == 0)
-            {
-                this->pkm(pkm, box, slot);
-                continue;
-            }
-            bool badMove = false;
-            for (int i = 0; i < 4; i++)
-            {
-                if (pkm->move(i) > 621)
-                {
-                    badMove = true;
-                    break;
-                }
-                if (pkm->relearnMove(i) > 621)
-                {
-                    badMove = true;
-                    break;
-                }
-            }
-            if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
-            {
-                pkm = std::make_shared<PK7>(pkmData);
-            }
-            else if (((PK6*)pkm.get())->encounterType() != 0)
-            {
-                if (((PK6*)pkm.get())->level() == 100) // Can be hyper trained
-                {
-                    if (!pkm->gen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
-                    {
-                        pkm = std::make_shared<PK7>(pkmData);
-                    }
-                }
-            }
-            this->pkm(pkm, box, slot);
-        }
-    }
-
-    for (int i = 0; i < boxes(); i++)
-    {
-        (*boxNames)[i] = i18n::localize("STORAGE") + " " + std::to_string(i + 1);
-    }
-
-    stream = FSStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
-    stream.write(oldData, oldSize);
-    stream.close();
-
-    delete[] oldData;
-
-    if (save())
-    {
-        Archive::deleteFile(Archive::sd(), u"/3ds/PKSM/bank/bank.bin");
+        Gui::error(i18n::localize("BANK_BAD_CONVERT"), R_FAILED(inStream.result()) ? inStream.result() : outStream.result());
+        inStream.close();
+        outStream.close();
     }
 }
 
