@@ -44,6 +44,7 @@
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -506,9 +507,9 @@ void StorageScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -1093,8 +1094,8 @@ void StorageScreen::putDownSwap()
         bankMon = TitleLoader::save->transfer(bankMon);
         if (!bankMon)
         {
-            Gui::warn(StringUtils::format(
-                i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(bankMon->generation()), genToCstring(TitleLoader::save->generation())));
+            Gui::warn(fmt::format(
+                i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(bankMon->generation()), genToString(TitleLoader::save->generation())));
             return;
         }
         if (bankMon->species() == 0 || (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
@@ -1187,8 +1188,8 @@ void StorageScreen::putDownNonSwap()
                 {
                     if (moveMon.size() == 1)
                     {
-                        Gui::warn(StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(moveMon[index]->generation()),
-                            genToCstring(TitleLoader::save->generation())));
+                        Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(moveMon[index]->generation()),
+                            genToString(TitleLoader::save->generation())));
                     }
                     continue;
                 }
@@ -1284,7 +1285,8 @@ bool StorageScreen::dumpPkm()
                     return false;
                 }
                 dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") +
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
                         (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())
@@ -1307,7 +1309,8 @@ bool StorageScreen::dumpPkm()
             else
             {
                 dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") +
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
                         (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())

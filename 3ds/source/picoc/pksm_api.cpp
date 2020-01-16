@@ -45,6 +45,7 @@
 #include "WC7.hpp"
 #include "WC8.hpp"
 #include "banks.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -284,8 +285,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         pkm = TitleLoader::save->transfer(pkm);
         if (!pkm)
         {
-            Gui::warn(
-                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
         std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
@@ -639,8 +639,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         pkm = TitleLoader::save->transfer(pkm);
         if (!pkm)
         {
-            Gui::warn(
-                StringUtils::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToCstring(gen), genToCstring(TitleLoader::save->generation())));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
         std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);

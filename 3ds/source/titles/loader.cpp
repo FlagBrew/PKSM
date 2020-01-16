@@ -31,6 +31,7 @@
 #include "Sav.hpp"
 #include "Title.hpp"
 #include "archive.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include <atomic>
@@ -290,7 +291,7 @@ void TitleLoader::scanSaves(void)
     for (size_t i = 0; i < ctrTitleIds.size(); i++)
     {
         u32 uniqueId                   = (u32)ctrTitleIds[i] >> 8;
-        std::string id                 = StringUtils::format("0x%05X", uniqueId);
+        std::string id                 = fmt::format(FMT_STRING("0x{:05X}"), uniqueId);
         std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
         if (Configuration::getInstance().showBackups())
         {

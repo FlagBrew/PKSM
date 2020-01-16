@@ -37,6 +37,7 @@
 #include "WC6.hpp"
 #include "WC7.hpp"
 #include "archive.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -173,8 +174,9 @@ void InjectSelectorScreen::drawBottom() const
 
     Gui::text("\uE004", 75, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
     Gui::text("\uE005", 228, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(StringUtils::format("%d/%d", hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1), 160,
-        20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(
+        fmt::format(FMT_STRING("{:d}/{:d}"), hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1),
+        160, 20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto& button : buttons)
     {

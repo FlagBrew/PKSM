@@ -33,6 +33,7 @@
 #include "archive.hpp"
 #include "banks.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
@@ -145,10 +146,10 @@ namespace
     {
         moveIcon.clear();
         consoleInit(GFX_TOP, nullptr);
-        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-        printf("\x1b[5;1HError during startup: \x1b[31m0x%08lX\x1b[0m", res);
-        printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message.c_str());
-        printf("\x1b[29;16HPress START to exit.");
+        fmt::print(FMT_STRING("\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        fmt::print(FMT_STRING("\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m"), (u32)res);
+        fmt::print(FMT_STRING("\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m"), message);
+        fmt::print(FMT_STRING("\x1b[29;16HPress START to exit."));
         gfxFlushBuffers();
         gfxSwapBuffers();
         gspWaitForVBlank();
@@ -721,7 +722,7 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(StringUtils::format(i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
+            Gui::waitFrame(fmt::format(i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
             svcSleepThread(50'000'000);
         }
 

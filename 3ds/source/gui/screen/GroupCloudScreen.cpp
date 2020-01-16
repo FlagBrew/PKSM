@@ -40,6 +40,7 @@
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
@@ -204,8 +205,7 @@ void GroupCloudScreen::drawTop() const
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
     Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER,
-        TextPosY::TOP);
+    Gui::text(fmt::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -328,9 +328,9 @@ void GroupCloudScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -743,7 +743,8 @@ bool GroupCloudScreen::dumpPkm()
             }
             else
             {
-                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") +
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
                         (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())

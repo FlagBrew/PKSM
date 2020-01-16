@@ -44,7 +44,6 @@ FORMATSOURCES	:=	../common/source \
 					../common/source/sound \
 					../common/source/sound/decoder \
 					../common/source/utils \
-					../core/source \
 					../core/source/i18n \
 					../core/source/personal \
 					../core/source/pkx \
@@ -93,6 +92,7 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
+					../core/fmt \
 					../core/memecrypto \
 					../core/include
 GRAPHICS		:=	../assets/gfx/ui
@@ -125,6 +125,8 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
+			-DFMT_EXCEPTIONS=0 \
+			-DFMT_HEADER_ONLY \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
 			`curl-config --cflags`
 
@@ -250,7 +252,7 @@ ifeq ($(OS),Windows_NT)
 else
 	@cd $(PACKER) && python3 packer.py
 endif
-	@cd $(PACKER) && cp out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
+	@cd $(PACKER) && mv out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
 ifeq ($(OS),Windows_NT)
 	@cd $(SCRIPTS) && py -3 genScripts.py
 else
