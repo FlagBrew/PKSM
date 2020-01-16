@@ -25,6 +25,7 @@
  */
 
 #include "LanguageStrings.hpp"
+#include "format.h"
 #include "io.hpp"
 #include "utils.hpp"
 
@@ -108,7 +109,7 @@ LanguageStrings::LanguageStrings(Language lang)
     for (auto i = countries.begin(); i != countries.end(); i++)
     {
         subregions[i->first] = {};
-        load(lang, StringUtils::format("/subregions/%03i.txt", (int)i->first), subregions[i->first]);
+        load(lang, fmt::format("/subregions/{:03d}.txt", i->first), subregions[i->first]);
     }
     load(lang, "/gui.json", gui);
 }

@@ -34,6 +34,7 @@
 #include "PK8.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "nlohmann/json.hpp"
 #include <unistd.h>
 
@@ -364,12 +365,11 @@ long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)
         {
-            curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-            char fieldName[6];
-            sprintf(fieldName, "pkmn%u", i + 1);
-            curl_mime_name(field, fieldName);
+            curl_mimepart* field  = curl_mime_addpart(mimeThing.get());
+            std::string fieldName = fmt::format("pkmn{:d}", i + 1);
+            curl_mime_name(field, fieldName.c_str());
             curl_mime_data(field, (char*)sendMe[i]->rawData(), sendMe[i]->getLength());
-            curl_mime_filename(field, fieldName);
+            curl_mime_filename(field, fieldName.c_str());
         }
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 

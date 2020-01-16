@@ -370,17 +370,6 @@ namespace
     }
 }
 
-std::string StringUtils::format(std::string fmt_str, ...)
-{
-    va_list ap;
-    char* fp = NULL;
-    va_start(ap, fmt_str);
-    vasprintf(&fp, fmt_str.c_str(), ap);
-    va_end(ap);
-    std::unique_ptr<char, decltype(free)*> formatted(fp, free);
-    return std::string(formatted.get());
-}
-
 std::u16string StringUtils::UTF8toUTF16(const std::string& src)
 {
     std::u16string ret;

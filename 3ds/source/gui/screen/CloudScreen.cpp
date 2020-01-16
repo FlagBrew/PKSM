@@ -32,7 +32,6 @@
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
-#include "GroupCloudScreen.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
 #include "QRScanner.hpp"
@@ -41,6 +40,7 @@
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
@@ -74,10 +74,6 @@ namespace
             else if (tmp.find("LGPE") == 0)
             {
                 *(Generation*)(userdata) = Generation::LGPE;
-            }
-            else if (tmp.find("8") == 0)
-            {
-                *(Generation*)(userdata) = Generation::EIGHT;
             }
         }
         return nitems * size;
@@ -232,8 +228,7 @@ void CloudScreen::drawTop() const
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
     Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(StringUtils::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER,
-        TextPosY::TOP);
+    Gui::text(fmt::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -322,7 +317,7 @@ void CloudScreen::drawTop() const
             TextPosY::TOP);
         u8 firstType  = infoMon->type1();
         u8 secondType = infoMon->type2();
-        if (infoMon->generation() < Generation::FIVE)
+        if (infoMon->generation() == Generation::FOUR)
         {
             if (firstType > 8)
                 firstType--;
@@ -348,9 +343,9 @@ void CloudScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = StringUtils::format("%2i/%2i/%2i", infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -407,12 +402,8 @@ void CloudScreen::update(touchPosition* touch)
 
     if (kDown & KEY_Y)
     {
-        std::unique_ptr<Screen> screen = std::make_unique<GroupCloudScreen>(storageBox, filter);
-        Gui::screenBack();
-        Gui::setScreen(std::move(screen));
-        return;
-        // saveChosen = !saveChosen;
-        // storageBox = 0;
+        saveChosen = !saveChosen;
+        storageBox = 0;
     }
 
     for (auto& button : mainButtons)
@@ -800,7 +791,8 @@ bool CloudScreen::dumpPkm()
             }
             else
             {
-                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " + StringUtils::format("%08X") +
+                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
                         (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())
@@ -963,13 +955,32 @@ void CloudScreen::shareReceive()
                 }
                 auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
-                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data(), retData.size());
-
-                if (!pkm)
+                size_t targetLength = 0;
+                switch (gen)
+                {
+                    case Generation::FOUR:
+                    case Generation::FIVE:
+                        targetLength = 138;
+                        break;
+                    case Generation::SIX:
+                    case Generation::SEVEN:
+                        targetLength = 234;
+                        break;
+                    case Generation::LGPE:
+                        targetLength = 261;
+                        break;
+                    case Generation::EIGHT:
+                        targetLength = 345;
+                    case Generation::UNUSED:
+                        break;
+                }
+                if (retData.size() != targetLength)
                 {
                     Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
                     return;
                 }
+
+                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data());
 
                 if (!cloudChosen && cursorIndex != 0)
                 {
@@ -1000,14 +1011,54 @@ void CloudScreen::shareReceive()
 
 bool CloudScreen::isValidTransfer(std::shared_ptr<PKX> moveMon)
 {
-    std::string invalidReasons = TitleLoader::save->invalidTransferReason(moveMon);
-    if (invalidReasons.empty())
+    if (!moveMon)
     {
-        return true;
-    }
-    else
-    {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
         return false;
     }
+    bool moveBad = false;
+    for (int i = 0; i < 4; i++)
+    {
+        if (TitleLoader::save->availableMoves().count((int)moveMon->move(i)) == 0)
+        {
+            moveBad = true;
+            break;
+        }
+        if (TitleLoader::save->availableMoves().count((int)moveMon->relearnMove(i)) == 0)
+        {
+            moveBad = true;
+            break;
+        }
+    }
+    if (moveBad)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_MOVE"));
+        return false;
+    }
+    else if (TitleLoader::save->availableSpecies().count((int)moveMon->species()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_SPECIES"));
+        return false;
+    }
+    else if (moveMon->alternativeForm() > TitleLoader::save->formCount(moveMon->species()) &&
+             !((moveMon->species() == 664 || moveMon->species() == 665) && moveMon->alternativeForm() <= TitleLoader::save->formCount(666)))
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_FORM"));
+        return false;
+    }
+    else if (TitleLoader::save->availableAbilities().count((int)moveMon->ability()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ABILITY"));
+        return false;
+    }
+    else if (TitleLoader::save->availableItems().count((int)moveMon->heldItem()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_ITEM"));
+        return false;
+    }
+    else if (TitleLoader::save->availableBalls().count((int)moveMon->ball()) == 0)
+    {
+        Gui::warn(i18n::localize("STORAGE_BAD_TRANFER") + '\n' + i18n::localize("STORAGE_BAD_BALL"));
+        return false;
+    }
+    return true;
 }

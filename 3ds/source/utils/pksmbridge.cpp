@@ -30,6 +30,7 @@
 #include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
 #include "archive.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -60,7 +61,7 @@ void setLoadedSaveFromBridge(bool v)
 
 bool receiveSaveFromBridge(void)
 {
-    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' + StringUtils::format(i18n::localize("WIRELESS_IP"), getHostId())))
+    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' + fmt::format(i18n::localize("WIRELESS_IP"), getHostId())))
     {
         return false;
     }
@@ -118,7 +119,7 @@ bool receiveSaveFromBridge(void)
         {
             break;
         }
-        fprintf(stderr, "Recv %u bytes, %u still missing\n", total, size - total);
+        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
     }
 
     close(fdconn);
@@ -176,7 +177,7 @@ bool sendSaveToBridge(void)
             break;
         }
         total += n;
-        fprintf(stderr, "Sent %u bytes, %u still missing\n", total, size - total);
+        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
     }
     if (total == size)
     {

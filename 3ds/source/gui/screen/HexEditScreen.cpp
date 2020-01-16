@@ -33,9 +33,9 @@
 #include "PK7.hpp"
 #include "Sav.hpp"
 #include "endian.hpp"
+#include "format.h"
 #include "i18n.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
 #include <bitset>
 
 namespace
@@ -1293,8 +1293,8 @@ void HexEditScreen::drawTop() const
                 {
                     color = PKSM_Color(0, 0, 0, 120);
                 }
-                Gui::text(StringUtils::format("%02X", pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), x * 25 + 24 / 2, y * 15 + 1,
-                    FONT_SIZE_9, color, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(fmt::format(FMT_STRING("{:02X}"), pkm->rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]), x * 25 + 24 / 2,
+                    y * 15 + 1, FONT_SIZE_9, color, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
@@ -1309,12 +1309,12 @@ void HexEditScreen::drawTop() const
 void HexEditScreen::drawBottom() const
 {
     Gui::backgroundBottom(false);
-    Gui::text(StringUtils::format("%s 0x%02X", i18n::localize("HEX_SELECTED_BYTE").c_str(), hid.fullIndex()), 160, 8, FONT_SIZE_14, COLOR_WHITE,
+    Gui::text(fmt::format(FMT_STRING("{:s} 0x{:02X}"), i18n::localize("HEX_SELECTED_BYTE"), hid.fullIndex()), 160, 8, FONT_SIZE_14, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_emulated_button_selected_blue_idx, 140, 50);
-    Gui::text(StringUtils::format("%01X %01X", pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52, FONT_SIZE_14,
-        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(fmt::format(FMT_STRING("{:01X} {:01X}"), pkm->rawData()[hid.fullIndex()] >> 4, pkm->rawData()[hid.fullIndex()] & 0x0F), 160, 52,
+        FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     if (level >= selectedDescription.second)
     {
         for (auto& button : buttons[hid.fullIndex()])

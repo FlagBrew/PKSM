@@ -27,9 +27,9 @@
 #include "ViewOverlay.hpp"
 #include "Configuration.hpp"
 #include "PB7.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace
 {
@@ -111,7 +111,7 @@ void ViewOverlay::drawTop() const
         {
             Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
         }
-        Gui::text(StringUtils::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);
@@ -142,7 +142,7 @@ void ViewOverlay::drawTop() const
 
         u8 firstType  = pkm->type1();
         u8 secondType = pkm->type2();
-        if (pkm->generation() < Generation::FIVE)
+        if (pkm->generation() == Generation::FOUR)
         {
             if (firstType > 8)
                 firstType--;
@@ -167,10 +167,10 @@ void ViewOverlay::drawTop() const
             TextPosY::TOP);
         Gui::text(
             i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(StringUtils::format("%i/%i", pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            StringUtils::format("%u/%u", pkm->versionTID(), pkm->versionSID()), 87, 176, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(StringUtils::format("%i/%i", (int)pkm->currentFriendship(), (int)pkm->otFriendship()), 122, 196, FONT_SIZE_12, COLOR_BLACK,
+        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->versionTID(), pkm->versionSID()), 87, 176, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->currentFriendship(), pkm->otFriendship()), 122, 196, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
             i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
