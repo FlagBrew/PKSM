@@ -129,13 +129,13 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
 
     switch (type)
     {
-        case SCBlockType::Common1:
-        case SCBlockType::Common2:
-        case SCBlockType::Common3:
-            // Block types A, B, and Common are empty; they have no extra data
+        case SCBlockType::Bool1:
+        case SCBlockType::Bool2:
+        case SCBlockType::Bool3:
+            // No extra data
             offset++;
             break;
-        case SCBlockType::Data:
+        case SCBlockType::Object:
         {
             dataLength = Endian::convertTo<u32>(data.get() + offset + 1) ^ xorShift.next32();
             for (size_t i = 0; i < dataLength; i++)
@@ -151,7 +151,7 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
             subtype    = SCBlockType(data[offset + 5] ^ xorShift.next());
             switch (subtype)
             {
-                case SCBlockType::Common3:
+                case SCBlockType::Bool3:
                     // An array of booleans
                     for (size_t i = 0; i < dataLength; i++)
                     {
@@ -159,16 +159,16 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
                     }
                     offset += 6 + dataLength;
                     break;
-                case SCBlockType::Single1:
-                case SCBlockType::Single2:
-                case SCBlockType::Single3:
-                case SCBlockType::Single4:
-                case SCBlockType::Single5:
-                case SCBlockType::Single6:
-                case SCBlockType::Single7:
-                case SCBlockType::Single8:
-                case SCBlockType::Single9:
-                case SCBlockType::Single10:
+                case SCBlockType::U8:
+                case SCBlockType::U16:
+                case SCBlockType::U32:
+                case SCBlockType::U64:
+                case SCBlockType::S8:
+                case SCBlockType::S16:
+                case SCBlockType::S32:
+                case SCBlockType::S64:
+                case SCBlockType::Float:
+                case SCBlockType::Double:
                 {
                     size_t entrySize = arrayEntrySize(subtype);
                     for (size_t i = 0; i < dataLength * entrySize; i++)
@@ -184,16 +184,16 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
             }
         }
         break;
-        case SCBlockType::Single1:
-        case SCBlockType::Single2:
-        case SCBlockType::Single3:
-        case SCBlockType::Single4:
-        case SCBlockType::Single5:
-        case SCBlockType::Single6:
-        case SCBlockType::Single7:
-        case SCBlockType::Single8:
-        case SCBlockType::Single9:
-        case SCBlockType::Single10:
+        case SCBlockType::U8:
+        case SCBlockType::U16:
+        case SCBlockType::U32:
+        case SCBlockType::U64:
+        case SCBlockType::S8:
+        case SCBlockType::S16:
+        case SCBlockType::S32:
+        case SCBlockType::S64:
+        case SCBlockType::Float:
+        case SCBlockType::Double:
         {
             size_t entrySize = arrayEntrySize(type);
             for (size_t i = 0; i < entrySize; i++)

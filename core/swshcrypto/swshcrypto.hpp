@@ -40,25 +40,24 @@ public:
     {
         None = 0,
 
-        // All aliases of each other
-        Common1 = 1,
-        Common2 = 2,
-        Common3 = 3,
+        Bool1 = 1, // False?
+        Bool2 = 2, // True?
+        Bool3 = 3, // Either? Array bool type
 
-        Data = 4,
+        Object = 4,
 
         Array = 5,
 
-        Single1  = 8,
-        Single2  = 9,
-        Single3  = 10,
-        Single4  = 11,
-        Single5  = 12,
-        Single6  = 13,
-        Single7  = 14,
-        Single8  = 15,
-        Single9  = 16,
-        Single10 = 17,
+        U8     = 8,
+        U16    = 9,
+        U32    = 10,
+        U64    = 11,
+        S8     = 12,
+        S16    = 13,
+        S32    = 14,
+        S64    = 15,
+        Float  = 16,
+        Double = 17,
     };
     u32 key() const;
     // Nop if in proper state
@@ -144,24 +143,24 @@ private:
         constexpr int baseSize = 4 + 1; // key + type
         switch (type)
         {
-            case SCBlockType::Common1:
-            case SCBlockType::Common2:
-            case SCBlockType::Common3:
+            case SCBlockType::Bool1:
+            case SCBlockType::Bool2:
+            case SCBlockType::Bool3:
                 return baseSize;
-            case SCBlockType::Data:
+            case SCBlockType::Object:
                 return baseSize + 4 + dataLength;
             case SCBlockType::Array:
                 return baseSize + 5 + dataLength * arrayEntrySize(subtype);
-            case SCBlockType::Single1:
-            case SCBlockType::Single2:
-            case SCBlockType::Single3:
-            case SCBlockType::Single4:
-            case SCBlockType::Single5:
-            case SCBlockType::Single6:
-            case SCBlockType::Single7:
-            case SCBlockType::Single8:
-            case SCBlockType::Single9:
-            case SCBlockType::Single10:
+            case SCBlockType::U8:
+            case SCBlockType::U16:
+            case SCBlockType::U32:
+            case SCBlockType::U64:
+            case SCBlockType::S8:
+            case SCBlockType::S16:
+            case SCBlockType::S32:
+            case SCBlockType::S64:
+            case SCBlockType::Float:
+            case SCBlockType::Double:
                 return baseSize + arrayEntrySize(type);
             default:
                 //! CHECK WHY THIS HAPPENS
@@ -173,20 +172,20 @@ private:
     {
         switch (type)
         {
-            case SCBlockType::Common3:
-            case SCBlockType::Single1:
-            case SCBlockType::Single5:
+            case SCBlockType::Bool3:
+            case SCBlockType::U8:
+            case SCBlockType::S8:
                 return 1;
-            case SCBlockType::Single2:
-            case SCBlockType::Single6:
+            case SCBlockType::U16:
+            case SCBlockType::S16:
                 return 2;
-            case SCBlockType::Single3:
-            case SCBlockType::Single7:
-            case SCBlockType::Single9:
+            case SCBlockType::U32:
+            case SCBlockType::S32:
+            case SCBlockType::Float:
                 return 4;
-            case SCBlockType::Single4:
-            case SCBlockType::Single8:
-            case SCBlockType::Single10:
+            case SCBlockType::U64:
+            case SCBlockType::S64:
+            case SCBlockType::Double:
                 return 8;
             default:
                 //! CHECK WHY THIS HAPPENS
@@ -198,21 +197,21 @@ private:
     {
         switch (type)
         {
-            case SCBlockType::Common1:
-            case SCBlockType::Common2:
-            case SCBlockType::Common3:
-            case SCBlockType::Single1:
-            case SCBlockType::Single2:
-            case SCBlockType::Single3:
-            case SCBlockType::Single4:
-            case SCBlockType::Single5:
-            case SCBlockType::Single6:
-            case SCBlockType::Single7:
-            case SCBlockType::Single8:
-            case SCBlockType::Single9:
-            case SCBlockType::Single10:
+            case SCBlockType::Bool1:
+            case SCBlockType::Bool2:
+            case SCBlockType::Bool3:
+            case SCBlockType::U8:
+            case SCBlockType::U16:
+            case SCBlockType::U32:
+            case SCBlockType::U64:
+            case SCBlockType::S8:
+            case SCBlockType::S16:
+            case SCBlockType::S32:
+            case SCBlockType::S64:
+            case SCBlockType::Float:
+            case SCBlockType::Double:
                 return 5;
-            case SCBlockType::Data:
+            case SCBlockType::Object:
                 return 9;
             case SCBlockType::Array:
                 return 10;
