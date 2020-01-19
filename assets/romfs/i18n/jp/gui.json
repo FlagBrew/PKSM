@@ -388,7 +388,7 @@
     "MOVE_4_PP_UPS": "技4 PPアップ",
     "MULTI_ABILITY_RIBBON": "マルチアビリティリボン",
     "MYSTERY_GIFT_CHECK": "更新されたギフトデータベースを確認しています…",
-    "MYSTERY_GIFT_DOWNLOAD": "ギフトデータベースをダウンロード中: {2:d}項目の{1:d}項目",
+    "MYSTERY_GIFT_DOWNLOAD": "ギフトデータベースをダウンロード中: {1:d}項目の{0:d}項目",
     "NA": "N/A",
     "NATIONAL_CHAMPION_RIBBON": "ナショナルチャンプリボン",
     "NATIONAL_RIBBON": "ナショナルリボン",
