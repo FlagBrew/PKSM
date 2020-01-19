@@ -179,8 +179,7 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
                 }
                 break;
                 default:
-                    //! CHECK WHY THIS HAPPENED IF IT DOES
-                    std::abort();
+                    throw CryptoException("Decoding block: Key: " + std::to_string(key()));
             }
         }
         break;
@@ -204,8 +203,7 @@ SCBlock::SCBlock(std::shared_ptr<u8[]> data, size_t& offset) : data(data), myOff
         }
         break;
         default:
-            //! CHECK WHY THIS HAPPENED IF IT DOES
-            std::abort();
+            throw CryptoException("Decoding block: Key: " + std::to_string(key()));
     }
 }
 

@@ -66,10 +66,10 @@ void UnistdDup2(struct ParseState *Parser, struct Value *ReturnValue, struct Val
     ReturnValue->Val->Integer = dup2(Param[0]->Val->Integer, Param[1]->Val->Integer);
 }
 
-void Unistd_Exit(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+/* void Unistd_Exit(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
     _exit(Param[0]->Val->Integer);
-}
+} */
 
 /* void UnistdFchown(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
@@ -419,7 +419,7 @@ struct LibraryFunction UnistdFunctions[] =
 /*    { UnistdExecv,         "int execv(char *, char *[]);" }, */
 /*    { UnistdExecve,        "int execve(char *, char *[], char *[]);" }, */
 /*    { UnistdExecvp,        "int execvp(char *, char *[]);" }, */
-    { Unistd_Exit,         "void _exit(int);" },
+/*    { Unistd_Exit,         "void _exit(int);" }, */
 /*    { UnistdFchown,        "int fchown(int, uid_t, gid_t);" }, */
 /*    { UnistdFchdir,        "int fchdir(int);" }, */
 /*    { UnistdFdatasync,     "int fdatasync(int);" }, */
@@ -502,4 +502,3 @@ void UnistdSetupFunc(Picoc *pc)
 }
 
 #endif /* !BUILTIN_MINI_STDLIB */
-

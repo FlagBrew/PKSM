@@ -71,6 +71,17 @@ public:
     }
 
 private:
+    class CryptoException : public std::exception
+    {
+    public:
+        CryptoException(const std::string& message) : mMessage("CryptoException: " + message) {}
+
+        const char* what() const noexcept override { return mMessage.c_str(); }
+
+    private:
+        std::string mMessage;
+    };
+
     class XorShift32
     {
     private:
@@ -163,8 +174,7 @@ private:
             case SCBlockType::Double:
                 return baseSize + arrayEntrySize(type);
             default:
-                //! CHECK WHY THIS HAPPENS
-                std::abort();
+                throw CryptoException("Type size unknown: " + std::to_string(u32(type)));
         }
     }
 
@@ -188,8 +198,7 @@ private:
             case SCBlockType::Double:
                 return 8;
             default:
-                //! CHECK WHY THIS HAPPENS
-                std::abort();
+                throw CryptoException("Type size unknown: " + std::to_string(u32(type)));
         }
     }
 
@@ -216,7 +225,7 @@ private:
             case SCBlockType::Array:
                 return 10;
             default:
-                std::abort(); //! CHECK WHY THIS HAPPENS
+                throw CryptoException("Type size unknown: " + std::to_string(u32(type)));
         }
     }
 };

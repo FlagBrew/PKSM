@@ -134,6 +134,16 @@ class QRScanner
 {
 private:
     using Traits = QRModeTraits<Mode>;
+    class QRException : public std::exception
+    {
+    public:
+        QRException(const std::string& message) : mMessage("QRException: " + message) {}
+
+        const char* what() const noexcept override { return mMessage.c_str(); }
+
+    private:
+        std::string mMessage;
+    };
 
 public:
     static typename Traits::ReturnType scan()
@@ -289,7 +299,7 @@ public:
         }
 
         // Should never happen
-        std::abort();
+        throw QRException("Unknown QR mode called");
     }
 };
 
