@@ -72,6 +72,58 @@ public:
     }
 
 private:
+    class XorShift32
+    {
+    private:
+        u32 mCounter = 0;
+        u32 mSeed;
+        static void advance(u32& key)
+        {
+            key ^= key << 2;
+            key ^= key >> 15;
+            key ^= key << 13;
+        }
+
+        static u32 popcount(u32 x)
+        {
+            x -= ((x >> 1) & 0x55555555u);
+            x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
+            x = (x + (x >> 4)) & 0x0F0F0F0Fu;
+            x += (x >> 8);
+            x += (x >> 16);
+            return x & 0x0000003Fu;
+        }
+
+    public:
+        XorShift32(u32 seed)
+        {
+            u32 count = popcount(seed);
+            for (u32 i = 0; i < count; i++)
+            {
+                advance(seed);
+            }
+
+            mSeed = seed;
+        }
+
+        u8 next()
+        {
+            u8 ret = (mSeed >> (mCounter << 3)) & 0xFF;
+            if (mCounter == 3)
+            {
+                advance(mSeed);
+                mCounter = 0;
+            }
+            else
+            {
+                ++mCounter;
+            }
+            return ret;
+        }
+
+        u32 next32() { return next() | (u32(next()) << 8) | (u32(next()) << 16) | (u32(next()) << 24); }
+    };
+
     SCBlock(std::shared_ptr<u8[]> data, size_t& offset);
     SCBlock(const SCBlock&) = delete;
     SCBlock& operator=(const SCBlock&) = delete;
@@ -87,8 +139,6 @@ private:
     SCBlockType subtype;
     bool currentlyEncrypted = false;
 
-    void cryptBytes(size_t inputOffset, size_t start, size_t size);
-    std::vector<u8> getKeyStream(size_t start, size_t size);
     size_t encryptedDataSize()
     {
         constexpr int baseSize = 4 + 1; // key + type
@@ -117,29 +167,6 @@ private:
                 //! CHECK WHY THIS HAPPENS
                 std::abort();
         }
-    }
-
-    static void xorshiftAdvance(u32& key)
-    {
-        key ^= (key << 2);
-        key ^= (key >> 15);
-        key ^= (key << 13);
-    }
-
-    static u32 popcount(u64 key)
-    {
-        // https://en.wikipedia.org/wiki/Hamming_weight#Efficient_implementation
-        constexpr u64 m1 = 0x5555555555555555;
-        constexpr u64 m2 = 0x3333333333333333;
-        constexpr u64 m4 = 0x0f0f0f0f0f0f0f0f;
-        // const u64 m8 = 0x00ff00ff00ff00ff;
-        // const u64 m16 = 0x0000ffff0000ffff;
-        // const u64 m32 = 0x00000000ffffffff;
-        constexpr u64 h01 = 0x0101010101010101;
-        key -= (key >> 1) & m1;
-        key = (key & m2) + ((key >> 2) & m2);
-        key = (key + (key >> 4)) & m4;
-        return (u32)((key * h01) >> 56);
     }
 
     static size_t arrayEntrySize(SCBlockType type)
