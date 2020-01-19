@@ -827,7 +827,10 @@ Result App::init(const std::string& execPath)
         return rebootToPKSM(execPath);
     }
 
-    updateGifts();
+    if (Configuration::getInstance().autoUpdate())
+    {
+        updateGifts();
+    }
 
     if (R_FAILED(res = Banks::init()))
         return consoleDisplayError("Banks::init failed.", res);
