@@ -32,12 +32,6 @@
 #include <queue>
 #include <vector>
 
-#if defined(_3DS)
-#include <3ds.h>
-#elif defined(__SWITCH__)
-#include <switch.h>
-#endif
-
 namespace
 {
     std::string utf16DataToUtf8(const char16_t* data, size_t size, char16_t delim = 0)
@@ -602,29 +596,7 @@ std::string& StringUtils::toLower(std::string& in)
 
 std::string StringUtils::transString45(const std::string& str)
 {
-    std::string ret = str;
-    for (size_t i = 0; i < ret.size(); i++)
-    {
-        u32 codepoint;
-        ssize_t consumedCodepoints = decode_utf8(&codepoint, (u8*)ret.data() + i);
-        if (consumedCodepoints == -1)
-        {
-            continue;
-        }
-        else
-        {
-            codepoint                   = swapCodepoints45(codepoint);
-            char codepoints[4]          = {'\0'};
-            ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
-            if (necessaryCodepoints == -1)
-            {
-                continue; // Should never happen
-            }
-            ret.replace(i, consumedCodepoints, codepoints, necessaryCodepoints);
-            i += necessaryCodepoints - 1;
-        }
-    }
-    return ret;
+    return UTF16toUTF8(transString45(UTF8toUTF16(str)));
 }
 
 std::u16string StringUtils::transString45(const std::u16string& str)
@@ -636,29 +608,7 @@ std::u16string StringUtils::transString45(const std::u16string& str)
 
 std::string StringUtils::transString67(const std::string& str)
 {
-    std::string ret = str;
-    for (size_t i = 0; i < ret.size(); i++)
-    {
-        u32 codepoint;
-        ssize_t consumedCodepoints = decode_utf8(&codepoint, (u8*)ret.data() + i);
-        if (consumedCodepoints == -1)
-        {
-            continue;
-        }
-        else
-        {
-            codepoint                   = swapCodepoints67(codepoint);
-            char codepoints[4]          = {'\0'};
-            ssize_t necessaryCodepoints = encode_utf8((u8*)codepoints, codepoint);
-            if (necessaryCodepoints == -1)
-            {
-                continue; // Should never happen
-            }
-            ret.replace(i, consumedCodepoints, codepoints, necessaryCodepoints);
-            i += necessaryCodepoints - 1;
-        }
-    }
-    return ret;
+    return UTF16toUTF8(transString67(UTF8toUTF16(str)));
 }
 
 std::u16string StringUtils::transString67(const std::u16string& str)
