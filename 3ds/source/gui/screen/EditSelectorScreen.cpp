@@ -409,7 +409,10 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         for (size_t i = 0; i < buttons.size(); i++)
         {
-            buttons[i]->update(touch);
+            if (buttons[i]->update(touch))
+            {
+                return;
+            }
         }
 
         for (auto& button : pkmButtons)
