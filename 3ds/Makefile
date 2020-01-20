@@ -125,7 +125,6 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DUNIQUE_ID=${UNIQUE_ID} \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
-			-DFMT_EXCEPTIONS=0 \
 			-DFMT_HEADER_ONLY \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
 			`curl-config --cflags`
