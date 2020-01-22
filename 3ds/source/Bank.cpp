@@ -422,7 +422,7 @@ void Bank::convertFromBankBin()
         extern nlohmann::json g_banks;
         g_banks["pksm_1"] = header.boxes;
         std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
-        boxNames = nlohmann::json::array();
+        boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
 
         for (int box = 0; box < std::min((int)(oldSize / (232 * 30)), boxes()); box++)
         {
