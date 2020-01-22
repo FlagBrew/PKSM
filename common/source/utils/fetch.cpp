@@ -103,8 +103,7 @@ Result Fetch::download(
         return -errno;
     }
 
-    bool doPost = !postData.empty();
-    if (auto fetch = Fetch::init(url, doPost, nullptr, nullptr, postData))
+    if (auto fetch = Fetch::init(url, url.substr(0, 5) == "https", nullptr, nullptr, postData))
     {
         fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
         fetch->setopt(CURLOPT_WRITEDATA, file);
