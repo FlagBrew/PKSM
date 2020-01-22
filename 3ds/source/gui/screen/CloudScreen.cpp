@@ -32,6 +32,7 @@
 #include "Configuration.hpp"
 #include "FSStream.hpp"
 #include "FilterScreen.hpp"
+#include "GroupCloudScreen.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
 #include "QRScanner.hpp"
@@ -402,8 +403,10 @@ void CloudScreen::update(touchPosition* touch)
 
     if (kDown & KEY_Y)
     {
-        saveChosen = !saveChosen;
-        storageBox = 0;
+        std::unique_ptr<Screen> screen = std::make_unique<GroupCloudScreen>(storageBox, filter);
+        Gui::screenBack();
+        Gui::setScreen(std::move(screen));
+        return;
     }
 
     for (auto& button : mainButtons)
