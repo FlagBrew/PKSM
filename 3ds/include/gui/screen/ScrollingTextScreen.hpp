@@ -43,9 +43,11 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
 
+protected:
+    std::shared_ptr<PKX> pkm;
+
 private:
     std::shared_ptr<TextParse::Text> text;
-    std::shared_ptr<PKX> pkm;
     size_t lineOffset                   = 0;
     static constexpr size_t SHOWN_LINES = 15;
 };

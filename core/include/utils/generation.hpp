@@ -38,6 +38,7 @@ enum class Generation : u32
     SEVEN,
     LGPE,
     EIGHT,
+    THREE,
     UNUSED = 0xFFFFFFFF
 };
 

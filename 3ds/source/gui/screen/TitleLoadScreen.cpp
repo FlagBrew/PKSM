@@ -34,9 +34,9 @@
 #include "Sav.hpp"
 #include "SaveLoadScreen.hpp"
 #include "Title.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -174,7 +174,7 @@ void TitleLoadScreen::drawBottom() const
             Gui::drawImageAt(title->icon(), 253, 31, NULL, 1.0f, 1.0f);
         }
         Gui::text(title->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(StringUtils::format("%08X", title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(FMT_STRING("{:08X}"), title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         Gui::text(selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD"), nextMediaPart, 58, FONT_SIZE_11,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);

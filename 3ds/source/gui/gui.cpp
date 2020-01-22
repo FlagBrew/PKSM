@@ -30,10 +30,10 @@
 #include "MessageScreen.hpp"
 #include "PKX.hpp"
 #include "TextParse.hpp"
+#include "format.h"
 #include "personal.hpp"
 #include "sound.hpp"
 #include "thread.hpp"
-#include "utils.hpp"
 #include <stack>
 
 namespace
@@ -2046,7 +2046,7 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
     text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -2074,8 +2074,8 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(StringUtils::format(i18n::localize("DOWNLOADING_FILE"), path.c_str()), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(StringUtils::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(fmt::format(i18n::localize("DOWNLOADING_FILE"), path), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -2138,7 +2138,7 @@ void Gui::error(const std::string& message, Result errorCode)
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
         text(message, 200, 85, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        text(StringUtils::format(i18n::localize("ERROR_CODE"), errorCode), 200, 105, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency),
+        text(fmt::format(i18n::localize("ERROR_CODE"), (u32)errorCode), 200, 105, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency),
             TextPosX::CENTER, TextPosY::TOP);
 
         text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);

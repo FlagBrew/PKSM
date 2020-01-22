@@ -61,16 +61,19 @@ public:
     static constexpr int PKSM_MAX_SPECIES = 890;
 
     virtual u8* rawData(void) { return data; }
-    void decrypt(void);
-    void encrypt(void);
+    virtual void decrypt(void);
+    virtual void encrypt(void);
     virtual std::shared_ptr<PKX> clone(void) const = 0;
     virtual ~PKX();
     PKX(u8* data, size_t length, bool directAccess = false);
     PKX(const PKX& pk) = delete;
     PKX& operator=(const PKX& pk) = delete;
     static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, bool party = false, bool directAccess = false);
+    // Returns null if length is not valid for that generation, and a party Pokemon depending on length
+    static std::unique_ptr<PKX> getPKM(Generation gen, u8* data, size_t length, bool directAccess = false);
     bool operator==(const PKFilter& filter) const;
 
+    virtual std::shared_ptr<PKX> convertToG3(Sav& save) const { return generation() == Generation::THREE ? clone() : nullptr; }
     virtual std::shared_ptr<PKX> convertToG4(Sav& save) const { return generation() == Generation::FOUR ? clone() : nullptr; }
     virtual std::shared_ptr<PKX> convertToG5(Sav& save) const { return generation() == Generation::FIVE ? clone() : nullptr; }
     virtual std::shared_ptr<PKX> convertToG6(Sav& save) const { return generation() == Generation::SIX ? clone() : nullptr; }
@@ -90,6 +93,7 @@ public:
     void fixMoves(void);
 
     static u32 getRandomPID(u16 species, u8 gender, u8 originGame, u8 nature, u8 form, u8 abilityNum, u32 oldPid, Generation gen);
+    static u8 genderFromPID(u32 pid);
 
     // BLOCK A
     virtual u32 encryptionConstant(void) const = 0;

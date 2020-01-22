@@ -39,7 +39,6 @@
 
 namespace StringUtils
 {
-    std::string format(std::string fmt_str, ...);
     std::u16string UTF8toUTF16(const std::string& src);
     std::string UTF16toUTF8(const std::u16string& src);
     std::u16string getU16String(const u8* data, int ofs, int len, char16_t term);
@@ -48,6 +47,8 @@ namespace StringUtils
     void setString(u8* data, const std::string& v, int ofs, int len, char16_t terminator = 0, char16_t padding = 0);
     std::string getString4(const u8* data, int ofs, int len);
     void setString4(u8* data, const std::string& v, int ofs, int len);
+    std::string getString3(const u8* data, int ofs, int len, bool jp);
+    void setString3(u8* data, const std::string& v, int ofs, int len, bool jp);
     std::vector<u16> stringToG4(const std::string& v);
     std::string& toLower(std::string& in);
     std::string& toUpper(std::string& in);

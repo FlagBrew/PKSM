@@ -5,6 +5,8 @@ import json
 import struct
 import bz2
 import gen4string
+import hashlib
+from shutil import rmtree
 
 validLangs = ["CHS", "CHT", "ENG", "FRE", "GER", "ITA", "JPN", "KOR", "SPA"]
 validTypes = ["wc7", "wc6", "wc7full", "wc6full", "pgf", "wc4", "pgt"]
@@ -217,11 +219,26 @@ except:
 # import a/o update the EventsGallery
 if os.path.exists("./EventsGallery"):
 	print("Pulling from EventsGallery...")
-	repo = git.Repo("./EventsGallery")
-	repo.remotes.origin.pull()
+	try:
+		repo = git.Repo("./EventsGallery")
+		repo.remotes.origin.pull()
+	except git.InvalidGitRepositoryError:
+		print("Repository corrupted! Cloning EventsGallery...")
+		rmtree('./EventsGallery')
+		try:
+			git.Git(".").clone("https://github.com/projectpokemon/EventsGallery.git")
+		except git.GitCommandError:
+			print("Could not clone EventsGallery. Aborting...")
+			exit(1)
+	except git.GitCommandError:
+		print("Error while pulling! Continuing with existing repo")
 else:
 	print("Cloning EventsGallery...")
-	git.Git(".").clone("https://github.com/projectpokemon/EventsGallery.git")
+	try:
+		git.Git(".").clone("https://github.com/projectpokemon/EventsGallery.git")
+	except git.GitCommandError:
+		print("Could not clone EventsGallery. Aborting...")
+		exit(1)
 
 # loop generations
 print("Creating data...")
@@ -257,7 +274,17 @@ for gen in range (4, 7+1):
 	with open("./out/sheet{}.json.bz2".format(gen), 'wb') as f:
 		f.write(compressed)
 
+	# sheet sha256
+	sha = hashlib.sha256(compressed).digest()
+	with open("./out/sheet{}.json.bz2.sha".format(gen), 'wb') as f:
+		f.write(sha)
+
 	# export data
 	compressed = bz2.compress(data)
 	with open("./out/data{}.bin.bz2".format(gen), 'wb') as f:
 		f.write(compressed)
+
+	# data sha256
+	sha = hashlib.sha256(compressed).digest()
+	with open("./out/data{}.bin.bz2.sha".format(gen), 'wb') as f:
+		f.write(sha)

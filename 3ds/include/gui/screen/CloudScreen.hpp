@@ -37,8 +37,6 @@ class PKX;
 
 class CloudScreen : public Screen
 {
-    friend class StorageViewOverlay;
-
 public:
     CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter = nullptr);
 

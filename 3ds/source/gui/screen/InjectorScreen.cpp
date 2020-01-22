@@ -29,12 +29,12 @@
 #include "Configuration.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
 #include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
-#include "utils.hpp"
 
 namespace
 {
@@ -376,10 +376,10 @@ void InjectorScreen::drawTop() const
                 sid  = TitleLoader::save->SID();
             }
             Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(StringUtils::format("%i/%i", tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(StringUtils::format("%i/%i/%i", wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(fmt::format(FMT_STRING("{:d}/{:d}/{:d}"), wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14,
+                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);

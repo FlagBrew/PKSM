@@ -36,9 +36,9 @@
 #include "QRScanner.hpp"
 #include "SavLGPE.hpp"
 #include "ViewOverlay.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
 #include <memory>
 
 void EditSelectorScreen::changeBoxName()
@@ -318,8 +318,8 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(StringUtils::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224,
-            FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224, FONT_SIZE_9,
+            COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)
