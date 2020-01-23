@@ -907,7 +907,7 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     }
     else
     {
-        Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
+        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
         return false;
     }
 }

@@ -291,7 +291,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
         if (!invalidReasons.empty())
         {
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
         }
         else
         {
@@ -645,7 +645,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
         if (!invalidReasons.empty())
         {
-            Gui::warn(i18n::localize("STORAGE_BAD_TRANSFER") + '\n' + i18n::localize(invalidReasons));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
         }
         else
         {
