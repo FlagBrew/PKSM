@@ -41,6 +41,7 @@ public:
 private:
     void attemptLegalization();
     std::unique_ptr<Button> legalButton;
+    bool justSwitched = true;
 };
 
 #endif

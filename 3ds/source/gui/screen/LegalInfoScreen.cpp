@@ -63,6 +63,17 @@ void LegalInfoScreen::drawBottom() const
 
 void LegalInfoScreen::update(touchPosition* touch)
 {
+    if (justSwitched)
+    {
+        if (hidKeysHeld() & KEY_TOUCH)
+        {
+            return;
+        }
+        else
+        {
+            justSwitched = false;
+        }
+    }
     if (legalButton)
     {
         legalButton->update(touch);
