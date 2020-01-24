@@ -43,12 +43,12 @@ Language getSafeLanguage(Generation gen, Language orig)
     {
         // case Generation::ONE
         // case Generation::TWO
-        // case Generation::THREE:
-        //     if (std::find(G3Langs.begin(), G3Langs.end(), orig) != G3Langs.end())
-        //     {
-        //         return orig;
-        //     }
-        //     return Language::EN;
+        case Generation::THREE:
+            if (std::find(G3Langs.begin(), G3Langs.end(), orig) != G3Langs.end())
+            {
+                return orig;
+            }
+            return Language::EN;
         case Generation::FOUR:
         case Generation::FIVE:
         case Generation::SIX:
