@@ -792,7 +792,10 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("socInit failed.", -1);
     }
 
-    Fetch::initMulti();
+    if (R_FAILED(Fetch::initMulti()))
+    {
+        return consoleDisplayError("Initializing network connection failed.", -1);
+    }
 
     if (R_FAILED(res = downloadAdditionalAssets()))
         return consoleDisplayError(
