@@ -110,7 +110,7 @@ void Bank::load(int maxBoxes)
                     for (int i = 0; i < boxes() * 30; i++)
                     {
                         in.read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i + sizeof(G7Entry)), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
+                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
                     in.close();
                 }
@@ -124,7 +124,7 @@ void Bank::load(int maxBoxes)
                     for (int i = 0; i < boxes() * 30; i++)
                     {
                         in.read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i + sizeof(G7Entry)), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
+                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
                     in.close();
                 }
