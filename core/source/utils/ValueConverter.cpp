@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "ValueConverter.hpp"
-#include "g3values.h"
+#include "utils/ValueConverter.hpp"
+#include "utils/g3values.h"
 #include <algorithm>
 
 u16 SpeciesConverter::g3ToNational(u16 v)

@@ -24,12 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav7.hpp"
-#include "PK7.hpp"
-#include "WC7.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "utils.hpp"
+#include "sav/Sav7.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK7.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
+#include "wcx/WC7.hpp"
 
 u16 Sav7::check16(u8* buf, u32 blockID, u32 len) const
 {

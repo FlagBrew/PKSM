@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavORAS.hpp"
-#include "endian.hpp"
+#include "sav/SavORAS.hpp"
+#include "utils/endian.hpp"
 #include <algorithm>
 
 SavORAS::SavORAS(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x76000)

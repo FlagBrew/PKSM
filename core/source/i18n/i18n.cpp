@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "i18n.hpp"
-#include "LanguageStrings.hpp"
+#include "i18n/i18n.hpp"
+#include "i18n/LanguageStrings.hpp"
 #include <atomic>
 #include <unistd.h>
 

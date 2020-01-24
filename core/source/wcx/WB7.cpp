@@ -24,11 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "WB7.hpp"
+#include "wcx/WB7.hpp"
 #include "Configuration.hpp"
-#include "endian.hpp"
-#include "personal.hpp"
-#include "utils.hpp"
+#include "personal/personal.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 namespace
 {

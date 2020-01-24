@@ -28,7 +28,7 @@
 #define SAV6_HPP
 
 #include "Sav.hpp"
-#include "personal.hpp"
+#include "personal/personal.hpp"
 
 class Sav6 : public Sav
 {

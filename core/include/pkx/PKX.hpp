@@ -27,14 +27,13 @@
 #ifndef PKX_HPP
 #define PKX_HPP
 
+#include "i18n/Language.hpp"
+#include "sav/Item.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
+#include "utils/stat.hpp"
 #include <memory>
 #include <string>
-
-#include "Item.hpp"
-#include "Language.hpp"
-#include "coretypes.h"
-#include "generation.hpp"
-#include "stat.hpp"
 
 class Sav;
 class PKFilter;

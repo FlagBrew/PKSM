@@ -24,12 +24,13 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PK3.hpp"
-#include "ValueConverter.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "pkx/PK3.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK4.hpp"
+#include "utils/ValueConverter.hpp"
+#include "utils/endian.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
 #include <algorithm>
 
 u8 PK3::getUnownForm(u32 pid)

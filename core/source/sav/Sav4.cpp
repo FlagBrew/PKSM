@@ -24,12 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav4.hpp"
-#include "PGT.hpp"
-#include "PK4.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "utils.hpp"
+#include "sav/Sav4.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK4.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
+#include "wcx/PGT.hpp"
 
 void Sav4::GBO(void)
 {

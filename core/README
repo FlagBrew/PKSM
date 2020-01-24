@@ -1,0 +1,15 @@
+PKSM core
+
+Usage in another project:
+Copy the directory this file is in to your project.
+
+Necessary include directories:
+- fmt
+- memecrypto
+- swshcrypto
+- include
+
+Necessary source directories:
+- memecrypto
+- swshcrypto
+- source and all its subdirectories

@@ -24,11 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "Sav.hpp"
-#include "endian.hpp"
-#include "utils.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "sav/Sav.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 #include <algorithm>
 
 void PK4::shuffleArray(u8 sv)

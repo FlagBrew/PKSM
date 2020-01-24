@@ -27,8 +27,8 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
-#include "coretypes.h"
-#include "generation.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
 
 class Item4;
 class Item5;

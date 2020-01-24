@@ -24,17 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PKX.hpp"
-#include "PB7.hpp"
-#include "PK3.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
-#include "PKFilter.hpp"
-#include "endian.hpp"
-#include "random.hpp"
+#include "pkx/PKX.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
+#include "pkx/PKFilter.hpp"
+#include "utils/endian.hpp"
+#include "utils/random.hpp"
 
 namespace
 {

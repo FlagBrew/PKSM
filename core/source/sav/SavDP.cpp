@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavDP.hpp"
-#include "PGT.hpp"
+#include "sav/SavDP.hpp"
+#include "wcx/PGT.hpp"
 
 SavDP::SavDP(std::shared_ptr<u8[]> dt) : Sav4(dt, 0x80000)
 {

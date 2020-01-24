@@ -24,9 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PB7.hpp"
-#include "endian.hpp"
-#include "utils.hpp"
+#include "pkx/PB7.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 void PB7::shuffleArray(u8 sv)
 {

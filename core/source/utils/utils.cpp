@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "utils.hpp"
-#include "endian.hpp"
-#include "g3text.hpp"
-#include "g4text.h"
+#include "utils/utils.hpp"
+#include "utils/endian.hpp"
+#include "utils/g3text.hpp"
+#include "utils/g4text.h"
 #include <algorithm>
 #include <map>
 #include <queue>

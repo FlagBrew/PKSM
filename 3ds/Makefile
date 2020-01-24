@@ -74,6 +74,7 @@ FORMATINCLUDES	:=	../common/include \
 					../common/include/sound \
 					../common/include/sound/decoder \
 					../common/include/utils \
+					../core/include \
 					../core/include/i18n \
 					../core/include/personal \
 					../core/include/pkx \

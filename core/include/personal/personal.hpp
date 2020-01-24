@@ -27,7 +27,7 @@
 #ifndef PERSONAL_HPP
 #define PERSONAL_HPP
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 
 namespace PersonalLGPE
 {

@@ -28,8 +28,8 @@
 #define I18N_HPP
 
 #include "Language.hpp"
-#include "coretypes.h"
-#include "generation.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
 #include <map>
 #include <string>
 #include <vector>

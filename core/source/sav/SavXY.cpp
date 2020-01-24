@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavXY.hpp"
-#include "endian.hpp"
+#include "sav/SavXY.hpp"
+#include "utils/endian.hpp"
 #include <algorithm>
 
 SavXY::SavXY(std::shared_ptr<u8[]> dt) : Sav6(dt, 0x65600)

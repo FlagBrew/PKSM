@@ -24,12 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavSWSH.hpp"
-#include "PK8.hpp"
-#include "WC8.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "utils.hpp"
+#include "sav/SavSWSH.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK8.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
+#include "wcx/WC8.hpp"
 
 namespace
 {

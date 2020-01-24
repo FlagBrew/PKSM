@@ -27,10 +27,10 @@
 #ifndef PKSM_WCX
 #define PKSM_WCX
 
-#include "Language.hpp"
-#include "coretypes.h"
-#include "generation.hpp"
-#include "stat.hpp"
+#include "i18n/Language.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
+#include "utils/stat.hpp"
 #include <string>
 
 class WCX

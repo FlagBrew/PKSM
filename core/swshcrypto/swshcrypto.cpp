@@ -25,8 +25,8 @@
  */
 
 #include "swshcrypto.hpp"
-#include "endian.hpp"
-#include "sha256.h"
+#include "utils/endian.hpp"
+#include "utils/sha256.h"
 #include <string.h>
 
 #define XORPAD_LENGTH 127

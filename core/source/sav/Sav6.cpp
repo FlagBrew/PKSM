@@ -24,13 +24,13 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav6.hpp"
-#include "PK6.hpp"
-#include "WC6.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "sav/Sav6.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK6.hpp"
+#include "utils/endian.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
+#include "wcx/WC6.hpp"
 
 u16 Sav6::TID(void) const
 {

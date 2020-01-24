@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav8.hpp"
-#include "PK8.hpp"
+#include "sav/Sav8.hpp"
+#include "pkx/PK8.hpp"
 #include <algorithm>
 
 Sav8::Sav8(std::shared_ptr<u8[]> dt, size_t length) : Sav(dt, length)

@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PGF.hpp"
-#include "endian.hpp"
-#include "personal.hpp"
-#include "utils.hpp"
+#include "wcx/PGF.hpp"
+#include "personal/personal.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 PGF::PGF(u8* dt)
 {

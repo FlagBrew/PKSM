@@ -24,12 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PK7.hpp"
-#include "PK6.hpp"
-#include "Sav.hpp"
-#include "endian.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK6.hpp"
+#include "sav/Sav.hpp"
+#include "utils/endian.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
 
 void PK7::shuffleArray(u8 sv)
 {

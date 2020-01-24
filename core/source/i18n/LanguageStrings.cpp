@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "LanguageStrings.hpp"
+#include "i18n/LanguageStrings.hpp"
 #include "format.h"
-#include "io.hpp"
-#include "utils.hpp"
+#include "utils/io.hpp"
+#include "utils/utils.hpp"
 
 namespace
 {

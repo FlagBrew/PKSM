@@ -28,7 +28,7 @@
 #define SAV8_HPP
 
 #include "Sav.hpp"
-#include "personal.hpp"
+#include "personal/personal.hpp"
 #include "swshcrypto.hpp"
 
 class Sav8 : public Sav

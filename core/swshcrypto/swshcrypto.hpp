@@ -27,7 +27,7 @@
 #ifndef SWSH_CRYPTO_HPP
 #define SWSH_CRYPTO_HPP
 
-#include "coretypes.h"
+#include "utils/coretypes.h"
 #include <memory>
 #include <vector>
 

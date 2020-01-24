@@ -27,8 +27,8 @@
 #ifndef LANGUAGE_HPP
 #define LANGUAGE_HPP
 
-#include "coretypes.h"
-#include "generation.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
 
 enum class Language : u8
 {

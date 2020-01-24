@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "WC6.hpp"
-#include "endian.hpp"
-#include "personal.hpp"
-#include "utils.hpp"
+#include "wcx/WC6.hpp"
+#include "personal/personal.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 WC6::WC6(u8* dt, bool full)
 {

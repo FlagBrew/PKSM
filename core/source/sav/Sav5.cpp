@@ -24,12 +24,12 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav5.hpp"
-#include "PGF.hpp"
-#include "PK5.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "utils.hpp"
+#include "sav/Sav5.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK5.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
+#include "wcx/PGF.hpp"
 
 u16 Sav5::TID(void) const
 {

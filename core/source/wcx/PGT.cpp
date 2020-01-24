@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PGT.hpp"
-#include "Language.hpp"
-#include "PK4.hpp"
-#include "endian.hpp"
+#include "wcx/PGT.hpp"
+#include "i18n/Language.hpp"
+#include "pkx/PK4.hpp"
+#include "utils/endian.hpp"
 
 PGT::PGT(u8* pgt)
 {

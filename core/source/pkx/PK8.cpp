@@ -24,9 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PK8.hpp"
-#include "endian.hpp"
-#include "utils.hpp"
+#include "pkx/PK8.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 void PK8::shuffleArray(u8 sv)
 {

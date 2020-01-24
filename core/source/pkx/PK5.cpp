@@ -24,14 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "PK5.hpp"
-#include "PK4.hpp"
-#include "PK6.hpp"
-#include "Sav.hpp"
-#include "endian.hpp"
-#include "i18n.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "pkx/PK5.hpp"
+#include "i18n/i18n.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK6.hpp"
+#include "sav/Sav.hpp"
+#include "utils/endian.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
 #include <algorithm>
 
 namespace

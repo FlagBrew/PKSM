@@ -27,10 +27,10 @@
 #ifndef SAV_HPP
 #define SAV_HPP
 
-#include "Language.hpp"
-#include "coretypes.h"
-#include "game.hpp"
-#include "generation.hpp"
+#include "i18n/Language.hpp"
+#include "utils/coretypes.h"
+#include "utils/game.hpp"
+#include "utils/generation.hpp"
 #include <map>
 #include <memory>
 #include <set>
@@ -181,7 +181,7 @@ public:
 
     virtual std::shared_ptr<PKX> pkm(u8 slot) const                             = 0;
     virtual void pkm(std::shared_ptr<PKX> pk, u8 slot)                          = 0;
-    virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot) const   = 0;
+    virtual std::shared_ptr<PKX> pkm(u8 box, u8 slot) const                     = 0;
     virtual void pkm(std::shared_ptr<PKX> pk, u8 box, u8 slot, bool applyTrade) = 0;
     virtual void trade(std::shared_ptr<PKX> pk)                                 = 0; // Look into bank boolean parameter
     virtual std::shared_ptr<PKX> emptyPkm() const                               = 0;

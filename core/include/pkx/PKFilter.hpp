@@ -27,9 +27,9 @@
 #ifndef PKFILTER_HPP
 #define PKFILTER_HPP
 
-#include "Language.hpp"
-#include "generation.hpp"
-#include "stat.hpp"
+#include "i18n/Language.hpp"
+#include "utils/generation.hpp"
+#include "utils/stat.hpp"
 #include <bitset>
 #include <string>
 #include <vector>

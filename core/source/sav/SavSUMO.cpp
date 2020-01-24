@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavSUMO.hpp"
-#include "endian.hpp"
+#include "sav/SavSUMO.hpp"
 #include "memecrypto.h"
-#include "sha256.h"
+#include "utils/endian.hpp"
+#include "utils/sha256.h"
 #include <algorithm>
 
 SavSUMO::SavSUMO(std::shared_ptr<u8[]> dt) : Sav7(dt, 0x6BE00)

@@ -24,20 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "Sav.hpp"
-#include "PKX.hpp"
-#include "SavB2W2.hpp"
-#include "SavBW.hpp"
-#include "SavDP.hpp"
-#include "SavHGSS.hpp"
-#include "SavLGPE.hpp"
-#include "SavORAS.hpp"
-#include "SavPT.hpp"
-#include "SavSUMO.hpp"
-#include "SavSWSH.hpp"
-#include "SavUSUM.hpp"
-#include "SavXY.hpp"
-#include "endian.hpp"
+#include "sav/Sav.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/SavB2W2.hpp"
+#include "sav/SavBW.hpp"
+#include "sav/SavDP.hpp"
+#include "sav/SavHGSS.hpp"
+#include "sav/SavLGPE.hpp"
+#include "sav/SavORAS.hpp"
+#include "sav/SavPT.hpp"
+#include "sav/SavSUMO.hpp"
+#include "sav/SavSWSH.hpp"
+#include "sav/SavUSUM.hpp"
+#include "sav/SavXY.hpp"
+#include "utils/endian.hpp"
 
 u16 Sav::ccitt16(const u8* buf, u32 len)
 {

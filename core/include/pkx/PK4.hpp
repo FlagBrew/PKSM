@@ -28,7 +28,7 @@
 #define PK4_HPP
 
 #include "PKX.hpp"
-#include "personal.hpp"
+#include "personal/personal.hpp"
 
 class PK4 : public PKX
 {

@@ -27,9 +27,8 @@
 #ifndef PK3_HPP
 #define PK3_HPP
 
-#include "PK4.hpp"
 #include "PKX.hpp"
-#include "time.h"
+#include "personal/personal.hpp"
 
 class PK3 : public PKX
 {

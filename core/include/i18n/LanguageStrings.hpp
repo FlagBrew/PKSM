@@ -28,10 +28,10 @@
 #define LANGUAGESTRINGS_HPP
 
 #include "Language.hpp"
-#include "coretypes.h"
-#include "generation.hpp"
-#include "io.hpp"
 #include "nlohmann/json.hpp"
+#include "utils/coretypes.h"
+#include "utils/generation.hpp"
+#include "utils/io.hpp"
 #include <algorithm>
 #include <stdio.h>
 #include <string>

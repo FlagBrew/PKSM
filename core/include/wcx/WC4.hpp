@@ -28,7 +28,7 @@
 #define WC4_HPP
 
 #include "PGT.hpp"
-#include "utils.hpp"
+#include "utils/utils.hpp"
 
 class WC4 : public PGT
 {

@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "WC7.hpp"
-#include "endian.hpp"
-#include "personal.hpp"
-#include "utils.hpp"
+#include "wcx/WC7.hpp"
+#include "personal/personal.hpp"
+#include "utils/endian.hpp"
+#include "utils/utils.hpp"
 
 WC7::WC7(u8* dt, bool full)
 {

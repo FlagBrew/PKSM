@@ -24,15 +24,15 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "personal.hpp"
-#include "endian.hpp"
-#include "personal_bwb2w2.h"
-#include "personal_dppthgss.h"
-#include "personal_lgpe.h"
-#include "personal_rsfrlge.h"
-#include "personal_smusum.h"
-#include "personal_swsh.h"
-#include "personal_xyoras.h"
+#include "personal/personal.hpp"
+#include "personal/personal_bwb2w2.h"
+#include "personal/personal_dppthgss.h"
+#include "personal/personal_lgpe.h"
+#include "personal/personal_rsfrlge.h"
+#include "personal/personal_smusum.h"
+#include "personal/personal_swsh.h"
+#include "personal/personal_xyoras.h"
+#include "utils/endian.hpp"
 
 namespace PersonalLGPE
 {

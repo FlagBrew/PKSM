@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "SavBW.hpp"
-#include "endian.hpp"
+#include "sav/SavBW.hpp"
+#include "utils/endian.hpp"
 #include <algorithm>
 
 SavBW::SavBW(std::shared_ptr<u8[]> dt) : Sav5(dt, 0x80000)
