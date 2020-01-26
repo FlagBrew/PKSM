@@ -119,26 +119,26 @@ void LegalInfoScreen::attemptLegalization()
                     nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
                     // clang-format off
                     if (retJson.is_object() &&
-                        retJson.contains("pokemon") && (retJson["pokemon"].is_string() || retJson["pokemon"].is_null()) &&
-                        retJson.contains("ran") && retJson["ran"].is_boolean() &&
-                        retJson.contains("success") && retJson["success"].is_boolean())
+                        retJson.contains("Pokemon") && (retJson["Pokemon"].is_string() || retJson["Pokemon"].is_null()) &&
+                        retJson.contains("Ran") && retJson["Ran"].is_boolean() &&
+                        retJson.contains("Success") && retJson["Success"].is_boolean())
                     // clang-format on
                     {
-                        if (!retJson["ran"].get<bool>())
+                        if (!retJson["Ran"].get<bool>())
                         {
                             Gui::warn(i18n::localize("ALREADY_LEGAL"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["success"].get<bool>())
+                        else if (!retJson["Success"].get<bool>())
                         {
                             Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["pokemon"].is_null())
+                        else if (!retJson["Pokemon"].is_null())
                         {
-                            std::vector<u8> pkmData = base64_decode(retJson["pokemon"].get<std::string>());
+                            std::vector<u8> pkmData = base64_decode(retJson["Pokemon"].get<std::string>());
                             switch (pkm->generation())
                             {
                                 case Generation::FOUR:
