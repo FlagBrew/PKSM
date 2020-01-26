@@ -25,7 +25,6 @@
  */
 
 #include "fetch.hpp"
-#include "random.hpp"
 #include "thread.hpp"
 #include <errno.h>
 #include <stdarg.h>

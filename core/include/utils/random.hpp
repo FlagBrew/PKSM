@@ -29,6 +29,6 @@
 
 #include <random>
 
-inline std::mt19937 randomNumbers;
+inline thread_local std::mt19937 randomNumbers;
 
 #endif
