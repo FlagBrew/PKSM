@@ -279,7 +279,7 @@ std::string Sav::invalidTransferReason(std::shared_ptr<PKX> pk) const
     {
         return "STORAGE_BAD_SPECIES";
     }
-    else if (pk->alternativeForm() > formCount(pk->species()) &&
+    else if (pk->alternativeForm() >= formCount(pk->species()) &&
              !((pk->species() == 664 || pk->species() == 665) && pk->alternativeForm() <= formCount(666)))
     {
         return "STORAGE_BAD_FORM";
