@@ -552,6 +552,7 @@
     "START_DELETE": "Press START to delete",
     "START_EXIT": "START: Exit",
     "START_EXTRA_FUNC": "START: Extra functions",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Sort/Filter",
     "START_TO_INJECT": "START 버튼을 눌러 주입을 시작하십시오.",
     "STATUS_CONDITIONS": "컨디션 상태",

@@ -552,6 +552,7 @@
     "START_DELETE": "Premi START per cancellare",
     "START_EXIT": "START: ESci",
     "START_EXTRA_FUNC": "START: Funzioni extra",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Filtra/Ordina",
     "START_TO_INJECT": "Clicca START per inserire la WC",
     "STATUS_CONDITIONS": "Stato",

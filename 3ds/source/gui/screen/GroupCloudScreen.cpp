@@ -583,7 +583,7 @@ void GroupCloudScreen::pickup()
             auto it                      = std::find(toSend.begin(), toSend.end(), thisPair);
             if (it == toSend.end())
             {
-                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != 0)
+                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != 0 && toSend.size() < 6)
                 {
                     toSend.push_back(thisPair);
                     if (toSend.size() == 6 && Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))

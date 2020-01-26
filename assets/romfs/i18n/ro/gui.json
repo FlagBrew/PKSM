@@ -552,6 +552,7 @@
     "START_DELETE": "Apasă START să deletezi",
     "START_EXIT": "START: Exit",
     "START_EXTRA_FUNC": "START: Extra funcții",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Sortează/Filtru",
     "START_TO_INJECT": "Apasă START să injectezi",
     "STATUS_CONDITIONS": "Condiții Status",

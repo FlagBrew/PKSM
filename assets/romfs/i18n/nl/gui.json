@@ -552,6 +552,7 @@
     "START_DELETE": "Druk op START om te verwijderen",
     "START_EXIT": "START: Exit",
     "START_EXTRA_FUNC": "START: Extra functies",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Soort/Filter",
     "START_TO_INJECT": "Druk op START om te injecteren",
     "STATUS_CONDITIONS": "Status Condities",

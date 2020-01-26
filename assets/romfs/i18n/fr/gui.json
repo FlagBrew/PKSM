@@ -552,6 +552,7 @@
     "START_DELETE": "Appuyez sur START pour supprimer",
     "START_EXIT": "START: Quitter",
     "START_EXTRA_FUNC": "START: Autres Fonctions",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Trier/Filtrer",
     "START_TO_INJECT": "Appuyez sur START pour injecter",
     "STATUS_CONDITIONS": "Conditions de Statut",

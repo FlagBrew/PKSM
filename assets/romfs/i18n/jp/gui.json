@@ -552,6 +552,7 @@
     "START_DELETE": "STARTボタンで削除します",
     "START_EXIT": "START: 終了",
     "START_EXTRA_FUNC": "START: 追加機能",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: ソート/フィルタ",
     "START_TO_INJECT": "STARTボタンで書き込みます",
     "STATUS_CONDITIONS": "状態",

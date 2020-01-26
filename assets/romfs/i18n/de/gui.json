@@ -552,6 +552,7 @@
     "START_DELETE": "Dr\u00fccke START zum l\u00f6schen",
     "START_EXIT": "START: Exit",
     "START_EXTRA_FUNC": "START: Extra-Funktionen",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: Sortieren/Filtern",
     "START_TO_INJECT": "Dr\u00fcck START zum Einf\u00fcgen",
     "STATUS_CONDITIONS": "Statusver\u00e4nderungen",

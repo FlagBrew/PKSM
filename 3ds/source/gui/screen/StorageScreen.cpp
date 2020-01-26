@@ -814,13 +814,11 @@ bool StorageScreen::backButton()
         }
         else
         {
-            bool timer = false;
             if (Banks::bank->hasChanged())
             {
                 if (Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
                 {
                     Banks::bank->save();
-                    timer = true;
                 }
                 else
                 {
@@ -1180,7 +1178,7 @@ void StorageScreen::putDownNonSwap()
                 {
                     continue;
                 }
-                if (moveMon[index]->species() == 0)
+                if (moveMon[index] && moveMon[index]->species() == 0)
                 {
                     moveMon[index] = TitleLoader::save->emptyPkm();
                 }

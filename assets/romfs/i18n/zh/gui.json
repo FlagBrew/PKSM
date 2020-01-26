@@ -552,6 +552,7 @@
     "START_DELETE": "按开始删除",
     "START_EXIT": "START: 退出应用程序",
     "START_EXTRA_FUNC": "START: 额外功能",
+    "START_FILTER_LEGAL": "START: Display/hide illegal groups",
     "START_SORT_FILTER": "START: 排序/筛选",
     "START_TO_INJECT": "按START导入",
     "STATUS_CONDITIONS": "状态",
