@@ -502,7 +502,7 @@ void Sav5::cryptMysteryGiftData()
     for (int i = 0; i < 0xA90; i += 2)
     {
         seed = seed * 0x41C64E6D + 0x6073; // Replace with seedStep?
-        Endian::convertFrom<u16>(&data[WondercardFlags + i], Endian::convertTo<u16>(&data[WondercardFlags + i]) & (seed >> 16));
+        Endian::convertFrom<u16>(&data[WondercardFlags + i], Endian::convertTo<u16>(&data[WondercardFlags + i]) ^ (seed >> 16));
     }
 }
 
