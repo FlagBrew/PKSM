@@ -271,7 +271,7 @@ void Bank::resize(int boxes)
     {
         Gui::showResizeStorage();
         BankEntry* newEntries = new BankEntry[boxes * 30];
-        std::copy(entries, entries + std::min(boxes, this->boxes()), newEntries);
+        std::copy(entries, entries + std::min(boxes, this->boxes()) * 30, newEntries);
         delete[] entries;
         if (boxes > this->boxes())
         {
