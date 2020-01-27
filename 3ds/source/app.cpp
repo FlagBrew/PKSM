@@ -360,15 +360,22 @@ namespace
                         return false;
                     }
 
-                    u8 buf[0x1000];
+                    size_t bufSize = 0x10000;
+                    u8* buf        = (u8*)memalign(0x1000, bufSize);
+                    u8 backupBuf[0x1000];
+                    if (!buf)
+                    {
+                        buf     = backupBuf;
+                        bufSize = sizeof(backupBuf);
+                    }
                     u32 bytesWritten, bytesRead;
                     u64 offset          = 0;
                     bool ciaInstallGood = true;
                     do
                     {
-                        memset(buf, 0, 0x1000);
+                        memset(buf, 0, bufSize);
 
-                        bytesRead = ciaFile.read(buf, 0x1000);
+                        bytesRead = ciaFile.read(buf, bufSize);
                         if (R_FAILED(ciaFile.result()))
                         {
                             Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile.result());
@@ -392,6 +399,11 @@ namespace
 
                         offset += bytesRead;
                     } while (offset < ciaFile.size() && ciaInstallGood);
+
+                    if (buf != backupBuf)
+                    {
+                        free(buf);
+                    }
 
                     if (!ciaInstallGood)
                     {
