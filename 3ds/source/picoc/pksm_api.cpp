@@ -236,10 +236,17 @@ void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct
     if (directory.good())
     {
         ret->amount = directory.count();
-        ret->data   = (char**)malloc(sizeof(char*) * directory.count());
-        for (size_t i = 0; i < directory.count(); i++)
+        if (directory.count() > 0)
         {
-            ret->data[i] = (char*)strToRet(dir + '/' + directory.item(i));
+            ret->data = (char**)malloc(sizeof(char*) * directory.count());
+            for (size_t i = 0; i < directory.count(); i++)
+            {
+                ret->data[i] = (char*)strToRet(dir + '/' + directory.item(i));
+            }
+        }
+        else
+        {
+            ret->data = nullptr;
         }
     }
     else
