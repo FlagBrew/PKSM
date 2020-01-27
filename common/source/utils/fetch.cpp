@@ -43,6 +43,92 @@ namespace
         std::shared_ptr<Fetch> fetch;
         std::function<void(CURLcode, std::shared_ptr<Fetch>)> function;
     };
+    void writeFromFileRecord(void* record);
+
+    constexpr int MAX_FILE_BUFFER_SIZE = 0x8000;
+    class FileRecord
+    {
+        friend void writeFromFileRecord(void* record);
+
+    public:
+        FileRecord(FILE* file) : file(file)
+        {
+            buffer1.reserve(0x8400);
+            buffer2.reserve(0x8400);
+            __lock_init(bufferLock1);
+            __lock_init(bufferLock2);
+        }
+        ~FileRecord()
+        {
+            __lock_close(bufferLock1);
+            __lock_close(bufferLock2);
+        }
+
+        void writeToBuffer(char* data, size_t size, size_t num)
+        {
+            std::vector<u8>* activeBuffer = &getAndLockActiveBuffer();
+            if (activeBuffer->size() > MAX_FILE_BUFFER_SIZE)
+            {
+                // Release the current lock
+                releaseActiveBuffer();
+                // Will wait for the end of the flush operation
+                activeBuffer = &getAndLockInactiveBuffer();
+                // Swap active buffer
+                whichBuffer = !whichBuffer;
+                // Start flush
+                Threads::create(writeFromFileRecord, this, 1024);
+            }
+
+            // Append to active buffer
+            activeBuffer->insert(activeBuffer->end(), data, data + size * num);
+            // Release whichever lock was used; it doesn't actually matter whether it was active or inactive at the beginning of the function
+            releaseActiveBuffer();
+        }
+
+        void finish()
+        {
+            // Wait for current operation to finish
+            getAndLockInactiveBuffer();
+            releaseInactiveBuffer();
+            // Then write out everything else
+            whichBuffer = !whichBuffer;
+            flushInactiveBuffer();
+        }
+
+    private:
+        std::vector<u8> buffer1;
+        std::vector<u8> buffer2;
+        FILE* file;
+        _LOCK_T bufferLock1;
+        _LOCK_T bufferLock2;
+        std::atomic<bool> whichBuffer = false;
+        std::vector<u8>& getAndLockActiveBuffer()
+        {
+            // Don't let active buffer change mid-operation!
+            bool originalWhich = whichBuffer;
+            __lock_acquire(originalWhich ? bufferLock1 : bufferLock2);
+            return originalWhich ? buffer1 : buffer2;
+        }
+        void releaseActiveBuffer() { __lock_release(whichBuffer ? bufferLock1 : bufferLock2); }
+        std::vector<u8>& getAndLockInactiveBuffer()
+        {
+            // Don't let active buffer change mid-operation!
+            bool originalWhich = whichBuffer;
+            __lock_acquire(!originalWhich ? bufferLock1 : bufferLock2);
+            return !originalWhich ? buffer1 : buffer2;
+        }
+        void releaseInactiveBuffer() { __lock_release(!whichBuffer ? bufferLock1 : bufferLock2); }
+        void flushInactiveBuffer()
+        {
+            std::vector<u8>& buffer = getAndLockInactiveBuffer();
+            fwrite(buffer.data(), 1, buffer.size(), file);
+            buffer.clear();
+            releaseInactiveBuffer();
+        }
+    };
+
+    void writeFromFileRecord(void* record) { ((FileRecord*)record)->flushInactiveBuffer(); }
+
     std::atomic<bool> multiThreadInfo = false;
     std::vector<MultiFetchRecord> fetches;
     _LOCK_T fetchesMutex;
@@ -54,6 +140,13 @@ namespace
     {
         std::string* str = (std::string*)userdata;
         str->append(ptr, size * nmemb);
+        return size * nmemb;
+    }
+
+    size_t file_write_callback(char* ptr, size_t size, size_t nmemb, void* userdata)
+    {
+        FileRecord* record = (FileRecord*)userdata;
+        record->writeToBuffer(ptr, size, nmemb);
         return size * nmemb;
     }
 }
@@ -101,11 +194,12 @@ Result Fetch::download(
     {
         return -errno;
     }
+    FileRecord record{file};
 
     if (auto fetch = Fetch::init(url, url.substr(0, 5) == "https", nullptr, nullptr, postData))
     {
-        fetch->setopt(CURLOPT_WRITEFUNCTION, fwrite);
-        fetch->setopt(CURLOPT_WRITEDATA, file);
+        fetch->setopt(CURLOPT_WRITEFUNCTION, file_write_callback);
+        fetch->setopt(CURLOPT_WRITEDATA, &record);
         if (progress)
         {
             fetch->setopt(CURLOPT_NOPROGRESS, 0L);
@@ -117,6 +211,7 @@ Result Fetch::download(
 
         auto res = Fetch::perform(fetch);
 
+        record.finish();
         fclose(file);
 
         if (res.index() == 0)
