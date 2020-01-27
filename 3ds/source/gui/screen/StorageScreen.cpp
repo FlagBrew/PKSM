@@ -903,11 +903,11 @@ bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTrans
     {
         return true;
     }
-    else
+    else if (!bulkTransfer)
     {
         Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
-        return false;
     }
+    return false;
 }
 
 void StorageScreen::pickupSwap()
@@ -1391,7 +1391,7 @@ bool StorageScreen::swapBoxWithStorage()
             temPkm = TitleLoader::save->transfer(temPkm);
             if (temPkm)
             {
-                if (isValidTransfer(temPkm, true) || temPkm->species() == 0)
+                if (temPkm->species() == 0 || isValidTransfer(temPkm, true))
                 {
                     auto otherTemPkm = TitleLoader::save->pkm(boxBox, i);
                     TitleLoader::save->pkm(temPkm, boxBox, i, Configuration::getInstance().transferEdit());

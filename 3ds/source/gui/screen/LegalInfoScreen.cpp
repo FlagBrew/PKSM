@@ -207,6 +207,9 @@ void LegalInfoScreen::attemptLegalization()
                 default:
                     Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     return;
+                case 503:
+                    Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
+                    return;
             }
         }
     }
