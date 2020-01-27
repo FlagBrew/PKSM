@@ -5,7 +5,7 @@
 Multipurpose and portable save manager for generations IV to VII, programmed in
 C++.
 
-* Supports original cartridges and digital copies of games from DPPt to LGPE
+* Supports original cartridges and digital copies of games from DPPt to SwSh
 * Allows on-the-fly modifications to all of your data
 * Allows internal and resizable offline storage to store your Pokémon
 * Capable of running custom scripts to allow injection of arbitrary data into
@@ -14,6 +14,7 @@ C++.
   or smartphone
 * Capable of scanning QR codes to inject both .pkx files or event wondercards
 * Contains an offline wondercard database to get events from old distributions
+* Capable of automatic verification and legalization of all your data
 
 **We do not support or condone cheating at the expense of others. Do not use
 significantly edited Pokémon in battle or in trades with those who are unaware
@@ -107,6 +108,7 @@ all`.
 
 ## Credits
 
+* [Bernardo](https://github.com/BernardoGiordano/) for creating PKSM
 * [piepie62](https://github.com/piepie62) and
   [Admiral-Fish](https://github.com/Admiral-Fish) for the immense amount of
   dedication they put into the project
@@ -124,11 +126,8 @@ all`.
   [WinterMute](https://github.com/WinterMute) for citro2d and devkitARM
 * [kamronbatman](https://github.com/kamronbatman) and ProjectPokemon.org for
   EventsGallery
-* Methylnaltrexone, Y0ndaime, Gudf, forthepokemans, CaptainBarnaklez, pass0418
-  for the translations
+* All the translators
 * Subject21_J and all the submitters for PKSM's icon
-* [Mewmore](https://www.youtube.com/user/Mewmore) for the default background
-  music
 * Allen, piepie62, SpiredMoth and all the contributors for the documentation
 * All the past contributors to the project
 * All the patrons and the huge amount of supporters that this project has gained
