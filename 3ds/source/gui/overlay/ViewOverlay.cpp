@@ -142,7 +142,7 @@ void ViewOverlay::drawTop() const
 
         u8 firstType  = pkm->type1();
         u8 secondType = pkm->type2();
-        if (pkm->generation() == Generation::FOUR)
+        if (pkm->generation() < Generation::FIVE)
         {
             if (firstType > 8)
                 firstType--;
