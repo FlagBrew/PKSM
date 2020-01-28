@@ -116,8 +116,8 @@ all`.
 * [SpiredMoth](https://github.com/SpiredMoth),
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
-* [Archit Date](https://github.com/architdate) for CoreConsole
-* [Allen](https://github.com/FM1337) for the GPSS
+* [Archit Date](https://github.com/architdate) for CoreConsole and PKHeX AutoLegalityMod
+* [Allen](https://github.com/FM1337) for the GPSS and CoreConsole's successor, CoreAPI
 * The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
 * [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
