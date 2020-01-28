@@ -36,6 +36,7 @@
 #include "PK8.hpp"
 #include "archive.hpp"
 #include "banks.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
@@ -44,6 +45,17 @@
 #define JSON(paths) paths.second
 #define ARCHIVE Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()
 #define OTHERARCHIVE Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data()
+
+class BankException : public std::exception
+{
+public:
+    BankException(u32 badVal) : string(fmt::format("BankException: Bad generation value: 0x{:X}", badVal)) {}
+
+    const char* what() const noexcept override { return string.c_str(); }
+
+private:
+    std::string string;
+};
 
 Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
 {
@@ -312,7 +324,7 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
         case Generation::UNUSED:
             return std::make_shared<PK7>();
     }
-    return nullptr;
+    throw BankException(u32(entries[index].gen));
 }
 
 void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
