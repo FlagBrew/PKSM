@@ -46,6 +46,7 @@ protected:
 
 private:
     void setDexFlags(int index, int gender, int shiny, int baseSpecies);
+    int getDexFlags(int index, int baseSpecies) const;
     bool sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const;
 
 public:

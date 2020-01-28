@@ -326,6 +326,31 @@ void Sav7::setDexFlags(int index, int gender, int shiny, int baseSpecies)
     data[ofs + (4 + shift) * brSize + bd] |= (u8)(1 << bm);
 }
 
+int Sav7::getDexFlags(int index, int baseSpecies) const
+{
+    int ret          = 0;
+    const int brSize = 0x8C;
+    int ofs          = PokeDex + 0x08 + 0x80 + 0x68;
+    int bd           = index >> 3;
+    int bm           = index & 7;
+    int bd1          = baseSpecies >> 3;
+    int bm1          = baseSpecies & 7;
+
+    for (u8 i = 0; i < 4; i++)
+    {
+        if (data[ofs + i * brSize + bd] & (u8)(1 << bm))
+        {
+            ret++;
+        }
+        if (data[ofs + i * brSize + bd1] & (u8)(1 << bm1))
+        {
+            ret++;
+        }
+    }
+
+    return ret;
+}
+
 bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) const
 {
     switch (species)
@@ -387,8 +412,7 @@ bool Sav7::sanitizeFormsToIterate(int species, int& fs, int& fe, int formIn) con
 
 void Sav7::dex(std::shared_ptr<PKX> pk)
 {
-    int MaxSpeciesID = game == Game::SM ? 802 : 807;
-    if (pk->species() == 0 || pk->species() > MaxSpeciesID || pk->egg())
+    if (pk->species() == 0 || pk->species() > maxSpecies() || pk->egg())
         return;
 
     int bit    = pk->species() - 1;
@@ -434,7 +458,7 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
             u8 fc = PersonalSMUSUM::formCount(pk->species());
             if (fc > 1)
             { // actually has forms
-                int f = dexFormIndex(pk->species(), fc, MaxSpeciesID - 1);
+                int f = dexFormIndex(pk->species(), fc, maxSpecies() - 1);
                 if (f >= 0) // bit index valid
                     bitIndex = f + form;
             }
@@ -460,13 +484,20 @@ void Sav7::dex(std::shared_ptr<PKX> pk)
 int Sav7::dexSeen(void) const
 {
     int ret = 0;
-    for (int i = 1; i <= maxSpecies(); i++)
+    for (int species = 1; species <= maxSpecies(); species++)
     {
-        int bitIndex = (i - 1) & 7;
-        for (int j = 0; j < 4; j++)
+        int forms = formCount(species);
+        for (int form = 0; form < forms; form++)
         {
-            int ofs = PokeDex + (0xF0 + (j * 0x8C)) + ((i - 1) >> 3);
-            if ((data[ofs] >> bitIndex & 1) != 0)
+            int dexForms = form == 0 ? -1 : dexFormIndex(species, forms, maxSpecies() - 1);
+
+            int index = species - 1;
+            if (dexForms >= 0)
+            {
+                index = dexForms + form;
+            }
+
+            if (getDexFlags(index, species) > 0)
             {
                 ret++;
                 break;
@@ -496,7 +527,7 @@ void Sav7::mysteryGift(WCX& wc, int& pos)
     WC7* wc7 = (WC7*)&wc;
     data[WondercardFlags + wc7->ID() / 8] |= 0x1 << (wc7->ID() % 8);
     std::copy(wc7->rawData(), wc7->rawData() + WC7::length, &data[WondercardData + WC7::length * pos]);
-    pos = (pos + 1) % 48;
+    pos = (pos + 1) % maxWondercards();
 }
 
 std::string Sav7::boxName(u8 box) const
