@@ -396,7 +396,7 @@ void GroupCloudScreen::update(touchPosition* touch)
     {
         if (toSend.size() > 1)
         {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_SEND_GROUP_CONFIRM")))
+            if (!Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
             {
                 return;
             }
