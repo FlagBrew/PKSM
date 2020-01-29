@@ -4,7 +4,7 @@ APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR	:=	8
 VERSION_MINOR	:=	0
-VERSION_MICRO	:=	2
+VERSION_MICRO	:=	3
 GIT_REV="$(shell git rev-parse --short HEAD)"
 
 OUTDIR			:= 	out
