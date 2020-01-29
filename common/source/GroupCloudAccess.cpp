@@ -82,7 +82,7 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
                                 {
                                     // clang-format off
                                     if (!pkm.is_object() ||
-                                        !pkm.contains("base_64") || !pkm["base_64"].is_string() ||
+                                        !pkm.contains("base64") || !pkm["base64"].is_string() ||
                                         !pkm.contains("generation") || !pkm["generation"].is_string() ||
                                         !pkm.contains("legal") || !pkm["legal"].is_boolean() ||
                                         !pkm.contains("code") || !pkm["code"].is_string())
