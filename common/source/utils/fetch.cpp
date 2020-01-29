@@ -87,7 +87,7 @@ std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string
         fetch->setopt(CURLOPT_USERAGENT, "PKSM-curl/7.59.0");
         fetch->setopt(CURLOPT_FOLLOWLOCATION, 1L);
         fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
-        fetch->setopt(CURLOPT_LOW_SPEED_TIME, 30);
+        fetch->setopt(CURLOPT_LOW_SPEED_TIME, 10L);
     }
     else
     {
