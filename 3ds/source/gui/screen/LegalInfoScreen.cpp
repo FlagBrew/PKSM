@@ -84,10 +84,12 @@ void LegalInfoScreen::update(touchPosition* touch)
 
 void LegalInfoScreen::attemptLegalization()
 {
-    long status_code    = 0;
-    std::string version = "version: " + std::to_string((int)TitleLoader::save->version());
+    long status_code       = 0;
+    std::string version    = "version: " + std::to_string((int)TitleLoader::save->version());
+    std::string generation = "Generation: " + genToString(pkm->generation());
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
+    headers             = curl_slist_append(headers, generation.c_str());
 
     std::string writeData;
     if (auto fetch = Fetch::init("https://flagbrew.org/api/v1/bot/auto_legality", true, &writeData, headers, ""))

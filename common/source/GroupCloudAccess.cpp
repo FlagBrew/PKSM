@@ -344,9 +344,16 @@ std::vector<std::shared_ptr<PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex
 
 long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
 {
-    long ret           = 0;
-    std::string amount = "amount: " + std::to_string(sendMe.size());
-    std::string code   = Configuration::getInstance().patronCode();
+    long ret               = 0;
+    std::string amount     = "amount: " + std::to_string(sendMe.size());
+    std::string code       = Configuration::getInstance().patronCode();
+    std::string generation = "Generations: ";
+    for (auto& mon : sendMe)
+    {
+        generation += genToString(mon->generation()) + ',';
+    }
+    // Remove trailing comma
+    generation.pop_back();
     if (!code.empty())
     {
         code = "PC: " + code;
@@ -354,6 +361,7 @@ long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, amount.c_str());
     headers                    = curl_slist_append(headers, "bundle: yes");
+    headers                    = curl_slist_append(headers, generation.c_str());
     if (!code.empty())
     {
         headers = curl_slist_append(headers, code.c_str());
