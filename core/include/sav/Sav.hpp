@@ -1,5 +1,5 @@
 /*
- *   This file is part of PKSM
+ *   This file is part of PKSM-Core
  *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify

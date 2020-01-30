@@ -1,5 +1,5 @@
 /*
- *   This file is part of PKSM
+ *   This file is part of PKSM-Core
  *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 #define LANGUAGESTRINGS_HPP
 
 #include "Language.hpp"
+#include "PKSMCORE_CONFIG.h"
 #include "nlohmann/json.hpp"
 #include "utils/coretypes.h"
 #include "utils/generation.hpp"
@@ -64,8 +65,8 @@ protected:
     template <typename T>
     static void load(Language lang, const std::string& name, std::map<T, std::string>& map)
     {
-        static constexpr const char* base = "romfs:/i18n/";
-        std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
         std::string tmp;
         FILE* values = fopen(path.c_str(), "rt");
@@ -81,7 +82,7 @@ protected:
             while (!feof(values) && !ferror(values))
             {
                 size = std::max(size, (size_t)128);
-                if (__getline(&data, &size, values) >= 0)
+                if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
                 {
                     tmp = std::string(data);
                     tmp = tmp.substr(0, tmp.find('\n'));

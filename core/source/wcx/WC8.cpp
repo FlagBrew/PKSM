@@ -1,5 +1,5 @@
 /*
- *   This file is part of PKSM
+ *   This file is part of PKSM-Core
  *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@
  */
 
 #include "wcx/WC8.hpp"
-#include "Configuration.hpp"
 #include "personal/personal.hpp"
 #include "utils/endian.hpp"
 #include "utils/utils.hpp"
@@ -340,12 +339,12 @@ std::string WC8::otName(Language lang) const
 
 std::string WC8::nickname() const
 {
-    return nickname(Configuration::getInstance().language());
+    return nickname(Language::EN);
 }
 
 std::string WC8::otName() const
 {
-    return otName(Configuration::getInstance().language());
+    return otName(Language::EN);
 }
 
 bool WC8::used() const

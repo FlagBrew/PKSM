@@ -24,30 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef LANGUAGE_HPP
-#define LANGUAGE_HPP
+#ifndef _PKSMCORE_GETLINE_FUNC
+#define _PKSMCORE_GETLINE_FUNC __getline
+#endif
 
-#include "utils/coretypes.h"
-#include "utils/generation.hpp"
-
-enum class Language : u8
-{
-    JP = 1,
-    EN,
-    FR,
-    IT,
-    DE,
-    UNUSED,
-    ES,
-    KO,
-    ZH,
-    TW,
-    NL,
-    PT,
-    RU,
-    RO
-};
-
-Language getSafeLanguage(Generation gen, Language originalLang);
-
+#ifndef _PKSMCORE_LANG_FOLDER
+#define _PKSMCORE_LANG_FOLDER "romfs:/i18n/"
 #endif

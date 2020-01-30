@@ -1,5 +1,5 @@
 /*
- *   This file is part of PKSM
+ *   This file is part of PKSM-Core
  *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 #include "format.h"
 #include "utils/io.hpp"
 #include "utils/utils.hpp"
+#include <stdio.h>
 
 namespace
 {
@@ -37,7 +38,7 @@ namespace
         static bool first = true;
         if (first)
         {
-            FILE* in = fopen("romfs:/i18n/forms.json", "rt");
+            FILE* in = fopen(_PKSMCORE_LANG_FOLDER "forms.json", "rt");
             if (in)
             {
                 if (!ferror(in))
@@ -116,8 +117,8 @@ LanguageStrings::LanguageStrings(Language lang)
 
 void LanguageStrings::load(Language lang, const std::string& name, std::vector<std::string>& array)
 {
-    static constexpr const char* base = "romfs:/i18n/";
-    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
     std::string tmp;
     FILE* values = fopen(path.c_str(), "rt");
@@ -133,7 +134,7 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
         while (!feof(values) && !ferror(values))
         {
             size = std::max(size, (size_t)128);
-            if (__getline(&data, &size, values) >= 0)
+            if (_PKSMCORE_GETLINE_FUNC(&data, &size, values) >= 0)
             {
                 tmp = std::string(data);
                 tmp = tmp.substr(0, tmp.find('\n'));
@@ -151,8 +152,8 @@ void LanguageStrings::load(Language lang, const std::string& name, std::vector<s
 
 void LanguageStrings::load(Language lang, const std::string& name, nlohmann::json& json)
 {
-    static constexpr const char* base = "romfs:/i18n/";
-    std::string path                  = io::exists(base + folder(lang) + name) ? base + folder(lang) + name : base + folder(Language::EN) + name;
+    std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                               : _PKSMCORE_LANG_FOLDER + folder(Language::EN) + name;
 
     FILE* values = fopen(path.c_str(), "rt");
     if (values)
