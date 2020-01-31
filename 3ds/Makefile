@@ -93,7 +93,7 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
-					../core/fmt \
+					../common/fmt \
 					../core/memecrypto \
 					../core/include
 GRAPHICS		:=	../assets/gfx/ui
