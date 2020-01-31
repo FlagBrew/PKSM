@@ -212,7 +212,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 52, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::JP);
+            Configuration::getInstance().language(Language::JPN);
             initButtons();
             return false;
         },
@@ -221,7 +221,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 74, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::EN);
+            Configuration::getInstance().language(Language::ENG);
             initButtons();
             return false;
         },
@@ -230,7 +230,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 96, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::FR);
+            Configuration::getInstance().language(Language::FRE);
             initButtons();
             return false;
         },
@@ -239,7 +239,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 118, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::DE);
+            Configuration::getInstance().language(Language::GER);
             initButtons();
             return false;
         },
@@ -248,7 +248,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 140, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::IT);
+            Configuration::getInstance().language(Language::ITA);
             initButtons();
             return false;
         },
@@ -257,7 +257,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 162, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::ES);
+            Configuration::getInstance().language(Language::SPA);
             initButtons();
             return false;
         },
@@ -268,7 +268,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 52, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::ZH);
+            Configuration::getInstance().language(Language::CHS);
             initButtons();
             return false;
         },
@@ -277,7 +277,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 74, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::KO);
+            Configuration::getInstance().language(Language::KOR);
             initButtons();
             return false;
         },
@@ -313,28 +313,28 @@ void ConfigScreen::initButtons()
 
     switch (Configuration::getInstance().language())
     {
-        case Language::JP:
+        case Language::JPN:
             ((ToggleButton*)tabButtons[0][0].get())->setState(true);
             break;
-        case Language::EN:
+        case Language::ENG:
             ((ToggleButton*)tabButtons[0][1].get())->setState(true);
             break;
-        case Language::FR:
+        case Language::FRE:
             ((ToggleButton*)tabButtons[0][2].get())->setState(true);
             break;
-        case Language::DE:
+        case Language::GER:
             ((ToggleButton*)tabButtons[0][3].get())->setState(true);
             break;
-        case Language::IT:
+        case Language::ITA:
             ((ToggleButton*)tabButtons[0][4].get())->setState(true);
             break;
-        case Language::ES:
+        case Language::SPA:
             ((ToggleButton*)tabButtons[0][5].get())->setState(true);
             break;
-        case Language::ZH:
+        case Language::CHS:
             ((ToggleButton*)tabButtons[0][6].get())->setState(true);
             break;
-        case Language::KO:
+        case Language::KOR:
             ((ToggleButton*)tabButtons[0][7].get())->setState(true);
             break;
         case Language::NL:

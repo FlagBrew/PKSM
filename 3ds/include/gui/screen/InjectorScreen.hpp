@@ -64,7 +64,7 @@ private:
     int slot;
     // For multi-item injects
     int item           = 0;
-    Language lang      = Language::JP;
+    Language lang      = Language::JPN;
     bool overwriteCard = false;
     bool adaptLanguage = false;
     bool choosingSlot  = false;

@@ -280,28 +280,28 @@ void Configuration::loadFromRomfs()
     switch (u8(systemLanguage))
     {
         case CFG_LANGUAGE_JP:
-            systemLanguage = Language::JP;
+            systemLanguage = Language::JPN;
             break;
         case CFG_LANGUAGE_EN:
-            systemLanguage = Language::EN;
+            systemLanguage = Language::ENG;
             break;
         case CFG_LANGUAGE_FR:
-            systemLanguage = Language::FR;
+            systemLanguage = Language::FRE;
             break;
         case CFG_LANGUAGE_DE:
-            systemLanguage = Language::DE;
+            systemLanguage = Language::GER;
             break;
         case CFG_LANGUAGE_IT:
-            systemLanguage = Language::IT;
+            systemLanguage = Language::ITA;
             break;
         case CFG_LANGUAGE_ES:
-            systemLanguage = Language::ES;
+            systemLanguage = Language::SPA;
             break;
         case CFG_LANGUAGE_ZH:
-            systemLanguage = Language::ZH;
+            systemLanguage = Language::CHS;
             break;
         case CFG_LANGUAGE_KO:
-            systemLanguage = Language::KO;
+            systemLanguage = Language::KOR;
             break;
         case CFG_LANGUAGE_NL:
             systemLanguage = Language::NL;
@@ -313,10 +313,10 @@ void Configuration::loadFromRomfs()
             systemLanguage = Language::RU;
             break;
         case CFG_LANGUAGE_TW:
-            systemLanguage = Language::TW;
+            systemLanguage = Language::CHT;
             break;
         default:
-            systemLanguage = Language::EN;
+            systemLanguage = Language::ENG;
             break;
     }
     (*mJson)["language"] = u8(systemLanguage);

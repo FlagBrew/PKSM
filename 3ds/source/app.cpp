@@ -529,8 +529,8 @@ namespace
 
     void i18nThread(void*)
     {
-        constexpr Language languages[] = {Language::JP, Language::EN, Language::FR, Language::IT, Language::DE, Language::ES, Language::KO,
-            Language::ZH, Language::TW, Language::NL, Language::PT, Language::RU, Language::RO};
+        constexpr Language languages[] = {Language::JPN, Language::ENG, Language::FRE, Language::ITA, Language::GER, Language::SPA, Language::KOR,
+            Language::CHS, Language::CHT, Language::NL, Language::PT, Language::RU, Language::RO};
         for (auto& i : languages)
         {
             if (continueI18N.test_and_set())

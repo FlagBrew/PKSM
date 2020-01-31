@@ -31,3 +31,7 @@
 #ifndef _PKSMCORE_LANG_FOLDER
 #define _PKSMCORE_LANG_FOLDER "romfs:/i18n/"
 #endif
+
+#ifndef _PKSMCORE_EXTRA_LANGUAGES
+#define _PKSMCORE_EXTRA_LANGUAGES NL, PT, RU, RO
+#endif
