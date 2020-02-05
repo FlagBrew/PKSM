@@ -448,7 +448,15 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     std::shared_ptr<u8[]> saveData = nullptr;
     if (in.good())
     {
-        size     = in.size();
+        size = in.size();
+        if (size < 0x200000) // Sane limit for save size as of SWSH 1.1.0
+        {
+            Gui::error(i18n::localize("WRONG_SIZE"), in.size());
+            loadedTitle  = nullptr;
+            saveFileName = "";
+            in.close();
+            return false;
+        }
         saveData = std::shared_ptr<u8[]>(new u8[size]);
         in.read(saveData.get(), size);
     }
