@@ -1,7 +1,22 @@
 kind: pipeline
 name: default
 
-main:
+
+compile:
+- name: submodules
+  image: docker:git
+  commands:
+  - git submodule update --init --force --remote
+- name: compile_pksm
+  image: fmcore/pksm_docker:latest
+  commands:
+  - make
+  when:
+    event:
+    - push
+
+
+push:
 - name: submodules
   image: docker:git
   commands:
@@ -18,19 +33,5 @@ main:
   when:
     branch:
     - master
-    event:
-    - push
-
-
-other:
-- name: submodules
-  image: docker:git
-  commands:
-  - git submodule update --init --force --remote
-- name: compile_pksm
-  image: fmcore/pksm_docker:latest
-  commands:
-  - make
-  when:
     event:
     - push
