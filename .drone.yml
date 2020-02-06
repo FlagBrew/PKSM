@@ -10,8 +10,6 @@ steps:
   image: fmcore/pksm_docker:latest
   commands:
   - make
-  - zip -r PKSM.zip out/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
-  - "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header \"secret: $TOKEN\" --header \"commit: $DRONE_COMMIT\" https://flagbrew.org\"$endpoint\""
   when:
     event:
     - push
@@ -21,6 +19,7 @@ steps:
     TOKEN:
       from_secret: token
   commands:
+  - zip -r PKSM.zip out/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
   - "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header \"secret: $TOKEN\" --header \"commit: $DRONE_COMMIT\" https://flagbrew.org\"$endpoint\""
   when:
     branch:
