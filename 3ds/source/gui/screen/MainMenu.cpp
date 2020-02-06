@@ -63,7 +63,7 @@ namespace
                 Gui::setScreen(std::make_unique<EditSelectorScreen>());
                 return true;
             case 2:
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (TitleLoader::save->generation() >= Generation::LGPE || TitleLoader::save->generation() <= Generation::THREE)
                 {
                     Gui::warn(i18n::localize("NO_WONDERCARDS"));
                     return false;

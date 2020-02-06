@@ -34,6 +34,7 @@ clean:
 
 format:
 	$(MAKE) -C 3ds format
+	$(MAKE) -C core format
 
 cppcheck:
 	$(MAKE) -C 3ds cppcheck

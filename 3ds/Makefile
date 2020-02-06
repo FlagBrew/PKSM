@@ -44,13 +44,6 @@ FORMATSOURCES	:=	../common/source \
 					../common/source/sound \
 					../common/source/sound/decoder \
 					../common/source/utils \
-					../core/source/i18n \
-					../core/source/personal \
-					../core/source/pkx \
-					../core/source/sav \
-					../core/source/utils \
-					../core/source/wcx \
-					../core/swshcrypto \
 					source \
 					source/gui \
 					source/gui/overlay \
@@ -66,7 +59,14 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../common/source/picoc/cstdlib \
 					../common/source/picoc/platform \
 					../common/source/quirc \
-					../core/memecrypto
+					../core/memecrypto \
+					../core/source/i18n \
+					../core/source/personal \
+					../core/source/pkx \
+					../core/source/sav \
+					../core/source/utils \
+					../core/source/wcx \
+					../core/swshcrypto
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
@@ -74,14 +74,6 @@ FORMATINCLUDES	:=	../common/include \
 					../common/include/sound \
 					../common/include/sound/decoder \
 					../common/include/utils \
-					../core/include \
-					../core/include/i18n \
-					../core/include/personal \
-					../core/include/pkx \
-					../core/include/sav \
-					../core/include/utils \
-					../core/include/wcx \
-					../core/swshcrypto \
 					include \
 					include/gui \
 					include/gui/overlay \
@@ -94,8 +86,15 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
 					../common/fmt \
+					../core/include \
+					../core/include/i18n \
+					../core/include/personal \
+					../core/include/pkx \
+					../core/include/sav \
+					../core/include/utils \
+					../core/include/wcx \
 					../core/memecrypto \
-					../core/include
+					../core/swshcrypto
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
