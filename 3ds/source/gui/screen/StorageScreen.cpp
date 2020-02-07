@@ -1284,8 +1284,7 @@ bool StorageScreen::dumpPkm()
                 }
                 dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
                 path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
-                        (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())
                 {
@@ -1308,8 +1307,7 @@ bool StorageScreen::dumpPkm()
             {
                 dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
                 path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
-                        (dumpMon->generation() != Generation::LGPE ? ".pk" + genToString(dumpMon->generation()) : ".pb7");
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())
                 {

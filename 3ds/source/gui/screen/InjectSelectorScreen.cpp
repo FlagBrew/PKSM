@@ -371,31 +371,7 @@ void InjectSelectorScreen::dumpCard(void) const
     std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
     mkdir(path.c_str(), 777);
     path += stringTime;
-    path += " - " + std::to_string(wc->ID()) + " - " + wc->title();
-    switch (wc->generation())
-    {
-        case Generation::FOUR:
-            path += ".pgt";
-            break;
-        case Generation::FIVE:
-            path += ".pgf";
-            break;
-        case Generation::SIX:
-            path += ".wc6";
-            break;
-        case Generation::SEVEN:
-            path += ".wc7";
-            break;
-        case Generation::LGPE:
-            path += ".wb7";
-            break;
-        case Generation::EIGHT:
-            path += ".wc8";
-            break;
-        case Generation::UNUSED:
-            Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("REPORT_THIS"));
-            return;
-    }
+    path += " - " + std::to_string(wc->ID()) + " - " + wc->title() + wc->extension();
     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());
     if (out.good())
     {
