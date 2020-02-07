@@ -1,9 +1,9 @@
-[submodule "source/memecrypto"]
-	path = core/memecrypto
-	url = https://github.com/FlagBrew/memecrypto.git
 [submodule "build/PKSM-Scripts"]
 	path = external/PKSM-Scripts
 	url = https://github.com/FlagBrew/PKSM-Scripts
 [submodule "docs/wiki"]
 	path = docs/wiki
 	url = https://github.com/FlagBrew/PKSM.wiki.git
+[submodule "core"]
+	path = core
+	url = https://github.com/FlagBrew/PKSM-Core

@@ -120,11 +120,11 @@ void ViewOverlay::drawTop() const
         {
             switch (Configuration::getInstance().language())
             {
-                case Language::TW:
-                case Language::ZH:
+                case Language::CHT:
+                case Language::CHS:
                     Gui::sprite(ui_sheet_pkrs_chn_idx, 192, 15);
                     break;
-                case Language::JP:
+                case Language::JPN:
                     Gui::sprite(ui_sheet_pkrs_jpn_idx, 192, 15);
                     break;
                 case Language::RU:

@@ -1,5 +1,0 @@
-0|—
-2|England
-4|Scotland
-5|Wales
-6|Northern Ireland

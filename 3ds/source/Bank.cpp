@@ -108,6 +108,7 @@ void Bank::load(int maxBoxes)
                     Generation gen;
                     u8 data[260];
                 };
+                static_assert(sizeof(G7Entry) == 264);
                 if (header.version == 1)
                 {
                     header.boxes = (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(G7Entry) / 30;

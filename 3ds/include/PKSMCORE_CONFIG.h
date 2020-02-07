@@ -24,23 +24,14 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef MESSAGESCREEN_HPP
-#define MESSAGESCREEN_HPP
+#ifndef _PKSMCORE_GETLINE_FUNC
+#define _PKSMCORE_GETLINE_FUNC __getline
+#endif
 
-#include "Language.hpp"
-#include "RunnableScreen.hpp"
+#ifndef _PKSMCORE_LANG_FOLDER
+#define _PKSMCORE_LANG_FOLDER "romfs:/i18n/"
+#endif
 
-class MessageScreen : public RunnableScreen<std::nullptr_t>
-{
-public:
-    MessageScreen(const std::string& message, Language lang = Language::ENG) : RunnableScreen(nullptr), message(message), lang(lang) {}
-    void drawTop() const override;
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
-
-private:
-    std::string message;
-    Language lang;
-};
-
+#ifndef _PKSMCORE_EXTRA_LANGUAGES
+#define _PKSMCORE_EXTRA_LANGUAGES NL, PT, RU, RO
 #endif

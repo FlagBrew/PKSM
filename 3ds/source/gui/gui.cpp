@@ -368,22 +368,22 @@ namespace
         }
         switch (lang)
         {
-            case Language::ES:
+            case Language::SPA:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
-            case Language::DE:
+            case Language::GER:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
-            case Language::FR:
+            case Language::FRE:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
-            case Language::IT:
+            case Language::ITA:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
-            case Language::JP:
+            case Language::JPN:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
-            case Language::KO:
+            case Language::KOR:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
-            case Language::TW:
-            case Language::ZH:
+            case Language::CHT:
+            case Language::CHS:
                 return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
-            case Language::EN:
+            case Language::ENG:
             case Language::PT:
             case Language::NL:
             default:
@@ -2022,7 +2022,7 @@ void Gui::waitFrame(const std::string& message)
 
 void Gui::warn(const std::string& message, std::optional<Language> lang)
 {
-    MessageScreen screen(message, lang.value_or(Language::EN));
+    MessageScreen screen(message, lang.value_or(Language::ENG));
     runScreen(screen);
 }
 

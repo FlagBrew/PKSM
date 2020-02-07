@@ -358,9 +358,9 @@ void TitleLoader::backupSave(const std::string& id)
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {
-        TitleLoader::save->encrypt();
+        TitleLoader::save->finishEditing();
         out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
-        TitleLoader::save->decrypt();
+        TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
         {
             sdSaves[id].emplace_back(path);
@@ -448,7 +448,15 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     std::shared_ptr<u8[]> saveData = nullptr;
     if (in.good())
     {
-        size     = in.size();
+        size = in.size();
+        if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
+        {
+            Gui::error(i18n::localize("WRONG_SIZE"), in.size());
+            loadedTitle  = nullptr;
+            saveFileName = "";
+            in.close();
+            return false;
+        }
         saveData = std::shared_ptr<u8[]>(new u8[size]);
         in.read(saveData.get(), size);
     }
@@ -579,7 +587,7 @@ void TitleLoader::saveToTitle(bool ask)
 
 void TitleLoader::saveChanges()
 {
-    save->encrypt();
+    save->finishEditing();
     if (saveIsFile)
     {
         // No need to check size; if it was read successfully, that means that it has the correct size
@@ -595,7 +603,7 @@ void TitleLoader::saveChanges()
     {
         saveToTitle(false);
     }
-    save->decrypt();
+    save->beginEditing();
 }
 
 void TitleLoader::exit()

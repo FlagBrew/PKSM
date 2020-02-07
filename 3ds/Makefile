@@ -44,13 +44,6 @@ FORMATSOURCES	:=	../common/source \
 					../common/source/sound \
 					../common/source/sound/decoder \
 					../common/source/utils \
-					../core/source/i18n \
-					../core/source/personal \
-					../core/source/pkx \
-					../core/source/sav \
-					../core/source/utils \
-					../core/source/wcx \
-					../core/swshcrypto \
 					source \
 					source/gui \
 					source/gui/overlay \
@@ -66,7 +59,14 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../common/source/picoc/cstdlib \
 					../common/source/picoc/platform \
 					../common/source/quirc \
-					../core/memecrypto
+					../core/memecrypto \
+					../core/source/i18n \
+					../core/source/personal \
+					../core/source/pkx \
+					../core/source/sav \
+					../core/source/utils \
+					../core/source/wcx \
+					../core/swshcrypto
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
@@ -74,14 +74,6 @@ FORMATINCLUDES	:=	../common/include \
 					../common/include/sound \
 					../common/include/sound/decoder \
 					../common/include/utils \
-					../core/include \
-					../core/include/i18n \
-					../core/include/personal \
-					../core/include/pkx \
-					../core/include/sav \
-					../core/include/utils \
-					../core/include/wcx \
-					../core/swshcrypto \
 					include \
 					include/gui \
 					include/gui/overlay \
@@ -93,9 +85,16 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
-					../core/fmt \
+					../common/fmt \
+					../core/include \
+					../core/include/i18n \
+					../core/include/personal \
+					../core/include/pkx \
+					../core/include/sav \
+					../core/include/utils \
+					../core/include/wcx \
 					../core/memecrypto \
-					../core/include
+					../core/swshcrypto
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
@@ -265,12 +264,16 @@ clean:
 	@echo clean ...
 	@rm -fr $(OUTDIR)
 	@rm -fr $(ROMFS)/mg/*
+	@rm -fr $(ROMFS)/i18n/
 	@touch $(ROMFS)/mg/.gitkeep
 	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 no-deps: $(ROMFS_FONTFILES)
-	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
+	@echo Copying strings to romfs...
+	@cp -r ../assets/gui_strings/* $(ROMFS)/i18n
+	@cp -r ../core/strings/* $(ROMFS)/i18n
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
