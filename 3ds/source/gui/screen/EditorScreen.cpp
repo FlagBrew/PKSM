@@ -63,56 +63,12 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
 
     if (this->box == PARTY_MAGIC_NUM)
     {
-        switch (pkm->generation())
+        if (!pkm->isParty())
         {
-            case Generation::FOUR:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[236] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK4>(pkmData, true);
-                    partyUpdate();
-                }
-                break;
-            case Generation::FIVE:
-                if (pkm->getLength() == 136)
-                {
-                    u8 pkmData[220] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK5>(pkmData, true);
-                    partyUpdate();
-                }
-                break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-                if (pkm->getLength() == 232)
-                {
-                    u8 pkmData[260] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    if (pkm->generation() == Generation::SIX)
-                    {
-                        pkm = std::make_shared<PK6>(pkmData, true);
-                    }
-                    else
-                    {
-                        pkm = std::make_shared<PK7>(pkmData, true);
-                    }
-                    partyUpdate();
-                }
-                break;
-            case Generation::EIGHT:
-                if (pkm->getLength() == 0x148)
-                {
-                    u8 pkmData[0x158] = {0};
-                    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), pkmData);
-                    pkm = std::make_shared<PK8>(pkmData, true);
-                    partyUpdate();
-                }
-                break;
-            case Generation::LGPE:
-                break; // Always a party Pokemon
-            case Generation::UNUSED:
-                Gui::warn(i18n::localize("THE_FUCK"));
+            std::shared_ptr<PKX> party = PKX::getPKM(pkm->generation(), nullptr, true);
+            std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), party->rawData());
+            pkm = party;
+            partyUpdate();
         }
 
         constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};

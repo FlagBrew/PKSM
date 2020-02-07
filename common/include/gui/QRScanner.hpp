@@ -201,35 +201,42 @@ public:
 
             if constexpr (std::is_same_v<Mode, PK4> || std::is_same_v<Mode, PK5>)
             {
-                if (decoded.size() != 136) // PK4/PK5 length
+                if (decoded.size() != PK4::BOX_LENGTH) // PK4/PK5 length
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                return std::make_unique<Mode>(decoded.data());
+                if (std::is_same_v<Mode, PK4>)
+                {
+                    return PKX::getPKM<Generation::FOUR>(decoded.data());
+                }
+                else
+                {
+                    return PKX::getPKM<Generation::FIVE>(decoded.data());
+                }
             }
 
             if constexpr (std::is_same_v<Mode, PK6>)
             {
-                if (decoded.size() != 232)
+                if (decoded.size() != PK6::BOX_LENGTH)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                return std::make_unique<PK6>(decoded.data());
+                return PKX::getPKM<Generation::SIX>(decoded.data());
             }
 
             if constexpr (std::is_same_v<Mode, PK8>)
             {
-                if (decoded.size() != 0x148)
+                if (decoded.size() != PK8::BOX_LENGTH)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                return std::make_unique<PK8>(decoded.data());
+                return PKX::getPKM<Generation::EIGHT>(decoded.data());
             }
 
             // Interchangeable, so has to be separate
@@ -283,7 +290,7 @@ public:
 
         if constexpr (std::is_same_v<Mode, PK7>)
         {
-            return std::make_unique<PK7>(data.data() + 0x30);
+            return PKX::getPKM<Generation::SEVEN>(data.data() + 0x30);
         }
 
         if constexpr (std::is_same_v<Mode, std::string>)

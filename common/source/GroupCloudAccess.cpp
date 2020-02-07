@@ -271,7 +271,7 @@ std::shared_ptr<PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) 
             }
         }
     }
-    return std::make_shared<PK7>();
+    return PKX::getPKM<Generation::SEVEN>(nullptr);
 }
 
 bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
@@ -305,7 +305,7 @@ std::shared_ptr<PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIn
             return ret;
         }
     }
-    return std::make_shared<PK7>();
+    return PKX::getPKM<Generation::SEVEN>(nullptr);
 }
 
 std::vector<std::shared_ptr<PKX>> GroupCloudAccess::group(size_t groupIndex) const

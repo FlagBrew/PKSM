@@ -196,7 +196,7 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
             return ret;
         }
     }
-    return std::make_shared<PK7>();
+    return PKX::getPKM<Generation::SEVEN>(nullptr);
 }
 
 bool CloudAccess::isLegal(size_t slot) const
@@ -222,7 +222,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 
         return ret;
     }
-    return std::make_shared<PK7>();
+    return PKX::getPKM<Generation::SEVEN>(nullptr);
 }
 
 bool CloudAccess::nextPage()

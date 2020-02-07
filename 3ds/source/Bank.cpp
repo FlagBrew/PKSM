@@ -305,26 +305,17 @@ void Bank::resize(int boxes)
 
 std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
 {
-    int index = box * 30 + slot;
-    switch (entries[index].gen)
+    int index                = box * 30 + slot;
+    std::shared_ptr<PKX> ret = PKX::getPKM(entries[index].gen, entries[index].data, false);
+    if (ret)
     {
-        case Generation::THREE:
-            return std::make_shared<PK3>(entries[index].data, false);
-        case Generation::FOUR:
-            return std::make_shared<PK4>(entries[index].data, false);
-        case Generation::FIVE:
-            return std::make_shared<PK5>(entries[index].data, false);
-        case Generation::SIX:
-            return std::make_shared<PK6>(entries[index].data, false);
-        case Generation::SEVEN:
-            return std::make_shared<PK7>(entries[index].data, false);
-        case Generation::LGPE:
-            return std::make_shared<PB7>(entries[index].data);
-        case Generation::EIGHT:
-            return std::make_shared<PK8>(entries[index].data, false);
-        case Generation::UNUSED:
-            return std::make_shared<PK7>();
+        return ret;
     }
+    else if (entries[index].gen == Generation::UNUSED)
+    {
+        return PKX::getPKM<Generation::SEVEN>(nullptr);
+    }
+
     throw BankException(u32(entries[index].gen));
 }
 
@@ -424,26 +415,26 @@ void Bank::convertFromBankBin()
     FSStream inStream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
     size_t oldSize = inStream.size();
     FSStream outStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
-    if (inStream.good() && outStream.good() && oldSize % 232 == 0 && (oldSize / 232) % 30 == 0)
+    if (inStream.good() && outStream.good() && oldSize % PK6::BOX_LENGTH == 0 && (oldSize / PK6::BOX_LENGTH) % 30 == 0)
     {
-        std::array<u8, 232> pkmData;
+        std::array<u8, PK6::BOX_LENGTH> pkmData;
         // ANOTHER CONVERSION SECTION
-        entries = new BankEntry[oldSize / 232];
+        entries = new BankEntry[oldSize / PK6::BOX_LENGTH];
         std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
         header.version = BANK_VERSION;
-        header.boxes   = oldSize / 232 / 30;
+        header.boxes   = oldSize / PK6::BOX_LENGTH / 30;
         extern nlohmann::json g_banks;
         g_banks["pksm_1"] = header.boxes;
         std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
         boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
 
-        for (int box = 0; box < std::min((int)(oldSize / (232 * 30)), boxes()); box++)
+        for (int box = 0; box < std::min((int)(oldSize / (PK6::BOX_LENGTH * 30)), boxes()); box++)
         {
             for (int slot = 0; slot < 30; slot++)
             {
                 inStream.read(pkmData.data(), pkmData.size());
                 outStream.write(pkmData.data(), pkmData.size());
-                std::shared_ptr<PKX> pkm = std::make_shared<PK6>(pkmData.data());
+                std::shared_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
                 if (pkm->species() == 0)
                 {
                     this->pkm(pkm, box, slot);
@@ -465,15 +456,15 @@ void Bank::convertFromBankBin()
                 }
                 if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
                 {
-                    pkm = std::make_shared<PK7>(pkmData.data());
+                    pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
                 }
                 else if (((PK6*)pkm.get())->encounterType() != 0)
                 {
                     if (((PK6*)pkm.get())->level() == 100) // Can be hyper trained
                     {
-                        if (!pkm->gen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
+                        if (!pkm->originGen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
                         {
-                            pkm = std::make_shared<PK7>(pkmData.data());
+                            pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
                         }
                     }
                 }

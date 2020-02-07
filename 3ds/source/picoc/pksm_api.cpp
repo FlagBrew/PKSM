@@ -31,6 +31,7 @@
 #include "PB7.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
+#include "PK3.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
@@ -46,6 +47,7 @@
 #include "WC8.hpp"
 #include "banks.hpp"
 #include "format.h"
+#include "genToPkx.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -669,19 +671,26 @@ void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
     switch (gen)
     {
+        case Generation::THREE:
+            ReturnValue->Val->Integer = GenToPkx<Generation::THREE>::PKX::BOX_LENGTH;
+            break;
         case Generation::FOUR:
+            ReturnValue->Val->Integer = GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH;
+            break;
         case Generation::FIVE:
-            ReturnValue->Val->Integer = 136;
+            ReturnValue->Val->Integer = GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH;
             break;
         case Generation::SIX:
+            ReturnValue->Val->Integer = GenToPkx<Generation::SIX>::PKX::BOX_LENGTH;
+            break;
         case Generation::SEVEN:
-            ReturnValue->Val->Integer = 232;
+            ReturnValue->Val->Integer = GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH;
             break;
         case Generation::LGPE:
-            ReturnValue->Val->Integer = 260;
+            ReturnValue->Val->Integer = GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH;
             break;
         case Generation::EIGHT:
-            ReturnValue->Val->Integer = 0x148;
+            ReturnValue->Val->Integer = GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH;
             break;
         case Generation::UNUSED:
             break;
@@ -695,19 +704,26 @@ void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     switch (gen)
     {
+        case Generation::THREE:
+            ReturnValue->Val->Integer = GenToPkx<Generation::THREE>::PKX::PARTY_LENGTH;
+            break;
         case Generation::FOUR:
-            ReturnValue->Val->Integer = 236;
+            ReturnValue->Val->Integer = GenToPkx<Generation::FOUR>::PKX::PARTY_LENGTH;
             break;
         case Generation::FIVE:
-            ReturnValue->Val->Integer = 220;
+            ReturnValue->Val->Integer = GenToPkx<Generation::FIVE>::PKX::PARTY_LENGTH;
             break;
         case Generation::SIX:
+            ReturnValue->Val->Integer = GenToPkx<Generation::SIX>::PKX::PARTY_LENGTH;
+            break;
         case Generation::SEVEN:
+            ReturnValue->Val->Integer = GenToPkx<Generation::SEVEN>::PKX::PARTY_LENGTH;
+            break;
         case Generation::LGPE:
-            ReturnValue->Val->Integer = 260;
+            ReturnValue->Val->Integer = GenToPkx<Generation::LGPE>::PKX::PARTY_LENGTH;
             break;
         case Generation::EIGHT:
-            ReturnValue->Val->Integer = 0x158;
+            ReturnValue->Val->Integer = GenToPkx<Generation::EIGHT>::PKX::PARTY_LENGTH;
             break;
         case Generation::UNUSED:
             break;
@@ -722,23 +738,26 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, true);
     switch (TitleLoader::save->generation())
     {
+        case Generation::THREE:
+            std::fill_n(data, GenToPkx<Generation::THREE>::PKX::BOX_LENGTH, 0);
+            break;
         case Generation::FOUR:
-            std::fill_n(data, 136, 0);
+            std::fill_n(data, GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH, 0);
             break;
         case Generation::FIVE:
-            std::fill_n(data, 136, 0);
+            std::fill_n(data, GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH, 0);
             break;
         case Generation::SIX:
-            std::fill_n(data, 232, 0);
+            std::fill_n(data, GenToPkx<Generation::SIX>::PKX::BOX_LENGTH, 0);
             break;
         case Generation::SEVEN:
-            std::fill_n(data, 232, 0);
+            std::fill_n(data, GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH, 0);
             break;
         case Generation::LGPE:
-            std::fill_n(data, 260, 0);
+            std::fill_n(data, GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH, 0);
             break;
         case Generation::EIGHT:
-            std::fill_n(data, 260, 0);
+            std::fill_n(data, GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH, 0);
             break;
         // Should never happen
         case Generation::UNUSED:

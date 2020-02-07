@@ -141,67 +141,20 @@ void LegalInfoScreen::attemptLegalization()
                         else if (!retJson["Pokemon"].is_null())
                         {
                             std::vector<u8> pkmData = base64_decode(retJson["Pokemon"].get<std::string>());
-                            switch (pkm->generation())
+                            auto fixed              = PKX::getPKM(pkm->generation(), pkmData.data(), pkmData.size(), true);
+                            if (fixed)
                             {
-                                case Generation::FOUR:
-                                    if (pkmData.size() == 136 || pkmData.size() == 236)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::FIVE:
-                                    if (pkmData.size() == 136 || pkmData.size() == 220)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::SIX:
-                                    if (pkmData.size() == 232 || pkmData.size() == 260)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::SEVEN:
-                                    if (pkmData.size() == 232 || pkmData.size() == 260)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::LGPE:
-                                    if (pkmData.size() == 260)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::EIGHT:
-                                    if (pkmData.size() == 0x148 || pkmData.size() == 0x158)
-                                    {
-                                        std::copy(pkmData.begin(), pkmData.begin() + pkm->getLength(), pkm->rawData());
-                                        Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                        Gui::screenBack();
-                                        return;
-                                    }
-                                    break;
-                                case Generation::UNUSED:
-                                    break;
+                                std::copy(fixed->rawData(), fixed->rawData() + std::min(pkm->getLength(), fixed->getLength()), pkm->rawData());
+                                Gui::warn(i18n::localize("PKM_LEGALIZED"));
+                                Gui::screenBack();
+                                return;
                             }
-                            Gui::error(i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' + i18n::localize("REPORT_THIS_TO_FLAGBREW"), pkmData.size());
-                            return;
+                            else
+                            {
+                                Gui::error(
+                                    i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' + i18n::localize("REPORT_THIS_TO_FLAGBREW"), pkmData.size());
+                                return;
+                            }
                         }
                     }
                 }

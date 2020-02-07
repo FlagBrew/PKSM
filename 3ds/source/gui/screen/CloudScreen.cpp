@@ -764,7 +764,7 @@ bool CloudScreen::releasePkm()
             }
             else
             {
-                Banks::bank->pkm(std::make_shared<PK7>(), storageBox, cursorIndex - 1);
+                Banks::bank->pkm(PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             }
             return false;
         }
