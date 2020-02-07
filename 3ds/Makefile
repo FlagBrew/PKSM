@@ -131,7 +131,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
-CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++17
+CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++2a
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=__assert_func -Wl,--wrap=abort

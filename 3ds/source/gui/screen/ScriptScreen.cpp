@@ -314,9 +314,9 @@ void ScriptScreen::applyScript()
     size_t index = MAGIC.size();
     while (index < scriptData.size())
     {
-        u32 offset = Endian::convertTo<u32>(scriptData.data() + index);
-        u32 length = Endian::convertTo<u32>(scriptData.data() + index + 4);
-        u32 repeat = Endian::convertTo<u32>(scriptData.data() + index + 8 + length);
+        u32 offset = LittleEndian::convertTo<u32>(scriptData.data() + index);
+        u32 length = LittleEndian::convertTo<u32>(scriptData.data() + index + 4);
+        u32 repeat = LittleEndian::convertTo<u32>(scriptData.data() + index + 8 + length);
 
         if (TitleLoader::save->generation() == Generation::FOUR)
         {

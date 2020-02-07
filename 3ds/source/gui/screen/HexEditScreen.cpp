@@ -951,7 +951,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 }
                 else if (buttons[i][j]->isMark())
                 {
-                    buttons[i][j]->setColor((Endian::convertTo<u16>(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
+                    buttons[i][j]->setColor((LittleEndian::convertTo<u16>(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
                 }
             }
             return true;
@@ -1653,7 +1653,7 @@ void HexEditScreen::drawMeaning() const
 
 bool HexEditScreen::rotateMark(u8 mark)
 {
-    u16 markData = Endian::convertTo<u16>(pkm->rawData() + 0x16);
+    u16 markData = LittleEndian::convertTo<u16>(pkm->rawData() + 0x16);
     switch ((markData >> (mark * 2)) & 0x3)
     {
         case 0:
@@ -1669,6 +1669,6 @@ bool HexEditScreen::rotateMark(u8 mark)
             markData &= (0xFFFF ^ (0x3 << (mark * 2)));
             break;
     }
-    Endian::convertFrom<u16>(pkm->rawData() + 0x16, markData);
+    LittleEndian::convertFrom<u16>(pkm->rawData() + 0x16, markData);
     return false;
 }
