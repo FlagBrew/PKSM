@@ -82,7 +82,7 @@ namespace
 }
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GROUP_SINGLE") + '\n' +
              i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
       filter(filter == nullptr ? std::make_shared<PKFilter>() : filter),
@@ -393,10 +393,6 @@ void CloudScreen::update(touchPosition* touch)
         }
         else
         {
-            if (!Gui::showChoiceMessage(i18n::localize("SHARE_CODE_ENTER_PROMPT")))
-            {
-                return;
-            }
             shareReceive();
         }
     }

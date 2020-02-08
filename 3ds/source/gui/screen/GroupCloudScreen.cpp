@@ -50,7 +50,7 @@
 #include <sys/stat.h>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GAME_STORAGE") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GROUP_SINGLE") + '\n' +
              i18n::localize("START_FILTER_LEGAL") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
       filter(filter ? filter : std::make_shared<PKFilter>()),
