@@ -9,7 +9,7 @@ import hashlib
 from shutil import rmtree
 
 validLangs = ["CHS", "CHT", "ENG", "FRE", "GER", "ITA", "JPN", "KOR", "SPA"]
-validTypes = ["wc7", "wc6", "wc7full", "wc6full", "pgf", "wc4", "pgt"]
+validTypes = ["wc7", "wc6", "wc7full", "wc6full", "pgf", "wc4", "pgt", "pcd"]
 
 def getWC4(data):
 	return bytearray(data[0x8:0x8 + 136])
@@ -142,7 +142,7 @@ def scanDir(root, sheet, origOffset):
 							match['indices'] = {}
 							match['indices'][lang] = len(sheet['wondercards']) - 1
 							sheet['matches'].append(match)
-					elif type == 'wc4':
+					elif type == 'wc4' or type == 'pcd':
 						if tempdata[0] == 1 or tempdata[0] == 2:
 							pk4 = getWC4(tempdata)
 							entry['species'] = struct.unpack('<H', pk4[0x8:0x0A])[0]
