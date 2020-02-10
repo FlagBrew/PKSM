@@ -38,7 +38,7 @@ public:
     FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size);
     FSStream(FS_Archive archive, const std::string& path, u32 flags) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags) {}
     FSStream(FS_Archive archive, const std::string& path, u32 flags, u64 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
-    ~FSStream() {}
+    ~FSStream() { close(); }
 
     Result close();
     bool eof();

@@ -27,7 +27,6 @@
 #include "ScriptScreen.hpp"
 #include "Configuration.hpp"
 #include "Directory.hpp"
-#include "FSStream.hpp"
 #include "Sav.hpp"
 #include "Sav4.hpp"
 #include "ScrollingTextScreen.hpp"
