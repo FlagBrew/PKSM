@@ -770,6 +770,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->TID(TitleLoader::save->TID());
         pkm->SID(TitleLoader::save->SID());
         pkm->otName(TitleLoader::save->otName());
+        pkm->otGender(TitleLoader::save->gender());
     }
     else
     {
@@ -778,7 +779,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->otName(Configuration::getInstance().defaultOT());
     }
     pkm->ball(4);
-    pkm->encryptionConstant((((u32)randomNumbers()) % 0xFFFFFFFF) + 1);
+    pkm->encryptionConstant(randomNumbers());
     pkm->version(TitleLoader::save->version());
     switch (pkm->version())
     {
@@ -831,16 +832,15 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     if (pkm->generation() == Generation::SIX)
     {
         ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK6*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-        ((PK6*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
         ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+        ((PK6*)pkm.get())->otMemory(1);
+        ((PK6*)pkm.get())->otFeeling(0);
+        ((PK6*)pkm.get())->otIntensity(1);
     }
     else if (pkm->generation() == Generation::SEVEN)
     {
         ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK7*)pkm.get())->geoCountry(0, Configuration::getInstance().defaultCountry());
-        ((PK7*)pkm.get())->geoRegion(0, Configuration::getInstance().defaultRegion());
         ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
         ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
     }
