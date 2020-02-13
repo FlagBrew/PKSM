@@ -94,6 +94,7 @@ namespace
     {
         switch (gen)
         {
+            case Generation::THREE:
             case Generation::FOUR:
             case Generation::FIVE:
             case Generation::SIX:
@@ -1918,10 +1919,11 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
             wcx = std::make_unique<WC8>(data);
             break;
         case Generation::UNUSED:
-            break;
+        case Generation::THREE:
+            return;
     }
 
-    if (gen == TitleLoader::save->generation())
+    if (wcx && gen == TitleLoader::save->generation())
     {
         TitleLoader::save->mysteryGift(*wcx, slot);
     }
