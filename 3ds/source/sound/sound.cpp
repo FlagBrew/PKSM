@@ -172,6 +172,11 @@ namespace
         }
         while (playMusic)
         {
+            if (bgm.empty())
+            {
+                bgmDone = true;
+                return;
+            }
             HIDUSER_GetSoundVolume(&currentVolume);
             if (bgmDone || (currentVolume == 0 && bgm.size() > 1))
             {
