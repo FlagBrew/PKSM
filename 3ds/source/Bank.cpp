@@ -253,6 +253,7 @@ bool Bank::saveWithoutBackup() const
             Gui::error(i18n::localize("BANK_NAME_ERROR"), out.result());
         }
         out.close();
+        needsCheck = false;
         return true;
     }
     else
@@ -261,8 +262,6 @@ bool Bank::saveWithoutBackup() const
         out.close();
         return false;
     }
-
-    needsCheck = false;
 }
 
 bool Bank::save() const
