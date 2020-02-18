@@ -136,6 +136,7 @@ void net_ip(struct ParseState*, struct Value*, struct Value**, int);
 void net_tcp_receiver(struct ParseState*, struct Value*, struct Value**, int);
 void net_tcp_sender(struct ParseState*, struct Value*, struct Value**, int);
 void net_udp_receiver(struct ParseState*, struct Value*, struct Value**, int);
+void fetch_web_content(struct ParseState*, struct Value*, struct Value**, int);
 void party_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void party_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
@@ -166,5 +167,7 @@ void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // PKSM prefix to prevent name hiding
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_base64_decode(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_base64_encode(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

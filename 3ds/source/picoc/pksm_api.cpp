@@ -46,6 +46,8 @@
 #include "WC7.hpp"
 #include "WC8.hpp"
 #include "banks.hpp"
+#include "base64.hpp"
+#include "fetch.hpp"
 #include "format.h"
 #include "genToPkx.hpp"
 #include "gui.hpp"
@@ -66,16 +68,22 @@ namespace
     void* strToRet(const std::string& str)
     {
         char* ret = (char*)malloc(str.size() + 1);
-        std::copy(str.begin(), str.end(), ret);
-        ret[str.size()] = '\0';
+        if (ret)
+        {
+            std::copy(str.begin(), str.end(), ret);
+            ret[str.size()] = '\0';
+        }
         return (void*)ret;
     }
 
     void* strToRet(const std::u16string& str)
     {
         u16* ret = (u16*)malloc((str.size() + 1) * 2);
-        std::copy(str.begin(), str.end(), ret);
-        ret[str.size()] = u'\0';
+        if (ret)
+        {
+            std::copy(str.begin(), str.end(), ret);
+            ret[str.size()] = u'\0';
+        }
         return (void*)ret;
     }
 
@@ -1932,5 +1940,70 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
 void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = TitleLoader::save->emptyGiftLocation();
+}
+
+void pksm_base64_decode(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8** out     = (u8**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+    char* in     = (char*)Param[2]->Val->Pointer;
+    int inSize   = Param[3]->Val->Integer;
+
+    auto data = base64_decode(in, inSize);
+
+    *outSize = data.size();
+    *out     = (u8*)malloc(data.size());
+    if (*out)
+    {
+        std::copy(data.begin(), data.end(), *out);
+    }
+}
+
+void pksm_base64_encode(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char** out   = (char**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+    u8* in       = (u8*)Param[2]->Val->Pointer;
+    int inSize   = Param[3]->Val->Integer;
+
+    auto data = base64_encode(in, inSize);
+
+    *outSize = data.size();
+    *out     = (char*)strToRet(data);
+}
+
+void fetch_web_content(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char** out   = (char**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+    char* url    = (char*)Param[2]->Val->Pointer;
+
+    std::string outData;
+    auto fetch = Fetch::init(url, url[4] == 's', &outData, nullptr, "");
+    auto ret   = Fetch::perform(fetch);
+    if (ret.index() == 0)
+    {
+        ReturnValue->Val->Integer = -(int)std::get<0>(ret);
+        *out                      = nullptr;
+        *outSize                  = 0;
+        return;
+    }
+    else
+    {
+        if (std::get<1>(ret) == CURLE_OK)
+        {
+            fetch->getinfo(CURLINFO_RESPONSE_CODE, &ReturnValue->Val->LongInteger);
+            *out     = (char*)strToRet(outData);
+            *outSize = outData.size();
+            return;
+        }
+        else
+        {
+            ReturnValue->Val->Integer = -((int)std::get<1>(ret) + 100);
+            *out                      = nullptr;
+            *outSize                  = 0;
+            return;
+        }
+    }
 }
 }

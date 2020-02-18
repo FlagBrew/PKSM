@@ -60,11 +60,15 @@ struct LibraryFunction UnixFunctions[] =
     { net_tcp_receiver,     "int net_tcp_recv(char* buffer, int size, int* received);" },
     { net_tcp_sender,       "int net_tcp_send(char* ip, int port, char* buffer, int size);" },
     { net_udp_receiver,     "int net_udp_recv(char* buffer, int size, int* received);" },
+    { fetch_web_content,    "int fetch_web_content(char** out, int* outSize, char* url);" },
     // i18n
     { i18n_species,         "char* i18n_species(int species);" },
     // text conversion
     { pksm_utf16_to_utf8,   "char* utf16_to_utf8(char* data);" },
     { pksm_utf8_to_utf16,   "char* utf8_to_utf16(char* data);" },
+    // misc
+    { pksm_base64_decode,   "void base64_decode(unsigned char** out, int* outSize, char* data, int size);" },
+    { pksm_base64_encode,   "void base64_encode(char** out, int* outSize, unsigned char* data, int size);" },
     // end
     { NULL,                 NULL }
 };
