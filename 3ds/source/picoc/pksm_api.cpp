@@ -300,21 +300,21 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     if (pkm)
     {
-        pkm = TitleLoader::save->transfer(pkm);
+        pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
             Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
-        std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
+        std::string invalidReasons = TitleLoader::save->invalidTransferReason(*pkm);
         if (!invalidReasons.empty())
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
         }
         else
         {
-            TitleLoader::save->pkm(pkm, box, slot, doTradeEdits);
-            TitleLoader::save->dex(pkm);
+            TitleLoader::save->pkm(*pkm, box, slot, doTradeEdits);
+            TitleLoader::save->dex(*pkm);
         }
     }
 }
@@ -533,9 +533,9 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
 
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false, true);
+    auto pkm = PKX::getPKM(gen, data, false, true);
 
-    Banks::bank->pkm(pkm, box, slot);
+    Banks::bank->pkm(*pkm, box, slot);
 }
 
 void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -654,21 +654,21 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
 
     if (pkm)
     {
-        pkm = TitleLoader::save->transfer(pkm);
+        pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
             Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
-        std::string invalidReasons = TitleLoader::save->invalidTransferReason(pkm);
+        std::string invalidReasons = TitleLoader::save->invalidTransferReason(*pkm);
         if (!invalidReasons.empty())
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
         }
         else
         {
-            TitleLoader::save->pkm(pkm, slot);
-            TitleLoader::save->dex(pkm);
+            TitleLoader::save->pkm(*pkm, slot);
+            TitleLoader::save->dex(*pkm);
         }
     }
 }

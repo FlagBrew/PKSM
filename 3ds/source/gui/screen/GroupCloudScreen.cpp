@@ -600,7 +600,7 @@ void GroupCloudScreen::pickup()
     }
     else if (!cloudChosen && Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == 0)
     {
-        Banks::bank->pkm(groupPkm.back(), storageBox, cursorIndex - 1);
+        Banks::bank->pkm(*groupPkm.back(), storageBox, cursorIndex - 1);
         groupPkm.pop_back();
     }
 }
@@ -714,7 +714,7 @@ bool GroupCloudScreen::releasePkm()
             {
                 toSend.erase(it);
             }
-            Banks::bank->pkm(PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+            Banks::bank->pkm(*PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             return false;
         }
     }

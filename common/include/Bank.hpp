@@ -38,8 +38,8 @@ class Bank
 public:
     Bank(const std::string& name, int maxBoxes);
     ~Bank();
-    std::shared_ptr<PKX> pkm(int box, int slot) const;
-    void pkm(std::shared_ptr<PKX> pkm, int box, int slot);
+    std::unique_ptr<PKX> pkm(int box, int slot) const;
+    void pkm(const PKX& pkm, int box, int slot);
     void resize(int boxes);
     void load(int maxBoxes);
     bool save() const;

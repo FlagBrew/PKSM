@@ -65,10 +65,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     {
         if (!pkm->isParty())
         {
-            std::shared_ptr<PKX> party = PKX::getPKM(pkm->generation(), nullptr, true);
-            std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), party->rawData());
-            pkm = party;
-            partyUpdate();
+            pkm = pkm->partyClone();
         }
 
         constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
@@ -623,7 +620,7 @@ bool EditorScreen::save()
     pkm->refreshChecksum();
     if (emergency)
     {
-        Banks::bank->pkm(pkm, box, index);
+        Banks::bank->pkm(*pkm, box, index);
     }
     else
     {
@@ -633,14 +630,14 @@ bool EditorScreen::save()
             {
                 partyUpdate();
             }
-            TitleLoader::save->pkm(pkm, box, index, false);
+            TitleLoader::save->pkm(*pkm, box, index, false);
         }
         else
         {
             partyUpdate();
-            TitleLoader::save->pkm(pkm, index);
+            TitleLoader::save->pkm(*pkm, index);
         }
-        TitleLoader::save->dex(pkm);
+        TitleLoader::save->dex(*pkm);
     }
     sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     return false;

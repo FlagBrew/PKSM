@@ -302,10 +302,10 @@ void Bank::resize(int boxes)
     }
 }
 
-std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
+std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
 {
-    int index                = box * 30 + slot;
-    std::shared_ptr<PKX> ret = PKX::getPKM(entries[index].gen, entries[index].data, false);
+    int index = box * 30 + slot;
+    auto ret  = PKX::getPKM(entries[index].gen, entries[index].data, false);
     if (ret)
     {
         return ret;
@@ -318,22 +318,22 @@ std::shared_ptr<PKX> Bank::pkm(int box, int slot) const
     throw BankException(u32(entries[index].gen));
 }
 
-void Bank::pkm(std::shared_ptr<PKX> pkm, int box, int slot)
+void Bank::pkm(const PKX& pkm, int box, int slot)
 {
     int index = box * 30 + slot;
     BankEntry newEntry;
-    if (pkm->species() == 0)
+    if (pkm.species() == 0)
     {
         std::fill_n((char*)&newEntry, sizeof(BankEntry), 0xFF);
         entries[index] = newEntry;
         needsCheck     = true;
         return;
     }
-    newEntry.gen = pkm->generation();
-    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), newEntry.data);
-    if (pkm->getLength() < sizeof(BankEntry::data))
+    newEntry.gen = pkm.generation();
+    std::copy(pkm.rawData(), pkm.rawData() + std::min((u32)sizeof(BankEntry::data), pkm.getLength()), newEntry.data);
+    if (pkm.getLength() < sizeof(BankEntry::data))
     {
-        std::fill_n(newEntry.data + pkm->getLength(), sizeof(BankEntry::data) - pkm->getLength(), 0xFF);
+        std::fill_n(newEntry.data + pkm.getLength(), sizeof(BankEntry::data) - pkm.getLength(), 0xFF);
     }
     entries[index] = newEntry;
     needsCheck     = true;
@@ -433,10 +433,10 @@ void Bank::convertFromBankBin()
             {
                 inStream.read(pkmData.data(), pkmData.size());
                 outStream.write(pkmData.data(), pkmData.size());
-                std::shared_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
+                std::unique_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
                 if (pkm->species() == 0)
                 {
-                    this->pkm(pkm, box, slot);
+                    this->pkm(*pkm, box, slot);
                     continue;
                 }
                 bool badMove = false;
@@ -467,7 +467,7 @@ void Bank::convertFromBankBin()
                         }
                     }
                 }
-                this->pkm(pkm, box, slot);
+                this->pkm(*pkm, box, slot);
             }
         }
 

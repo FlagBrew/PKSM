@@ -333,22 +333,22 @@ void SortScreen::sort()
         {
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                Banks::bank->pkm(sortMe[i], i / 30, i % 30);
+                Banks::bank->pkm(*sortMe[i], i / 30, i % 30);
             }
             for (int i = sortMe.size(); i < Banks::bank->boxes() * 30; i++)
             {
-                Banks::bank->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30);
+                Banks::bank->pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30);
             }
         }
         else
         {
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                TitleLoader::save->pkm(sortMe[i], i / 30, i % 30, false);
+                TitleLoader::save->pkm(*sortMe[i], i / 30, i % 30, false);
             }
             for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
             {
-                TitleLoader::save->pkm(TitleLoader::save->emptyPkm(), i / 30, i % 30, false);
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30, false);
             }
         }
     }

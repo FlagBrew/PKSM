@@ -58,8 +58,6 @@ private:
     // Clones from storage (bottom), clones and increments download counter (top), places in storage (bottom), or uploads (top)
     void pickup();
 
-    static bool isValidTransfer(std::shared_ptr<PKX> pkm);
-
     void shareSend();
     void shareReceive();
 
@@ -73,7 +71,6 @@ private:
     int storageBox    = 0;
     bool justSwitched = true;
     bool cloudChosen  = false;
-    bool saveChosen   = false;
 };
 
 #endif
