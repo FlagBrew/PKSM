@@ -28,7 +28,7 @@
 #define HIDDENPOWEROVERLAY_HPP
 
 #include "Configuration.hpp"
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 
 class PKX;
@@ -45,7 +45,7 @@ public:
 
 private:
     std::shared_ptr<PKX> pkm;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
 };
 
 #endif

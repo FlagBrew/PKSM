@@ -29,7 +29,7 @@
 
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "Sav.hpp"
 #include "spritesheets.h"
@@ -75,7 +75,7 @@ private:
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::unique_ptr<Button> searchButton;
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     int origItem;
     int slot;
     int& firstEmpty;

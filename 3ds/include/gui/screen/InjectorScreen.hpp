@@ -27,7 +27,7 @@
 #ifndef INJECTORSCREEN_HPP
 #define INJECTORSCREEN_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "Language.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
@@ -57,7 +57,7 @@ private:
     std::vector<std::unique_ptr<Button>> buttons;
     std::unique_ptr<WCX> wondercard;
     std::string game;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<nlohmann::json> ids;
     const std::vector<Sav::giftData> gifts;
     const int emptySlot;

@@ -27,34 +27,31 @@
 #ifndef HID_HPP
 #define HID_HPP
 
-#include "types.h"
+#include "IHid.hpp"
+#include <3ds.h>
 
 #define DELAY_TICKS 50000000
 
-class Hid
+template <HidDirection ListDirection, HidDirection PageDirection>
+class Hid : public IHid<ListDirection, PageDirection, DELAY_TICKS>
 {
 public:
-    virtual ~Hid(void) {}
+    Hid(size_t entries, size_t columns) : IHid<ListDirection, PageDirection, DELAY_TICKS>(entries, columns) {}
 
-    size_t fullIndex(void) const;
-    size_t index(void) const;
-    size_t maxEntries(size_t max) const;
-    size_t maxVisibleEntries(void) const;
-    int page(void) const;
-    virtual void update(size_t count) = 0;
-    void page_back(void);
-    void page_forward(void);
-    void select(size_t index);
-
-protected:
-    size_t mIndex;
-    int mPage;
-    size_t mMaxPages;
-    size_t mMaxVisibleEntries;
-    size_t mColumns;
-    size_t mRows;
-    u64 mCurrentTime;
-    u64 mLastTime;
+private:
+    bool downDown() const override { return hidKeysDown() & KEY_DOWN; }
+    bool upDown() const override { return hidKeysDown() & KEY_UP; }
+    bool leftDown() const override { return hidKeysDown() & KEY_LEFT; }
+    bool rightDown() const override { return hidKeysDown() & KEY_RIGHT; }
+    bool leftTriggerDown() const override { return hidKeysDown() & KEY_L; }
+    bool rightTriggerDown() const override { return hidKeysDown() & KEY_R; }
+    bool downHeld() const override { return hidKeysHeld() & KEY_DOWN; }
+    bool upHeld() const override { return hidKeysHeld() & KEY_UP; }
+    bool leftHeld() const override { return hidKeysHeld() & KEY_LEFT; }
+    bool rightHeld() const override { return hidKeysHeld() & KEY_RIGHT; }
+    bool leftTriggerHeld() const override { return hidKeysHeld() & KEY_L; }
+    bool rightTriggerHeld() const override { return hidKeysHeld() & KEY_R; }
+    u64 tick() const override { return svcGetSystemTick(); }
 };
 
 #endif

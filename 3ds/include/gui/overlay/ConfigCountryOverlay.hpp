@@ -27,7 +27,7 @@
 #ifndef CONFIGCOUNTRYOVERLAY_HPP
 #define CONFIGCOUNTRYOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
@@ -45,7 +45,7 @@ public:
 
 private:
     void searchBar();
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     const std::map<u8, std::string>& validCountries;
     std::map<u8, std::string> countries;
     std::string searchString    = "";

@@ -27,7 +27,7 @@
 #ifndef SPECIESOVERLAY_HPP
 #define SPECIESOVERLAY_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
@@ -49,7 +49,7 @@ public:
 private:
     void searchBar();
     std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<Button> searchButton;
     std::string searchString    = "";
     std::string oldSearchString = "";

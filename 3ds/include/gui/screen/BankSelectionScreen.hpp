@@ -27,7 +27,7 @@
 #ifndef BANKSELECTIONSCREEN_HPP
 #define BANKSELECTIONSCREEN_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "Screen.hpp"
 #include <string>
 #include <vector>
@@ -43,7 +43,7 @@ public:
 private:
     void renameBank();
     void resizeBank();
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<std::string, int>> strings;
     int& storageBox;
     bool finished = false;

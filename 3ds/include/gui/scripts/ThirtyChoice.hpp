@@ -27,7 +27,7 @@
 #ifndef THIRTYCHOICE_HPP
 #define THIRTYCHOICE_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "RunnableScreen.hpp"
 #include "generation.hpp"
 #include <string>
@@ -57,7 +57,7 @@ public:
 
 private:
     std::string question;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::string> labels;
     std::vector<pkm> pkms;
     const int items;

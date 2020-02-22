@@ -28,7 +28,7 @@
 #define SORTOVERLAY_HPP
 
 #include "Configuration.hpp"
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "SortScreen.hpp"
 #include <array>
@@ -50,7 +50,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     static constexpr std::array<SortScreen::SortType, 26> vals = {SortScreen::SortType::NONE, SortScreen::SortType::DEX,
         SortScreen::SortType::SPECIESNAME, SortScreen::SortType::FORM, SortScreen::SortType::TYPE1, SortScreen::SortType::TYPE2,
         SortScreen::SortType::HP, SortScreen::SortType::ATK, SortScreen::SortType::DEF, SortScreen::SortType::SATK, SortScreen::SortType::SDEF,

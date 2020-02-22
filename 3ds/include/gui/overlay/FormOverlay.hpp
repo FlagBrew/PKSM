@@ -28,7 +28,7 @@
 #define FORMOVERLAY_HPP
 
 #include "Configuration.hpp"
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
@@ -48,7 +48,7 @@ public:
 
 private:
     std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     u16 formCount;
 };
 

@@ -27,7 +27,7 @@
 #ifndef LOCATIONOVERLAY_HPP
 #define LOCATIONOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
@@ -47,7 +47,7 @@ public:
 private:
     void searchBar();
     std::shared_ptr<PKX> pkm;
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     const std::map<u16, std::string>& validLocations;
     std::map<u16, std::string> locations;
     std::string searchString    = "";

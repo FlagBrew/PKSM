@@ -27,7 +27,7 @@
 #ifndef FILECHOOSEOVERLAY_HPP
 #define FILECHOOSEOVERLAY_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "STDirectory.hpp"
 #include <vector>
@@ -49,7 +49,7 @@ private:
     STDirectory currDir;
     std::string& string;
     std::vector<std::pair<std::string, bool>> currFiles;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
 };
 
 #endif

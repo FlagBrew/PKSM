@@ -27,7 +27,7 @@
 #ifndef INJECTSELECTORSCREEN_HPP
 #define INJECTSELECTORSCREEN_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
 #include "nlohmann/json_fwd.hpp"
@@ -51,13 +51,13 @@ private:
     bool doQR(void);
     bool toggleFilter(const std::string& lang);
     bool toggleFilter(u8 type);
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::vector<nlohmann::json> wondercards;
     std::vector<std::unique_ptr<Button>> buttons;
     std::vector<std::unique_ptr<ToggleButton>> langFilters;
     std::vector<std::unique_ptr<ToggleButton>> typeFilters;
 
-    HidHorizontal dumpHid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> dumpHid;
     void dumpCard(void) const;
     std::vector<Sav::giftData> gifts;
     std::string langFilter = "";

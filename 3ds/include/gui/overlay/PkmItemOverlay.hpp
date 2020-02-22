@@ -27,7 +27,7 @@
 #ifndef PKMITEMOVERLAY_HPP
 #define PKMITEMOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 
 class Button;
@@ -46,7 +46,7 @@ public:
 private:
     void searchBar();
     std::shared_ptr<PKX> pkm;
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> items;
     std::vector<std::pair<int, std::string>> validItems;
     std::string searchString    = "";

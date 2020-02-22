@@ -27,7 +27,7 @@
 #ifndef SCRIPTSCREEN_HPP
 #define SCRIPTSCREEN_HPP
 
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "STDirectory.hpp"
 #include "Screen.hpp"
 
@@ -49,7 +49,7 @@ private:
     std::string currDirString;
     STDirectory currDir;
     std::vector<std::pair<std::string, bool>> currFiles;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     bool sdSearch, cScripts;
 };
 

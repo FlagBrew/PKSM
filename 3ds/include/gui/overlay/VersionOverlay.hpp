@@ -27,7 +27,7 @@
 #ifndef VERSIONOVERLAY_HPP
 #define VERSIONOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 
 class PKX;
@@ -43,7 +43,7 @@ public:
 
 private:
     std::shared_ptr<PKX> pkm;
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<u8, const std::string&>> games;
 };
 

@@ -28,7 +28,7 @@
 #define BOXOVERLAY_HPP
 
 #include "Configuration.hpp"
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <string>
 #include <vector>
@@ -49,7 +49,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::string> strings;
     int& out;
 };

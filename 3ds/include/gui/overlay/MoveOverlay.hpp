@@ -27,7 +27,7 @@
 #ifndef MOVEOVERLAY_HPP
 #define MOVEOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <variant>
 
@@ -48,7 +48,7 @@ public:
 private:
     void searchBar();
     std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> moves;
     std::vector<std::pair<int, std::string>> validMoves;
     std::string searchString    = "";

@@ -28,7 +28,7 @@
 #define HEXEDITSCREEN_HPP
 
 #include "Button.hpp"
-#include "HidHorizontal.hpp"
+#include "Hid.hpp"
 #include "Screen.hpp"
 #include "gui.hpp"
 #include <vector>
@@ -172,7 +172,7 @@ private:
     std::pair<const std::string*, SecurityLevel> selectedDescription;
     std::vector<int> selectBytes;
     std::shared_ptr<PKX> pkm;
-    HidHorizontal hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes
     // to have toggles, bitsetters, and just plain hexediting

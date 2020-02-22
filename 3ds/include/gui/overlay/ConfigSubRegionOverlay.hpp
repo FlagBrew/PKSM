@@ -27,7 +27,7 @@
 #ifndef CONFIGSUBREGIONOVERLAY_HPP
 #define CONFIGSUBREGIONOVERLAY_HPP
 
-#include "HidVertical.hpp"
+#include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
@@ -45,7 +45,7 @@ public:
 
 private:
     void searchBar();
-    HidVertical hid;
+    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     const std::map<u8, std::string>& validSubRegions;
     std::map<u8, std::string> subregions;
     std::string searchString    = "";
