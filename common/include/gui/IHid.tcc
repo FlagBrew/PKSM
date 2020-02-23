@@ -37,19 +37,11 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
 
     if (leftTriggerDown())
     {
-        page_back();
-        if (mIndex > maxEntries(count))
-        {
-            mIndex = maxEntries(count);
-        }
+        pageBack();
     }
     else if (rightTriggerDown())
     {
-        page_forward();
-        if (mIndex > maxEntries(count))
-        {
-            mIndex = maxEntries(count);
-        }
+        pageForward();
     }
     else if (leftTriggerHeld())
     {
@@ -58,11 +50,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             return;
         }
 
-        page_back();
-        if (mIndex > maxEntries(count))
-        {
-            mIndex = maxEntries(count);
-        }
+        pageBack();
     }
     else if (rightTriggerHeld())
     {
@@ -71,11 +59,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             return;
         }
 
-        page_forward();
-        if (mIndex > maxEntries(count))
-        {
-            mIndex = maxEntries(count);
-        }
+        pageForward();
     }
 
     if constexpr (ListDirection == HidDirection::HORIZONTAL)
@@ -86,7 +70,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_back();
+                    pageBack();
                 }
                 mIndex += mColumns * (mRows - 1);
             }
@@ -97,17 +81,14 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
         }
         else if (downDown())
         {
-            if (mIndex >= mColumns * (mRows - 1))
+            mIndex += mColumns;
+            if (mIndex > maxEntries(count))
             {
+                mIndex %= mColumns;
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
-                mIndex -= mColumns * (mRows - 1);
-            }
-            else
-            {
-                mIndex += mColumns;
             }
         }
         else if (upHeld())
@@ -120,7 +101,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_back();
+                    pageBack();
                 }
                 mIndex += mColumns * (mRows - 1);
             }
@@ -135,17 +116,14 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 return;
             }
-            if (mIndex >= mColumns * (mRows - 1))
+            mIndex += mColumns;
+            if (mIndex > maxEntries(count))
             {
+                mIndex %= mColumns;
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
-                mIndex -= mColumns * (mRows - 1);
-            }
-            else
-            {
-                mIndex += mColumns;
             }
         }
 
@@ -157,35 +135,32 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             }
             else
             {
+                mIndex += mColumns - 1;
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_back();
+                    pageBack();
                 }
-                mIndex += mColumns - 1;
             }
         }
         else if (rightDown())
         {
             if (mIndex % mColumns != mColumns - 1)
             {
-                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                mIndex++;
+                if (mIndex > maxEntries(count))
                 {
                     if constexpr (PageDirection == HidDirection::HORIZONTAL)
                     {
-                        page_forward();
+                        pageForward();
                     }
-                    mIndex = (mIndex / mColumns) * mColumns;
-                }
-                else
-                {
-                    mIndex++;
+                    mIndex = mIndex - (mIndex % mColumns);
                 }
             }
             else
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
                 mIndex -= mColumns - 1;
             }
@@ -204,7 +179,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_back();
+                    pageBack();
                 }
                 mIndex += mColumns - 1;
             }
@@ -217,24 +192,21 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             }
             if (mIndex % mColumns != mColumns - 1)
             {
-                if (mIndex + mPage * mMaxVisibleEntries == count - 1)
+                mIndex++;
+                if (mIndex > maxEntries(count))
                 {
                     if constexpr (PageDirection == HidDirection::HORIZONTAL)
                     {
-                        page_forward();
+                        pageForward();
                     }
-                    mIndex = (mIndex / mColumns) * mColumns;
-                }
-                else
-                {
-                    mIndex++;
+                    mIndex = mIndex - (mIndex % mColumns);
                 }
             }
             else
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
                 mIndex -= mColumns - 1;
             }
@@ -244,7 +216,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
     {
         if (leftDown())
         {
-            if (mIndex % mRows != mIndex)
+            if (mIndex / mRows != 0)
             {
                 mIndex -= mRows;
             }
@@ -252,31 +224,21 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_back();
+                    pageBack();
                 }
-                mIndex += mRows;
+                mIndex += mRows * (mColumns - 1);
             }
         }
         else if (rightDown())
         {
-            if (maxEntries(count) < mRows)
+            mIndex += mRows;
+            if (mIndex > maxEntries(count))
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
-            }
-            else if (mIndex + mRows < mMaxVisibleEntries)
-            {
-                mIndex += mRows;
-            }
-            else
-            {
-                if constexpr (PageDirection == HidDirection::HORIZONTAL)
-                {
-                    page_forward();
-                }
-                mIndex -= mRows;
+                mIndex %= mRows;
             }
         }
         else if (leftHeld())
@@ -285,7 +247,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 return;
             }
-            if (mIndex % mRows != mIndex)
+            if (mIndex / mRows != 0)
             {
                 mIndex -= mRows;
             }
@@ -293,9 +255,9 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_back();
+                    pageBack();
                 }
-                mIndex += mRows;
+                mIndex += mRows * (mColumns - 1);
             }
         }
         else if (rightHeld())
@@ -304,24 +266,14 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 return;
             }
-            if (maxEntries(count) < mRows)
+            mIndex += mRows;
+            if (mIndex > maxEntries(count))
             {
                 if constexpr (PageDirection == HidDirection::HORIZONTAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
-            }
-            else if (mIndex + mRows < mMaxVisibleEntries)
-            {
-                mIndex += mRows;
-            }
-            else
-            {
-                if constexpr (PageDirection == HidDirection::HORIZONTAL)
-                {
-                    page_forward();
-                }
-                mIndex -= mRows;
+                mIndex %= mRows;
             }
         }
 
@@ -335,7 +287,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_back();
+                    pageBack();
                 }
                 mIndex = mIndex + mRows - 1;
             }
@@ -348,9 +300,9 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
                 {
                     if constexpr (PageDirection == HidDirection::VERTICAL)
                     {
-                        page_forward();
+                        pageForward();
                     }
-                    mIndex = (mIndex / mRows) * mRows;
+                    mIndex = mIndex - (mIndex % mRows);
                 }
                 else
                 {
@@ -361,7 +313,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
                 mIndex = mIndex + 1 - mRows;
             }
@@ -380,7 +332,7 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_back();
+                    pageBack();
                 }
                 mIndex = mIndex + mRows - 1;
             }
@@ -397,9 +349,9 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
                 {
                     if constexpr (PageDirection == HidDirection::VERTICAL)
                     {
-                        page_forward();
+                        pageForward();
                     }
-                    mIndex = (mIndex / mRows) * mRows;
+                    mIndex = mIndex - (mIndex % mRows);
                 }
                 else
                 {
@@ -410,16 +362,14 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
             {
                 if constexpr (PageDirection == HidDirection::VERTICAL)
                 {
-                    page_forward();
+                    pageForward();
                 }
                 mIndex = mIndex + 1 - mRows;
             }
         }
     }
 
-    if (mIndex > maxEntries(count))
-    {
-        mIndex = maxEntries(count);
-    }
+    correctIndex(count);
+
     mLastTime = currentTime;
 }
