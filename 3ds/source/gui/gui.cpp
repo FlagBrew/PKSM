@@ -427,6 +427,39 @@ void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Col
     drawSolidTriangle(x2 - dx, y2 - dy, x2 + dx, y2 + dy, x1 + dx, y1 + dy, color);
 }
 
+void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Color color)
+{
+    if (points.size() > 2)
+    {
+        for (size_t currentPoint = 2; currentPoint < points.size(); currentPoint++)
+        {
+            drawSolidTriangle(points[0].first, points[0].second, points[currentPoint - 1].first, points[currentPoint - 1].second,
+                points[currentPoint].first, points[currentPoint].second, color);
+        }
+    }
+}
+void Gui::drawLinedPolygon(std::vector<std::pair<float, float>> points, float width, PKSM_Color color)
+{
+    if (points.size() > 2)
+    {
+        for (size_t startPoint = 0; startPoint < points.size(); startPoint++)
+        {
+            const auto& a = points[startPoint];
+            const auto& b = points[(startPoint + 1) % points.size()];
+            const auto& d = points[startPoint == 0 ? points.size() - 1 : startPoint - 1];
+            const auto& c = points[(startPoint + 2) % points.size()];
+
+            float dAngle                       = atan2f(d.second - a.second, d.first - a.first);
+            std::pair<float, float> trapPointD = {a.first + width * cos(dAngle), a.second + width * sin(dAngle)};
+            drawSolidTriangle(a.first, a.second, b.first, b.second, trapPointD.first, trapPointD.second, color);
+
+            float cAngle                       = atan2f(c.second - b.second, c.first - b.first);
+            std::pair<float, float> trapPointC = {b.first + width * cos(cAngle), b.second + width * sin(cAngle)};
+            drawSolidTriangle(b.first, b.second, trapPointD.first, trapPointD.second, trapPointC.first, trapPointC.second, color);
+        }
+    }
+}
+
 void Gui::setDoHomeDraw()
 {
     noHomeAlpha  = 1.0f;
