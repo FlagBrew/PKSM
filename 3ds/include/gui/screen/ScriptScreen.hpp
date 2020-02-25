@@ -49,7 +49,7 @@ private:
     std::string currDirString;
     STDirectory currDir;
     std::vector<std::pair<std::string, bool>> currFiles;
-    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
+    Hid<HidDirection::HORIZONTAL, HidDirection::VERTICAL> hid;
     bool sdSearch, cScripts;
 };
 
