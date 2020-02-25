@@ -582,6 +582,14 @@ void TitleLoader::saveToTitle(bool ask)
                 }
             }
         }
+
+        u8 out;
+        u64 secureValue = ((u64)SECUREVALUE_SLOT_SD << 32) | (loadedTitle->lowId() & 0xFFFFFF00);
+        res             = FSUSER_ControlSecureSave(SECURESAVE_ACTION_DELETE, &secureValue, 8, &out, 1);
+        if (R_FAILED(res))
+        {
+            Gui::error(i18n::localize("SECURE_VALUE_ERROR"), res);
+        }
     }
 }
 
