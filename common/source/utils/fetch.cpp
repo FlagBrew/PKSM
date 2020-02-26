@@ -116,8 +116,6 @@ Result Fetch::download(
             fetch->setopt(CURLOPT_XFERINFOFUNCTION, progress);
             fetch->setopt(CURLOPT_XFERINFODATA, progressInfo);
         }
-        fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
-        fetch->setopt(CURLOPT_LOW_SPEED_TIME, 30);
 
         auto res = Fetch::perform(fetch);
 
