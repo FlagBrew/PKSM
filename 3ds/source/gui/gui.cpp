@@ -844,9 +844,6 @@ void Gui::mainLoop(void)
             screens.top()->doTopDraw();
             screens.top()->getInstructions().drawTop();
             flushText();
-
-            drawLinedPolygon({{25, 50}, {0, 25}, {50, 0}, {100, 25}, {50, 50}}, 2, COLOR_WHITE);
-            flushText();
             target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
             screens.top()->getInstructions().drawBottom();
