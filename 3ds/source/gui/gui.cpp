@@ -449,12 +449,62 @@ void Gui::drawLinedPolygon(std::vector<std::pair<float, float>> points, float wi
             const auto& d = points[startPoint == 0 ? points.size() - 1 : startPoint - 1];
             const auto& c = points[(startPoint + 2) % points.size()];
 
-            float dAngle                       = atan2f(d.second - a.second, d.first - a.first);
-            std::pair<float, float> trapPointD = {a.first + width * cos(dAngle), a.second + width * sin(dAngle)};
+            // Line segment angles
+            float daAngle = atan2f(d.second - a.second, d.first - a.first);
+            if (daAngle < 0)
+            {
+                daAngle = C3D_Angle(1) + daAngle;
+            }
+            float abAngle = atan2f(a.second - b.second, a.first - b.first);
+            if (abAngle < 0)
+            {
+                abAngle = C3D_Angle(1) + abAngle;
+            }
+            float baAngle = atan2f(b.second - a.second, b.first - a.first);
+            if (baAngle < 0)
+            {
+                baAngle = C3D_Angle(1) + baAngle;
+            }
+            float bcAngle = atan2f(c.second - b.second, c.first - b.first);
+            if (bcAngle < 0)
+            {
+                bcAngle = C3D_Angle(1) + bcAngle;
+            }
+
+            // NOTE: have to handle differing signs properly
+
+            // Angle of line segment DA with respect to AB
+            float dabTheta = daAngle + baAngle;
+            float dabPhi   = dabTheta / 2;
+            float dabLength;
+            // Should not happen; means that dab was 0 degrees
+            if (sinf(dabPhi - baAngle) == 0)
+            {
+                dabLength = width;
+            }
+            else
+            {
+                dabLength = width / sinf(dabPhi - baAngle);
+            }
+
+            std::pair<float, float> trapPointD = {a.first + dabLength * cosf(dabPhi), a.second + dabLength * sinf(dabPhi)};
             drawSolidTriangle(a.first, a.second, b.first, b.second, trapPointD.first, trapPointD.second, color);
 
-            float cAngle                       = atan2f(c.second - b.second, c.first - b.first);
-            std::pair<float, float> trapPointC = {b.first + width * cos(cAngle), b.second + width * sin(cAngle)};
+            // Angle of line segment AB with respect to BC
+            float abcTheta = abAngle + bcAngle;
+            float abcPhi   = abcTheta / 2;
+            float abcLength;
+            // Should not happen; means that abc was 0 degrees
+            if (sinf(abcPhi - bcAngle) == 0)
+            {
+                abcLength = width;
+            }
+            else
+            {
+                abcLength = width / sinf(abcPhi - bcAngle);
+            }
+
+            std::pair<float, float> trapPointC = {b.first + abcLength * cosf(abcPhi), b.second + abcLength * sinf(abcPhi)};
             drawSolidTriangle(b.first, b.second, trapPointD.first, trapPointD.second, trapPointC.first, trapPointC.second, color);
         }
     }
@@ -793,6 +843,9 @@ void Gui::mainLoop(void)
             target(GFX_TOP);
             screens.top()->doTopDraw();
             screens.top()->getInstructions().drawTop();
+            flushText();
+
+            drawLinedPolygon({{25, 50}, {0, 25}, {50, 0}, {100, 25}, {50, 50}}, 2, COLOR_WHITE);
             flushText();
             target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
