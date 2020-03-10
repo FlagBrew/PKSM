@@ -383,6 +383,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     {
         Banks::bank->save();
     }
+    TitleLoader::save->cryptBoxData(false);
     PicocCleanup(picoc);
     // And here we'll clean up
     aptSetHomeAllowed(true);
