@@ -546,7 +546,7 @@ void TitleLoader::saveToTitle(bool ask)
                     {
                         break;
                     }
-                    Gui::showRestoreProgress(pageSize * (i + 1), save->getLength());
+                    Gui::showRestoreProgress((pageSize * (i + 1)) / 1024, save->getLength() / 1024);
                 }
             }
         }
