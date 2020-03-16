@@ -408,8 +408,7 @@ void Sound::playEffect(const std::string& effectName)
     }
 }
 
-// Must be called by the main thread. Will be called via extern function in Gui::mainLoop for sound.hpp to stay implementation-independent
-void SOUND_correctBGMDataSize()
+void Sound::update()
 {
     if (currentBGM)
     {

@@ -38,6 +38,9 @@ namespace Sound
 
     void startBGM(void);
     void playEffect(const std::string& effectName);
+
+    // Should be called by the main thread. May contain implementation-specific stuff that needs to happen there
+    void update(void);
 }
 
 #endif
