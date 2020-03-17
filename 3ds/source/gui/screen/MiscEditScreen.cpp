@@ -206,8 +206,8 @@ void MiscEditScreen::drawBottom() const
         print += 2000;
     }
     Gui::text(std::to_string(print), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), TitleLoader::save->version()), 115, 112, FONT_SIZE_12,
-        COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), pkm->version()), 115, 112, FONT_SIZE_12, COLOR_BLACK,
+        TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
