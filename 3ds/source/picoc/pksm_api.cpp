@@ -195,7 +195,7 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     int numChars = Param[2]->Val->Integer;
 
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars);
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars - 1);
     swkbdSetHintText(&state, hint);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     swkbdInputText(&state, out, numChars * 3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so
