@@ -1081,13 +1081,13 @@ void StorageScreen::putDownSwap()
     {
         std::shared_ptr<PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
         std::shared_ptr<PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-        if (!isValidTransfer(bankMon))
-        {
-            return;
-        }
         if (bankMon->species() == 0)
         {
             bankMon = TitleLoader::save->emptyPkm();
+        }
+        else if (!isValidTransfer(bankMon))
+        {
+            return;
         }
         bankMon = TitleLoader::save->transfer(*bankMon);
         if (!bankMon)
@@ -1174,13 +1174,13 @@ void StorageScreen::putDownNonSwap()
             for (int x = 0; x < selectDimensions.first; x++)
             {
                 int index = x + y * selectDimensions.first;
-                if (!isValidTransfer(moveMon[index], moveMon.size() > 1))
-                {
-                    continue;
-                }
-                if (moveMon[index] && moveMon[index]->species() == 0)
+                if (!moveMon[index] || moveMon[index]->species() == 0)
                 {
                     moveMon[index] = TitleLoader::save->emptyPkm();
+                }
+                else if (!isValidTransfer(moveMon[index], moveMon.size() > 1))
+                {
+                    continue;
                 }
                 if (!TitleLoader::save->transfer(*moveMon[index]))
                 {
