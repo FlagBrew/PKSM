@@ -25,6 +25,7 @@
  */
 
 #include "Configuration.hpp"
+#include "DateTime.hpp"
 #include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "Sav.hpp"
@@ -196,11 +197,9 @@ bool sendSaveToBridge(void)
 
 void backupBridgeChanges()
 {
-    char stringTime[15]   = {0};
-    time_t unixTime       = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-    std::strftime(stringTime, 14, "%Y%m%d%H%M%S", timeStruct);
-    std::string path = "/3ds/PKSM/backups/bridge/" + std::string(stringTime) + ".bak";
+    DateTime now     = DateTime::now();
+    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak"), now.year(), now.month(), now.day(),
+        now.hour(), now.minute(), now.second());
     FSStream out     = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
     if (out.good())
     {

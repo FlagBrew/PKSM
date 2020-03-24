@@ -26,6 +26,7 @@
 
 #include "loader.hpp"
 #include "Configuration.hpp"
+#include "DateTime.hpp"
 #include "Directory.hpp"
 #include "FSStream.hpp"
 #include "Sav.hpp"
@@ -35,7 +36,6 @@
 #include "gui.hpp"
 #include "io.hpp"
 #include <atomic>
-#include <ctime>
 #include <sys/stat.h>
 
 namespace
@@ -346,13 +346,11 @@ void TitleLoader::backupSave(const std::string& id)
         return;
     }
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
-    char stringTime[15]   = {0};
-    time_t unixTime       = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-    std::strftime(stringTime, 14, "%Y%m%d%H%M%S", timeStruct);
-    std::string path = "/3ds/PKSM/backups/" + id;
+    DateTime now     = DateTime::now();
+    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/{0:s}"), id);
     mkdir(path.c_str(), 777);
-    path += '/' + std::string(stringTime) + '/';
+    path +=
+        fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
     path += idToSaveName(id);
     FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());

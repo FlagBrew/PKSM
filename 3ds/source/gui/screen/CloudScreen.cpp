@@ -746,15 +746,10 @@ bool CloudScreen::dumpPkm()
         auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         if (dumpMon && dumpMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
-            char stringDate[12]   = {0};
-            char stringTime[11]   = {0};
-            time_t unixTime       = time(NULL);
-            struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-            std::strftime(stringDate, 11, "%Y-%m-%d", timeStruct);
-            std::strftime(stringTime, 10, "/%H-%M-%S", timeStruct);
-            std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
+            DateTime now     = DateTime::now();
+            std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
             mkdir(path.c_str(), 777);
-            path += stringTime;
+            path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
             if (cursorIndex == 0)
             {
                 return false;

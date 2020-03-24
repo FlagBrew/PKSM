@@ -48,7 +48,7 @@ bool InjectorScreen::setLanguage(Language language)
         lang       = language;
         wondercard = MysteryGift::wondercard((*ids)[i18n::langString(lang)]);
 
-        changeDate();
+        wondercard->date(Configuration::getInstance().date());
     }
     return false;
 }
@@ -125,7 +125,7 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds)
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
 
-    changeDate();
+    wondercard->date(Configuration::getInstance().date());
 }
 
 InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
@@ -378,8 +378,9 @@ void InjectorScreen::drawTop() const
             Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(fmt::format(FMT_STRING("{:d}/{:d}/{:d}"), wondercard->day(), wondercard->month(), wondercard->year()), 87, 155, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Date date = wondercard->date();
+            Gui::text(fmt::format(FMT_STRING("{:d}/{:d}/{:d}"), date.day(), date.month(), date.year()), 87, 155, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             if (wondercard->generation() == Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
@@ -551,15 +552,4 @@ void InjectorScreen::update(touchPosition* touch)
 bool InjectorScreen::isLangAvailable(Language l) const
 {
     return ids && ids->find(i18n::langString(l)) != ids->end();
-}
-
-void InjectorScreen::changeDate()
-{
-    time_t current = time(NULL);
-    int day        = Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday;
-    int month      = Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon;
-    int year       = Configuration::getInstance().year() ? Configuration::getInstance().year() : gmtime(&current)->tm_year;
-    wondercard->day(day);
-    wondercard->month(month);
-    wondercard->year(year);
 }

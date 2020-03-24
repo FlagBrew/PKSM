@@ -336,44 +336,17 @@ void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struc
 
 void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    int ret = Configuration::getInstance().day();
-    if (ret == 0)
-    {
-        const time_t current      = time(NULL);
-        ReturnValue->Val->Integer = gmtime(&current)->tm_mday;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = ret;
-    }
+    ReturnValue->Val->Integer = Configuration::getInstance().date().day();
 }
 
 void cfg_default_month(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    int ret = Configuration::getInstance().month();
-    if (ret == 0)
-    {
-        const time_t current      = time(NULL);
-        ReturnValue->Val->Integer = gmtime(&current)->tm_mon;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = ret;
-    }
+    ReturnValue->Val->Integer = Configuration::getInstance().date().month();
 }
 
 void cfg_default_year(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    int ret = Configuration::getInstance().year();
-    if (ret == 0)
-    {
-        const time_t current      = time(NULL);
-        ReturnValue->Val->Integer = gmtime(&current)->tm_year;
-    }
-    else
-    {
-        ReturnValue->Val->Integer = ret;
-    }
+    ReturnValue->Val->Integer = Configuration::getInstance().date().year();
 }
 
 void gui_boxes(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -833,10 +806,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pkm->fixMoves();
     pkm->PID((u32)randomNumbers());
     pkm->language(getSafeLanguage(pkm->generation(), Configuration::getInstance().language()));
-    const time_t current = time(NULL);
-    pkm->metDay(Configuration::getInstance().day() ? Configuration::getInstance().day() : gmtime(&current)->tm_mday);
-    pkm->metMonth(Configuration::getInstance().month() ? Configuration::getInstance().month() : gmtime(&current)->tm_mon);
-    pkm->metYear(Configuration::getInstance().year() ? Configuration::getInstance().year() - 2000 : gmtime(&current)->tm_year - 2000);
+    pkm->metDate(Configuration::getInstance().date());
     pkm->metLevel(1);
     if (pkm->generation() == Generation::SIX)
     {
@@ -1269,7 +1239,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
             }
-            pkm->eggDay(nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.day((u8)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case EGG_MONTH:
             if (NumArgs != 4)
@@ -1277,7 +1251,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
             }
-            pkm->eggMonth(nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.month((u8)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case EGG_YEAR:
             if (NumArgs != 4)
@@ -1285,7 +1263,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
-            pkm->eggYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.year((u32)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case MET_DAY:
             if (NumArgs != 4)
@@ -1293,7 +1275,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
-            pkm->metDay(nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.day((u8)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case MET_MONTH:
             if (NumArgs != 4)
@@ -1301,7 +1287,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
-            pkm->metMonth(nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.month((u8)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case MET_YEAR:
             if (NumArgs != 4)
@@ -1309,7 +1299,11 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
-            pkm->metYear(nextArg->Val->Integer > 2000 ? nextArg->Val->Integer - 2000 : nextArg->Val->Integer);
+            {
+                Date date = pkm->eggDate();
+                date.year((u32)nextArg->Val->Integer);
+                pkm->eggDate(date);
+            }
             break;
         case FORM:
             if (NumArgs != 4)
@@ -1648,7 +1642,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_DAY", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->eggDay();
+            ReturnValue->Val->UnsignedInteger = pkm->eggDate().day();
             break;
         case EGG_MONTH:
             if (NumArgs != 3)
@@ -1656,7 +1650,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_MONTH", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->eggMonth();
+            ReturnValue->Val->UnsignedInteger = pkm->eggDate().month();
             break;
         case EGG_YEAR:
             if (NumArgs != 3)
@@ -1664,7 +1658,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EGG_YEAR", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->eggYear();
+            ReturnValue->Val->UnsignedInteger = pkm->eggDate().year();
             break;
         case MET_DAY:
             if (NumArgs != 3)
@@ -1672,7 +1666,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->metDay();
+            ReturnValue->Val->UnsignedInteger = pkm->metDate().day();
             break;
         case MET_MONTH:
             if (NumArgs != 3)
@@ -1680,7 +1674,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->metMonth();
+            ReturnValue->Val->UnsignedInteger = pkm->metDate().month();
             break;
         case MET_YEAR:
             if (NumArgs != 3)
@@ -1688,7 +1682,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->metYear();
+            ReturnValue->Val->UnsignedInteger = pkm->metDate().year();
             break;
         case FORM:
             if (NumArgs != 3)

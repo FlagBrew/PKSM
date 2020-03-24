@@ -146,25 +146,25 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0xD2:
-                if (pkm->eggMonth() > 12)
+                if (pkm->eggDate().month() > 12 || pkm->eggDate().month() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0xD5:
-                if (pkm->metMonth() > 12)
+                if (pkm->metDate().month() > 12 || pkm->metDate().month() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0xD3:
-                if (pkm->eggDay() > 31)
+                if (pkm->eggDate().day() > 31 || pkm->eggDate().day() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0xD6:
-                if (pkm->metDay() > 31)
+                if (pkm->metDate().day() > 31 || pkm->metDate().day() == 0)
                 {
                     return false;
                 }
@@ -209,25 +209,25 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0x79:
-                if (pkm->eggMonth() > 12)
+                if (pkm->eggDate().month() > 12 || pkm->eggDate().month() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x7C:
-                if (pkm->metMonth() > 12)
+                if (pkm->metDate().month() > 12 || pkm->metDate().month() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x7A:
-                if (pkm->eggDay() > 31)
+                if (pkm->eggDate().day() > 31 || pkm->eggDate().day() == 0)
                 {
                     return false;
                 }
                 return true;
             case 0x7D:
-                if (pkm->metDay() > 31)
+                if (pkm->metDate().day() > 31 || pkm->metDate().day() == 0)
                 {
                     return false;
                 }

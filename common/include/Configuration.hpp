@@ -27,6 +27,7 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
+#include "DateTime.hpp"
 #include "Language.hpp"
 #include "coretypes.h"
 #include "nlohmann/json_fwd.hpp"
@@ -64,6 +65,24 @@ public:
     int month(void) const;
 
     int year(void) const;
+
+    Date date(void) const
+    {
+        Date ret = Date::today();
+        if (day() != 0)
+        {
+            ret.day(day());
+        }
+        if (month() != 0)
+        {
+            ret.month(month());
+        }
+        if (year() != 0)
+        {
+            ret.year(year());
+        }
+        return ret;
+    }
 
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;

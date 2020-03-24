@@ -361,17 +361,12 @@ bool InjectSelectorScreen::doQR()
 
 void InjectSelectorScreen::dumpCard(void) const
 {
-    auto wc               = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
-    char stringDate[12]   = {0};
-    char stringTime[11]   = {0};
-    time_t unixTime       = time(NULL);
-    struct tm* timeStruct = gmtime((const time_t*)&unixTime);
-    std::strftime(stringDate, 11, "%Y-%m-%d", timeStruct);
-    std::strftime(stringTime, 10, "/%H-%M-%S", timeStruct);
-    std::string path = std::string("/3ds/PKSM/dumps/") + stringDate;
+    auto wc          = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
+    DateTime now     = DateTime::now();
+    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
     mkdir(path.c_str(), 777);
-    path += stringTime;
-    path += " - " + std::to_string(wc->ID()) + " - " + wc->title() + wc->extension();
+    path += fmt::format(
+        FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(), now.minute(), now.second(), wc->ID(), wc->title(), wc->extension());
     FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());
     if (out.good())
     {

@@ -198,19 +198,16 @@ void MiscEditScreen::drawBottom() const
     }
 
     Gui::text(std::to_string((int)pkm->metLevel()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(std::to_string((int)(otAndMet ? pkm->metDay() : pkm->eggDay())), 115, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(std::to_string((int)(otAndMet ? pkm->metMonth() : pkm->eggMonth())), 115, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    int print = otAndMet ? pkm->metYear() : pkm->eggYear();
-    if (print < 2000)
-    {
-        print += 2000;
-    }
-    Gui::text(std::to_string(print), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Date date = otAndMet ? pkm->metDate() : pkm->eggDate();
+    Gui::text(std::to_string((int)date.day()), 115, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)date.month()), 115, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string(date.year()), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::location(lang, otAndMet ? pkm->metLocation() : pkm->eggLocation(), pkm->version()), 115, 112, FONT_SIZE_12, COLOR_BLACK,
         TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
     {
+        int print;
         if (pkm->generation() == Generation::SIX)
         {
             print = ((PK6*)pkm.get())->enjoyment();
@@ -621,14 +618,15 @@ void MiscEditScreen::day()
     input[2]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 day = (u8)std::max(1, std::min(std::stoi(input), 31));
+        Date date = otAndMet ? pkm->metDate() : pkm->eggDate();
+        date.day((u8)std::max(1, std::min(std::stoi(input), 31)));
         if (otAndMet)
         {
-            pkm->metDay(day);
+            pkm->metDate(date);
         }
         else
         {
-            pkm->eggDay(day);
+            pkm->eggDate(date);
         }
     }
 }
@@ -644,14 +642,15 @@ void MiscEditScreen::month()
     input[2]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 month = (u8)std::max(1, std::min(std::stoi(input), 12));
+        Date date = otAndMet ? pkm->metDate() : pkm->eggDate();
+        date.day((u8)std::max(1, std::min(std::stoi(input), 12)));
         if (otAndMet)
         {
-            pkm->metMonth(month);
+            pkm->metDate(date);
         }
         else
         {
-            pkm->eggMonth(month);
+            pkm->eggDate(date);
         }
     }
 }
@@ -667,18 +666,15 @@ void MiscEditScreen::year()
     input[4]        = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        int year = std::stoi(input);
-        if (year > 2000)
-        {
-            year -= 2000;
-        }
+        Date date = otAndMet ? pkm->metDate() : pkm->eggDate();
+        date.year(std::max(2000, std::stoi(input)));
         if (otAndMet)
         {
-            pkm->metYear((u8)year);
+            pkm->metDate(date);
         }
         else
         {
-            pkm->eggYear((u8)year);
+            pkm->eggDate(date);
         }
     }
 }
