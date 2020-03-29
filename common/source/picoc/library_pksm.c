@@ -49,6 +49,7 @@ struct LibraryFunction UnixFunctions[] =
     { current_directory,    "char* current_directory();" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
     { delete_directory,     "void delete_directory(struct directory* dir);" },
+    { save_path,            "char* save_path();" },
     // configurations
     { cfg_default_ot,       "char* cfg_default_ot(enum Generation gen);" },
     { cfg_default_tid,      "unsigned short cfg_default_tid(enum Generation gen);" },

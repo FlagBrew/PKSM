@@ -294,6 +294,19 @@ void delete_directory(struct ParseState* Parser, struct Value* ReturnValue, stru
     }
 }
 
+void save_path(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int numArgs)
+{
+    auto savePath = TitleLoader::savePath();
+    if (savePath.empty())
+    {
+        ReturnValue->Val->Pointer = nullptr;
+    }
+    else
+    {
+        ReturnValue->Val->Pointer = strToRet(TitleLoader::savePath());
+    }
+}
+
 void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data          = (u8*)Param[0]->Val->Pointer;

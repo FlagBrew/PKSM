@@ -612,6 +612,16 @@ void TitleLoader::saveChanges()
     save->beginEditing();
 }
 
+std::string TitleLoader::savePath()
+{
+    std::string savePath;
+    if (saveIsFile)
+    {
+        savePath = saveFileName;
+    }
+    return savePath;
+}
+
 void TitleLoader::exit()
 {
     continueScan.clear();

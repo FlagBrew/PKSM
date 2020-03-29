@@ -56,6 +56,7 @@ namespace TitleLoader
     void saveToTitle(bool ask);
     void init(void);
     void exit(void);
+    std::string savePath(void);
 
     // Title list
     inline std::vector<std::shared_ptr<Title>> nandTitles;
