@@ -10,6 +10,7 @@ struct LibraryFunction UnixFunctions[] =
     // gui
     { gui_choice,           "int gui_choice(char* message);" },
     { gui_warn,             "void gui_warn(char* warning);" },
+    { gui_splash,           "void gui_splash(char* notification);" },
     { gui_menu6x5,          "int gui_menu_6x5(char* question, int options, char** labels, struct pkx* pokemon, enum Generation generation);" },
     { gui_menu20x2,         "int gui_menu_20x2(char* question, int options, char** labels);" },
     { gui_keyboard,         "void gui_keyboard(char* out, char* hint, int maxChars);" },

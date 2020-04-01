@@ -132,6 +132,11 @@ void gui_choice(struct ParseState* Parser, struct Value* ReturnValue, struct Val
     ReturnValue->Val->Integer = (int)Gui::showChoiceMessage((char*)Param[0]->Val->Pointer);
 }
 
+void gui_splash(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    Gui::waitFrame((char*)Param[0]->Val->Pointer);
+}
+
 void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* question            = (char*)Param[0]->Val->Pointer;

@@ -127,6 +127,7 @@ void cfg_default_month(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_year(struct ParseState*, struct Value*, struct Value**, int);
 void gui_warn(struct ParseState*, struct Value*, struct Value**, int);
 void gui_choice(struct ParseState*, struct Value*, struct Value**, int);
+void gui_splash(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu6x5(struct ParseState*, struct Value*, struct Value**, int);
 void gui_menu20x2(struct ParseState*, struct Value*, struct Value**, int);
 void gui_keyboard(struct ParseState*, struct Value*, struct Value**, int);
