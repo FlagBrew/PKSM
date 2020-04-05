@@ -1504,7 +1504,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     Date date = Date::today();
     if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) && date.month() == ((u16)(~magicNumber) ^ 0xB542))
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, (u8)(~magicNumber >> 13) ^ 306), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, (u8)(~magicNumber >> 13) ^ 184), x, y, &tint, scale, scale);
         return;
     }
     if (species == 490 && form == -1)
