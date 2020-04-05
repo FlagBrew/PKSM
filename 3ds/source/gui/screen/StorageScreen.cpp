@@ -1329,7 +1329,7 @@ bool StorageScreen::duplicate()
             grabSelection(false);
             postPickup();
         }
-        else
+        else if (pickupMode != SWAP)
         {
             if (storageChosen)
             {
