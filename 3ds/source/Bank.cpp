@@ -169,15 +169,16 @@ void Bank::load(int maxBoxes)
             create   = true;
         }
 
-        in = FSStream(ARCHIVE, JSON(paths), FS_OPEN_READ);
-        if (in.good())
+        FSStream json(ARCHIVE, JSON(paths), FS_OPEN_READ);
+        if (json.good())
         {
             size_t jsonSize = in.size();
-            char jsonData[jsonSize + 1];
-            in.read(jsonData, jsonSize);
-            in.close();
+            char* jsonData  = new char[jsonSize + 1];
+            json.read(jsonData, jsonSize);
+            json.close();
             jsonData[jsonSize] = '\0';
             boxNames           = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
+            delete[] jsonData;
             if (boxNames->is_discarded())
             {
                 createJSON();
@@ -241,18 +242,18 @@ bool Bank::saveWithoutBackup() const
 
         std::string jsonData = boxNames->dump(2);
         Archive::deleteFile(ARCHIVE, JSON(paths));
-        out = FSStream(ARCHIVE, JSON(paths), FS_OPEN_WRITE, jsonData.size());
-        if (out.good())
+        FSStream json(ARCHIVE, JSON(paths), FS_OPEN_WRITE, jsonData.size() + 1);
+        if (json.good())
         {
-            out.write(jsonData.data(), jsonData.size() + 1);
+            json.write(jsonData.data(), jsonData.size() + 1);
             sha256(prevHash.data(), (u8*)entries, sizeof(BankEntry) * boxes() * 30);
             sha256(prevNameHash.data(), (u8*)jsonData.data(), jsonData.size());
         }
         else
         {
-            Gui::error(i18n::localize("BANK_NAME_ERROR"), out.result());
+            Gui::error(i18n::localize("BANK_NAME_ERROR"), json.result());
         }
-        out.close();
+        json.close();
         needsCheck = false;
         return true;
     }
