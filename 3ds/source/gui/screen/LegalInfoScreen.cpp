@@ -126,15 +126,15 @@ void LegalInfoScreen::attemptLegalization()
                         retJson.contains("Success") && retJson["Success"].is_boolean())
                     // clang-format on
                     {
-                        if (!retJson["Ran"].get<bool>())
+                        if (!retJson["Success"].get<bool>())
                         {
-                            Gui::warn(i18n::localize("ALREADY_LEGAL"));
+                            Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["Success"].get<bool>())
+                        else if (!retJson["Ran"].get<bool>())
                         {
-                            Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
+                            Gui::warn(i18n::localize("ALREADY_LEGAL"));
                             Gui::screenBack();
                             return;
                         }
