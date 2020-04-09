@@ -643,7 +643,7 @@ void MiscEditScreen::month()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         Date date = otAndMet ? pkm->metDate() : pkm->eggDate();
-        date.day((u8)std::max(1, std::min(std::stoi(input), 12)));
+        date.month((u8)std::max(1, std::min(std::stoi(input), 12)));
         if (otAndMet)
         {
             pkm->metDate(date);
