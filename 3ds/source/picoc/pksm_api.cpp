@@ -51,7 +51,7 @@
 #include "format.h"
 #include "genToPkx.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "random.hpp"
 #include "utils.hpp"
@@ -311,10 +311,10 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
-        std::string invalidReasons = TitleLoader::save->invalidTransferReason(*pkm);
-        if (!invalidReasons.empty())
+        auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
+        if (invalidReason != Sav::BadTransferReason::OKAY)
         {
-            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
         else
         {
@@ -638,10 +638,10 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
             return;
         }
-        std::string invalidReasons = TitleLoader::save->invalidTransferReason(*pkm);
-        if (!invalidReasons.empty())
+        auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
+        if (invalidReason != Sav::BadTransferReason::OKAY)
         {
-            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
         else
         {

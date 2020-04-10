@@ -46,7 +46,7 @@
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 #include <PB7.hpp>
 #include <stack>
@@ -898,14 +898,14 @@ bool StorageScreen::releasePkm()
 
 bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer)
 {
-    std::string invalidReasons = TitleLoader::save->invalidTransferReason(*moveMon);
-    if (invalidReasons.empty())
+    auto invalidReason = TitleLoader::save->invalidTransferReason(*moveMon);
+    if (invalidReason == Sav::BadTransferReason::OKAY)
     {
         return true;
     }
     else if (!bulkTransfer)
     {
-        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::localize(invalidReasons));
+        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
     }
     return false;
 }
