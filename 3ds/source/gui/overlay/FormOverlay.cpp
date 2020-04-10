@@ -86,8 +86,8 @@ void FormOverlay::drawTop() const
                 {
                     Gui::pkm(std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<0>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
-                    const std::string& text = i18n::form(
-                        Configuration::getInstance().language(), std::get<0>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    const std::string& text =
+                        i18n::form(Configuration::getInstance().language(), TitleLoader::save->version(), std::get<0>(object)->species(), x + y * 6);
                     Gui::text(
                         text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
@@ -96,8 +96,8 @@ void FormOverlay::drawTop() const
                 {
                     Gui::pkm(std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation(), std::get<1>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
-                    const std::string& text = i18n::form(
-                        Configuration::getInstance().language(), std::get<1>(object)->species(), x + y * 6, TitleLoader::save->generation());
+                    const std::string& text =
+                        i18n::form(Configuration::getInstance().language(), TitleLoader::save->version(), std::get<1>(object)->species(), x + y * 6);
                     Gui::text(
                         text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }

@@ -1368,12 +1368,12 @@ void Gui::format(const PKX& pkm, int x, int y)
     {
         // If this ever happens
         // case Generation::ONE:
-        // case Generation::TWO:
+        // case Generation::TWO: // if this ever happens
         //     Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
         //     break;
-        // case Generation::THREE: // if this ever happens
-        //     Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
-        //     break;
+        case Generation::THREE:
+            Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
+            break;
         case Generation::FOUR:
             Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
             break;
@@ -1398,55 +1398,55 @@ void Gui::generation(const PKX& pkm, int x, int y)
 {
     switch (pkm.version())
     {
-        case 1:  // sapphire
-        case 2:  // ruby
-        case 3:  // emerald
-        case 4:  // fire red
-        case 5:  // leaf green
-        case 15: // colosseum/XD
+        case GameVersion::S:
+        case GameVersion::R:
+        case GameVersion::E:
+        case GameVersion::FR:
+        case GameVersion::LG:
+        case GameVersion::CXD:
             Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
             break;
-        case 10: // diamond
-        case 11: // pearl
-        case 12: // platinum
-        case 7:  // heart gold
-        case 8:  // soul silver
+        case GameVersion::D:
+        case GameVersion::P:
+        case GameVersion::Pt:
+        case GameVersion::HG:
+        case GameVersion::SS:
             Gui::sprite(ui_sheet_icon_generation_4_idx, x, y);
             break;
-        case 20: // white
-        case 21: // black
-        case 22: // white2
-        case 23: // black2
+        case GameVersion::W:
+        case GameVersion::B:
+        case GameVersion::W2:
+        case GameVersion::B2:
             Gui::sprite(ui_sheet_icon_generation_5_idx, x, y);
             break;
-        case 24: // x
-        case 25: // y
-        case 26: // as
-        case 27: // or
+        case GameVersion::X:
+        case GameVersion::Y:
+        case GameVersion::AS:
+        case GameVersion::OR:
             Gui::sprite(ui_sheet_icon_generation_6_idx, x, y);
             break;
-        case 30: // sun
-        case 31: // moon
-        case 32: // us
-        case 33: // um
+        case GameVersion::SN:
+        case GameVersion::MN:
+        case GameVersion::US:
+        case GameVersion::UM:
             Gui::sprite(ui_sheet_icon_generation_7_idx, x, y);
             break;
-        case 34: // go
+        case GameVersion::GO:
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
-        case 35: // rd
-        case 36: // gn
-        case 37: // bu
-        case 38: // yw
-        case 39: // gd
-        case 40: // sv
-        case 41: // cr
+        case GameVersion::RD:
+        case GameVersion::GN:
+        case GameVersion::BU:
+        case GameVersion::YW:
+        case GameVersion::GD:
+        case GameVersion::SV:
+        case GameVersion::C:
             Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
             break;
-        case 42: // lgp
-        case 43: // lge
-        case 44: // sw
-        case 45: // sh
+        case GameVersion::GP:
+        case GameVersion::GE:
+        case GameVersion::SW:
+        case GameVersion::SH:
         default:
             break;
     }

@@ -33,17 +33,18 @@
 
 VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
-    for (size_t i = 0; i < i18n::numGameStrings(Configuration::getInstance().language()); i++)
+    auto gameStrings = i18n::rawGames(Configuration::getInstance().language());
+    for (size_t i = 0; i < gameStrings.size(); i++)
     {
-        const std::string& str = i18n::game(Configuration::getInstance().language(), i);
-        if (str != i18n::localize("INVALID_GAME"))
+        if (!gameStrings[i].empty())
         {
-            games.emplace_back((u8)i, str);
+            games.emplace_back(GameVersion(i), gameStrings[i]);
         }
     }
     hid.update(games.size());
-    hid.select(std::distance(games.begin(),
-        std::find_if(games.begin(), games.end(), [pkm](const std::pair<u8, const std::string&>& pair) { return pair.first == pkm->version(); })));
+    hid.select(std::distance(games.begin(), std::find_if(games.begin(), games.end(), [pkm](const std::pair<GameVersion, const std::string&>& pair) {
+        return pair.first == pkm->version();
+    })));
 }
 
 void VersionOverlay::drawBottom() const
@@ -67,7 +68,7 @@ void VersionOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < games.size())
         {
-            Gui::text(std::to_string(games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
+            Gui::text(std::to_string((int)games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
                           games[hid.page() * hid.maxVisibleEntries() + i].second,
                 x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }

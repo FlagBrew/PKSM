@@ -454,7 +454,7 @@ void Bank::convertFromBankBin()
                         break;
                     }
                 }
-                if (pkm->version() > 27 || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
+                if (pkm->version() > GameVersion::OR || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
                 {
                     pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
                 }

@@ -37,19 +37,15 @@
 
 namespace
 {
-    nlohmann::json mysteryGiftSheet = nlohmann::json::object();
-    u8* mysteryGiftData             = nullptr;
+    nlohmann::json mysteryGiftSheet;
+    u8* mysteryGiftData;
 }
 
 void MysteryGift::init(Generation g)
 {
     // Just in case cleanup did not occur properly
-    mysteryGiftSheet.clear();
-    if (mysteryGiftData)
-    {
-        delete[] mysteryGiftData;
-        mysteryGiftData = nullptr;
-    }
+    delete[] mysteryGiftData;
+    mysteryGiftData = nullptr;
 
     std::string sheetPath = "/3ds/PKSM/mysterygift/sheet" + genToString(g) + ".json.bz2";
     std::string dataPath  = "/3ds/PKSM/mysterygift/data" + genToString(g) + ".bin.bz2";

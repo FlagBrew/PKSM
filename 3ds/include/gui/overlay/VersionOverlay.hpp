@@ -29,6 +29,7 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "gameversion.hpp"
 
 class PKX;
 
@@ -44,7 +45,7 @@ public:
 private:
     std::shared_ptr<PKX> pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    std::vector<std::pair<u8, const std::string&>> games;
+    std::vector<std::pair<GameVersion, const std::string&>> games;
 };
 
 #endif

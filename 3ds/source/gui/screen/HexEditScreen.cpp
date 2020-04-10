@@ -1492,8 +1492,8 @@ void HexEditScreen::drawMeaning() const
                     }
                     // falls through
                 case 0x7E ... 0x7F:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::location(Configuration::getInstance().language(), versionToGen(pkm->version()), pkm->eggLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x46 ... 0x47:
                     if (pkm->generation() == Generation::FIVE)
@@ -1502,8 +1502,8 @@ void HexEditScreen::drawMeaning() const
                     }
                     // falls through
                 case 0x80 ... 0x81:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::location(Configuration::getInstance().language(), versionToGen(pkm->version()), pkm->metLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
@@ -1537,12 +1537,12 @@ void HexEditScreen::drawMeaning() const
                         COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xD8 ... 0xD9:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), pkm->eggLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::location(Configuration::getInstance().language(), versionToGen(pkm->version()), pkm->eggLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDA ... 0xDB:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), pkm->metLocation(), pkm->version()), 160, 100, FONT_SIZE_12,
-                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::location(Configuration::getInstance().language(), versionToGen(pkm->version()), pkm->metLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xE0:
                 {

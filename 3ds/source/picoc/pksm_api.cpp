@@ -770,42 +770,44 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pkm->version(TitleLoader::save->version());
     switch (pkm->version())
     {
-        case 7:
-        case 8:
+        case GameVersion::HG:
+        case GameVersion::SS:
             pkm->metLocation(0x0095); // Route 1, HGSS
             break;
-        case 10:
-        case 11:
-        case 12:
+        case GameVersion::D:
+        case GameVersion::P:
+        case GameVersion::Pt:
             pkm->metLocation(0x0010); // Route 201, DPPt
             break;
-        case 20:
-        case 21:
-        case 22:
-        case 23:
+        case GameVersion::B:
+        case GameVersion::W:
+        case GameVersion::B2:
+        case GameVersion::W2:
             pkm->metLocation(0x000e); // Route 1, BWB2W2
             break;
-        case 24:
-        case 25:
+        case GameVersion::X:
+        case GameVersion::Y:
             pkm->metLocation(0x0008); // Route 1, XY
             break;
-        case 26:
-        case 27:
+        case GameVersion::OR:
+        case GameVersion::AS:
             pkm->metLocation(0x00cc); // Route 101, ORAS
             break;
-        case 30:
-        case 31:
-        case 32:
-        case 33:
+        case GameVersion::SN:
+        case GameVersion::MN:
+        case GameVersion::US:
+        case GameVersion::UM:
             pkm->metLocation(0x0006); // Route 1, SMUSUM
             break;
-        case 42:
-        case 43:
+        case GameVersion::GP:
+        case GameVersion::GE:
             pkm->metLocation(0x0003); // Route 1, LGPE
             break;
-        case 44:
-        case 45:
+        case GameVersion::SW:
+        case GameVersion::SH:
             pkm->metLocation(0x000C); // Route 1, SWSH
+            break;
+        default:
             break;
     }
     pkm->fixMoves();
@@ -1460,7 +1462,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
             }
-            pkm->version(nextArg->Val->Integer);
+            pkm->version(GameVersion(nextArg->Val->Integer));
             break;
         default:
             delete pkm;
@@ -1839,7 +1841,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->version();
+            ReturnValue->Val->Integer = u8(pkm->version());
             break;
         default:
             delete pkm;

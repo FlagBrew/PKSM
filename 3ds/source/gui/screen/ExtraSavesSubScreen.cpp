@@ -152,56 +152,56 @@ namespace
         return {"", 0, 0};
     }
 
-    constexpr int groupToGameId1(ExtraSavesSubScreen::Group g)
+    constexpr GameVersion groupToGameId1(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return 12;
+                return GameVersion::Pt;
             case ExtraSavesSubScreen::Group::DP:
-                return 10;
+                return GameVersion::D;
             case ExtraSavesSubScreen::Group::HGSS:
-                return 7;
+                return GameVersion::HG;
             case ExtraSavesSubScreen::Group::BW:
-                return 21;
+                return GameVersion::B;
             case ExtraSavesSubScreen::Group::B2W2:
-                return 23;
+                return GameVersion::B2;
             case ExtraSavesSubScreen::Group::XY:
-                return 24;
+                return GameVersion::X;
             case ExtraSavesSubScreen::Group::ORAS:
-                return 27;
+                return GameVersion::OR;
             case ExtraSavesSubScreen::Group::SM:
-                return 30;
+                return GameVersion::SN;
             case ExtraSavesSubScreen::Group::USUM:
-                return 32;
+                return GameVersion::US;
         }
-        return 0;
+        return GameVersion::INVALID;
     }
 
-    constexpr int groupToGameId2(ExtraSavesSubScreen::Group g)
+    constexpr GameVersion groupToGameId2(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return 12;
+                return GameVersion::Pt;
             case ExtraSavesSubScreen::Group::DP:
-                return 11;
+                return GameVersion::P;
             case ExtraSavesSubScreen::Group::HGSS:
-                return 8;
+                return GameVersion::SS;
             case ExtraSavesSubScreen::Group::BW:
-                return 20;
+                return GameVersion::W;
             case ExtraSavesSubScreen::Group::B2W2:
-                return 22;
+                return GameVersion::W2;
             case ExtraSavesSubScreen::Group::XY:
-                return 25;
+                return GameVersion::Y;
             case ExtraSavesSubScreen::Group::ORAS:
-                return 26;
+                return GameVersion::AS;
             case ExtraSavesSubScreen::Group::SM:
-                return 31;
+                return GameVersion::MN;
             case ExtraSavesSubScreen::Group::USUM:
-                return 33;
+                return GameVersion::UM;
         }
-        return 0;
+        return GameVersion::INVALID;
     }
 
     void drawIcon(std::tuple<const char*, int, int> label, int x, int y)

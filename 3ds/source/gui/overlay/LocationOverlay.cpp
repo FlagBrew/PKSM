@@ -36,7 +36,7 @@ LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2),
-      validLocations(i18n::locations(Configuration::getInstance().language(), pkm->generation())),
+      validLocations(i18n::rawLocations(Configuration::getInstance().language(), pkm->generation())),
       locations(validLocations),
       met(met)
 {

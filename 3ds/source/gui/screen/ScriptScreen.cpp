@@ -43,44 +43,44 @@ namespace
 {
     constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
-    std::string getScriptDir(int version)
+    std::string getScriptDir(GameVersion version)
     {
         switch (version)
         {
-            case 7:
-            case 8:
+            case GameVersion::HG:
+            case GameVersion::SS:
                 return "/scripts/hgss";
-            case 10:
-            case 11:
+            case GameVersion::D:
+            case GameVersion::P:
                 return "/scripts/dp";
-            case 12:
+            case GameVersion::Pt:
                 return "/scripts/pt";
-            case 20:
-            case 21:
+            case GameVersion::B:
+            case GameVersion::W:
                 return "/scripts/bw";
-            case 22:
-            case 23:
+            case GameVersion::B2:
+            case GameVersion::W2:
                 return "/scripts/b2w2";
-            case 24:
-            case 25:
+            case GameVersion::X:
+            case GameVersion::Y:
                 return "/scripts/xy";
-            case 26:
-            case 27:
+            case GameVersion::OR:
+            case GameVersion::AS:
                 return "/scripts/oras";
-            case 30:
-            case 31:
+            case GameVersion::SN:
+            case GameVersion::MN:
                 return "/scripts/sm";
-            case 32:
-            case 33:
+            case GameVersion::US:
+            case GameVersion::UM:
                 return "/scripts/usum";
-            case 42:
-            case 43:
+            case GameVersion::GP:
+            case GameVersion::GE:
                 return "/scripts/lgpe";
-            case 44:
-            case 45:
+            case GameVersion::SW:
+            case GameVersion::SH:
                 return "/scripts/swsh";
             default:
-                return "/scripts/" + std::to_string(version);
+                return "/scripts/" + std::to_string((int)version);
         }
     }
 
@@ -360,7 +360,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         args[0]            = (char*)TitleLoader::save->rawData().get();
         std::string length = std::to_string(TitleLoader::save->getLength());
         args[1]            = length.data();
-        char version       = TitleLoader::save->version();
+        char version       = (char)TitleLoader::save->version();
         args[2]            = &version;
         PicocCallMain(picoc, 3, args);
     }
