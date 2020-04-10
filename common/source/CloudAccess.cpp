@@ -349,6 +349,6 @@ void CloudAccess::filterToGen(Generation g)
 void CloudAccess::removeGenFilter()
 {
     lowGen   = Generation::THREE;
-    highGen  = Generation::SEVEN;
+    highGen  = Generation::EIGHT;
     showLGPE = true;
 }
