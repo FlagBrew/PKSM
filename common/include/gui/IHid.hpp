@@ -101,11 +101,11 @@ public:
         {
             if constexpr (ListDirection == HidDirection::HORIZONTAL)
             {
-                mIndex = mIndex % mColumns;
+                mIndex -= mColumns;
             }
             else
             {
-                mIndex = mIndex % mRows;
+                mIndex -= mRows;
             }
             // If the above doesn't fix, then forcibly fix
             if (mIndex > maxEntries(count))
