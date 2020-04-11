@@ -676,7 +676,7 @@ namespace
 
         for (auto& gen : mgGens)
         {
-            for (const std::string& fileName : {"sheet" + genToString(gen) + ".json.bz2", "data" + genToString(gen) + ".bin.bz2"})
+            for (const std::string& fileName : {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
             {
                 std::array<u8, SHA256_BLOCK_SIZE> checksum = readGiftChecksum(fileName);
 

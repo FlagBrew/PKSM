@@ -792,7 +792,7 @@ bool CloudScreen::clickBottomIndex(int index)
 void CloudScreen::shareSend()
 {
     long status_code    = 0;
-    std::string version = "Generation: " + genToString(infoMon->generation());
+    std::string version = "Generation: " + (std::string)infoMon->generation();
     std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
     {

@@ -202,7 +202,7 @@ void MiscEditScreen::drawBottom() const
     Gui::text(std::to_string((int)date.day()), 115, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(std::to_string((int)date.month()), 115, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(std::to_string(date.year()), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::location(lang, versionToGen(pkm->version()), otAndMet ? pkm->metLocation() : pkm->eggLocation()), 115, 112, FONT_SIZE_12,
+    Gui::text(i18n::location(lang, (Generation)pkm->version(), otAndMet ? pkm->metLocation() : pkm->eggLocation()), 115, 112, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     if (pkm->generation() > Generation::FIVE)
@@ -681,7 +681,7 @@ void MiscEditScreen::year()
 
 void MiscEditScreen::validate()
 {
-    std::string generation     = "Generation: " + genToString(pkm->generation());
+    std::string generation     = "Generation: " + (std::string)pkm->generation();
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, generation.c_str());

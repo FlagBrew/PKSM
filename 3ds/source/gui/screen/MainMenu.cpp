@@ -155,7 +155,7 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(fmt::format(i18n::localize("GENERATION"), genToString(TitleLoader::save->generation())), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)TitleLoader::save->generation()), 10, y, FONT_SIZE_12, COLOR_BLACK,
                     TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:

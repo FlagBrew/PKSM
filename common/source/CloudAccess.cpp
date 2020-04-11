@@ -177,8 +177,8 @@ std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal
 {
     return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
-           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + genToString(low) +
-           "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
+           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + (std::string)low +
+           "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
 }
 
 std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
@@ -186,7 +186,7 @@ std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
     if (slot < (*current->data)["results"].size())
     {
         std::string b64Data = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        Generation gen      = stringToGen((*current->data)["results"][slot]["generation"].get<std::string>());
+        Generation gen      = Generation::fromString((*current->data)["results"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
@@ -288,7 +288,7 @@ bool CloudAccess::prevPage()
 long CloudAccess::pkm(std::shared_ptr<PKX> mon)
 {
     long ret            = 0;
-    std::string version = "Generation: " + genToString(mon->generation());
+    std::string version = "Generation: " + (std::string)mon->generation();
     std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
     {

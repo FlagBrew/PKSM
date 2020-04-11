@@ -308,7 +308,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen, (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -635,7 +635,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), genToString(gen), genToString(TitleLoader::save->generation())));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen, (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);

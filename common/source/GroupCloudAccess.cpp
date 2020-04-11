@@ -183,8 +183,8 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
 
 std::string GroupCloudAccess::makeURL(int num, bool legal, Generation low, Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + genToString(low) +
-           "&max_gen=" + genToString(high) + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) + "&page=" + std::to_string(num) +
+    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + (std::string)low +
+           "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) + "&page=" + std::to_string(num) +
            (legal ? "&legal_only=yes" : "");
 }
 
@@ -262,7 +262,7 @@ std::shared_ptr<PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) 
         {
             auto& poke           = group["pokemon"][pokeIndex];
             std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
-            Generation gen       = stringToGen(poke["generation"].get<std::string>());
+            Generation gen       = Generation::fromString(poke["generation"].get<std::string>());
 
             auto ret = PKX::getPKM(gen, data.data(), data.size());
             if (ret)
@@ -350,7 +350,7 @@ long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
     std::string generation = "Generations: ";
     for (auto& mon : sendMe)
     {
-        generation += genToString(mon->generation()) + ',';
+        generation += (std::string)mon->generation() + ',';
     }
     // Remove trailing comma
     generation.pop_back();

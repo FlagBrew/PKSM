@@ -86,7 +86,7 @@ void LegalInfoScreen::attemptLegalization()
 {
     long status_code       = 0;
     std::string version    = "version: " + std::to_string((int)TitleLoader::save->version());
-    std::string generation = "Generation: " + genToString(pkm->generation());
+    std::string generation = "Generation: " + (std::string)pkm->generation();
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());

@@ -875,7 +875,7 @@ void GroupCloudScreen::shareReceive()
                             pkm.contains("base64") && pkm["base64"].is_string())
                         {
                             // clang-format on
-                            Generation gen       = stringToGen(pkm["generation"].get<std::string>());
+                            Generation gen       = Generation::fromString(pkm["generation"].get<std::string>());
                             std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
 
                             if (gen != Generation::UNUSED)
