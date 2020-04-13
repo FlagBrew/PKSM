@@ -260,7 +260,7 @@ void EditSelectorScreen::drawBottom() const
             else
             {
                 std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
-                if (pokemon->species() > 0)
+                if (pokemon->species() != Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
                 }
@@ -281,7 +281,7 @@ void EditSelectorScreen::drawBottom() const
         int x                        = (i % 2 == 0 ? 221 : 271);
         int y                        = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
         std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(i);
-        if (pokemon->species() > 0)
+        if (pokemon->species() != Species::None)
         {
             Gui::pkm(*pokemon, x, y);
         }
@@ -374,7 +374,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == 0)
+    if (infoMon && infoMon->species() == Species::None)
     {
         infoMon = nullptr;
     }
@@ -440,7 +440,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (tmpMon && tmpMon->species() == 0)
+                    if (tmpMon && tmpMon->species() == Species::None)
                     {
                         tmpMon = nullptr;
                     }
@@ -455,7 +455,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                 {
                     tmpMon = TitleLoader::save->pkm(cursorPos - 31);
                 }
-                if (tmpMon && tmpMon->species() == 0)
+                if (tmpMon && tmpMon->species() == Species::None)
                 {
                     tmpMon = nullptr;
                 }
@@ -843,7 +843,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (moveMon && moveMon->species() == 0)
+                if (moveMon && moveMon->species() == Species::None)
                 {
                     moveMon = nullptr;
                 }
@@ -851,7 +851,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (tmpMon && tmpMon->species() == 0)
+                if (tmpMon && tmpMon->species() == Species::None)
                 {
                     tmpMon = nullptr;
                 }
@@ -865,7 +865,7 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (moveMon && moveMon->species() == 0)
+                if (moveMon && moveMon->species() == Species::None)
                 {
                     moveMon = nullptr;
                 }
@@ -873,7 +873,7 @@ bool EditSelectorScreen::clonePkm()
             else
             {
                 std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (tmpMon->species() == 0)
+                if (tmpMon->species() == Species::None)
                 {
                     tmpMon = nullptr;
                 }

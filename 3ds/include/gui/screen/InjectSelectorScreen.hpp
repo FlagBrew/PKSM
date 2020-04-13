@@ -30,6 +30,7 @@
 #include "Hid.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
+#include "mysterygift.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include <memory>
 #include <string>
@@ -59,7 +60,7 @@ private:
 
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> dumpHid;
     void dumpCard(void) const;
-    std::vector<Sav::giftData> gifts;
+    std::vector<MysteryGift::giftData> gifts;
     std::string langFilter = "";
     int typeFilter         = -1;
     bool dump              = false;

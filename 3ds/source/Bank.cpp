@@ -323,7 +323,7 @@ void Bank::pkm(const PKX& pkm, int box, int slot)
 {
     int index = box * 30 + slot;
     BankEntry newEntry;
-    if (pkm.species() == 0)
+    if (pkm.species() == Species::None)
     {
         std::fill_n((char*)&newEntry, sizeof(BankEntry), 0xFF);
         entries[index] = newEntry;
@@ -435,7 +435,7 @@ void Bank::convertFromBankBin()
                 inStream.read(pkmData.data(), pkmData.size());
                 outStream.write(pkmData.data(), pkmData.size());
                 std::unique_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
-                if (pkm->species() == 0)
+                if (pkm->species() == Species::None)
                 {
                     this->pkm(*pkm, box, slot);
                     continue;
@@ -454,7 +454,8 @@ void Bank::convertFromBankBin()
                         break;
                     }
                 }
-                if (pkm->version() > GameVersion::OR || pkm->species() > 721 || pkm->ability() > 191 || pkm->heldItem() > 775 || badMove)
+                if (pkm->version() > GameVersion::OR || pkm->species() >= Species::Rowlet || pkm->ability() > Ability::DeltaStream ||
+                    pkm->heldItem() > 775 || badMove)
                 {
                     pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
                 }

@@ -80,7 +80,7 @@ void BallOverlay::drawTop() const
                 break;
             }
             Gui::ball(balls[x + y * 6], x * 67 + 24, y * 48 + 8);
-            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6] - 1), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
+            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6]), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::CENTER, TextPosY::TOP);
         }
     }

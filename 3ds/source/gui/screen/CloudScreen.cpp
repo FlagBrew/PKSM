@@ -151,7 +151,7 @@ void CloudScreen::drawBottom() const
         for (u8 column = 0; column < 6; column++)
         {
             auto pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
-            if (pokemon->species() > 0)
+            if (pokemon->species() != Species::None)
             {
                 float blend = *pokemon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
@@ -236,7 +236,7 @@ void CloudScreen::drawTop() const
         for (u8 column = 0; column < 6; column++)
         {
             auto pkm = access.pkm(row * 6 + column);
-            if (pkm->species() > 0)
+            if (pkm->species() != Species::None)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
@@ -284,40 +284,33 @@ void CloudScreen::drawTop() const
     if (infoMon)
     {
         Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        std::string info = "#" + std::to_string(infoMon->species());
+        std::string info = "#" + std::to_string(int(infoMon->species()));
         Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info      = i18n::localize("LV") + std::to_string(infoMon->level());
         auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         int width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        if (infoMon->gender() == 0)
+        switch (infoMon->gender())
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
-        }
-        else if (infoMon->gender() == 1)
-        {
-            Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
-        }
-        else if (infoMon->gender() == 2)
-        {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
+            case Gender::Male:
+                Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
+                break;
+            case Gender::Female:
+                Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
+                break;
+            case Gender::Genderless:
+                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
+                break;
         }
         if (infoMon->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
-        u8 firstType  = infoMon->type1();
-        u8 secondType = infoMon->type2();
-        if (infoMon->generation() < Generation::FIVE)
-        {
-            if (firstType > 8)
-                firstType--;
-            if (secondType > 8)
-                secondType--;
-        }
+        Gui::text(
+            infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Type firstType  = infoMon->type1();
+        Type secondType = infoMon->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -331,8 +324,8 @@ void CloudScreen::drawTop() const
         info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
+        Gui::text(
+            infoMon->nature().localize(Configuration::getInstance().language()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
@@ -560,7 +553,7 @@ void CloudScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == 0)
+    if (infoMon && infoMon->species() == Species::None)
     {
         infoMon = nullptr;
     }
@@ -573,7 +566,7 @@ void CloudScreen::pickup()
         if (cloudChosen)
         {
             auto cloudMon = access.pkm(cursorIndex - 1);
-            if (cloudMon && cloudMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+            if (cloudMon && cloudMon->species() != Species::None && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
             {
                 moveMon = access.fetchPkm(cursorIndex - 1);
             }
@@ -587,7 +580,7 @@ void CloudScreen::pickup()
             moveMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         }
 
-        if (moveMon && moveMon->species() == 0)
+        if (moveMon && moveMon->species() == Species::None)
         {
             moveMon = nullptr;
         }
@@ -621,7 +614,7 @@ void CloudScreen::pickup()
             auto oldMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
             Banks::bank->pkm(*moveMon, storageBox, cursorIndex - 1);
 
-            if (oldMon->species() == 0)
+            if (oldMon->species() == Species::None)
             {
                 moveMon = nullptr;
             }
@@ -717,7 +710,7 @@ bool CloudScreen::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != 0)
+    if (infoMon && infoMon->species() != Species::None)
     {
         justSwitched = true;
         addOverlay<CloudViewOverlay>(infoMon);
@@ -730,7 +723,7 @@ bool CloudScreen::releasePkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+        if (pkm->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
             Banks::bank->pkm(*PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             return false;
@@ -744,7 +737,7 @@ bool CloudScreen::dumpPkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (dumpMon && dumpMon->species() != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        if (dumpMon && dumpMon->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             DateTime now     = DateTime::now();
             std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
@@ -756,7 +749,7 @@ bool CloudScreen::dumpPkm()
             }
             else
             {
-                path += " - " + std::to_string(dumpMon->species()) + " - " + dumpMon->nickname() + " - " +
+                path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
                         fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
                 FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
                 if (out.good())

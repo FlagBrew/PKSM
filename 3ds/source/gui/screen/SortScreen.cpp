@@ -148,7 +148,7 @@ void SortScreen::sort()
             for (int i = 0; i < Banks::bank->boxes() * 30; i++)
             {
                 std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
-                if (pkm->species() != 0)
+                if (pkm->species() != Species::None)
                 {
                     sortMe.push_back(pkm);
                 }
@@ -159,7 +159,7 @@ void SortScreen::sort()
             for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
             {
                 std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
-                if (pkm->species() != 0)
+                if (pkm->species() != Species::None)
                 {
                     sortMe.push_back(pkm);
                 }
@@ -303,11 +303,11 @@ void SortScreen::sort()
                             return false;
                         break;
                     case SortType::SPECIESNAME:
-                        if (i18n::species(Configuration::getInstance().language(), pkm1->species()) <
-                            i18n::species(Configuration::getInstance().language(), pkm2->species()))
+                        if (pkm1->species().localize(Configuration::getInstance().language()) <
+                            pkm2->species().localize(Configuration::getInstance().language()))
                             return true;
-                        if (i18n::species(Configuration::getInstance().language(), pkm2->species()) <
-                            i18n::species(Configuration::getInstance().language(), pkm1->species()))
+                        if (pkm2->species().localize(Configuration::getInstance().language()) <
+                            pkm1->species().localize(Configuration::getInstance().language()))
                             return false;
                         break;
                     case SortType::OTNAME:

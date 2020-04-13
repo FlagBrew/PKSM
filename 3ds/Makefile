@@ -87,7 +87,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/quirc \
 					../common/fmt \
 					../core/include \
-					../core/include/i18n \
+					../core/include/enums \
 					../core/include/personal \
 					../core/include/pkx \
 					../core/include/sav \

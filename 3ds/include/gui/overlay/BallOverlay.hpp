@@ -27,6 +27,7 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
+#include "Ball.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include <memory>
@@ -46,7 +47,7 @@ public:
 private:
     std::shared_ptr<PKX> pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
-    std::vector<int> balls;
+    std::vector<Ball> balls;
 };
 
 #endif

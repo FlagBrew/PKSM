@@ -81,7 +81,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
         }
     }
 
-    if (!pkm || pkm->species() == 0)
+    if (!pkm || pkm->species() == Species::None)
     {
         pkm = TitleLoader::save->emptyPkm();
         if (Configuration::getInstance().useSaveInfo())
@@ -97,7 +97,7 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             pkm->SID(Configuration::getInstance().defaultSID());
             pkm->otName(Configuration::getInstance().defaultOT());
         }
-        pkm->ball(4);
+        pkm->ball(Ball::Poke);
         pkm->encryptionConstant((u32)randomNumbers());
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
@@ -288,23 +288,23 @@ void EditorScreen::drawBottom() const
     Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
 
     Gui::ball(pkm->ball(), 4, 3);
-    Gui::text(i18n::species(lang, pkm->species()), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->species().localize(lang), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     switch (pkm->gender())
     {
-        case 0:
+        case Gender::Male:
             Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
             break;
-        case 1:
+        case Gender::Female:
             Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
             break;
-        case 2:
+        case Gender::Genderless:
             Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
         default:
             break;
     }
     Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::nature(lang, pkm->nature()), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::ability(lang, pkm->ability()), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->nature().localize(lang), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -442,7 +442,7 @@ bool EditorScreen::advanceMon(bool forward)
                 }
                 pkm = TitleLoader::save->pkm(box, index);
             }
-        } while (pkm->species() == 0);
+        } while (pkm->species() == Species::None);
         sha256(origHash.data(), pkm->rawData(), pkm->getLength());
     }
     return false;
@@ -529,7 +529,7 @@ void EditorScreen::setNick()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         pkm->nickname(input);
-        std::string speciesName = i18n::species(pkm->language(), pkm->species());
+        std::string speciesName = pkm->species().localize(pkm->language());
         if (pkm->generation() == Generation::FOUR || pkm->version() <= GameVersion::CXD ||
             (pkm->version() >= GameVersion::RD && pkm->version() <= GameVersion::C)) // Gen 4, less than or equal to Colosseum/XD, or in VC territory
         {
@@ -652,12 +652,12 @@ bool EditorScreen::selectAbility()
 {
     if (pkm->generation() == Generation::FOUR)
     {
-        u8 setAbility = pkm->ability();
-        if (pkm->abilities(0) != setAbility && pkm->abilities(0) != 0)
+        Ability setAbility = pkm->ability();
+        if (pkm->abilities(0) != setAbility && pkm->abilities(0) != Ability::None)
         {
             pkm->setAbility(0);
         }
-        else if (pkm->abilities(1) != 0)
+        else if (pkm->abilities(1) != Ability::None)
         {
             pkm->setAbility(1);
         }
@@ -672,7 +672,7 @@ bool EditorScreen::selectAbility()
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != Ability::None)
                 {
                     pkm->setAbility(1);
                     if (pk5->abilities(1) == pk5->abilities(2))
@@ -680,27 +680,27 @@ bool EditorScreen::selectAbility()
                         pk5->hiddenAbility(true);
                     }
                 }
-                else if (pkm->abilities(2) != 0)
+                else if (pkm->abilities(2) != Ability::None)
                 {
                     pkm->setAbility(2);
                 }
                 break;
             case 1:
-                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != Ability::None)
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != 0)
+                else if (pkm->abilities(0) != Ability::None)
                 {
                     pkm->setAbility(0);
                 }
                 break;
             case 2:
-                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != Ability::None)
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != 0)
+                else if (pkm->abilities(1) != Ability::None)
                 {
                     pkm->setAbility(1);
                     if (pkm->abilities(1) == pkm->abilities(2))
@@ -716,31 +716,31 @@ bool EditorScreen::selectAbility()
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != 0)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != Ability::None)
                 {
                     pkm->setAbility(1);
                 }
-                else if (pkm->abilities(2) != 0)
+                else if (pkm->abilities(2) != Ability::None)
                 {
                     pkm->setAbility(2);
                 }
                 break;
             case 1:
-                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != 0)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != Ability::None)
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != 0)
+                else if (pkm->abilities(0) != Ability::None)
                 {
                     pkm->setAbility(0);
                 }
                 break;
             case 2:
-                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != 0)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != Ability::None)
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != 0)
+                else if (pkm->abilities(1) != Ability::None)
                 {
                     pkm->setAbility(1);
                 }
@@ -758,16 +758,16 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    static constexpr std::array<u16, 2> noChange = {
-        716, 717}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    if (std::any_of(noChange.begin(), noChange.end(), [this](const u16& badSpecies) { return badSpecies == pkm->species(); }))
+    static constexpr std::array<Species, 2> noChange = {
+        Species::Xerneas, Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
+    if (std::any_of(noChange.begin(), noChange.end(), [this](const Species& badSpecies) { return badSpecies == pkm->species(); }))
     {
         return false;
     }
-    u8 count = TitleLoader::save->formCount(pkm->species());
-    if (pkm->species() == 664 || pkm->species() == 665)
+    u8 count = TitleLoader::save->formCount(u16(pkm->species()));
+    if (pkm->species() == Species::Scatterbug || pkm->species() == Species::Spewpa)
     {
-        count = TitleLoader::save->formCount(666);
+        count = TitleLoader::save->formCount(u16(Species::Vivillon));
     }
     if (count > 1)
     {
@@ -792,14 +792,14 @@ bool EditorScreen::genderSwitch()
 {
     switch (pkm->gender())
     {
-        case 0:
-            pkm->gender(1);
+        case Gender::Male:
+            pkm->gender(Gender::Female);
             break;
-        case 1:
-            pkm->gender(2);
+        case Gender::Female:
+            pkm->gender(Gender::Genderless);
             break;
-        case 2:
-            pkm->gender(0);
+        case Gender::Genderless:
+            pkm->gender(Gender::Male);
             break;
     }
     return false;

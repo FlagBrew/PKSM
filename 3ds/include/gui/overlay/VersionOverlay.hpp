@@ -27,9 +27,9 @@
 #ifndef VERSIONOVERLAY_HPP
 #define VERSIONOVERLAY_HPP
 
+#include "GameVersion.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "gameversion.hpp"
 
 class PKX;
 

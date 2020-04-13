@@ -173,7 +173,7 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(fmt::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGifts().size()), 10, y, FONT_SIZE_12, COLOR_BLACK,
+                Gui::text(fmt::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGiftAmount()), 10, y, FONT_SIZE_12, COLOR_BLACK,
                     TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:

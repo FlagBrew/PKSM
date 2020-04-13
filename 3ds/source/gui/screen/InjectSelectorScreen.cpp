@@ -59,7 +59,19 @@ InjectSelectorScreen::InjectSelectorScreen()
     MysteryGift::init(TitleLoader::save->generation());
     wondercards = MysteryGift::wondercards();
 
-    gifts = TitleLoader::save->currentGifts();
+    size_t currentCards = TitleLoader::save->currentGiftAmount();
+    for (size_t i = 0; i < currentCards; i++)
+    {
+        auto gift = TitleLoader::save->mysteryGift(i);
+        if (gift->pokemon())
+        {
+            gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+        }
+        else
+        {
+            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+        }
+    }
 
     // QR
     instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
@@ -92,7 +104,19 @@ void InjectSelectorScreen::update(touchPosition* touch)
     u32 heldKeys = hidKeysHeld();
     if (updateGifts)
     {
-        gifts = TitleLoader::save->currentGifts();
+        size_t currentCards = TitleLoader::save->currentGiftAmount();
+        for (size_t i = 0; i < currentCards; i++)
+        {
+            auto gift = TitleLoader::save->mysteryGift(i);
+            if (gift->pokemon())
+            {
+                gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+            }
+            else
+            {
+                gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+            }
+        }
     }
     if (!dump)
     {
@@ -152,7 +176,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
     }
     else
     {
-        dumpHid.update(std::max(TitleLoader::save->emptyGiftLocation(), 1));
+        dumpHid.update(std::max(TitleLoader::save->currentGiftAmount(), 1));
         if (downKeys & KEY_A)
         {
             dumpCard();
@@ -262,7 +286,7 @@ void InjectSelectorScreen::drawTop() const
             }
             else
             {
-                Sav::giftData data;
+                MysteryGift::giftData data;
                 const std::string& lang = i18n::langString(Configuration::getInstance().language());
                 if (wondercards[i].find(lang) != wondercards[i].end())
                 {
@@ -280,7 +304,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::pkm(data.species, data.form, TitleLoader::save->generation(), data.gender, x, y);
+                    Gui::pkm(Species{u16(data.species)}, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
                 PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255);
                 TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL : TextWidthAction::SQUISH_OR_SLICE;
@@ -309,7 +333,7 @@ void InjectSelectorScreen::drawTop() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {

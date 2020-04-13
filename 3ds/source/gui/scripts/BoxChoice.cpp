@@ -108,7 +108,7 @@ void BoxChoice::drawBottom() const
             else
             {
                 std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
-                if (pokemon->species() > 0)
+                if (pokemon->species() != Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
                 }
@@ -170,7 +170,7 @@ void BoxChoice::drawTop() const
             for (u8 column = 0; column < 6; column++)
             {
                 auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
-                if (pkm->species() > 0)
+                if (pkm->species() != Species::None)
                 {
                     Gui::pkm(*pkm, x, y);
                 }
@@ -205,40 +205,33 @@ void BoxChoice::drawTop() const
         if (infoMon)
         {
             Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            std::string info = "#" + std::to_string(infoMon->species());
+            std::string info = "#" + std::to_string(int(infoMon->species()));
             Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info      = i18n::localize("LV") + std::to_string(infoMon->level());
             auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             int width = text->maxWidth(FONT_SIZE_12);
             Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            if (infoMon->gender() == 0)
+            switch (infoMon->gender())
             {
-                Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
-            }
-            else if (infoMon->gender() == 1)
-            {
-                Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
-            }
-            else if (infoMon->gender() == 2)
-            {
-                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
+                case Gender::Male:
+                    Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
+                    break;
+                case Gender::Female:
+                    Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
+                    break;
+                case Gender::Genderless:
+                    Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
+                    break;
             }
             if (infoMon->shiny())
             {
                 Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
             }
 
-            Gui::text(i18n::species(Configuration::getInstance().language(), infoMon->species()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
-            u8 firstType  = infoMon->type1();
-            u8 secondType = infoMon->type2();
-            if (infoMon->generation() < Generation::FIVE)
-            {
-                if (firstType > 8)
-                    firstType--;
-                if (secondType > 8)
-                    secondType--;
-            }
+            Type firstType  = infoMon->type1();
+            Type secondType = infoMon->type2();
             if (firstType != secondType)
             {
                 Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -252,7 +245,7 @@ void BoxChoice::drawTop() const
             info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
             Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            Gui::text(i18n::nature(Configuration::getInstance().language(), infoMon->nature()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
             info  = i18n::localize("IV") + ": ";
             text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
@@ -277,7 +270,7 @@ void BoxChoice::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == 0)
+    if (infoMon && infoMon->species() == Species::None)
     {
         infoMon = nullptr;
     }
@@ -493,7 +486,7 @@ bool BoxChoice::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != 0)
+    if (infoMon && infoMon->species() != Species::None)
     {
         addOverlay<ViewOverlay>(infoMon, true);
     }

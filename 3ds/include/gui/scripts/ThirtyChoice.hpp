@@ -27,9 +27,9 @@
 #ifndef THIRTYCHOICE_HPP
 #define THIRTYCHOICE_HPP
 
+#include "Generation.hpp"
 #include "Hid.hpp"
 #include "RunnableScreen.hpp"
-#include "generation.hpp"
 #include <string>
 #include <vector>
 

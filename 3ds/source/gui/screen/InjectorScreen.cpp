@@ -33,7 +33,6 @@
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
-#include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
 
 namespace
@@ -53,12 +52,23 @@ bool InjectorScreen::setLanguage(Language language)
     return false;
 }
 
-InjectorScreen::InjectorScreen(nlohmann::json myIds)
-    : hid(40, 8),
-      ids(std::make_unique<nlohmann::json>(myIds)),
-      gifts(TitleLoader::save->currentGifts()),
-      emptySlot(TitleLoader::save->emptyGiftLocation())
+InjectorScreen::InjectorScreen(nlohmann::json myIds) : hid(40, 8), ids(std::make_unique<nlohmann::json>(myIds))
 {
+    size_t currentCards = TitleLoader::save->currentGiftAmount();
+    for (size_t i = 0; i < currentCards; i++)
+    {
+        auto gift = TitleLoader::save->mysteryGift(i);
+        if (gift->pokemon())
+        {
+            gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+        }
+        else
+        {
+            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+        }
+    }
+    emptySlot = currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
+
     const std::string& langString = i18n::langString(Configuration::getInstance().language());
     if (ids->find(langString) != ids->end())
     {
@@ -128,9 +138,23 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds)
     wondercard->date(Configuration::getInstance().date());
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx)
-    : wondercard(std::move(wcx)), hid(40, 8), gifts(TitleLoader::save->currentGifts()), emptySlot(TitleLoader::save->emptyGiftLocation())
+InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8)
 {
+    size_t currentCards = TitleLoader::save->currentGiftAmount();
+    for (size_t i = 0; i < currentCards; i++)
+    {
+        auto gift = TitleLoader::save->mysteryGift(i);
+        if (gift->pokemon())
+        {
+            gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+        }
+        else
+        {
+            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+        }
+    }
+    emptySlot = currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
+
     lang = Language::UNUSED;
 
     slot          = emptySlot + 1;
@@ -328,10 +352,10 @@ void InjectorScreen::drawTop() const
         Gui::ball(wondercard->ball(), 4, 6);
         if (wondercard->pokemon())
         {
-            if (wondercard->species() == 490 && wondercard->egg())
+            if (wondercard->species() == Species::Manaphy && wondercard->egg())
             {
-                Gui::pkm(490, -1, wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(490, -1, wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
+                Gui::pkm(Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
+                Gui::pkm(Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
             }
             else
             {
@@ -362,8 +386,8 @@ void InjectorScreen::drawTop() const
         Gui::text(i18n::localize("DATE"), 9, 155, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         if (wondercard->pokemon())
         {
-            Gui::text(i18n::species(Configuration::getInstance().language(), wondercard->species()), 87, 35, FONT_SIZE_14, COLOR_BLACK,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(wondercard->species().localize(Configuration::getInstance().language()), 87, 35, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
             Gui::text(std::to_string(wondercard->level()), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
@@ -458,7 +482,7 @@ void InjectorScreen::drawTop() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(gifts[fullI].species, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {

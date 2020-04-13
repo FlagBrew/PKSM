@@ -28,7 +28,7 @@
 #define STATSEDITSCREEN_HPP
 
 #include "Screen.hpp"
-#include "stat.hpp"
+#include "Stat.hpp"
 #include <memory>
 #include <vector>
 

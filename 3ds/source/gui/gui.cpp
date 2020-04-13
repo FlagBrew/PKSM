@@ -117,7 +117,8 @@ namespace
         }
     }
 
-    constexpr int getSpeciesOffset(int species)
+    template <Species::EnumType species>
+    constexpr int getSpeciesOffset()
     {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
@@ -126,233 +127,233 @@ namespace
         {
             // case NEXT_SPECIES_WITH_FORMS:
             // imageOffsetFromBack += 1;
-            case 801:
+            case Species::Magearna:
                 imageOffsetFromBack += 3;
-            case 800:
+            case Species::Necrozma:
                 imageOffsetFromBack += 1;
-            case 784:
+            case Species::Kommoo:
                 imageOffsetFromBack += 1;
-            case 778:
+            case Species::Mimikyu:
                 imageOffsetFromBack += 1;
-            case 777:
+            case Species::Togedemaru:
                 imageOffsetFromBack += 7;
-            case 774:
+            case Species::Minior:
                 imageOffsetFromBack += 1;
-            case 758:
+            case Species::Salazzle:
                 imageOffsetFromBack += 1;
-            case 754:
+            case Species::Lurantis:
                 imageOffsetFromBack += 1;
-            case 752:
+            case Species::Araquanid:
                 imageOffsetFromBack += 1;
-            case 746:
+            case Species::Wishiwashi:
                 imageOffsetFromBack += 2;
-            case 745:
+            case Species::Lycanroc:
                 imageOffsetFromBack += 1;
-            case 744:
+            case Species::Rockruff:
                 imageOffsetFromBack += 1;
-            case 743:
+            case Species::Ribombee:
                 imageOffsetFromBack += 3;
-            case 741:
+            case Species::Oricorio:
                 imageOffsetFromBack += 1;
-            case 738:
+            case Species::Vikavolt:
                 imageOffsetFromBack += 1;
-            case 735:
+            case Species::Gumshoos:
                 imageOffsetFromBack += 1;
-            case 720:
+            case Species::Hoopa:
                 imageOffsetFromBack += 1;
-            case 719:
+            case Species::Diancie:
                 imageOffsetFromBack += 4;
-            case 718:
+            case Species::Zygarde:
                 imageOffsetFromBack += 1;
-            case 681:
+            case Species::Aegislash:
                 imageOffsetFromBack += 1;
-            case 678:
+            case Species::Meowstic:
                 imageOffsetFromBack += 9;
-            case 676:
+            case Species::Furfrou:
                 imageOffsetFromBack += 4;
-            case 671:
+            case Species::Florges:
                 imageOffsetFromBack += 5;
-            case 670:
+            case Species::Floette:
                 imageOffsetFromBack += 4;
-            case 669:
+            case Species::Flabebe:
                 imageOffsetFromBack += 19;
-            case 666:
+            case Species::Vivillon:
                 imageOffsetFromBack += 2;
-            case 658:
+            case Species::Greninja:
                 imageOffsetFromBack += 1;
-            case 648:
+            case Species::Meloetta:
                 imageOffsetFromBack += 1;
-            case 647:
+            case Species::Keldeo:
                 imageOffsetFromBack += 2;
-            case 646:
+            case Species::Kyurem:
                 imageOffsetFromBack += 1;
-            case 645:
+            case Species::Landorus:
                 imageOffsetFromBack += 1;
-            case 642:
+            case Species::Thundurus:
                 imageOffsetFromBack += 1;
-            case 641:
+            case Species::Tornadus:
                 imageOffsetFromBack += 3;
-            case 586:
+            case Species::Sawsbuck:
                 imageOffsetFromBack += 3;
-            case 585:
+            case Species::Deerling:
                 imageOffsetFromBack += 1;
-            case 555:
+            case Species::Darmanitan:
                 imageOffsetFromBack += 1;
-            case 550:
+            case Species::Basculin:
                 imageOffsetFromBack += 1;
-            case 531:
+            case Species::Audino:
                 imageOffsetFromBack += 1;
-            case 492:
+            case Species::Shaymin:
                 imageOffsetFromBack += 1;
-            case 487:
+            case Species::Giratina:
                 imageOffsetFromBack += 5;
-            case 479:
+            case Species::Rotom:
                 imageOffsetFromBack += 1;
-            case 475:
+            case Species::Gallade:
                 imageOffsetFromBack += 1;
-            case 460:
+            case Species::Abomasnow:
                 imageOffsetFromBack += 1;
-            case 448:
+            case Species::Lucario:
                 imageOffsetFromBack += 1;
-            case 445:
+            case Species::Garchomp:
                 imageOffsetFromBack += 1;
-            case 428:
+            case Species::Lopunny:
                 imageOffsetFromBack += 1;
-            case 423:
+            case Species::Gastrodon:
                 imageOffsetFromBack += 1;
-            case 422:
+            case Species::Shellos:
                 imageOffsetFromBack += 1;
-            case 421:
+            case Species::Cherrim:
                 imageOffsetFromBack += 2;
-            case 413:
+            case Species::Wormadam:
                 imageOffsetFromBack += 2;
-            case 412:
+            case Species::Burmy:
                 imageOffsetFromBack += 3;
-            case 386:
+            case Species::Deoxys:
                 imageOffsetFromBack += 1;
-            case 384:
+            case Species::Rayquaza:
                 imageOffsetFromBack += 1;
-            case 383:
+            case Species::Groudon:
                 imageOffsetFromBack += 1;
-            case 382:
+            case Species::Kyogre:
                 imageOffsetFromBack += 1;
-            case 381:
+            case Species::Latios:
                 imageOffsetFromBack += 1;
-            case 380:
+            case Species::Latias:
                 imageOffsetFromBack += 1;
-            case 376:
+            case Species::Metagross:
                 imageOffsetFromBack += 1;
-            case 373:
+            case Species::Salamence:
                 imageOffsetFromBack += 1;
-            case 362:
+            case Species::Glalie:
                 imageOffsetFromBack += 1;
-            case 359:
+            case Species::Absol:
                 imageOffsetFromBack += 1;
-            case 354:
+            case Species::Banette:
                 imageOffsetFromBack += 3;
-            case 351:
+            case Species::Castform:
                 imageOffsetFromBack += 1;
-            case 334:
+            case Species::Altaria:
                 imageOffsetFromBack += 1;
-            case 323:
+            case Species::Camerupt:
                 imageOffsetFromBack += 1;
-            case 319:
+            case Species::Sharpedo:
                 imageOffsetFromBack += 1;
-            case 310:
+            case Species::Manectric:
                 imageOffsetFromBack += 1;
-            case 308:
+            case Species::Medicham:
                 imageOffsetFromBack += 1;
-            case 306:
+            case Species::Aggron:
                 imageOffsetFromBack += 1;
-            case 303:
+            case Species::Mawile:
                 imageOffsetFromBack += 1;
-            case 302:
+            case Species::Sableye:
                 imageOffsetFromBack += 1;
-            case 282:
+            case Species::Gardevoir:
                 imageOffsetFromBack += 1;
-            case 260:
+            case Species::Swampert:
                 imageOffsetFromBack += 1;
-            case 257:
+            case Species::Blaziken:
                 imageOffsetFromBack += 1;
-            case 254:
+            case Species::Sceptile:
                 imageOffsetFromBack += 1;
-            case 248:
+            case Species::Tyranitar:
                 imageOffsetFromBack += 1;
-            case 229:
+            case Species::Houndoom:
                 imageOffsetFromBack += 1;
-            case 214:
+            case Species::Heracross:
                 imageOffsetFromBack += 1;
-            case 212:
+            case Species::Scizor:
                 imageOffsetFromBack += 1;
-            case 208:
+            case Species::Steelix:
                 imageOffsetFromBack += 1;
-            case 181:
+            case Species::Ampharos:
                 imageOffsetFromBack += 1;
-            case 172:
+            case Species::Pichu:
                 imageOffsetFromBack += 2;
-            case 150:
+            case Species::Mewtwo:
                 imageOffsetFromBack += 1;
-            case 142:
+            case Species::Aerodactyl:
                 imageOffsetFromBack += 1;
-            case 130:
+            case Species::Gyarados:
                 imageOffsetFromBack += 1;
-            case 127:
+            case Species::Pinsir:
                 imageOffsetFromBack += 1;
-            case 115:
+            case Species::Kangaskhan:
                 imageOffsetFromBack += 2;
-            case 105:
+            case Species::Marowak:
                 imageOffsetFromBack += 1;
-            case 103:
+            case Species::Exeggutor:
                 imageOffsetFromBack += 1;
-            case 94:
+            case Species::Gengar:
                 imageOffsetFromBack += 1;
-            case 89:
+            case Species::Muk:
                 imageOffsetFromBack += 1;
-            case 88:
+            case Species::Grimer:
                 imageOffsetFromBack += 1;
-            case 80:
+            case Species::Slowbro:
                 imageOffsetFromBack += 1;
-            case 76:
+            case Species::Golem:
                 imageOffsetFromBack += 1;
-            case 75:
+            case Species::Graveler:
                 imageOffsetFromBack += 1;
-            case 74:
+            case Species::Geodude:
                 imageOffsetFromBack += 1;
-            case 65:
+            case Species::Alakazam:
                 imageOffsetFromBack += 1;
-            case 53:
+            case Species::Persian:
                 imageOffsetFromBack += 1;
-            case 52:
+            case Species::Meowth:
                 imageOffsetFromBack += 1;
-            case 51:
+            case Species::Dugtrio:
                 imageOffsetFromBack += 1;
-            case 50:
+            case Species::Diglett:
                 imageOffsetFromBack += 1;
-            case 38:
+            case Species::Ninetales:
                 imageOffsetFromBack += 1;
-            case 37:
+            case Species::Vulpix:
                 imageOffsetFromBack += 1;
-            case 28:
+            case Species::Sandslash:
                 imageOffsetFromBack += 1;
-            case 27:
+            case Species::Sandshrew:
                 imageOffsetFromBack += 1;
-            case 26:
+            case Species::Raichu:
                 imageOffsetFromBack += 13;
-            case 25:
+            case Species::Pikachu:
                 imageOffsetFromBack += 2;
-            case 20:
+            case Species::Raticate:
                 imageOffsetFromBack += 1;
-            case 19:
+            case Species::Rattata:
                 imageOffsetFromBack += 1;
-            case 18:
+            case Species::Pidgeot:
                 imageOffsetFromBack += 1;
-            case 15:
+            case Species::Beedrill:
                 imageOffsetFromBack += 1;
-            case 9:
+            case Species::Blastoise:
                 imageOffsetFromBack += 2;
-            case 6:
+            case Species::Charizard:
                 imageOffsetFromBack += 1;
-            case 3:
+            case Species::Venusaur:
                 imageOffsetFromBack += 0;
         }
 #pragma GCC diagnostic pop
@@ -360,34 +361,34 @@ namespace
         return imageOffsetFromBack;
     }
 
-    C2D_Image typeImage(Language lang, u8 type)
+    C2D_Image typeImage(Language lang, Type type)
     {
-        if (type > 17)
+        if (type > Type::Fairy)
         {
-            type = 0;
+            type = Type::Normal;
         }
         switch (lang)
         {
             case Language::SPA:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + size_t(type));
             case Language::GER:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + size_t(type));
             case Language::FRE:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + size_t(type));
             case Language::ITA:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + size_t(type));
             case Language::JPN:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + size_t(type));
             case Language::KOR:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + size_t(type));
             case Language::CHT:
             case Language::CHS:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + size_t(type));
             case Language::ENG:
             case Language::PT:
             case Language::NL:
             default:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + type);
+                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + size_t(type));
         }
     }
 }
@@ -1476,7 +1477,7 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, f
 
     if (pokemon.egg())
     {
-        if (pokemon.species() != 490)
+        if (pokemon.species() != Species::Manaphy)
         {
             pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
             Gui::drawImageAt(
@@ -1503,7 +1504,7 @@ void Gui::pkm(const PKX& pokemon, int x, int y, float scale, PKSM_Color color, f
     }
 }
 
-void Gui::pkm(int species, int form, Generation generation, int gender, int x, int y, float scale, PKSM_Color color, float blend)
+void Gui::pkm(Species species, int form, Generation generation, Gender gender, int x, int y, float scale, PKSM_Color color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, colorToFormat(color), blend);
@@ -1513,15 +1514,15 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, (u8)(~magicNumber >> 13) ^ 184), x, y, &tint, scale, scale);
         return;
     }
-    if (species == 490 && form == -1)
+    if (species == Species::Manaphy && form == -1)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, &tint, scale, scale);
     }
-    else if (species == 201)
+    else if (species == Species::Unown)
     {
         if (form == 0 || form > 27)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
         }
         else
         {
@@ -1529,38 +1530,40 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         }
     }
     // For possible hex editor mishaps
-    else if (species > 809)
+    else if (species > Species::Melmetal)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
     }
-    // Unfezant
-    else if (species == 521 && gender == 1)
+    else if (species == Species::Unfezant && gender == Gender::Female)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y, &tint, scale, scale);
     }
-    // Unfezant
-    else if (species == 592 && gender == 1)
+    else if (species == Species::Frillish && gender == Gender::Female)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y, &tint, scale, scale);
     }
-    // Unfezant
-    else if (species == 593 && gender == 1)
+    else if (species == Species::Jellicent && gender == Gender::Female)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y, &tint, scale, scale);
     }
-    // Unfezant
-    else if (species == 668 && gender == 1)
+    else if (species == Species::Pyroar && gender == Gender::Female)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y, &tint, scale, scale);
     }
     else if (form == 0)
     {
         // This max will change over time!
-        species = std::min(809, std::max(0, species));
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        if (species > Species::Melmetal)
+        {
+            species = Species::Melmetal;
+        }
+        if (species < Species::None)
+        {
+            species = Species::None;
+        }
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
-    // Mimikyu
-    else if (species == 778)
+    else if (species == Species::Mimikyu)
     {
         if (form == 1 || form > PersonalSMUSUM::formCount(778))
         {
@@ -1571,8 +1574,7 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y, &tint, scale, scale);
         }
     }
-    // Minior
-    else if (species == 774)
+    else if (species == Species::Minior)
     {
         if (form < 7 || form > PersonalSMUSUM::formCount(774))
         {
@@ -1583,58 +1585,53 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7), x, y, &tint, scale, scale);
         }
     }
-    // Pumpkaboo, Gourgeist, & Genesect
-    else if (species == 710 || species == 711 || species == 649)
+    else if (species == Species::Pumpkaboo || species == Species::Gourgeist || species == Species::Genesect)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     // Pikachu
-    else if (species == 25)
+    else if (species == Species::Pikachu)
     {
-        if (generation == Generation::SIX && form < PersonalXYORAS::formCount(25))
+        if (generation == Generation::SIX && form < PersonalXYORAS::formCount(size_t(species)))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, &tint, scale, scale);
         }
-        else if (form < PersonalSMUSUM::formCount(25))
+        else if (form < PersonalSMUSUM::formCount(size_t(species)))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, &tint, scale, scale);
         }
-        else if (form == PersonalLGPE::formCount(25) - 1)
+        else if (form == PersonalLGPE::formCount(size_t(species)) - 1)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
         }
     }
-    // LGPE starter Eevee
-    else if (species == 133)
+    else if (species == Species::Eevee)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
     }
-    // Arceus
-    else if (species == 493)
+    else if (species == Species::Arceus)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
-    // Vivillon chain
-    else if (species == 664 || species == 665)
+    else if (species == Species::Scatterbug || species == Species::Spewpa)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
-    // Silvally
-    else if (species == 773)
+    else if (species == Species::Silvally)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else
     {
-        if (form > PersonalLGPE::formCount(species))
+        if (form > PersonalSWSH::formCount(size_t(species)))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, species), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
             return;
         }
         int imageOffsetFromBack = 0;
@@ -1642,348 +1639,349 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
         // In switch for constexpr evaluation
         switch (species)
         {
-            case 801:
-                imageOffsetFromBack = getSpeciesOffset(801);
+            case Species::Magearna:
+                imageOffsetFromBack = getSpeciesOffset<Species::Magearna>();
                 break;
-            case 800:
-                imageOffsetFromBack = getSpeciesOffset(800);
+            case Species::Necrozma:
+                imageOffsetFromBack = getSpeciesOffset<Species::Necrozma>();
                 break;
-            case 784:
-                imageOffsetFromBack = getSpeciesOffset(784);
+            case Species::Kommoo:
+                imageOffsetFromBack = getSpeciesOffset<Species::Kommoo>();
                 break;
-            case 778:
-                imageOffsetFromBack = getSpeciesOffset(778);
+            case Species::Mimikyu:
+                imageOffsetFromBack = getSpeciesOffset<Species::Mimikyu>();
                 break;
-            case 777:
-                imageOffsetFromBack = getSpeciesOffset(777);
+            case Species::Togedemaru:
+                imageOffsetFromBack = getSpeciesOffset<Species::Togedemaru>();
                 break;
-            case 774:
-                imageOffsetFromBack = getSpeciesOffset(774);
+            case Species::Minior:
+                imageOffsetFromBack = getSpeciesOffset<Species::Minior>();
                 break;
-            case 758:
-                imageOffsetFromBack = getSpeciesOffset(758);
+            case Species::Salazzle:
+                imageOffsetFromBack = getSpeciesOffset<Species::Salazzle>();
                 break;
-            case 754:
-                imageOffsetFromBack = getSpeciesOffset(754);
+            case Species::Lurantis:
+                imageOffsetFromBack = getSpeciesOffset<Species::Lurantis>();
                 break;
-            case 752:
-                imageOffsetFromBack = getSpeciesOffset(752);
+            case Species::Araquanid:
+                imageOffsetFromBack = getSpeciesOffset<Species::Araquanid>();
                 break;
-            case 746:
-                imageOffsetFromBack = getSpeciesOffset(746);
+            case Species::Wishiwashi:
+                imageOffsetFromBack = getSpeciesOffset<Species::Wishiwashi>();
                 break;
-            case 745:
-                imageOffsetFromBack = getSpeciesOffset(745);
+            case Species::Lycanroc:
+                imageOffsetFromBack = getSpeciesOffset<Species::Lycanroc>();
                 break;
-            case 744:
-                imageOffsetFromBack = getSpeciesOffset(744);
+            case Species::Rockruff:
+                imageOffsetFromBack = getSpeciesOffset<Species::Rockruff>();
                 break;
-            case 743:
-                imageOffsetFromBack = getSpeciesOffset(743);
+            case Species::Ribombee:
+                imageOffsetFromBack = getSpeciesOffset<Species::Ribombee>();
                 break;
-            case 741:
-                imageOffsetFromBack = getSpeciesOffset(741);
+            case Species::Oricorio:
+                imageOffsetFromBack = getSpeciesOffset<Species::Oricorio>();
                 break;
-            case 738:
-                imageOffsetFromBack = getSpeciesOffset(738);
+            case Species::Vikavolt:
+                imageOffsetFromBack = getSpeciesOffset<Species::Vikavolt>();
                 break;
-            case 735:
-                imageOffsetFromBack = getSpeciesOffset(735);
+            case Species::Gumshoos:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gumshoos>();
                 break;
-            case 720:
-                imageOffsetFromBack = getSpeciesOffset(720);
+            case Species::Hoopa:
+                imageOffsetFromBack = getSpeciesOffset<Species::Hoopa>();
                 break;
-            case 719:
-                imageOffsetFromBack = getSpeciesOffset(719);
+            case Species::Diancie:
+                imageOffsetFromBack = getSpeciesOffset<Species::Diancie>();
                 break;
-            case 718:
-                imageOffsetFromBack = getSpeciesOffset(718);
+            case Species::Zygarde:
+                imageOffsetFromBack = getSpeciesOffset<Species::Zygarde>();
                 break;
-            case 681:
-                imageOffsetFromBack = getSpeciesOffset(681);
+            case Species::Aegislash:
+                imageOffsetFromBack = getSpeciesOffset<Species::Aegislash>();
                 break;
-            case 678:
-                imageOffsetFromBack = getSpeciesOffset(678);
+            case Species::Meowstic:
+                imageOffsetFromBack = getSpeciesOffset<Species::Meowstic>();
                 break;
-            case 676:
-                imageOffsetFromBack = getSpeciesOffset(676);
+            case Species::Furfrou:
+                imageOffsetFromBack = getSpeciesOffset<Species::Furfrou>();
                 break;
-            case 671:
-                imageOffsetFromBack = getSpeciesOffset(671);
+            case Species::Florges:
+                imageOffsetFromBack = getSpeciesOffset<Species::Florges>();
                 break;
-            case 670:
-                imageOffsetFromBack = getSpeciesOffset(670);
+            case Species::Floette:
+                imageOffsetFromBack = getSpeciesOffset<Species::Floette>();
                 break;
-            case 669:
-                imageOffsetFromBack = getSpeciesOffset(669);
+            case Species::Flabebe:
+                imageOffsetFromBack = getSpeciesOffset<Species::Flabebe>();
                 break;
-            case 666:
-                imageOffsetFromBack = getSpeciesOffset(666);
+            case Species::Vivillon:
+                imageOffsetFromBack = getSpeciesOffset<Species::Vivillon>();
                 break;
-            case 658:
-                imageOffsetFromBack = getSpeciesOffset(658);
+            case Species::Greninja:
+                imageOffsetFromBack = getSpeciesOffset<Species::Greninja>();
                 break;
-            case 648:
-                imageOffsetFromBack = getSpeciesOffset(648);
+            case Species::Meloetta:
+                imageOffsetFromBack = getSpeciesOffset<Species::Meloetta>();
                 break;
-            case 647:
-                imageOffsetFromBack = getSpeciesOffset(647);
+            case Species::Keldeo:
+                imageOffsetFromBack = getSpeciesOffset<Species::Keldeo>();
                 break;
-            case 646:
-                imageOffsetFromBack = getSpeciesOffset(646);
+            case Species::Kyurem:
+                imageOffsetFromBack = getSpeciesOffset<Species::Kyurem>();
                 break;
-            case 645:
-                imageOffsetFromBack = getSpeciesOffset(645);
+            case Species::Landorus:
+                imageOffsetFromBack = getSpeciesOffset<Species::Landorus>();
                 break;
-            case 642:
-                imageOffsetFromBack = getSpeciesOffset(642);
+            case Species::Thundurus:
+                imageOffsetFromBack = getSpeciesOffset<Species::Thundurus>();
                 break;
-            case 641:
-                imageOffsetFromBack = getSpeciesOffset(641);
+            case Species::Tornadus:
+                imageOffsetFromBack = getSpeciesOffset<Species::Tornadus>();
                 break;
-            case 586:
-                imageOffsetFromBack = getSpeciesOffset(586);
+            case Species::Sawsbuck:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sawsbuck>();
                 break;
-            case 585:
-                imageOffsetFromBack = getSpeciesOffset(585);
+            case Species::Deerling:
+                imageOffsetFromBack = getSpeciesOffset<Species::Deerling>();
                 break;
-            case 555:
-                imageOffsetFromBack = getSpeciesOffset(555);
+            case Species::Darmanitan:
+                imageOffsetFromBack = getSpeciesOffset<Species::Darmanitan>();
                 break;
-            case 550:
-                imageOffsetFromBack = getSpeciesOffset(550);
+            case Species::Basculin:
+                imageOffsetFromBack = getSpeciesOffset<Species::Basculin>();
                 break;
-            case 531:
-                imageOffsetFromBack = getSpeciesOffset(531);
+            case Species::Audino:
+                imageOffsetFromBack = getSpeciesOffset<Species::Audino>();
                 break;
-            case 492:
-                imageOffsetFromBack = getSpeciesOffset(492);
+            case Species::Shaymin:
+                imageOffsetFromBack = getSpeciesOffset<Species::Shaymin>();
                 break;
-            case 487:
-                imageOffsetFromBack = getSpeciesOffset(487);
+            case Species::Giratina:
+                imageOffsetFromBack = getSpeciesOffset<Species::Giratina>();
                 break;
-            case 479:
-                imageOffsetFromBack = getSpeciesOffset(479);
+            case Species::Rotom:
+                imageOffsetFromBack = getSpeciesOffset<Species::Rotom>();
                 break;
-            case 475:
-                imageOffsetFromBack = getSpeciesOffset(475);
+            case Species::Gallade:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gallade>();
                 break;
-            case 460:
-                imageOffsetFromBack = getSpeciesOffset(460);
+            case Species::Abomasnow:
+                imageOffsetFromBack = getSpeciesOffset<Species::Abomasnow>();
                 break;
-            case 448:
-                imageOffsetFromBack = getSpeciesOffset(448);
+            case Species::Lucario:
+                imageOffsetFromBack = getSpeciesOffset<Species::Lucario>();
                 break;
-            case 445:
-                imageOffsetFromBack = getSpeciesOffset(445);
+            case Species::Garchomp:
+                imageOffsetFromBack = getSpeciesOffset<Species::Garchomp>();
                 break;
-            case 428:
-                imageOffsetFromBack = getSpeciesOffset(428);
+            case Species::Lopunny:
+                imageOffsetFromBack = getSpeciesOffset<Species::Lopunny>();
                 break;
-            case 423:
-                imageOffsetFromBack = getSpeciesOffset(423);
+            case Species::Gastrodon:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gastrodon>();
                 break;
-            case 422:
-                imageOffsetFromBack = getSpeciesOffset(422);
+            case Species::Shellos:
+                imageOffsetFromBack = getSpeciesOffset<Species::Shellos>();
                 break;
-            case 421:
-                imageOffsetFromBack = getSpeciesOffset(421);
+            case Species::Cherrim:
+                imageOffsetFromBack = getSpeciesOffset<Species::Cherrim>();
                 break;
-            case 413:
-                imageOffsetFromBack = getSpeciesOffset(413);
+            case Species::Wormadam:
+                imageOffsetFromBack = getSpeciesOffset<Species::Wormadam>();
                 break;
-            case 412:
-                imageOffsetFromBack = getSpeciesOffset(412);
+            case Species::Burmy:
+                imageOffsetFromBack = getSpeciesOffset<Species::Burmy>();
                 break;
-            case 386:
-                imageOffsetFromBack = getSpeciesOffset(386);
+            case Species::Deoxys:
+                imageOffsetFromBack = getSpeciesOffset<Species::Deoxys>();
                 break;
-            case 384:
-                imageOffsetFromBack = getSpeciesOffset(384);
+            case Species::Rayquaza:
+                imageOffsetFromBack = getSpeciesOffset<Species::Rayquaza>();
                 break;
-            case 383:
-                imageOffsetFromBack = getSpeciesOffset(383);
+            case Species::Groudon:
+                imageOffsetFromBack = getSpeciesOffset<Species::Groudon>();
                 break;
-            case 382:
-                imageOffsetFromBack = getSpeciesOffset(382);
+            case Species::Kyogre:
+                imageOffsetFromBack = getSpeciesOffset<Species::Kyogre>();
                 break;
-            case 381:
-                imageOffsetFromBack = getSpeciesOffset(381);
+            case Species::Latios:
+                imageOffsetFromBack = getSpeciesOffset<Species::Latios>();
                 break;
-            case 380:
-                imageOffsetFromBack = getSpeciesOffset(380);
+            case Species::Latias:
+                imageOffsetFromBack = getSpeciesOffset<Species::Latias>();
                 break;
-            case 376:
-                imageOffsetFromBack = getSpeciesOffset(376);
+            case Species::Metagross:
+                imageOffsetFromBack = getSpeciesOffset<Species::Metagross>();
                 break;
-            case 373:
-                imageOffsetFromBack = getSpeciesOffset(373);
+            case Species::Salamence:
+                imageOffsetFromBack = getSpeciesOffset<Species::Salamence>();
                 break;
-            case 362:
-                imageOffsetFromBack = getSpeciesOffset(362);
+            case Species::Glalie:
+                imageOffsetFromBack = getSpeciesOffset<Species::Glalie>();
                 break;
-            case 359:
-                imageOffsetFromBack = getSpeciesOffset(359);
+            case Species::Absol:
+                imageOffsetFromBack = getSpeciesOffset<Species::Absol>();
                 break;
-            case 354:
-                imageOffsetFromBack = getSpeciesOffset(354);
+            case Species::Banette:
+                imageOffsetFromBack = getSpeciesOffset<Species::Banette>();
                 break;
-            case 351:
-                imageOffsetFromBack = getSpeciesOffset(351);
+            case Species::Castform:
+                imageOffsetFromBack = getSpeciesOffset<Species::Castform>();
                 break;
-            case 334:
-                imageOffsetFromBack = getSpeciesOffset(334);
+            case Species::Altaria:
+                imageOffsetFromBack = getSpeciesOffset<Species::Altaria>();
                 break;
-            case 323:
-                imageOffsetFromBack = getSpeciesOffset(323);
+            case Species::Camerupt:
+                imageOffsetFromBack = getSpeciesOffset<Species::Camerupt>();
                 break;
-            case 319:
-                imageOffsetFromBack = getSpeciesOffset(319);
+            case Species::Sharpedo:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sharpedo>();
                 break;
-            case 310:
-                imageOffsetFromBack = getSpeciesOffset(310);
+            case Species::Manectric:
+                imageOffsetFromBack = getSpeciesOffset<Species::Manectric>();
                 break;
-            case 308:
-                imageOffsetFromBack = getSpeciesOffset(308);
+            case Species::Medicham:
+                imageOffsetFromBack = getSpeciesOffset<Species::Medicham>();
                 break;
-            case 306:
-                imageOffsetFromBack = getSpeciesOffset(306);
+            case Species::Aggron:
+                imageOffsetFromBack = getSpeciesOffset<Species::Aggron>();
                 break;
-            case 303:
-                imageOffsetFromBack = getSpeciesOffset(303);
+            case Species::Mawile:
+                imageOffsetFromBack = getSpeciesOffset<Species::Mawile>();
                 break;
-            case 302:
-                imageOffsetFromBack = getSpeciesOffset(302);
+            case Species::Sableye:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sableye>();
                 break;
-            case 282:
-                imageOffsetFromBack = getSpeciesOffset(282);
+            case Species::Gardevoir:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gardevoir>();
                 break;
-            case 260:
-                imageOffsetFromBack = getSpeciesOffset(260);
+            case Species::Swampert:
+                imageOffsetFromBack = getSpeciesOffset<Species::Swampert>();
                 break;
-            case 257:
-                imageOffsetFromBack = getSpeciesOffset(257);
+            case Species::Blaziken:
+                imageOffsetFromBack = getSpeciesOffset<Species::Blaziken>();
                 break;
-            case 254:
-                imageOffsetFromBack = getSpeciesOffset(254);
+            case Species::Sceptile:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sceptile>();
                 break;
-            case 248:
-                imageOffsetFromBack = getSpeciesOffset(248);
+            case Species::Tyranitar:
+                imageOffsetFromBack = getSpeciesOffset<Species::Tyranitar>();
                 break;
-            case 229:
-                imageOffsetFromBack = getSpeciesOffset(229);
+            case Species::Houndoom:
+                imageOffsetFromBack = getSpeciesOffset<Species::Houndoom>();
                 break;
-            case 214:
-                imageOffsetFromBack = getSpeciesOffset(214);
+            case Species::Heracross:
+                imageOffsetFromBack = getSpeciesOffset<Species::Heracross>();
                 break;
-            case 212:
-                imageOffsetFromBack = getSpeciesOffset(212);
+            case Species::Scizor:
+                imageOffsetFromBack = getSpeciesOffset<Species::Scizor>();
                 break;
-            case 208:
-                imageOffsetFromBack = getSpeciesOffset(208);
+            case Species::Steelix:
+                imageOffsetFromBack = getSpeciesOffset<Species::Steelix>();
                 break;
-            case 181:
-                imageOffsetFromBack = getSpeciesOffset(181);
+            case Species::Ampharos:
+                imageOffsetFromBack = getSpeciesOffset<Species::Ampharos>();
                 break;
-            case 172:
-                imageOffsetFromBack = getSpeciesOffset(172);
+            case Species::Pichu:
+                imageOffsetFromBack = getSpeciesOffset<Species::Pichu>();
                 break;
-            case 150:
-                imageOffsetFromBack = getSpeciesOffset(150);
+            case Species::Mewtwo:
+                imageOffsetFromBack = getSpeciesOffset<Species::Mewtwo>();
                 break;
-            case 142:
-                imageOffsetFromBack = getSpeciesOffset(142);
+            case Species::Aerodactyl:
+                imageOffsetFromBack = getSpeciesOffset<Species::Aerodactyl>();
                 break;
-            case 130:
-                imageOffsetFromBack = getSpeciesOffset(130);
+            case Species::Gyarados:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gyarados>();
                 break;
-            case 127:
-                imageOffsetFromBack = getSpeciesOffset(127);
+            case Species::Pinsir:
+                imageOffsetFromBack = getSpeciesOffset<Species::Pinsir>();
                 break;
-            case 115:
-                imageOffsetFromBack = getSpeciesOffset(115);
+            case Species::Kangaskhan:
+                imageOffsetFromBack = getSpeciesOffset<Species::Kangaskhan>();
                 break;
-            case 105:
-                imageOffsetFromBack = getSpeciesOffset(105);
+            case Species::Marowak:
+                imageOffsetFromBack = getSpeciesOffset<Species::Marowak>();
                 break;
-            case 103:
-                imageOffsetFromBack = getSpeciesOffset(103);
+            case Species::Exeggutor:
+                imageOffsetFromBack = getSpeciesOffset<Species::Exeggutor>();
                 break;
-            case 94:
-                imageOffsetFromBack = getSpeciesOffset(94);
+            case Species::Gengar:
+                imageOffsetFromBack = getSpeciesOffset<Species::Gengar>();
                 break;
-            case 89:
-                imageOffsetFromBack = getSpeciesOffset(89);
+            case Species::Muk:
+                imageOffsetFromBack = getSpeciesOffset<Species::Muk>();
                 break;
-            case 88:
-                imageOffsetFromBack = getSpeciesOffset(88);
+            case Species::Grimer:
+                imageOffsetFromBack = getSpeciesOffset<Species::Grimer>();
                 break;
-            case 80:
-                imageOffsetFromBack = getSpeciesOffset(80);
+            case Species::Slowbro:
+                imageOffsetFromBack = getSpeciesOffset<Species::Slowbro>();
                 break;
-            case 76:
-                imageOffsetFromBack = getSpeciesOffset(76);
+            case Species::Golem:
+                imageOffsetFromBack = getSpeciesOffset<Species::Golem>();
                 break;
-            case 75:
-                imageOffsetFromBack = getSpeciesOffset(75);
+            case Species::Graveler:
+                imageOffsetFromBack = getSpeciesOffset<Species::Graveler>();
                 break;
-            case 74:
-                imageOffsetFromBack = getSpeciesOffset(74);
+            case Species::Geodude:
+                imageOffsetFromBack = getSpeciesOffset<Species::Geodude>();
                 break;
-            case 65:
-                imageOffsetFromBack = getSpeciesOffset(65);
+            case Species::Alakazam:
+                imageOffsetFromBack = getSpeciesOffset<Species::Alakazam>();
                 break;
-            case 53:
-                imageOffsetFromBack = getSpeciesOffset(53);
+            case Species::Persian:
+                imageOffsetFromBack = getSpeciesOffset<Species::Persian>();
                 break;
-            case 52:
-                imageOffsetFromBack = getSpeciesOffset(52);
+            case Species::Meowth:
+                imageOffsetFromBack = getSpeciesOffset<Species::Meowth>();
                 break;
-            case 51:
-                imageOffsetFromBack = getSpeciesOffset(51);
+            case Species::Dugtrio:
+                imageOffsetFromBack = getSpeciesOffset<Species::Dugtrio>();
                 break;
-            case 50:
-                imageOffsetFromBack = getSpeciesOffset(50);
+            case Species::Diglett:
+                imageOffsetFromBack = getSpeciesOffset<Species::Diglett>();
                 break;
-            case 38:
-                imageOffsetFromBack = getSpeciesOffset(38);
+            case Species::Ninetales:
+                imageOffsetFromBack = getSpeciesOffset<Species::Ninetales>();
                 break;
-            case 37:
-                imageOffsetFromBack = getSpeciesOffset(37);
+            case Species::Vulpix:
+                imageOffsetFromBack = getSpeciesOffset<Species::Vulpix>();
                 break;
-            case 28:
-                imageOffsetFromBack = getSpeciesOffset(28);
+            case Species::Sandslash:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sandslash>();
                 break;
-            case 27:
-                imageOffsetFromBack = getSpeciesOffset(27);
+            case Species::Sandshrew:
+                imageOffsetFromBack = getSpeciesOffset<Species::Sandshrew>();
                 break;
-            case 26:
-                imageOffsetFromBack = getSpeciesOffset(26);
+            case Species::Raichu:
+                imageOffsetFromBack = getSpeciesOffset<Species::Raichu>();
                 break;
-            case 25:
-                imageOffsetFromBack = getSpeciesOffset(25);
+            case Species::Pikachu:
+                imageOffsetFromBack = getSpeciesOffset<Species::Pikachu>();
                 break;
-            case 20:
-                imageOffsetFromBack = getSpeciesOffset(20);
+            case Species::Raticate:
+                imageOffsetFromBack = getSpeciesOffset<Species::Raticate>();
                 break;
-            case 19:
-                imageOffsetFromBack = getSpeciesOffset(19);
+            case Species::Rattata:
+                imageOffsetFromBack = getSpeciesOffset<Species::Rattata>();
                 break;
-            case 18:
-                imageOffsetFromBack = getSpeciesOffset(18);
+            case Species::Pidgeot:
+                imageOffsetFromBack = getSpeciesOffset<Species::Pidgeot>();
                 break;
-            case 15:
-                imageOffsetFromBack = getSpeciesOffset(15);
+            case Species::Beedrill:
+                imageOffsetFromBack = getSpeciesOffset<Species::Beedrill>();
                 break;
-
-            case 9:
-                imageOffsetFromBack = getSpeciesOffset(9);
+            case Species::Blastoise:
+                imageOffsetFromBack = getSpeciesOffset<Species::Blastoise>();
                 break;
-            case 6:
-                imageOffsetFromBack = getSpeciesOffset(6);
+            case Species::Charizard:
+                imageOffsetFromBack = getSpeciesOffset<Species::Charizard>();
                 break;
-            case 3:
-                imageOffsetFromBack = getSpeciesOffset(3);
+            case Species::Venusaur:
+                imageOffsetFromBack = getSpeciesOffset<Species::Venusaur>();
+                break;
+            default:
                 break;
         }
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
@@ -1998,11 +1996,11 @@ void Gui::pkm(int species, int form, Generation generation, int gender, int x, i
     }
 }
 
-void Gui::ball(size_t index, int x, int y)
+void Gui::ball(Ball ball, int x, int y)
 {
-    if (index < 27)
+    if (ball <= Ball::Beast)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, index + types_spritesheet_empty_idx), x, y);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, size_t(ball) + types_spritesheet_empty_idx), x, y);
     }
     else
     {
@@ -2010,7 +2008,7 @@ void Gui::ball(size_t index, int x, int y)
     }
 }
 
-void Gui::type(Language lang, u8 type, int x, int y)
+void Gui::type(Language lang, Type type, int x, int y)
 {
     Gui::drawImageAt(typeImage(lang, type), x, y);
 }

@@ -95,21 +95,20 @@ void ViewOverlay::drawTop() const
 
     if (pkm)
     {
-        Gui::text(
-            i18n::species(Configuration::getInstance().language(), pkm->species()), 25, 7, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->species().localize(Configuration::getInstance().language()), 25, 7, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::ball(pkm->ball(), 4, 6);
         Gui::generation(*pkm, 115, 11);
-        if (pkm->gender() == 0)
+        switch (pkm->gender())
         {
-            Gui::sprite(ui_sheet_icon_male_idx, 127, 10);
-        }
-        else if (pkm->gender() == 1)
-        {
-            Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
-        }
-        else if (pkm->gender() == 2)
-        {
-            Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
+            case Gender::Male:
+                Gui::sprite(ui_sheet_icon_male_idx, 127, 10);
+                break;
+            case Gender::Female:
+                Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
+                break;
+            case Gender::Genderless:
+                Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
+                break;
         }
         Gui::text(fmt::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
@@ -140,15 +139,8 @@ void ViewOverlay::drawTop() const
             Gui::sprite(ui_sheet_pkrs_cured_idx, 201, 7);
         }
 
-        u8 firstType  = pkm->type1();
-        u8 secondType = pkm->type2();
-        if (pkm->generation() < Generation::FIVE)
-        {
-            if (firstType > 8)
-                firstType--;
-            if (secondType > 8)
-                secondType--;
-        }
+        Type firstType  = pkm->type1();
+        Type secondType = pkm->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 59, 35);
@@ -161,10 +153,9 @@ void ViewOverlay::drawTop() const
 
         Gui::text(pkm->nickname(), 87, 56, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(pkm->otName(), 87, 76, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->nature().localize(Configuration::getInstance().language()), 87, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            i18n::nature(Configuration::getInstance().language(), pkm->nature()), 87, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 87, 116, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
+            pkm->ability().localize(Configuration::getInstance().language()), 87, 116, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
             i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -173,7 +164,7 @@ void ViewOverlay::drawTop() const
         Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->currentFriendship(), pkm->otFriendship()), 122, 196, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            i18n::hp(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            i18n::type(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
         static constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
         for (int i = 0; i < 6; i++)
@@ -199,7 +190,7 @@ void ViewOverlay::drawTop() const
     }
     else
     {
-        Gui::ball(0, 4, 6);
+        Gui::ball(Ball::None, 4, 6);
         for (int i = 0; i < 4; i++)
         {
             Gui::text(

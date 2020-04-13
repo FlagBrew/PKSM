@@ -35,6 +35,7 @@
 class Button;
 class PKX;
 class PKFilter;
+class Species;
 
 class SpeciesOverlay : public ReplaceableScreen
 {
@@ -53,7 +54,7 @@ private:
     std::unique_ptr<Button> searchButton;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    std::vector<int> dispPkm;
+    std::vector<Species> dispPkm;
     bool justSwitched = true;
 };
 

@@ -584,7 +584,7 @@ void party_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct 
 
 void i18n_species(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), Param[0]->Val->Integer).c_str();
+    ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), Species{u16(Param[0]->Val->Integer)}).c_str();
 }
 
 void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -765,7 +765,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->SID(Configuration::getInstance().defaultSID());
         pkm->otName(Configuration::getInstance().defaultOT());
     }
-    pkm->ball(4);
+    pkm->ball(Ball::Poke);
     pkm->encryptionConstant(randomNumbers());
     pkm->version(TitleLoader::save->version());
     switch (pkm->version())
@@ -832,8 +832,8 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 
     // From SpeciesOverlay
-    pkm->nickname(i18n::species(Configuration::getInstance().language(), species));
-    pkm->species((u16)species);
+    pkm->nickname(i18n::species(Configuration::getInstance().language(), Species{u16(species)}));
+    pkm->species(Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
     pkm->PID(PKX::getRandomPID(
@@ -932,7 +932,7 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 scriptFail(Parser, "Incorrect number of args (%i) for SAV_GENDER", NumArgs);
             }
-            ReturnValue->Val->Integer = TitleLoader::save->gender();
+            ReturnValue->Val->Integer = int(TitleLoader::save->gender());
             break;
         case SAV_COUNTRY:
             if (NumArgs != 1)
@@ -1029,7 +1029,7 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (field)
     {
         case SAV_VALUE_SPECIES:
-            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(Species{u16(value)});
             break;
         case SAV_VALUE_MOVE:
             ReturnValue->Val->Integer = TitleLoader::save->availableMoves().count(value);
@@ -1038,10 +1038,10 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
             ReturnValue->Val->Integer = TitleLoader::save->availableItems().count(value);
             break;
         case SAV_VALUE_ABILITY:
-            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(Ability{u16(value)});
             break;
         case SAV_VALUE_BALL:
-            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(value);
+            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(Ball{u8(value)});
             break;
         default:
             scriptFail(Parser, "Field number %i is invalid", (int)field);
@@ -1056,7 +1056,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
     std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, true);
 
-    if (pkm->species() == 0 || pkm->species() > PKX::PKSM_MAX_SPECIES)
+    if (pkm->species() == Species::None || pkm->species() > PKX::PKSM_MAX_SPECIES)
     {
         ReturnValue->Val->Integer = 0;
     }
@@ -1141,7 +1141,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
-            pkm->ball(nextArg->Val->Integer);
+            pkm->ball(Ball{u8(nextArg->Val->Integer)});
             break;
         case LEVEL:
             if (NumArgs != 4)
@@ -1157,7 +1157,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
-            pkm->gender(nextArg->Val->Integer);
+            pkm->gender(Gender{u8(nextArg->Val->Integer)});
             break;
         case ABILITY:
             if (NumArgs != 4)
@@ -1165,7 +1165,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
-            pkm->ability(nextArg->Val->Integer);
+            pkm->ability(Ability{u8(nextArg->Val->Integer)});
             break;
         case IV_HP:
             if (NumArgs != 4)
@@ -1374,7 +1374,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
             }
-            pkm->species(nextArg->Val->Integer);
+            pkm->species(Species{u16(nextArg->Val->Integer)});
             break;
         case PID:
             if (NumArgs != 4)
@@ -1390,7 +1390,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
             }
-            pkm->nature(nextArg->Val->Integer);
+            pkm->nature(Nature{u8(nextArg->Val->Integer)});
             break;
         case FATEFUL:
             if (NumArgs != 4)
@@ -1454,7 +1454,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
             }
-            pkm->otGender(nextArg->Val->Integer);
+            pkm->otGender(Gender{u8(nextArg->Val->Integer)});
             break;
         case ORIGINAL_GAME:
             if (NumArgs != 4)
@@ -1545,7 +1545,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->ball();
+            ReturnValue->Val->UnsignedInteger = u8(pkm->ball());
             break;
         case LEVEL:
             if (NumArgs != 3)
@@ -1561,7 +1561,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->gender();
+            ReturnValue->Val->UnsignedInteger = u8(pkm->gender());
             break;
         case ABILITY:
             if (NumArgs != 3)
@@ -1569,7 +1569,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->ability();
+            ReturnValue->Val->UnsignedInteger = u16(pkm->ability());
             break;
         case IV_HP:
             if (NumArgs != 3)
@@ -1753,7 +1753,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->species();
+            ReturnValue->Val->Integer = u16(pkm->species());
             break;
         case PID:
             if (NumArgs != 3)
@@ -1769,7 +1769,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->nature();
+            ReturnValue->Val->Integer = u8(pkm->nature());
             break;
         case FATEFUL:
             if (NumArgs != 3)
@@ -1833,7 +1833,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->otGender();
+            ReturnValue->Val->Integer = u8(pkm->otGender());
             break;
         case ORIGINAL_GAME:
             if (NumArgs != 3)
@@ -1940,7 +1940,12 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = TitleLoader::save->emptyGiftLocation();
+    int ret = TitleLoader::save->currentGiftAmount();
+    if (ret == TitleLoader::save->maxWondercards())
+    {
+        ret--;
+    }
+    ReturnValue->Val->Integer = ret;
 }
 
 void pksm_base64_decode(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)

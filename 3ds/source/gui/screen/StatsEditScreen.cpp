@@ -300,7 +300,7 @@ void StatsEditScreen::drawBottom() const
         Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
     Gui::text(
-        i18n::localize("EDITOR_HIDDEN_POWER") + i18n::hp(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+        i18n::localize("EDITOR_HIDDEN_POWER") + i18n::type(lang, pkm->hpType()), 295, 181, FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 }
 
 void StatsEditScreen::update(touchPosition* touch)

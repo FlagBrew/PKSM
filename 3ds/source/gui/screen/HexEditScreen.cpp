@@ -1499,16 +1499,16 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(pkm->species().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
-                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
                     break;
                 case 0x28 ... 0x2F:
                     Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1546,16 +1546,16 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x8 ... 0x9:
-                    Gui::text(i18n::species(Configuration::getInstance().language(), pkm->species()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(pkm->species().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
                     break;
                 case 0xA ... 0xB:
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
-                    Gui::text(i18n::ability(Configuration::getInstance().language(), pkm->ability()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
                     break;
                 case 0x5A ... 0x61:
                     Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x5A) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,

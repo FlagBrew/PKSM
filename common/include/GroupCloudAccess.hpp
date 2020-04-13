@@ -27,7 +27,7 @@
 #ifndef GROUPCLOUDACCESS_HPP
 #define GROUPCLOUDACCESS_HPP
 
-#include "generation.hpp"
+#include "Generation.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include <atomic>
 #include <memory>

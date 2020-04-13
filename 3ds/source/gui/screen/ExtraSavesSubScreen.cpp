@@ -27,6 +27,8 @@
 #include "ExtraSavesSubScreen.hpp"
 #include "Configuration.hpp"
 #include "FileChooseOverlay.hpp"
+#include "GameVersion.hpp"
+#include "Species.hpp"
 #include "gui.hpp"
 #include "i18n.hpp"
 
@@ -100,56 +102,56 @@ namespace
         return "";
     }
 
-    constexpr std::tuple<const char*, int, int> groupToLabel1(ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, Species, int> groupToLabel1(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return {"Pt", 487, 1};
+                return {"Pt", Species::Giratina, 1};
             case ExtraSavesSubScreen::Group::DP:
-                return {"D", 483, 0};
+                return {"D", Species::Dialga, 0};
             case ExtraSavesSubScreen::Group::HGSS:
-                return {"HG", 250, 0};
+                return {"HG", Species::HoOh, 0};
             case ExtraSavesSubScreen::Group::BW:
-                return {"B", 643, 0};
+                return {"B", Species::Reshiram, 0};
             case ExtraSavesSubScreen::Group::B2W2:
-                return {"B2", 646, 2};
+                return {"B2", Species::Kyurem, 2};
             case ExtraSavesSubScreen::Group::XY:
-                return {"X", 716, 0};
+                return {"X", Species::Xerneas, 0};
             case ExtraSavesSubScreen::Group::ORAS:
-                return {"OR", 383, 1};
+                return {"OR", Species::Groudon, 1};
             case ExtraSavesSubScreen::Group::SM:
-                return {"S", 791, 0};
+                return {"S", Species::Solgaleo, 0};
             case ExtraSavesSubScreen::Group::USUM:
-                return {"US", 800, 1};
+                return {"US", Species::Necrozma, 1};
         }
-        return {"", 0, 0};
+        return {"", Species::None, 0};
     }
 
-    constexpr std::tuple<const char*, int, int> groupToLabel2(ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, Species, int> groupToLabel2(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return {"Pt", 487, 1};
+                return {"Pt", Species::Giratina, 1};
             case ExtraSavesSubScreen::Group::DP:
-                return {"P", 484, 0};
+                return {"P", Species::Palkia, 0};
             case ExtraSavesSubScreen::Group::HGSS:
-                return {"SS", 249, 0};
+                return {"SS", Species::Lugia, 0};
             case ExtraSavesSubScreen::Group::BW:
-                return {"W", 644, 0};
+                return {"W", Species::Zekrom, 0};
             case ExtraSavesSubScreen::Group::B2W2:
-                return {"W2", 646, 1};
+                return {"W2", Species::Kyurem, 1};
             case ExtraSavesSubScreen::Group::XY:
-                return {"Y", 717, 0};
+                return {"Y", Species::Yveltal, 0};
             case ExtraSavesSubScreen::Group::ORAS:
-                return {"AS", 382, 1};
+                return {"AS", Species::Kyogre, 1};
             case ExtraSavesSubScreen::Group::SM:
-                return {"M", 792, 0};
+                return {"M", Species::Lunala, 0};
             case ExtraSavesSubScreen::Group::USUM:
-                return {"UM", 800, 2};
+                return {"UM", Species::Necrozma, 2};
         }
-        return {"", 0, 0};
+        return {"", Species::None, 0};
     }
 
     constexpr GameVersion groupToGameId1(ExtraSavesSubScreen::Group g)
@@ -204,10 +206,10 @@ namespace
         return GameVersion::INVALID;
     }
 
-    void drawIcon(std::tuple<const char*, int, int> label, int x, int y)
+    void drawIcon(std::tuple<const char*, Species, int> label, int x, int y)
     {
         Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, 2, x + 8, y);
+        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, Gender::Genderless, x + 8, y);
         Gui::text(std::get<0>(label), x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }

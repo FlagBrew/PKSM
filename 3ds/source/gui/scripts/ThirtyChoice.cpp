@@ -25,6 +25,7 @@
  */
 
 #include "ThirtyChoice.hpp"
+#include "Species.hpp"
 #include "gui.hpp"
 
 void ThirtyChoice::drawTop() const
@@ -49,7 +50,7 @@ void ThirtyChoice::drawTop() const
             {
                 break;
             }
-            Gui::pkm(pkms[index].species, pkms[index].form, gen, 0, x * 67 + 18, y * 48 + 1);
+            Gui::pkm(Species{u16(pkms[index].species)}, pkms[index].form, gen, Gender::Male, x * 67 + 18, y * 48 + 1);
             Gui::text(labels[index], x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::SCROLL,
                 65.0f);
         }

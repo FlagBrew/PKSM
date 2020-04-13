@@ -31,6 +31,7 @@
 #include "Language.hpp"
 #include "Sav.hpp"
 #include "Screen.hpp"
+#include "mysterygift.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include <memory>
 #include <string>
@@ -59,8 +60,8 @@ private:
     std::string game;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<nlohmann::json> ids;
-    const std::vector<Sav::giftData> gifts;
-    const int emptySlot;
+    std::vector<MysteryGift::giftData> gifts;
+    int emptySlot;
     int slot;
     // For multi-item injects
     int item           = 0;

@@ -27,7 +27,7 @@
 #ifndef BANK_HPP
 #define BANK_HPP
 
-#include "generation.hpp"
+#include "Generation.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include "sha256.h"
 

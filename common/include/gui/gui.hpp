@@ -27,18 +27,22 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
+#include "Ball.hpp"
+#include "Gender.hpp"
+#include "Generation.hpp"
 #include "Language.hpp"
 #include "RunnableScreen.hpp"
 #include "Screen.hpp"
 #include "TextParse.hpp"
 #include "TextPos.hpp"
+#include "Type.hpp"
 #include "colors.hpp"
-#include "generation.hpp"
 #include "spritesheets.h"
 #include "types.h"
 #include <citro2d.h>
 
 class PKX;
+class Species;
 
 namespace Gui
 {
@@ -57,14 +61,14 @@ namespace Gui
     // Dunno what specific things might be necessary
 #endif
 
-    void ball(size_t index, int x, int y);
-    void type(Language lang, u8 type, int x, int y);
+    void ball(Ball ball, int x, int y);
+    void type(Language lang, Type type, int x, int y);
     void generation(const PKX& pkm, int x, int y);
     void format(const PKX& pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, PKSM_Color color);
     void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
-    void pkm(int species, int form, Generation generation, int gender, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK,
+    void pkm(Species species, int form, Generation generation, Gender gender, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK,
         float blend = 0.0f);
 
     int pointerBob();

@@ -50,45 +50,25 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
         },
         ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(dispPkm.size());
-    if (TitleLoader::save->generation() != Generation::LGPE)
+    if (object.index() == 0)
     {
-        if (object.index() == 0)
+        auto& pkm = std::get<0>(object);
+        auto it   = std::find(dispPkm.begin(), dispPkm.end(), pkm->species());
+        if (it == dispPkm.end())
         {
-            auto& pkm = std::get<0>(object);
-            hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
+            it = dispPkm.begin();
         }
-        else
-        {
-            auto& filter = std::get<1>(object);
-            hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
-        }
+        hid.select(pkm->species() == Species::None ? 0 : std::distance(dispPkm.begin(), it));
     }
     else
     {
-        if (object.index() == 0)
+        auto& filter = std::get<1>(object);
+        auto it      = std::find(dispPkm.begin(), dispPkm.end(), filter->species());
+        if (it == dispPkm.end())
         {
-            auto& pkm = std::get<0>(object);
-            if (pkm->species() == 808 || pkm->species() == 809)
-            {
-                hid.select(pkm->species() - 657);
-            }
-            else
-            {
-                hid.select(pkm->species() == 0 ? 0 : pkm->species() - 1);
-            }
+            it = dispPkm.begin();
         }
-        else
-        {
-            auto& filter = std::get<1>(object);
-            if (filter->species() == 808 || filter->species() == 809)
-            {
-                hid.select(filter->species() - 657);
-            }
-            else
-            {
-                hid.select(filter->species() == 0 ? 0 : filter->species() - 1);
-            }
-        }
+        hid.select(filter->species() == Species::None ? 0 : std::distance(dispPkm.begin(), it));
     }
 }
 
@@ -126,9 +106,10 @@ void SpeciesOverlay::drawTop() const
             {
                 break;
             }
-            size_t species = dispPkm[pkmIndex];
-            Gui::pkm(species, 0, TitleLoader::save->generation(), 0, x * 50 + 7, y * 48 + 2);
-            Gui::text(std::to_string(species), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Species species = dispPkm[pkmIndex];
+            Gender gender   = object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
+            Gui::pkm(species, 0, TitleLoader::save->generation(), gender, x * 50 + 7, y * 48 + 2);
+            Gui::text(std::to_string(size_t(species)), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
@@ -181,11 +162,11 @@ void SpeciesOverlay::update(touchPosition* touch)
     {
         if (dispPkm.size() > 0)
         {
-            int species = dispPkm[hid.fullIndex()];
+            Species species = dispPkm[hid.fullIndex()];
             if (object.index() == 0)
             {
                 auto pkm = std::get<0>(object);
-                if (pkm->species() == 0 || !pkm->nicknamed())
+                if (pkm->species() == Species::None || !pkm->nicknamed())
                 {
                     std::string nick = i18n::species(pkm->language(), species);
                     if (pkm->generation() == Generation::FOUR)
@@ -194,7 +175,7 @@ void SpeciesOverlay::update(touchPosition* touch)
                     }
                     pkm->nickname(nick);
                 }
-                pkm->species((u16)species);
+                pkm->species(species);
                 pkm->alternativeForm(0);
                 pkm->setAbility(0);
                 pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
@@ -202,10 +183,10 @@ void SpeciesOverlay::update(touchPosition* touch)
             }
             else
             {
-                std::get<1>(object)->species((u16)species);
+                std::get<1>(object)->species(species);
             }
         }
-        if (object.index() == 1 || std::get<0>(object)->species() != 0)
+        if (object.index() == 1 || std::get<0>(object)->species() != Species::None)
         {
             parent->removeOverlay();
         }
