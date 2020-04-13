@@ -53,7 +53,7 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
                 this->filter->moveEnabled(i, !this->filter->moveEnabled(i));
                 return false;
             },
-            ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_off_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+            ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
         ((ToggleButton*)buttons[0].back().get())->setState(filter->moveEnabled(i));
 
         buttons[0].push_back(std::make_unique<ToggleButton>(53, 130 + 24 * i, 13, 13,
@@ -89,7 +89,7 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             }
             return false;
         },
-        ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_off_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+        ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(filter->speciesEnabled());
 
     buttons[0].push_back(std::make_unique<ToggleButton>(105, 68, 13, 13,
@@ -116,8 +116,8 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
             this->filter->alternativeFormEnabled(!this->filter->alternativeFormEnabled());
             return false;
         },
-        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_off_idx, "", 0.0f,
-        COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK));
+        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f,
+        COLOR_BLACK, ui_sheet_emulated_checkbox_disabled_idx, "", 0.0f, COLOR_BLACK));
     ((EnablableToggleButton*)buttons[0].back().get())->setState(filter->alternativeFormEnabled());
 
     buttons[0].push_back(std::make_unique<ToggleButton>(226, 68, 13, 13,
@@ -152,8 +152,8 @@ void FilterScreen::drawBottom() const
         Gui::sprite(ui_sheet_emulated_stripe_move_grey_idx, 92, 128 + i * 24);
     }
 
-    Gui::pkm(filter->species(), 0, TitleLoader::save->generation(), 0, 58, 60);
-    Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(), 0, 179, 60);
+    Gui::pkm(filter->species(), 0, TitleLoader::save->generation(), filter->gender(), 58, 60);
+    Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(), filter->gender(), 179, 60);
 
     Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);

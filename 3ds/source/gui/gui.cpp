@@ -1355,6 +1355,12 @@ void Gui::sprite(int key, int x, int y)
     {
         drawSolidRect(x, y, 104, 17, COLOR_DARKBLUE);
     }
+    else if (key == ui_sheet_emulated_checkbox_disabled_idx)
+    {
+        C2D_ImageTint tint;
+        C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y, 0.5f, &tint);
+    }
     // standard case
     else
     {
