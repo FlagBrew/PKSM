@@ -863,29 +863,45 @@ bool StorageScreen::clearBox()
 bool StorageScreen::releasePkm()
 {
     backHeld = true;
-    if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+    if (!moveMon.empty())
     {
-        if (storageChosen)
+        if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
-            Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+            moveMon.clear();
         }
-        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    }
+    else if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+    {
+        if (pickupMode != MULTI || !currentlySelecting)
         {
-            TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (storageChosen)
             {
-                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
-                for (int i = 0; i < sav->partyCount(); i++)
+                Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
+            }
+            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+            {
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
+                if (TitleLoader::save->generation() == Generation::LGPE)
                 {
-                    if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                    for (int i = 0; i < sav->partyCount(); i++)
                     {
-                        sav->partyBoxSlot(i, 1001);
-                        sav->fixParty();
+                        if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
+                        {
+                            sav->partyBoxSlot(i, 1001);
+                            sav->fixParty();
+                        }
                     }
                 }
             }
         }
+        else if (pickupMode == MULTI && currentlySelecting)
+        {
+            grabSelection(true);
+            moveMon.clear();
+        }
     }
+    selectDimensions = {0, 0};
     return false;
 }
 
