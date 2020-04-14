@@ -287,12 +287,6 @@ void Configuration::loadFromRomfs()
     // load system language
     Language systemLanguage;
     CFGU_GetSystemLanguage((u8*)&systemLanguage);
-    u8 countryData[4];
-    CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
-    (*mJson)["defaults"]["country"] = countryData[3];
-    (*mJson)["defaults"]["region"]  = countryData[2];
-    CFGU_SecureInfoGetRegion(countryData);
-    (*mJson)["defaults"]["nationality"] = *countryData;
 
     switch (u8(systemLanguage))
     {
