@@ -161,6 +161,29 @@ Configuration::Configuration()
                 (*mJson)["alphaChannel"] = false;
                 (*mJson)["autoUpdate"]   = true;
             }
+            if ((*mJson)["version"].get<int>() < 9)
+            {
+                if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
+                    !((*mJson)["defaults"].contains("sid") && (*mJson)["defaults"]["sid"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("tid") && (*mJson)["defaults"]["tid"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("ot") && (*mJson)["defaults"]["ot"].is_string()) ||
+                    !((*mJson)["defaults"].contains("nationality") && (*mJson)["defaults"]["nationality"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("country") && (*mJson)["defaults"]["country"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("region") && (*mJson)["defaults"]["region"].is_number_integer()))
+                {
+                    loadFromRomfs();
+                    Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                                  i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                        (*mJson)["language"]);
+                    return;
+                }
+                (*mJson)["defaults"].erase("sid");
+                (*mJson)["defaults"].erase("tid");
+                (*mJson)["defaults"].erase("ot");
+                (*mJson)["defaults"].erase("nationality");
+                (*mJson)["defaults"].erase("country");
+                (*mJson)["defaults"].erase("region");
+            }
 
             (*mJson)["version"] = CURRENT_VERSION;
             save();
@@ -182,12 +205,6 @@ Configuration::Configuration()
             !(mJson->contains("patronCode") && (*mJson)["patronCode"].is_string()) ||
             !(mJson->contains("alphaChannel") && (*mJson)["alphaChannel"].is_boolean()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
-            !((*mJson)["defaults"].contains("tid") && (*mJson)["defaults"]["tid"].is_number_integer()) ||
-            !((*mJson)["defaults"].contains("sid") && (*mJson)["defaults"]["sid"].is_number_integer()) ||
-            !((*mJson)["defaults"].contains("ot") && (*mJson)["defaults"]["ot"].is_string()) ||
-            !((*mJson)["defaults"].contains("nationality") && (*mJson)["defaults"]["nationality"].is_number_integer()) ||
-            !((*mJson)["defaults"].contains("country") && (*mJson)["defaults"]["country"].is_number_integer()) ||
-            !((*mJson)["defaults"].contains("region") && (*mJson)["defaults"]["region"].is_number_integer()) ||
             !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
             !((*mJson)["defaults"]["date"].contains("day") && (*mJson)["defaults"]["date"]["day"].is_number_integer()) ||
             !((*mJson)["defaults"]["date"].contains("month") && (*mJson)["defaults"]["date"]["month"].is_number_integer()) ||
@@ -344,26 +361,6 @@ bool Configuration::useExtData(void) const
     return (*mJson)["useExtData"];
 }
 
-u32 Configuration::defaultTID(void) const
-{
-    return (*mJson)["defaults"]["tid"];
-}
-
-u32 Configuration::defaultSID(void) const
-{
-    return (*mJson)["defaults"]["sid"];
-}
-
-std::string Configuration::defaultOT(void) const
-{
-    return (*mJson)["defaults"]["ot"];
-}
-
-int Configuration::nationality(void) const
-{
-    return (*mJson)["defaults"]["nationality"];
-}
-
 int Configuration::day(void) const
 {
     return (*mJson)["defaults"]["date"]["day"];
@@ -392,16 +389,6 @@ bool Configuration::useSaveInfo(void) const
 bool Configuration::randomMusic(void) const
 {
     return (*mJson)["randomMusic"];
-}
-
-int Configuration::defaultRegion(void) const
-{
-    return (*mJson)["defaults"]["region"];
-}
-
-int Configuration::defaultCountry(void) const
-{
-    return (*mJson)["defaults"]["country"];
 }
 
 bool Configuration::showBackups(void) const
@@ -449,26 +436,6 @@ void Configuration::useExtData(bool use)
     (*mJson)["useExtData"] = use;
 }
 
-void Configuration::defaultTID(u32 tid)
-{
-    (*mJson)["defaults"]["tid"] = tid;
-}
-
-void Configuration::defaultSID(u32 sid)
-{
-    (*mJson)["defaults"]["sid"] = sid;
-}
-
-void Configuration::defaultOT(const std::string& ot)
-{
-    (*mJson)["defaults"]["ot"] = ot;
-}
-
-void Configuration::nationality(int nation)
-{
-    (*mJson)["defaults"]["nationality"] = nation;
-}
-
 void Configuration::day(int day)
 {
     (*mJson)["defaults"]["date"]["day"] = day;
@@ -497,16 +464,6 @@ void Configuration::useSaveInfo(bool saveInfo)
 void Configuration::randomMusic(bool random)
 {
     (*mJson)["randomMusic"] = random;
-}
-
-void Configuration::defaultRegion(u8 value)
-{
-    (*mJson)["defaults"]["region"] = value;
-}
-
-void Configuration::defaultCountry(u8 value)
-{
-    (*mJson)["defaults"]["country"] = value;
 }
 
 void Configuration::showBackups(bool value)

@@ -50,9 +50,9 @@ struct LibraryFunction UnixFunctions[] =
     { read_directory,       "struct directory* read_directory(char* dir);" },
     { delete_directory,     "void delete_directory(struct directory* dir);" },
     // configurations
-    { cfg_default_ot,       "char* cfg_default_ot();" },
-    { cfg_default_tid,      "unsigned short cfg_default_tid();" },
-    { cfg_default_sid,      "unsigned short cfg_default_sid();" },
+    { cfg_default_ot,       "char* cfg_default_ot(enum Generation gen);" },
+    { cfg_default_tid,      "unsigned short cfg_default_tid(enum Generation gen);" },
+    { cfg_default_sid,      "unsigned short cfg_default_sid(enum Generation gen);" },
     { cfg_default_day,      "int cfg_default_day();" },
     { cfg_default_month,    "int cfg_default_month();" },
     { cfg_default_year,     "int cfg_default_year();" },

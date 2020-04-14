@@ -37,6 +37,7 @@
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PK8.hpp"
+#include "PkmUtils.hpp"
 #include "STDirectory.hpp"
 #include "Sav4.hpp"
 #include "ThirtyChoice.hpp"
@@ -87,14 +88,15 @@ namespace
         return (void*)ret;
     }
 
-    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str) {
-        ProgramFail(Parser, str.c_str());
-        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
-    }
-
     template <typename... Ts>
     [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args) {
         ProgramFail(Parser, str.c_str(), args...);
+        std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
+    }
+
+    template <>
+    [[noreturn]] void scriptFail<>(struct ParseState* Parser, const std::string& str) {
+        ProgramFail(Parser, str.c_str());
         std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
     }
 
@@ -326,17 +328,29 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = strToRet(Configuration::getInstance().defaultOT());
+    Generation gen = Generation(Param[0]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    ReturnValue->Val->Pointer = strToRet(PkmUtils::getDefault(gen)->otName());
 }
 
 void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultTID();
+    Generation gen = Generation(Param[0]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    ReturnValue->Val->UnsignedShortInteger = PkmUtils::getDefault(gen)->TID();
 }
 
 void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->UnsignedShortInteger = Configuration::getInstance().defaultSID();
+    Generation gen = Generation(Param[0]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    ReturnValue->Val->UnsignedShortInteger = PkmUtils::getDefault(gen)->SID();
 }
 
 void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -723,116 +737,88 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     int species = Param[1]->Val->Integer;
 
     std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, true);
+    auto orig                = PkmUtils::getDefault(TitleLoader::save->generation());
     switch (TitleLoader::save->generation())
     {
         case Generation::THREE:
-            std::fill_n(data, GenToPkx<Generation::THREE>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::THREE>::PKX::BOX_LENGTH, data);
             break;
         case Generation::FOUR:
-            std::fill_n(data, GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH, data);
             break;
         case Generation::FIVE:
-            std::fill_n(data, GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH, data);
             break;
         case Generation::SIX:
-            std::fill_n(data, GenToPkx<Generation::SIX>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::SIX>::PKX::BOX_LENGTH, data);
             break;
         case Generation::SEVEN:
-            std::fill_n(data, GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH, data);
             break;
         case Generation::LGPE:
-            std::fill_n(data, GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH, data);
             break;
         case Generation::EIGHT:
-            std::fill_n(data, GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH, 0);
+            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH, data);
             break;
         // Should never happen
         case Generation::UNUSED:
             break;
     }
 
-    // From EditorScreen
     if (Configuration::getInstance().useSaveInfo())
     {
         pkm->TID(TitleLoader::save->TID());
         pkm->SID(TitleLoader::save->SID());
         pkm->otName(TitleLoader::save->otName());
         pkm->otGender(TitleLoader::save->gender());
-    }
-    else
-    {
-        pkm->TID(Configuration::getInstance().defaultTID());
-        pkm->SID(Configuration::getInstance().defaultSID());
-        pkm->otName(Configuration::getInstance().defaultOT());
-    }
-    pkm->ball(Ball::Poke);
-    pkm->encryptionConstant(randomNumbers());
-    pkm->version(TitleLoader::save->version());
-    switch (pkm->version())
-    {
-        case GameVersion::HG:
-        case GameVersion::SS:
-            pkm->metLocation(0x0095); // Route 1, HGSS
-            break;
-        case GameVersion::D:
-        case GameVersion::P:
-        case GameVersion::Pt:
-            pkm->metLocation(0x0010); // Route 201, DPPt
-            break;
-        case GameVersion::B:
-        case GameVersion::W:
-        case GameVersion::B2:
-        case GameVersion::W2:
-            pkm->metLocation(0x000e); // Route 1, BWB2W2
-            break;
-        case GameVersion::X:
-        case GameVersion::Y:
-            pkm->metLocation(0x0008); // Route 1, XY
-            break;
-        case GameVersion::OR:
-        case GameVersion::AS:
-            pkm->metLocation(0x00cc); // Route 101, ORAS
-            break;
-        case GameVersion::SN:
-        case GameVersion::MN:
-        case GameVersion::US:
-        case GameVersion::UM:
-            pkm->metLocation(0x0006); // Route 1, SMUSUM
-            break;
-        case GameVersion::GP:
-        case GameVersion::GE:
-            pkm->metLocation(0x0003); // Route 1, LGPE
-            break;
-        case GameVersion::SW:
-        case GameVersion::SH:
-            pkm->metLocation(0x000C); // Route 1, SWSH
-            break;
-        default:
-            break;
-    }
-    pkm->fixMoves();
-    pkm->PID((u32)randomNumbers());
-    pkm->language(getSafeLanguage(pkm->generation(), Configuration::getInstance().language()));
-    pkm->metDate(Configuration::getInstance().date());
-    pkm->metLevel(1);
-    if (pkm->generation() == Generation::SIX)
-    {
-        ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-        ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
-        ((PK6*)pkm.get())->otMemory(1);
-        ((PK6*)pkm.get())->otFeeling(0);
-        ((PK6*)pkm.get())->otIntensity(1);
-    }
-    else if (pkm->generation() == Generation::SEVEN)
-    {
-        ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-        ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-        ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+        pkm->version(TitleLoader::save->version());
+        switch (pkm->version())
+        {
+            case GameVersion::HG:
+            case GameVersion::SS:
+                pkm->metLocation(0x0095); // Route 1, HGSS
+                break;
+            case GameVersion::D:
+            case GameVersion::P:
+            case GameVersion::Pt:
+                pkm->metLocation(0x0010); // Route 201, DPPt
+                break;
+            case GameVersion::B:
+            case GameVersion::W:
+            case GameVersion::B2:
+            case GameVersion::W2:
+                pkm->metLocation(0x000e); // Route 1, BWB2W2
+                break;
+            case GameVersion::X:
+            case GameVersion::Y:
+                pkm->metLocation(0x0008); // Route 1, XY
+                break;
+            case GameVersion::OR:
+            case GameVersion::AS:
+                pkm->metLocation(0x00cc); // Route 101, ORAS
+                break;
+            case GameVersion::SN:
+            case GameVersion::MN:
+            case GameVersion::US:
+            case GameVersion::UM:
+                pkm->metLocation(0x0006); // Route 1, SMUSUM
+                break;
+            case GameVersion::GP:
+            case GameVersion::GE:
+                pkm->metLocation(0x0003); // Route 1, LGPE
+                break;
+            case GameVersion::SW:
+            case GameVersion::SH:
+                pkm->metLocation(0x000C); // Route 1, SWSH
+                break;
+            default:
+                break;
+        }
     }
 
     // From SpeciesOverlay
-    pkm->nickname(i18n::species(Configuration::getInstance().language(), Species{u16(species)}));
+    pkm->nickname(i18n::species(pkm->language(), Species{u16(species)}));
     pkm->species(Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);

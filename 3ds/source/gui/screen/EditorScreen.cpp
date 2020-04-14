@@ -41,6 +41,7 @@
 #include "PK7.hpp"
 #include "PK8.hpp"
 #include "PkmItemOverlay.hpp"
+#include "PkmUtils.hpp"
 #include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
@@ -83,84 +84,57 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
 
     if (!pkm || pkm->species() == Species::None)
     {
-        pkm = TitleLoader::save->emptyPkm();
+        pkm = PkmUtils::getDefault(TitleLoader::save->generation());
+        pkm->species(Species::None); // Intentionally set species to none
         if (Configuration::getInstance().useSaveInfo())
         {
             pkm->TID(TitleLoader::save->TID());
             pkm->SID(TitleLoader::save->SID());
             pkm->otName(TitleLoader::save->otName());
             pkm->otGender(TitleLoader::save->gender());
-        }
-        else
-        {
-            pkm->TID(Configuration::getInstance().defaultTID());
-            pkm->SID(Configuration::getInstance().defaultSID());
-            pkm->otName(Configuration::getInstance().defaultOT());
-        }
-        pkm->ball(Ball::Poke);
-        pkm->encryptionConstant((u32)randomNumbers());
-        pkm->version(TitleLoader::save->version());
-        switch (pkm->version())
-        {
-            case GameVersion::HG:
-            case GameVersion::SS:
-                pkm->metLocation(0x0095); // Route 1, HGSS
-                break;
-            case GameVersion::D:
-            case GameVersion::P:
-            case GameVersion::Pt:
-                pkm->metLocation(0x0010); // Route 201, DPPt
-                break;
-            case GameVersion::B:
-            case GameVersion::W:
-            case GameVersion::B2:
-            case GameVersion::W2:
-                pkm->metLocation(0x000e); // Route 1, BWB2W2
-                break;
-            case GameVersion::X:
-            case GameVersion::Y:
-                pkm->metLocation(0x0008); // Route 1, XY
-                break;
-            case GameVersion::OR:
-            case GameVersion::AS:
-                pkm->metLocation(0x00cc); // Route 101, ORAS
-                break;
-            case GameVersion::SN:
-            case GameVersion::MN:
-            case GameVersion::US:
-            case GameVersion::UM:
-                pkm->metLocation(0x0006); // Route 1, SMUSUM
-                break;
-            case GameVersion::GP:
-            case GameVersion::GE:
-                pkm->metLocation(0x0003); // Route 1, LGPE
-                break;
-            case GameVersion::SW:
-            case GameVersion::SH:
-                pkm->metLocation(0x000C); // Route 1, SWSH
-                break;
-            default:
-                break;
-        }
-        pkm->fixMoves();
-        pkm->PID((u32)randomNumbers());
-        pkm->language(getSafeLanguage(pkm->generation(), Configuration::getInstance().language()));
-        pkm->metDate(Configuration::getInstance().date());
-        pkm->metLevel(1);
-        if (pkm->generation() == Generation::SIX)
-        {
-            ((PK6*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-            ((PK6*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-            ((PK6*)pkm.get())->region(Configuration::getInstance().defaultRegion());
-            ((PK6*)pkm.get())->otMemory(1);
-            ((PK6*)pkm.get())->otFeeling(0);
-            ((PK6*)pkm.get())->otIntensity(1);
-        }
-        else if (pkm->generation() == Generation::SEVEN)
-        {
-            ((PK7*)pkm.get())->consoleRegion(Configuration::getInstance().nationality());
-            ((PK7*)pkm.get())->country(Configuration::getInstance().defaultCountry());
-            ((PK7*)pkm.get())->region(Configuration::getInstance().defaultRegion());
+            pkm->version(TitleLoader::save->version());
+            switch (pkm->version())
+            {
+                case GameVersion::HG:
+                case GameVersion::SS:
+                    pkm->metLocation(0x0095); // Route 1, HGSS
+                    break;
+                case GameVersion::D:
+                case GameVersion::P:
+                case GameVersion::Pt:
+                    pkm->metLocation(0x0010); // Route 201, DPPt
+                    break;
+                case GameVersion::B:
+                case GameVersion::W:
+                case GameVersion::B2:
+                case GameVersion::W2:
+                    pkm->metLocation(0x000e); // Route 1, BWB2W2
+                    break;
+                case GameVersion::X:
+                case GameVersion::Y:
+                    pkm->metLocation(0x0008); // Route 1, XY
+                    break;
+                case GameVersion::OR:
+                case GameVersion::AS:
+                    pkm->metLocation(0x00cc); // Route 101, ORAS
+                    break;
+                case GameVersion::SN:
+                case GameVersion::MN:
+                case GameVersion::US:
+                case GameVersion::UM:
+                    pkm->metLocation(0x0006); // Route 1, SMUSUM
+                    break;
+                case GameVersion::GP:
+                case GameVersion::GE:
+                    pkm->metLocation(0x0003); // Route 1, LGPE
+                    break;
+                case GameVersion::SW:
+                case GameVersion::SH:
+                    pkm->metLocation(0x000C); // Route 1, SWSH
+                    break;
+                default:
+                    break;
+            }
         }
         addOverlay<SpeciesOverlay>(pkm);
     }
@@ -377,7 +351,10 @@ bool EditorScreen::goBack()
     if (saved() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
     {
         Gui::screenBack();
-        TitleLoader::save->fixParty();
+        if (!emergency)
+        {
+            TitleLoader::save->fixParty();
+        }
         return true;
     }
     return false;
@@ -619,7 +596,14 @@ bool EditorScreen::save()
     pkm->refreshChecksum();
     if (emergency)
     {
-        Banks::bank->pkm(*pkm, box, index);
+        if (box != PARTY_MAGIC_NUM)
+        {
+            Banks::bank->pkm(*pkm, box, index);
+        }
+        else
+        {
+            PkmUtils::setDefault(pkm->clone());
+        }
     }
     else
     {

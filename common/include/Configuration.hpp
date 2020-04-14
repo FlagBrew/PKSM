@@ -36,7 +36,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 8;
+    static constexpr int CURRENT_VERSION = 9;
 
     static Configuration& getInstance(void)
     {
@@ -51,14 +51,6 @@ public:
     bool transferEdit(void) const;
 
     bool useExtData(void) const;
-
-    u32 defaultTID(void) const;
-
-    u32 defaultSID(void) const;
-
-    std::string defaultOT(void) const;
-
-    int nationality(void) const;
 
     int day(void) const;
 
@@ -93,10 +85,6 @@ public:
 
     bool randomMusic(void) const;
 
-    int defaultRegion(void) const;
-
-    int defaultCountry(void) const;
-
     bool showBackups(void) const;
 
     std::string legalEndpoint(void) const;
@@ -115,14 +103,6 @@ public:
 
     void useExtData(bool use);
 
-    void defaultTID(u32 tid);
-
-    void defaultSID(u32 sid);
-
-    void defaultOT(const std::string& ot);
-
-    void nationality(int nation);
-
     void day(int day);
 
     void month(int month);
@@ -139,10 +119,6 @@ public:
     void useSaveInfo(bool saveInfo);
 
     void randomMusic(bool random);
-
-    void defaultRegion(u8 value);
-
-    void defaultCountry(u8 value);
 
     void showBackups(bool value);
 

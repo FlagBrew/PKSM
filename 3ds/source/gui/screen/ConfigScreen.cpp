@@ -27,13 +27,15 @@
 #include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
-#include "ConfigCountryOverlay.hpp"
-#include "ConfigSubRegionOverlay.hpp"
 #include "Configuration.hpp"
+#include "EditorScreen.hpp"
 #include "ExtraSavesScreen.hpp"
+#include "PKX.hpp"
+#include "PkmUtils.hpp"
 #include "QRScanner.hpp"
 #include "ToggleButton.hpp"
 #include "banks.hpp"
+#include "format.h"
 #include "gui.hpp"
 #include "i18n.hpp"
 #include "loader.hpp"
@@ -60,21 +62,6 @@ namespace
         {
             int tid = std::stoi(input);
             callback(std::min(maxValue, tid));
-        }
-    }
-
-    void inputOT()
-    {
-        SwkbdState state;
-        swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 12);
-        swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
-        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
-        char input[25]  = {0};
-        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-        input[24]       = '\0';
-        if (ret == SWKBD_BUTTON_CONFIRM)
-        {
-            Configuration::getInstance().defaultOT(input);
         }
     }
 
@@ -108,38 +95,6 @@ namespace
         {
             Configuration::getInstance().patronCode(input);
         }
-    }
-
-    bool nationalityChoice()
-    {
-        switch (Configuration::getInstance().nationality())
-        {
-            case 0:
-                Configuration::getInstance().nationality(1);
-                break;
-            case 1:
-                Configuration::getInstance().nationality(2);
-                break;
-            case 2:
-                Configuration::getInstance().nationality(3);
-                break;
-            case 3:
-                Configuration::getInstance().nationality(4);
-                break;
-            case 4:
-                Configuration::getInstance().nationality(5);
-                break;
-            case 5:
-                Configuration::getInstance().nationality(6);
-                break;
-            case 6:
-                Configuration::getInstance().nationality(0);
-                break;
-            default:
-                Configuration::getInstance().nationality(0);
-                break;
-        }
-        return false;
     }
 
     u8 getNextAlpha(int off)
@@ -355,33 +310,37 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(122, 38, 15, 12,
         []() {
-            inputNumber([](u16 a) { Configuration::getInstance().defaultTID(a); }, 5, 0xFFFF);
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::FOUR), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(122, 59, 15, 12,
         []() {
-            inputNumber([](u16 a) { Configuration::getInstance().defaultSID(a); }, 5, 0xFFFF);
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::FIVE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(122, 80, 15, 12,
         []() {
-            inputOT();
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::SIX), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-    tabButtons[1].push_back(
-        std::make_unique<ClickButton>(122, 101, 15, 12, &nationalityChoice, ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[1].push_back(std::make_unique<ClickButton>(122, 101, 15, 12,
+        []() {
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::SEVEN), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(122, 122, 15, 12,
         [this]() {
-            addOverlay<ConfigCountryOverlay>();
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::LGPE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(122, 143, 15, 12,
         [this]() {
-            addOverlay<ConfigSubRegionOverlay>();
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::EIGHT), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -506,53 +465,59 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        Gui::text(i18n::localize("TID"), 19, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("SID"), 19, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("OT"), 19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("3DS_REGION"), 19, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("COUNTRY"), 19, 120, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("SUBREGION"), 19, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::FOUR), 19, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::FIVE), 19, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::SIX), 19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::SEVEN), 19, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::LGPE), 19, 120, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::EIGHT), 19, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
         Gui::text(i18n::localize("DAY"), 19, 162, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("MONTH"), 19, 183, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("YEAR"), 19, 204, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        std::string data;
-        switch (Configuration::getInstance().nationality())
-        {
-            case 0:
-                data = "JPN";
-                break;
-            case 1:
-                data = "USA";
-                break;
-            case 2:
-                data = "EUR";
-                break;
-            case 3:
-                data = "AUS";
-                break;
-            case 4:
-                data = "CHN";
-                break;
-            case 5:
-                data = "KOR";
-                break;
-            case 6:
-                data = "TWN";
-                break;
-            default:
-                data = "USA";
-                break;
-        }
-        Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::country(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
-                      Configuration::getInstance().defaultRegion()),
-            150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // std::string data;
+        // switch (Configuration::getInstance().nationality())
+        // {
+        //     case 0:
+        //         data = "JPN";
+        //         break;
+        //     case 1:
+        //         data = "USA";
+        //         break;
+        //     case 2:
+        //         data = "EUR";
+        //         break;
+        //     case 3:
+        //         data = "AUS";
+        //         break;
+        //     case 4:
+        //         data = "CHN";
+        //         break;
+        //     case 5:
+        //         data = "KOR";
+        //         break;
+        //     case 6:
+        //         data = "TWN";
+        //         break;
+        //     default:
+        //         data = "USA";
+        //         break;
+        // }
+        // Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(i18n::country(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
+        //     COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
+        //               Configuration::getInstance().defaultRegion()),
+        //     150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(std::to_string(Configuration::getInstance().day()), 150, 162, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(std::to_string(Configuration::getInstance().month()), 150, 183, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(std::to_string(Configuration::getInstance().year()), 150, 204, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -712,6 +677,7 @@ void ConfigScreen::back()
     {
         TitleLoader::scanSaves();
     }
+    PkmUtils::saveDefaults();
     Gui::screenBack();
 }
 

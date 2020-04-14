@@ -24,38 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef CONFIGSCREEN_HPP
-#define CONFIGSCREEN_HPP
+#ifndef PKMUTILS_HPP
+#define PKMUTILS_HPP
 
-#include "Screen.hpp"
-#include "ToggleButton.hpp"
-#include <array>
-#include <bitset>
-#include <vector>
+#include <PKX.hpp>
 
-class Button;
-class PKX;
-
-class ConfigScreen : public Screen
+namespace PkmUtils
 {
-public:
-    ConfigScreen(void);
-    void update(touchPosition* touch) override;
-    void drawTop(void) const override;
-    void drawBottom(void) const override;
-
-private:
-    std::vector<std::unique_ptr<ToggleButton>> tabs;
-    std::array<std::vector<std::unique_ptr<Button>>, 4> tabButtons;
-    std::bitset<4> patronMenu;
-    void back(void);
-    void initButtons(void);
-    int patronMenuTimer;
-    int currentTab            = 0;
-    bool countPatronMenuTimer = false;
-    bool justSwitched         = true;
-    bool showBackupsChanged   = false;
-    bool useExtDataChanged    = false;
-};
+    void initDefaults();
+    void saveDefaults();
+    std::unique_ptr<PKX> getDefault(Generation gen);
+    void setDefault(std::unique_ptr<PKX> pkm);
+}
 
 #endif

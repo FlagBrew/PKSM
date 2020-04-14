@@ -28,6 +28,7 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "FSStream.hpp"
+#include "PkmUtils.hpp"
 #include "TitleLoadScreen.hpp"
 #include "appIcon.hpp"
 #include "archive.hpp"
@@ -815,13 +816,14 @@ Result App::init(const std::string& execPath)
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
 
-    Configuration::getInstance();
     i18n::init(Configuration::getInstance().language());
 
     continueI18N.test_and_set();
     Threads::create(i18nThread, nullptr, 16 * 1024);
+    PkmUtils::initDefaults();
 
     moveIcon.clear();
+    Configuration::getInstance();
 
     if (!assetsMatch())
     {
