@@ -1629,7 +1629,7 @@ void Gui::pkm(Species species, int form, Generation generation, Gender gender, i
     }
     else
     {
-        if (form > PersonalSWSH::formCount(size_t(species)))
+        if (form > PersonalLGPE::formCount(size_t(species)))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
             return;
