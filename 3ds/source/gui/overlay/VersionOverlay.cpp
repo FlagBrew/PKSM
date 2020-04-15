@@ -33,7 +33,7 @@
 
 VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
-    auto gameStrings = i18n::rawGames(Configuration::getInstance().language());
+    const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
     for (size_t i = 0; i < gameStrings.size(); i++)
     {
         if (!gameStrings[i].empty())
