@@ -748,10 +748,35 @@ bool EditorScreen::selectForm()
     {
         return false;
     }
-    u8 count = TitleLoader::save->formCount(u16(pkm->species()));
+    u8 count = pkm->formCount();
     if (pkm->species() == Species::Scatterbug || pkm->species() == Species::Spewpa)
     {
-        count = TitleLoader::save->formCount(u16(Species::Vivillon));
+        switch (pkm->generation())
+        {
+            case Generation::THREE:
+                count = PersonalRSFRLGE::formCount(u16(pkm->species()));
+                break;
+            case Generation::FOUR:
+                count = PersonalDPPtHGSS::formCount(u16(pkm->species()));
+                break;
+            case Generation::FIVE:
+                count = PersonalBWB2W2::formCount(u16(pkm->species()));
+                break;
+            case Generation::SIX:
+                count = PersonalXYORAS::formCount(u16(pkm->species()));
+                break;
+            case Generation::SEVEN:
+                count = PersonalSMUSUM::formCount(u16(pkm->species()));
+                break;
+            case Generation::LGPE:
+                count = PersonalLGPE::formCount(u16(pkm->species()));
+                break;
+            case Generation::EIGHT:
+                count = PersonalSWSH::formCount(u16(pkm->species()));
+                break;
+            case Generation::UNUSED:
+                break;
+        }
     }
     if (count > 1)
     {
@@ -791,27 +816,15 @@ bool EditorScreen::genderSwitch()
 
 bool EditorScreen::setSaveInfo()
 {
-    if (pkm->otName() != TitleLoader::save->otName())
+    if (TitleLoader::save)
     {
         pkm->otName(TitleLoader::save->otName());
-    }
-    if (pkm->TID() != TitleLoader::save->TID())
-    {
         pkm->TID(TitleLoader::save->TID());
-    }
-    if (pkm->SID() != TitleLoader::save->SID())
-    {
         pkm->SID(TitleLoader::save->SID());
-    }
-    if (pkm->otGender() != TitleLoader::save->gender())
-    {
         pkm->otGender(TitleLoader::save->gender());
-    }
-    if (pkm->version() != TitleLoader::save->version())
-    {
         pkm->version(TitleLoader::save->version());
+        pkm->currentHandler(0);
     }
-    pkm->currentHandler(0);
     return false;
 }
 
