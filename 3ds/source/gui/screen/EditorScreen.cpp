@@ -753,15 +753,6 @@ bool EditorScreen::selectForm()
     {
         switch (pkm->generation())
         {
-            case Generation::THREE:
-                count = PersonalRSFRLGE::formCount(u16(pkm->species()));
-                break;
-            case Generation::FOUR:
-                count = PersonalDPPtHGSS::formCount(u16(pkm->species()));
-                break;
-            case Generation::FIVE:
-                count = PersonalBWB2W2::formCount(u16(pkm->species()));
-                break;
             case Generation::SIX:
                 count = PersonalXYORAS::formCount(u16(pkm->species()));
                 break;
@@ -774,6 +765,7 @@ bool EditorScreen::selectForm()
             case Generation::EIGHT:
                 count = PersonalSWSH::formCount(u16(pkm->species()));
                 break;
+            default:
             case Generation::UNUSED:
                 break;
         }
