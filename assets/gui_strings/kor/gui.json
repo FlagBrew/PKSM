@@ -325,6 +325,7 @@
     "LEGALITY_ILLEGAL": "Illegal",
     "LEGALITY_LEGAL": "Legal",
     "LEGALIZE": "Legalize",
+    "LEGALIZE_IN_QUEUE": "Your previous Pokémon is giving our server some issues",
     "LEGEND_RIBBON": "레전드 리본",
     "LEVEL": "레벨",
     "LGPE_HAS_TM": "이미 이 기술머신을 보유하고 있습니다!",

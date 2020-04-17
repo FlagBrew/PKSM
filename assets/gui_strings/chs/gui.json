@@ -325,6 +325,7 @@
     "LEGALITY_ILLEGAL": "非法",
     "LEGALITY_LEGAL": "法律",
     "LEGALIZE": "Legalize",
+    "LEGALIZE_IN_QUEUE": "Your previous Pokémon is giving our server some issues",
     "LEGEND_RIBBON": "传说奖章",
     "LEVEL": "等级",
     "LGPE_HAS_TM": "你已拥有这个招式学习器!",

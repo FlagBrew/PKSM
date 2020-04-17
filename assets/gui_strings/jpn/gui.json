@@ -325,6 +325,7 @@
     "LEGALITY_ILLEGAL": "不正",
     "LEGALITY_LEGAL": "適正",
     "LEGALIZE": "整合性にする",
+    "LEGALIZE_IN_QUEUE": "Your previous Pokémon is giving our server some issues",
     "LEGEND_RIBBON": "レジェンドリボン",
     "LEVEL": "Lv.",
     "LGPE_HAS_TM": "既にこの技マシンを所持しています!",

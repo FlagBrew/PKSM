@@ -328,6 +328,7 @@
     "LEGALITY_ILLEGAL": "Illegal",
     "LEGALITY_LEGAL": "Legal",
     "LEGALIZE": "Legalize",
+    "LEGALIZE_IN_QUEUE": "Your previous Pokémon is giving our server some issues",
     "LEGEND_RIBBON": "Legend Ribbon",
     "LEVEL": "Level",
     "LGPE_HAS_TM": "You already have this TM!",
