@@ -175,8 +175,15 @@ void BagScreen::update(touchPosition* touch)
     u32 heldKeys     = hidKeysHeld();
     if (downKeys & KEY_B)
     {
-        Gui::screenBack();
-        return;
+        if (!selectingPouch)
+        {
+            selectingPouch = true;
+        }
+        else
+        {
+            Gui::screenBack();
+            return;
+        }
     }
     if (downKeys & KEY_R)
     {
