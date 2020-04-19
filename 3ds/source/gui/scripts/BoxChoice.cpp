@@ -118,7 +118,12 @@ void BoxChoice::drawBottom() const
         y += 30;
     }
 
-    Gui::text(TitleLoader::save->boxName(boxBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    std::string show = TitleLoader::save->boxName(boxBox);
+    if (show.empty())
+    {
+        show = i18n::localize("BOX") + std::to_string(boxBox);
+    }
+    Gui::text(show, 107, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (!storageChosen)
     {

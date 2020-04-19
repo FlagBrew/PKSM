@@ -287,7 +287,12 @@ void EditSelectorScreen::drawBottom() const
         }
     }
 
-    Gui::text(TitleLoader::save->boxName(box), 107, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    std::string show = TitleLoader::save->boxName(box);
+    if (show.empty())
+    {
+        show = i18n::localize("BOX") + std::to_string(box);
+    }
+    Gui::text(show, 107, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     if (cursorPos == 0)
     {
