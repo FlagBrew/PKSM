@@ -113,14 +113,16 @@ int main()
         }
     }
 
-    printf("constexpr char personal_swsh[] = { ");
+    printf("constexpr unsigned char personal_swsh[] = { ");
     for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
     {
         printf("0x%x, ", *(((u8*)outEntries) + i));
     }
     printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
 
-    printf("constexpr int personal_swsh_size = %li;", entries * sizeof(PKSMPersonalEntry));
+    printf("constexpr int personal_swsh_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal_swsh_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
 
     return 0;
 }

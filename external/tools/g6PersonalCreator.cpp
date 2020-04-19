@@ -102,7 +102,7 @@ int main()
         outEntries[i].formCount      = inEntries[i].formCount;
     }
 
-    printf("constexpr char personal_xyoras[] = { ");
+    printf("constexpr unsigned char personal_xyoras[] = { ");
     for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
     {
         printf("0x%x, ", *(((u8*)outEntries) + i));
@@ -110,6 +110,8 @@ int main()
     printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
 
     printf("constexpr int personal_xyoras_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal_xyoras_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
 
     return 0;
 }

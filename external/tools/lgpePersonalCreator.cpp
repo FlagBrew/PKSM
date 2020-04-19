@@ -74,7 +74,7 @@ struct PKSMPersonalEntry
 int main()
 {
     assert(sizeof(PKSMPersonalEntry) == 17);
-    FILE* personalFile = fopen("personal_uu", "rb");
+    FILE* personalFile = fopen("personal_gg", "rb");
     fseek(personalFile, 0, SEEK_END);
     auto size = ftell(personalFile);
     fseek(personalFile, 0, SEEK_SET);
@@ -104,19 +104,18 @@ int main()
         outEntries[i].ability2       = inEntries[i].ability2;
         outEntries[i].abilityH       = inEntries[i].abilityH;
         outEntries[i].formStatIndex  = inEntries[i].formStatIndex;
-        outEntries[i].formCount      = inEntries[i].formCount;
     }
 
-    printf("constexpr unsigned char personal_smusum[] = { ");
+    printf("constexpr unsigned char personal_lgpe[] = { ");
     for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
     {
         printf("0x%x, ", *(((u8*)outEntries) + i));
     }
     printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
 
-    printf("constexpr int personal_smusum_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+    printf("constexpr int personal_lgpe_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
 
-    printf("constexpr int personal_smusum_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+    printf("constexpr int personal_lgpe_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
 
     return 0;
 }

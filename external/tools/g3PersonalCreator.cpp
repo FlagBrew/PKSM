@@ -85,7 +85,7 @@ int main()
         outEntries[i].ability2       = inEntries[i].ability2;
     }
 
-    printf("constexpr char personal_rsfrlge[] = { ");
+    printf("constexpr unsigned char personal_rsfrlge[] = { ");
     for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
     {
         printf("0x%x, ", *(((u8*)outEntries) + i));
@@ -93,6 +93,8 @@ int main()
     printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
 
     printf("constexpr int personal_rsfrlge_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal_rsfrlge_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
 
     return 0;
 }
