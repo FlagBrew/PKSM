@@ -34,13 +34,19 @@
 #include <algorithm>
 
 BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      pkm(pkm),
-      hid(30, 6),
-      balls(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end())
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
 {
+    if (TitleLoader::save)
+    {
+        balls = std::vector<Ball>(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end());
+    }
+    else
+    {
+        balls = std::vector<Ball>(VersionTables::availableBalls(GameVersion::oldestVersion(pkm->generation())).begin(),
+            VersionTables::availableBalls(GameVersion::oldestVersion(pkm->generation())).end());
+    }
     std::sort(balls.begin(), balls.end());
-    hid.update(24);
+    hid.update(balls.size());
     auto index = std::find(balls.begin(), balls.end(), pkm->ball());
     if (index != balls.end())
     {

@@ -70,7 +70,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> p
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
-    const std::set<int>& availableItems      = TitleLoader::save->availableItems();
+    const std::set<int>& availableItems =
+        TitleLoader::save ? TitleLoader::save->availableItems() : VersionTables::availableItems(GameVersion::oldestVersion(pkm->generation()));
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
         if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||

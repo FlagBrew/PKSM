@@ -748,22 +748,40 @@ bool EditorScreen::selectForm()
     {
         return false;
     }
-    u8 count = pkm->formCount();
-    if (pkm->species() == Species::Scatterbug || pkm->species() == Species::Spewpa)
+    u8 count          = 1;
+    u16 formCountSpec = u16(pkm->species());
+    if (formCountSpec == u16(Species::Scatterbug) || formCountSpec == u16(Species::Spewpa))
+    {
+        formCountSpec = u16(Species::Vivillon);
+    }
+    if (TitleLoader::save)
+    {
+        count = TitleLoader::save->formCount(u16(formCountSpec));
+    }
+    else
     {
         switch (pkm->generation())
         {
+            case Generation::THREE:
+                count = PersonalRSFRLGE::formCount(formCountSpec);
+                break;
+            case Generation::FOUR:
+                count = PersonalDPPtHGSS::formCount(formCountSpec);
+                break;
+            case Generation::FIVE:
+                count = PersonalBWB2W2::formCount(formCountSpec);
+                break;
             case Generation::SIX:
-                count = PersonalXYORAS::formCount(u16(pkm->species()));
+                count = PersonalXYORAS::formCount(formCountSpec);
                 break;
             case Generation::SEVEN:
-                count = PersonalSMUSUM::formCount(u16(pkm->species()));
+                count = PersonalSMUSUM::formCount(formCountSpec);
                 break;
             case Generation::LGPE:
-                count = PersonalLGPE::formCount(u16(pkm->species()));
+                count = PersonalLGPE::formCount(formCountSpec);
                 break;
             case Generation::EIGHT:
-                count = PersonalSWSH::formCount(u16(pkm->species()));
+                count = PersonalSWSH::formCount(formCountSpec);
                 break;
             default:
             case Generation::UNUSED:

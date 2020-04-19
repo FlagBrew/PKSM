@@ -35,12 +35,39 @@
 #include "loader.hpp"
 #include "utils.hpp"
 
+namespace
+{
+    class SpeciesException : public std::exception
+    {
+    public:
+        SpeciesException() {}
+
+        const char* what() { return "SpeciesException: If you are seeing this, piepie62 is dumb."; }
+    };
+}
+
 SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       object(object),
       hid(40, 8),
       dispPkm(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end())
 {
+    if (TitleLoader::save)
+    {
+        dispPkm = std::vector<Species>(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+    }
+    else
+    {
+        if (object.index() == 0)
+        {
+            dispPkm = std::vector<Species>(VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation())).begin(),
+                VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation())).end());
+        }
+        else
+        {
+            throw SpeciesException{};
+        }
+    }
     std::sort(dispPkm.begin(), dispPkm.end());
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
