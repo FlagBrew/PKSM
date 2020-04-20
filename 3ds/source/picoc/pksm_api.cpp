@@ -858,7 +858,7 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             {
                 scriptFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
             }
-            ReturnValue->Val->Integer = TitleLoader::save->formCount(getNextVarArg(Param[0])->Val->Integer);
+            ReturnValue->Val->Integer = TitleLoader::save->formCount(Species{u16(getNextVarArg(Param[0])->Val->Integer)});
             break;
         case MAX_IN_POUCH:
             if (NumArgs != 2)

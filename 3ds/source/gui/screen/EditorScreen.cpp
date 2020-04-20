@@ -748,45 +748,19 @@ bool EditorScreen::selectForm()
     {
         return false;
     }
-    u8 count          = 1;
-    u16 formCountSpec = u16(pkm->species());
-    if (formCountSpec == u16(Species::Scatterbug) || formCountSpec == u16(Species::Spewpa))
+    u8 count;
+    Species formCountSpec = pkm->species();
+    if (formCountSpec == Species::Scatterbug || formCountSpec == Species::Spewpa)
     {
-        formCountSpec = u16(Species::Vivillon);
+        formCountSpec = Species::Vivillon;
     }
     if (TitleLoader::save)
     {
-        count = TitleLoader::save->formCount(u16(formCountSpec));
+        count = TitleLoader::save->formCount(formCountSpec);
     }
     else
     {
-        switch (pkm->generation())
-        {
-            case Generation::THREE:
-                count = PersonalRSFRLGE::formCount(formCountSpec);
-                break;
-            case Generation::FOUR:
-                count = PersonalDPPtHGSS::formCount(formCountSpec);
-                break;
-            case Generation::FIVE:
-                count = PersonalBWB2W2::formCount(formCountSpec);
-                break;
-            case Generation::SIX:
-                count = PersonalXYORAS::formCount(formCountSpec);
-                break;
-            case Generation::SEVEN:
-                count = PersonalSMUSUM::formCount(formCountSpec);
-                break;
-            case Generation::LGPE:
-                count = PersonalLGPE::formCount(formCountSpec);
-                break;
-            case Generation::EIGHT:
-                count = PersonalSWSH::formCount(formCountSpec);
-                break;
-            default:
-            case Generation::UNUSED:
-                break;
-        }
+        count = VersionTables::formCount(GameVersion::oldestVersion(pkm->generation()), formCountSpec);
     }
     if (count > 1)
     {

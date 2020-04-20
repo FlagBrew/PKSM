@@ -84,20 +84,20 @@ void FormOverlay::drawTop() const
             {
                 case 0:
                 {
+                    GameVersion v = TitleLoader::save ? TitleLoader::save->version() : GameVersion::oldestVersion(std::get<0>(object)->generation());
                     Gui::pkm(std::get<0>(object)->species(), x + y * 6, std::get<0>(object)->generation(), std::get<0>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
-                    const std::string& text = i18n::form(
-                        Configuration::getInstance().language(), std::get<0>(object)->generation(), std::get<0>(object)->species(), x + y * 6);
+                    const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<0>(object)->species(), x + y * 6);
                     Gui::text(
                         text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
                 break;
                 case 1:
                 {
+                    GameVersion v = TitleLoader::save ? TitleLoader::save->version() : GameVersion::oldestVersion(std::get<1>(object)->generation());
                     Gui::pkm(std::get<1>(object)->species(), x + y * 6, std::get<1>(object)->generation(), std::get<1>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
-                    const std::string& text = i18n::form(
-                        Configuration::getInstance().language(), std::get<1>(object)->generation(), std::get<1>(object)->species(), x + y * 6);
+                    const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<1>(object)->species(), x + y * 6);
                     Gui::text(
                         text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }

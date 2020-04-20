@@ -103,9 +103,9 @@ FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
 
     buttons[0].push_back(std::make_unique<ClickButton>(172, 53, 50, 44,
         [this]() {
-            if (TitleLoader::save->formCount(u16(this->filter->species())) > 1)
+            if (TitleLoader::save->formCount(this->filter->species()) > 1)
             {
-                this->addOverlay<FormOverlay>(this->filter, TitleLoader::save->formCount(u16(this->filter->species())));
+                this->addOverlay<FormOverlay>(this->filter, TitleLoader::save->formCount(this->filter->species()));
             }
             return false;
         },
