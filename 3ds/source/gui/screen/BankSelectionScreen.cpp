@@ -29,7 +29,7 @@
 #include "banks.hpp"
 #include "format.h"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include <algorithm>
 
 BankSelectionScreen::BankSelectionScreen(int& storageBox) : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)

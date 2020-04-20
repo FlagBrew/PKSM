@@ -29,7 +29,7 @@
 #include "Configuration.hpp"
 #include "PKX.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "utils.hpp"
 
 LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met)

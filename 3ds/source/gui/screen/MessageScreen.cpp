@@ -26,7 +26,7 @@
 
 #include "MessageScreen.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 
 void MessageScreen::drawTop() const
 {

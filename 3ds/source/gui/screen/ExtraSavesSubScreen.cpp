@@ -30,7 +30,7 @@
 #include "GameVersion.hpp"
 #include "Species.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 
 namespace
 {

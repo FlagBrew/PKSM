@@ -43,7 +43,7 @@
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
 #include <sys/stat.h>

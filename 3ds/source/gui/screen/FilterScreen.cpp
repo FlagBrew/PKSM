@@ -34,7 +34,7 @@
 #include "SpeciesOverlay.hpp"
 #include "ToggleButton.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 
 FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)

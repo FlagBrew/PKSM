@@ -32,6 +32,10 @@
 
 namespace i18n
 {
+    void initGui(Language lang);
+    void exitGui(Language lang);
+    const std::string& localize(Language lang, const std::string& index);
+
     const std::string& pouch(Language lang, Sav::Pouch pouch);
     const std::string& badTransfer(Language lang, Sav::BadTransferReason reason);
 }

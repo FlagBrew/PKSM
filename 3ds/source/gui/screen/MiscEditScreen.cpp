@@ -40,7 +40,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 
 MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)

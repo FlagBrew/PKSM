@@ -26,11 +26,39 @@
 
 #include "i18n_ext.hpp"
 #include "../../../core/source/i18n/i18n_internal.hpp"
+#include "nlohmann/json.hpp"
 
 namespace i18n
 {
+    std::unordered_map<Language, nlohmann::json> gui;
+
+    void initGui(Language lang)
+    {
+        nlohmann::json j;
+        load(lang, "/gui.json", j);
+        gui.insert_or_assign(lang, std::move(j));
+    }
+
+    void exitGui(Language lang) { gui.erase(lang); }
+
+    const std::string& localize(Language lang, const std::string& v)
+    {
+        checkInitialized(lang);
+        auto it = gui.find(lang);
+        if (it != gui.end())
+        {
+            if (!it->second.contains(v))
+            {
+                it->second[v] = "MISSING: " + v;
+            }
+            return it->second[v].get_ref<const std::string&>();
+        }
+        return emptyString;
+    }
+
     const std::string& pouch(Language lang, Sav::Pouch pouch)
     {
+        checkInitialized(lang);
         switch (pouch)
         {
             case Sav::Pouch::NormalItem:
@@ -69,6 +97,7 @@ namespace i18n
 
     const std::string& badTransfer(Language lang, Sav::BadTransferReason reason)
     {
+        checkInitialized(lang);
         switch (reason)
         {
             case Sav::BadTransferReason::MOVE:

@@ -30,7 +30,7 @@
 #include "PKX.hpp"
 #include "Sav.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 
 FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u16 formCount)

@@ -36,7 +36,7 @@
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
@@ -816,6 +816,7 @@ Result App::init(const std::string& execPath)
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
 
+    i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     i18n::init(Configuration::getInstance().language());
 
     continueI18N.test_and_set();

@@ -27,7 +27,7 @@
 #include "FileChooseOverlay.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include <algorithm>
 
 FileChooseOverlay::FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString)

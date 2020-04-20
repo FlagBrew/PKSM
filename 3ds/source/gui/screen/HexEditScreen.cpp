@@ -34,7 +34,7 @@
 #include "Sav.hpp"
 #include "endian.hpp"
 #include "format.h"
-#include "i18n.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 #include <bitset>
 
