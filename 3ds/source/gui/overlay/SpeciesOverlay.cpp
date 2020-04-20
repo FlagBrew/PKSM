@@ -135,7 +135,20 @@ void SpeciesOverlay::drawTop() const
             }
             Species species = dispPkm[pkmIndex];
             Gender gender   = object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
-            Gui::pkm(species, 0, TitleLoader::save->generation(), gender, x * 50 + 7, y * 48 + 2);
+            Generation gen;
+            if (object.index() == 0)
+            {
+                gen = std::get<0>(object)->generation();
+            }
+            else if (object.index() == 1 && TitleLoader::save)
+            {
+                gen = TitleLoader::save->generation();
+            }
+            else
+            {
+                throw SpeciesException{};
+            }
+            Gui::pkm(species, 0, gen, gender, x * 50 + 7, y * 48 + 2);
             Gui::text(std::to_string(size_t(species)), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
@@ -160,7 +173,10 @@ void SpeciesOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         dispPkm.clear();
-        for (auto i = TitleLoader::save->availableSpecies().begin(); i != TitleLoader::save->availableSpecies().end(); i++)
+        const std::set<Species>& set = TitleLoader::save
+                                           ? TitleLoader::save->availableSpecies()
+                                           : VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation()));
+        for (auto i = set.begin(); i != set.end(); i++)
         {
             std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
             StringUtils::toLower(speciesName);
@@ -175,7 +191,10 @@ void SpeciesOverlay::update(touchPosition* touch)
     else if (searchString.empty() && !oldSearchString.empty())
     {
         dispPkm.clear();
-        dispPkm.insert(dispPkm.begin(), TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+        const std::set<Species>& set = TitleLoader::save
+                                           ? TitleLoader::save->availableSpecies()
+                                           : VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation()));
+        dispPkm.insert(dispPkm.begin(), set.begin(), set.end());
         std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString = "";
     }
