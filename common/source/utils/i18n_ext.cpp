@@ -32,6 +32,19 @@ namespace i18n
 {
     std::unordered_map<Language, nlohmann::json> gui;
 
+    void load(Language lang, const std::string& name, nlohmann::json& json)
+    {
+        std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+
+        FILE* values = fopen(path.c_str(), "rt");
+        if (values)
+        {
+            json = nlohmann::json::parse(values, nullptr, false);
+            fclose(values);
+        }
+    }
+
     void initGui(Language lang)
     {
         nlohmann::json j;
