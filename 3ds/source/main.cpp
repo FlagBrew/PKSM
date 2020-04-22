@@ -39,21 +39,6 @@ namespace
         const char* what() const noexcept override { return "Abort called"; }
     };
 
-    class AssertException : public std::exception
-    {
-    public:
-        AssertException(const char* file, int line, const char* functionName, const char* condition)
-            : mMessage("Assert failed: File " + std::string(file) + ", line " + std::to_string(line) + ": " + std::string(functionName) +
-                       ". Condition was " + std::string(condition))
-        {
-        }
-
-        const char* what() const noexcept override { return mMessage.c_str(); }
-
-    private:
-        std::string mMessage;
-    };
-
     void consoleDisplayError(const char* message)
     {
         consoleInit(GFX_TOP, nullptr);
@@ -70,28 +55,12 @@ namespace
         }
     }
 
-    bool prettyAbort  = true;
-    bool prettyAssert = true;
+    bool prettyAbort = true;
 }
 
 // These are necessary because of the 3DS's bad exit semantics.
 // We *have* to clean up; not doing so ends in terrible, terrible things happening (mainly infinite hangs)
 extern "C" {
-extern void __real___assert_func(const char*, int, const char*, const char*);
-
-void __wrap___assert_func(const char* file, int line, const char* functionName, const char* condition)
-{
-    if (prettyAssert)
-    {
-        prettyAssert = false;
-        throw AssertException(file, line, functionName, condition);
-    }
-    else
-    {
-        __real___assert_func(file, line, functionName, condition);
-    }
-}
-
 extern void __real_abort();
 
 void __wrap_abort(void)
