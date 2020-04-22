@@ -60,7 +60,7 @@ private:
     int selectedItem    = 0;
     int firstItem       = 0;
     int firstEmpty      = 0;
-    bool selectingPouch = false;
+    bool selectingPouch = true;
     bool justSwitched   = true;
 };
 
