@@ -36,8 +36,17 @@ APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
 APP_AUTHOR		:=	FlagBrew
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
-OUTDIR			:=	out
-BUILD			:=	build
+OUT_DEBUG		:=	out
+OUT_RELEASE		:=	out_release
+BUILD_DEBUG		:=	build
+BUILD_RELEASE	:=	build_release
+ifneq ($(strip $(RELEASE)),)
+BUILD			:=	$(BUILD_RELEASE)
+OUTDIR			:=	$(OUT_RELEASE)
+else
+BUILD			:=	$(BUILD_DEBUG)
+OUTDIR			:=	$(OUT_DEBUG)
+endif
 FORMATSOURCES	:=	../common/source \
 					../common/source/gui \
 					../common/source/io \
@@ -116,8 +125,15 @@ ICON_FLAGS		:=	nosavebackups,visible
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections -flto \
+ifneq ($(strip $(RELEASE)),)
+OPTIMIZE		:=	-O3 -flto
+RELEASE_FLAGS	:=	-DNDEBUG
+else
+OPTIMIZE		:=	-Og
+endif
+
+CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -mword-relocations \
+			-fomit-frame-pointer -ffunction-sections \
 			-Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
@@ -126,16 +142,16 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O3 -mword-relocations \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
 			-DFMT_HEADER_ONLY \
-			-DNDEBUG \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
-			`curl-config --cflags`
+			`curl-config --cflags` \
+			$(OPTIMIZE) $(RELEASE_FLAGS)
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++2a
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -flto -Wl,--wrap=abort
+LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
 
 LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
@@ -263,11 +279,15 @@ endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(OUTDIR)
+	@rm -fr $(OUT_DEBUG)
 	@rm -fr $(ROMFS)/mg/*
 	@rm -fr $(ROMFS)/i18n/
 	@touch $(ROMFS)/mg/.gitkeep
-	@rm -fr $(BUILD) $(PACKER)/out $(PACKER)/EventsGallery
+	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
+#---------------------------------------------------------------------------------
+spotless: clean
+	@rm -fr $(OUT_RELEASE)
+	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
 no-deps: $(ROMFS_FONTFILES)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n

@@ -1,6 +1,8 @@
 .vscode
 3ds/build/
+3ds/build_release/
 3ds/out/
+3ds/out_release/
 out/
 release/
 assets/gfx/pkm

@@ -11,11 +11,9 @@ OUTDIR			:= 	out
 RELEASEDIR		:=	release
 ICON			:=	assets/icon.png
 
-all: 3ds
+debug: 3ds-debug
 
-release: 3ds docs
-	@mkdir -p $(RELEASEDIR)
-	@cp 3ds/out/PKSM.elf $(RELEASEDIR)
+release: 3ds-release docs
 
 revision:
 	@echo \#define GIT_REV \"$(GIT_REV)\" > common/include/revision.h
@@ -23,11 +21,14 @@ revision:
 	@echo \#define VERSION_MINOR $(VERSION_MINOR) >> common/include/revision.h
 	@echo \#define VERSION_MICRO $(VERSION_MICRO) >> common/include/revision.h
 
-3ds: revision
+3ds-debug: revision
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO)
 
 no-deps: revision
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO) no-deps
+
+3ds-release: revision
+	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO) RELEASE="1"
 
 docs:
 	@mkdir -p $(OUTDIR)
@@ -36,6 +37,9 @@ docs:
 clean:
 	@rm -f common/include/revision.h
 	$(MAKE) -C 3ds clean
+
+spotless: clean
+	$(MAKE) -C 3ds spotless
 
 format:
 	$(MAKE) -C 3ds format
@@ -47,4 +51,4 @@ cppcheck:
 cppclean:
 	$(MAKE) -C 3ds cppclean
 
-.PHONY: revision 3ds docs clean format cppcheck release
+.PHONY: revision 3ds-debug 3ds-release docs clean format cppcheck release debug
