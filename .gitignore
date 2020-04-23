@@ -14,10 +14,9 @@ assets/romfs/i18n/
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x
 assets/romfs/scripts/
-!common/EventsGalleryPacker
-common/EventsGalleryPacker/EventsGallery
-common/EventsGalleryPacker/out
-common/EventsGalleryPacker/__pycache__
+external/EventsGalleryPacker/EventsGallery
+external/EventsGalleryPacker/out
+external/EventsGalleryPacker/gallerypack
 common/include/revision.h
 external/tools/*
 !external/tools/*.cpp

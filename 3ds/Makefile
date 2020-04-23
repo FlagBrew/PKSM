@@ -107,7 +107,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx
-PACKER			:=	../common/EventsGalleryPacker
+PACKER			:=	../external/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
 
@@ -264,9 +264,9 @@ all: deps no-deps
 deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
 ifeq ($(OS),Windows_NT)
-	@cd $(PACKER) && py -3 packer.py
+	@cd $(PACKER) && py -3 pack.py
 else
-	@cd $(PACKER) && python3 packer.py
+	@cd $(PACKER) && python3 pack.py
 endif
 	@cd $(PACKER) && cp out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
 ifeq ($(OS),Windows_NT)
