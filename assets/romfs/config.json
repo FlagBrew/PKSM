@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "language": 2,
   "autoBackup": true,
   "transferEdit": true,
@@ -16,7 +16,8 @@
   "useSaveInfo": false,
   "randomMusic": false,
   "showBackups": false,
-  "legalEndpoint": "https://flagbrew.org/pksm/legality/check",
+  "apiUrl": "",
+  "useApiUrl": false,
   "patronCode": "",
   "alphaChannel": false,
   "autoUpdate": true

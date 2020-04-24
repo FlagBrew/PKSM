@@ -184,6 +184,12 @@ Configuration::Configuration()
                 (*mJson)["defaults"].erase("country");
                 (*mJson)["defaults"].erase("region");
             }
+            if ((*mJson)["version"].get<int>() < 10)
+            {
+                mJson->erase("legalEndpoint");
+                (*mJson)["apiUrl"]    = "";
+                (*mJson)["useApiUrl"] = false;
+            }
 
             (*mJson)["version"] = CURRENT_VERSION;
             save();
@@ -201,7 +207,8 @@ Configuration::Configuration()
             !(mJson->contains("useSaveInfo") && (*mJson)["useSaveInfo"].is_boolean()) ||
             !(mJson->contains("randomMusic") && (*mJson)["randomMusic"].is_boolean()) ||
             !(mJson->contains("showBackups") && (*mJson)["showBackups"].is_boolean()) ||
-            !(mJson->contains("legalEndpoint") && (*mJson)["legalEndpoint"].is_string()) ||
+            !(mJson->contains("apiUrl") && (*mJson)["apiUrl"].is_string()) ||
+            !(mJson->contains("useApiUrl") && (*mJson)["useApiUrl"].is_boolean()) ||
             !(mJson->contains("patronCode") && (*mJson)["patronCode"].is_string()) ||
             !(mJson->contains("alphaChannel") && (*mJson)["alphaChannel"].is_boolean()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
@@ -390,9 +397,14 @@ bool Configuration::showBackups(void) const
     return (*mJson)["showBackups"];
 }
 
-std::string Configuration::legalEndpoint(void) const
+std::string Configuration::apiUrl(void) const
 {
-    return (*mJson)["legalEndpoint"];
+    return (*mJson)["apiUrl"];
+}
+
+bool Configuration::useApiUrl(void) const
+{
+    return (*mJson)["useApiUrl"];
 }
 
 std::string Configuration::patronCode(void) const
@@ -465,9 +477,14 @@ void Configuration::showBackups(bool value)
     (*mJson)["showBackups"] = value;
 }
 
-void Configuration::legalEndpoint(const std::string& value)
+void Configuration::apiUrl(const std::string& value)
 {
-    (*mJson)["legalEndpoint"] = value;
+    (*mJson)["apiUrl"] = value;
+}
+
+void Configuration::useApiUrl(bool value)
+{
+    (*mJson)["useApiUrl"] = value;
 }
 
 void Configuration::patronCode(const std::string& value)

@@ -46,8 +46,9 @@ public:
 
 private:
     std::vector<std::unique_ptr<ToggleButton>> tabs;
-    std::array<std::vector<std::unique_ptr<Button>>, 4> tabButtons;
+    std::array<std::vector<std::unique_ptr<Button>>, 5> tabButtons;
     std::bitset<4> patronMenu;
+    std::bitset<9> debugMenu;
     void back(void);
     void initButtons(void);
     int patronMenuTimer;

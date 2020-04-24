@@ -817,14 +817,12 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("Gui::init failed.", res);
 
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
+    moveIcon.clear();
     i18n::init(Configuration::getInstance().language());
 
     continueI18N.test_and_set();
     Threads::create(i18nThread, nullptr, 16 * 1024);
     PkmUtils::initDefaults();
-
-    moveIcon.clear();
-    Configuration::getInstance();
 
     if (!assetsMatch())
     {

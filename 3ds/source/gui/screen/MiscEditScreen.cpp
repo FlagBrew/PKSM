@@ -686,8 +686,10 @@ void MiscEditScreen::validate()
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, generation.c_str());
 
+    std::string url = Configuration::getInstance().useApiUrl() ? Configuration::getInstance().apiUrl() : "https://flagbrew.org/";
+
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/pksm/legality/check", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "pksm/legality/check", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

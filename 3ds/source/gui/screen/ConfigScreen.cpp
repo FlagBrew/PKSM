@@ -97,6 +97,22 @@ namespace
         }
     }
 
+    void inputApiUrl()
+    {
+        SwkbdState state;
+        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 29);
+        swkbdSetHintText(&state, "API Url");
+        swkbdSetInitialText(&state, "");
+        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+        char input[88]  = {0};
+        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+        input[87]       = '\0';
+        if (ret == SWKBD_BUTTON_CONFIRM)
+        {
+            Configuration::getInstance().apiUrl(input);
+        }
+    }
+
     u8 getNextAlpha(int off)
     {
         static u8 retVals[14] = {190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
@@ -432,6 +448,18 @@ void ConfigScreen::initButtons()
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[4].push_back(std::make_unique<ClickButton>(247, 87, 15, 12,
+        [this]() {
+            inputApiUrl();
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[4].push_back(std::make_unique<ClickButton>(247, 111, 15, 12,
+        [this]() {
+            Configuration::getInstance().useApiUrl(!Configuration::getInstance().alphaChannel());
+            return true;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void ConfigScreen::drawBottom() const
@@ -585,10 +613,26 @@ void ConfigScreen::drawBottom() const
         Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
     }
+    else if (currentTab == 4)
+    {
+        Gui::text("Debug", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
+        Gui::text("URL", 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+
+        for (auto& button : tabButtons[currentTab])
+        {
+            button->draw();
+        }
+
+        Gui::text(Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+    }
 }
 
 void ConfigScreen::update(touchPosition* touch)
 {
+    u32 kDown = hidKeysDown();
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -600,9 +644,87 @@ void ConfigScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    if (hidKeysDown() & KEY_B)
+    if (kDown & KEY_B)
     {
         back();
+        return;
+    }
+    else if (kDown & KEY_UP)
+    {
+        if (debugMenu[0])
+        {
+            debugMenu.set(1);
+        }
+        else if (!debugMenu[1])
+        {
+            debugMenu.set(0);
+        }
+        else
+        {
+            debugMenu.reset();
+        }
+    }
+    else if (kDown & KEY_DOWN)
+    {
+        if (debugMenu[2])
+        {
+            debugMenu.set(3);
+        }
+        else if (!debugMenu[3] && debugMenu[1])
+        {
+            debugMenu.set(2);
+        }
+        else
+        {
+            debugMenu.reset();
+        }
+    }
+    else if (kDown & KEY_LEFT)
+    {
+        if (debugMenu[5])
+        {
+            debugMenu.set(6);
+        }
+        else if (!debugMenu[5] && debugMenu[3])
+        {
+            debugMenu.set(4);
+        }
+        else
+        {
+            debugMenu.reset();
+        }
+    }
+    else if (kDown & KEY_RIGHT)
+    {
+        if (debugMenu[6])
+        {
+            debugMenu.set(7);
+        }
+        else if (!debugMenu[6] && debugMenu[4])
+        {
+            debugMenu.set(5);
+        }
+        else
+        {
+            debugMenu.reset();
+        }
+    }
+    else if (kDown & KEY_A)
+    {
+        if (debugMenu[7])
+        {
+            debugMenu.set(8);
+        }
+        else
+        {
+            debugMenu.reset();
+        }
+    }
+
+    if (debugMenu[8])
+    {
+        debugMenu.reset();
+        currentTab = 4;
         return;
     }
 

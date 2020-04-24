@@ -91,8 +91,10 @@ void LegalInfoScreen::attemptLegalization()
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());
 
+    std::string url = Configuration::getInstance().useApiUrl() ? Configuration::getInstance().apiUrl() : "https://flagbrew.org/";
+
     std::string writeData;
-    if (auto fetch = Fetch::init("https://flagbrew.org/api/v1/bot/auto_legality", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "api/v1/bot/auto_legality", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

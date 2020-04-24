@@ -36,7 +36,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 9;
+    static constexpr int CURRENT_VERSION = 10;
 
     static Configuration& getInstance(void)
     {
@@ -87,7 +87,9 @@ public:
 
     bool showBackups(void) const;
 
-    std::string legalEndpoint(void) const;
+    std::string apiUrl(void) const;
+
+    bool useApiUrl(void) const;
 
     std::string patronCode(void) const;
 
@@ -122,7 +124,9 @@ public:
 
     void showBackups(bool value);
 
-    void legalEndpoint(const std::string& value);
+    void apiUrl(const std::string& value);
+
+    void useApiUrl(bool value);
 
     void patronCode(const std::string& value);
 
