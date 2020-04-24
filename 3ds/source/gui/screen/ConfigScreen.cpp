@@ -456,7 +456,7 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[4].push_back(std::make_unique<ClickButton>(247, 111, 15, 12,
         [this]() {
-            Configuration::getInstance().useApiUrl(!Configuration::getInstance().alphaChannel());
+            Configuration::getInstance().useApiUrl(!Configuration::getInstance().useApiUrl());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
