@@ -393,7 +393,7 @@ void InjectorScreen::drawTop() const
                 TextPosY::TOP);
             std::string text = wondercard->otName();
             u16 tid = wondercard->TID(), sid = wondercard->SID();
-            if (text == i18n::localize("YOUR_OT_NAME") || text == "")
+            if (text.empty())
             {
                 text = TitleLoader::save->otName();
                 tid  = TitleLoader::save->TID();
