@@ -50,6 +50,8 @@ endif
 FORMATSOURCES	:=	../common/source \
 					../common/source/gui \
 					../common/source/io \
+					../common/source/picoc \
+					../common/source/picoc/cstdlib \
 					../common/source/sound \
 					../common/source/sound/decoder \
 					../common/source/utils \
@@ -64,9 +66,6 @@ FORMATSOURCES	:=	../common/source \
 					source/titles \
 					source/utils
 SOURCES			:=	$(FORMATSOURCES) \
-					../common/source/picoc \
-					../common/source/picoc/cstdlib \
-					../common/source/picoc/platform \
 					../common/source/quirc \
 					../core/memecrypto \
 					../core/source/i18n \
@@ -75,7 +74,9 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/source/sav \
 					../core/source/utils \
 					../core/source/wcx \
-					../core/swshcrypto
+					../core/swshcrypto \
+					../external/picoc/source/interpreter
+
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
@@ -103,7 +104,9 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/utils \
 					../core/include/wcx \
 					../core/memecrypto \
-					../core/swshcrypto
+					../core/swshcrypto \
+					../external/picoc/include
+
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(ROMFS)/gfx

@@ -87,7 +87,7 @@ namespace
     Picoc* picoC()
     {
         static Picoc picoc;
-        PicocInitialise(&picoc, PICOC_STACKSIZE);
+        PicocInitialize(&picoc, PICOC_STACKSIZE);
         return &picoc;
     }
 

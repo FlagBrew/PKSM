@@ -1,38 +1,62 @@
-#include "picoc.h"
 #include "interpreter.h"
+#include "picoc.h"
 
-/* mark where to end the program for platforms which require this */
-jmp_buf PicocExitBuf;
+#ifdef USE_READLINE
+#include <readline/history.h>
+#include <readline/readline.h>
+#endif
 
-#ifndef NO_DEBUGGER
+#ifdef DEBUGGER
+static int gEnableDebugger = true;
+#else
+static int gEnableDebugger = false;
+#endif
+
+#ifdef DEBUGGER
 #include <signal.h>
 
-Picoc *break_pc = NULL;
+Picoc* break_pc = NULL;
 
 static void BreakHandler(int Signal)
 {
-    break_pc->DebugManualBreak = TRUE;
+    break_pc->DebugManualBreak = true;
 }
 
-void PlatformInit(Picoc *pc)
+void PlatformInit(Picoc* pc)
 {
     /* capture the break signal and pass it to the debugger */
     break_pc = pc;
     signal(SIGINT, BreakHandler);
 }
 #else
-void PlatformInit(Picoc *pc)
-{
-}
+void PlatformInit(Picoc* pc) {}
 #endif
 
-void PlatformCleanup(Picoc *pc)
-{
-}
+void PlatformCleanup(Picoc* pc) {}
 
 /* get a line of interactive input */
-char *PlatformGetLine(char *Buf, int MaxLen, const char *Prompt)
+char* PlatformGetLine(char* Buf, int MaxLen, const char* Prompt)
 {
+#ifdef USE_READLINE
+    if (Prompt != NULL)
+    {
+        /* use GNU readline to read the line */
+        char* InLine = readline(Prompt);
+        if (InLine == NULL)
+            return NULL;
+
+        Buf[MaxLen - 1] = '\0';
+        strncpy(Buf, InLine, MaxLen - 2);
+        strncat(Buf, "\n", MaxLen - 2);
+
+        if (InLine[0] != '\0')
+            add_history(InLine);
+
+        free(InLine);
+        return Buf;
+    }
+#endif
+
     if (Prompt != NULL)
         printf("%s", Prompt);
 
@@ -48,19 +72,19 @@ int PlatformGetCharacter()
 }
 
 /* write a character to the console */
-void PlatformPutc(unsigned char OutCh, union OutputStreamInfo *Stream)
+void PlatformPutc(unsigned char OutCh, union OutputStreamInfo* Stream)
 {
     putchar(OutCh);
 }
 
 /* read a file into memory */
-char *PlatformReadFile(Picoc *pc, const char *FileName)
+char* PlatformReadFile(Picoc* pc, const char* FileName)
 {
     struct stat FileInfo;
-    char *ReadText;
-    FILE *InFile;
+    char* ReadText;
+    FILE* InFile;
     int BytesRead;
-    char *p;
+    char* p;
 
     if (stat(FileName, &FileInfo))
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
@@ -82,7 +106,7 @@ char *PlatformReadFile(Picoc *pc, const char *FileName)
 
     if ((ReadText[0] == '#') && (ReadText[1] == '!'))
     {
-        for (p = ReadText; (*p != '\r') && (*p != '\n'); ++p)
+        for (p = ReadText; (*p != '\0') && (*p != '\r') && (*p != '\n'); ++p)
         {
             *p = ' ';
         }
@@ -92,9 +116,9 @@ char *PlatformReadFile(Picoc *pc, const char *FileName)
 }
 
 /* read and scan a file for definitions */
-void PicocPlatformScanFile(Picoc *pc, const char *FileName)
+void PicocPlatformScanFile(Picoc* pc, const char* FileName)
 {
-    char *SourceStr = PlatformReadFile(pc, FileName);
+    char* SourceStr = PlatformReadFile(pc, FileName);
 
     /* ignore "#!/path/to/picoc" .. by replacing the "#!" with "//" */
     if (SourceStr != NULL && SourceStr[0] == '#' && SourceStr[1] == '!')
@@ -103,13 +127,12 @@ void PicocPlatformScanFile(Picoc *pc, const char *FileName)
         SourceStr[1] = '/';
     }
 
-    PicocParse(pc, FileName, SourceStr, strlen(SourceStr), TRUE, FALSE, TRUE, TRUE);
+    PicocParse(pc, FileName, SourceStr, strlen(SourceStr), true, false, true, gEnableDebugger);
 }
 
 /* exit the program */
-void PlatformExit(Picoc *pc, int RetVal)
+void PlatformExit(Picoc* pc, int RetVal)
 {
     pc->PicocExitValue = RetVal;
     longjmp(pc->PicocExitBuf, 1);
 }
-
