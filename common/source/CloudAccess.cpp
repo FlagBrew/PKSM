@@ -229,7 +229,8 @@ bool CloudAccess::nextPage()
 {
     while (!next->available)
     {
-        usleep(100);
+        constexpr timespec sleepTime = {0, 100000};
+        nanosleep(&sleepTime, nullptr);
     }
     if (!next->data || next->data->is_discarded())
     {
@@ -259,7 +260,8 @@ bool CloudAccess::prevPage()
 {
     while (!prev->available)
     {
-        usleep(100);
+        constexpr timespec sleepTime = {0, 100000};
+        nanosleep(&sleepTime, nullptr);
     }
     if (!prev->data || prev->data->is_discarded())
     {

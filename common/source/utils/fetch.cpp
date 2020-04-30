@@ -152,14 +152,14 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
 
 void Fetch::multiMainThread(void*)
 {
-    int lastActive = INT_MIN;
+    int trash;
     while (multiThreadInfo)
     {
         CURLMcode mc;
         int active;
 
         __lock_acquire(multiHandleMutex);
-        mc = curl_multi_perform(multiHandle, &active);
+        mc = curl_multi_perform(multiHandle, &trash);
         __lock_release(multiHandleMutex);
         if (mc == CURLM_OK)
         {
@@ -169,39 +169,34 @@ void Fetch::multiMainThread(void*)
             __lock_release(multiHandleMutex);
             if (numFDs == 0)
             {
-                usleep(1000);
+                constexpr timespec sleepTime = {0, 1000000};
+                nanosleep(&sleepTime, nullptr);
             }
         }
 
-        if (active < lastActive)
+        __lock_acquire(multiHandleMutex);
+        auto msg = curl_multi_info_read(multiHandle, &trash);
+        while (msg != nullptr)
         {
-            int msgs;
-            __lock_acquire(multiHandleMutex);
-            auto msg = curl_multi_info_read(multiHandle, &msgs);
-            while (msg != nullptr)
+            // Find the done handle
+            __lock_acquire(fetchesMutex);
+            auto it = std::find_if(
+                fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) { return record.fetch->curl.get() == msg->easy_handle; });
+            // And delete it
+            if (it != fetches.end())
             {
-                // Find the done handle
-                __lock_acquire(fetchesMutex);
-                auto it = std::find_if(
-                    fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) { return record.fetch->curl.get() == msg->easy_handle; });
-                // And delete it
-                if (it != fetches.end())
+                if (it->function)
                 {
-                    if (it->function)
-                    {
-                        it->function(msg->data.result, it->fetch);
-                    }
-                    curl_multi_remove_handle(multiHandle, it->fetch->curl.get());
-                    fetches.erase(it);
+                    it->function(msg->data.result, it->fetch);
                 }
-                __lock_release(fetchesMutex);
-
-                msg = curl_multi_info_read(multiHandle, &msgs);
+                curl_multi_remove_handle(multiHandle, it->fetch->curl.get());
+                fetches.erase(it);
             }
-            __lock_release(multiHandleMutex);
-        }
+            __lock_release(fetchesMutex);
 
-        lastActive = active;
+            msg = curl_multi_info_read(multiHandle, &trash);
+        }
+        __lock_release(multiHandleMutex);
 
         // Terrible things have happened, but I don't know what to do
     }
@@ -231,7 +226,8 @@ void Fetch::exitMulti()
     {
         while (!multiThreadInfo) // Wait for it to be done
         {
-            usleep(100);
+            constexpr timespec sleepTime = {0, 100000};
+            nanosleep(&sleepTime, nullptr);
         }
         // And finally clean up
         __lock_acquire(fetchesMutex);
@@ -288,7 +284,8 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
 
         while (wait.test_and_set())
         {
-            usleep(100);
+            constexpr timespec sleepTime = {0, 100000};
+            nanosleep(&sleepTime, nullptr);
         }
 
         return cres;
