@@ -805,6 +805,11 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("socInit failed.", -1);
     }
 
+    if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
+    {
+        return consoleDisplayError("cURL init falied", (Result) code);
+    }
+
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
@@ -858,7 +863,7 @@ Result App::init(const std::string& execPath)
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create(cartScan, nullptr, 16 * 256);
+    Threads::create(cartScan, nullptr);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
@@ -875,6 +880,7 @@ Result App::exit(void)
     TitleLoader::exit();
     Gui::exit();
     Fetch::exitMulti();
+    curl_global_cleanup();
     socExit();
     acExit();
     doCartScan.clear();
