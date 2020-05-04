@@ -614,12 +614,11 @@ void TitleLoader::saveChanges()
 
 std::string TitleLoader::savePath()
 {
-    std::string savePath;
     if (saveIsFile)
     {
-        savePath = saveFileName;
+        return savePath;
     }
-    return savePath;
+    return "";
 }
 
 void TitleLoader::exit()
