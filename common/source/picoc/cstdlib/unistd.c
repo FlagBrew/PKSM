@@ -271,6 +271,11 @@ void UnistdRmdir(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     ReturnValue->Val->Integer = rmdir(Param[0]->Val->Pointer);
 }
 
+void UnistdMkdir(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->Integer = mkdir(Param[0]->Val->Pointer, Param[1]->Val->Integer);
+}
+
 void UnistdSbrk(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Pointer = sbrk(Param[0]->Val->Integer);
@@ -400,6 +405,7 @@ typedef int size_t; \
 typedef int ssize_t; \
 typedef int useconds_t;\
 typedef int intptr_t;\
+typedef int mode_t;\
 ";
 
 /* all unistd.h functions */
@@ -459,7 +465,7 @@ struct LibraryFunction UnistdFunctions[] = {{UnistdAccess, "int access(char *, i
     /*    { UnistdPwrite,        "ssize_t pwrite(int, void *, size_t, off_t);" }, */
     {UnistdRead, "ssize_t read(int, void *, size_t);"},
     /*    { UnistdReadlink,      "int readlink(char *, char *, size_t);" }, */
-    {UnistdRmdir, "int rmdir(char *);"}, {UnistdSbrk, "void *sbrk(intptr_t);"},
+    {UnistdRmdir, "int rmdir(char *);"}, {UnistdMkdir, "int mkdir(char *, mode_t);"}, {UnistdSbrk, "void *sbrk(intptr_t);"},
     /*    { UnistdSetgid,        "int setgid(gid_t);" }, */
     /*    { UnistdSetpgid,       "int setpgid(pid_t, pid_t);" }, */
     /*    { UnistdSetpgrp,       "pid_t setpgrp(void);" }, */
