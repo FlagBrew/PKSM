@@ -616,7 +616,7 @@ std::string TitleLoader::savePath()
 {
     if (saveIsFile)
     {
-        return savePath;
+        return saveFileName;
     }
     return "";
 }
