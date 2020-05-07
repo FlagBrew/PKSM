@@ -448,7 +448,7 @@ namespace TextParse
         for (auto& glyph : glyphs)
         {
             C2D_PlainImageTint(&tint, colorToFormat(glyph.color), 1.0f);
-            // The one exception to using Gui::drawImageAt: we want to control depth here
+            // The one exception to using Gui::drawImageAt: we want to control depth here, and not cause a pretty infinite loop of death
             C2D_DrawImageAt({glyph.glyph.tex, &glyph.glyph.subtex}, glyph.x, glyph.y, glyph.z, &tint, glyph.sizeX, glyph.sizeY);
         }
     }

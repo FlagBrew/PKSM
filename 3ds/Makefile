@@ -252,7 +252,7 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all clean deps no-deps format
+.PHONY: all deps clean spotless no-deps format cppcheck cppclean
 
 check_defined = \
     $(strip $(foreach 1,$1, \

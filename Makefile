@@ -51,4 +51,4 @@ cppcheck:
 cppclean:
 	$(MAKE) -C 3ds cppclean
 
-.PHONY: revision 3ds-debug 3ds-release docs clean format cppcheck release debug
+.PHONY: debug release revision 3ds-debug no-deps 3ds-release docs clean spotless format cppcheck cppclean
