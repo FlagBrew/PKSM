@@ -30,13 +30,11 @@
 #include "CloudScreen.hpp"
 #include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
 #include "FilterScreen.hpp"
 #include "PK7.hpp"
 #include "PKFilter.hpp"
 #include "QRScanner.hpp"
 #include "Sav.hpp"
-#include "archive.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
@@ -731,18 +729,18 @@ bool GroupCloudScreen::dumpPkm()
             }
             else
             {
-                path += " - " + std::to_string(size_t(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
+                path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
                         fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-                FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
-                if (out.good())
+                FILE* out = fopen(path.c_str(), "wb");
+                if (out)
                 {
-                    out.write(dumpMon->rawData(), dumpMon->getLength());
+                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+                    fclose(out);
                 }
                 else
                 {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
                 }
-                out.close();
             }
             return true;
         }

@@ -25,13 +25,12 @@
  */
 
 #include "loader.hpp"
+#include "Archive.hpp"
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "FSStream.hpp"
 #include "Sav.hpp"
 #include "Title.hpp"
-#include "archive.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
@@ -176,14 +175,22 @@ namespace
     {
         if (directories.count(dir) == 0)
         {
-            directories.emplace(dir, std::make_shared<Directory>(Archive::sd(), dir));
+            std::shared_ptr<Directory> d = Archive::sd().directory(dir);
+            if (d)
+            {
+                directories.emplace(dir, d);
+            }
         }
         else
         {
             // Attempt to re-read directory
             if (!directories[dir]->loaded())
             {
-                directories[dir] = std::make_shared<Directory>(Archive::sd(), dir);
+                std::shared_ptr<Directory> d = Archive::sd().directory(dir);
+                if (d)
+                {
+                    directories[dir] = d;
+                }
             }
         }
         std::vector<std::string> ret;
@@ -197,16 +204,19 @@ namespace
                     std::u16string fileName = directory->item(j);
                     if (fileName.substr(0, id.size()) == id)
                     {
-                        Directory subdir(Archive::sd(), dir + u"/" + fileName);
-                        for (size_t k = 0; k < subdir.count(); k++)
+                        auto subdir = Archive::sd().directory(dir + u"/" + fileName);
+                        if (subdir)
                         {
-                            if (subdir.folder(k))
+                            for (size_t k = 0; k < subdir->count(); k++)
                             {
-                                std::string savePath =
-                                    StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir.item(k) + u"/") + idToSaveName(id);
-                                if (io::exists(savePath))
+                                if (subdir->folder(k))
                                 {
-                                    ret.emplace_back(savePath);
+                                    std::string savePath =
+                                        StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir->item(k) + u"/") + idToSaveName(id);
+                                    if (io::exists(savePath))
+                                    {
+                                        ret.emplace_back(savePath);
+                                    }
                                 }
                             }
                         }
@@ -353,11 +363,12 @@ void TitleLoader::backupSave(const std::string& id)
         fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
     path += idToSaveName(id);
-    FSStream out = FSStream(Archive::sd(), path, FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
-    if (out.good())
+    FILE* out = fopen(path.c_str(), "wb");
+    if (out)
     {
         TitleLoader::save->finishEditing();
-        out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), out);
+        fclose(out);
         TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
         {
@@ -368,7 +379,6 @@ void TitleLoader::backupSave(const std::string& id)
     {
         Gui::warn(i18n::localize("BAD_OPEN_BACKUP"));
     }
-    out.close();
 }
 
 bool TitleLoader::load(std::shared_ptr<u8[]> data, size_t size)
@@ -383,16 +393,30 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
     loadedTitle = title;
     if (title->mediaType() == FS_MediaType::MEDIATYPE_SD || title->cardType() == FS_CardType::CARD_CTR)
     {
-        FS_Archive archive;
-        Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
-        FSStream in(archive, u"/main", FS_OPEN_READ);
-        if (in.good())
+        Archive archive;
+        std::unique_ptr<File> in;
+        if (title->gba())
         {
-            std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[in.size()]);
-            in.read(data.get(), in.size());
-            save = Sav::getSave(data, in.size());
-            in.close();
-            FSUSER_CloseArchive(archive);
+            archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
+            constexpr u32 pathData[5] = {
+                1,   // Save data
+                1,   // TMD content index
+                3,   // Type: save data?
+                0, 0 // No EXEFS file name needed
+            };
+            in = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
+        }
+        else
+        {
+            archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
+            in      = archive.file(u"/main", FS_OPEN_READ);
+        }
+        if (in)
+        {
+            std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[in->size()]);
+            in->read(data.get(), in->size());
+            save = Sav::getSave(data, in->size());
+            in->close();
             if (Configuration::getInstance().autoBackup())
             {
                 backupSave(title->checkpointPrefix());
@@ -401,12 +425,11 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
         else
         {
-            Gui::error(i18n::localize("BAD_OPEN_SAVE"), in.result());
-            in.close();
+            Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
             loadedTitle = nullptr;
-            FSUSER_CloseArchive(archive);
             return false;
         }
+        archive.close();
     }
     else
     {
@@ -441,32 +464,33 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     saveIsFile   = true;
     saveFileName = savePath;
     loadedTitle  = title;
-    FSStream in(Archive::sd(), StringUtils::UTF8toUTF16(savePath), FS_OPEN_READ);
+    FILE* in     = fopen(savePath.c_str(), "rb");
     u32 size;
     std::shared_ptr<u8[]> saveData = nullptr;
-    if (in.good())
+    if (in)
     {
-        size = in.size();
+        fseek(in, 0, SEEK_END);
+        u32 size = ftell(in);
+        rewind(in);
         if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
         {
-            Gui::error(i18n::localize("WRONG_SIZE"), in.size());
+            Gui::error(i18n::localize("WRONG_SIZE"), size);
             loadedTitle  = nullptr;
             saveFileName = "";
-            in.close();
+            fclose(in);
             return false;
         }
         saveData = std::shared_ptr<u8[]>(new u8[size]);
-        in.read(saveData.get(), size);
+        fread(saveData.get(), 1, size, in);
+        fclose(in);
     }
     else
     {
-        Gui::error(i18n::localize("BAD_OPEN_SAVE"), in.result());
+        Gui::error(i18n::localize("BAD_OPEN_SAVE"), errno);
         loadedTitle  = nullptr;
         saveFileName = "";
-        in.close();
         return false;
     }
-    in.close();
     save = Sav::getSave(saveData, size);
     if (!save)
     {
@@ -512,26 +536,42 @@ void TitleLoader::saveToTitle(bool ask)
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
-                FS_Archive archive;
-                Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
-                FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->getLength());
-                if (out.good())
+                Archive archive;
+                std::unique_ptr<File> out;
+                if (title->gba())
                 {
-                    out.write(save->rawData().get(), save->getLength());
-                    if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
-                    {
-                        out.close();
-                        FSUSER_CloseArchive(archive);
-                        Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
-                        return;
-                    }
+                    archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
+                    constexpr u32 pathData[5] = {
+                        1,   // Save data
+                        1,   // TMD content index
+                        3,   // Type: save data?
+                        0, 0 // No EXEFS file name needed
+                    };
+                    out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
                 }
                 else
                 {
-                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), out.result());
+                    archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
+                    out     = archive.file(u"/main", FS_OPEN_READ);
                 }
-                out.close();
-                FSUSER_CloseArchive(archive);
+
+                if (out)
+                {
+                    out->write(save->rawData().get(), save->getLength());
+                    if (R_FAILED(res = archive.commit()))
+                    {
+                        out->close();
+                        archive.close();
+                        Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
+                        return;
+                    }
+                    out->close();
+                    archive.close();
+                }
+                else
+                {
+                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
+                }
             }
             else
             {
@@ -556,26 +596,42 @@ void TitleLoader::saveToTitle(bool ask)
                 if (title == loadedTitle &&
                     (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                 {
-                    FS_Archive archive;
-                    Archive::save(&archive, title->mediaType(), title->lowId(), title->highId());
-                    FSStream out(archive, u"/main", FS_OPEN_WRITE | FS_OPEN_CREATE, save->getLength());
-                    if (out.good())
+                    Archive archive;
+                    std::unique_ptr<File> out;
+                    if (title->gba())
                     {
-                        out.write(save->rawData().get(), save->getLength());
-                        if (R_FAILED(res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0)))
-                        {
-                            out.close();
-                            FSUSER_CloseArchive(archive);
-                            Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
-                            return;
-                        }
+                        archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
+                        constexpr u32 pathData[5] = {
+                            1,   // Save data
+                            1,   // TMD content index
+                            3,   // Type: save data?
+                            0, 0 // No EXEFS file name needed
+                        };
+                        out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
                     }
                     else
                     {
-                        Gui::error(i18n::localize("BAD_OPEN_SAVE"), out.result());
+                        archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
+                        out     = archive.file(u"/main", FS_OPEN_READ);
                     }
-                    out.close();
-                    FSUSER_CloseArchive(archive);
+
+                    if (out)
+                    {
+                        out->write(save->rawData().get(), save->getLength());
+                        if (R_FAILED(res = archive.commit()))
+                        {
+                            out->close();
+                            archive.close();
+                            Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
+                            return;
+                        }
+                        out->close();
+                        archive.close();
+                    }
+                    else
+                    {
+                        Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
+                    }
                     break; // There can only be one match
                 }
             }
@@ -596,10 +652,12 @@ void TitleLoader::saveChanges()
     save->finishEditing();
     if (saveIsFile)
     {
-        // No need to check size; if it was read successfully, that means that it has the correct size
-        FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(saveFileName), FS_OPEN_WRITE);
-        out.write(save->rawData().get(), save->getLength());
-        out.close();
+        FILE* out = fopen(saveFileName.c_str(), "wb");
+        if (out)
+        {
+            fwrite(save->rawData().get(), 1, save->getLength(), out);
+            fclose(out);
+        }
         if (Configuration::getInstance().writeFileSave())
         {
             saveToTitle(true);

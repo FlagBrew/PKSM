@@ -25,26 +25,25 @@
  */
 
 #include "Configuration.hpp"
-#include "FSStream.hpp"
-#include "archive.hpp"
+#include "Archive.hpp"
 #include "gui.hpp"
 #include "nlohmann/json.hpp"
 
 Configuration::Configuration()
 {
-    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_READ);
+    auto stream = Archive::data().file(u"/config.json", FS_OPEN_READ);
 
-    if (R_FAILED(stream.result()))
+    if (!stream)
     {
         loadFromRomfs();
     }
     else
     {
-        oldSize           = stream.size();
+        oldSize           = stream->size();
         char* jsonData    = new char[oldSize + 1];
         jsonData[oldSize] = '\0';
-        stream.read(jsonData, oldSize);
-        stream.close();
+        stream->read(jsonData, oldSize);
+        stream->close();
         mJson = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
         delete[] jsonData;
 
@@ -263,12 +262,16 @@ void Configuration::save()
 
     if (oldSize != size)
     {
-        Archive::deleteFile(Archive::data(), "/config.json");
+        Archive::data().deleteFile("/config.json");
     }
 
-    FSStream stream(Archive::data(), u"/config.json", FS_OPEN_WRITE, oldSize = size);
-    stream.write(writeData.data(), size);
-    stream.close();
+    Archive::data().createFile(u"/config.json", 0, oldSize = size);
+    auto stream = Archive::data().file(u"/config.json", FS_OPEN_WRITE, oldSize = size);
+    if (stream)
+    {
+        stream->write(writeData.data(), size);
+        stream->close();
+    }
 }
 
 std::vector<std::string> Configuration::extraSaves(const std::string& id) const

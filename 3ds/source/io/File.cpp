@@ -24,72 +24,54 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "FSStream.hpp"
+#include "File.hpp"
+#include "internal_fspxi.hpp"
 
-FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags)
+File::File(Handle handle) : mHandle(handle)
 {
-    mGood   = false;
-    mSize   = 0;
-    mOffset = 0;
+    mResult = FSFILE_GetSize(handle, &mSize);
+}
 
-    mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-    if (R_SUCCEEDED(mResult))
+File::File(FSPXI_File handle) : mHandle(handle)
+{
+    mResult = FSPXI_GetFileSize(fspxiHandle, handle, &mSize);
+}
+
+Result File::close(void)
+{
+    switch (mHandle.index())
     {
-        FSFILE_GetSize(mHandle, &mSize);
-        mGood = true;
+        case 0:
+            return mResult = FSFILE_Close(std::get<0>(mHandle));
+        case 1:
+            return mResult = FSPXI_CloseFile(fspxiHandle, std::get<1>(mHandle));
     }
+    return -1; // Cannot happen
 }
 
-FSStream::FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size)
-{
-    mGood   = false;
-    mSize   = size;
-    mOffset = 0;
-
-    mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-    if (R_FAILED(mResult))
-    {
-        mResult = FSUSER_CreateFile(archive, fsMakePath(PATH_UTF16, path.data()), 0, mSize);
-        if (R_SUCCEEDED(mResult))
-        {
-            mResult = FSUSER_OpenFile(&mHandle, archive, fsMakePath(PATH_UTF16, path.data()), flags, 0);
-            if (R_SUCCEEDED(mResult))
-            {
-                mGood = true;
-            }
-        }
-    }
-    else
-    {
-        mGood = true;
-    }
-}
-
-Result FSStream::close(void)
-{
-    mResult = FSFILE_Close(mHandle);
-    return mResult;
-}
-
-bool FSStream::good(void)
-{
-    return mGood;
-}
-
-Result FSStream::result(void)
+Result File::result(void)
 {
     return mResult;
 }
 
-u64 FSStream::size(void)
+u64 File::size(void)
 {
     return mSize;
 }
 
-u32 FSStream::read(void* buf, u32 sz)
+u32 File::read(void* buf, u32 sz)
 {
-    u32 rd  = 0;
-    mResult = FSFILE_Read(mHandle, &rd, mOffset, buf, sz);
+    u32 rd = 0;
+    switch (mHandle.index())
+    {
+        case 0:
+            mResult = FSFILE_Read(std::get<0>(mHandle), &rd, mOffset, buf, sz);
+            break;
+        case 1:
+            mResult = FSPXI_ReadFile(fspxiHandle, std::get<1>(mHandle), &rd, mOffset, buf, sz);
+            break;
+    }
+
     if (R_FAILED(mResult))
     {
         if (rd > sz)
@@ -101,25 +83,33 @@ u32 FSStream::read(void* buf, u32 sz)
     return rd;
 }
 
-u32 FSStream::write(const void* buf, u32 sz)
+u32 File::write(const void* buf, u32 sz)
 {
-    u32 wt  = 0;
-    mResult = FSFILE_Write(mHandle, &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
+    u32 wt = 0;
+    switch (mHandle.index())
+    {
+        case 0:
+            mResult = FSFILE_Write(std::get<0>(mHandle), &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
+            break;
+        case 1:
+            mResult = FSPXI_WriteFile(fspxiHandle, std::get<1>(mHandle), &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
+            break;
+    }
     mOffset += wt;
     return wt;
 }
 
-bool FSStream::eof(void)
+bool File::eof(void)
 {
     return mOffset >= mSize;
 }
 
-u64 FSStream::offset(void)
+u64 File::offset(void)
 {
     return mOffset;
 }
 
-void FSStream::seek(u32 offset, int from)
+void File::seek(u64 offset, int from)
 {
     switch (from)
     {
@@ -137,7 +127,22 @@ void FSStream::seek(u32 offset, int from)
     }
 }
 
-Handle FSStream::getRawHandle(void)
+Handle File::getRawHandle(void)
 {
-    return mHandle;
+    if (mHandle.index() == 0)
+        return std::get<0>(mHandle);
+
+    return 0;
+}
+
+Result File::resize(u64 size)
+{
+    switch (mHandle.index())
+    {
+        case 0:
+            return mResult = FSFILE_SetSize(std::get<0>(mHandle), size);
+        case 1:
+            return mResult = FSPXI_SetFileSize(fspxiHandle, std::get<1>(mHandle), size);
+    }
+    return -1; // Cannot happen
 }

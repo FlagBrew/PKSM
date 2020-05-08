@@ -27,7 +27,6 @@
 #include "InjectSelectorScreen.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
 #include "InjectorScreen.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
@@ -36,7 +35,6 @@
 #include "ToggleButton.hpp"
 #include "WC6.hpp"
 #include "WC7.hpp"
-#include "archive.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -391,16 +389,16 @@ void InjectSelectorScreen::dumpCard(void) const
     mkdir(path.c_str(), 777);
     path += fmt::format(
         FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(), now.minute(), now.second(), wc->ID(), wc->title(), wc->extension());
-    FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, wc->size());
-    if (out.good())
+    FILE* out = fopen(path.c_str(), "wb");
+    if (out)
     {
-        out.write(wc->rawData(), wc->size());
+        fwrite(wc->rawData(), 1, wc->size(), out);
+        fclose(out);
     }
     else
     {
-        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
     }
-    out.close();
 }
 
 bool InjectSelectorScreen::toggleFilter(const std::string& lang)

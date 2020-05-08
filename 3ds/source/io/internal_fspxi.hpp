@@ -24,43 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef TITLE_HPP
-#define TITLE_HPP
+#ifndef INTERNAL_FSPXI_HPP
+#define INTERNAL_FSPXI_HPP
 
-#include "spi.hpp"
 #include <3ds.h>
-#include <algorithm>
-#include <citro2d.h>
-#include <string>
 
-class Title
-{
-public:
-    Title(void) = default;
-    ~Title(void);
-
-    bool load(u64 id, FS_MediaType mediaType, FS_CardType cardType);
-    CardType SPICardType(void) const;
-    u32 highId(void) const;
-    u32 lowId(void) const;
-    u64 ID(void) const { return (u64)highId() << 32 | lowId(); }
-    std::string name(void) const;
-    C2D_Image icon(void) const;
-    FS_MediaType mediaType(void) const;
-    FS_CardType cardType(void) const;
-    bool gba(void) const;
-
-    std::string checkpointPrefix(void) const;
-
-private:
-    u64 mId;
-    FS_MediaType mMedia;
-    FS_CardType mCard;
-    CardType mCardType;
-    C2D_Image mIcon;
-    std::string mName;
-    std::string mPrefix;
-    bool mGba;
-};
+inline Handle fspxiHandle = 0;
 
 #endif

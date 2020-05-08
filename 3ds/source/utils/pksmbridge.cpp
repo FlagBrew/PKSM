@@ -26,11 +26,9 @@
 
 #include "Configuration.hpp"
 #include "DateTime.hpp"
-#include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
-#include "archive.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -200,10 +198,10 @@ void backupBridgeChanges()
     DateTime now     = DateTime::now();
     std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak"), now.year(), now.month(), now.day(),
         now.hour(), now.minute(), now.second());
-    FSStream out     = FSStream(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_WRITE | FS_OPEN_CREATE, TitleLoader::save->getLength());
-    if (out.good())
+    FILE* out        = fopen(path.c_str(), "wb");
+    if (out)
     {
-        out.write(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), out);
+        fclose(out);
     }
-    out.close();
 }

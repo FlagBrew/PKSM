@@ -24,43 +24,45 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef FSSTREAM_HPP
-#define FSSTREAM_HPP
+#ifndef FILE_HPP
+#define FILE_HPP
 
 #include "utils.hpp"
 #include <3ds.h>
 #include <string>
+#include <variant>
 
-class FSStream
+class File
 {
+    friend class Archive;
+    File(Handle handle);
+    File(FSPXI_File handle);
+
 public:
-    FSStream(FS_Archive archive, const std::u16string& path, u32 flags);
-    FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size);
-    FSStream(FS_Archive archive, const std::string& path, u32 flags) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags) {}
-    FSStream(FS_Archive archive, const std::string& path, u32 flags, u64 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
-    FSStream(const FSStream& other) = delete;
-    FSStream(FSStream&& other)      = delete;
-    FSStream& operator=(const FSStream& other) = delete;
-    FSStream& operator=(FSStream&& other) = delete;
-    ~FSStream() { close(); }
+    File(const File& other) = delete;
+    File(File&& other)      = delete;
+    File& operator=(const File& other) = delete;
+    File& operator=(File&& other) = delete;
+    ~File() { close(); }
 
     Result close();
     bool eof();
-    bool good();
     u64 offset();
     u32 read(void* buf, u32 size);
     Result result();
     u64 size();
     u32 write(const void* buf, u32 size);
-    void seek(u32 offset, int from);
+    void seek(u64 offset, int from);
+    Result resize(u64 size);
+
+    // Not for general use! Also not guaranteed to work (if it's a PXI file), so definitely don't use often.
     Handle getRawHandle();
 
 private:
-    Handle mHandle;
+    std::variant<Handle, FSPXI_File> mHandle;
     u64 mSize;
     u64 mOffset;
     Result mResult;
-    bool mGood;
 };
 
 #endif

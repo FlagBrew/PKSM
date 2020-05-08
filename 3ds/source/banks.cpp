@@ -25,9 +25,8 @@
  */
 
 #include "banks.hpp"
+#include "Archive.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
-#include "archive.hpp"
 #include "nlohmann/json.hpp"
 
 // Public on purpose: banks being converted need to set their size
@@ -45,19 +44,18 @@ namespace
     Result read()
     {
         std::string path = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
-        FSStream in(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_READ);
-        if (in.good())
+        auto in          = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).file(path, FS_OPEN_READ);
+        if (in)
         {
-            size_t size = in.size();
+            size_t size = in->size();
             char data[size + 1];
-            in.read(data, size);
+            in->read(data, size);
             data[size] = '\0';
-            in.close();
+            in->close();
             g_banks = nlohmann::json::parse(data, nullptr, false);
         }
         else
         {
-            in.close();
             return createJson();
         }
         return 0;
@@ -68,18 +66,19 @@ Result Banks::saveJson()
 {
     std::string jsonData = g_banks.dump(2);
     std::string path     = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
-    Archive::deleteFile(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path);
-    FSStream out(Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd(), path, FS_OPEN_WRITE, jsonData.size());
-    if (out.good())
+    (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).deleteFile(path);
+    (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).createFile(path, 0, jsonData.size());
+    auto out = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).file(path, FS_OPEN_WRITE);
+    if (out)
     {
-        out.write(jsonData.data(), jsonData.size() + 1);
-        out.close();
-        return out.result();
+        out->write(jsonData.data(), jsonData.size() + 1);
+        out->close();
+        return out->result();
     }
     else
     {
-        Result ret = out.result();
-        out.close();
+        Result ret = out->result();
+        out->close();
         return ret;
     }
 }
@@ -146,8 +145,8 @@ void Banks::removeBank(const std::string& name)
         }
         remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
         remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
-        Archive::deleteFile(Archive::data(), "/banks/" + name + ".bnk");
-        Archive::deleteFile(Archive::data(), "/banks/" + name + ".json");
+        Archive::data().deleteFile("/banks/" + name + ".bnk");
+        Archive::data().deleteFile("/banks/" + name + ".json");
         for (auto i = g_banks.begin(); i != g_banks.end(); i++)
         {
             if (i.key() == name)

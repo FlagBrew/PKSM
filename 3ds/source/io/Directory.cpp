@@ -25,40 +25,64 @@
  */
 
 #include "Directory.hpp"
+#include "internal_fspxi.hpp"
 
-Directory::Directory(FS_Archive archive, const std::u16string& root)
+#define DIRECTORY_READ_SIZE 10
+
+Directory::Directory(Handle handle)
 {
     load = false;
     err  = 0;
-    Handle handle;
-
-    list.clear();
-
-    err = FSUSER_OpenDirectory(&handle, archive, fsMakePath(PATH_UTF16, root.c_str()));
-    if (R_FAILED(err))
-    {
-        return;
-    }
 
     u32 result = 0;
+    std::array<FS_DirectoryEntry, DIRECTORY_READ_SIZE> tmp;
     do
     {
-        FS_DirectoryEntry item;
-        err = FSDIR_Read(handle, &result, 1, &item);
-        if (result == 1)
+        err = FSDIR_Read(handle, &result, DIRECTORY_READ_SIZE, tmp.data());
+        if (result > 0)
         {
-            list.push_back(item);
+            list.insert(list.end(), tmp.begin(), tmp.begin() + result);
         }
     } while (result);
 
-    err = FSDIR_Close(handle);
     if (R_FAILED(err))
     {
         list.clear();
-        return;
+    }
+    else
+    {
+        load = true;
     }
 
-    load = true;
+    FSDIR_Close(handle);
+}
+
+Directory::Directory(FSPXI_Directory handle)
+{
+    load = false;
+    err  = 0;
+
+    u32 result = 0;
+    std::array<FS_DirectoryEntry, DIRECTORY_READ_SIZE> tmp;
+    do
+    {
+        err = FSPXI_ReadDirectory(fspxiHandle, handle, &result, DIRECTORY_READ_SIZE, tmp.data());
+        if (result > 0)
+        {
+            list.insert(list.end(), tmp.begin(), tmp.begin() + result);
+        }
+    } while (result);
+
+    if (R_FAILED(err))
+    {
+        list.clear();
+    }
+    else
+    {
+        load = true;
+    }
+
+    FSPXI_CloseDirectory(fspxiHandle, handle);
 }
 
 Result Directory::error(void) const

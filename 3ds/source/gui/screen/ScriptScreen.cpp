@@ -25,12 +25,12 @@
  */
 
 #include "ScriptScreen.hpp"
+#include "Archive.hpp"
 #include "Configuration.hpp"
 #include "Directory.hpp"
 #include "Sav.hpp"
 #include "Sav4.hpp"
 #include "ScrollingTextScreen.hpp"
-#include "archive.hpp"
 #include "banks.hpp"
 #include "endian.hpp"
 #include "gui.hpp"

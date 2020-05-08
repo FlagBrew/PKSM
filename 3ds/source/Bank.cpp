@@ -25,8 +25,8 @@
  */
 
 #include "Bank.hpp"
+#include "Archive.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
 #include "PB7.hpp"
 #include "PK3.hpp"
 #include "PK4.hpp"
@@ -34,7 +34,6 @@
 #include "PK6.hpp"
 #include "PK7.hpp"
 #include "PK8.hpp"
-#include "archive.hpp"
 #include "banks.hpp"
 #include "format.h"
 #include "gui.hpp"
@@ -43,8 +42,8 @@
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second
-#define ARCHIVE Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()
-#define OTHERARCHIVE Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data()
+#define ARCHIVE (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd())
+#define OTHERARCHIVE (Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data())
 
 class BankException : public std::exception
 {
@@ -87,16 +86,16 @@ void Bank::load(int maxBoxes)
     {
         auto paths    = this->paths();
         bool needSave = false;
-        FSStream in(ARCHIVE, BANK(paths), FS_OPEN_READ);
-        if (in.good())
+        auto in       = ARCHIVE.file(BANK(paths), FS_OPEN_READ);
+        if (in)
         {
             Gui::waitFrame(i18n::localize("BANK_LOAD"));
-            u32 size = in.size();
-            in.read((char*)&header, sizeof(BankHeader::MAGIC) + sizeof(BankHeader::version));
+            u32 size = in->size();
+            in->read((char*)&header, sizeof(BankHeader::MAGIC) + sizeof(BankHeader::version));
             if (memcmp(header.MAGIC, BANK_MAGIC.data(), 8))
             {
                 Gui::warn(i18n::localize("BANK_CORRUPT"));
-                in.close();
+                in->close();
                 createBank(maxBoxes);
                 needSave = true;
             }
@@ -122,38 +121,38 @@ void Bank::load(int maxBoxes)
 
                     for (int i = 0; i < boxes() * 30; i++)
                     {
-                        in.read(entries + i, sizeof(G7Entry));
+                        in->read(entries + i, sizeof(G7Entry));
                         std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
-                    in.close();
+                    in->close();
                 }
                 else if (header.version == 2)
                 {
-                    in.read(&header.boxes, sizeof(u32));
+                    in->read(&header.boxes, sizeof(u32));
                     entries        = new BankEntry[boxes() * 30];
                     header.version = BANK_VERSION;
                     needSave       = true;
 
                     for (int i = 0; i < boxes() * 30; i++)
                     {
-                        in.read(entries + i, sizeof(G7Entry));
+                        in->read(entries + i, sizeof(G7Entry));
                         std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
-                    in.close();
+                    in->close();
                 }
                 else if (header.version == BANK_VERSION)
                 {
-                    in.read(&header.boxes, sizeof(u32));
+                    in->read(&header.boxes, sizeof(u32));
                     entries = new BankEntry[boxes() * 30];
 
-                    in.read(entries, size - sizeof(BankHeader));
-                    in.close();
+                    in->read(entries, size - sizeof(BankHeader));
+                    in->close();
                 }
                 else
                 {
                     Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
                     Gui::waitFrame(i18n::localize("BANK_CREATE"));
-                    in.close();
+                    in->close();
                     createBank(maxBoxes);
                     needSave = true;
                     create   = true;
@@ -163,19 +162,18 @@ void Bank::load(int maxBoxes)
         else
         {
             Gui::waitFrame(i18n::localize("BANK_CREATE"));
-            in.close();
             createBank(maxBoxes);
             needSave = true;
             create   = true;
         }
 
-        FSStream json(ARCHIVE, JSON(paths), FS_OPEN_READ);
-        if (json.good())
+        auto json = ARCHIVE.file(JSON(paths), FS_OPEN_READ);
+        if (json)
         {
-            size_t jsonSize = in.size();
+            size_t jsonSize = in->size();
             char* jsonData  = new char[jsonSize + 1];
-            json.read(jsonData, jsonSize);
-            json.close();
+            json->read(jsonData, jsonSize);
+            json->close();
             jsonData[jsonSize] = '\0';
             boxNames           = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
             delete[] jsonData;
@@ -198,7 +196,6 @@ void Bank::load(int maxBoxes)
         }
         else
         {
-            in.close();
             createJSON();
             needSave = true;
         }
@@ -232,35 +229,36 @@ bool Bank::saveWithoutBackup() const
 {
     auto paths = this->paths();
     Gui::waitFrame(i18n::localize("BANK_SAVE"));
-    Archive::deleteFile(ARCHIVE, BANK(paths));
-    FSStream out(ARCHIVE, BANK(paths), FS_OPEN_WRITE, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
-    if (out.good())
+    ARCHIVE.deleteFile(BANK(paths));
+    ARCHIVE.createFile(BANK(paths), 0, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
+    auto out = ARCHIVE.file(BANK(paths), FS_OPEN_WRITE);
+    if (out)
     {
-        out.write(&header, sizeof(BankHeader));
-        out.write(entries, sizeof(BankEntry) * boxes() * 30);
-        out.close();
+        out->write(&header, sizeof(BankHeader));
+        out->write(entries, sizeof(BankEntry) * boxes() * 30);
+        out->close();
 
         std::string jsonData = boxNames->dump(2);
-        Archive::deleteFile(ARCHIVE, JSON(paths));
-        FSStream json(ARCHIVE, JSON(paths), FS_OPEN_WRITE, jsonData.size() + 1);
-        if (json.good())
+        ARCHIVE.deleteFile(JSON(paths));
+        ARCHIVE.createFile(JSON(paths), 0, jsonData.size() + 1);
+        out = ARCHIVE.file(JSON(paths), FS_OPEN_WRITE, jsonData.size() + 1);
+        if (out)
         {
-            json.write(jsonData.data(), jsonData.size() + 1);
+            out->write(jsonData.data(), jsonData.size() + 1);
             sha256(prevHash.data(), (u8*)entries, sizeof(BankEntry) * boxes() * 30);
             sha256(prevNameHash.data(), (u8*)jsonData.data(), jsonData.size());
+            out->close();
         }
         else
         {
-            Gui::error(i18n::localize("BANK_NAME_ERROR"), json.result());
+            Gui::error(i18n::localize("BANK_NAME_ERROR"), ARCHIVE.result());
         }
-        json.close();
         needsCheck = false;
         return true;
     }
     else
     {
-        Gui::error(i18n::localize("BANK_SAVE_ERROR"), out.result());
-        out.close();
+        Gui::error(i18n::localize("BANK_SAVE_ERROR"), ARCHIVE.result());
         return false;
     }
 }
@@ -412,11 +410,15 @@ bool Bank::hasChanged() const
 void Bank::convertFromBankBin()
 {
     Gui::waitFrame(i18n::localize("BANK_CONVERT"));
-    FSStream inStream(Archive::sd(), "/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
-    size_t oldSize = inStream.size();
-    FSStream outStream(Archive::sd(), "/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE, oldSize);
-    if (inStream.good() && outStream.good() && oldSize % PK6::BOX_LENGTH == 0 && (oldSize / PK6::BOX_LENGTH) % 30 == 0)
+    auto inStream   = Archive::sd().file("/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
+    Result inResult = Archive::sd().result();
+    Archive::sd().createFile("/3ds/PKSM/backups/bank.bin", 0, 1);
+    auto outStream   = Archive::sd().file("/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE);
+    Result outResult = Archive::sd().result();
+    if (inStream && outStream && inStream->size() % PK6::BOX_LENGTH == 0 && (inStream->size() / PK6::BOX_LENGTH) % 30 == 0 &&
+        R_SUCCEEDED(outStream->resize(inStream->size())))
     {
+        size_t oldSize = inStream->size();
         std::array<u8, PK6::BOX_LENGTH> pkmData;
         // ANOTHER CONVERSION SECTION
         entries = new BankEntry[oldSize / PK6::BOX_LENGTH];
@@ -432,8 +434,8 @@ void Bank::convertFromBankBin()
         {
             for (int slot = 0; slot < 30; slot++)
             {
-                inStream.read(pkmData.data(), pkmData.size());
-                outStream.write(pkmData.data(), pkmData.size());
+                inStream->read(pkmData.data(), pkmData.size());
+                outStream->write(pkmData.data(), pkmData.size());
                 std::unique_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
                 if (pkm->species() == Species::None)
                 {
@@ -473,8 +475,8 @@ void Bank::convertFromBankBin()
             }
         }
 
-        inStream.close();
-        outStream.close();
+        inStream->close();
+        outStream->close();
 
         for (int i = 0; i < boxes(); i++)
         {
@@ -483,14 +485,12 @@ void Bank::convertFromBankBin()
 
         if (save())
         {
-            Archive::deleteFile(Archive::sd(), u"/3ds/PKSM/bank/bank.bin");
+            Archive::sd().deleteFile(u"/3ds/PKSM/bank/bank.bin");
         }
     }
     else
     {
-        Gui::error(i18n::localize("BANK_BAD_CONVERT"), R_FAILED(inStream.result()) ? inStream.result() : outStream.result());
-        inStream.close();
-        outStream.close();
+        Gui::error(i18n::localize("BANK_BAD_CONVERT"), R_FAILED(inResult) ? inResult : outResult);
     }
 }
 
