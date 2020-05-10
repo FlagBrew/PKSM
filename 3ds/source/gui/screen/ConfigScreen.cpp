@@ -39,6 +39,7 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "thread.hpp"
 
 namespace
 {
@@ -795,7 +796,12 @@ void ConfigScreen::back()
     {
         Banks::swapSD(!Configuration::getInstance().useExtData());
     }
-    if (showBackupsChanged)
+    if (titleIdsChanged)
+    {
+        TitleLoader::reloadTitleIds();
+        Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024);
+    }
+    if (showBackupsChanged || titleIdsChanged)
     {
         TitleLoader::scanSaves();
     }

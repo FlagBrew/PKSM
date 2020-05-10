@@ -28,6 +28,7 @@
 #define CONFIGURATION_HPP
 
 #include "DateTime.hpp"
+#include "GameVersion.hpp"
 #include "Language.hpp"
 #include "coretypes.h"
 #include "nlohmann/json_fwd.hpp"
@@ -36,7 +37,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 10;
+    static constexpr int CURRENT_VERSION = 11;
 
     static Configuration& getInstance(void)
     {
@@ -79,6 +80,9 @@ public:
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;
 
+    // Allows setting title IDs of versions. Can be used to edit romhacks or GBA VC. Support not guaranteed for the former!
+    std::string titleId(GameVersion version) const;
+
     bool writeFileSave(void) const;
 
     bool useSaveInfo(void) const;
@@ -115,6 +119,8 @@ public:
     // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
     // I implemented it just in case
     void extraSaves(const std::string& id, std::vector<std::string>& saves);
+
+    void titleId(GameVersion version, const std::string& id);
 
     void writeFileSave(bool write);
 

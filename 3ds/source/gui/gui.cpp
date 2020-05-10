@@ -826,6 +826,10 @@ void Gui::mainLoop(void)
 {
     bool exit = false;
     Sound::start();
+    C2D_TextBuf c2dText = C2D_TextBufNew(256);
+    C2D_Text displayMe;
+    C2D_TextParse(&displayMe, c2dText, "Wonder what happens with this?\n\nProbably breaks");
+    C2D_TextOptimize(&displayMe);
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -853,6 +857,8 @@ void Gui::mainLoop(void)
             }
             drawNoHome();
 
+            C2D_DrawText(&displayMe, C2D_AlignJustified, 160, 20, 1.0f, FONT_SIZE_12, FONT_SIZE_12);
+
             C3D_FrameEnd(0);
             Gui::frameClean();
             inFrame = false;
@@ -865,6 +871,7 @@ void Gui::mainLoop(void)
 
             target(GFX_BOTTOM);
             screens.top()->doBottomDraw();
+            Gui::text(std::to_string(displayMe.words), 20, 20, 1.0f, COLOR_BLACK, TextPosX::LEFT, TextPosY::CENTER);
             flushText();
 
             if (!aptIsHomeAllowed() && aptIsHomePressed())
@@ -872,6 +879,8 @@ void Gui::mainLoop(void)
                 setDoHomeDraw();
             }
             drawNoHome();
+
+            // C2D_DrawText(&displayMe, C2D_AlignJustified, 20, 20, 1.0f, 1.0f, 1.0f);
 
             C3D_FrameEnd(0);
             Gui::frameClean();
@@ -885,6 +894,7 @@ void Gui::mainLoop(void)
 
         textBuffer->clear();
     }
+    C2D_TextBufDelete(c2dText);
 }
 
 void Gui::exit(void)

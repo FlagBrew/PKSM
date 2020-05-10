@@ -189,6 +189,19 @@ Configuration::Configuration()
                 (*mJson)["apiUrl"]    = "";
                 (*mJson)["useApiUrl"] = false;
             }
+            if ((*mJson)["version"].get<int>() < 11)
+            {
+                (*mJson)["titles"] = nlohmann::json::object();
+
+                (*mJson)["titles"][std::to_string((u32)GameVersion::X)]  = "0x0004000000055D00";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::Y)]  = "0x0004000000055E00";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::OR)] = "0x000400000011C400";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::AS)] = "0x000400000011C500";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::SN)] = "0x0004000000164800";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::MN)] = "0x0004000000175E00";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::US)] = "0x00040000001B5000";
+                (*mJson)["titles"][std::to_string((u32)GameVersion::UM)] = "0x00040000001B5100";
+            }
 
             (*mJson)["version"] = CURRENT_VERSION;
             save();
@@ -211,6 +224,7 @@ Configuration::Configuration()
             !(mJson->contains("patronCode") && (*mJson)["patronCode"].is_string()) ||
             !(mJson->contains("alphaChannel") && (*mJson)["alphaChannel"].is_boolean()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
+            !(mJson->contains("titles") && (*mJson)["titles"].is_object()) ||
             !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
             !((*mJson)["defaults"]["date"].contains("day") && (*mJson)["defaults"]["date"]["day"].is_number_integer()) ||
             !((*mJson)["defaults"]["date"].contains("month") && (*mJson)["defaults"]["date"]["month"].is_number_integer()) ||
@@ -249,6 +263,18 @@ Configuration::Configuration()
                 return;
             }
         }
+
+        for (auto& version : (*mJson)["titles"])
+        {
+            if (!version.is_string())
+            {
+                loadFromRomfs();
+                Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                              i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                    (*mJson)["language"]);
+                return;
+            }
+        }
     }
 }
 
@@ -272,20 +298,6 @@ void Configuration::save()
         stream->write(writeData.data(), size);
         stream->close();
     }
-}
-
-std::vector<std::string> Configuration::extraSaves(const std::string& id) const
-{
-    if ((*mJson)["extraSaves"].count(id) > 0)
-    {
-        return (*mJson)["extraSaves"][id].get<std::vector<std::string>>();
-    }
-    return {};
-}
-
-void Configuration::extraSaves(const std::string& id, std::vector<std::string>& value)
-{
-    (*mJson)["extraSaves"][id] = value;
 }
 
 void Configuration::loadFromRomfs()
@@ -425,6 +437,25 @@ bool Configuration::autoUpdate(void) const
     return (*mJson)["autoUpdate"];
 }
 
+std::vector<std::string> Configuration::extraSaves(const std::string& id) const
+{
+    if ((*mJson)["extraSaves"].count(id) > 0)
+    {
+        return (*mJson)["extraSaves"][id].get<std::vector<std::string>>();
+    }
+    return {};
+}
+
+std::string Configuration::titleId(GameVersion version) const
+{
+    std::string v = std::to_string((u32)version);
+    if ((*mJson)["titles"].count(v) > 0)
+    {
+        return (*mJson)["titles"][v].get<std::string>();
+    }
+    return "";
+}
+
 void Configuration::language(Language lang)
 {
     (*mJson)["language"] = u8(lang);
@@ -503,4 +534,14 @@ void Configuration::alphaChannel(bool value)
 void Configuration::autoUpdate(bool value)
 {
     (*mJson)["autoUpdate"] = value;
+}
+
+void Configuration::extraSaves(const std::string& id, std::vector<std::string>& value)
+{
+    (*mJson)["extraSaves"][id] = value;
+}
+
+void Configuration::titleId(GameVersion version, const std::string& id)
+{
+    (*mJson)["titles"][std::to_string((u32)version)] = id;
 }

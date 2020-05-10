@@ -155,17 +155,9 @@ namespace
         return "main";
     }
 
-    // known 3ds title ids
-    constexpr std::array<unsigned long long, 8> ctrTitleIds = {
-        0x0004000000055D00, // X
-        0x0004000000055E00, // Y
-        0x000400000011C400, // OR
-        0x000400000011C500, // AS
-        0x0004000000164800, // Sun
-        0x0004000000175E00, // Moon
-        0x00040000001B5000, // Ultrasun
-        0x00040000001B5100  // Ultramoon
-    };
+    std::vector<u64> ctrTitleIds;
+    constexpr std::array<GameVersion, 13> searchVersions = {GameVersion::S, GameVersion::R, GameVersion::E, GameVersion::FR, GameVersion::LG,
+        GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
 
     bool saveIsFile;
     std::string saveFileName;
@@ -236,6 +228,16 @@ namespace
 void TitleLoader::init(void)
 {
     continueScan.test_and_set();
+
+    reloadTitleIds();
+}
+
+void TitleLoader::reloadTitleIds(void)
+{
+    for (const auto& version : searchVersions)
+    {
+        ctrTitleIds.emplace_back(std::stoull(Configuration::getInstance().titleId(version), nullptr, 16));
+    }
 }
 
 void TitleLoader::scanTitles(void)
@@ -291,7 +293,7 @@ void TitleLoader::scanTitles(void)
         }
     }
 
-    // sort the list alphabetically
+    // sort the list according to title ID
     std::sort(nandTitles.begin(), nandTitles.end(), [](std::shared_ptr<Title>& l, std::shared_ptr<Title>& r) { return l->ID() < r->ID(); });
 }
 
@@ -470,7 +472,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
     if (in)
     {
         fseek(in, 0, SEEK_END);
-        u32 size = ftell(in);
+        size = ftell(in);
         rewind(in);
         if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
         {

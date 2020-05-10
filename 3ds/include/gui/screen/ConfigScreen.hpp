@@ -57,6 +57,7 @@ private:
     bool justSwitched         = true;
     bool showBackupsChanged   = false;
     bool useExtDataChanged    = false;
+    bool titleIdsChanged      = false;
 };
 
 #endif
