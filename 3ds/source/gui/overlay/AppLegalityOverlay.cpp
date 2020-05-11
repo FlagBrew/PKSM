@@ -136,6 +136,9 @@ void AppLegalityOverlay::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_B)
     {
-        parent->removeOverlay();
+        // remove image view
+        this->removeOverlay();
+        // remove this
+        this->parent->removeOverlay();
     }
 }
