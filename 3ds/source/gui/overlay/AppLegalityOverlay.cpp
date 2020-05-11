@@ -42,8 +42,9 @@
 #include <poll.h>
 
 #include <sys/types.h>
-
+#include <sys/stat.h>
 #include <sys/socket.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
@@ -63,7 +64,7 @@ namespace
         return std::clamp(in, 8U, 1024U); // clamp size to keep gpu from locking
     }
 
-    static struct in_addr serverAddr;
+    static in_addr serverAddr;
     static char messageHolder[256];
     SwkbdCallbackResult parseIpCallback(void* user, const char** ppMessage, const char* text, size_t textlen)
     {
@@ -75,10 +76,10 @@ namespace
             return SWKBD_CALLBACK_CONTINUE;
         }
 
-        struct addrinfo *info;
+        addrinfo *info;
         if (getaddrinfo(text, NULL, NULL, &info) == 0)
         {
-            serverAddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
+            serverAddr = ((sockaddr_in*)info->ai_addr)->sin_addr;
             freeaddrinfo(info);
             return SWKBD_CALLBACK_OK;
         }
@@ -136,8 +137,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             swkbdSetInitialText(&swkbd, "0.0.0.0");
             swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, leftButton.c_str(), false);
             swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, rightButton.c_str(), true);
-            swkbdSetFilterCallback(&swkbd, callback, parseIpCallback);
-            SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
+            swkbdSetFilterCallback(&swkbd, parseIpCallback, nullptr);
+            SwkbdButton button = swkbdInputText(&swkbd, serverAddress, 16);
             if(button == SWKBD_BUTTON_NONE)
             {
                 return true;
@@ -150,13 +151,13 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 return true;
             }
 
-            struct sockaddr_in s;
-            memset(&s, 0, sizeof(struct sockaddr_in));
+            sockaddr_in s;
+            memset(&s, 0, sizeof(sockaddr_in));
             s.sin_family = AF_INET;
             s.sin_port = htons(49000);
-            s.sin_addr.s_addr = serverAddr;
+            s.sin_addr.s_addr = serverAddr.s_addr;
 
-            if (connect(sockfd, (struct sockaddr *)&s, sizeof(s)) < 0 )
+            if (connect(sockfd, (sockaddr *)&s, sizeof(s)) < 0 )
             {
                 Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
                 close(sockfd);
@@ -164,41 +165,40 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             }
 
             ssize_t dataTransmitted = 0;
-            const char* generationStr = pkm->generation();
-            u32 generationSize = strlen(generationStr);
-            u32 sendableGenerationSize = htonl(generationSize);
+            std::string generationStr = std::string(this->pkm->generation());
+            u32 sendableGenerationSize = htonl(generationStr.size());
             dataTransmitted = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
-            if(dataTransmitted < sizeof(u32))
+            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
-            dataTransmitted = send(sockfd, generationStr, generationSize, 0);
-            if(dataTransmitted < generationSize)
+            dataTransmitted = send(sockfd, generationStr.c_str(), generationStr.size(), 0);
+            if(dataTransmitted >= 0 && u32(dataTransmitted)  < generationStr.size())
             {
                 close(sockfd);
                 return true;
             }
 
-            u32 sendableVersion = htonl(pkm->version());
+            u32 sendableVersion = htonl(static_cast<u32>(static_cast<u8>(this->pkm->version())));
             dataTransmitted = send(sockfd, &sendableVersion, sizeof(u32), 0);
-            if(dataTransmitted < sizeof(u32))
+            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
 
-            const u8* pkmData = pkm->rawData();
-            u32 pkmSize = pkm->Length();
+            const u8* pkmData = this->pkm->rawData();
+            u32 pkmSize = this->pkm->getLength();
             u32 sendablePkmSize = htonl(pkmSize);
-            dataTransmitted = send(sockfd, &pkmSize, sizeof(u32), 0);
-            if(dataTransmitted < sizeof(u32))
+            dataTransmitted = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
+            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
             dataTransmitted = send(sockfd, pkmData, pkmSize, 0);
-            if(dataTransmitted < pkmSize)
+            if(dataTransmitted >= 0 && u32(dataTransmitted)  < pkmSize)
             {
                 close(sockfd);
                 return true;
@@ -206,13 +206,13 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
 
             std::unique_ptr<u8[]> receivedBytes = std::make_unique<u8[]>(pkmSize);
             dataTransmitted = recv(sockfd, receivedBytes.get(), pkmSize, 0);
-            if(dataTransmitted < pkmSize)
+            if(dataTransmitted >= 0 && u32(dataTransmitted) < pkmSize)
             {
                 close(sockfd);
                 return true;
             }
 
-            auto pkx = PKX::getPKM(pkm->generation(), receivedBytes.get(), pkmSize, false);
+            auto pkx = PKX::getPKM(this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
             if (pkx)
             {
                 pkx = TitleLoader::save->transfer(*pkx);
