@@ -71,9 +71,9 @@ void ReplaceableScreen::doBottomDraw() const
 
 bool ReplaceableScreen::willReplaceBottom() const
 {
-    if (overlay)
+    if (overlay && overlay->willReplaceBottom())
     {
-        return overlay->willReplaceBottom();
+        return true;
     }
     else
     {
@@ -83,9 +83,9 @@ bool ReplaceableScreen::willReplaceBottom() const
 
 bool ReplaceableScreen::willReplaceTop() const
 {
-    if (overlay)
+    if (overlay && overlay->willReplaceTop())
     {
-        return overlay->willReplaceTop();
+        return true;
     }
     else
     {
@@ -136,9 +136,9 @@ void ReplaceableScreen::doUpdate(touchPosition* touch)
 
 bool ReplaceableScreen::willHandleUpdate() const
 {
-    if (overlay)
+    if (overlay && overlay->willHandleUpdate())
     {
-        return overlay->willHandleUpdate();
+        return true;
     }
     else
     {

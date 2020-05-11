@@ -75,7 +75,8 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/source/utils \
 					../core/source/wcx \
 					../core/swshcrypto \
-					../external/picoc/source/interpreter
+					../external/picoc/source/interpreter \
+					../external/qrgen
 
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
@@ -105,7 +106,8 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/wcx \
 					../core/memecrypto \
 					../core/swshcrypto \
-					../external/picoc/include
+					../external/picoc/include \
+					../external/qrgen
 
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
@@ -151,7 +153,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -mword-relocations \
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
-CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++2a
+CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)

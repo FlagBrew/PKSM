@@ -26,6 +26,7 @@
 
 #include "MiscEditScreen.hpp"
 #include "AccelButton.hpp"
+#include "AppLegalityOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "LegalInfoScreen.hpp"
@@ -54,6 +55,12 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
             otAndMet = !otAndMet;
+            return true;
+        },
+        ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(204, 140, 108, 30,
+        [this]() {
+            addOverlay<AppLegalityOverlay>(this->pkm);
             return true;
         },
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
@@ -171,6 +178,9 @@ void MiscEditScreen::drawBottom() const
     {
         button->draw();
     }
+
+    Gui::text(i18n::localize("APP_LEGALIZE"), 258, 155, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
+        TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
 
     Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 258, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
         TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
