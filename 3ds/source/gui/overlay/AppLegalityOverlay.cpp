@@ -35,6 +35,18 @@
 #include "gui.hpp"
 #include "loader.hpp"
 
+#include <unistd.h>
+#include <errno.h>
+
+#include <fcntl.h>
+#include <poll.h>
+
+#include <sys/types.h>
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 namespace
 {
     // Borrowed from LOVE
@@ -49,6 +61,34 @@ namespace
         in++;
 
         return std::clamp(in, 8U, 1024U); // clamp size to keep gpu from locking
+    }
+
+    static struct in_addr serverAddr;
+    static char messageHolder[256];
+    SwkbdCallbackResult parseIpCallback(void* user, const char** ppMessage, const char* text, size_t textlen)
+    {
+        if(textlen < 7)
+        {
+            std::string errMsg = i18n::localize("INPUT_TOO_SHORT");
+            std::copy(errMsg.begin(), errMsg.end(), std::begin(messageHolder));
+            *ppMessage = messageHolder;
+            return SWKBD_CALLBACK_CONTINUE;
+        }
+
+        struct addrinfo *info;
+        if (getaddrinfo(text, NULL, NULL, &info) == 0)
+        {
+            serverAddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
+            freeaddrinfo(info);
+            return SWKBD_CALLBACK_OK;
+        }
+        else
+        {
+            std::string errMsg = i18n::localize("INPUT_INVALID");
+            std::copy(errMsg.begin(), errMsg.end(), std::begin(messageHolder));
+            *ppMessage = messageHolder;
+            return SWKBD_CALLBACK_CONTINUE;
+        }
     }
 }
 
@@ -85,7 +125,107 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
 
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
-            // do the socket thing
+            char serverAddress[16] = {0};
+            std::string leftButton = i18n::localize("CANCEL_BUTTON");
+            std::string rightButton = i18n::localize("LEGALIZE");
+            SwkbdState swkbd;
+            swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, 15);
+            swkbdSetNumpadKeys(&swkbd, L'.', 0);
+            swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+            swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
+            swkbdSetInitialText(&swkbd, "0.0.0.0");
+            swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, leftButton.c_str(), false);
+            swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, rightButton.c_str(), true);
+            swkbdSetFilterCallback(&swkbd, callback, parseIpCallback);
+            SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
+            if(button == SWKBD_BUTTON_NONE)
+            {
+                return true;
+            }
+
+            int sockfd = socket(AF_INET,SOCK_STREAM,0);
+            if (sockfd < 0)
+            {
+                Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
+                return true;
+            }
+
+            struct sockaddr_in s;
+            memset(&s, 0, sizeof(struct sockaddr_in));
+            s.sin_family = AF_INET;
+            s.sin_port = htons(49000);
+            s.sin_addr.s_addr = serverAddr;
+
+            if (connect(sockfd, (struct sockaddr *)&s, sizeof(s)) < 0 )
+            {
+                Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
+                close(sockfd);
+                return true;
+            }
+
+            ssize_t dataTransmitted = 0;
+            const char* generationStr = pkm->generation();
+            u32 generationSize = strlen(generationStr);
+            u32 sendableGenerationSize = htonl(generationSize);
+            dataTransmitted = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
+            if(dataTransmitted < sizeof(u32))
+            {
+                close(sockfd);
+                return true;
+            }
+            dataTransmitted = send(sockfd, generationStr, generationSize, 0);
+            if(dataTransmitted < generationSize)
+            {
+                close(sockfd);
+                return true;
+            }
+
+            u32 sendableVersion = htonl(pkm->version());
+            dataTransmitted = send(sockfd, &sendableVersion, sizeof(u32), 0);
+            if(dataTransmitted < sizeof(u32))
+            {
+                close(sockfd);
+                return true;
+            }
+
+            const u8* pkmData = pkm->rawData();
+            u32 pkmSize = pkm->Length();
+            u32 sendablePkmSize = htonl(pkmSize);
+            dataTransmitted = send(sockfd, &pkmSize, sizeof(u32), 0);
+            if(dataTransmitted < sizeof(u32))
+            {
+                close(sockfd);
+                return true;
+            }
+            dataTransmitted = send(sockfd, pkmData, pkmSize, 0);
+            if(dataTransmitted < pkmSize)
+            {
+                close(sockfd);
+                return true;
+            }
+
+            std::unique_ptr<u8[]> receivedBytes = std::make_unique<u8[]>(pkmSize);
+            dataTransmitted = recv(sockfd, receivedBytes.get(), pkmSize, 0);
+            if(dataTransmitted < pkmSize)
+            {
+                close(sockfd);
+                return true;
+            }
+
+            auto pkx = PKX::getPKM(pkm->generation(), receivedBytes.get(), pkmSize, false);
+            if (pkx)
+            {
+                pkx = TitleLoader::save->transfer(*pkx);
+                if (pkx)
+                {
+                    std::copy(pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
+                }
+            }
+
+            close(sockfd);
+
+            Gui::warn(i18n::localize("PKM_LEGALIZED"));
+
             return true;
         },
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
