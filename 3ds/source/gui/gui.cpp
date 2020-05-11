@@ -885,7 +885,6 @@ void Gui::mainLoop(void)
 
         textBuffer->clear();
     }
-    C2D_TextBufDelete(c2dText);
 }
 
 void Gui::exit(void)
