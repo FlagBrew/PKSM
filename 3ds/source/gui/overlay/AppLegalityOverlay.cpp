@@ -168,13 +168,13 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             std::string generationStr = std::string(this->pkm->generation());
             u32 sendableGenerationSize = htonl(generationStr.size());
             dataTransmitted = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
+            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
             dataTransmitted = send(sockfd, generationStr.c_str(), generationStr.size(), 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted)  < generationStr.size())
+            if(0 > dataTransmitted || u32(dataTransmitted)  < generationStr.size())
             {
                 close(sockfd);
                 return true;
@@ -182,7 +182,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
 
             u32 sendableVersion = htonl(static_cast<u32>(static_cast<u8>(this->pkm->version())));
             dataTransmitted = send(sockfd, &sendableVersion, sizeof(u32), 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
+            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
@@ -192,13 +192,13 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             u32 pkmSize = this->pkm->getLength();
             u32 sendablePkmSize = htonl(pkmSize);
             dataTransmitted = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted)  < sizeof(u32))
+            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
             dataTransmitted = send(sockfd, pkmData, pkmSize, 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted)  < pkmSize)
+            if(0 > dataTransmitted || u32(dataTransmitted)  < pkmSize)
             {
                 close(sockfd);
                 return true;
@@ -206,7 +206,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
 
             std::unique_ptr<u8[]> receivedBytes = std::make_unique<u8[]>(pkmSize);
             dataTransmitted = recv(sockfd, receivedBytes.get(), pkmSize, 0);
-            if(dataTransmitted >= 0 && u32(dataTransmitted) < pkmSize)
+            if(0 > dataTransmitted || u32(dataTransmitted) < pkmSize)
             {
                 close(sockfd);
                 return true;
