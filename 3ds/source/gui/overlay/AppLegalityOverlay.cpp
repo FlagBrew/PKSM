@@ -127,7 +127,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
             char serverAddress[16] = {0};
-            std::string leftButton = i18n::localize("CANCEL_BUTTON");
+            std::string leftButton = i18n::localize("CANCEL");
             std::string rightButton = i18n::localize("LEGALIZE");
             SwkbdState swkbd;
             swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, 15);
