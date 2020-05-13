@@ -619,11 +619,19 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                 in->close();
             }
             save = Sav::getSave(data, in->size());
-            if (Configuration::getInstance().autoBackup())
+            if (save)
             {
-                backupSave(title->checkpointPrefix());
+                if (Configuration::getInstance().autoBackup())
+                {
+                    backupSave(title->checkpointPrefix());
+                }
+                return true;
             }
-            return true;
+            else
+            {
+                Gui::error(i18n::localize("BAD_OPEN_SAVE"), -1);
+                return false;
+            }
         }
         else
         {
