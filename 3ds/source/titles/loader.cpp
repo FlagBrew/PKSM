@@ -738,24 +738,8 @@ void TitleLoader::saveToTitle(bool ask)
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
-                Archive archive;
-                std::unique_ptr<File> out;
-                if (title->gba())
-                {
-                    archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
-                    constexpr u32 pathData[5] = {
-                        1,   // Save data
-                        1,   // TMD content index
-                        3,   // Type: save data?
-                        0, 0 // No EXEFS file name needed
-                    };
-                    out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
-                }
-                else
-                {
-                    archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-                    out     = archive.file(u"/main", FS_OPEN_READ);
-                }
+                Archive archive           = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
+                std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_READ);
 
                 if (out)
                 {
