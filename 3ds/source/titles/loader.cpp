@@ -747,7 +747,7 @@ void TitleLoader::saveToTitle(bool ask)
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
                 Archive archive           = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-                std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_READ);
+                std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_WRITE);
 
                 if (out)
                 {
@@ -801,17 +801,130 @@ void TitleLoader::saveToTitle(bool ask)
                             3,   // Type: save data?
                             0, 0 // No EXEFS file name needed
                         };
-                        out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
+                        out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ | FS_OPEN_WRITE);
                     }
                     else
                     {
                         archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-                        out     = archive.file(u"/main", FS_OPEN_READ);
+                        out     = archive.file(u"/main", FS_OPEN_WRITE);
                     }
 
                     if (out)
                     {
-                        out->write(save->rawData().get(), save->getLength());
+                        if (title->gba())
+                        {
+                            static constexpr u8 ZEROS[0x20]   = {0};
+                            static constexpr u8 FULL_FS[0x20] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
+                            // Get which slot to save to
+                            std::unique_ptr<GbaHeader> header1 = std::make_unique<GbaHeader>();
+                            out->read(header1.get(), sizeof(GbaHeader));
+                            // No clue how to handle an uninitialized save.
+                            if (memcmp(header1.get(), ZEROS, sizeof(ZEROS)))
+                            {
+                                // If the top save is uninitialized, grab the bottom save's header and copy it to the top's. Then write data
+                                if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
+                                {
+                                    // Search for the magic
+                                    out->read(header1->magic, sizeof(GbaHeader::magic));
+                                    while (R_SUCCEEDED(out->result()) && !memcmp(header1->magic, ".SAV", 4))
+                                    {
+                                        out->seek(0x200 - sizeof(GbaHeader::magic), SEEK_CUR);
+                                        out->read(header1->magic, sizeof(GbaHeader::magic));
+                                    }
+                                    if (R_SUCCEEDED(out->result()))
+                                    {
+                                        // Doesn't matter whether this CMAC is valid or not. We just need to update it
+                                        out->read(&header1->padding1, sizeof(GbaHeader) - sizeof(GbaHeader::magic));
+                                        out->seek(0, SEEK_SET);
+                                        // Increment save count
+                                        header1->savesMade++;
+                                        out->write(header1.get(), sizeof(GbaHeader));
+                                        out->write(save->rawData().get(), save->getLength());
+
+                                        out->seek(0, SEEK_SET);
+                                        auto cmac = calcGbaCMAC(*out, *header1);
+                                        out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
+                                        out->write(cmac.data(), cmac.size());
+                                        out->close();
+                                    }
+                                }
+                                // Otherwise, compare the top and bottom save counts. If we loaded from the top, save in the bottom; if we loaded from
+                                // the bottom, save in the top
+                                else
+                                {
+                                    std::unique_ptr<GbaHeader> header2 = std::make_unique<GbaHeader>();
+                                    out->seek(header1->saveSize, SEEK_CUR);
+                                    out->read(header2.get(), sizeof(GbaHeader));
+
+                                    // Check the first CMAC
+                                    out->seek(0, SEEK_SET);
+                                    auto cmac         = calcGbaCMAC(*out, *header1);
+                                    bool firstInvalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
+
+                                    // Check the second CMAC
+                                    out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+                                    cmac               = calcGbaCMAC(*out, *header2);
+                                    bool secondInvalid = (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
+
+                                    if (firstInvalid)
+                                    {
+                                        // Just save to the first with header2->savesMade+1 as save number for simplicity; whether or not the second
+                                        // save was valid to begin with is immaterial
+                                        header1->savesMade = header2->savesMade + 1;
+                                        out->seek(0, SEEK_SET);
+                                        out->write(header1.get(), sizeof(GbaHeader));
+                                        out->write(save->rawData().get(), save->getLength());
+                                        out->seek(0, SEEK_SET);
+
+                                        cmac = calcGbaCMAC(*out, *header1);
+                                        out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
+                                        out->write(cmac.data(), cmac.size());
+                                        out->close();
+                                    }
+                                    else
+                                    {
+                                        // If the second is valid and we loaded from it, save over first save
+                                        if (!secondInvalid && header2->savesMade == header1->savesMade + 1)
+                                        {
+                                            header1->savesMade = header2->savesMade + 1;
+                                            out->seek(0, SEEK_SET);
+                                            out->write(header1.get(), sizeof(GbaHeader));
+                                            out->write(save->rawData().get(), save->getLength());
+                                            out->seek(0, SEEK_SET);
+
+                                            cmac = calcGbaCMAC(*out, *header1);
+                                            out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
+                                            out->write(cmac.data(), cmac.size());
+                                            out->close();
+                                        }
+                                        // Otherwise, save over the second save
+                                        else
+                                        {
+                                            out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+                                            header2->savesMade = header1->savesMade + 1;
+                                            out->write(header2.get(), sizeof(GbaHeader));
+                                            out->write(save->rawData().get(), save->getLength());
+                                            out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+
+                                            cmac = calcGbaCMAC(*out, *header1);
+                                            out->seek(sizeof(GbaHeader) + header1->saveSize + offsetof(GbaHeader, cmac), SEEK_SET);
+                                            out->write(cmac.data(), cmac.size());
+                                            out->close();
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Gui::warn(i18n::localize("UNINIT_GBA_SAVE"));
+                            }
+                        }
+                        else
+                        {
+                            out->write(save->rawData().get(), save->getLength());
+                        }
                         if (R_FAILED(res = archive.commit()))
                         {
                             out->close();
