@@ -52,11 +52,11 @@ public:
     Result result();
     u64 size();
     u32 write(const void* buf, u32 size);
-    void seek(u64 offset, int from);
+    void seek(s64 offset, int from);
     Result resize(u64 size);
 
-    // Not for general use! Also not guaranteed to work (if it's a PXI file), so definitely don't use often.
-    Handle getRawHandle();
+    // Not for general use! Only meant for very specific, necessary direct calls.
+    std::variant<Handle, FSPXI_File> getRawHandle();
 
 private:
     std::variant<Handle, FSPXI_File> mHandle;

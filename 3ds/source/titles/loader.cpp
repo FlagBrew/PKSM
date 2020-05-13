@@ -25,6 +25,7 @@
  */
 
 #include "loader.hpp"
+#include "../io/internal_fspxi.hpp"
 #include "Archive.hpp"
 #include "Configuration.hpp"
 #include "DateTime.hpp"
@@ -34,11 +35,30 @@
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
+#include "sha256.h"
+#include <3ds.h>
 #include <atomic>
 #include <sys/stat.h>
 
 namespace
 {
+    struct GbaHeader
+    {
+        u8 magic[4];       // .SAV
+        u8 padding1[12];   // Always 0xFF
+        u8 cmac[0x10];     // CMAC. MUST BE RECALCULATED ON SAVE
+        u8 padding2[0x10]; // Always 0xFF
+        u32 contentId;     // Always 1
+        u32 savesMade;     // Check this to find which save to load
+        u64 titleId;
+        u8 sdCid[0x10];
+        u32 saveOffset; // Always 0x200
+        u32 saveSize;
+        u8 padding3[8];      // Always 0xFF
+        u8 arm7Registers[8]; // Not really sure what to do with this. Seems to be 0x7F 00 00 00 00 00 00 00?
+        u8 padding4[0x198];  // Get it to the proper size
+    };
+
     std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
     constexpr char langIds[8] = {
@@ -222,6 +242,51 @@ namespace
     std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
     {
         return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
+    }
+
+    // file must be at header address. On return, will be at the end of the save described by the header.
+    std::array<u8, 0x10> calcGbaCMAC(File& file, const GbaHeader& header)
+    {
+        std::array<u8, 0x10> ret;
+        constexpr size_t READBLOCK_SIZE = 0x1000;
+        std::array<u8, SHA256_BLOCK_SIZE> hashData;
+
+        // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this was a good idea
+        // CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" + SHA256(0x30..0x200 + the entire save itself))))
+        // I *think* FSPXI_CalcSavegameMAC should do the AES-CMAC and CTR-SIGN step. It might do the CTR-SAV0 step as well?
+        SHA256_CTX ctx;
+        sha256_init(&ctx);
+        file.seek(0x30, SEEK_CUR);
+        size_t sha_end_idx = header.saveSize + 0x200 - 0x30;
+        u8* readblock      = new u8[READBLOCK_SIZE];
+        size_t read        = 0;
+        for (size_t i = 0; i < sha_end_idx; i += read)
+        {
+            size_t readSize = std::min(sha_end_idx - i, READBLOCK_SIZE);
+            read            = file.read(readblock, readSize);
+            sha256_update(&ctx, readblock, readSize);
+        }
+        delete[] readblock;
+
+        sha256_final(&ctx, hashData.data());
+
+        // FSPXI_CalcSavegameMAC might do CTR-SAV0 step?
+        // sha256_init(&ctx);
+        // sha256_update(&ctx, (u8*)"CTR-SAV0", 8);
+        // sha256_update(&ctx, hashData.data(), hashData.size());
+        // sha256_final(&ctx, hashData.data());
+
+        // FSPXI_CalcSavegameMAC might do CTR-SIGN step?
+        // sha256_init(&ctx);
+        // sha256_update(&ctx, (u8*)"CTR-SIGN", 8);
+        // sha256_update(&ctx, (u8*)&header.titleId, sizeof(u64));
+        // sha256_update(&ctx, hashData.data(), hashData.size());
+        // sha256_final(&ctx, hashData.data());
+
+        // I really, really, really hope this works properly for this
+        FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()), hashData.data(), hashData.size(), ret.data(), ret.size());
+
+        return ret;
     }
 }
 
@@ -415,10 +480,145 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         }
         if (in)
         {
-            std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[in->size()]);
-            in->read(data.get(), in->size());
+            std::shared_ptr<u8[]> data;
+            size_t size;
+            // Have to get to the correct GBA save and sidestep the stupid size shit
+            if (title->gba())
+            {
+                static constexpr u8 ZEROS[0x20]    = {0};
+                static constexpr u8 FULL_FS[0x20]  = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+                std::unique_ptr<GbaHeader> header1 = std::make_unique<GbaHeader>();
+                in->read(header1.get(), sizeof(GbaHeader));
+                // Save uninitialized; we'd get garbage that probably goes out of bounds
+                if (!memcmp(header1.get(), ZEROS, sizeof(ZEROS)))
+                {
+                    // Dummy data
+                    data = std::shared_ptr<u8[]>(new u8[1]);
+                    size = 1;
+                }
+                // Save initialized only in bottom save. Only check it.
+                else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
+                {
+                    // If the first header is garbage FF, we have to search for the second
+                    in->read(header1->magic, sizeof(GbaHeader::magic));
+                    while (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
+                    {
+                        in->seek(0x200 - sizeof(GbaHeader::magic), SEEK_CUR);
+                        in->read(header1->magic, sizeof(GbaHeader::magic));
+                    }
+                    if (R_SUCCEEDED(in->result()))
+                    {
+                        in->read(&header1->padding1, sizeof(GbaHeader) - sizeof(GbaHeader::magic));
+                        in->seek(-0x200, SEEK_CUR);
+                        auto cmac    = calcGbaCMAC(*in, *header1);
+                        bool invalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
+
+                        if (invalid)
+                        {
+                            data = std::shared_ptr<u8[]>(new u8[1]);
+                            size = 1;
+                        }
+                        else
+                        {
+                            size = header1->saveSize;
+                            data = std::shared_ptr<u8[]>(new u8[size]);
+                            // Always 0x200 after the second header
+                            in->seek(sizeof(GbaHeader) * 2 + size, SEEK_SET);
+                            in->read(data.get(), size);
+                            in->close();
+                        }
+                    }
+                    // Reached end of file? Something weird happened; we can't handle that
+                    else
+                    {
+                        data = std::shared_ptr<u8[]>(new u8[1]);
+                        size = 1;
+                    }
+                }
+                // Both headers are initialized. Compare CMACs and such
+                else
+                {
+                    std::unique_ptr<GbaHeader> header2 = std::make_unique<GbaHeader>();
+                    in->seek(header1->saveSize, SEEK_CUR);
+                    in->read(header2.get(), sizeof(GbaHeader));
+
+                    // Check the first CMAC
+                    in->seek(0, SEEK_SET);
+                    auto cmac         = calcGbaCMAC(*in, *header1);
+                    bool firstInvalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
+
+                    // Check the second CMAC
+                    in->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+                    cmac               = calcGbaCMAC(*in, *header2);
+                    bool secondInvalid = (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
+
+                    if (firstInvalid)
+                    {
+                        // Both CMACs are invalid. Run and hide.
+                        if (secondInvalid)
+                        {
+                            // Dummy data
+                            data = std::shared_ptr<u8[]>(new u8[1]);
+                            size = 1;
+                        }
+                        // The second CMAC is the only valid one. Use it
+                        else
+                        {
+                            size = header2->saveSize;
+                            data = std::shared_ptr<u8[]>(new u8[size]);
+                            // Always 0x200 after the second header
+                            in->seek(sizeof(GbaHeader) * 2 + size, SEEK_SET);
+                            in->read(data.get(), size);
+                            in->close();
+                        }
+                    }
+                    else
+                    {
+                        // The first CMAC is the only valid one. Use it
+                        if (secondInvalid)
+                        {
+                            size = header1->saveSize;
+                            data = std::shared_ptr<u8[]>(new u8[size]);
+                            // Always 0x200 after the first header
+                            in->seek(sizeof(GbaHeader), SEEK_SET);
+                            in->read(data.get(), size);
+                            in->close();
+                        }
+                        else
+                        {
+                            // Will include rollover (header1->savesMade == 0xFFFFFFFF)
+                            // This is proper logic according to https://github.com/d0k3/GodMode9/issues/494
+                            if (header2->savesMade == header1->savesMade + 1)
+                            {
+                                size = header2->saveSize;
+                                data = std::shared_ptr<u8[]>(new u8[size]);
+                                // Always 0x200 after the second header
+                                in->seek(sizeof(GbaHeader) * 2 + size, SEEK_SET);
+                                in->read(data.get(), size);
+                                in->close();
+                            }
+                            else
+                            {
+                                size = header1->saveSize;
+                                data = std::shared_ptr<u8[]>(new u8[size]);
+                                // Always 0x200 after the first header
+                                in->seek(sizeof(GbaHeader), SEEK_SET);
+                                in->read(data.get(), size);
+                                in->close();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                size = in->size();
+                data = std::shared_ptr<u8[]>(new u8[size]);
+                in->read(data.get(), size);
+                in->close();
+            }
             save = Sav::getSave(data, in->size());
-            in->close();
             if (Configuration::getInstance().autoBackup())
             {
                 backupSave(title->checkpointPrefix());

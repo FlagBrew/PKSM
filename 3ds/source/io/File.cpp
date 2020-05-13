@@ -109,7 +109,7 @@ u64 File::offset(void)
     return mOffset;
 }
 
-void File::seek(u64 offset, int from)
+void File::seek(s64 offset, int from)
 {
     switch (from)
     {
@@ -127,12 +127,9 @@ void File::seek(u64 offset, int from)
     }
 }
 
-Handle File::getRawHandle(void)
+std::variant<Handle, FSPXI_File> File::getRawHandle(void)
 {
-    if (mHandle.index() == 0)
-        return std::get<0>(mHandle);
-
-    return 0;
+    return mHandle;
 }
 
 Result File::resize(u64 size)

@@ -345,7 +345,7 @@ namespace
                 auto ciaFile = Archive::sd().file(path, FS_OPEN_READ);
                 if (ciaFile)
                 {
-                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile->getRawHandle())))
+                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, std::get<0>(ciaFile->getRawHandle()))))
                     {
                         Gui::error(i18n::localize("BAD_CIA_FILE"), res);
                         ciaFile->close();
