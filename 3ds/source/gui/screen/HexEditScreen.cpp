@@ -1507,8 +1507,8 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 100,
-                        FON_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), pkm->formatTID(), pkm->formatSID(), pkm->TSV()), 160, 100, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
                     Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
@@ -1558,8 +1558,8 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 100,
-                        FON_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), pkm->formatTID(), pkm->formatSID(), pkm->TSV()), 160, 100, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
                     Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
