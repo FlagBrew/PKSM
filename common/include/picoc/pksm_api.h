@@ -158,6 +158,7 @@ void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
 void save_path(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
+void i18n_form(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_box_size(struct ParseState*, struct Value*, struct Value**, int);

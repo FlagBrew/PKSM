@@ -65,6 +65,7 @@ struct LibraryFunction UnixFunctions[] =
     { fetch_web_content,    "int fetch_web_content(char** out, int* outSize, char* url);" },
     // i18n
     { i18n_species,         "char* i18n_species(int species);" },
+    { i18n_form,            "char* i18n_form(int gameVersion, int species, int form);" },
     // text conversion
     { pksm_utf16_to_utf8,   "char* utf16_to_utf8(char* data);" },
     { pksm_utf8_to_utf16,   "char* utf8_to_utf16(char* data);" },

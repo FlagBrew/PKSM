@@ -614,6 +614,13 @@ void i18n_species(struct ParseState* Parser, struct Value* ReturnValue, struct V
     ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), Species{u16(Param[0]->Val->Integer)}).c_str();
 }
 
+void i18n_form(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->Pointer = (void*)i18n::form(Configuration::getInstance().language(), GameVersion{u8(Param[0]->Val->Integer)},
+        Species{u16(Param[1]->Val->Integer)}, u8(Param[2]->Val->Integer))
+                                    .c_str();
+}
+
 void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data       = (u8*)Param[0]->Val->Pointer;
