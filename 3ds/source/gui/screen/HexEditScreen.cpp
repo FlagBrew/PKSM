@@ -301,7 +301,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x0E ... 0x0F:
                 return std::make_pair(&i18n::localize("OT_SID"), NORMAL);
             case 0x10 ... 0x13:
-                return std::make_pair(&i18n::localize("EXPERIENCE"), OPEN);
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
             case 0x14:
                 return std::make_pair(&i18n::localize("ABILITY"), NORMAL);
             case 0x15:
@@ -318,10 +318,10 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x18 ... 0x1B:
                 return std::make_pair(&i18n::localize("PID"), NORMAL);
             case 0x1C:
-                return std::make_pair(&i18n::localize("NATURE"), OPEN);
+                return std::make_pair(&i18n::localize("NATURE"), NORMAL);
             // Gender, fateful encounter, and form bits
             case 0x1D:
-                return std::make_pair(&i18n::localize("GENDER_FATEFUL_ENCOUNTER_FORM"), OPEN);
+                return std::make_pair(&i18n::localize("GENDER_FATEFUL_ENCOUNTER_FORM"), NORMAL);
             case 0x1E:
                 return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x1F:
@@ -567,7 +567,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0xDE:
                 if (pkm->generation() == Generation::SIX)
                 {
-                    return std::make_pair(&i18n::localize("GEN_4_ENCOUNTER_TYPE"), OPEN);
+                    return std::make_pair(&i18n::localize("GEN_4_ENCOUNTER_TYPE"), NORMAL);
                 }
                 else
                 {
@@ -655,7 +655,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x16:
                 return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
             case 0x17:
-                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), NORMAL);
             case 0x18:
                 return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x19:
@@ -805,7 +805,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x16:
                 return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
             case 0x17:
-                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), OPEN);
+                return std::make_pair(&i18n::localize("ORIGINAL_LANGUAGE"), NORMAL);
             case 0x18:
                 return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
             case 0x19:
@@ -1506,6 +1506,10 @@ void HexEditScreen::drawMeaning() const
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
+                case 0xC ... 0xF:
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 100,
+                        FON_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
                 case 0x15:
                     Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
                         TextPosY::TOP);
@@ -1552,6 +1556,10 @@ void HexEditScreen::drawMeaning() const
                 case 0xA ... 0xB:
                     Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
                         TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xC ... 0xF:
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 100,
+                        FON_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
                     Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
