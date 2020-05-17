@@ -27,12 +27,12 @@
 #include "File.hpp"
 #include "internal_fspxi.hpp"
 
-File::File(Handle handle) : mHandle(handle)
+File::File(Handle handle) : mHandle(handle), mOffset(0)
 {
     mResult = FSFILE_GetSize(handle, &mSize);
 }
 
-File::File(FSPXI_File handle) : mHandle(handle)
+File::File(FSPXI_File handle) : mHandle(handle), mOffset(0)
 {
     mResult = FSPXI_GetFileSize(fspxiHandle, handle, &mSize);
 }
