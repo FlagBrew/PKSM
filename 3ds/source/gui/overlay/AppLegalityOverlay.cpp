@@ -34,19 +34,16 @@
 #include "base64.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-
-#include <unistd.h>
+#include <arpa/inet.h>
 #include <errno.h>
-
 #include <fcntl.h>
-#include <poll.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <poll.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace
 {
@@ -65,18 +62,15 @@ namespace
     }
 
     static in_addr serverAddr;
-    static char messageHolder[256];
     SwkbdCallbackResult parseIpCallback(void* user, const char** ppMessage, const char* text, size_t textlen)
     {
-        if(textlen < 7)
+        if (textlen < 7)
         {
-            std::string errMsg = i18n::localize("INPUT_TOO_SHORT");
-            std::copy(errMsg.begin(), errMsg.end(), std::begin(messageHolder));
-            *ppMessage = messageHolder;
+            *ppMessage = i18n::localize("INPUT_TOO_SHORT").c_str();
             return SWKBD_CALLBACK_CONTINUE;
         }
 
-        addrinfo *info;
+        addrinfo* info;
         if (getaddrinfo(text, NULL, NULL, &info) == 0)
         {
             serverAddr = ((sockaddr_in*)info->ai_addr)->sin_addr;
@@ -85,9 +79,7 @@ namespace
         }
         else
         {
-            std::string errMsg = i18n::localize("INPUT_INVALID");
-            std::copy(errMsg.begin(), errMsg.end(), std::begin(messageHolder));
-            *ppMessage = messageHolder;
+            *ppMessage = i18n::localize("INPUT_INVALID").c_str();
             return SWKBD_CALLBACK_CONTINUE;
         }
     }
@@ -127,24 +119,21 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
     buttons.push_back(std::make_unique<ClickButton>(204, 171, 108, 30,
         [this]() {
             char serverAddress[16] = {0};
-            std::string leftButton = i18n::localize("CANCEL");
-            std::string rightButton = i18n::localize("LEGALIZE");
             SwkbdState swkbd;
             swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, 15);
-            swkbdSetNumpadKeys(&swkbd, L'.', 0);
+            swkbdSetNumpadKeys(&swkbd, '.', 0);
             swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
             swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
             swkbdSetInitialText(&swkbd, "0.0.0.0");
-            swkbdSetButton(&swkbd, SWKBD_BUTTON_LEFT, leftButton.c_str(), false);
-            swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, rightButton.c_str(), true);
+            swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n::localize("LEGALIZE").c_str(), true);
             swkbdSetFilterCallback(&swkbd, parseIpCallback, nullptr);
             SwkbdButton button = swkbdInputText(&swkbd, serverAddress, 16);
-            if(button == SWKBD_BUTTON_NONE)
+            if (button == SWKBD_BUTTON_NONE)
             {
                 return true;
             }
 
-            int sockfd = socket(AF_INET,SOCK_STREAM,0);
+            int sockfd = socket(AF_INET, SOCK_STREAM, 0);
             if (sockfd < 0)
             {
                 Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
@@ -153,60 +142,60 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
 
             sockaddr_in s;
             memset(&s, 0, sizeof(sockaddr_in));
-            s.sin_family = AF_INET;
-            s.sin_port = htons(49000);
+            s.sin_family      = AF_INET;
+            s.sin_port        = htons(49000);
             s.sin_addr.s_addr = serverAddr.s_addr;
 
-            if (connect(sockfd, (sockaddr *)&s, sizeof(s)) < 0 )
+            if (connect(sockfd, (sockaddr*)&s, sizeof(s)) < 0)
             {
                 Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
                 close(sockfd);
                 return true;
             }
 
-            ssize_t dataTransmitted = 0;
-            std::string generationStr = std::string(this->pkm->generation());
+            ssize_t dataTransmitted    = 0;
+            std::string generationStr  = std::string(this->pkm->generation());
             u32 sendableGenerationSize = htonl(generationStr.size());
-            dataTransmitted = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
-            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
+            dataTransmitted            = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
+            if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
             dataTransmitted = send(sockfd, generationStr.c_str(), generationStr.size(), 0);
-            if(0 > dataTransmitted || u32(dataTransmitted)  < generationStr.size())
+            if (0 > dataTransmitted || u32(dataTransmitted) < generationStr.size())
             {
                 close(sockfd);
                 return true;
             }
 
             u32 sendableVersion = htonl(static_cast<u32>(static_cast<u8>(this->pkm->version())));
-            dataTransmitted = send(sockfd, &sendableVersion, sizeof(u32), 0);
-            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
+            dataTransmitted     = send(sockfd, &sendableVersion, sizeof(u32), 0);
+            if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
 
-            const u8* pkmData = this->pkm->rawData();
-            u32 pkmSize = this->pkm->getLength();
+            const u8* pkmData   = this->pkm->rawData();
+            u32 pkmSize         = this->pkm->getLength();
             u32 sendablePkmSize = htonl(pkmSize);
-            dataTransmitted = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
-            if(0 > dataTransmitted || u32(dataTransmitted)  < sizeof(u32))
+            dataTransmitted     = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
+            if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
             {
                 close(sockfd);
                 return true;
             }
             dataTransmitted = send(sockfd, pkmData, pkmSize, 0);
-            if(0 > dataTransmitted || u32(dataTransmitted)  < pkmSize)
+            if (0 > dataTransmitted || u32(dataTransmitted) < pkmSize)
             {
                 close(sockfd);
                 return true;
             }
 
             std::unique_ptr<u8[]> receivedBytes = std::make_unique<u8[]>(pkmSize);
-            dataTransmitted = recv(sockfd, receivedBytes.get(), pkmSize, 0);
-            if(0 > dataTransmitted || u32(dataTransmitted) < pkmSize)
+            dataTransmitted                     = recv(sockfd, receivedBytes.get(), pkmSize, 0);
+            if (0 > dataTransmitted || u32(dataTransmitted) < pkmSize)
             {
                 close(sockfd);
                 return true;

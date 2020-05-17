@@ -27,15 +27,15 @@
 #include "random.hpp"
 
 extern "C" {
-#include "pksm_random.h"
 #include "picoc.h"
+#include "pksm_random.h"
 
-void PKSM_Rand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+void PKSM_Rand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = randomNumbers() >> 1;
 }
 
-void PKSM_Srand(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+void PKSM_Srand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     randomNumbers.seed(Param[0]->Val->Integer);
 }

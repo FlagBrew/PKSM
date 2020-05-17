@@ -807,7 +807,7 @@ Result App::init(const std::string& execPath)
 
     if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
     {
-        return consoleDisplayError("cURL init falied", (Result) code);
+        return consoleDisplayError("cURL init falied", (Result)code);
     }
 
     if (R_FAILED(Fetch::initMulti()))
