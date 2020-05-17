@@ -17,21 +17,18 @@ public:
 
     uint32_t length(void) override;
 
-    uint32_t decode(void* buffer) override;
+    uint32_t decode(void* buffer, size_t bufferSize) override;
 
     bool stereo(void) override;
 
     uint32_t sampleRate(void) override;
 
-    uint32_t bufferSize(void) override;
-
 private:
-    uint64_t fillVorbisBuffer(char* bufferOut);
+    uint64_t fillVorbisBuffer(char* bufferOut, size_t bufferSize);
 
     FILE* f;
     OggVorbis_File vorbisFile;
     vorbis_info* vi;
-    const size_t buffSize = 8 * 4096;
 };
 
 int isVorbis(const std::string& in);

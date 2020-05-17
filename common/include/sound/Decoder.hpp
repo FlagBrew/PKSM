@@ -36,13 +36,12 @@ class Decoder
 public:
     virtual ~Decoder() {}
     bool good() { return initialized; }
-    virtual u32 pos()                = 0;
-    virtual u32 length()             = 0;
-    virtual u32 decode(void* buffer) = 0;
-    virtual bool stereo()            = 0;
-    virtual u32 sampleRate()         = 0;
-    virtual u32 bufferSize()         = 0;
-    static std::shared_ptr<Decoder> get(const std::string& fileName);
+    virtual u32 pos()                                   = 0;
+    virtual u32 length()                                = 0;
+    virtual u32 decode(void* buffer, size_t bufferSize) = 0;
+    virtual bool stereo()                               = 0;
+    virtual u32 sampleRate()                            = 0;
+    static std::unique_ptr<Decoder> get(const std::string& fileName);
 
 protected:
     bool initialized = false;

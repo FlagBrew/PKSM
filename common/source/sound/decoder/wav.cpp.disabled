@@ -52,9 +52,9 @@ uint32_t WavDecoder::length(void)
     return pWav->totalSampleCount;
 }
 
-uint32_t WavDecoder::decode(void* buffer)
+uint32_t WavDecoder::decode(void* buffer, size_t bufferSize)
 {
-    uint64_t out = drwav_read_s16(pWav, buffSize, reinterpret_cast<drwav_int16*>(buffer));
+    uint64_t out = drwav_read_s16(pWav, bufferSize, reinterpret_cast<drwav_int16*>(buffer));
     wavprogress += out;
     return out;
 }
@@ -67,9 +67,4 @@ bool WavDecoder::stereo(void)
 uint32_t WavDecoder::sampleRate(void)
 {
     return pWav->sampleRate;
-}
-
-uint32_t WavDecoder::bufferSize(void)
-{
-    return buffSize;
 }

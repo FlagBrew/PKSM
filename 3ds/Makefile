@@ -151,7 +151,7 @@ CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -mword-relocations \
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
-CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++2a
+CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)

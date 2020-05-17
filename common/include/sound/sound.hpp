@@ -36,11 +36,10 @@ namespace Sound
     void registerEffect(const std::string& effectName, const std::string& fileName);
     void exit(void);
 
-    void startBGM(void);
-    void playEffect(const std::string& effectName);
+    void start(void);
+    void stop(void);
 
-    // Should be called by the main thread. May contain implementation-specific stuff that needs to happen there
-    void update(void);
+    void playEffect(const std::string& effectName);
 }
 
 #endif

@@ -60,9 +60,9 @@ uint32_t VorbisDecoder::length(void)
     return ov_pcm_total(&vorbisFile, -1);
 }
 
-uint32_t VorbisDecoder::decode(void* buffer)
+uint32_t VorbisDecoder::decode(void* buffer, size_t bufferSize)
 {
-    return fillVorbisBuffer(reinterpret_cast<char*>(buffer));
+    return fillVorbisBuffer(reinterpret_cast<char*>(buffer), bufferSize);
 }
 
 bool VorbisDecoder::stereo(void)
@@ -73,11 +73,6 @@ bool VorbisDecoder::stereo(void)
 uint32_t VorbisDecoder::sampleRate(void)
 {
     return vi->rate;
-}
-
-uint32_t VorbisDecoder::bufferSize(void)
-{
-    return buffSize;
 }
 
 int isVorbis(const std::string& in)
@@ -96,10 +91,10 @@ int isVorbis(const std::string& in)
     return err;
 }
 
-uint64_t VorbisDecoder::fillVorbisBuffer(char* bufferOut)
+uint64_t VorbisDecoder::fillVorbisBuffer(char* bufferOut, size_t bufferSize)
 {
     uint64_t samplesRead = 0;
-    int samplesToRead    = buffSize;
+    int samplesToRead    = bufferSize;
     int current_section;
 
     while (samplesToRead > 0)

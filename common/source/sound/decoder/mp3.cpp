@@ -56,12 +56,6 @@ Mp3Decoder::Mp3Decoder(const std::string& filename)
     mpg123_format_none(mh);
     mpg123_format(mh, rate, channels, encoding);
 
-    /*
-     * Buffer could be almost any size here, mpg123_outblock() is just some
-     * recommendation. The size should be a multiple of the PCM frame size.
-     */
-    buffSize = mpg123_outblock(mh) * 16;
-
     initialized = true;
 }
 
@@ -83,10 +77,10 @@ uint32_t Mp3Decoder::length(void)
     return mpg123_length(mh);
 }
 
-uint32_t Mp3Decoder::decode(void* buffer)
+uint32_t Mp3Decoder::decode(void* buffer, size_t bufferSize)
 {
     size_t done = 0;
-    mpg123_read(mh, reinterpret_cast<unsigned char*>(buffer), buffSize, &done);
+    mpg123_read(mh, reinterpret_cast<unsigned char*>(buffer), bufferSize, &done);
     return done / (sizeof(int16_t));
 }
 
@@ -98,9 +92,4 @@ bool Mp3Decoder::stereo(void)
 uint32_t Mp3Decoder::sampleRate(void)
 {
     return rate;
-}
-
-uint32_t Mp3Decoder::bufferSize(void)
-{
-    return buffSize;
 }

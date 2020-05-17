@@ -41,17 +41,14 @@ public:
 
     uint32_t length(void) override;
 
-    uint32_t decode(void* buffer) override;
+    uint32_t decode(void* buffer, size_t bufferSize) override;
 
     bool stereo(void) override;
 
     uint32_t sampleRate(void) override;
 
-    uint32_t bufferSize(void) override;
-
 private:
     mpg123_handle* mh;
-    size_t buffSize;
     uint32_t rate;
     uint8_t channels;
 };

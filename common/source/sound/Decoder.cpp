@@ -33,7 +33,7 @@
 // #include "vorbis.hpp"
 // #include "wav.hpp"
 
-std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
+std::unique_ptr<Decoder> Decoder::get(const std::string& fileName)
 {
     FILE* fp              = fopen(fileName.c_str(), "r");
     std::string extension = fileName.substr(fileName.find_last_of(".") + 1);
@@ -53,7 +53,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     /* if (!strncmp(magic, "RIFF", 4))
     {
         // fprintf(stderr, "Decoder: Using wav.");
-        auto wavdec = std::make_shared<WavDecoder>(fileName);
+        auto wavdec = std::make_unique<WavDecoder>(fileName);
         if (wavdec->good())
             return wavdec;
     }
@@ -63,7 +63,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
         if (isVorbis(fileName) == 0)
         {
             // fprintf(stderr, "Decoder: Using ogg vorbis");
-            auto vorbisdec = std::make_shared<VorbisDecoder>(fileName);
+            auto vorbisdec = std::make_unique<VorbisDecoder>(fileName);
             if (vorbisdec->good())
                 return vorbisdec;
         }
@@ -74,7 +74,7 @@ std::shared_ptr<Decoder> Decoder::get(const std::string& fileName)
     if (!strncasecmp(extension.c_str(), "MP3", 3))
     {
         // fprintf(stderr, "Decoder: Using mpeg3");
-        auto mp3dec = std::make_shared<Mp3Decoder>(fileName);
+        auto mp3dec = std::make_unique<Mp3Decoder>(fileName);
         if (mp3dec->good())
             return mp3dec;
     }

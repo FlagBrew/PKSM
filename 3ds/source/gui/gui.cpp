@@ -825,7 +825,7 @@ void Gui::frameClean()
 void Gui::mainLoop(void)
 {
     bool exit = false;
-    Sound::startBGM();
+    Sound::start();
     while (aptMainLoop() && !exit)
     {
         hidScanInput();
@@ -884,7 +884,6 @@ void Gui::mainLoop(void)
         }
 
         textBuffer->clear();
-        Sound::update();
     }
 }
 
