@@ -126,6 +126,9 @@ all`.
   [WinterMute](https://github.com/WinterMute) for citro2d and devkitARM
 * [kamronbatman](https://github.com/kamronbatman) and ProjectPokemon.org for
   EventsGallery
+* [nayuki](https://github.com/nayuki) for [QR-Code-generator](https://github.com/nayuki/QR-Code-generator)
+* [jpoirier](https://github.com/jpoirier), [zsaleeba](https://gitlab.com/zsaleeba), and [Jan Švejda](https://gitlab.com/jenda.svejda) for the base and most improvements in [our picoC fork](https://github.com/FlagBrew/picoc)
+* [dlbeer](https://github.com/dlbeer) for [quirc](https://github.com/dlbeer/quirc)
 * All the translators
 * Subject21_J and all the submitters for PKSM's icon
 * Allen, piepie62, SpiredMoth and all the contributors for the documentation

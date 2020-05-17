@@ -24,33 +24,31 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BASE64_HPP
-#define BASE64_HPP
+#ifndef APPLEGALITYOVERLAY_HPP
+#define APPLEGALITYOVERLAY_HPP
 
-#include <string>
-#include <vector>
+#include "Button.hpp"
+#include "Configuration.hpp"
+#include "Hid.hpp"
+#include "ReplaceableScreen.hpp"
+#include "colors.hpp"
 
-std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
-inline std::vector<unsigned char> base64_decode(const std::string_view& data)
+class PKX;
+
+class AppLegalityOverlay : public ReplaceableScreen
 {
-    return base64_decode(data.data(), data.size());
-}
-inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
-{
-    return base64_decode((char*)data, input_length);
-}
-std::string base64_encode(const char* data, size_t input_length);
-inline std::string base64_encode(const unsigned char* data, size_t input_length)
-{
-    return base64_encode((char*)data, input_length);
-}
-inline std::string base64_encode(const std::vector<char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
-inline std::string base64_encode(const std::vector<unsigned char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
+public:
+    AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    ~AppLegalityOverlay() {}
+    void drawTop() const override {} // Handled by ImageViewOverlay
+    bool replacesTop() const override { return false; }
+    void drawBottom() const override;
+    bool handlesUpdate() const override { return true; }
+    void update(touchPosition* touch) override;
+
+private:
+    std::shared_ptr<PKX> pkm;
+    std::vector<std::unique_ptr<Button>> buttons;
+};
 
 #endif

@@ -51,6 +51,12 @@ template <typename T>
 struct QRModeTraits;
 
 template <>
+struct QRModeTraits<PKX>
+{
+    using ReturnType = std::unique_ptr<PKX>;
+};
+
+template <>
 struct QRModeTraits<PK4>
 {
     using ReturnType = std::unique_ptr<PKX>;
@@ -153,6 +159,31 @@ public:
         if (data.empty())
         {
             return (typename Traits::ReturnType){};
+        }
+
+        if constexpr (std::is_same_v<Mode, PKX>)
+        {
+            std::string strData{data.begin(), data.end()};
+            auto firstColon = strData.find_first_of(':');
+            auto lastColon  = strData.find_last_of(':');
+            if (firstColon == lastColon)
+            {
+                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
+                return nullptr;
+            }
+            Generation g = Generation::fromString(((std::string_view)strData).substr(0, firstColon));
+            if (g == Generation::UNUSED)
+            {
+                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
+                return nullptr;
+            }
+            auto pkmData = base64_decode(((std::string_view)strData).substr(lastColon + 1));
+            if (pkmData.empty())
+            {
+                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
+                return nullptr;
+            }
+            return PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
         }
 
         if constexpr (std::is_same_v<Mode, PK4> || std::is_same_v<Mode, PK5> || std::is_same_v<Mode, PK8> || std::is_same_v<Mode, WC4> ||

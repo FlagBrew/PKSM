@@ -75,7 +75,8 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/source/utils \
 					../core/source/wcx \
 					../core/swshcrypto \
-					../external/picoc/source/interpreter
+					../external/picoc/source/interpreter \
+					../external/qrgen
 
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
@@ -105,7 +106,8 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/wcx \
 					../core/memecrypto \
 					../core/swshcrypto \
-					../external/picoc/include
+					../external/picoc/include \
+					../external/qrgen
 
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs

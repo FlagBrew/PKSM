@@ -24,33 +24,32 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BASE64_HPP
-#define BASE64_HPP
+#ifndef IMAGEVIEWOVERLAY_HPP
+#define IMAGEVIEWOVERLAY_HPP
 
-#include <string>
-#include <vector>
+#include "Configuration.hpp"
+#include "Hid.hpp"
+#include "ReplaceableScreen.hpp"
+#include "colors.hpp"
 
-std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
-inline std::vector<unsigned char> base64_decode(const std::string_view& data)
+class PKX;
+
+class ImageViewOverlay : public ReplaceableScreen
 {
-    return base64_decode(data.data(), data.size());
-}
-inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
-{
-    return base64_decode((char*)data, input_length);
-}
-std::string base64_encode(const char* data, size_t input_length);
-inline std::string base64_encode(const unsigned char* data, size_t input_length)
-{
-    return base64_encode((char*)data, input_length);
-}
-inline std::string base64_encode(const std::vector<char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
-inline std::string base64_encode(const std::vector<unsigned char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
+public:
+    ImageViewOverlay(ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background = COLOR_WHITE);
+    ImageViewOverlay(ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background = COLOR_WHITE);
+    ~ImageViewOverlay();
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override {}
+    bool handlesUpdate() const override { return false; }
+    void update(touchPosition*) {}
+
+private:
+    C2D_Image image;
+    PKSM_Color bg;
+    bool deleteImage;
+};
 
 #endif

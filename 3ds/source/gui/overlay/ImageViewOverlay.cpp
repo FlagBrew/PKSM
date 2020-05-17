@@ -24,33 +24,34 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BASE64_HPP
-#define BASE64_HPP
+#include "ImageViewOverlay.hpp"
+#include "gui.hpp"
 
-#include <string>
-#include <vector>
-
-std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
-inline std::vector<unsigned char> base64_decode(const std::string_view& data)
+ImageViewOverlay::ImageViewOverlay(ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), image(image), bg(background), deleteImage(false)
 {
-    return base64_decode(data.data(), data.size());
-}
-inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
-{
-    return base64_decode((char*)data, input_length);
-}
-std::string base64_encode(const char* data, size_t input_length);
-inline std::string base64_encode(const unsigned char* data, size_t input_length)
-{
-    return base64_encode((char*)data, input_length);
-}
-inline std::string base64_encode(const std::vector<char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
-inline std::string base64_encode(const std::vector<unsigned char>& data)
-{
-    return base64_encode(data.data(), data.size());
 }
 
-#endif
+ImageViewOverlay::ImageViewOverlay(ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), image(image), bg(background), deleteImage(true)
+{
+}
+
+ImageViewOverlay::~ImageViewOverlay()
+{
+    if (deleteImage)
+    {
+        C3D_TexDelete(image.tex);
+        delete image.tex;
+        delete image.subtex;
+    }
+}
+
+void ImageViewOverlay::drawTop() const
+{
+    Gui::drawSolidRect(0, 0, 400, 240, bg);
+    float scale = std::min(390.0f / image.subtex->width, 230.0f / image.subtex->height);
+    float x     = (400.0f - scale * image.subtex->width) / 2;
+    float y     = (240.0f - scale * image.subtex->width) / 2;
+    Gui::drawImageAt(image, x, y, nullptr, scale, scale);
+}
