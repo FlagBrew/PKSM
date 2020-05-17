@@ -525,6 +525,8 @@ void Archive::exit(void)
 {
     sd().close();
     data().close();
+
+    svcCloseHandle(fspxiHandle);
 }
 
 Archive& Archive::sd()
