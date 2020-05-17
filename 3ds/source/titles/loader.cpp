@@ -301,7 +301,8 @@ void TitleLoader::reloadTitleIds(void)
 {
     for (const auto& version : searchVersions)
     {
-        ctrTitleIds.emplace_back(std::stoull(Configuration::getInstance().titleId(version), nullptr, 16));
+        std::string id = Configuration::getInstance().titleId(version);
+        ctrTitleIds.emplace_back(strtoull(id.c_str(), nullptr, 16));
     }
 }
 

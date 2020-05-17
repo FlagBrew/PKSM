@@ -39,6 +39,9 @@ namespace
 
     constexpr FS_ExtSaveDataInfo PKSM_ARCHIVE_DATA = {MEDIATYPE_SD, 0, 0, UNIQUE_ID, 0};
 
+    Archive sdArchive;
+    Archive dataArchive;
+
     void moveOldBackups()
     {
         STDirectory d("/3ds/PKSM/backup");
@@ -157,6 +160,22 @@ Archive::Archive(FS_ArchiveID id, FS_Path path, bool pxi) : mPXI(pxi)
     {
         mHandle = 0;
     }
+}
+
+Archive::Archive(Archive&& other) : mHandle(other.mHandle), mResult(other.mResult), mPXI(other.mPXI)
+{
+    // Reset other's handle so it doesn't close this one.
+    other.mHandle = 0;
+}
+
+Archive& Archive::operator=(Archive&& other)
+{
+    mHandle = other.mHandle;
+    mPXI    = other.mPXI;
+    mResult = other.mResult;
+    // Reset other's handle so it doesn't close this one.
+    other.mHandle = 0;
+    return *this;
 }
 
 Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
@@ -442,8 +461,11 @@ Result Archive::init(const std::string& execPath)
     Result res = 0;
     if (R_FAILED(res = svcControlService(SERVICEOP_STEAL_CLIENT_SESSION, &fspxiHandle, "PxiFS0")))
         return res;
+
+    sdArchive = Archive{ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""), false};
     if (R_FAILED(sd().result()))
         return res;
+    dataArchive = extdata(UNIQUE_ID, false);
     if (R_FAILED(data().result()))
     {
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
@@ -507,20 +529,18 @@ void Archive::exit(void)
 
 Archive& Archive::sd()
 {
-    static Archive archive{ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""), false};
-    return archive;
+    return sdArchive;
 }
 
 Archive& Archive::data()
 {
-    static Archive archive = extdata(UNIQUE_ID, false);
-    return archive;
+    return dataArchive;
 }
 
 Archive Archive::save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
 {
     const u32 path[3] = {mediatype, lowid, highid};
-    return Archive{ARCHIVE_USER_SAVEDATA, {PATH_BINARY, 12, path}, pxi};
+    return Archive{ARCHIVE_USER_SAVEDATA, {PATH_BINARY, sizeof(path), path}, pxi};
 }
 
 Archive Archive::rawSave(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
@@ -534,7 +554,7 @@ Archive Archive::rawSave(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi
 Archive Archive::extdata(u32 extdata, bool pxi)
 {
     const u32 path[3] = {MEDIATYPE_SD, extdata, 0};
-    return Archive{ARCHIVE_EXTDATA, {PATH_BINARY, 12, path}, pxi};
+    return Archive{ARCHIVE_EXTDATA, {PATH_BINARY, sizeof(path), path}, pxi};
 }
 
 Result Archive::close()
@@ -574,20 +594,20 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
     }
     else
     {
-        smdh    = new smdh_s;
-        auto in = sd().file(execPath, FS_OPEN_READ);
+        smdh     = new smdh_s;
+        FILE* in = fopen(execPath.c_str(), "rb");
         if (in)
         {
-            in->seek(0x20, SEEK_SET);
+            fseek(in, 0x20, SEEK_SET);
             u32 pos;
-            in->read(&pos, sizeof(pos));
-            in->seek(pos, SEEK_SET);
-            in->read(smdh, sizeof(smdh_s));
-            in->close();
+            fread(&pos, sizeof(pos), 1, in);
+            fseek(in, pos, SEEK_SET);
+            fread(smdh, sizeof(smdh_s), 1, in);
+            fclose(in);
         }
         else
         {
-            return sd().result();
+            return -errno;
         }
     }
 

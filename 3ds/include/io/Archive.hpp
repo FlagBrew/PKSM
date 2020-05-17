@@ -41,6 +41,10 @@ public:
     Archive(FS_ArchiveID id, FS_Path path, bool pxi);
     Archive() : mHandle(0), mResult(-1), mPXI(false) {}
     ~Archive() { close(); }
+    Archive(const Archive&) = delete;
+    Archive& operator=(const Archive&) = delete;
+    Archive(Archive&&);
+    Archive& operator=(Archive&&);
 
     static Result init(const std::string& execPath);
     static void exit(void);
