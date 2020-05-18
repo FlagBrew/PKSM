@@ -503,14 +503,14 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                 {
                     // If the first header is garbage FF, we have to search for the second. It can only be at one of these possible sizes + 0x200 (for
                     // the size of the first header)
-                    static constexpr u32 POSSIBLE_SAVE_SIZES = {
+                    static constexpr u32 POSSIBLE_SAVE_SIZES[] = {
                         0x400,   // 8kbit
                         0x2000,  // 64kbit
                         0x8000,  // 256kbit
                         0x10000, // 512kbit
                         0x20000, // 1024kbit/1Mbit
                     };
-                    for (constexpr auto& size : POSSIBLE_SAVE_SIZES)
+                    for (auto& size : POSSIBLE_SAVE_SIZES)
                     {
                         // Go to the possible offset
                         in->seek(size + sizeof(GbaHeader), SEEK_SET);
@@ -841,7 +841,7 @@ void TitleLoader::saveToTitle(bool ask)
                                 // If the top save is uninitialized, grab the bottom save's header and copy it to the top's. Then write data
                                 if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                                 {
-                                    static constexpr u32 POSSIBLE_SAVE_SIZES = {
+                                    static constexpr u32 POSSIBLE_SAVE_SIZES[] = {
                                         0x400,   // 8kbit
                                         0x2000,  // 64kbit
                                         0x8000,  // 256kbit
@@ -849,7 +849,7 @@ void TitleLoader::saveToTitle(bool ask)
                                         0x20000, // 1024kbit/1Mbit
                                     };
                                     // Search for bottom header
-                                    for (constexpr auto& size : POSSIBLE_SAVE_SIZES)
+                                    for (auto& size : POSSIBLE_SAVE_SIZES)
                                     {
                                         // Go to the possible offset
                                         out->seek(size + sizeof(GbaHeader), SEEK_SET);
