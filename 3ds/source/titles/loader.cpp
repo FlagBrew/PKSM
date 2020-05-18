@@ -841,17 +841,29 @@ void TitleLoader::saveToTitle(bool ask)
                                 // If the top save is uninitialized, grab the bottom save's header and copy it to the top's. Then write data
                                 if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                                 {
-                                    // Search for the magic
-                                    out->read(header1->magic, sizeof(GbaHeader::magic));
-                                    while (R_SUCCEEDED(out->result()) && !memcmp(header1->magic, ".SAV", 4))
+                                    static constexpr u32 POSSIBLE_SAVE_SIZES = {
+                                        0x400,   // 8kbit
+                                        0x2000,  // 64kbit
+                                        0x8000,  // 256kbit
+                                        0x10000, // 512kbit
+                                        0x20000, // 1024kbit/1Mbit
+                                    };
+                                    // Search for bottom header
+                                    for (constexpr auto& size : POSSIBLE_SAVE_SIZES)
                                     {
-                                        out->seek(0x200 - sizeof(GbaHeader::magic), SEEK_CUR);
-                                        out->read(header1->magic, sizeof(GbaHeader::magic));
+                                        // Go to the possible offset
+                                        in->seek(size + sizeof(GbaHeader), SEEK_SET);
+                                        // Read what may be a header
+                                        in->read(header1.get(), sizeof(GbaHeader));
+                                        // If it's a header, we found it! Break.
+                                        if (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
+                                        {
+                                            break;
+                                        }
                                     }
                                     if (R_SUCCEEDED(out->result()))
                                     {
                                         // Doesn't matter whether this CMAC is valid or not. We just need to update it
-                                        out->read(&header1->padding1, sizeof(GbaHeader) - sizeof(GbaHeader::magic));
                                         out->seek(0, SEEK_SET);
                                         // Increment save count
                                         header1->savesMade++;
