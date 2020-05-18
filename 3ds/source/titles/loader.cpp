@@ -852,11 +852,11 @@ void TitleLoader::saveToTitle(bool ask)
                                     for (constexpr auto& size : POSSIBLE_SAVE_SIZES)
                                     {
                                         // Go to the possible offset
-                                        in->seek(size + sizeof(GbaHeader), SEEK_SET);
+                                        out->seek(size + sizeof(GbaHeader), SEEK_SET);
                                         // Read what may be a header
-                                        in->read(header1.get(), sizeof(GbaHeader));
+                                        out->read(header1.get(), sizeof(GbaHeader));
                                         // If it's a header, we found it! Break.
-                                        if (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
+                                        if (R_SUCCEEDED(out->result()) && !memcmp(header1->magic, ".SAV", 4))
                                         {
                                             break;
                                         }
