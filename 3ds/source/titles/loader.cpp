@@ -501,16 +501,30 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                 // Save initialized only in bottom save. Only check it.
                 else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                 {
-                    // If the first header is garbage FF, we have to search for the second
-                    in->read(header1->magic, sizeof(GbaHeader::magic));
-                    while (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
+                    // If the first header is garbage FF, we have to search for the second. It can only be at one of these possible sizes + 0x200 (for
+                    // the size of the first header)
+                    static constexpr u32 POSSIBLE_SAVE_SIZES = {
+                        0x400,   // 8kbit
+                        0x2000,  // 64kbit
+                        0x8000,  // 256kbit
+                        0x10000, // 512kbit
+                        0x20000, // 1024kbit/1Mbit
+                    };
+                    for (constexpr auto& size : POSSIBLE_SAVE_SIZES)
                     {
-                        in->seek(0x200 - sizeof(GbaHeader::magic), SEEK_CUR);
-                        in->read(header1->magic, sizeof(GbaHeader::magic));
+                        // Go to the possible offset
+                        in->seek(size + sizeof(GbaHeader), SEEK_SET);
+                        // Read what may be a header
+                        in->read(header1.get(), sizeof(GbaHeader));
+                        // If it's a header, we found it! Break.
+                        if (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
+                        {
+                            break;
+                        }
                     }
                     if (R_SUCCEEDED(in->result()))
                     {
-                        in->read(&header1->padding1, sizeof(GbaHeader) - sizeof(GbaHeader::magic));
+                        // Seek back to the beginning of this header
                         in->seek(-0x200, SEEK_CUR);
                         auto cmac    = calcGbaCMAC(*in, *header1);
                         bool invalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
@@ -530,7 +544,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                             in->close();
                         }
                     }
-                    // Reached end of file? Something weird happened; we can't handle that
+                    // Reached end of file? No header present at all? Something weird happened; we can't handle that
                     else
                     {
                         data = std::shared_ptr<u8[]>(new u8[1]);
