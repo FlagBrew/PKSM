@@ -38,6 +38,8 @@ namespace i18n
 
     const std::string& pouch(Language lang, Sav::Pouch pouch);
     const std::string& badTransfer(Language lang, Sav::BadTransferReason reason);
+
+    const std::string& language(Language lang);
 }
 
 #endif

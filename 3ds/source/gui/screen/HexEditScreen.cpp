@@ -255,10 +255,6 @@ bool HexEditScreen::editNumber(bool high, bool up)
         {
             (*chosen) |= (original - 1) << 4;
         }
-        if (!checkValue())
-        {
-            *chosen = oldValue;
-        }
     }
     else
     {
@@ -270,10 +266,10 @@ bool HexEditScreen::editNumber(bool high, bool up)
         {
             (*chosen)--;
         }
-        if (!checkValue())
-        {
-            *chosen = oldValue;
-        }
+    }
+    if (!checkValue())
+    {
+        *chosen = oldValue;
     }
     return true;
 }
@@ -427,7 +423,6 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 {
                     return std::make_pair(&i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
-
             case 0x3A:
                 if (pkm->generation() == Generation::LGPE)
                 {
@@ -706,7 +701,9 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x37:
                 return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
-            case 0x38 ... 0x3B:
+            case 0x38 ... 0x3A:
+                return std::make_pair(&i18n::localize("IVS"), NORMAL);
+            case 0x3B:
                 return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x3C ... 0x3F:
                 return std::make_pair(&i18n::localize("HOENN_RIBBONS"), NORMAL);
@@ -941,29 +938,14 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
     for (u32 i = 0; i < pkm->getLength(); i++)
     {
         buttons.push_back({});
-        auto edit = [i, this](bool high, bool up) {
-            editNumber(high, up);
-            for (size_t j = 4; j < buttons[i].size(); j++)
-            {
-                if (buttons[i][j]->isToggle())
-                {
-                    buttons[i][j]->setToggled((this->pkm->rawData()[i] >> buttons[i][j]->bit()) & 0x1);
-                }
-                else if (buttons[i][j]->isMark())
-                {
-                    buttons[i][j]->setColor((LittleEndian::convertTo<u16>(this->pkm->rawData() + 0x16) >> buttons[i][j]->bit()) & 0x3);
-                }
-            }
-            return true;
-        };
-        buttons[i].push_back(
-            std::make_unique<HexEditButton>(145, 33, 13, 13, [edit]() { return edit(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(
-            std::make_unique<HexEditButton>(161, 33, 13, 13, [edit]() { return edit(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
-        buttons[i].push_back(
-            std::make_unique<HexEditButton>(145, 75, 13, 13, [edit]() { return edit(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
-        buttons[i].push_back(
-            std::make_unique<HexEditButton>(161, 75, 13, 13, [edit]() { return edit(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(std::make_unique<HexEditButton>(
+            145, 33, 13, 13, [this]() { return editNumber(true, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(std::make_unique<HexEditButton>(
+            161, 33, 13, 13, [this]() { return editNumber(false, true); }, ui_sheet_button_plus_small_idx, "", false, 0));
+        buttons[i].push_back(std::make_unique<HexEditButton>(
+            145, 75, 13, 13, [this]() { return editNumber(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
+        buttons[i].push_back(std::make_unique<HexEditButton>(
+            161, 75, 13, 13, [this]() { return editNumber(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
         {
             switch (i)
@@ -1032,6 +1014,12 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 case 0x30 ... 0x35:
                 // Distribution Super Training (???)
                 case 0x3A:
+                    // LGPE height byte
+                    if (pkm->generation() == Generation::LGPE && i == 0x3A)
+                    {
+                        currRibbon += 8;
+                        break;
+                    }
                     for (int j = 0; j < 4; j++)
                     {
                         buttons[i].pop_back();
@@ -1086,7 +1074,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 case 0xDE:
-                    if (pkm->generation() == Generation::SEVEN)
+                    if (pkm->generation() != Generation::SIX)
                     {
                         for (int j = 0; j < 4; j++)
                         {
@@ -1449,7 +1437,7 @@ void HexEditScreen::update(touchPosition* touch)
         {
             if (timer == 0)
             {
-                pkm->rawData()[hid.fullIndex()]++;
+                editNumber(false, true);
                 timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
                 timerCount++;
             }
@@ -1458,9 +1446,22 @@ void HexEditScreen::update(touchPosition* touch)
         {
             if (timer == 0)
             {
-                pkm->rawData()[hid.fullIndex()]--;
+                editNumber(false, false);
                 timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
                 timerCount++;
+            }
+        }
+
+        // Recolor buttons
+        for (auto& button : buttons[hid.fullIndex()])
+        {
+            if (button->isToggle())
+            {
+                button->setToggled((this->pkm->rawData()[i] >> button->bit()) & 0x1);
+            }
+            else if (button->isMark())
+            {
+                button->setColor((LittleEndian::convertTo<u16>(this->pkm->rawData() + 0x16) >> button->bit()) & 0x3);
             }
         }
     }
@@ -1491,7 +1492,8 @@ void HexEditScreen::update(touchPosition* touch)
 
 void HexEditScreen::drawMeaning() const
 {
-    size_t i = hid.fullIndex();
+    static constexpr const char* languages[] = {"日本語", "English", "Français", "Deutsch", "Italiano", "Español", "中文", "한국어"};
+    size_t i                                 = hid.fullIndex();
     switch (pkm->generation())
     {
         case Generation::FOUR:
@@ -1513,6 +1515,9 @@ void HexEditScreen::drawMeaning() const
                 case 0x15:
                     Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
                         TextPosY::TOP);
+                    break;
+                case 0x17:
+                    Gui::text(i18n::localize(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28 ... 0x2F:
                     Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1685,6 +1690,9 @@ void HexEditScreen::drawMeaning() const
                     Gui::text(data, 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                 }
                 break;
+                case 0xE3:
+                    Gui::text(i18n::localize(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
             }
             break;
         case Generation::UNUSED:

@@ -473,18 +473,18 @@ void ConfigScreen::drawBottom() const
 
     if (currentTab == 0)
     {
-        Gui::text("日本語", 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("English", 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Français", 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Deutsch", 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Italiano", 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Español", 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::JPN), 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::ENG), 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::FRE), 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::GER), 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::ITA), 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::SPA), 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text("中文", 199, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("한국어", 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Nederlands", 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Português", 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Română", 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::CHS), 199, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::KOR), 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::NL), 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::PT), 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {

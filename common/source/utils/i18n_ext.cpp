@@ -130,4 +130,46 @@ namespace i18n
         }
         return emptyString;
     }
+
+    const std::string& language(Language lang)
+    {
+        static const std::string JPN = "日本語";
+        static const std::string ENG = "English";
+        static const std::string FRE = "Français";
+        static const std::string GER = "Deutsch";
+        static const std::string ITA = "Italiano";
+        static const std::string SPA = "Español";
+        static const std::string CHN = "中文";
+        static const std::string KOR = "한국어";
+        static const std::string NL  = "Nederlands";
+        static const std::string PT  = "Português";
+        static const std::string RO  = "Română";
+        switch (lang)
+        {
+            case Language::JPN:
+                return JPN;
+            case Language::ENG:
+                return ENG;
+            case Language::FRE:
+                return FRE;
+            case Language::GER:
+                return GER;
+            case Language::ITA:
+                return ITA;
+            case Language::SPA:
+                return SPA;
+            case Language::CHS:
+            case Language::CHT:
+                return CHN;
+            case Language::KOR:
+                return KOR;
+            case Language::NL:
+                return NL;
+            case Language::PT:
+                return PT;
+            case Language::RO:
+                return RO;
+        }
+        return emptyString;
+    }
 }
