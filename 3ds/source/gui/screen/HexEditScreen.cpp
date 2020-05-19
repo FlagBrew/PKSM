@@ -853,7 +853,9 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
             case 0x37:
                 return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
-            case 0x38 ... 0x3B:
+            case 0x38 ... 0x3A:
+                return std::make_pair(&i18n::localize("IVS"), NORMAL);
+            case 0x3B:
                 return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
             case 0x3C ... 0x3F:
                 return std::make_pair(&i18n::localize("HOENN_RIBBONS"), NORMAL);
@@ -1492,8 +1494,7 @@ void HexEditScreen::update(touchPosition* touch)
 
 void HexEditScreen::drawMeaning() const
 {
-    static constexpr const char* languages[] = {"日本語", "English", "Français", "Deutsch", "Italiano", "Español", "中文", "한국어"};
-    size_t i                                 = hid.fullIndex();
+    size_t i = hid.fullIndex();
     switch (pkm->generation())
     {
         case Generation::FOUR:
