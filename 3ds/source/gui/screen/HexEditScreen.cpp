@@ -1518,7 +1518,7 @@ void HexEditScreen::drawMeaning() const
                         TextPosY::TOP);
                     break;
                 case 0x17:
-                    Gui::text(i18n::localize(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::language(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28 ... 0x2F:
                     Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x28) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1692,7 +1692,7 @@ void HexEditScreen::drawMeaning() const
                 }
                 break;
                 case 0xE3:
-                    Gui::text(i18n::localize(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::language(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
