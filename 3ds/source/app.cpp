@@ -579,18 +579,21 @@ namespace
         struct
         {
             bool exists;
-            struct stat myStat;
+            u64 mtime;
         } fileInfo, checksumFileInfo;
+        struct stat dummy;
 
         std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
         std::string checksumPath = path + ".sha";
         std::array<u8, SHA256_BLOCK_SIZE> ret;
 
-        fileInfo.exists         = (stat(path.c_str(), &fileInfo.myStat) == 0);
-        checksumFileInfo.exists = (stat(checksumPath.c_str(), &checksumFileInfo.myStat) == 0);
+        fileInfo.exists         = (stat(path.c_str(), &dummy) == 0);
+        archive_getmtime(path.c_str(), &fileInfo.mtime);
+        checksumFileInfo.exists = (stat(checksumPath.c_str(), &dummy) == 0);
+        archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
 
         // Either both exist and file was modified before checksum file, or checksum file exists and file doesn't
-        if (checksumFileInfo.exists && (!fileInfo.exists || (fileInfo.exists && fileInfo.myStat.st_ctime <= checksumFileInfo.myStat.st_ctime)))
+        if (checksumFileInfo.exists && (!fileInfo.exists || (fileInfo.exists && fileInfo.mtime <= checksumFileInfo.mtime)))
         {
             FILE* correctSum = fopen(checksumPath.c_str(), "rb");
             if (correctSum)
