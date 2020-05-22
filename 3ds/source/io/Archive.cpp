@@ -170,6 +170,7 @@ Archive::Archive(Archive&& other) : mHandle(other.mHandle), mResult(other.mResul
 
 Archive& Archive::operator=(Archive&& other)
 {
+    close();
     mHandle = other.mHandle;
     mPXI    = other.mPXI;
     mResult = other.mResult;
