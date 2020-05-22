@@ -170,12 +170,15 @@ Archive::Archive(Archive&& other) : mHandle(other.mHandle), mResult(other.mResul
 
 Archive& Archive::operator=(Archive&& other)
 {
-    close();
-    mHandle = other.mHandle;
-    mPXI    = other.mPXI;
-    mResult = other.mResult;
-    // Reset other's handle so it doesn't close this one.
-    other.mHandle = 0;
+    if (&other != this)
+    {
+        close();
+        mHandle = other.mHandle;
+        mPXI    = other.mPXI;
+        mResult = other.mResult;
+        // Reset other's handle so it doesn't close this one.
+        other.mHandle = 0;
+    }
     return *this;
 }
 
