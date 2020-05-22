@@ -153,6 +153,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
                 auto out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
                 if (out)
                 {
+                    mGba      = true;
                     loadTitle = true;
                     mIcon     = loadTextureIcon(smdh);
                     out->close();
