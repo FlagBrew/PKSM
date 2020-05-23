@@ -1122,11 +1122,21 @@ bool TitleLoader::scanCard()
             res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
             if (R_SUCCEEDED(res) && count > 0)
             {
+                static constexpr std::array<u64, 8> originalIDs = {
+                    0x0004000000055D00, // X
+                    0x0004000000055E00, // Y
+                    0x000400000011C400, // OR
+                    0x000400000011C500, // AS
+                    0x0004000000164800, // SN
+                    0x0004000000175E00, // MN
+                    0x00040000001B5000, // US
+                    0x00040000001B5100  // UM
+                };
                 ret = true;
                 u64 id;
                 res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
                 // check if this id is in our list
-                if (R_SUCCEEDED(res) && std::find(ctrTitleIds.begin(), ctrTitleIds.end(), id) != ctrTitleIds.end())
+                if (R_SUCCEEDED(res) && std::find(originalIDs.begin(), originalIDs.end(), id) != originalIDs.end())
                 {
                     auto title = std::make_shared<Title>();
                     if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
