@@ -60,7 +60,8 @@ namespace TitleLoader
     void reloadTitleIds(void);
 
     // Title list
-    inline std::vector<std::shared_ptr<Title>> nandTitles;
+    inline std::vector<std::shared_ptr<Title>> ctrTitles;
+    inline std::vector<std::shared_ptr<Title>> vcTitles;
     inline std::shared_ptr<Title> cardTitle = nullptr;
     inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
     inline std::shared_ptr<Sav> save;

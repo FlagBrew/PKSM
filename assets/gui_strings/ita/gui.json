@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "Regione del 3DS",
     "3DS_REGION_ID": "ID Regione del 3DS",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "Abilit\u00e0",
     "ABILITY_NUMBER": "Numero abilit\u00e0",
     "ABILITY_RIBBON": "Fiocco Abilit\u00e0",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Per favore riapri l'applicazione!",
     "UPLOAD_GROUP": "Caricare gruppo sul GPSS?",
     "USA": "Stati Uniti",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Fiocco Trionfo",
     "VIEW": "Dettagli",
     "WATCH_MULTIPLE_MEGA": "Megaevoluzione a ripetizione!",

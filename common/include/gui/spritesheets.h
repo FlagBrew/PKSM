@@ -83,8 +83,9 @@
 // These are both about 18x18
 #define ui_sheet_emulated_button_filter_positive_idx 546
 #define ui_sheet_emulated_button_filter_negative_idx 547
-#define ui_sheet_emulated_button_tab_unselected_idx 548
+#define ui_sheet_emulated_button_tabs_3_unselected_idx 548
 #define ui_sheet_emulated_checkbox_disabled_idx 549
+#define ui_sheet_emulated_button_tabs_2_unselected_idx 550
 
 #elif defined(__SWITCH__)
 // No emulated sprites because no sprites yet :P

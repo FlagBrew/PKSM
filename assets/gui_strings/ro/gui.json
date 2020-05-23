@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "Regiune 3DS",
     "3DS_REGION_ID": "ID Regiune 3DS",
+    "3DS_TITLES": "3DS Games",
     "A_ADD_SAVE": "\uE000: Adaugă Un Save",
     "A_BARRAGE_OF_BITBOTS": "Un baraj de bitboți!",
     "A_BOX_NAME": "\uE000: Nume Cutie",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Re-deschide aplicația!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "Statele Unite ale Americii",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Panglică Victorie",
     "VIEW": "Vezi",
     "WATCH_MULTIPLE_MEGA": "Ai grijă! Multiple evoluții mega!",

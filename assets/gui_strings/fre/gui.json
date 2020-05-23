@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "R\u00e9gion de 3DS",
     "3DS_REGION_ID": "ID de la r\u00e9gion de la console",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "Talent",
     "ABILITY_NUMBER": "Num\u00e9ro du Talent",
     "ABILITY_RIBBON": "Ruban Abilit\u00e9",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Veuillez red\u00e9marrer PKSM!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "Am\u00e9rique",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Ruban Victoire 2",
     "VIEW": "Voir",
     "WATCH_MULTIPLE_MEGA": "Attention! M\u00e9ga-\u00c9volutions en cha\u00eene!",

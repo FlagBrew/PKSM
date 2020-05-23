@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "Regi\u00f3n 3DS",
     "3DS_REGION_ID": "ID Regi\u00f3n 3DS",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "Habilidad",
     "ABILITY_NUMBER": "N\u00fam. Habilidad",
     "ABILITY_RIBBON": "Cinta de Habilidad",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "¡Vuelva a abrir la aplicación!",
     "UPLOAD_GROUP": "¿Desea subir este grupo a GPSS?",
     "USA": "Estados Unidos",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Cinta Victoria",
     "VIEW": "Ver",
     "WATCH_MULTIPLE_MEGA": "¡Megaevoluciones en serie!",

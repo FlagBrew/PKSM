@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DS Region",
     "3DS_REGION_ID": "3DS Region ID",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "F\u00e4higkeit",
     "ABILITY_NUMBER": "F\u00e4higkeits Nummer",
     "ABILITY_RIBBON": "Band der F\u00e4higkeit",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Bitte starte das Programm neu!",
     "UPLOAD_GROUP": "Gruppe zum GPSS hochladen?",
     "USA": "Vereinigte Staaten",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Band des Sieges",
     "VIEW": "Anzeigen",
     "WATCH_MULTIPLE_MEGA": "Ein Wunder! Mehrfache Mega-Entwicklungen!",

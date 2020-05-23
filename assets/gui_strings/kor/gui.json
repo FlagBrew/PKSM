@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DS 국적",
     "3DS_REGION_ID": "3DS 국적 코드",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "특성",
     "ABILITY_NUMBER": "특성 번호",
     "ABILITY_RIBBON": "특성 리본",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Please re-open the application!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "미국",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "승리 리본",
     "VIEW": "뷰",
     "WATCH_MULTIPLE_MEGA": "경이로운 연속 메가진화!",

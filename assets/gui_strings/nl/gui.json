@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DS Regio",
     "3DS_REGION_ID": "3DS Regio ID",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "Vermogen",
     "ABILITY_NUMBER": "Vermogen Aantal",
     "ABILITY_RIBBON": "Vermogen Lint",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Herstart de applicatie!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "Verendigde Staten",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Victory Lint",
     "VIEW": "Weergeven",
     "WATCH_MULTIPLE_MEGA": "Watch It! Multiple Mega Evolutions!",

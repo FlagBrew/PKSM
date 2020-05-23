@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DS地区",
     "3DS_REGION_ID": "3DS地区ID",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "特性",
     "ABILITY_NUMBER": "特性数值",
     "ABILITY_RIBBON": "才能奖章",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "请重新打开应用程序!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "美国",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "胜利奖章",
     "VIEW": "浏览",
     "WATCH_MULTIPLE_MEGA": "惊异！连续超进化!",

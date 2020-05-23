@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "Regi\u00e3o do 3DS",
     "3DS_REGION_ID": "ID de Regi\u00e3o do 3DS",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "Habilidade",
     "ABILITY_NUMBER": "N\u00famero de Habilidade",
     "ABILITY_RIBBON": "Fitas de Habilidade",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Please re-open the application!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "Estados Unidos",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Fita da Vit\u00f3ria",
     "VIEW": "Ver",
     "WATCH_MULTIPLE_MEGA": "Observe! Mult\u00edplas Mega Evolu\u00e7\u00f5es!",

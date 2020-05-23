@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DS Region",
     "3DS_REGION_ID": "3DS Region ID",
+    "3DS_TITLES": "3DS Games",
     "A_ADD_SAVE": "\uE000: Add Save",
     "A_BARRAGE_OF_BITBOTS": "A Barrage of Bitbots!",
     "A_BOX_NAME": "\uE000: Box Name",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "Please re-open the application!",
     "UPLOAD_GROUP": "Upload group to GPSS?",
     "USA": "United States",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "Victory Ribbon",
     "VIEW": "View",
     "WATCH_MULTIPLE_MEGA": "Watch It! Multiple Mega Evolutions!",

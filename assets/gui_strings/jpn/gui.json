@@ -1,6 +1,7 @@
 {
     "3DS_REGION": "3DSリージョン",
     "3DS_REGION_ID": "3DSリージョンID",
+    "3DS_TITLES": "3DS Games",
     "ABILITY": "特性",
     "ABILITY_NUMBER": "特性番号",
     "ABILITY_RIBBON": "アビリティリボン",
@@ -623,6 +624,7 @@
     "UPDATE_SUCCESS_2": "アプリを再起動してください",
     "UPLOAD_GROUP": "グループをGPSSにアップロードしますか?",
     "USA": "米国",
+    "VC_TITLES": "VC Games",
     "VICTORY_RIBBON": "ビクトリーリボン",
     "VIEW": "見る",
     "WATCH_MULTIPLE_MEGA": "きょうい! れんぞく メガシンカ!",

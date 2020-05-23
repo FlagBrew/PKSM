@@ -71,9 +71,9 @@ std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
     {
         return nullptr;
     }
-    else if ((size_t)i < TitleLoader::nandTitles.size())
+    else if ((size_t)i < (*titles).size())
     {
-        return TitleLoader::nandTitles[i];
+        return (*titles)[i];
     }
     return nullptr;
 }
@@ -94,6 +94,26 @@ TitleLoadScreen::TitleLoadScreen()
     buttons.push_back(std::make_unique<AccelButton>(
         24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+
+    titles = &TitleLoader::ctrTitles;
+
+    tabs.push_back(std::make_unique<ToggleButton>(1, 2, 158, 17,
+        [&]() {
+            titles = &TitleLoader::ctrTitles;
+            resetTitles();
+            return true;
+        },
+        ui_sheet_res_null_idx, i18n::localize("3DS_TITLES"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_2_unselected_idx,
+        i18n::localize("3DS_TITLES"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+    tabs.push_back(std::make_unique<ToggleButton>(161, 2, 158, 17,
+        [&]() {
+            titles = &TitleLoader::vcTitles;
+            resetTitles();
+            return true;
+        },
+        ui_sheet_res_null_idx, i18n::localize("VC_TITLES"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_2_unselected_idx,
+        i18n::localize("VC_TITLES"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+    tabs[0]->setState(true);
 }
 
 void TitleLoadScreen::makeInstructions()
@@ -125,18 +145,18 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    for (size_t i = 0; i < TitleLoader::nandTitles.size(); i++)
+    for (size_t i = 0; i < (*titles).size(); i++)
     {
-        int y = TitleLoader::nandTitles.size() > 4 ? (i / 4) * 60 + 68 : 98;
-        int x = 150 + (4 - (TitleLoader::nandTitles.size() % 4 == 0 ? 4 : TitleLoader::nandTitles.size() % 4)) * 30 + (i > 3 ? i - 4 : i) * 60;
+        int y = (*titles).size() > 4 ? (i / 4) * 60 + 68 : 98;
+        int x = 150 + (4 - ((*titles).size() % 4 == 0 ? 4 : (*titles).size() % 4)) * 30 + (i > 3 ? i - 4 : i) * 60;
 
-        if (TitleLoader::nandTitles.size() > 4 && i < 4)
+        if ((*titles).size() > 4 && i < 4)
         {
             x = 150 + (i > 3 ? i - 4 : i) * 60;
         }
 
-        Gui::drawImageAt(TitleLoader::nandTitles[i]->icon(), x, y, NULL, 1.0f, 1.0f);
-        if (titleFromIndex(selectedTitle) == TitleLoader::nandTitles[i])
+        Gui::drawImageAt((*titles)[i]->icon(), x, y, NULL, 1.0f, 1.0f);
+        if (titleFromIndex(selectedTitle) == (*titles)[i])
         {
             Gui::drawSelector(x - 1, y - 1);
         }
@@ -152,7 +172,14 @@ void TitleLoadScreen::drawTop() const
 void TitleLoadScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
+    // Background to tab buttons
+    Gui::drawSolidRect(0, 0, 320, 20, PKSM_Color(40, 53, 147, 255));
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
+
+    for (auto& tabButton : tabs)
+    {
+        tabButton->draw();
+    }
 
     auto text      = Gui::parseText(i18n::localize("LOADER_ID"), FONT_SIZE_11, 0.0f);
     int nextIdPart = 27 + text->maxWidth(FONT_SIZE_11);
@@ -253,17 +280,21 @@ void TitleLoadScreen::update(touchPosition* touch)
         oldLang = Configuration::getInstance().language();
         makeInstructions();
     }
+    for (auto& tabButton : tabs)
+    {
+        if (tabButton->update(touch))
+        {
+            return;
+        }
+    }
     u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardWasUpdated())
     {
-        selectedGame  = false;
-        selectedSave  = -1;
-        firstSave     = -1;
-        selectedTitle = -2;
+        resetTitles();
     }
     if (selectedTitle == -2)
     {
-        if (TitleLoader::cardTitle == nullptr && !TitleLoader::nandTitles.empty())
+        if (TitleLoader::cardTitle == nullptr && !(*titles).empty())
         {
             selectedTitle = 0;
         }
@@ -350,33 +381,32 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
             {
-                if (TitleLoader::nandTitles.size() > 4)
+                if ((*titles).size() > 4)
                 {
                     selectedTitle = 4;
                 }
-                else if (!TitleLoader::nandTitles.empty())
+                else if (!(*titles).empty())
                 {
                     selectedTitle = 0;
                 }
             }
             else
             {
-                if (TitleLoader::nandTitles.size() > 4)
+                if ((*titles).size() > 4)
                 {
                     if (selectedTitle < 4)
                     {
-                        selectedTitle =
-                            selectedTitle + 4 > (int)TitleLoader::nandTitles.size() - 1 ? TitleLoader::nandTitles.size() - 1 : selectedTitle + 4;
+                        selectedTitle = selectedTitle + 4 > (int)(*titles).size() - 1 ? (*titles).size() - 1 : selectedTitle + 4;
                     }
                     else
                     {
                         selectedTitle -= 4;
                     }
                 }
-                else if (TitleLoader::nandTitles.size() < 5)
+                else if ((*titles).size() < 5)
                 {
                     selectedTitle++;
-                    if (selectedTitle == (int)TitleLoader::nandTitles.size())
+                    if (selectedTitle == (int)(*titles).size())
                     {
                         if (TitleLoader::cardTitle)
                         {
@@ -394,18 +424,18 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
             {
-                if (TitleLoader::nandTitles.size() > 4)
+                if ((*titles).size() > 4)
                 {
                     selectedTitle = 0;
                 }
                 else
                 {
-                    selectedTitle = TitleLoader::nandTitles.size() - 1;
+                    selectedTitle = (*titles).size() - 1;
                 }
             }
             else
             {
-                if (TitleLoader::nandTitles.size() > 4)
+                if ((*titles).size() > 4)
                 {
                     if (selectedTitle > 3)
                     {
@@ -413,23 +443,22 @@ void TitleLoadScreen::update(touchPosition* touch)
                     }
                     else
                     {
-                        selectedTitle =
-                            selectedTitle + 4 > (int)TitleLoader::nandTitles.size() - 1 ? TitleLoader::nandTitles.size() - 1 : selectedTitle + 4;
+                        selectedTitle = selectedTitle + 4 > (int)(*titles).size() - 1 ? (*titles).size() - 1 : selectedTitle + 4;
                     }
                 }
-                else if (TitleLoader::nandTitles.size() < 5 && selectedTitle > -2)
+                else if ((*titles).size() < 5 && selectedTitle > -2)
                 {
                     selectedTitle--;
                     if (selectedTitle == -1 && !TitleLoader::cardTitle)
                     {
-                        selectedTitle = TitleLoader::nandTitles.size() - 1;
+                        selectedTitle = (*titles).size() - 1;
                     }
                 }
             }
         }
         else if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == (int)TitleLoader::nandTitles.size() - 1 || selectedTitle == 3)
+            if (selectedTitle == (int)(*titles).size() - 1 || selectedTitle == 3)
             {
                 if (TitleLoader::cardTitle)
                 {
@@ -437,7 +466,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    if (TitleLoader::nandTitles.size() > 4 && selectedTitle > 3)
+                    if ((*titles).size() > 4 && selectedTitle > 3)
                     {
                         if (selectedTitle > 3)
                         {
@@ -463,7 +492,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (selectedTitle == -1)
             {
-                selectedTitle = TitleLoader::nandTitles.size() < 4 ? TitleLoader::nandTitles.size() - 1 : 3;
+                selectedTitle = (*titles).size() < 4 ? (*titles).size() - 1 : 3;
             }
             else if (selectedTitle == 4)
             {
@@ -473,7 +502,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle = (int)TitleLoader::nandTitles.size() - 1;
+                    selectedTitle = (int)(*titles).size() - 1;
                 }
             }
             else if (selectedTitle == 0)
@@ -484,7 +513,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle = TitleLoader::nandTitles.size() > 4 ? 3 : (int)TitleLoader::nandTitles.size() - 1;
+                    selectedTitle = (*titles).size() > 4 ? 3 : (int)(*titles).size() - 1;
                 }
             }
             else
@@ -547,4 +576,12 @@ bool TitleLoadScreen::setSelectedSave(int i)
         selectedSave = i;
     }
     return false;
+}
+
+void TitleLoadScreen::resetTitles()
+{
+    selectedGame  = false;
+    selectedSave  = -1;
+    firstSave     = -1;
+    selectedTitle = -2;
 }
