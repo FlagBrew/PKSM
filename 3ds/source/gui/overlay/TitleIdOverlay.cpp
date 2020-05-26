@@ -35,6 +35,8 @@ namespace
 {
     constexpr size_t NUM_TITLES                           = 13;
     constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES] = {"R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
+    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES]   = {"", "", "", "", "", "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400",
+        "0x000400000011C500", "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000", "0x00040000001B5100"};
     constexpr Species TITLE_SPECIES[NUM_TITLES]      = {Species::Groudon, Species::Kyogre, Species::Rayquaza, Species::Charizard, Species::Venusaur,
         Species::Xerneas, Species::Yveltal, Species::Groudon, Species::Kyogre, Species::Solgaleo, Species::Lunala, Species::Necrozma,
         Species::Necrozma};
@@ -93,7 +95,8 @@ std::string TitleIdOverlay::getNewTitleId() const
 {
     static constexpr int NUM_CHARS = 18;
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, NUM_CHARS);
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 3, NUM_CHARS);
+    swkbdSetButton(&state, SWKBD_BUTTON_MIDDLE, i18n::localize("RESET").c_str(), false);
     swkbdSetHintText(&state, i18n::localize("TITLE_ID").c_str());
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);
     swkbdSetInitialText(&state, titleId.c_str());
@@ -130,6 +133,10 @@ std::string TitleIdOverlay::getNewTitleId() const
         {
             titleId = "0x" + titleId;
         }
+    }
+    else if (ret == SWKBD_BUTTON_MIDDLE)
+    {
+        titleId = TITLE_ID_DEFAULTS[hid.fullIndex()];
     }
     return titleId;
 }
