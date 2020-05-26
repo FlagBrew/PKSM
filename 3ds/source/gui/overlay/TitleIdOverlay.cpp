@@ -129,7 +129,7 @@ std::string TitleIdOverlay::getNewTitleId() const
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         titleId = input;
-        if (!(titleId[0] == '0' && titleId[1] == 'x'))
+        if (!(titleId[0] == '0' && (titleId[1] == 'x' || titleId[1] == 'X')))
         {
             titleId = "0x" + titleId;
         }
