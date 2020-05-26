@@ -33,6 +33,7 @@
 #include "PKX.hpp"
 #include "PkmUtils.hpp"
 #include "QRScanner.hpp"
+#include "TitleIdOverlay.hpp"
 #include "ToggleButton.hpp"
 #include "banks.hpp"
 #include "format.h"
@@ -445,7 +446,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(247, 212, 15, 12,
         [this]() {
-            // Gui::setScreen(std::make_unique<TitleIdScreen>());
+            addOverlay<TitleIdOverlay>();
+            titleIdsChanged = true;
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));

@@ -587,6 +587,8 @@
     "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT": "¡Esos tiros largos son certeros!",
     "TID": "TID",
     "TID_SID": "TID/SID",
+    "TITLE_ID": "Title ID",
+    "TITLE_ID_NOT_FOUND": "Title ID not found.",
     "TITLE_IDS": "Title IDs",
     "TMHM": "MTs/MOs",
     "TMS": "MTs",

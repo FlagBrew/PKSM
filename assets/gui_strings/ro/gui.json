@@ -587,6 +587,8 @@
     "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT": "Încercările astea imposibile nu sunt chiar atât de imposibile!",
     "TID": "ID Trainer",
     "TID_SID": "ID Trainer/ID Secret",
+    "TITLE_ID": "Title ID",
+    "TITLE_ID_NOT_FOUND": "Title ID not found.",
     "TITLE_IDS": "Title IDs",
     "TMHM": "TM-uri/HM-uri",
     "TMS": "TM-uri",
