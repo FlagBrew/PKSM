@@ -141,7 +141,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         // Is it a GBA save? GBA saves are not in the normal archive format
         else
         {
-            archive = Archive::rawSave(mMedia, lowId(), highId(), true);
+            archive = Archive::saveAndContents(mMedia, lowId(), highId(), true);
             if (R_SUCCEEDED(archive.result()))
             {
                 constexpr u32 pathData[5] = {

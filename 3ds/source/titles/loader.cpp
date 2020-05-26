@@ -530,7 +530,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         std::unique_ptr<File> in;
         if (title->gba())
         {
-            archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
+            archive                   = Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
             constexpr u32 pathData[5] = {
                 1,   // Save data
                 1,   // TMD content index
@@ -880,7 +880,7 @@ void TitleLoader::saveToTitle(bool ask)
                         std::unique_ptr<File> out;
                         if (title->gba())
                         {
-                            archive                   = Archive::rawSave(title->mediaType(), title->lowId(), title->highId(), true);
+                            archive                   = Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
                             constexpr u32 pathData[5] = {
                                 1,   // Save data
                                 1,   // TMD content index

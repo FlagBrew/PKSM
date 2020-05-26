@@ -549,11 +549,9 @@ Archive Archive::save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
     return Archive{ARCHIVE_USER_SAVEDATA, {PATH_BINARY, sizeof(path), path}, pxi};
 }
 
-Archive Archive::rawSave(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
+Archive Archive::saveAndContents(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4)
 {
-    // Not sure what this 1 signifies. Possible that 1 is save data? See
-    // https://www.3dbrew.org/wiki/Filesystem_services#0x2345678A_Archive_Path_Data_Format
-    const u32 path[4] = {lowid, highid, mediatype, 1};
+    const u32 path[4] = {lowid, highid, mediatype, pathWord4};
     return Archive{ARCHIVE_SAVEDATA_AND_CONTENT, {PATH_BINARY, sizeof(path), path}, pxi};
 }
 

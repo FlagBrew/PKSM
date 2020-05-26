@@ -52,7 +52,7 @@ public:
     static Archive& sd(void);
     static Archive& data(void);
     static Archive save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi);
-    static Archive rawSave(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi);
+    static Archive saveAndContents(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4 = 0);
     static Archive extdata(u32 extdata, bool pxi);
 
     // As these do manual directory traversal, an FS_Path overload is not possible
