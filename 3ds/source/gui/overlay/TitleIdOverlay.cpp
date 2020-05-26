@@ -38,7 +38,7 @@ namespace
     constexpr Species TITLE_SPECIES[NUM_TITLES]      = {Species::Groudon, Species::Kyogre, Species::Rayquaza, Species::Charizard, Species::Venusaur,
         Species::Xerneas, Species::Yveltal, Species::Groudon, Species::Kyogre, Species::Solgaleo, Species::Lunala, Species::Necrozma,
         Species::Necrozma};
-    constexpr int TITLE_FORMS[NUM_TITLES]            = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2};
+    constexpr int TITLE_FORMS[NUM_TITLES]            = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
     constexpr GameVersion TITLE_VERSIONS[NUM_TITLES] = {GameVersion::R, GameVersion::S, GameVersion::E, GameVersion::FR, GameVersion::LG,
         GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
 }
@@ -62,7 +62,7 @@ void TitleIdOverlay::drawTop() const
     {
         int x = i % 8;
         int y = i / 8;
-        Gui::pkm(TITLE_SPECIES[i], TITLE_FORMS[i], Generation::SEVEN, Gender::Genderless, x * 50 + 7, y * 48 + 2);
+        Gui::pkm(TITLE_SPECIES[i], TITLE_FORMS[i], (Generation)TITLE_VERSIONS[i], Gender::Genderless, x * 50 + 7, y * 48 + 2);
         Gui::text(TITLE_ABBREVIATIONS[i], x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
