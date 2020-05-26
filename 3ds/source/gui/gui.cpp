@@ -1628,7 +1628,30 @@ void Gui::pkm(Species species, int form, Generation generation, Gender gender, i
     }
     else
     {
-        if (form > PersonalLGPE::formCount(size_t(species)))
+        decltype(PersonalSWSH::formCount)* formCountGetter;
+        switch (generation)
+        {
+            case Generation::FOUR:
+                formCountGetter = PersonalDPPtHGSS::formCount;
+                break;
+            case Generation::FIVE:
+                formCountGetter = PersonalBWB2W2::formCount;
+                break;
+            case Generation::SIX:
+                formCountGetter = PersonalXYORAS::formCount;
+                break;
+            case Generation::EIGHT:
+                formCountGetter = PersonalSWSH::formCount;
+                break;
+            case Generation::LGPE:
+                formCountGetter = PersonalLGPE::formCount;
+                break;
+            case Generation::SEVEN:
+            default:
+                formCountGetter = PersonalSMUSUM::formCount;
+                break;
+        }
+        if (form > formCountGetter(size_t(species)))
         {
             Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
             return;
