@@ -1365,6 +1365,33 @@ void Gui::sprite(int key, int x, int y)
     {
         drawSolidRect(x, y, 158, 17, COLOR_DARKBLUE);
     }
+    else if (key == ui_sheet_emulated_gameselector_bg_solid_idx)
+    {
+        u8 off = 5, rep = 197;
+        /* LEFT */
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
+        // Bottom side
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, 1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
+        x += 5;
+        Gui::drawSolidRect(x, y, 382, rep + 10, PKSM_Color(26, 35, 126, 255));
+        /* RIGHT */
+        x += 382;
+        sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        tex = _select_box(sprite, 0, 0, 0, off);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -1.0f, 1.0f);
+        // Bottom side
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, -1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
+    }
     // standard case
     else
     {

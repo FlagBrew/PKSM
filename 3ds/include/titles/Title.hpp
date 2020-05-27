@@ -27,6 +27,7 @@
 #ifndef TITLE_HPP
 #define TITLE_HPP
 
+#include "format.h"
 #include "spi.hpp"
 #include <3ds.h>
 #include <algorithm>
@@ -51,6 +52,22 @@ public:
     bool gba(void) const;
 
     std::string checkpointPrefix(void) const;
+
+    // clang-format off
+    template <typename StrType>
+    requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
+    static StrType tidToCheckpointPrefix(u64 tid)
+    // clang-format on
+    {
+        if constexpr (std::is_same_v<std::string, StrType>)
+        {
+            return fmt::format<StrType>("0x{:05X}", ((u32)tid) >> 8);
+        }
+        else if constexpr (std::is_same_v<std::u16string, StrType>)
+        {
+            return fmt::format<StrType>(u"0x{:05X}", ((u32)tid) >> 8);
+        }
+    }
 
 private:
     u64 mId;

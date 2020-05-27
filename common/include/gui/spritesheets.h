@@ -86,6 +86,7 @@
 #define ui_sheet_emulated_button_tabs_3_unselected_idx 548
 #define ui_sheet_emulated_checkbox_disabled_idx 549
 #define ui_sheet_emulated_button_tabs_2_unselected_idx 550
+#define ui_sheet_emulated_gameselector_bg_solid_idx 551
 
 #elif defined(__SWITCH__)
 // No emulated sprites because no sprites yet :P

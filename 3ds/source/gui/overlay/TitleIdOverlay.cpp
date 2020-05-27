@@ -95,7 +95,7 @@ std::string TitleIdOverlay::getNewTitleId() const
 {
     static constexpr int NUM_CHARS = 18;
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 3, NUM_CHARS);
+    swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, NUM_CHARS);
     swkbdSetButton(&state, SWKBD_BUTTON_MIDDLE, i18n::localize("RESET").c_str(), false);
     swkbdSetHintText(&state, i18n::localize("TITLE_ID").c_str());
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);

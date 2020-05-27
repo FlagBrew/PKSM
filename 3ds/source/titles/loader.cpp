@@ -93,22 +93,6 @@ namespace
     constexpr std::array<GameVersion, 13> searchVersions = {GameVersion::S, GameVersion::R, GameVersion::E, GameVersion::FR, GameVersion::LG,
         GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
 
-    // clang-format off
-    template <typename StrType>
-    requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
-    StrType tidToCheckpointPrefix(u64 tid)
-    // clang-format on
-    {
-        if constexpr (std::is_same_v<std::string, StrType>)
-        {
-            return fmt::format<StrType>("0x{:05X}", ((u32)tid) >> 8);
-        }
-        else if constexpr (std::is_same_v<std::u16string, StrType>)
-        {
-            return fmt::format<StrType>(u"0x{:05X}", ((u32)tid) >> 8);
-        }
-    }
-
     std::string idToSaveName(const std::string& id)
     {
         if (id.size() == 3 || id.size() == 4)
@@ -152,7 +136,7 @@ namespace
         }
         for (const auto& tid : vcTitleIds)
         {
-            std::string chkPrefix = tidToCheckpointPrefix<std::string>(tid);
+            std::string chkPrefix = Title::tidToCheckpointPrefix<std::string>(tid);
             if (chkPrefix == id)
             {
                 return "00000001.sav";
@@ -204,7 +188,7 @@ namespace
         }
         for (const auto& tid : vcTitleIds)
         {
-            std::u16string chkPrefix = tidToCheckpointPrefix<std::u16string>(tid);
+            std::u16string chkPrefix = Title::tidToCheckpointPrefix<std::u16string>(tid);
             if (chkPrefix == id)
             {
                 return "00000001.sav";

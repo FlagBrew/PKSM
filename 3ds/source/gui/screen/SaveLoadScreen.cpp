@@ -31,13 +31,14 @@
 #include "Configuration.hpp"
 #include "MainMenu.hpp"
 #include "Species.hpp"
+#include "Title.hpp"
 #include "TitleLoadScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 
 namespace
 {
-    constexpr std::string_view dsIds[9] = {
+    constexpr std::array<std::string_view, 9> dsIds = {
         "ADA", // Diamond
         "APA", // Pearl
         "CPU", // Platinum
@@ -48,12 +49,20 @@ namespace
         "IRE", // Black 2
         "IRD"  // White 2
     };
+    constexpr std::array<std::string_view, 9> dsPrefixes = {"D: ", "P: ", "Pt: ", "HG: ", "SS: ", "B: ", "W: ", "B2: ", "W2: "};
+    constexpr std::array<int, 9> dsGroups                = {7, 7, 9, 8, 8, 10, 10, 11, 11};
 
-    constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
+    constexpr size_t CTR_TITLES = 13;
 
-    constexpr std::string_view ctrNames[] = {"XY", "ORAS", "SUMO", "USUM"};
+    std::array<std::string, CTR_TITLES> ctrIds;
+    // Used to get ctrIds
+    constexpr std::array<GameVersion, CTR_TITLES> ctrVersions = {GameVersion::R, GameVersion::S, GameVersion::E, GameVersion::FR, GameVersion::LG,
+        GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
+    constexpr std::array<std::string_view, CTR_TITLES> ctrPrefixes = {
+        "R: ", "S: ", "E: ", "FR: ", "LG: ", "X: ", "Y: ", "OR: ", "AS: ", "SU: ", "MO: ", "US: ", "UM: "};
+    constexpr std::array<int, CTR_TITLES> ctrGroups = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
 
-    constexpr std::string_view dsNames[] = {"Pt", "DP", "HGSS", "BW", "B2W2"};
+    constexpr std::array<std::string_view, 12> names = {"RS", "E", "FRLG", "XY", "ORAS", "SUMO", "USUM", "DP", "HGSS", "Pt", "BW", "B2W2"};
 }
 
 SaveLoadScreen::SaveLoadScreen()
@@ -73,135 +82,7 @@ SaveLoadScreen::SaveLoadScreen()
         24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
     buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 
-    for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
-    {
-        std::string key = i->first;
-        if (key.size() == 4)
-        {
-            if (key.substr(0, 3) == dsIds[0])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[0].push_back({"D: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[1])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[0].push_back({"P: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[2])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[-1].push_back({"Pt: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[3])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[1].push_back({"HG: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[4])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[1].push_back({"SS: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[5])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[2].push_back({"B: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[6])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[2].push_back({"W: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[7])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[3].push_back({"B2: ", i->second[j]});
-                }
-            }
-            else if (key.substr(0, 3) == dsIds[8])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[3].push_back({"W2: ", i->second[j]});
-                }
-            }
-        }
-        else
-        {
-            if (key == ctrIds[0])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[4].push_back({"X: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[1])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[4].push_back({"Y: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[2])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[5].push_back({"OR: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[3])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[5].push_back({"AS: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[4])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[6].push_back({"S: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[5])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[6].push_back({"M: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[6])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[7].push_back({"US: ", i->second[j]});
-                }
-            }
-            else if (key == ctrIds[7])
-            {
-                for (size_t j = 0; j < i->second.size(); j++)
-                {
-                    saves[7].push_back({"UM: ", i->second[j]});
-                }
-            }
-        }
-    }
+    updateTitles();
 }
 
 void SaveLoadScreen::makeInstructions()
@@ -214,71 +95,103 @@ void SaveLoadScreen::drawTop(void) const
 {
     Gui::drawSolidRect(0, 0, 400.0f, 240.0f, PKSM_Color(15, 22, 89, 255));
 
-    Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
-    Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
+    Gui::sprite(ui_sheet_emulated_gameselector_bg_solid_idx, 4, 29);
+    // Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
 
-    int x = 90;
-    int y = 68;
+    int x = 116, y = 49;
+    // draw GBA game boxes
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Groudon, 0, Generation::THREE, Gender::Genderless, x - 2, y - 2);
+    Gui::text("R", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Kyogre, 0, Generation::THREE, Gender::Genderless, x + 16, y + 20);
+    Gui::text("S", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
-    // draw DS game boxes
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Dialga, 0, Generation::SEVEN, Gender::Genderless, x - 4, y - 2);
-    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Palkia, 0, Generation::SEVEN, Gender::Genderless, x + 18, y + 20);
-    Gui::text("P", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::HoOh, 0, Generation::SEVEN, Gender::Genderless, x - 5, y - 2);
-    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Lugia, 0, Generation::SEVEN, Gender::Genderless, x + 17, y + 20);
-    Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Reshiram, 0, Generation::SEVEN, Gender::Genderless, x - 3, y - 2);
-    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Zekrom, 0, Generation::SEVEN, Gender::Genderless, x + 18, y + 20);
-    Gui::text("W", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Kyurem, 2, Generation::SEVEN, Gender::Genderless, x - 6, y - 2);
-    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Kyurem, 1, Generation::SEVEN, Gender::Genderless, x + 16, y + 20);
-    Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(40, 98, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Giratina, 1, Generation::SEVEN, Gender::Genderless, 48, 98);
-    Gui::text("Pt", 40 + 24, 98 + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Rayquaza, 0, Generation::THREE, Gender::Genderless, x + 8, y);
+    Gui::text("E", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-    x = 90, y = 128;
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Charizard, 0, Generation::THREE, Gender::Genderless, x - 3, y - 2);
+    Gui::text("FR", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Venusaur, 0, Generation::THREE, Gender::Genderless, x + 17, y + 20);
+    Gui::text("LG", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+
+    x = 86, y += 60;
     // draw 3DS game boxes
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Xerneas, 0, Generation::SEVEN, Gender::Genderless, x - 3, y - 2);
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Xerneas, 0, Generation::SIX, Gender::Genderless, x - 3, y - 2);
     Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Yveltal, 0, Generation::SEVEN, Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(Species::Yveltal, 0, Generation::SIX, Gender::Genderless, x + 16, y + 20);
     Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(Species::Groudon, 1, Generation::SEVEN, Gender::Genderless, x - 2, y - 2);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Groudon, 1, Generation::SIX, Gender::Genderless, x - 2, y - 2);
     Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(Species::Kyogre, 1, Generation::SEVEN, Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(Species::Kyogre, 1, Generation::SIX, Gender::Genderless, x + 16, y + 20);
     Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(Species::Solgaleo, 0, Generation::SEVEN, Gender::Genderless, x - 4, y - 2);
     Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(Species::Lunala, 0, Generation::SEVEN, Gender::Genderless, x + 18, y + 20);
     Gui::text("M", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::drawSolidRect(x += 60, y, 48, 48, COLOR_HIGHBLUE);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
     Gui::pkm(Species::Necrozma, 1, Generation::SEVEN, Gender::Genderless, x - 3, y - 2);
     Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::pkm(Species::Necrozma, 2, Generation::SEVEN, Gender::Genderless, x + 19, y + 20);
     Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
-    if (saveGroup == -1)
+    x = 56, y += 60;
+    // draw DS game boxes
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Dialga, 0, Generation::FOUR, Gender::Genderless, x - 4, y - 2);
+    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Palkia, 0, Generation::FOUR, Gender::Genderless, x + 18, y + 20);
+    Gui::text("P", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::HoOh, 0, Generation::FOUR, Gender::Genderless, x - 5, y - 2);
+    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Lugia, 0, Generation::FOUR, Gender::Genderless, x + 17, y + 20);
+    Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Giratina, 1, Generation::FOUR, Gender::Genderless, x + 8, y);
+    Gui::text("Pt", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Reshiram, 0, Generation::FIVE, Gender::Genderless, x - 3, y - 2);
+    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Zekrom, 0, Generation::FIVE, Gender::Genderless, x + 18, y + 20);
+    Gui::text("W", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+
+    x += 60;
+    Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
+    Gui::pkm(Species::Kyurem, 2, Generation::FIVE, Gender::Genderless, x - 6, y - 2);
+    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(Species::Kyurem, 1, Generation::FIVE, Gender::Genderless, x + 16, y + 20);
+    Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+
+    if (saveGroup < 3)
     {
-        Gui::drawSelector(39, 97);
+        Gui::drawSelector(115 + saveGroup * 60, 48);
     }
-    else if (saveGroup < 4)
+    else if (saveGroup < 7)
     {
-        Gui::drawSelector(149 + saveGroup * 60, 67);
+        Gui::drawSelector(85 + (saveGroup - 3) * 60, 108);
     }
     else
     {
-        Gui::drawSelector(149 + (saveGroup - 4) * 60, 127);
+        Gui::drawSelector(55 + (saveGroup - 7) * 60, 168);
     }
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
@@ -289,7 +202,7 @@ void SaveLoadScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    Gui::text(std::string(titleName(saveGroup)), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::string(names[saveGroup]), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -344,6 +257,12 @@ void SaveLoadScreen::drawBottom() const
 
 void SaveLoadScreen::update(touchPosition* touch)
 {
+    if (mustUpdateTitles)
+    {
+        mustUpdateTitles = false;
+        updateTitles();
+        return;
+    }
     if (oldLang != Configuration::getInstance().language())
     {
         oldLang = Configuration::getInstance().language();
@@ -362,10 +281,6 @@ void SaveLoadScreen::update(touchPosition* touch)
         {
             loadSave();
             return;
-        }
-        if (downKeys & KEY_X)
-        {
-            Gui::setScreen(std::make_unique<ConfigScreen>());
         }
         if (downKeys & KEY_DOWN)
         {
@@ -415,43 +330,63 @@ void SaveLoadScreen::update(touchPosition* touch)
     {
         if (downKeys & KEY_DOWN)
         {
-            if (saveGroup == -1)
+            if (saveGroup < 3)
             {
-                saveGroup = 4;
+                saveGroup += 3;
             }
-            else if (saveGroup < 4)
+            else if (saveGroup < 7)
             {
                 saveGroup += 4;
             }
-            else
+            else if (saveGroup == 7 || saveGroup == 8)
             {
-                saveGroup -= 4;
+                saveGroup = 0;
+            }
+            else if (saveGroup == 9)
+            {
+                saveGroup = 1;
+            }
+            else if (saveGroup == 10 || saveGroup == 11)
+            {
+                saveGroup = 2;
             }
         }
         else if (downKeys & KEY_UP)
         {
-            if (saveGroup == -1)
+            if (saveGroup == 11)
             {
-                saveGroup = 0;
+                saveGroup -= 5;
             }
-            else if (saveGroup < 4)
+            else if (saveGroup >= 7)
             {
-                saveGroup += 4;
+                saveGroup -= 4;
+            }
+            else if (saveGroup == 6)
+            {
+                saveGroup -= 4;
+            }
+            else if (saveGroup >= 3)
+            {
+                saveGroup -= 3;
             }
             else
             {
-                saveGroup -= 4;
+                saveGroup += 8;
             }
         }
         else if (downKeys & KEY_RIGHT)
         {
-            if (saveGroup == -1)
+            if (saveGroup == 2)
             {
                 saveGroup = 0;
             }
-            else if (saveGroup % 4 == 3)
+            else if (saveGroup == 6)
             {
-                saveGroup = -1;
+                saveGroup = 3;
+            }
+            else if (saveGroup == 11)
+            {
+                saveGroup = 7;
             }
             else
             {
@@ -460,13 +395,17 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         else if (downKeys & KEY_LEFT)
         {
-            if (saveGroup == -1)
+            if (saveGroup == 0)
             {
-                saveGroup = 3;
+                saveGroup = 2;
             }
-            else if (saveGroup % 4 == 0)
+            else if (saveGroup == 3)
             {
-                saveGroup = -1;
+                saveGroup = 6;
+            }
+            else if (saveGroup == 7)
+            {
+                saveGroup = 11;
             }
             else
             {
@@ -494,6 +433,7 @@ void SaveLoadScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_X)
     {
+        mustUpdateTitles = true;
         Gui::setScreen(std::make_unique<ConfigScreen>());
     }
 }
@@ -506,18 +446,6 @@ bool SaveLoadScreen::loadSave()
         return true;
     }
     return false;
-}
-
-constexpr std::string_view SaveLoadScreen::titleName(int index)
-{
-    if (index < 4)
-    {
-        return dsNames[index + 1];
-    }
-    else
-    {
-        return ctrNames[index - 4];
-    }
 }
 
 bool SaveLoadScreen::setSelectedSave(int i)
@@ -544,4 +472,43 @@ bool SaveLoadScreen::setSelectedSave(int i)
         selectedSave = i;
     }
     return false;
+}
+
+void SaveLoadScreen::updateTitles()
+{
+    for (size_t i = 0; i < ctrVersions.size(); i++)
+    {
+        std::string tidStr = Configuration::getInstance().titleId(ctrVersions[i]);
+        u64 tid            = strtoull(tidStr.c_str(), nullptr, 16);
+        ctrIds[i]          = Title::tidToCheckpointPrefix<std::string>(tid);
+    }
+
+    for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
+    {
+        if (i->first.size() == 4)
+        {
+            std::string key = i->first.substr(0, 3);
+            auto found      = std::find(dsIds.begin(), dsIds.end(), key);
+            if (found != dsIds.end())
+            {
+                auto num = std::distance(dsIds.begin(), found);
+                for (size_t j = 0; j < i->second.size(); j++)
+                {
+                    saves[dsGroups[num]].emplace_back(std::make_pair(std::string(dsPrefixes[num]), i->second[j]));
+                }
+            }
+        }
+        else
+        {
+            auto found = std::find(ctrIds.begin(), ctrIds.end(), i->first);
+            if (found != ctrIds.end())
+            {
+                auto num = std::distance(ctrIds.begin(), found);
+                for (size_t j = 0; j < i->second.size(); j++)
+                {
+                    saves[ctrGroups[num]].emplace_back(std::make_pair(std::string(ctrPrefixes[num]), i->second[j]));
+                }
+            }
+        }
+    }
 }
