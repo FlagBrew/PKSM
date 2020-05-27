@@ -30,6 +30,8 @@
 #include "GameVersion.hpp"
 #include "Species.hpp"
 #include "gui.hpp"
+#include "loader.hpp"
+#include "thread.hpp"
 
 namespace
 {
@@ -82,6 +84,8 @@ void TitleIdOverlay::update(touchPosition* touch)
 
     if (kDown & KEY_B)
     {
+        TitleLoader::reloadTitleIds();
+        Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024);
         parent->removeOverlay();
         return;
     }

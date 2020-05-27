@@ -29,6 +29,7 @@
 #include "FileChooseOverlay.hpp"
 #include "GameVersion.hpp"
 #include "Species.hpp"
+#include "Title.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 
@@ -48,7 +49,8 @@ namespace
 
     constexpr char dsPostfixes[] = {'E', 'S', 'K', 'J', 'I', 'D', 'F', 'O'};
 
-    constexpr std::string_view ctrIds[] = {"0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
+    // R, S, E, FR, LG, X, Y, OR, AS, S, M, US, UM
+    std::array<std::string, 13> ctrIds = {"", "", "", "", "", "0x0055D", "0x0055E", "0x011C4", "0x011C5", "0x01648", "0x0175E", "0x01B50", "0x01B51"};
 
     std::string groupToId1(ExtraSavesSubScreen::Group g)
     {
@@ -64,14 +66,20 @@ namespace
                 return std::string(dsIds[5]) + dsPostfixes[0];
             case ExtraSavesSubScreen::Group::B2W2:
                 return std::string(dsIds[7]) + dsPostfixes[0];
+            case ExtraSavesSubScreen::Group::RS:
+                return ctrIds[0];
+            case ExtraSavesSubScreen::Group::E:
+                return ctrIds[2];
+            case ExtraSavesSubScreen::Group::FRLG:
+                return ctrIds[3];
             case ExtraSavesSubScreen::Group::XY:
-                return std::string(ctrIds[0]);
+                return ctrIds[5];
             case ExtraSavesSubScreen::Group::ORAS:
-                return std::string(ctrIds[2]);
+                return ctrIds[7];
             case ExtraSavesSubScreen::Group::SM:
-                return std::string(ctrIds[4]);
+                return ctrIds[9];
             case ExtraSavesSubScreen::Group::USUM:
-                return std::string(ctrIds[6]);
+                return ctrIds[11];
         }
         return "";
     }
@@ -90,14 +98,20 @@ namespace
                 return std::string(dsIds[6]) + dsPostfixes[0];
             case ExtraSavesSubScreen::Group::B2W2:
                 return std::string(dsIds[8]) + dsPostfixes[0];
+            case ExtraSavesSubScreen::Group::RS:
+                return ctrIds[1];
+            case ExtraSavesSubScreen::Group::E:
+                return ctrIds[2];
+            case ExtraSavesSubScreen::Group::FRLG:
+                return ctrIds[4];
             case ExtraSavesSubScreen::Group::XY:
-                return std::string(ctrIds[1]);
+                return ctrIds[6];
             case ExtraSavesSubScreen::Group::ORAS:
-                return std::string(ctrIds[3]);
+                return ctrIds[8];
             case ExtraSavesSubScreen::Group::SM:
-                return std::string(ctrIds[5]);
+                return ctrIds[10];
             case ExtraSavesSubScreen::Group::USUM:
-                return std::string(ctrIds[7]);
+                return ctrIds[12];
         }
         return "";
     }
@@ -116,6 +130,12 @@ namespace
                 return {"B", Species::Reshiram, 0};
             case ExtraSavesSubScreen::Group::B2W2:
                 return {"B2", Species::Kyurem, 2};
+            case ExtraSavesSubScreen::Group::RS:
+                return {"R", Species::Groudon, 0};
+            case ExtraSavesSubScreen::Group::E:
+                return {"E", Species::Rayquaza, 0};
+            case ExtraSavesSubScreen::Group::FRLG:
+                return {"FR", Species::Charizard, 0};
             case ExtraSavesSubScreen::Group::XY:
                 return {"X", Species::Xerneas, 0};
             case ExtraSavesSubScreen::Group::ORAS:
@@ -142,6 +162,12 @@ namespace
                 return {"W", Species::Zekrom, 0};
             case ExtraSavesSubScreen::Group::B2W2:
                 return {"W2", Species::Kyurem, 1};
+            case ExtraSavesSubScreen::Group::RS:
+                return {"S", Species::Kyogre, 0};
+            case ExtraSavesSubScreen::Group::E:
+                return {"E", Species::Rayquaza, 0};
+            case ExtraSavesSubScreen::Group::FRLG:
+                return {"LG", Species::Venusaur, 0};
             case ExtraSavesSubScreen::Group::XY:
                 return {"Y", Species::Yveltal, 0};
             case ExtraSavesSubScreen::Group::ORAS:
@@ -168,6 +194,12 @@ namespace
                 return GameVersion::B;
             case ExtraSavesSubScreen::Group::B2W2:
                 return GameVersion::B2;
+            case ExtraSavesSubScreen::Group::RS:
+                return GameVersion::R;
+            case ExtraSavesSubScreen::Group::E:
+                return GameVersion::E;
+            case ExtraSavesSubScreen::Group::FRLG:
+                return GameVersion::FR;
             case ExtraSavesSubScreen::Group::XY:
                 return GameVersion::X;
             case ExtraSavesSubScreen::Group::ORAS:
@@ -194,6 +226,12 @@ namespace
                 return GameVersion::W;
             case ExtraSavesSubScreen::Group::B2W2:
                 return GameVersion::W2;
+            case ExtraSavesSubScreen::Group::RS:
+                return GameVersion::S;
+            case ExtraSavesSubScreen::Group::E:
+                return GameVersion::E;
+            case ExtraSavesSubScreen::Group::FRLG:
+                return GameVersion::LG;
             case ExtraSavesSubScreen::Group::XY:
                 return GameVersion::Y;
             case ExtraSavesSubScreen::Group::ORAS:
@@ -217,6 +255,14 @@ namespace
 ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
     : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' + i18n::localize("B_BACK")), group(g)
 {
+    for (size_t i = 0; i < 13; i++)
+    {
+        static constexpr GameVersion versions[13] = {GameVersion::R, GameVersion::S, GameVersion::E, GameVersion::FR, GameVersion::LG, GameVersion::X,
+            GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
+        std::string id                            = Configuration::getInstance().titleId(versions[i]);
+        u64 tid                                   = strtoull(id.c_str(), nullptr, 16);
+        ctrIds[i]                                 = Title::tidToCheckpointPrefix<std::string>(tid);
+    }
     updateSaves();
 }
 
@@ -294,23 +340,9 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::XY:
-            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[1] : ctrIds[0]));
-            numSaves     = currentSaves.size();
-            break;
-        case ExtraSavesSubScreen::Group::ORAS:
-            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[3] : ctrIds[2]));
-            numSaves     = currentSaves.size();
-            break;
-        case ExtraSavesSubScreen::Group::SM:
-            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[5] : ctrIds[4]));
-            numSaves     = currentSaves.size();
-            break;
-        case ExtraSavesSubScreen::Group::USUM:
-            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? ctrIds[7] : ctrIds[6]));
-            numSaves     = currentSaves.size();
-            break;
         default:
+            currentSaves = Configuration::getInstance().extraSaves(std::string(secondSelected ? groupToId2(group) : groupToId1(group)));
+            numSaves     = currentSaves.size();
             break;
     }
 }
@@ -318,7 +350,7 @@ void ExtraSavesSubScreen::updateSaves()
 void ExtraSavesSubScreen::drawTop() const
 {
     Gui::backgroundTop(true);
-    if (group != ExtraSavesSubScreen::Group::Pt)
+    if (group != ExtraSavesSubScreen::Group::Pt && group != ExtraSavesSubScreen::Group::E)
     {
         auto label = groupToLabel1(group);
         drawIcon(label, 128, 96);

@@ -816,11 +816,6 @@ void ConfigScreen::back()
     {
         Banks::swapSD(!Configuration::getInstance().useExtData());
     }
-    if (titleIdsChanged)
-    {
-        TitleLoader::reloadTitleIds();
-        Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024);
-    }
     if (showBackupsChanged || titleIdsChanged)
     {
         TitleLoader::scanSaves();
