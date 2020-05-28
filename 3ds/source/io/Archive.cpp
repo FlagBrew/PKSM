@@ -528,6 +528,7 @@ Result Archive::init(const std::string& execPath)
 void Archive::exit(void)
 {
     sd().close();
+    data().commit();
     data().close();
 
     svcCloseHandle(fspxiHandle);
