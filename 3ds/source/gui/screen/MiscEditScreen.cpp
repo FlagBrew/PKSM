@@ -704,6 +704,7 @@ void MiscEditScreen::validate()
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
+        pkm->refreshChecksum();
         curl_mime_data(field, (char*)pkm->rawData(), pkm->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
