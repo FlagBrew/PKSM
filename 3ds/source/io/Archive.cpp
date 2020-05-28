@@ -233,12 +233,12 @@ Result Archive::copyDir(Archive& src, const std::u16string& dir, Archive& dst, c
         {
             if (d->folder(i))
             {
-                if (R_FAILED(res = moveDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                if (R_FAILED(res = copyDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
                     return res;
             }
             else
             {
-                if (R_FAILED(res = moveFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                if (R_FAILED(res = copyFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
                     return res;
             }
         }
@@ -475,7 +475,7 @@ Result Archive::init(const std::string& execPath)
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
             return res;
 
-        data() = extdata(UNIQUE_ID, false);
+        dataArchive = extdata(UNIQUE_ID, false);
 
         if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
             return res;
