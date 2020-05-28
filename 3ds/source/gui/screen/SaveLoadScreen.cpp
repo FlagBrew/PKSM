@@ -239,7 +239,7 @@ void SaveLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    if (selectedSave < 5 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
+    if (selectedSave < 5 && saves[saveGroup].size() != 0 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
         Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
