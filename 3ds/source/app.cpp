@@ -59,6 +59,7 @@ namespace
     std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
     std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
     std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
+    u64 endTid                    = 0;
 
     struct asset
     {
@@ -548,17 +549,8 @@ namespace
         Result res = -1;
         if (execPath.empty())
         {
-            u8 param[0x300];
-            u8 hmac[0x20];
-
-            if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
-            {
-                // This should fix problems
-                Archive::data().commit();
-                Archive::data().close();
-                Archive::sd().close();
-                res = APT_DoApplicationJump(param, sizeof(param), hmac);
-            }
+            endTid = 0x000400000EC10000;
+            res    = 0;
         }
         else
         {
@@ -906,4 +898,18 @@ Result App::exit(void)
     hidExit();
 
     return 0;
+}
+
+void App::end()
+{
+    if (endTid != 0)
+    {
+        u8 param[0x300];
+        u8 hmac[0x20];
+
+        if (R_SUCCEEDED(APT_PrepareToDoApplicationJump(0, endTid, MEDIATYPE_SD)))
+        {
+            APT_DoApplicationJump(param, sizeof(param), hmac);
+        }
+    }
 }

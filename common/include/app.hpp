@@ -37,6 +37,8 @@ namespace App
 {
     Result init(const std::string& execPath);
     Result exit(void);
+
+    void end(void);
 }
 
 #endif

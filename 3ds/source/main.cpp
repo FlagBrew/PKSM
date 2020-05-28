@@ -95,5 +95,7 @@ int main(int argc, char* argv[])
         consoleDisplayError(e.what());
     }
 
-    return App::exit();
+    res = App::exit();
+    App::end();
+    return res;
 }
