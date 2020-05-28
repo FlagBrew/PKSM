@@ -105,9 +105,12 @@ std::string TitleIdOverlay::getNewTitleId() const
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);
     if (titleId.empty())
     {
-        titleId = "0x00040000";
+        swkbdSetInitialText(&state, "0x00040000");
     }
-    swkbdSetInitialText(&state, titleId.c_str());
+    else
+    {
+        swkbdSetInitialText(&state, titleId.c_str());
+    }
     swkbdSetValidation(&state, SWKBD_ANYTHING, SWKBD_FILTER_CALLBACK, 0);
     swkbdSetFilterCallback(&state,
         [](void*, const char** ppMessage, const char* text, size_t textlen) {
