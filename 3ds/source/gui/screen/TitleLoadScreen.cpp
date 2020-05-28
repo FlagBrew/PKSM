@@ -280,13 +280,6 @@ void TitleLoadScreen::update(touchPosition* touch)
         oldLang = Configuration::getInstance().language();
         makeInstructions();
     }
-    for (auto& tabButton : tabs)
-    {
-        if (tabButton->update(touch))
-        {
-            return;
-        }
-    }
     u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardWasUpdated())
     {
@@ -527,14 +520,34 @@ void TitleLoadScreen::update(touchPosition* touch)
             Gui::setScreen(std::make_unique<SaveLoadScreen>());
             return;
         }
-        if (buttonsDown & KEY_A)
+        else if (buttonsDown & KEY_A)
         {
             selectedGame = true;
             selectedSave = 0;
         }
+        else if (buttonsDown & KEY_L)
+        {
+            titles = &TitleLoader::ctrTitles;
+            resetTitles();
+            return;
+        }
+        else if (buttonsDown & KEY_R)
+        {
+            titles = &TitleLoader::vcTitles;
+            resetTitles();
+            return;
+        }
+
         if (buttons[0]->update(touch))
         {
             return;
+        }
+        for (auto& tabButton : tabs)
+        {
+            if (tabButton->update(touch))
+            {
+                return;
+            }
         }
     }
     if (auto title = titleFromIndex(selectedTitle))
