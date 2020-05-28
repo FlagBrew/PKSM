@@ -103,6 +103,10 @@ std::string TitleIdOverlay::getNewTitleId() const
     swkbdSetButton(&state, SWKBD_BUTTON_MIDDLE, i18n::localize("RESET").c_str(), false);
     swkbdSetHintText(&state, i18n::localize("TITLE_ID").c_str());
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);
+    if (titleId.empty())
+    {
+        titleId = "0x00040000";
+    }
     swkbdSetInitialText(&state, titleId.c_str());
     swkbdSetValidation(&state, SWKBD_ANYTHING, SWKBD_FILTER_CALLBACK, 0);
     swkbdSetFilterCallback(&state,
