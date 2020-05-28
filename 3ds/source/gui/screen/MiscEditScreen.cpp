@@ -58,12 +58,16 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
             return true;
         },
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(204, 140, 108, 30,
+
+    instructions.addCircle(false, 272 + 24, 24, 6, COLOR_GREY);
+    instructions.addLine(false, 272 + 24, 24, 272 + 24, 64, 4, COLOR_GREY);
+    instructions.addBox(false, 76 + 24, 64, 200, 18, COLOR_GREY, i18n::localize("APP_LEGALIZE"), COLOR_WHITE);
+    buttons.push_back(std::make_unique<ClickButton>(272, 0, 48, 48,
         [this]() {
             addOverlay<AppLegalityOverlay>(this->pkm);
             return true;
         },
-        ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
+        ui_sheet_gpssmobile_curve_idx, "", 0.0f, COLOR_BLACK));
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
     instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
@@ -179,8 +183,8 @@ void MiscEditScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize("APP_LEGALIZE"), 258, 155, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
-        TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
+    // Gui::text(i18n::localize("APP_LEGALIZE"), 258, 155, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP,
+    // 100.0f);
 
     Gui::text(i18n::localize(otAndMet ? "HT_EGG" : "OT_MET"), 258, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
         TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
