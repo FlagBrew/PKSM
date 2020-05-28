@@ -553,6 +553,8 @@ namespace
 
             if (R_SUCCEEDED(res = APT_PrepareToDoApplicationJump(0, 0x000400000EC10000, MEDIATYPE_SD)))
             {
+                // This should fix problems
+                Archive::data().commit();
                 res = APT_DoApplicationJump(param, sizeof(param), hmac);
             }
         }
@@ -585,7 +587,7 @@ namespace
         std::string checksumPath = path + ".sha";
         std::array<u8, SHA256_BLOCK_SIZE> ret;
 
-        fileInfo.exists         = (stat(path.c_str(), &dummy) == 0);
+        fileInfo.exists = (stat(path.c_str(), &dummy) == 0);
         archive_getmtime(path.c_str(), &fileInfo.mtime);
         checksumFileInfo.exists = (stat(checksumPath.c_str(), &dummy) == 0);
         archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
