@@ -24,43 +24,25 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef FSSTREAM_HPP
-#define FSSTREAM_HPP
+#ifndef TITLEIDOVERLAY_HPP
+#define TITLEIDOVERLAY_HPP
 
-#include "utils.hpp"
-#include <3ds.h>
-#include <string>
+#include "Hid.hpp"
+#include "ReplaceableScreen.hpp"
 
-class FSStream
+class TitleIdOverlay : public ReplaceableScreen
 {
 public:
-    FSStream(FS_Archive archive, const std::u16string& path, u32 flags);
-    FSStream(FS_Archive archive, const std::u16string& path, u32 flags, u64 size);
-    FSStream(FS_Archive archive, const std::string& path, u32 flags) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags) {}
-    FSStream(FS_Archive archive, const std::string& path, u32 flags, u64 size) : FSStream(archive, StringUtils::UTF8toUTF16(path), flags, size) {}
-    FSStream(const FSStream& other) = delete;
-    FSStream(FSStream&& other)      = delete;
-    FSStream& operator=(const FSStream& other) = delete;
-    FSStream& operator=(FSStream&& other) = delete;
-    ~FSStream() { close(); }
-
-    Result close();
-    bool eof();
-    bool good();
-    u64 offset();
-    u32 read(void* buf, u32 size);
-    Result result();
-    u64 size();
-    u32 write(const void* buf, u32 size);
-    void seek(u32 offset, int from);
-    Handle getRawHandle();
+    TitleIdOverlay(ReplaceableScreen& screen);
+    ~TitleIdOverlay() {}
+    void drawTop() const override;
+    bool replacesTop() const override { return true; }
+    void drawBottom() const override;
+    void update(touchPosition* touch) override;
 
 private:
-    Handle mHandle;
-    u64 mSize;
-    u64 mOffset;
-    Result mResult;
-    bool mGood;
+    std::string getNewTitleId() const;
+    Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
 };
 
 #endif

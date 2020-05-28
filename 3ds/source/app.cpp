@@ -25,13 +25,12 @@
  */
 
 #include "app.hpp"
+#include "Archive.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
 #include "PkmUtils.hpp"
 #include "TitleLoadScreen.hpp"
 #include "appIcon.hpp"
-#include "archive.hpp"
 #include "banks.hpp"
 #include "fetch.hpp"
 #include "format.h"
@@ -78,18 +77,18 @@ namespace
     bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
     {
         bool match = false;
-        FSStream in(Archive::sd(), path, FS_OPEN_READ);
-        if (in.good())
+        auto in    = Archive::sd().file(path, FS_OPEN_READ);
+        if (in)
         {
-            size_t size = in.size();
+            size_t size = in->size();
             char* data  = new char[size];
-            in.read(data, size);
+            in->read(data, size);
             char hash[SHA256_BLOCK_SIZE];
             sha256((unsigned char*)hash, (unsigned char*)data, size);
             delete[] data;
             match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
+            in->close();
         }
-        in.close();
         return match;
     }
 
@@ -178,13 +177,13 @@ namespace
 
     void backupExtData()
     {
-        Archive::deleteDir(Archive::data(), u"/3ds/PKSM/extDataBackup");
+        Archive::sd().deleteDir(u"/3ds/PKSM/extDataBackup");
         Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
     }
 
     void backupBanks()
     {
-        Archive::deleteDir(Archive::data(), u"/3ds/PKSM/banksBkp");
+        Archive::sd().deleteDir(u"/3ds/PKSM/banksBkp");
         Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
     }
 
@@ -328,14 +327,13 @@ namespace
             if (R_FAILED(res))
             {
                 Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
-                Archive::deleteFile(Archive::sd(), path);
+                Archive::sd().deleteFile(path);
                 return false;
             }
 
             Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
             if (execPath != "")
             {
-                Archive::deleteFile(Archive::sd(), execPath);
                 Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
                 return true;
             }
@@ -344,20 +342,20 @@ namespace
                 // Adapted from https://github.com/joel16/3DShell/blob/master/source/cia.c
                 AM_TitleEntry title;
                 Handle dstHandle;
-                FSStream ciaFile(Archive::sd(), path, FS_OPEN_READ);
-                if (ciaFile.good())
+                auto ciaFile = Archive::sd().file(path, FS_OPEN_READ);
+                if (ciaFile)
                 {
-                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, ciaFile.getRawHandle())))
+                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, std::get<0>(ciaFile->getRawHandle()))))
                     {
                         Gui::error(i18n::localize("BAD_CIA_FILE"), res);
-                        ciaFile.close();
+                        ciaFile->close();
                         return false;
                     }
 
                     if (R_FAILED(res = AM_StartCiaInstall(MEDIATYPE_SD, &dstHandle)))
                     {
                         Gui::error(i18n::localize("CIA_INSTALL_START_FAIL"), res);
-                        ciaFile.close();
+                        ciaFile->close();
                         return false;
                     }
 
@@ -376,11 +374,11 @@ namespace
                     {
                         memset(buf, 0, bufSize);
 
-                        bytesRead = ciaFile.read(buf, bufSize);
-                        if (R_FAILED(ciaFile.result()))
+                        bytesRead = ciaFile->read(buf, bufSize);
+                        if (R_FAILED(ciaFile->result()))
                         {
-                            Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile.result());
-                            ciaFile.close();
+                            Gui::error(i18n::localize("CIA_UPDATE_READ_FAIL"), ciaFile->result());
+                            ciaFile->close();
                             FSFILE_Close(dstHandle);
                             return false;
                         }
@@ -388,7 +386,7 @@ namespace
                         if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
                         {
                             Gui::error(i18n::localize("CIA_UPDATE_WRITE_FAIL"), res);
-                            ciaFile.close();
+                            ciaFile->close();
                             FSFILE_Close(dstHandle);
                             return false;
                         }
@@ -399,7 +397,7 @@ namespace
                         }
 
                         offset += bytesRead;
-                    } while (offset < ciaFile.size() && ciaInstallGood);
+                    } while (offset < ciaFile->size() && ciaInstallGood);
 
                     if (buf != backupBuf)
                     {
@@ -409,7 +407,7 @@ namespace
                     if (!ciaInstallGood)
                     {
                         AM_CancelCIAInstall(dstHandle);
-                        ciaFile.close();
+                        ciaFile->close();
                         Gui::warn("Bytes written doesn't match bytes read:\n" + std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
                         return false;
                     }
@@ -417,13 +415,13 @@ namespace
                     if (R_FAILED(res = AM_FinishCiaInstall(dstHandle)))
                     {
                         Gui::error(i18n::localize("CIA_INSTALL_FINISH_FAIL"), res);
-                        ciaFile.close();
+                        ciaFile->close();
                         return false;
                     }
 
-                    ciaFile.close();
+                    ciaFile->close();
 
-                    Archive::deleteFile(Archive::sd(), path);
+                    Archive::sd().deleteFile(path);
 
                     return true;
                 }

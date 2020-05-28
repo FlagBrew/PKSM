@@ -27,6 +27,7 @@
 #ifndef TITLE_HPP
 #define TITLE_HPP
 
+#include "format.h"
 #include "spi.hpp"
 #include <3ds.h>
 #include <algorithm>
@@ -40,16 +41,33 @@ public:
     ~Title(void);
 
     bool load(u64 id, FS_MediaType mediaType, FS_CardType cardType);
-    CardType SPICardType(void);
-    u32 highId(void);
-    u32 lowId(void);
-    u64 ID(void) { return (u64)highId() << 32 | lowId(); }
-    std::string name(void);
-    C2D_Image icon(void);
-    FS_MediaType mediaType(void);
-    FS_CardType cardType(void);
+    CardType SPICardType(void) const;
+    u32 highId(void) const;
+    u32 lowId(void) const;
+    u64 ID(void) const { return (u64)highId() << 32 | lowId(); }
+    std::string name(void) const;
+    C2D_Image icon(void) const;
+    FS_MediaType mediaType(void) const;
+    FS_CardType cardType(void) const;
+    bool gba(void) const;
 
-    std::string checkpointPrefix(void);
+    std::string checkpointPrefix(void) const;
+
+    // clang-format off
+    template <typename StrType>
+    requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
+    static StrType tidToCheckpointPrefix(u64 tid)
+    // clang-format on
+    {
+        if constexpr (std::is_same_v<std::string, StrType>)
+        {
+            return fmt::format<StrType>("0x{:05X}", ((u32)tid) >> 8);
+        }
+        else if constexpr (std::is_same_v<std::u16string, StrType>)
+        {
+            return fmt::format<StrType>(u"0x{:05X}", ((u32)tid) >> 8);
+        }
+    }
 
 private:
     u64 mId;
@@ -59,6 +77,7 @@ private:
     C2D_Image mIcon;
     std::string mName;
     std::string mPrefix;
+    bool mGba;
 };
 
 #endif

@@ -31,7 +31,6 @@
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
-#include "FSStream.hpp"
 #include "MainMenu.hpp"
 #include "PK4.hpp"
 #include "SavLGPE.hpp"
@@ -40,7 +39,6 @@
 #include "StorageViewOverlay.hpp"
 #include "TitleLoadScreen.hpp"
 #include "app.hpp"
-#include "archive.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
@@ -1295,16 +1293,16 @@ bool StorageScreen::dumpPkm()
                 dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
                 path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
                         fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-                FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
-                if (out.good())
+                FILE* out = fopen(path.c_str(), "wb");
+                if (out)
                 {
-                    out.write(dumpMon->rawData(), dumpMon->getLength());
+                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+                    fclose(out);
                 }
                 else
                 {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
                 }
-                out.close();
             }
         }
         else
@@ -1318,16 +1316,16 @@ bool StorageScreen::dumpPkm()
                 dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
                 path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
                         fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-                FSStream out(Archive::sd(), StringUtils::UTF8toUTF16(path), FS_OPEN_CREATE | FS_OPEN_WRITE, dumpMon->getLength());
-                if (out.good())
+                FILE* out = fopen(path.c_str(), "wb");
+                if (out)
                 {
-                    out.write(dumpMon->rawData(), dumpMon->getLength());
+                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+                    fclose(out);
                 }
                 else
                 {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), out.result());
+                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
                 }
-                out.close();
             }
         }
         return true;

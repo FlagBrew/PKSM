@@ -74,17 +74,20 @@ private:
         }
         return false;
     }
-    static constexpr std::string_view titleName(int index);
     bool loadSave(void);
+    void updateTitles(void);
 
     // Has to be mutable because no const operator[]
-    mutable std::unordered_map<int, std::vector<std::pair<std::string, std::string>>> saves;
+    static constexpr size_t NUM_GROUPS = 12;
+    std::array<std::vector<std::pair<std::string, std::string>>, NUM_GROUPS> saves;
     std::vector<std::unique_ptr<Button>> buttons;
     int firstSave    = 0;
     int selectedSave = -1;
     int saveGroup    = 0;
     Language oldLang;
     bool selectedGroup = false;
+
+    bool mustUpdateTitles = false;
 };
 
 #endif

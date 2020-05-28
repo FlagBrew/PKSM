@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "language": 2,
   "autoBackup": true,
   "transferEdit": true,
@@ -12,6 +12,16 @@
     }
   },
   "extraSaves": {},
+  "titles": {
+    "24": "0x0004000000055D00",
+    "25": "0x0004000000055E00",
+    "26": "0x000400000011C500",
+    "27": "0x000400000011C400",
+    "30": "0x0004000000164800",
+    "31": "0x0004000000175E00",
+    "32": "0x00040000001B5000",
+    "33": "0x00040000001B5100"
+  },
   "writeFileSave": false,
   "useSaveInfo": false,
   "randomMusic": false,

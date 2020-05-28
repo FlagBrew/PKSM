@@ -34,17 +34,20 @@
 class ExtraSavesSubScreen : public Screen
 {
 public:
-    enum Group : s8
+    enum Group : u8
     {
-        Pt = -1,
-        DP,
-        HGSS,
-        BW,
-        B2W2,
+        RS,
+        E,
+        FRLG,
         XY,
         ORAS,
         SM,
-        USUM
+        USUM,
+        DP,
+        HGSS,
+        Pt,
+        BW,
+        B2W2
     };
     ExtraSavesSubScreen(Group group);
 
@@ -64,7 +67,6 @@ private:
     Group group;
     bool secondSelected = false;
     bool updateConfig   = false;
-    // std::vector<std::shared_ptr<Button>> deleteButtons;
 };
 
 #endif

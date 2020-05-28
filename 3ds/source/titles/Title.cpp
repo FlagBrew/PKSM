@@ -25,7 +25,7 @@
  */
 
 #include "Title.hpp"
-#include "archive.hpp"
+#include "Archive.hpp"
 #include "format.h"
 #include "smdh.hpp"
 
@@ -132,10 +132,34 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         mName   = StringUtils::UTF16toUTF8((char16_t*)smdh->applicationTitles[1].shortDescription);
         mPrefix = fmt::format(FMT_STRING("0x{:05X}"), lowId() >> 8);
 
-        if (Archive::saveAccessible(mMedia, lowId(), highId()))
+        Archive archive = Archive::save(mMedia, lowId(), highId(), false);
+        if (R_SUCCEEDED(archive.result()))
         {
             loadTitle = true;
             mIcon     = loadTextureIcon(smdh);
+        }
+        // Is it a GBA save? GBA saves are not in the normal archive format
+        else
+        {
+            archive = Archive::saveAndContents(mMedia, lowId(), highId(), true);
+            if (R_SUCCEEDED(archive.result()))
+            {
+                constexpr u32 pathData[5] = {
+                    1,   // Save data
+                    1,   // TMD content index
+                    3,   // Type: save data?
+                    0, 0 // No EXEFS file name needed
+                };
+                auto out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
+                if (out)
+                {
+                    mGba      = true;
+                    loadTitle = true;
+                    mIcon     = loadTextureIcon(smdh);
+                    out->close();
+                }
+                archive.close();
+            }
         }
         delete smdh;
     }
@@ -179,42 +203,47 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
     return loadTitle;
 }
 
-u32 Title::highId(void)
+u32 Title::highId(void) const
 {
     return (u32)(mId >> 32);
 }
 
-u32 Title::lowId(void)
+u32 Title::lowId(void) const
 {
     return (u32)mId;
 }
 
-std::string Title::name(void)
+std::string Title::name(void) const
 {
     return mName;
 }
 
-CardType Title::SPICardType(void)
+CardType Title::SPICardType(void) const
 {
     return mCardType;
 }
 
-C2D_Image Title::icon(void)
+C2D_Image Title::icon(void) const
 {
     return mIcon;
 }
 
-FS_MediaType Title::mediaType(void)
+FS_MediaType Title::mediaType(void) const
 {
     return mMedia;
 }
 
-FS_CardType Title::cardType(void)
+FS_CardType Title::cardType(void) const
 {
     return mCard;
 }
 
-std::string Title::checkpointPrefix(void)
+bool Title::gba(void) const
+{
+    return mGba;
+}
+
+std::string Title::checkpointPrefix(void) const
 {
     return mPrefix;
 }

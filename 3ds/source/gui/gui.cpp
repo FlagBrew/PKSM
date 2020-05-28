@@ -420,12 +420,12 @@ void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, fl
 void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Color color)
 {
     flushText();
-    // C2D_DrawLine(x1, y1, x2, y2, 0.5f, width, color);
-    float angle = atan2f(y2 - y1, x2 - x1) + C3D_Angle(.25);
-    float dy    = width / 2 * sinf(angle);
-    float dx    = width / 2 * cosf(angle);
-    drawSolidTriangle(x1 - dx, y1 - dy, x1 + dx, y1 + dy, x2 - dx, y2 - dy, color);
-    drawSolidTriangle(x2 - dx, y2 - dy, x2 + dx, y2 + dy, x1 + dx, y1 + dy, color);
+    C2D_DrawLine(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), width, 0.5f);
+    // float angle = atan2f(y2 - y1, x2 - x1) + C3D_Angle(.25);
+    // float dy    = width / 2 * sinf(angle);
+    // float dx    = width / 2 * cosf(angle);
+    // drawSolidTriangle(x1 - dx, y1 - dy, x1 + dx, y1 + dy, x2 - dx, y2 - dy, color);
+    // drawSolidTriangle(x2 - dx, y2 - dy, x2 + dx, y2 + dy, x1 + dx, y1 + dy, color);
 }
 
 void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Color color)
@@ -1351,7 +1351,7 @@ void Gui::sprite(int key, int x, int y)
         C2D_PlainImageTint(&tint, C2D_Color32(0xbd, 0x30, 0x26, 255), 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint);
     }
-    else if (key == ui_sheet_emulated_button_tab_unselected_idx)
+    else if (key == ui_sheet_emulated_button_tabs_3_unselected_idx)
     {
         drawSolidRect(x, y, 104, 17, COLOR_DARKBLUE);
     }
@@ -1360,6 +1360,37 @@ void Gui::sprite(int key, int x, int y)
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
         C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y, 0.5f, &tint);
+    }
+    else if (key == ui_sheet_emulated_button_tabs_2_unselected_idx)
+    {
+        drawSolidRect(x, y, 158, 17, COLOR_DARKBLUE);
+    }
+    else if (key == ui_sheet_emulated_gameselector_bg_solid_idx)
+    {
+        u8 off = 5, rep = 197;
+        /* LEFT */
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y);
+        // Bottom side
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, 1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
+        x += 5;
+        Gui::drawSolidRect(x, y, 382, rep + 10, PKSM_Color(26, 35, 126, 255));
+        /* RIGHT */
+        x += 382;
+        sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        // Top side
+        tex = _select_box(sprite, 0, 0, 0, off);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, -1.0f, 1.0f);
+        // Bottom side
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off + rep, nullptr, -1.0f, -1.0f);
+        // Center
+        tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
+        Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
     }
     // standard case
     else

@@ -24,47 +24,45 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef LOADER_HPP
-#define LOADER_HPP
+#ifndef FILE_HPP
+#define FILE_HPP
 
+#include "utils.hpp"
 #include <3ds.h>
-#include <memory>
 #include <string>
-#include <unordered_map>
-#include <vector>
+#include <variant>
 
-class Sav;
-class Title;
-
-bool isLoadedSaveFromBridge(void);
-bool receiveSaveFromBridge(void);
-bool sendSaveToBridge(void);
-void setLoadedSaveFromBridge(bool v);
-void backupBridgeChanges(void);
-
-namespace TitleLoader
+class File
 {
-    void scanTitles(void);
-    bool scanCard(void);
-    bool cardWasUpdated(void);
-    void scanSaves(void);
-    bool load(std::shared_ptr<Title> title);
-    bool load(std::shared_ptr<Title> title, const std::string& path);
-    bool load(std::shared_ptr<u8[]> data, size_t size);
-    void backupSave(const std::string& id);
-    void saveChanges(void);
-    void saveToTitle(bool ask);
-    void init(void);
-    void exit(void);
-    std::string savePath(void);
-    void reloadTitleIds(void);
+    friend class Archive;
+    File(Handle handle);
+    File(FSPXI_File handle);
 
-    // Title list
-    inline std::vector<std::shared_ptr<Title>> ctrTitles;
-    inline std::vector<std::shared_ptr<Title>> vcTitles;
-    inline std::shared_ptr<Title> cardTitle = nullptr;
-    inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
-    inline std::shared_ptr<Sav> save;
-}
+public:
+    File(const File& other) = delete;
+    File(File&& other)      = delete;
+    File& operator=(const File& other) = delete;
+    File& operator=(File&& other) = delete;
+    ~File() { close(); }
+
+    Result close();
+    bool eof();
+    u64 offset();
+    u32 read(void* buf, u32 size);
+    Result result();
+    u64 size();
+    u32 write(const void* buf, u32 size);
+    void seek(s64 offset, int from);
+    Result resize(u64 size);
+
+    // Not for general use! Only meant for very specific, necessary direct calls.
+    std::variant<Handle, FSPXI_File> getRawHandle();
+
+private:
+    std::variant<Handle, FSPXI_File> mHandle;
+    u64 mSize;
+    u64 mOffset;
+    Result mResult;
+};
 
 #endif

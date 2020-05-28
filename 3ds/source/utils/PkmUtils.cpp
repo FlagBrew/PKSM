@@ -28,6 +28,7 @@
 #include "Configuration.hpp"
 #include "Generation.hpp"
 #include "PB7.hpp"
+#include "PK3.hpp"
 #include "PK4.hpp"
 #include "PK5.hpp"
 #include "PK6.hpp"
@@ -41,7 +42,7 @@
 
 namespace
 {
-    std::unique_ptr<PK4> g3Default   = nullptr;
+    std::unique_ptr<PK3> g3Default   = nullptr;
     bool g3Save                      = false;
     std::unique_ptr<PK4> g4Default   = nullptr;
     bool g4Save                      = false;
@@ -174,6 +175,7 @@ namespace
 
 void PkmUtils::initDefaults()
 {
+    g3Default   = loadPkm<Generation::THREE>("default.pk3");
     g4Default   = loadPkm<Generation::FOUR>("default.pk4");
     g5Default   = loadPkm<Generation::FIVE>("default.pk5");
     g6Default   = loadPkm<Generation::SIX>("default.pk6");
@@ -185,6 +187,16 @@ void PkmUtils::initDefaults()
 
 void PkmUtils::saveDefaults()
 {
+    if (g3Save)
+    {
+        FILE* out = fopen("/3ds/PKSM/defaults/default.pk3", "wb");
+        if (out)
+        {
+            fwrite(g3Default->rawData(), 1, g3Default->getLength(), out);
+            fclose(out);
+            g3Save = false;
+        }
+    }
     if (g4Save)
     {
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk4", "wb");
@@ -251,6 +263,8 @@ std::unique_ptr<PKX> PkmUtils::getDefault(Generation gen)
 {
     switch (gen)
     {
+        case Generation::THREE:
+            return g3Default->clone();
         case Generation::FOUR:
             return g4Default->clone();
         case Generation::FIVE:
@@ -271,6 +285,10 @@ void PkmUtils::setDefault(std::unique_ptr<PKX> pkm)
 {
     switch (pkm->generation())
     {
+        case Generation::THREE:
+            g3Default = std::unique_ptr<PK3>((PK3*)pkm.release());
+            g3Save    = true;
+            break;
         case Generation::FOUR:
             g4Default = std::unique_ptr<PK4>((PK4*)pkm.release());
             g4Save    = true;
