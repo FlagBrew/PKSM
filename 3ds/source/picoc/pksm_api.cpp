@@ -1861,14 +1861,18 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     char* string   = (char*)Param[0]->Val->Pointer;
     u32 offset     = Param[1]->Val->UnsignedInteger;
     u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
-    if (TitleLoader::save->generation() != Generation::FOUR)
+    if (TitleLoader::save->generation() == Generation::FOUR)
     {
-        StringUtils::setString(
-            TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
+        StringUtils::setString4(TitleLoader::save->rawData().get(), string, offset, codepoints);
+    }
+    else if (TitleLoader::save->generation() == Generation::THREE)
+    {
+        StringUtils::setString3(TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->language() == Language::JPN);
     }
     else
     {
-        StringUtils::setString4(TitleLoader::save->rawData().get(), string, offset, codepoints);
+        StringUtils::setString(
+            TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
     }
 }
 
@@ -1879,20 +1883,20 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     if (TitleLoader::save->generation() == Generation::FOUR)
     {
-        std::string data = StringUtils::getString4(TitleLoader::save->rawData().get(), offset, codepoints);
-        char* ret        = (char*)malloc(data.size() + 1);
-        std::copy(data.begin(), data.end(), ret);
-        ret[data.size()]                  = '\0';
-        ReturnValue->Val->UnsignedInteger = (u32)ret;
+        std::string data          = StringUtils::getString4(TitleLoader::save->rawData().get(), offset, codepoints);
+        ReturnValue->Val->Pointer = strToRet(data);
+    }
+    else if (TitleLoader::save->generation() == Generation::THREE)
+    {
+        std::string data =
+            StringUtils::getString3(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->language() == Language::JPN);
+        ReturnValue->Val->Pointer = strToRet(data);
     }
     else
     {
         std::string data = StringUtils::getString(
             TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
-        char* ret = (char*)malloc(data.size() + 1);
-        std::copy(data.begin(), data.end(), ret);
-        ret[data.size()]                  = '\0';
-        ReturnValue->Val->UnsignedInteger = (u32)ret;
+        ReturnValue->Val->Pointer = strToRet(data);
     }
 }
 
@@ -1935,6 +1939,8 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
             break;
         case Generation::UNUSED:
         case Generation::THREE:
+        case Generation::ONE:
+        case Generation::TWO:
             return;
     }
 
@@ -1947,7 +1953,7 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
 void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     int ret = TitleLoader::save->currentGiftAmount();
-    if (ret == TitleLoader::save->maxWondercards())
+    if ((size_t)ret == TitleLoader::save->maxWondercards())
     {
         ret--;
     }
