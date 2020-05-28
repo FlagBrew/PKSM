@@ -555,6 +555,8 @@ namespace
             {
                 // This should fix problems
                 Archive::data().commit();
+                Archive::data().close();
+                Archive::sd().close();
                 res = APT_DoApplicationJump(param, sizeof(param), hmac);
             }
         }
