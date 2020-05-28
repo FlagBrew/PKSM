@@ -47,6 +47,14 @@ namespace
     {
         switch (version)
         {
+            case GameVersion::R:
+            case GameVersion::S:
+                return "/scripts/rs";
+            case GameVersion::E:
+                return "/scripts/e";
+            case GameVersion::FR:
+            case GameVersion::LG:
+                return "/scripts/frlg";
             case GameVersion::HG:
             case GameVersion::SS:
                 return "/scripts/hgss";
