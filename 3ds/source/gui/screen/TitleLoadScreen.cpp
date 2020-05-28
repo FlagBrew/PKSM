@@ -307,6 +307,25 @@ void TitleLoadScreen::update(touchPosition* touch)
             {
                 Gui::setScreen(std::make_unique<ConfigScreen>());
             }
+            else if (buttonsDown & KEY_L)
+            {
+                tabs[0]->setState(true);
+                titles = &TitleLoader::ctrTitles;
+                resetTitles();
+            }
+            else if (buttonsDown & KEY_R)
+            {
+                tabs[1]->setState(true);
+                titles = &TitleLoader::vcTitles;
+                resetTitles();
+            }
+            for (auto& tabButton : tabs)
+            {
+                if (tabButton->update(touch))
+                {
+                    return;
+                }
+            }
             return;
         }
     }
@@ -527,12 +546,14 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else if (buttonsDown & KEY_L)
         {
+            tabs[0]->setState(true);
             titles = &TitleLoader::ctrTitles;
             resetTitles();
             return;
         }
         else if (buttonsDown & KEY_R)
         {
+            tabs[1]->setState(true);
             titles = &TitleLoader::vcTitles;
             resetTitles();
             return;
