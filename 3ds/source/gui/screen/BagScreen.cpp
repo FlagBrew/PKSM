@@ -170,9 +170,8 @@ void BagScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    static int timer = 0;
-    u32 downKeys     = hidKeysDown();
-    u32 heldKeys     = hidKeysHeld();
+    u32 downKeys   = hidKeysDown();
+    u32 repeatKeys = hidKeysDownRepeat();
     if (downKeys & KEY_B)
     {
         if (!selectingPouch)
@@ -195,7 +194,7 @@ void BagScreen::update(touchPosition* touch)
     }
     if (!selectingPouch)
     {
-        if (downKeys & KEY_DOWN)
+        if (repeatKeys & KEY_DOWN)
         {
             if (selectedItem + firstItem < firstEmpty)
             {
@@ -216,32 +215,8 @@ void BagScreen::update(touchPosition* touch)
                 selectedItem = 0;
                 firstItem    = 0;
             }
-            timer = 10;
         }
-        else if (heldKeys & KEY_DOWN && timer == 0)
-        {
-            if (selectedItem + firstItem < firstEmpty)
-            {
-                if (selectedItem == 6)
-                {
-                    if (firstItem + 6 < firstEmpty)
-                    {
-                        firstItem++;
-                    }
-                }
-                else
-                {
-                    selectedItem++;
-                }
-            }
-            else
-            {
-                selectedItem = 0;
-                firstItem    = 0;
-            }
-            timer = 10;
-        }
-        else if (downKeys & KEY_UP)
+        else if (repeatKeys & KEY_UP)
         {
             if (firstItem > 0 && selectedItem == 0)
             {
@@ -262,50 +237,14 @@ void BagScreen::update(touchPosition* touch)
                     }
                 }
             }
-            timer = 10;
         }
-        else if (heldKeys & KEY_UP && timer == 0)
-        {
-            if (firstItem > 0 && selectedItem == 0)
-            {
-                firstItem--;
-            }
-            else if (selectedItem > 0)
-            {
-                selectedItem--;
-            }
-            else
-            {
-                firstItem = std::max(firstEmpty - 6, 0);
-                for (int i = firstItem + 6; i > firstItem; i--)
-                {
-                    if (i == firstEmpty)
-                    {
-                        selectedItem = i - firstItem;
-                    }
-                }
-            }
-            timer = 10;
-        }
-        else if (downKeys & KEY_LEFT)
+        else if (repeatKeys & KEY_LEFT)
         {
             editCount(false, selectedItem);
-            timer = 10;
         }
-        else if (heldKeys & KEY_LEFT && timer == 0)
-        {
-            editCount(false, selectedItem);
-            timer = 10;
-        }
-        else if (downKeys & KEY_RIGHT)
+        else if (repeatKeys & KEY_RIGHT)
         {
             editCount(true, selectedItem);
-            timer = 10;
-        }
-        else if (heldKeys & KEY_RIGHT && timer == 0)
-        {
-            editCount(true, selectedItem);
-            timer = 10;
         }
 
         if (downKeys & KEY_A)
@@ -315,19 +254,12 @@ void BagScreen::update(touchPosition* touch)
     }
     else
     {
-        if (downKeys & KEY_DOWN)
+        if (repeatKeys & KEY_DOWN)
         {
             currentPouch = (currentPouch + 1) % limits.size();
             switchPouch(currentPouch);
-            timer = 10;
         }
-        else if (heldKeys & KEY_DOWN && timer == 0)
-        {
-            currentPouch = (currentPouch + 1) % limits.size();
-            switchPouch(currentPouch);
-            timer = 10;
-        }
-        else if (downKeys & KEY_UP)
+        else if (repeatKeys & KEY_UP)
         {
             int newPouch = currentPouch - 1;
             if (newPouch == -1)
@@ -335,17 +267,6 @@ void BagScreen::update(touchPosition* touch)
                 newPouch = limits.size() - 1;
             }
             switchPouch(newPouch);
-            timer = 10;
-        }
-        else if (heldKeys & KEY_UP && timer == 0)
-        {
-            int newPouch = currentPouch - 1;
-            if (newPouch == -1)
-            {
-                newPouch = limits.size() - 1;
-            }
-            switchPouch(newPouch);
-            timer = 10;
         }
 
         if (downKeys & KEY_A)
@@ -368,11 +289,6 @@ void BagScreen::update(touchPosition* touch)
         amountButtons[i * 3]->update(touch);
         amountButtons[i * 3 + 1]->update(touch);
         amountButtons[i * 3 + 2]->update(touch);
-    }
-
-    if (timer > 0)
-    {
-        timer--;
     }
 }
 

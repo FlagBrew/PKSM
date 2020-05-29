@@ -354,8 +354,6 @@ void EditSelectorScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    static bool sleep     = true;
-    static int sleepTimer = 10;
 
     if (moveMon)
     {
@@ -384,8 +382,9 @@ void EditSelectorScreen::update(touchPosition* touch)
         infoMon = nullptr;
     }
 
-    u32 downKeys = hidKeysDown();
-    u32 heldKeys = hidKeysHeld();
+    u32 downKeys   = hidKeysDown();
+    u32 heldKeys   = hidKeysHeld();
+    u32 repeatKeys = hidKeysDownRepeat();
 
     if (menu)
     {
@@ -426,11 +425,6 @@ void EditSelectorScreen::update(touchPosition* touch)
         for (auto& button : pkmButtons)
         {
             button->update(touch);
-        }
-
-        if (sleepTimer < 0 && sleep)
-        {
-            sleep = false;
         }
 
         if (downKeys & KEY_A)
@@ -495,7 +489,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             doQR();
             return;
         }
-        else if (downKeys & KEY_LEFT)
+        else if (repeatKeys & KEY_LEFT)
         {
             if (cursorPos >= 31)
             {
@@ -529,10 +523,8 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 prevBox();
             }
-            sleep      = true;
-            sleepTimer = 10;
         }
-        else if (downKeys & KEY_RIGHT)
+        else if (repeatKeys & KEY_RIGHT)
         {
             if (cursorPos == 0)
             {
@@ -559,10 +551,8 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 cursorPos = 25;
             }
-            sleep      = true;
-            sleepTimer = 10;
         }
-        else if (downKeys & KEY_UP)
+        else if (repeatKeys & KEY_UP)
         {
             if (cursorPos == 0)
             {
@@ -587,10 +577,8 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 cursorPos -= 6;
             }
-            sleep      = true;
-            sleepTimer = 10;
         }
-        else if (downKeys & KEY_DOWN)
+        else if (repeatKeys & KEY_DOWN)
         {
             if (cursorPos >= 31)
             {
@@ -615,160 +603,14 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 cursorPos += 6;
             }
-            sleep      = true;
-            sleepTimer = 10;
         }
-        else if (downKeys & KEY_R)
+        else if (repeatKeys & KEY_R)
         {
             nextBox();
-            sleep      = true;
-            sleepTimer = 10;
         }
-        else if (downKeys & KEY_L)
+        else if (repeatKeys & KEY_L)
         {
             prevBox();
-            sleep      = true;
-            sleepTimer = 10;
-        }
-        else if (sleepTimer < 0)
-        {
-            if (heldKeys & KEY_LEFT)
-            {
-                if (cursorPos >= 31)
-                {
-                    if (cursorPos == 31)
-                    {
-                        cursorPos = 6;
-                    }
-                    else if (cursorPos == 33)
-                    {
-                        cursorPos = 18;
-                    }
-                    else if (cursorPos == 35)
-                    {
-                        cursorPos = 30;
-                    }
-                    else
-                    {
-                        cursorPos--;
-                    }
-                }
-                else if (cursorPos > 1)
-                {
-                    cursorPos--;
-                }
-                else if (cursorPos == 1)
-                {
-                    prevBox();
-                    cursorPos = 30;
-                }
-                else if (cursorPos == 0)
-                {
-                    prevBox();
-                }
-                sleep = true;
-            }
-            else if (heldKeys & KEY_RIGHT)
-            {
-                if (cursorPos == 0)
-                {
-                    nextBox();
-                }
-                else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
-                {
-                    cursorPos++;
-                }
-                else if (cursorPos == 30)
-                {
-                    nextBox();
-                    cursorPos = 1;
-                }
-                else if (cursorPos == 32)
-                {
-                    cursorPos = 1;
-                }
-                else if (cursorPos == 34)
-                {
-                    cursorPos = 13;
-                }
-                else if (cursorPos == 36)
-                {
-                    cursorPos = 25;
-                }
-                sleep = true;
-            }
-            else if (heldKeys & KEY_UP)
-            {
-                if (cursorPos == 0)
-                {
-                    cursorPos = 27;
-                }
-                else if (cursorPos <= 6)
-                {
-                    cursorPos = 0;
-                }
-                else if (cursorPos >= 31)
-                {
-                    if (cursorPos > 32)
-                    {
-                        cursorPos -= 2;
-                    }
-                    else
-                    {
-                        cursorPos += 4;
-                    }
-                }
-                else
-                {
-                    cursorPos -= 6;
-                }
-                sleep = true;
-            }
-            else if (heldKeys & KEY_DOWN)
-            {
-                if (cursorPos >= 31)
-                {
-                    if (cursorPos < 35)
-                    {
-                        cursorPos += 2;
-                    }
-                    else
-                    {
-                        cursorPos -= 4;
-                    }
-                }
-                else if (cursorPos >= 25)
-                {
-                    cursorPos = 0;
-                }
-                else if (cursorPos == 0)
-                {
-                    cursorPos = 3;
-                }
-                else
-                {
-                    cursorPos += 6;
-                }
-                sleep = true;
-            }
-            else if (heldKeys & KEY_R)
-            {
-                nextBox();
-                sleep = true;
-            }
-            else if (heldKeys & KEY_L)
-            {
-                prevBox();
-                sleep = true;
-            }
-
-            if (sleep)
-                sleepTimer = 10;
-        }
-
-        if (sleep)
-        {
-            sleepTimer--;
         }
     }
 }

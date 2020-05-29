@@ -93,7 +93,7 @@ void ConfigSubRegionOverlay::drawTop() const
 
 void ConfigSubRegionOverlay::update(touchPosition* touch)
 {
-    if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
+    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
     {
         return;
     }

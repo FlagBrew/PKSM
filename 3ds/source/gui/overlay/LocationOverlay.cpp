@@ -96,7 +96,7 @@ void LocationOverlay::drawTop() const
 
 void LocationOverlay::update(touchPosition* touch)
 {
-    if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
+    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
     {
         return;
     }

@@ -355,9 +355,8 @@ void CloudScreen::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    static bool sleep = true;
-    u32 kDown         = hidKeysDown();
-    u32 kHeld         = hidKeysHeld();
+    u32 kDown   = hidKeysDown();
+    u32 kRepeat = hidKeysDownRepeat();
 
     if (kDown & KEY_B)
     {
@@ -414,127 +413,110 @@ void CloudScreen::update(touchPosition* touch)
         addOverlay<CloudOverlay>(access);
         justSwitched = true;
     }
-    else if (buttonCooldown <= 0)
+    else if (kRepeat & KEY_LEFT)
     {
-        sleep = false;
-        if (kHeld & KEY_LEFT)
-        {
-            if (cursorIndex == 0)
-            {
-                if (prevBox())
-                {
-                    return;
-                }
-            }
-            else if (cursorIndex > 1)
-            {
-                cursorIndex--;
-            }
-            else if (cursorIndex == 1)
-            {
-                if (prevBox())
-                {
-                    return;
-                }
-                cursorIndex = 30;
-            }
-            sleep = true;
-        }
-        else if (kHeld & KEY_RIGHT)
-        {
-            if (cursorIndex == 0)
-            {
-                if (nextBox())
-                {
-                    return;
-                }
-            }
-            else if (cursorIndex < 30)
-            {
-                cursorIndex++;
-            }
-            else if (cursorIndex == 30)
-            {
-                if (nextBox())
-                {
-                    return;
-                }
-                cursorIndex = 1;
-            }
-            sleep = true;
-        }
-        else if (kHeld & KEY_UP)
-        {
-            if (cursorIndex == 0 && !cloudChosen)
-            {
-                cloudChosen = true;
-                cursorIndex = 27;
-            }
-            else if (cursorIndex > 0 && cursorIndex <= 6)
-            {
-                cursorIndex = 0;
-            }
-            else if (cursorIndex > 6)
-            {
-                cursorIndex -= 6;
-            }
-            sleep = true;
-        }
-        else if (kHeld & KEY_DOWN)
-        {
-            if (cursorIndex >= 25 && cloudChosen)
-            {
-                cloudChosen = false;
-                cursorIndex = 0;
-            }
-            else if (cursorIndex == 0)
-            {
-                cursorIndex = 3;
-            }
-            else if (cursorIndex < 25)
-            {
-                cursorIndex += 6;
-            }
-            sleep = true;
-        }
-        else if (kHeld & KEY_R)
-        {
-            if (nextBox())
-            {
-                return;
-            }
-            sleep = true;
-        }
-        else if (kHeld & KEY_L)
+        if (cursorIndex == 0)
         {
             if (prevBox())
             {
                 return;
             }
-            sleep = true;
         }
-        else if (kHeld & KEY_ZR)
+        else if (cursorIndex > 1)
         {
-            if (nextBoxTop())
+            cursorIndex--;
+        }
+        else if (cursorIndex == 1)
+        {
+            if (prevBox())
             {
                 return;
             }
-            sleep = true;
+            cursorIndex = 30;
         }
-        else if (kHeld & KEY_ZL)
-        {
-            if (prevBoxTop())
-            {
-                return;
-            }
-            sleep = true;
-        }
-
-        if (sleep)
-            buttonCooldown = 10;
     }
-    if (sleep)
-        buttonCooldown--;
+    else if (kRepeat & KEY_RIGHT)
+    {
+        if (cursorIndex == 0)
+        {
+            if (nextBox())
+            {
+                return;
+            }
+        }
+        else if (cursorIndex < 30)
+        {
+            cursorIndex++;
+        }
+        else if (cursorIndex == 30)
+        {
+            if (nextBox())
+            {
+                return;
+            }
+            cursorIndex = 1;
+        }
+    }
+    else if (kRepeat & KEY_UP)
+    {
+        if (cursorIndex == 0 && !cloudChosen)
+        {
+            cloudChosen = true;
+            cursorIndex = 27;
+        }
+        else if (cursorIndex > 0 && cursorIndex <= 6)
+        {
+            cursorIndex = 0;
+        }
+        else if (cursorIndex > 6)
+        {
+            cursorIndex -= 6;
+        }
+    }
+    else if (kRepeat & KEY_DOWN)
+    {
+        if (cursorIndex >= 25 && cloudChosen)
+        {
+            cloudChosen = false;
+            cursorIndex = 0;
+        }
+        else if (cursorIndex == 0)
+        {
+            cursorIndex = 3;
+        }
+        else if (cursorIndex < 25)
+        {
+            cursorIndex += 6;
+        }
+    }
+    else if (kRepeat & KEY_R)
+    {
+        if (nextBox())
+        {
+            return;
+        }
+    }
+    else if (kRepeat & KEY_L)
+    {
+        if (prevBox())
+        {
+            return;
+        }
+    }
+    else if (kRepeat & KEY_ZR)
+    {
+        if (nextBoxTop())
+        {
+            return;
+        }
+    }
+    else if (kRepeat & KEY_ZL)
+    {
+        if (prevBoxTop())
+        {
+            return;
+        }
+    }
 
     if (cursorIndex != 0)
     {

@@ -31,6 +31,7 @@
 #include "Hid.hpp"
 #include "Screen.hpp"
 #include "gui.hpp"
+#include <bitset>
 #include <vector>
 
 class PKX;
@@ -177,9 +178,11 @@ private:
     // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes
     // to have toggles, bitsetters, and just plain hexediting
     std::vector<std::vector<std::unique_ptr<HexEditButton>>> buttons;
-    // For Super Secret Mode
-    std::vector<std::unique_ptr<Button>> secretButtons;
     SecurityLevel level = SecurityLevel::NORMAL;
+
+    int superSecretTimer                     = 600;
+    std::bitset<8> superSecretCornersPressed = {false};
+    bool countDownSecretTimer                = false;
 };
 
 #endif

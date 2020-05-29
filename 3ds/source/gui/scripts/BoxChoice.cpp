@@ -290,9 +290,8 @@ void BoxChoice::update(touchPosition* touch)
             justSwitched = false;
         }
     }
-    static bool sleep = true;
-    u32 kDown         = hidKeysDown();
-    u32 kHeld         = hidKeysHeld();
+    u32 kDown   = hidKeysDown();
+    u32 kRepeat = hidKeysDownRepeat();
     if (!overlay)
     {
         for (size_t i = 0; i < mainButtons.size(); i++)
@@ -306,8 +305,6 @@ void BoxChoice::update(touchPosition* touch)
             if (button->update(touch))
                 return;
         }
-
-        static int buttonCooldown = 10;
 
         if (kDown & KEY_A)
         {
@@ -327,93 +324,79 @@ void BoxChoice::update(touchPosition* touch)
             showViewer();
             return;
         }
-        else if (buttonCooldown <= 0)
+
+        if (kRepeat & KEY_LEFT)
         {
-            sleep = false;
-            if (kHeld & KEY_LEFT)
-            {
-                if (cursorIndex == 0)
-                {
-                    prevBox();
-                }
-                else if (cursorIndex > 1)
-                {
-                    cursorIndex--;
-                }
-                else if (cursorIndex == 1)
-                {
-                    prevBox();
-                    cursorIndex = 30;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_RIGHT)
-            {
-                if (cursorIndex == 0)
-                {
-                    nextBox();
-                }
-                else if (cursorIndex < 30)
-                {
-                    cursorIndex++;
-                }
-                else if (cursorIndex == 30)
-                {
-                    nextBox();
-                    cursorIndex = 1;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_UP)
-            {
-                if (cursorIndex == 0 && !storageChosen)
-                {
-                    storageChosen = true;
-                    cursorIndex   = 27;
-                }
-                else if (cursorIndex > 0 && cursorIndex <= 6)
-                {
-                    cursorIndex = 0;
-                }
-                else if (cursorIndex > 6)
-                {
-                    cursorIndex -= 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_DOWN)
-            {
-                if (cursorIndex >= 25 && storageChosen)
-                {
-                    storageChosen = false;
-                    cursorIndex   = 0;
-                }
-                else if (cursorIndex == 0)
-                {
-                    cursorIndex = 3;
-                }
-                else if (cursorIndex < 25)
-                {
-                    cursorIndex += 6;
-                }
-                sleep = true;
-            }
-            else if (kHeld & KEY_R)
-            {
-                nextBox();
-                sleep = true;
-            }
-            else if (kHeld & KEY_L)
+            if (cursorIndex == 0)
             {
                 prevBox();
-                sleep = true;
             }
-
-            if (sleep)
-                buttonCooldown = 10;
+            else if (cursorIndex > 1)
+            {
+                cursorIndex--;
+            }
+            else if (cursorIndex == 1)
+            {
+                prevBox();
+                cursorIndex = 30;
+            }
         }
-        if (sleep)
-            buttonCooldown--;
+        else if (kRepeat & KEY_RIGHT)
+        {
+            if (cursorIndex == 0)
+            {
+                nextBox();
+            }
+            else if (cursorIndex < 30)
+            {
+                cursorIndex++;
+            }
+            else if (cursorIndex == 30)
+            {
+                nextBox();
+                cursorIndex = 1;
+            }
+        }
+        else if (kRepeat & KEY_UP)
+        {
+            if (cursorIndex == 0 && !storageChosen)
+            {
+                storageChosen = true;
+                cursorIndex   = 27;
+            }
+            else if (cursorIndex > 0 && cursorIndex <= 6)
+            {
+                cursorIndex = 0;
+            }
+            else if (cursorIndex > 6)
+            {
+                cursorIndex -= 6;
+            }
+        }
+        else if (kRepeat & KEY_DOWN)
+        {
+            if (cursorIndex >= 25 && storageChosen)
+            {
+                storageChosen = false;
+                cursorIndex   = 0;
+            }
+            else if (cursorIndex == 0)
+            {
+                cursorIndex = 3;
+            }
+            else if (cursorIndex < 25)
+            {
+                cursorIndex += 6;
+            }
+        }
+        else if (kRepeat & KEY_R)
+        {
+            nextBox();
+        }
+        else if (kRepeat & KEY_L)
+        {
+            prevBox();
+        }
     }
     else
     {

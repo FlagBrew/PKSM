@@ -156,7 +156,7 @@ void SpeciesOverlay::drawTop() const
 
 void SpeciesOverlay::update(touchPosition* touch)
 {
-    if (justSwitched && ((hidKeysHeld() | hidKeysDown()) & KEY_TOUCH))
+    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
     {
         return;
     }

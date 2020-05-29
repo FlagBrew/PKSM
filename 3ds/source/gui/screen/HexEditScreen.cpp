@@ -36,7 +36,6 @@
 #include "format.h"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include <bitset>
 
 namespace
 {
@@ -86,10 +85,6 @@ namespace
         "BATTLE_TREE_GREAT_RIBBON", "BATTLE_TREE_MASTER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
         "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS", "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG", "DAZZLING_DIZZYING_DANCE_SPOONS",
         "WHAT_UPSTART_MAGIKARP_MOVING_UP", "WATCH_MULTIPLE_MEGA", "UNUSED", "UNUSED"};
-
-    constexpr int FAST_TIME     = 1;
-    constexpr int SLOW_TIME     = 5;
-    constexpr int TIME_TO_ACCEL = 5;
 }
 
 bool HexEditScreen::toggleBit(int selected, int offset)
@@ -936,6 +931,8 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
 
 HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
 {
+    // Set to fast mode
+    hidSetRepeatParameters(5, 1);
     int currRibbon = 0;
     for (u32 i = 0; i < pkm->getLength(); i++)
     {
@@ -1350,17 +1347,13 @@ void HexEditScreen::drawBottom() const
 
 void HexEditScreen::update(touchPosition* touch)
 {
-    u32 down                                        = hidKeysDown();
-    u32 held                                        = hidKeysHeld();
-    static int superSecretTimer                     = 600;
-    static std::bitset<8> superSecretCornersPressed = {false};
-    static bool countDownSecretTimer                = false;
-    static int timer                                = SLOW_TIME;
-    static int timerCount                           = 0;
-    // u32 held = hidKeysHeld();
+    u32 down   = hidKeysDown();
+    u32 repeat = hidKeysDownRepeat();
 
     if (down & KEY_B)
     {
+        // Reset back to normal repeat time
+        hidSetRepeatParameters(10, 10);
         Gui::screenBack();
         return;
     }
@@ -1435,23 +1428,13 @@ void HexEditScreen::update(touchPosition* touch)
             buttons[hid.fullIndex()][i]->update(touch);
         }
 
-        if (down & KEY_A || held & KEY_A)
+        if (repeat & KEY_A)
         {
-            if (timer == 0)
-            {
-                editNumber(false, true);
-                timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
-                timerCount++;
-            }
+            editNumber(false, true);
         }
-        else if (down & KEY_X || held & KEY_X)
+        else if (repeat & KEY_X)
         {
-            if (timer == 0)
-            {
-                editNumber(false, false);
-                timer = timerCount > TIME_TO_ACCEL ? FAST_TIME : SLOW_TIME;
-                timerCount++;
-            }
+            editNumber(false, false);
         }
 
         // Recolor buttons
@@ -1482,14 +1465,6 @@ void HexEditScreen::update(touchPosition* touch)
                 superSecretCornersPressed[i] = false;
             }
         }
-    }
-    if (timer > 0)
-    {
-        timer--;
-    }
-    else
-    {
-        timerCount = 0;
     }
 }
 

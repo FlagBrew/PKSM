@@ -804,6 +804,8 @@ Result Gui::init(void)
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 
+    hidSetRepeatParameters(10, 10);
+
     return 0;
 }
 
