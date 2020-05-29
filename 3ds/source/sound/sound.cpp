@@ -46,7 +46,6 @@ namespace
     std::array<std::unique_ptr<Decoder>, NUM_CHANNELS> decoders;
     // 0 is reserved for the background music
     std::atomic_flag occupiedChannels[NUM_CHANNELS];
-    LightLock channelLock;
     LightEvent frameEvent;
 
     std::unordered_map<std::string, std::string> effects; // effect name to file name
@@ -195,7 +194,6 @@ namespace
 Result Sound::init()
 {
     LightEvent_Init(&frameEvent, RESET_ONESHOT);
-    LightLock_Init(&channelLock);
     STDirectory dir("/3ds/PKSM/songs");
     if (dir.good())
     {
