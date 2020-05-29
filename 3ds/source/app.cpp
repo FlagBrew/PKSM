@@ -909,11 +909,7 @@ void App::end()
 
         if (R_SUCCEEDED(APT_PrepareToDoApplicationJump(0, endTid, MEDIATYPE_SD)))
         {
-            if (R_SUCCEEDED(APT_DoApplicationJump(param, sizeof(param), hmac)))
-            {
-                // Wait to restart
-                while (true) {}
-            }
+            APT_DoApplicationJump(param, sizeof(param), hmac);
         }
     }
 }
