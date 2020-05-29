@@ -62,7 +62,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     instructions.addCircle(false, 272 + 24, 24, 6, COLOR_GREY);
     instructions.addLine(false, 272 + 24, 24, 272 + 24, 64, 4, COLOR_GREY);
     instructions.addBox(false, 76 + 24, 64, 200, 18, COLOR_GREY, i18n::localize("APP_LEGALIZE"), COLOR_WHITE);
-    buttons.push_back(std::make_unique<ClickButton>(272, 0, 48, 48,
+    buttons.push_back(std::make_unique<ClickButton>(278, 0, 42, 42,
         [this]() {
             addOverlay<AppLegalityOverlay>(this->pkm);
             return true;
