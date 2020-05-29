@@ -83,6 +83,7 @@ int main(int argc, char* argv[])
     if (R_FAILED(res))
     {
         App::exit();
+        App::end();
         return res;
     }
 
