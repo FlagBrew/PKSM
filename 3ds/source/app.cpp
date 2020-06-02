@@ -550,7 +550,7 @@ namespace
         if (execPath.empty())
         {
             endTid = 0x000400000EC10000;
-            res    = 0;
+            res    = APT_PrepareToDoApplicationJump(0, endTid, MEDIATYPE_SD);
         }
         else
         {
@@ -906,10 +906,7 @@ void App::end()
     {
         u8 param[0x300];
         u8 hmac[0x20];
-
-        if (R_SUCCEEDED(APT_PrepareToDoApplicationJump(0, endTid, MEDIATYPE_SD)))
-        {
-            APT_DoApplicationJump(param, sizeof(param), hmac);
-        }
+        APT_DoApplicationJump(param, sizeof(param), hmac);
+        while (true) {}
     }
 }
