@@ -128,7 +128,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             swkbdSetButton(&swkbd, SWKBD_BUTTON_RIGHT, i18n::localize("LEGALIZE").c_str(), true);
             swkbdSetFilterCallback(&swkbd, parseIpCallback, nullptr);
             SwkbdButton button = swkbdInputText(&swkbd, serverAddress, 16);
-            if (button != SWKBD_BUTTON_LEFT)
+            if (button != SWKBD_BUTTON_CONFIRM)
             {
                 return true;
             }
