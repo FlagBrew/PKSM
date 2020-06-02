@@ -74,6 +74,7 @@ private:
     };
     void refreshPages();
     static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, Generation low, Generation high, bool LGPE);
+    static bool pageIsGood(const nlohmann::json& page);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;
     bool isGood = false;

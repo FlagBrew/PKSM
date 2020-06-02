@@ -95,6 +95,7 @@ private:
     void refreshPages();
     static void downloadCloudPage(
         std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
+    static bool pageIsGood(const nlohmann::json& json);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;
     SortType sort      = LATEST;

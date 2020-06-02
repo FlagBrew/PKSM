@@ -66,31 +66,9 @@ void CloudAccess::downloadCloudPage(
             {
                 case 200:
                     page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
-                    // clang-format off
-                    if (!page->data || !page->data->is_object() ||
-                        !page->data->contains("total_pkm") || !(*page->data)["total_pkm"].is_number_integer() ||
-                        !page->data->contains("results") || !(*page->data)["results"].is_array() ||
-                        !page->data->contains("pages") || !(*page->data)["pages"].is_number_integer())
-                    // clang-format on
+                    if (!page->data || !pageIsGood(*page->data))
                     {
                         page->data = nullptr;
-                    }
-                    else
-                    {
-                        for (auto& json : (*page->data)["results"])
-                        {
-                            // clang-format off
-                            if (!json.is_object() ||
-                                !json.contains("base_64") || !json["base_64"].is_string() ||
-                                !json.contains("generation") || !json["generation"].is_string() ||
-                                !json.contains("legal") || !json["legal"].is_boolean() ||
-                                !json.contains("code") || !json["code"].is_string())
-                            // clang-format on
-                            {
-                                page->data = nullptr;
-                                break;
-                            }
-                        }
                     }
                     break;
                 default:
@@ -112,13 +90,13 @@ void CloudAccess::refreshPages()
     current            = std::make_shared<Page>();
     current->data      = std::make_unique<nlohmann::json>(grabPage(pageNumber));
     current->available = true;
-    isGood             = (bool)current->data && !current->data->is_discarded();
+    isGood             = (bool)current->data && pageIsGood(*current->data);
     if (isGood && pageNumber >= pages())
     {
         pageNumber         = pages();
         current->data      = std::make_unique<nlohmann::json>(grabPage(pages()));
         current->available = true;
-        isGood             = (bool)current->data && !current->data->is_discarded();
+        isGood             = (bool)current->data && pageIsGood(*current->data);
     }
     if (isGood)
     {
@@ -353,4 +331,34 @@ void CloudAccess::removeGenFilter()
     lowGen   = Generation::THREE;
     highGen  = Generation::EIGHT;
     showLGPE = true;
+}
+
+bool CloudAccess::pageIsGood(const nlohmann::json& page)
+{
+    // clang-format off
+    if (!page.is_object() ||
+        !page.contains("total_pkm") || !page["total_pkm"].is_number_integer() ||
+        !page.contains("results") || !page["results"].is_array() ||
+        !page.contains("pages") || !page["pages"].is_number_integer())
+    // clang-format on
+    {
+        return false;
+    }
+    else
+    {
+        for (auto& json : page["results"])
+        {
+            // clang-format off
+            if (!json.is_object() ||
+                !json.contains("base_64") || !json["base_64"].is_string() ||
+                !json.contains("generation") || !json["generation"].is_string() ||
+                !json.contains("legal") || !json["legal"].is_boolean() ||
+                !json.contains("code") || !json["code"].is_string())
+            // clang-format on
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }

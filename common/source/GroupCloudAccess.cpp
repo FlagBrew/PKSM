@@ -54,51 +54,10 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
                 case 200:
                     page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
                     // clang-format off
-                    if (!page->data || !page->data->is_object() ||
-                        !page->data->contains("total_bundles") || !(*page->data)["total_bundles"].is_number_integer() ||
-                        !page->data->contains("pages") || !(*page->data)["pages"].is_number_integer() ||
-                        !page->data->contains("results") || !(*page->data)["results"].is_array())
+                    if (!page->data || !pageIsGood(*page->data))
                     // clang-format on
                     {
                         page->data = nullptr;
-                    }
-                    else
-                    {
-                        for (auto& group : (*page->data)["results"])
-                        {
-                            // clang-format off
-                            if (!group.is_object() ||
-                                !group.contains("pokemon") || !group["pokemon"].is_array() ||
-                                !group.contains("code") || !group["code"].is_string())
-                            // clang-format on
-                            {
-                                page->data = nullptr;
-                                break;
-                            }
-                            else
-                            {
-                                bool shouldBreak = false;
-                                for (auto& pkm : group["pokemon"])
-                                {
-                                    // clang-format off
-                                    if (!pkm.is_object() ||
-                                        !pkm.contains("base64") || !pkm["base64"].is_string() ||
-                                        !pkm.contains("generation") || !pkm["generation"].is_string() ||
-                                        !pkm.contains("legal") || !pkm["legal"].is_boolean() ||
-                                        !pkm.contains("code") || !pkm["code"].is_string())
-                                    // clang-format on
-                                    {
-                                        page->data  = nullptr;
-                                        shouldBreak = true;
-                                        break;
-                                    }
-                                }
-                                if (shouldBreak)
-                                {
-                                    break;
-                                }
-                            }
-                        }
                     }
                     break;
                 default:
@@ -120,13 +79,13 @@ void GroupCloudAccess::refreshPages()
     current            = std::make_shared<Page>();
     current->data      = std::make_unique<nlohmann::json>(grabPage(pageNumber));
     current->available = true;
-    isGood             = (bool)current->data && !current->data->is_discarded();
+    isGood             = (bool)current->data && pageIsGood(*current->data);
     if (isGood && pageNumber >= pages())
     {
         pageNumber         = pages();
         current->data      = std::make_unique<nlohmann::json>(grabPage(pages()));
         current->available = true;
-        isGood             = (bool)current->data && !current->data->is_discarded();
+        isGood             = (bool)current->data && pageIsGood(*current->data);
     }
     if (isGood)
     {
@@ -395,4 +354,48 @@ long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
     }
     curl_slist_free_all(headers);
     return ret;
+}
+
+bool GroupCloudAccess::pageIsGood(const nlohmann::json& page)
+{
+    // clang-format off
+    if (!page.is_object() ||
+        !page.contains("total_bundles") || !page["total_bundles"].is_number_integer() ||
+        !page.contains("pages") || !page["pages"].is_number_integer() ||
+        !page.contains("results") || !page["results"].is_array())
+    // clang-format on
+    {
+        return false;
+    }
+    else
+    {
+        for (auto& group : page["results"])
+        {
+            // clang-format off
+            if (!group.is_object() ||
+                !group.contains("pokemon") || !group["pokemon"].is_array() ||
+                !group.contains("code") || !group["code"].is_string())
+            // clang-format on
+            {
+                return false;
+            }
+            else
+            {
+                for (auto& pkm : group["pokemon"])
+                {
+                    // clang-format off
+                    if (!pkm.is_object() ||
+                        !pkm.contains("base64") || !pkm["base64"].is_string() ||
+                        !pkm.contains("generation") || !pkm["generation"].is_string() ||
+                        !pkm.contains("legal") || !pkm["legal"].is_boolean() ||
+                        !pkm.contains("code") || !pkm["code"].is_string())
+                    // clang-format on
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
 }
