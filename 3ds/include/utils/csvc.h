@@ -14,7 +14,7 @@
  *    This notice may not be removed or altered from any source distribution.
  */
 
-/* This file was modified from https://github.com/AuroraWright/Luma3DS to only have svcControlService and be compatible with C++ */
+/* This file was modified from https://github.com/LumaTeam/Luma3DS to only have svcControlService and be compatible with C++ */
 
 #pragma once
 

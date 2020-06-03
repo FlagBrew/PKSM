@@ -12,7 +12,7 @@
 @    Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 @    This notice may not be removed or altered from any source distribution.
 
-@    This file was modified from https://github.com/AuroraWright/Luma3DS to only have svcControlService
+@    This file was modified from https://github.com/LumaTeam/Luma3DS to only have svcControlService
 
 .arm
 .balign 4
