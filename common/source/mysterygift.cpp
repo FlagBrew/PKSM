@@ -25,6 +25,7 @@
  */
 
 #include "mysterygift.hpp"
+#include "PCD.hpp"
 #include "PGF.hpp"
 #include "PGT.hpp"
 #include "WB7.hpp"
@@ -123,9 +124,13 @@ std::unique_ptr<WCX> MysteryGift::wondercard(size_t index)
         {
             wc = std::make_unique<WC4>(mysteryGiftData + offset);
         }
-        else
+        else if (entry["type"] == "pgt")
         {
             wc = std::make_unique<PGT>(mysteryGiftData + offset);
+        }
+        else
+        {
+            wc = std::make_unique<PCD>(mysteryGiftData + offset);
         }
         return wc;
     }
@@ -170,6 +175,7 @@ std::vector<nlohmann::json> MysteryGift::wondercards()
 MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
 {
     nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
-    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<u16>(), entry["form"].get<int>());
+    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>(),
+        Gender(entry["gender"].get<int>()), entry["released"].get<bool>());
     return ret;
 }

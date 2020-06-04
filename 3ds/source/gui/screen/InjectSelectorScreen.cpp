@@ -131,9 +131,22 @@ void InjectSelectorScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_A)
         {
-            Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
-            updateGifts = true;
-            return;
+            bool allReleased = true;
+            for (const auto& card : wondercards[hid.fullIndex()])
+            {
+                MysteryGift::giftData info = MysteryGift::wondercardInfo(card.get<int>());
+                if (!info.released)
+                {
+                    allReleased = false;
+                    break;
+                }
+            }
+            if (allReleased || Gui::showChoiceMessage("Not all of these wonder card(s) are released.\nContinue to injection screen?"))
+            {
+                Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
+                updateGifts = true;
+                return;
+            }
         }
         if (downKeys & KEY_X)
         {

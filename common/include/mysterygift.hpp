@@ -39,8 +39,9 @@ namespace MysteryGift
 {
     struct giftData
     {
-        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, Gender gender = Gender::Male)
-            : name(name), game(game), species(species), form(form), gender(gender)
+        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, Gender gender = Gender::Male,
+            bool released = false)
+            : name(name), game(game), species(species), form(form), gender(gender), released(released)
         {
         }
         std::string name;
@@ -48,6 +49,7 @@ namespace MysteryGift
         int species;
         int form;
         Gender gender;
+        bool released;
     };
 
     void init(Generation gen);
