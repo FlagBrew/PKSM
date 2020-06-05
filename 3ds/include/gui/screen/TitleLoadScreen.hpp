@@ -43,7 +43,7 @@ public:
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
-    void makeInstructions();
+    void refreshLanguage();
 
 private:
     bool setSelectedSave(int i);

@@ -75,9 +75,8 @@ std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
 }
 
 TitleLoadScreen::TitleLoadScreen()
-    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") +
-             "\n\uE004: " + i18n::localize("3DS_TITLES") + "\n\uE005: " + i18n::localize("VC_TITLES") + '\n' + i18n::localize("START_EXIT"))
 {
+    refreshLanguage();
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
@@ -92,7 +91,14 @@ TitleLoadScreen::TitleLoadScreen()
     buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 
     titles = &TitleLoader::ctrTitles;
+}
 
+void TitleLoadScreen::refreshLanguage()
+{
+    instructions = Instructions(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + "\n\uE004: " +
+                                i18n::localize("3DS_TITLES") + "\n\uE005: " + i18n::localize("VC_TITLES") + '\n' + i18n::localize("START_EXIT"));
+
+    tabs.clear();
     tabs.push_back(std::make_unique<ToggleButton>(1, 2, 158, 17,
         [&]() {
             titles = &TitleLoader::ctrTitles;
@@ -109,13 +115,8 @@ TitleLoadScreen::TitleLoadScreen()
         },
         ui_sheet_res_null_idx, i18n::localize("VC_TITLES"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_2_unselected_idx,
         i18n::localize("VC_TITLES"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
-    tabs[0]->setState(true);
-}
 
-void TitleLoadScreen::makeInstructions()
-{
-    instructions = Instructions(
-        i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"));
+    tabs[0]->setState(titles = &TitleLoader::ctrTitles);
 }
 
 void TitleLoadScreen::drawTop() const
@@ -274,7 +275,7 @@ void TitleLoadScreen::update(touchPosition* touch)
     if (oldLang != Configuration::getInstance().language())
     {
         oldLang = Configuration::getInstance().language();
-        makeInstructions();
+        refreshLanguage();
     }
     u32 buttonsDown = hidKeysDown();
     if (TitleLoader::cardWasUpdated())
