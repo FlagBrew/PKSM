@@ -75,8 +75,8 @@ std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
 }
 
 TitleLoadScreen::TitleLoadScreen()
-    : Screen(
-          i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") + '\n' + i18n::localize("START_EXIT"))
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_ABSENT") +
+             "\n\uE004: " + i18n::localize("3DS_TITLES") + "\n\uE005: " + i18n::localize("VC_TITLES") + '\n' + i18n::localize("START_EXIT"))
 {
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
