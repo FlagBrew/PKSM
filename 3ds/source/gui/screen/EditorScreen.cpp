@@ -816,5 +816,5 @@ bool EditorScreen::setSaveInfo()
 bool EditorScreen::saved()
 {
     auto newHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
-    return newHash != origHash;
+    return newHash == origHash;
 }
