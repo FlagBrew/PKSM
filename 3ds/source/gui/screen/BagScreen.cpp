@@ -372,8 +372,17 @@ void BagScreen::editItem()
     std::vector<std::pair<const std::string*, int>> items(limit);
     items[0]         = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
     auto currentItem = TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
-    std::pair<const std::string*, int> currentItemPair =
-        std::make_pair(&i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
+
+    std::pair<const std::string*, int> currentItemPair;
+    if (currentItem->generation() == pksm::Generation::THREE)
+    {
+        std::make_pair(&i18n::item3(Configuration::getInstance().language(), ((pksm::Item3*)currentItem.get())->id3()),
+            ((pksm::Item3*)currentItem.get())->id3());
+    }
+    else
+    {
+        currentItemPair = std::make_pair(&i18n::item(Configuration::getInstance().language(), currentItem->id()), currentItem->id());
+    }
 
     if (!canEdit(limits[currentPouch].first, *currentItem))
     {
@@ -383,8 +392,14 @@ void BagScreen::editItem()
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
-        items[i]   = std::make_pair(
-            &i18n::item(Configuration::getInstance().language(), itemId), itemId); // Store the string so that the pointer isn't deleted
+        if (TitleLoader::save->generation() == pksm::Generation::THREE)
+        {
+            items[i] = std::make_pair(&i18n::item3(Configuration::getInstance().language(), itemId), itemId);
+        }
+        else
+        {
+            items[i] = std::make_pair(&i18n::item(Configuration::getInstance().language(), itemId), itemId);
+        }
     }
     std::sort(items.begin() + 1, items.end(),
         [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2) { return (*p1.first) < (*p2.first); });
