@@ -9,20 +9,23 @@ import stat
 def main():
     if platform.system() == "Windows":
         binary = "gallerypack-windows.exe"
+        execute = binary
     elif platform.system() == "Darwin":
         binary = "gallerypack-mac"
+        execute = "./" + binary
     elif platform.system() == "Linux":
         binary = "gallerypack-linux"
+        execute = "./" + binary
     else:
         print("This system is not supported")
         return 1
 
-    with urllib.request.urlopen("https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/" + binary) as response, open("gallerypack", 'wb') as out_file:
+    with urllib.request.urlopen("https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/" + binary) as response, open(binary, 'wb') as out_file:
         data = response.read()
         out_file.write(data)
     
     # chmod 755
-    os.chmod("gallerypack", stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+    os.chmod(binary, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
     
     if os.path.exists("./EventsGallery"):
         print("Pulling from EventsGallery...")
@@ -47,7 +50,7 @@ def main():
             print("Could not clone EventsGallery. Aborting...")
             exit(1)
 
-    os.system("./gallerypack ./EventsGallery")
+    os.system(execute + " ./EventsGallery")
     
 if __name__ == "__main__":
     main()

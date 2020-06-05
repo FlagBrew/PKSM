@@ -16,7 +16,7 @@ assets/romfs/i18n/
 assets/romfs/scripts/
 external/EventsGalleryPacker/EventsGallery
 external/EventsGalleryPacker/out
-external/EventsGalleryPacker/gallerypack
+external/EventsGalleryPacker/gallerypack*
 common/include/revision.h
 external/tools/*
 !external/tools/*.cpp
