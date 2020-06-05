@@ -29,7 +29,7 @@
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
 
-ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_ptr<PKX> pk)
+ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_ptr<pksm::PKX> pk)
     : Screen(i18n::localize("UP_SCROLL_UP") + '\n' + i18n::localize("DOWN_SCROLL_DOWN") + '\n' + i18n::localize("B_BACK")),
       pkm(pk),
       text(Gui::parseText(text, FONT_SIZE_12, 300.0f))

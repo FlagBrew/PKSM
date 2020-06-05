@@ -27,12 +27,11 @@
 #ifndef CLOUDACCESS_HPP
 #define CLOUDACCESS_HPP
 
-#include "Generation.hpp"
+#include "enums/Generation.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include "pkx/PKX.hpp"
 #include <atomic>
 #include <memory>
-
-class PKX;
 
 class CloudAccess
 {
@@ -43,11 +42,11 @@ public:
         POPULAR
     };
     CloudAccess();
-    std::shared_ptr<PKX> pkm(size_t slot) const;
+    std::shared_ptr<pksm::PKX> pkm(size_t slot) const;
     bool isLegal(size_t slot) const;
     // Gets the Pokémon and increments the server-side download counter
-    std::shared_ptr<PKX> fetchPkm(size_t slot) const;
-    long pkm(std::shared_ptr<PKX> pk);
+    std::shared_ptr<pksm::PKX> fetchPkm(size_t slot) const;
+    long pkm(std::shared_ptr<pksm::PKX> pk);
     int pages() const;
     int page() const { return pageNumber; }
     bool nextPage();
@@ -79,10 +78,10 @@ public:
         }
     }
     bool filterLegal() const { return legal; }
-    void filterToGen(Generation g);
+    void filterToGen(pksm::Generation g);
     void removeGenFilter();
     bool good() const { return isGood; }
-    static std::string makeURL(int page, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
+    static std::string makeURL(int page, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
 
 private:
@@ -94,17 +93,17 @@ private:
     };
     void refreshPages();
     static void downloadCloudPage(
-        std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE);
+        std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
     static bool pageIsGood(const nlohmann::json& json);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;
-    SortType sort      = LATEST;
-    bool isGood        = false;
-    bool ascend        = true;
-    bool legal         = false;
-    Generation lowGen  = Generation::THREE;
-    Generation highGen = Generation::EIGHT;
-    bool showLGPE      = true;
+    SortType sort            = LATEST;
+    bool isGood              = false;
+    bool ascend              = true;
+    bool legal               = false;
+    pksm::Generation lowGen  = pksm::Generation::THREE;
+    pksm::Generation highGen = pksm::Generation::EIGHT;
+    bool showLGPE            = true;
 };
 
 #endif

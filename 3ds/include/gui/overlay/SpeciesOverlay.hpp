@@ -29,18 +29,18 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "enums/Species.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
 #include <memory>
 #include <variant>
 
 class Button;
-class PKX;
-class PKFilter;
-class Species;
 
 class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object);
+    SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -49,12 +49,12 @@ public:
 
 private:
     void searchBar();
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
+    std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>> object;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<Button> searchButton;
     std::string searchString    = "";
     std::string oldSearchString = "";
-    std::vector<Species> dispPkm;
+    std::vector<pksm::Species> dispPkm;
     bool justSwitched = true;
 };
 

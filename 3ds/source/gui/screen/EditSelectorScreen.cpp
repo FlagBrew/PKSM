@@ -29,27 +29,27 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
-#include "PB7.hpp"
-#include "PK3.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "QRScanner.hpp"
-#include "SavLGPE.hpp"
 #include "ViewOverlay.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
+#include "sav/SavLGPE.hpp"
 #include <memory>
 
 void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
     {
-        case Generation::FOUR:
-        case Generation::FIVE:
+        case pksm::Generation::FOUR:
+        case pksm::Generation::FIVE:
         {
             SwkbdState state;
             swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
@@ -65,9 +65,9 @@ void EditSelectorScreen::changeBoxName()
             }
         }
         break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::EIGHT:
+        case pksm::Generation::SIX:
+        case pksm::Generation::SEVEN:
+        case pksm::Generation::EIGHT:
         {
             SwkbdState state;
             swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
@@ -83,8 +83,8 @@ void EditSelectorScreen::changeBoxName()
             }
         }
         break;
-        case Generation::LGPE:
-        case Generation::UNUSED:
+        case pksm::Generation::LGPE:
+        case pksm::Generation::UNUSED:
             // Nothing happens
             break;
     }
@@ -92,26 +92,26 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     switch (TitleLoader::save->generation())
     {
-        case Generation::FOUR:
-            pkm = QRScanner<PK4>::scan();
+        case pksm::Generation::FOUR:
+            pkm = QRScanner<pksm::PK4>::scan();
             break;
-        case Generation::FIVE:
-            pkm = QRScanner<PK5>::scan();
+        case pksm::Generation::FIVE:
+            pkm = QRScanner<pksm::PK5>::scan();
             break;
-        case Generation::SIX:
-            pkm = QRScanner<PK6>::scan();
+        case pksm::Generation::SIX:
+            pkm = QRScanner<pksm::PK6>::scan();
             break;
-        case Generation::SEVEN:
-            pkm = QRScanner<PK7>::scan();
+        case pksm::Generation::SEVEN:
+            pkm = QRScanner<pksm::PK7>::scan();
             break;
-        case Generation::EIGHT:
-            pkm = QRScanner<PK8>::scan();
+        case pksm::Generation::EIGHT:
+            pkm = QRScanner<pksm::PK8>::scan();
             break;
-        case Generation::UNUSED:
-        case Generation::LGPE:
+        case pksm::Generation::UNUSED:
+        case pksm::Generation::LGPE:
             return false;
     }
 
@@ -188,9 +188,9 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
 
 EditSelectorScreen::~EditSelectorScreen()
 {
-    if (TitleLoader::save->generation() == Generation::LGPE)
+    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
     {
-        ((SavLGPE*)TitleLoader::save.get())->compressBox();
+        ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
@@ -203,7 +203,7 @@ EditSelectorScreen::~EditSelectorScreen()
                 break;
             }
         }
-        ((SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
+        ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
     }
     TitleLoader::save->cryptBoxData(false);
     TitleLoader::save->currentBox((u8)box);
@@ -231,7 +231,7 @@ void EditSelectorScreen::drawBottom() const
         int x = (i % 2 == 0 ? 214 : 264);
         int y = (i % 2 == 0 ? 43 + 45 * (i / 2) : 59 + 45 * (i / 2));
         Gui::sprite(ui_sheet_icon_party_idx, x, y);
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        if (TitleLoader::save->generation() == pksm::Generation::LGPE)
         {
             Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + i, x + 34, y + 30);
         }
@@ -239,11 +239,11 @@ void EditSelectorScreen::drawBottom() const
 
     u16 partyPkm[6];
     std::fill_n(partyPkm, 6, 1001);
-    if (TitleLoader::save->generation() == Generation::LGPE)
+    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
     {
         for (int i = 0; i < 6; i++)
         {
-            partyPkm[i] = ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
+            partyPkm[i] = ((pksm::SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
         }
     }
 
@@ -253,18 +253,18 @@ void EditSelectorScreen::drawBottom() const
         for (u8 column = 0; column < 6; column++)
         {
             u16 x = 4 + column * 34;
-            if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
-                std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
-                if (pokemon->species() != Species::None)
+                std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
+                if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
                 }
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
                     int partySlot = std::distance(partyPkm, std::find(partyPkm, partyPkm + 6, box * 30 + row * 6 + column));
                     if (partySlot < 6)
@@ -278,10 +278,10 @@ void EditSelectorScreen::drawBottom() const
 
     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
     {
-        int x                        = (i % 2 == 0 ? 221 : 271);
-        int y                        = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(i);
-        if (pokemon->species() != Species::None)
+        int x                              = (i % 2 == 0 ? 221 : 271);
+        int y                              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(i);
+        if (pokemon->species() != pksm::Species::None)
         {
             Gui::pkm(*pokemon, x, y);
         }
@@ -377,7 +377,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == Species::None)
+    if (infoMon && infoMon->species() == pksm::Species::None)
     {
         infoMon = nullptr;
     }
@@ -435,11 +435,11 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else if (moveMon && cursorPos < 31)
             {
-                std::shared_ptr<PKX> tmpMon = nullptr;
+                std::shared_ptr<pksm::PKX> tmpMon = nullptr;
                 if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                    if (tmpMon && tmpMon->species() == Species::None)
+                    if (tmpMon && tmpMon->species() == pksm::Species::None)
                     {
                         tmpMon = nullptr;
                     }
@@ -449,12 +449,12 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else if (moveMon)
             {
-                std::shared_ptr<PKX> tmpMon = nullptr;
+                std::shared_ptr<pksm::PKX> tmpMon = nullptr;
                 if (cursorPos - 31 < TitleLoader::save->partyCount())
                 {
                     tmpMon = TitleLoader::save->pkm(cursorPos - 31);
                 }
-                if (tmpMon && tmpMon->species() == Species::None)
+                if (tmpMon && tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
@@ -690,15 +690,15 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (moveMon && moveMon->species() == Species::None)
+                if (moveMon && moveMon->species() == pksm::Species::None)
                 {
                     moveMon = nullptr;
                 }
             }
             else
             {
-                std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
-                if (tmpMon && tmpMon->species() == Species::None)
+                std::shared_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                if (tmpMon && tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
@@ -712,15 +712,15 @@ bool EditSelectorScreen::clonePkm()
             if (!moveMon)
             {
                 moveMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (moveMon && moveMon->species() == Species::None)
+                if (moveMon && moveMon->species() == pksm::Species::None)
                 {
                     moveMon = nullptr;
                 }
             }
             else
             {
-                std::shared_ptr<PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
-                if (tmpMon->species() == Species::None)
+                std::shared_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                if (tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
@@ -752,9 +752,9 @@ bool EditSelectorScreen::releasePokemon()
         if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), box, cursorPos - 1, false);
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
             {
-                SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                pksm::SavLGPE* sav = (pksm::SavLGPE*)TitleLoader::save.get();
                 for (int i = 0; i < sav->partyCount(); i++)
                 {
                     if (sav->partyBoxSlot(i) == box * 30 + cursorPos - 1)

@@ -27,20 +27,20 @@
 #ifndef MESSAGESCREEN_HPP
 #define MESSAGESCREEN_HPP
 
-#include "Language.hpp"
 #include "RunnableScreen.hpp"
+#include "enums/Language.hpp"
 
 class MessageScreen : public RunnableScreen<std::nullptr_t>
 {
 public:
-    MessageScreen(const std::string& message, Language lang = Language::ENG) : RunnableScreen(nullptr), message(message), lang(lang) {}
+    MessageScreen(const std::string& message, pksm::Language lang = pksm::Language::ENG) : RunnableScreen(nullptr), message(message), lang(lang) {}
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
     std::string message;
-    Language lang;
+    pksm::Language lang;
 };
 
 #endif

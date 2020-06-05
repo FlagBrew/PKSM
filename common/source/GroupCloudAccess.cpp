@@ -26,21 +26,21 @@
 
 #include "GroupCloudAccess.hpp"
 #include "Configuration.hpp"
-#include "PB7.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "nlohmann/json.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include <unistd.h>
 
 GroupCloudAccess::Page::~Page() {}
 
-void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, Generation low, Generation high, bool LGPE)
+void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
     auto fetch           = Fetch::init(GroupCloudAccess::makeURL(number, legal, low, high, LGPE), true, retData, nullptr, "");
@@ -140,7 +140,7 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
     }
 }
 
-std::string GroupCloudAccess::makeURL(int num, bool legal, Generation low, Generation high, bool LGPE)
+std::string GroupCloudAccess::makeURL(int num, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + (std::string)low +
            "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) + "&page=" + std::to_string(num) +
@@ -214,7 +214,7 @@ int GroupCloudAccess::pages() const
     return (*current->data)["pages"].get<int>();
 }
 
-std::shared_ptr<PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) const
+std::shared_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) const
 {
     if (groupIndex < (*current->data)["results"].size())
     {
@@ -223,16 +223,16 @@ std::shared_ptr<PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) 
         {
             auto& poke           = group["pokemon"][pokeIndex];
             std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
-            Generation gen       = Generation::fromString(poke["generation"].get<std::string>());
+            pksm::Generation gen = pksm::Generation::fromString(poke["generation"].get<std::string>());
 
-            auto ret = PKX::getPKM(gen, data.data(), data.size());
+            auto ret = pksm::PKX::getPKM(gen, data.data(), data.size());
             if (ret)
             {
                 return ret;
             }
         }
     }
-    return PKX::getPKM<Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
 bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
@@ -248,7 +248,7 @@ bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
     return false;
 }
 
-std::shared_ptr<PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
+std::shared_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
 {
     if (groupIndex < (*current->data)["results"].size())
     {
@@ -266,12 +266,12 @@ std::shared_ptr<PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIn
             return ret;
         }
     }
-    return PKX::getPKM<Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
-std::vector<std::shared_ptr<PKX>> GroupCloudAccess::group(size_t groupIndex) const
+std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const
 {
-    std::vector<std::shared_ptr<PKX>> ret;
+    std::vector<std::shared_ptr<pksm::PKX>> ret;
     if (groupIndex < (*current->data)["results"].size())
     {
         auto& group = (*current->data)["results"][groupIndex];
@@ -283,9 +283,9 @@ std::vector<std::shared_ptr<PKX>> GroupCloudAccess::group(size_t groupIndex) con
     return ret;
 }
 
-std::vector<std::shared_ptr<PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex) const
+std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex) const
 {
-    std::vector<std::shared_ptr<PKX>> ret;
+    std::vector<std::shared_ptr<pksm::PKX>> ret;
     if (groupIndex < (*current->data)["results"].size())
     {
         auto& group = (*current->data)["results"][groupIndex];
@@ -303,7 +303,7 @@ std::vector<std::shared_ptr<PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex
     return ret;
 }
 
-long GroupCloudAccess::group(std::vector<std::shared_ptr<PKX>> sendMe)
+long GroupCloudAccess::group(std::vector<std::shared_ptr<pksm::PKX>> sendMe)
 {
     long ret               = 0;
     std::string amount     = "amount: " + std::to_string(sendMe.size());

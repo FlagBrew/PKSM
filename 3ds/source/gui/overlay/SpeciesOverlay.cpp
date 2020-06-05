@@ -27,13 +27,13 @@
 #include "SpeciesOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
+#include "utils/utils.hpp"
 
 namespace
 {
@@ -46,7 +46,7 @@ namespace
     };
 }
 
-SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       object(object),
       hid(40, 8),
@@ -54,14 +54,15 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
 {
     if (TitleLoader::save)
     {
-        dispPkm = std::vector<Species>(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+        dispPkm = std::vector<pksm::Species>(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
     }
     else
     {
         if (object.index() == 0)
         {
-            dispPkm = std::vector<Species>(VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation())).begin(),
-                VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation())).end());
+            dispPkm = std::vector<pksm::Species>(
+                pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation())).begin(),
+                pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation())).end());
         }
         else
         {
@@ -85,7 +86,7 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
         {
             it = dispPkm.begin();
         }
-        hid.select(pkm->species() == Species::None ? 0 : std::distance(dispPkm.begin(), it));
+        hid.select(pkm->species() == pksm::Species::None ? 0 : std::distance(dispPkm.begin(), it));
     }
     else
     {
@@ -95,7 +96,7 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std
         {
             it = dispPkm.begin();
         }
-        hid.select(filter->species() == Species::None ? 0 : std::distance(dispPkm.begin(), it));
+        hid.select(filter->species() == pksm::Species::None ? 0 : std::distance(dispPkm.begin(), it));
     }
 }
 
@@ -133,9 +134,9 @@ void SpeciesOverlay::drawTop() const
             {
                 break;
             }
-            Species species = dispPkm[pkmIndex];
-            Gender gender   = object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
-            Generation gen;
+            pksm::Species species = dispPkm[pkmIndex];
+            pksm::Gender gender   = object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
+            pksm::Generation gen;
             if (object.index() == 0)
             {
                 gen = std::get<0>(object)->generation();
@@ -173,9 +174,9 @@ void SpeciesOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         dispPkm.clear();
-        const std::set<Species>& set = TitleLoader::save
-                                           ? TitleLoader::save->availableSpecies()
-                                           : VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation()));
+        const std::set<pksm::Species>& set =
+            TitleLoader::save ? TitleLoader::save->availableSpecies()
+                              : pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
         for (auto i = set.begin(); i != set.end(); i++)
         {
             std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
@@ -191,9 +192,9 @@ void SpeciesOverlay::update(touchPosition* touch)
     else if (searchString.empty() && !oldSearchString.empty())
     {
         dispPkm.clear();
-        const std::set<Species>& set = TitleLoader::save
-                                           ? TitleLoader::save->availableSpecies()
-                                           : VersionTables::availableSpecies(GameVersion::oldestVersion(std::get<0>(object)->generation()));
+        const std::set<pksm::Species>& set =
+            TitleLoader::save ? TitleLoader::save->availableSpecies()
+                              : pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
         dispPkm.insert(dispPkm.begin(), set.begin(), set.end());
         std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString = "";
@@ -208,14 +209,14 @@ void SpeciesOverlay::update(touchPosition* touch)
     {
         if (dispPkm.size() > 0)
         {
-            Species species = dispPkm[hid.fullIndex()];
+            pksm::Species species = dispPkm[hid.fullIndex()];
             if (object.index() == 0)
             {
                 auto pkm = std::get<0>(object);
-                if (pkm->species() == Species::None || !pkm->nicknamed())
+                if (pkm->species() == pksm::Species::None || !pkm->nicknamed())
                 {
                     std::string nick = i18n::species(pkm->language(), species);
-                    if (pkm->generation() == Generation::FOUR)
+                    if (pkm->generation() == pksm::Generation::FOUR)
                     {
                         nick = StringUtils::toUpper(nick);
                     }
@@ -224,15 +225,15 @@ void SpeciesOverlay::update(touchPosition* touch)
                 pkm->species(species);
                 pkm->alternativeForm(0);
                 pkm->setAbility(0);
-                pkm->PID(PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(),
-                    pkm->PID(), pkm->generation()));
+                pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(),
+                    pkm->abilityNumber(), pkm->PID(), pkm->generation()));
             }
             else
             {
                 std::get<1>(object)->species(species);
             }
         }
-        if (object.index() == 1 || std::get<0>(object)->species() != Species::None)
+        if (object.index() == 1 || std::get<0>(object)->species() != pksm::Species::None)
         {
             parent->removeOverlay();
         }

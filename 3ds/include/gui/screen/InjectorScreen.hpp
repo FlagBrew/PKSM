@@ -33,30 +33,30 @@
 #include "Screen.hpp"
 #include "mysterygift.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include "wcx/WCX.hpp"
 #include <memory>
 #include <string>
 #include <vector>
 
 class Button;
-class WCX;
 
 class InjectorScreen : public Screen
 {
 public:
     InjectorScreen(nlohmann::json ids);
-    InjectorScreen(std::unique_ptr<WCX> card);
+    InjectorScreen(std::unique_ptr<pksm::WCX> card);
     ~InjectorScreen();
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
 
 private:
-    bool setLanguage(Language lang);
-    bool isLangAvailable(Language lang) const;
+    bool setLanguage(pksm::Language lang);
+    bool isLangAvailable(pksm::Language lang) const;
     void changeDate();
 
     std::vector<std::unique_ptr<Button>> buttons;
-    std::unique_ptr<WCX> wondercard;
+    std::unique_ptr<pksm::WCX> wondercard;
     std::string game;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<nlohmann::json> ids;
@@ -64,11 +64,11 @@ private:
     int emptySlot;
     int slot;
     // For multi-item injects
-    int item           = 0;
-    Language lang      = Language::JPN;
-    bool overwriteCard = false;
-    bool adaptLanguage = false;
-    bool choosingSlot  = false;
+    int item            = 0;
+    pksm::Language lang = pksm::Language::JPN;
+    bool overwriteCard  = false;
+    bool adaptLanguage  = false;
+    bool choosingSlot   = false;
 };
 
 #endif

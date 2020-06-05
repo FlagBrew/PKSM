@@ -27,9 +27,9 @@
 #include "StorageViewOverlay.hpp"
 #include "Button.hpp"
 #include "EditorScreen.hpp"
-#include "PKX.hpp"
 #include "StorageScreen.hpp"
 #include "gui.hpp"
+#include "pkx/PKX.hpp"
 
 void StorageViewOverlay::drawBottom() const
 {

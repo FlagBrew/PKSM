@@ -27,12 +27,12 @@
 #include "PkmItemOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
+#include "utils/utils.hpp"
 #include <set>
 
 namespace
@@ -65,13 +65,14 @@ namespace
     }
 }
 
-PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems = i18n::rawItems(Configuration::getInstance().language());
-    const std::set<int>& availableItems =
-        TitleLoader::save ? TitleLoader::save->availableItems() : VersionTables::availableItems(GameVersion::oldestVersion(pkm->generation()));
+    const std::set<int>& availableItems      = TitleLoader::save
+                                              ? TitleLoader::save->availableItems()
+                                              : pksm::VersionTables::availableItems(pksm::GameVersion::oldestVersion(pkm->generation()));
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
         if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||

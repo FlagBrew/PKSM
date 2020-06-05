@@ -31,7 +31,7 @@
 #include "Configuration.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "Sav.hpp"
+#include "sav/Sav.hpp"
 #include "spritesheets.h"
 #include <string>
 #include <vector>
@@ -40,7 +40,7 @@ class BagItemOverlay : public ReplaceableScreen
 {
 public:
     BagItemOverlay(ReplaceableScreen& screen, std::vector<std::pair<const std::string*, int>>& items, size_t selected,
-        std::pair<Sav::Pouch, int> pouch, int slot, int& firstEmpty)
+        std::pair<pksm::Sav::Pouch, int> pouch, int slot, int& firstEmpty)
         : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
                                          i18n::localize("B_BACK")),
           validItems(items),
@@ -71,7 +71,7 @@ private:
     void searchBar();
     const std::vector<std::pair<const std::string*, int>> validItems;
     std::vector<std::pair<const std::string*, int>> items;
-    std::pair<Sav::Pouch, int> pouch;
+    std::pair<pksm::Sav::Pouch, int> pouch;
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::unique_ptr<Button> searchButton;

@@ -34,7 +34,6 @@
 #include <vector>
 
 class Button;
-class PKX;
 
 class ConfigScreen : public Screen
 {

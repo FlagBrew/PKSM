@@ -26,10 +26,10 @@
 
 #include "ViewOverlay.hpp"
 #include "Configuration.hpp"
-#include "PB7.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PB7.hpp"
 
 namespace
 {
@@ -100,13 +100,13 @@ void ViewOverlay::drawTop() const
         Gui::generation(*pkm, 115, 11);
         switch (pkm->gender())
         {
-            case Gender::Male:
+            case pksm::Gender::Male:
                 Gui::sprite(ui_sheet_icon_male_idx, 127, 10);
                 break;
-            case Gender::Female:
+            case pksm::Gender::Female:
                 Gui::sprite(ui_sheet_icon_female_idx, 129, 10);
                 break;
-            case Gender::Genderless:
+            case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
                 break;
         }
@@ -119,14 +119,14 @@ void ViewOverlay::drawTop() const
         {
             switch (Configuration::getInstance().language())
             {
-                case Language::CHT:
-                case Language::CHS:
+                case pksm::Language::CHT:
+                case pksm::Language::CHS:
                     Gui::sprite(ui_sheet_pkrs_chn_idx, 192, 15);
                     break;
-                case Language::JPN:
+                case pksm::Language::JPN:
                     Gui::sprite(ui_sheet_pkrs_jpn_idx, 192, 15);
                     break;
-                case Language::RU:
+                case pksm::Language::RU:
                     Gui::sprite(ui_sheet_pkrs_rus_idx, 192, 15);
                     break;
                 default:
@@ -139,8 +139,8 @@ void ViewOverlay::drawTop() const
             Gui::sprite(ui_sheet_pkrs_cured_idx, 201, 7);
         }
 
-        Type firstType  = pkm->type1();
-        Type secondType = pkm->type2();
+        pksm::Type firstType  = pkm->type1();
+        pksm::Type secondType = pkm->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 59, 35);
@@ -166,13 +166,14 @@ void ViewOverlay::drawTop() const
         Gui::text(
             i18n::type(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        static constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
+        static constexpr pksm::Stat statValues[] = {
+            pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK, pksm::Stat::SPDEF, pksm::Stat::SPD};
         for (int i = 0; i < 6; i++)
         {
             Gui::text(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
-            if (pkm->generation() == Generation::LGPE)
+            if (pkm->generation() == pksm::Generation::LGPE)
             {
-                Gui::text(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK,
+                Gui::text(std::to_string((int)((pksm::PB7*)pkm.get())->awakened(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK,
                     TextPosX::CENTER, TextPosY::TOP);
             }
             else
@@ -190,7 +191,7 @@ void ViewOverlay::drawTop() const
     }
     else
     {
-        Gui::ball(Ball::None, 4, 6);
+        Gui::ball(pksm::Ball::None, 4, 6);
         for (int i = 0; i < 4; i++)
         {
             Gui::text(

@@ -28,16 +28,16 @@
 #define STORAGEOVERLAY_HPP
 
 #include "ReplaceableScreen.hpp"
+#include "pkx/PKFilter.hpp"
 #include <memory>
 #include <vector>
 
 class Button;
-class PKFilter;
 
 class StorageOverlay : public ReplaceableScreen
 {
 public:
-    StorageOverlay(ReplaceableScreen& screen, bool storage, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter);
+    StorageOverlay(ReplaceableScreen& screen, bool storage, int& boxBox, int& storageBox, std::shared_ptr<pksm::PKFilter> filter);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -45,7 +45,7 @@ public:
 private:
     bool selectBox();
     std::vector<std::unique_ptr<Button>> buttons;
-    std::shared_ptr<PKFilter> filter;
+    std::shared_ptr<pksm::PKFilter> filter;
     int& boxBox;
     int& storageBox;
     bool storage;

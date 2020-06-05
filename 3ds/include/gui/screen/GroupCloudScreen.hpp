@@ -29,15 +29,15 @@
 
 #include "GroupCloudAccess.hpp"
 #include "Screen.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
 
 class Button;
-class PKX;
-class PKFilter;
 
 class GroupCloudScreen : public Screen
 {
 public:
-    GroupCloudScreen(int storageBox, std::shared_ptr<PKFilter> filter);
+    GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter);
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
@@ -64,11 +64,11 @@ private:
 
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    std::vector<std::shared_ptr<PKX>> groupPkm;
+    std::shared_ptr<pksm::PKX> infoMon = nullptr;
+    std::vector<std::shared_ptr<pksm::PKX>> groupPkm;
     // box-index pairs
     std::vector<std::pair<int, int>> toSend;
-    std::shared_ptr<PKFilter> filter;
+    std::shared_ptr<pksm::PKFilter> filter;
     GroupCloudAccess access;
     int cursorIndex   = 0;
     int storageBox    = 0;

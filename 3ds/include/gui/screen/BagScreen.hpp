@@ -27,8 +27,8 @@
 #ifndef BAGSCREEN_HPP
 #define BAGSCREEN_HPP
 
-#include "Sav.hpp"
 #include "Screen.hpp"
+#include "sav/Sav.hpp"
 
 class Button;
 
@@ -42,8 +42,8 @@ public:
     void drawBottom() const override;
 
 private:
-    std::vector<std::pair<Sav::Pouch, int>> limits;
-    std::map<Sav::Pouch, std::vector<int>> allowedItems;
+    std::vector<std::pair<pksm::Sav::Pouch, int>> limits;
+    std::map<pksm::Sav::Pouch, std::vector<int>> allowedItems;
     std::vector<std::unique_ptr<Button>> amountButtons;
     std::vector<std::unique_ptr<Button>> buttons;
     static constexpr std::array<u16, 35> lgpeKeyItems = {101, 102, 103, 113, 115, 121, 122, 123, 124, 125, 126, 127, 128, 442, 632, 651, 872, 873,
@@ -54,7 +54,7 @@ private:
     void editItem();
     void editCount(bool up, int selected);
     void setCount(int selected);
-    bool canEdit(Sav::Pouch pouch, const Item& item) const;
+    bool canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const;
 
     int currentPouch    = 0;
     int selectedItem    = 0;

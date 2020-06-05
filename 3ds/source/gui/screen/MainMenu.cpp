@@ -32,13 +32,14 @@
 #include "EditSelectorScreen.hpp"
 #include "InjectSelectorScreen.hpp"
 #include "MainMenuButton.hpp"
-#include "Sav5.hpp"
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "revision.h"
+#include "sav/Sav5.hpp"
+#include "utils/crypto.hpp"
 
 namespace
 {
@@ -63,7 +64,7 @@ namespace
                 Gui::setScreen(std::make_unique<EditSelectorScreen>());
                 return true;
             case 2:
-                if (TitleLoader::save->generation() >= Generation::LGPE || TitleLoader::save->generation() <= Generation::THREE)
+                if (TitleLoader::save->generation() >= pksm::Generation::LGPE || TitleLoader::save->generation() <= pksm::Generation::THREE)
                 {
                     Gui::warn(i18n::localize("NO_WONDERCARDS"));
                     return false;
@@ -87,11 +88,11 @@ namespace
 MainMenu::MainMenu()
 {
     oldLang = Configuration::getInstance().language();
-    if (TitleLoader::save->generation() == Generation::FIVE)
+    if (TitleLoader::save->generation() == pksm::Generation::FIVE)
     {
-        ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+        ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
     }
-    sha256(oldHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    oldHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     makeButtons();
     makeInstructions();
 }
@@ -168,8 +169,9 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(fmt::format(TitleLoader::save->generation() == Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
-                              TitleLoader::save->badges()),
+                Gui::text(
+                    fmt::format(TitleLoader::save->generation() == pksm::Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
+                        TitleLoader::save->badges()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
@@ -243,9 +245,8 @@ void MainMenu::update(touchPosition* touch)
 
 bool MainMenu::needsSave()
 {
-    std::array<u8, SHA256_BLOCK_SIZE> newHash;
-    sha256(newHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
-    if (memcmp(newHash.data(), oldHash.data(), SHA256_BLOCK_SIZE))
+    auto newHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    if (newHash != oldHash)
     {
         return true;
     }
@@ -269,15 +270,15 @@ void MainMenu::save()
     else
     {
         Gui::waitFrame(i18n::localize("SAVING"));
-        if (TitleLoader::save->generation() == Generation::FIVE)
+        if (TitleLoader::save->generation() == pksm::Generation::FIVE)
         {
-            ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+            ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
         TitleLoader::saveChanges();
-        if (TitleLoader::save->generation() == Generation::FIVE)
+        if (TitleLoader::save->generation() == pksm::Generation::FIVE)
         {
-            ((Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+            ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
     }
-    sha256(oldHash.data(), TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    oldHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
 }

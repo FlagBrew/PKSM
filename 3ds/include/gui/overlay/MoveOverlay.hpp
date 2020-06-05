@@ -29,16 +29,16 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
 #include <variant>
 
-class PKX;
-class PKFilter;
 class Button;
 
 class MoveOverlay : public ReplaceableScreen
 {
 public:
-    MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& pkm, int moveIndex);
+    MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& pkm, int moveIndex);
     ~MoveOverlay();
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -47,7 +47,7 @@ public:
 
 private:
     void searchBar();
-    std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>> object;
+    std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>> object;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> moves;
     std::vector<std::pair<int, std::string>> validMoves;

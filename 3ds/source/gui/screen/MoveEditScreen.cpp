@@ -28,12 +28,12 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "MoveOverlay.hpp"
-#include "PB7.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PB7.hpp"
 
-MoveEditScreen::MoveEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
+MoveEditScreen::MoveEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
         [this]() {
@@ -100,7 +100,7 @@ void MoveEditScreen::update(touchPosition* touch)
 
 void MoveEditScreen::drawBottom() const
 {
-    Language lang = Configuration::getInstance().language();
+    pksm::Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
@@ -131,7 +131,7 @@ void MoveEditScreen::drawBottom() const
     {
         Gui::text(
             i18n::move(lang, pkm->move(i)), 24, 32 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, 144);
-        if (pkm->generation() < Generation::SIX)
+        if (pkm->generation() < pksm::Generation::SIX)
         {
             Gui::text(i18n::localize("EDITOR_NOT_APPLICABLE_GEN"), 24, 141 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
@@ -156,7 +156,7 @@ void MoveEditScreen::drawBottom() const
 
 void MoveEditScreen::changeMove()
 {
-    if (moveSelected < 4 || pkm->generation() >= Generation::SIX)
+    if (moveSelected < 4 || pkm->generation() >= pksm::Generation::SIX)
     {
         addOverlay<MoveOverlay>(pkm, moveSelected);
     }

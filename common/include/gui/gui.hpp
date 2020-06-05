@@ -27,21 +27,21 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "Ball.hpp"
-#include "Gender.hpp"
-#include "Generation.hpp"
-#include "Language.hpp"
+#include "PKX.hpp"
 #include "RunnableScreen.hpp"
 #include "Screen.hpp"
 #include "TextParse.hpp"
 #include "TextPos.hpp"
 #include "Type.hpp"
 #include "colors.hpp"
+#include "enums/Ball.hpp"
+#include "enums/Gender.hpp"
+#include "enums/Generation.hpp"
+#include "enums/Language.hpp"
 #include "spritesheets.h"
 #include "types.h"
 #include <citro2d.h>
 
-class PKX;
 class Species;
 
 namespace Gui
@@ -61,15 +61,15 @@ namespace Gui
     // Dunno what specific things might be necessary
 #endif
 
-    void ball(Ball ball, int x, int y);
-    void type(Language lang, Type type, int x, int y);
-    void generation(const PKX& pkm, int x, int y);
-    void format(const PKX& pkm, int x, int y);
+    void ball(pksm::Ball ball, int x, int y);
+    void type(pksm::Language lang, pksm::Type type, int x, int y);
+    void generation(const pksm::PKX& pkm, int x, int y);
+    void format(const pksm::PKX& pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, PKSM_Color color);
-    void pkm(const PKX& pkm, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
-    void pkm(Species species, int form, Generation generation, Gender gender, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK,
-        float blend = 0.0f);
+    void pkm(const pksm::PKX& pkm, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
+    void pkm(pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender, int x, int y, float scale = 1.0f,
+        PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
 
     int pointerBob();
 #if defined(_3DS)
@@ -108,7 +108,7 @@ namespace Gui
     void showRestoreProgress(u32 partial, u32 total);
     void showDownloadProgress(const std::string& path, u32 partial, u32 total);
     void waitFrame(const std::string& message);
-    void warn(const std::string& message, std::optional<Language> forceLang = std::nullopt);
+    void warn(const std::string& message, std::optional<pksm::Language> forceLang = std::nullopt);
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);
 }

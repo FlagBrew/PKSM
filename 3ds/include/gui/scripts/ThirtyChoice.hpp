@@ -27,9 +27,9 @@
 #ifndef THIRTYCHOICE_HPP
 #define THIRTYCHOICE_HPP
 
-#include "Generation.hpp"
 #include "Hid.hpp"
 #include "RunnableScreen.hpp"
+#include "enums/Generation.hpp"
 #include <string>
 #include <vector>
 
@@ -42,7 +42,7 @@ struct pkm
 class ThirtyChoice : public RunnableScreen<size_t>
 {
 public:
-    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, Generation gen = Generation::SEVEN)
+    ThirtyChoice(char* question, char** text, pkm* pokemon, int items, pksm::Generation gen = pksm::Generation::SEVEN)
         : RunnableScreen(0), question(question), hid(30, 6), items(items), gen(gen)
     {
         for (int i = 0; i < items; i++)
@@ -61,7 +61,7 @@ private:
     std::vector<std::string> labels;
     std::vector<pkm> pkms;
     const int items;
-    const Generation gen;
+    const pksm::Generation gen;
 };
 
 #endif

@@ -27,13 +27,13 @@
 #include "AppLegalityOverlay.hpp"
 #include "ClickButton.hpp"
 #include "ImageViewOverlay.hpp"
-#include "PKX.hpp"
 #include "QRGen.hpp"
 #include "QRScanner.hpp"
-#include "Sav.hpp"
 #include "base64.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -85,7 +85,7 @@ namespace
     }
 }
 
-AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("B_BACK")), pkm(pkm)
 {
     std::string data = (std::string)pkm->generation() + ":" + std::to_string((u32)TitleLoader::save->version()) + ":" +
@@ -201,7 +201,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 return true;
             }
 
-            auto pkx = PKX::getPKM(this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
+            auto pkx = pksm::PKX::getPKM(this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
             if (pkx)
             {
                 pkx = TitleLoader::save->transfer(*pkx);
@@ -220,7 +220,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(204, 140, 108, 30,
         [this]() {
-            auto pkx = QRScanner<PKX>::scan();
+            auto pkx = QRScanner<pksm::PKX>::scan();
             if (pkx)
             {
                 pkx = TitleLoader::save->transfer(*pkx);

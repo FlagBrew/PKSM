@@ -27,17 +27,16 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
-#include "Ball.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "enums/Ball.hpp"
+#include "pkx/PKX.hpp"
 #include <memory>
-
-class PKX;
 
 class BallOverlay : public ReplaceableScreen
 {
 public:
-    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
     virtual ~BallOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -45,9 +44,9 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
-    std::vector<Ball> balls;
+    std::vector<pksm::Ball> balls;
 };
 
 #endif

@@ -26,24 +26,24 @@
 
 #include "BallOverlay.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 #include <algorithm>
 
-BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
 {
     if (TitleLoader::save)
     {
-        balls = std::vector<Ball>(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end());
+        balls = std::vector<pksm::Ball>(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end());
     }
     else
     {
-        balls = std::vector<Ball>(VersionTables::availableBalls(GameVersion::oldestVersion(pkm->generation())).begin(),
-            VersionTables::availableBalls(GameVersion::oldestVersion(pkm->generation())).end());
+        balls = std::vector<pksm::Ball>(pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation())).begin(),
+            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation())).end());
     }
     std::sort(balls.begin(), balls.end());
     hid.update(balls.size());

@@ -27,15 +27,15 @@
 #include "LegalInfoScreen.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 
-LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<PKX> pk) : ScrollingTextScreen(string, pk)
+LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<pksm::PKX> pk) : ScrollingTextScreen(string, pk)
 {
     if (string.substr(0, 6) != "Legal!")
     {
@@ -143,7 +143,7 @@ void LegalInfoScreen::attemptLegalization()
                         else if (!retJson["Pokemon"].is_null())
                         {
                             std::vector<u8> pkmData = base64_decode(retJson["Pokemon"].get<std::string>());
-                            auto fixed              = PKX::getPKM(pkm->generation(), pkmData.data(), pkmData.size(), true);
+                            auto fixed              = pksm::PKX::getPKM(pkm->generation(), pkmData.data(), pkmData.size(), true);
                             if (fixed)
                             {
                                 std::copy(fixed->rawData(), fixed->rawData() + std::min(pkm->getLength(), fixed->getLength()), pkm->rawData());

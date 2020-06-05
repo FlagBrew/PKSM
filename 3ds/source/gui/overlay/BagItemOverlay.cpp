@@ -25,11 +25,11 @@
  */
 
 #include "BagItemOverlay.hpp"
-#include "Item.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "utils.hpp"
+#include "sav/Item.hpp"
+#include "sav/Sav.hpp"
+#include "utils/utils.hpp"
 
 void BagItemOverlay::drawBottom() const
 {
@@ -110,7 +110,7 @@ void BagItemOverlay::update(touchPosition* touch)
         {
             if (firstEmpty != slot)
             {
-                static Item4 emptyItem;
+                static pksm::Item4 emptyItem;
                 for (int i = slot; i < --firstEmpty; i++)
                 {
                     auto item = TitleLoader::save->item(pouch.first, i + 1);

@@ -29,16 +29,16 @@
 
 #include "CloudAccess.hpp"
 #include "Screen.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
 #include <array>
 
 class Button;
-class PKFilter;
-class PKX;
 
 class CloudScreen : public Screen
 {
 public:
-    CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter = nullptr);
+    CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter = nullptr);
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
@@ -63,10 +63,10 @@ private:
 
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    std::shared_ptr<PKX> moveMon;
+    std::shared_ptr<pksm::PKX> infoMon = nullptr;
+    std::shared_ptr<pksm::PKX> moveMon;
     CloudAccess access;
-    std::shared_ptr<PKFilter> filter;
+    std::shared_ptr<pksm::PKFilter> filter;
     int cursorIndex   = 0;
     int storageBox    = 0;
     bool justSwitched = true;

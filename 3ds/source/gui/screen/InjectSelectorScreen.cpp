@@ -28,19 +28,18 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "InjectorScreen.hpp"
-#include "PGF.hpp"
-#include "PGT.hpp"
 #include "QRScanner.hpp"
-#include "Sav5.hpp"
 #include "ToggleButton.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
+#include "wcx/PGF.hpp"
+#include "wcx/PGT.hpp"
+#include "wcx/WC6.hpp"
+#include "wcx/WC7.hpp"
 #include <sys/stat.h>
 
 namespace
@@ -67,7 +66,7 @@ InjectSelectorScreen::InjectSelectorScreen()
         }
         else
         {
-            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+            gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
         }
     }
 
@@ -112,7 +111,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             }
             else
             {
-                gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+                gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
             }
         }
     }
@@ -150,7 +149,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_X)
         {
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
             {
                 Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
             }
@@ -315,7 +314,7 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::pkm(Species{u16(data.species)}, data.form, TitleLoader::save->generation(), data.gender, x, y);
+                    Gui::pkm(pksm::Species{u16(data.species)}, data.form, TitleLoader::save->generation(), data.gender, x, y);
                 }
                 PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255);
                 TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL : TextWidthAction::SQUISH_OR_SLICE;
@@ -344,7 +343,8 @@ void InjectSelectorScreen::drawTop() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(
+                        pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {
@@ -363,23 +363,23 @@ void InjectSelectorScreen::drawTop() const
 
 bool InjectSelectorScreen::doQR()
 {
-    std::unique_ptr<WCX> wcx;
+    std::unique_ptr<pksm::WCX> wcx;
     switch (TitleLoader::save->generation())
     {
-        case Generation::FOUR:
-            wcx = QRScanner<WC4>::scan();
+        case pksm::Generation::FOUR:
+            wcx = QRScanner<pksm::WC4>::scan();
             break;
-        case Generation::FIVE:
-            wcx = QRScanner<PGF>::scan();
+        case pksm::Generation::FIVE:
+            wcx = QRScanner<pksm::PGF>::scan();
             break;
-        case Generation::SIX:
-            wcx = QRScanner<WC6>::scan();
+        case pksm::Generation::SIX:
+            wcx = QRScanner<pksm::WC6>::scan();
             break;
-        case Generation::SEVEN:
-            wcx = QRScanner<WC7>::scan();
+        case pksm::Generation::SEVEN:
+            wcx = QRScanner<pksm::WC7>::scan();
             break;
-        case Generation::EIGHT:
-            wcx = QRScanner<WC8>::scan();
+        case pksm::Generation::EIGHT:
+            wcx = QRScanner<pksm::WC8>::scan();
             break;
         default:
             return false;

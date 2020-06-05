@@ -34,15 +34,8 @@
 #include "MiscEditScreen.hpp"
 #include "MoveEditScreen.hpp"
 #include "NatureOverlay.hpp"
-#include "PB7.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "PkmItemOverlay.hpp"
 #include "PkmUtils.hpp"
-#include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
 #include "ViewOverlay.hpp"
@@ -50,14 +43,21 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
+#include "sav/Sav.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
 
 #define NO_TEXT_BUTTON(x, y, w, h, function, image) std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 #define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 #define NO_TEXT_CLICK(x, y, w, h, function, image) std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 
-EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, bool emergency)
+EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int index, bool emergency)
     : pkm(pokemon), box(box), index(index), emergency(emergency)
 {
     addOverlay<ViewOverlay>(pkm, false);
@@ -69,23 +69,23 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             pkm = pkm->partyClone();
         }
 
-        constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+        constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
         for (int i = 0; i < 6; i++)
         {
             origPartyStats[i] = pkm->partyStat(stats[i]);
         }
         origPartyLevel  = pkm->partyLevel();
         origPartyCurrHP = pkm->partyCurrHP();
-        if (pkm->generation() == Generation::LGPE)
+        if (pkm->generation() == pksm::Generation::LGPE)
         {
-            origPartyCP = ((PB7*)pkm.get())->partyCP();
+            origPartyCP = ((pksm::PB7*)pkm.get())->partyCP();
         }
     }
 
-    if (!pkm || pkm->species() == Species::None)
+    if (!pkm || pkm->species() == pksm::Species::None)
     {
         pkm = PkmUtils::getDefault(TitleLoader::save->generation());
-        pkm->species(Species::None); // Intentionally set species to none
+        pkm->species(pksm::Species::None); // Intentionally set species to none
         if (Configuration::getInstance().useSaveInfo())
         {
             pkm->TID(TitleLoader::save->TID());
@@ -95,41 +95,41 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
             pkm->version(TitleLoader::save->version());
             switch (pkm->version())
             {
-                case GameVersion::HG:
-                case GameVersion::SS:
+                case pksm::GameVersion::HG:
+                case pksm::GameVersion::SS:
                     pkm->metLocation(0x0095); // Route 1, HGSS
                     break;
-                case GameVersion::D:
-                case GameVersion::P:
-                case GameVersion::Pt:
+                case pksm::GameVersion::D:
+                case pksm::GameVersion::P:
+                case pksm::GameVersion::Pt:
                     pkm->metLocation(0x0010); // Route 201, DPPt
                     break;
-                case GameVersion::B:
-                case GameVersion::W:
-                case GameVersion::B2:
-                case GameVersion::W2:
+                case pksm::GameVersion::B:
+                case pksm::GameVersion::W:
+                case pksm::GameVersion::B2:
+                case pksm::GameVersion::W2:
                     pkm->metLocation(0x000e); // Route 1, BWB2W2
                     break;
-                case GameVersion::X:
-                case GameVersion::Y:
+                case pksm::GameVersion::X:
+                case pksm::GameVersion::Y:
                     pkm->metLocation(0x0008); // Route 1, XY
                     break;
-                case GameVersion::OR:
-                case GameVersion::AS:
+                case pksm::GameVersion::OR:
+                case pksm::GameVersion::AS:
                     pkm->metLocation(0x00cc); // Route 101, ORAS
                     break;
-                case GameVersion::SN:
-                case GameVersion::MN:
-                case GameVersion::US:
-                case GameVersion::UM:
+                case pksm::GameVersion::SN:
+                case pksm::GameVersion::MN:
+                case pksm::GameVersion::US:
+                case pksm::GameVersion::UM:
                     pkm->metLocation(0x0006); // Route 1, SMUSUM
                     break;
-                case GameVersion::GP:
-                case GameVersion::GE:
+                case pksm::GameVersion::GP:
+                case pksm::GameVersion::GE:
                     pkm->metLocation(0x0003); // Route 1, LGPE
                     break;
-                case GameVersion::SW:
-                case GameVersion::SH:
+                case pksm::GameVersion::SW:
+                case pksm::GameVersion::SH:
                     pkm->metLocation(0x000C); // Route 1, SWSH
                     break;
                 default:
@@ -228,12 +228,12 @@ EditorScreen::EditorScreen(std::shared_ptr<PKX> pokemon, int box, int index, boo
     instructions.addBox(false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
 
-    sha256(origHash.data(), pkm->rawData(), pkm->getLength());
+    origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
 }
 
 void EditorScreen::drawBottom() const
 {
-    Language lang = Configuration::getInstance().language();
+    pksm::Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
@@ -265,13 +265,13 @@ void EditorScreen::drawBottom() const
     Gui::text(pkm->species().localize(lang), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     switch (pkm->gender())
     {
-        case Gender::Male:
+        case pksm::Gender::Male:
             Gui::sprite(ui_sheet_icon_male_idx, 186, 7);
             break;
-        case Gender::Female:
+        case pksm::Gender::Female:
             Gui::sprite(ui_sheet_icon_female_idx, 187, 7);
             break;
-        case Gender::Genderless:
+        case pksm::Gender::Genderless:
             Gui::sprite(ui_sheet_icon_genderless_idx, 187, 7);
         default:
             break;
@@ -419,8 +419,8 @@ bool EditorScreen::advanceMon(bool forward)
                 }
                 pkm = TitleLoader::save->pkm(box, index);
             }
-        } while (pkm->species() == Species::None);
-        sha256(origHash.data(), pkm->rawData(), pkm->getLength());
+        } while (pkm->species() == pksm::Species::None);
+        origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
     }
     return false;
 }
@@ -482,7 +482,7 @@ bool EditorScreen::togglePokerus()
 void EditorScreen::setOT()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (8 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (8 - 1));
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -497,7 +497,7 @@ void EditorScreen::setOT()
 void EditorScreen::setNick()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= Generation::SIX ? 12 : (11 - 1));
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (11 - 1));
     swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -507,8 +507,9 @@ void EditorScreen::setNick()
     {
         pkm->nickname(input);
         std::string speciesName = pkm->species().localize(pkm->language());
-        if (pkm->generation() == Generation::FOUR || pkm->version() <= GameVersion::CXD ||
-            (pkm->version() >= GameVersion::RD && pkm->version() <= GameVersion::C)) // Gen 4, less than or equal to Colosseum/XD, or in VC territory
+        if (pkm->generation() == pksm::Generation::FOUR || pkm->version() <= pksm::GameVersion::CXD ||
+            (pkm->version() >= pksm::GameVersion::RD &&
+                pkm->version() <= pksm::GameVersion::C)) // Gen 4, less than or equal to Colosseum/XD, or in VC territory
         {
             StringUtils::toUpper(speciesName);
         }
@@ -561,7 +562,7 @@ void EditorScreen::setFriendship()
 void EditorScreen::partyUpdate()
 {
     // Update party values IF the user hasn't edited them themselves
-    constexpr Stat stats[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPD, Stat::SPATK, Stat::SPDEF};
+    constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {
         if (pkm->partyStat(stats[i]) == origPartyStats[i])
@@ -577,12 +578,12 @@ void EditorScreen::partyUpdate()
     }
     if (pkm->partyCurrHP() == origPartyCurrHP)
     {
-        pkm->partyCurrHP(pkm->stat(Stat::HP));
-        origPartyCurrHP = pkm->stat(Stat::HP);
+        pkm->partyCurrHP(pkm->stat(pksm::Stat::HP));
+        origPartyCurrHP = pkm->stat(pksm::Stat::HP);
     }
-    if (pkm->generation() == Generation::LGPE)
+    if (pkm->generation() == pksm::Generation::LGPE)
     {
-        PB7* pb7 = (PB7*)pkm.get();
+        pksm::PB7* pb7 = (pksm::PB7*)pkm.get();
         if (pb7->partyCP() == origPartyCP)
         {
             pb7->partyCP(pb7->CP());
@@ -609,7 +610,7 @@ bool EditorScreen::save()
     {
         if (box != PARTY_MAGIC_NUM)
         {
-            if (TitleLoader::save->generation() == Generation::LGPE || TitleLoader::save->generation() == Generation::EIGHT)
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE || TitleLoader::save->generation() == pksm::Generation::EIGHT)
             {
                 partyUpdate();
             }
@@ -622,7 +623,7 @@ bool EditorScreen::save()
         }
         TitleLoader::save->dex(*pkm);
     }
-    sha256(origHash.data(), pkm->rawData(), pkm->getLength());
+    origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
     return false;
 }
 
@@ -634,14 +635,14 @@ bool EditorScreen::selectNature()
 
 bool EditorScreen::selectAbility()
 {
-    if (pkm->generation() == Generation::FOUR)
+    if (pkm->generation() == pksm::Generation::FOUR)
     {
-        Ability setAbility = pkm->ability();
-        if (pkm->abilities(0) != setAbility && pkm->abilities(0) != Ability::None)
+        pksm::Ability setAbility = pkm->ability();
+        if (pkm->abilities(0) != setAbility && pkm->abilities(0) != pksm::Ability::None)
         {
             pkm->setAbility(0);
         }
-        else if (pkm->abilities(1) != Ability::None)
+        else if (pkm->abilities(1) != pksm::Ability::None)
         {
             pkm->setAbility(1);
         }
@@ -650,13 +651,13 @@ bool EditorScreen::selectAbility()
             pkm->setAbility(0);
         }
     }
-    else if (pkm->generation() == Generation::FIVE)
+    else if (pkm->generation() == pksm::Generation::FIVE)
     {
-        PK5* pk5 = (PK5*)pkm.get();
+        pksm::PK5* pk5 = (pksm::PK5*)pkm.get();
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != Ability::None)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                     if (pk5->abilities(1) == pk5->abilities(2))
@@ -664,27 +665,27 @@ bool EditorScreen::selectAbility()
                         pk5->hiddenAbility(true);
                     }
                 }
-                else if (pkm->abilities(2) != Ability::None)
+                else if (pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
                 break;
             case 1:
-                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != Ability::None)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != Ability::None)
+                else if (pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
                 break;
             case 2:
-                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != Ability::None)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != Ability::None)
+                else if (pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                     if (pkm->abilities(1) == pkm->abilities(2))
@@ -700,31 +701,31 @@ bool EditorScreen::selectAbility()
         switch (pkm->abilityNumber() >> 1)
         {
             case 0:
-                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != Ability::None)
+                if (pkm->abilities(1) != pkm->ability() && pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                 }
-                else if (pkm->abilities(2) != Ability::None)
+                else if (pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
                 break;
             case 1:
-                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != Ability::None)
+                if (pkm->abilities(2) != pkm->ability() && pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != Ability::None)
+                else if (pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
                 break;
             case 2:
-                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != Ability::None)
+                if (pkm->abilities(0) != pkm->ability() && pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != Ability::None)
+                else if (pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                 }
@@ -742,17 +743,17 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    static constexpr std::array<Species, 2> noChange = {
-        Species::Xerneas, Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    if (std::any_of(noChange.begin(), noChange.end(), [this](const Species& badSpecies) { return badSpecies == pkm->species(); }))
+    static constexpr std::array<pksm::Species, 2> noChange = {pksm::Species::Xerneas,
+        pksm::Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
+    if (std::any_of(noChange.begin(), noChange.end(), [this](const pksm::Species& badSpecies) { return badSpecies == pkm->species(); }))
     {
         return false;
     }
     u8 count;
-    Species formCountSpec = pkm->species();
-    if (formCountSpec == Species::Scatterbug || formCountSpec == Species::Spewpa)
+    pksm::Species formCountSpec = pkm->species();
+    if (formCountSpec == pksm::Species::Scatterbug || formCountSpec == pksm::Species::Spewpa)
     {
-        formCountSpec = Species::Vivillon;
+        formCountSpec = pksm::Species::Vivillon;
     }
     if (TitleLoader::save)
     {
@@ -760,7 +761,7 @@ bool EditorScreen::selectForm()
     }
     else
     {
-        count = VersionTables::formCount(GameVersion::oldestVersion(pkm->generation()), formCountSpec);
+        count = pksm::VersionTables::formCount(pksm::GameVersion::oldestVersion(pkm->generation()), formCountSpec);
     }
     if (count > 1)
     {
@@ -785,14 +786,14 @@ bool EditorScreen::genderSwitch()
 {
     switch (pkm->gender())
     {
-        case Gender::Male:
-            pkm->gender(Gender::Female);
+        case pksm::Gender::Male:
+            pkm->gender(pksm::Gender::Female);
             break;
-        case Gender::Female:
-            pkm->gender(Gender::Genderless);
+        case pksm::Gender::Female:
+            pkm->gender(pksm::Gender::Genderless);
             break;
-        case Gender::Genderless:
-            pkm->gender(Gender::Male);
+        case pksm::Gender::Genderless:
+            pkm->gender(pksm::Gender::Male);
             break;
     }
     return false;
@@ -814,7 +815,6 @@ bool EditorScreen::setSaveInfo()
 
 bool EditorScreen::saved()
 {
-    static std::array<u8, SHA256_BLOCK_SIZE> newHash;
-    sha256(newHash.data(), pkm->rawData(), pkm->getLength());
-    return !memcmp(newHash.data(), origHash.data(), SHA256_BLOCK_SIZE);
+    auto newHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
+    return newHash != origHash;
 }

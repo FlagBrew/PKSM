@@ -27,9 +27,9 @@
 #ifndef TITLELOADSCREEN_HPP
 #define TITLELOADSCREEN_HPP
 
-#include "Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
+#include "enums/Language.hpp"
 #include <cmath>
 #include <memory>
 
@@ -74,7 +74,7 @@ private:
     int selectedTitle = -2;
     int firstSave     = -1;
     int selectedSave  = -1;
-    Language oldLang;
+    pksm::Language oldLang;
     bool selectedGame   = false;
     bool uninstGameView = false;
 };

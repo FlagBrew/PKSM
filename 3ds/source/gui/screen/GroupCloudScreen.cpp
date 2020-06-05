@@ -31,10 +31,7 @@
 #include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
 #include "FilterScreen.hpp"
-#include "PK7.hpp"
-#include "PKFilter.hpp"
 #include "QRScanner.hpp"
-#include "Sav.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
@@ -44,14 +41,17 @@
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PKFilter.hpp"
+#include "sav/Sav.hpp"
 #include <algorithm>
 #include <sys/stat.h>
 
-GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
+GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GROUP_SINGLE") + '\n' +
              i18n::localize("START_FILTER_LEGAL") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
-      filter(filter ? filter : std::make_shared<PKFilter>()),
+      filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
       storageBox(storageBox)
 {
     mainButtons[0] = std::make_unique<ClickButton>(212, 78, 108, 28,
@@ -116,8 +116,8 @@ void GroupCloudScreen::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            std::shared_ptr<PKX> pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
-            if (pokemon->species() != Species::None)
+            std::shared_ptr<pksm::PKX> pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
+            if (pokemon->species() != pksm::Species::None)
             {
                 float blend = *pokemon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
@@ -217,7 +217,7 @@ void GroupCloudScreen::drawTop() const
         for (u8 column = 0; column < 6; column++)
         {
             auto pkm = access.pkm(row, column);
-            if (pkm->species() != Species::None)
+            if (pkm->species() != pksm::Species::None)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
@@ -281,13 +281,13 @@ void GroupCloudScreen::drawTop() const
         Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         switch (infoMon->gender())
         {
-            case Gender::Male:
+            case pksm::Gender::Male:
                 Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
                 break;
-            case Gender::Female:
+            case pksm::Gender::Female:
                 Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
                 break;
-            case Gender::Genderless:
+            case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
         }
@@ -298,8 +298,8 @@ void GroupCloudScreen::drawTop() const
 
         Gui::text(
             infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Type firstType  = infoMon->type1();
-        Type secondType = infoMon->type2();
+        pksm::Type firstType  = infoMon->type1();
+        pksm::Type secondType = infoMon->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -319,9 +319,10 @@ void GroupCloudScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(
+            FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -524,7 +525,7 @@ void GroupCloudScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == Species::None)
+    if (infoMon && infoMon->species() == pksm::Species::None)
     {
         infoMon = nullptr;
     }
@@ -555,7 +556,7 @@ void GroupCloudScreen::pickup()
             auto it                      = std::find(toSend.begin(), toSend.end(), thisPair);
             if (it == toSend.end())
             {
-                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != Species::None && toSend.size() < 6)
+                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != pksm::Species::None && toSend.size() < 6)
                 {
                     toSend.push_back(thisPair);
                     if (toSend.size() == 6 && Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
@@ -570,7 +571,7 @@ void GroupCloudScreen::pickup()
             }
         }
     }
-    else if (!cloudChosen && Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == Species::None)
+    else if (!cloudChosen && Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == pksm::Species::None)
     {
         Banks::bank->pkm(*groupPkm.back(), storageBox, cursorIndex - 1);
         groupPkm.pop_back();
@@ -666,7 +667,7 @@ bool GroupCloudScreen::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != Species::None)
+    if (infoMon && infoMon->species() != pksm::Species::None)
     {
         justSwitched = true;
         addOverlay<CloudViewOverlay>(infoMon);
@@ -679,14 +680,14 @@ bool GroupCloudScreen::releasePkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm && pkm->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+        if (pkm && pkm->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
             auto it = std::find(toSend.begin(), toSend.end(), std::pair<int, int>{storageBox, cursorIndex - 1});
             if (it != toSend.end())
             {
                 toSend.erase(it);
             }
-            Banks::bank->pkm(*PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+            Banks::bank->pkm(*pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             return false;
         }
     }
@@ -698,7 +699,7 @@ bool GroupCloudScreen::dumpPkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (dumpMon && dumpMon->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        if (dumpMon && dumpMon->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             DateTime now     = DateTime::now();
             std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
@@ -745,7 +746,7 @@ bool GroupCloudScreen::clickBottomIndex(int index)
 
 void GroupCloudScreen::shareSend()
 {
-    std::vector<std::shared_ptr<PKX>> sendMe;
+    std::vector<std::shared_ptr<pksm::PKX>> sendMe;
     for (auto& index : toSend)
     {
         sendMe.push_back(Banks::bank->pkm(index.first, index.second));
@@ -839,7 +840,7 @@ void GroupCloudScreen::shareReceive()
                 {
                     groupPkm.clear();
                     std::string badVersions;
-                    std::vector<std::shared_ptr<PKX>> temPkm;
+                    std::vector<std::shared_ptr<pksm::PKX>> temPkm;
                     for (auto& pkm : groupJson["pokemon"])
                     {
                         // clang-format off
@@ -847,12 +848,12 @@ void GroupCloudScreen::shareReceive()
                             pkm.contains("base64") && pkm["base64"].is_string())
                         {
                             // clang-format on
-                            Generation gen       = Generation::fromString(pkm["generation"].get<std::string>());
+                            pksm::Generation gen = pksm::Generation::fromString(pkm["generation"].get<std::string>());
                             std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
 
-                            if (gen != Generation::UNUSED)
+                            if (gen != pksm::Generation::UNUSED)
                             {
-                                temPkm.push_back(PKX::getPKM(gen, data.data()));
+                                temPkm.push_back(pksm::PKX::getPKM(gen, data.data()));
                             }
                             else
                             {

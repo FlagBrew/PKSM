@@ -28,16 +28,16 @@
 #define MOVEEDITSCREEN_HPP
 
 #include "Screen.hpp"
+#include "pkx/PKX.hpp"
 #include <memory>
 #include <vector>
 
-class PKX;
 class Button;
 
 class MoveEditScreen : public Screen
 {
 public:
-    MoveEditScreen(std::shared_ptr<PKX> pkm);
+    MoveEditScreen(std::shared_ptr<pksm::PKX> pkm);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -45,7 +45,7 @@ public:
 
 private:
     void changeMove();
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     std::vector<std::unique_ptr<Button>> buttons;
     int moveSelected = 0;
 };

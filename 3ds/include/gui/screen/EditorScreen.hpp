@@ -27,19 +27,18 @@
 #ifndef EDITORSCREEN_HPP
 #define EDITORSCREEN_HPP
 
+#include "Button.hpp"
+#include "PKX.hpp"
 #include "Screen.hpp"
-#include "sha256.h"
+#include "utils/crypto.hpp"
 #include <array>
 #include <memory>
 #include <vector>
 
-class PKX;
-class Button;
-
 class EditorScreen : public Screen
 {
 public:
-    EditorScreen(std::shared_ptr<PKX> pkm, int box, int index, bool emergency = false);
+    EditorScreen(std::shared_ptr<pksm::PKX> pkm, int box, int index, bool emergency = false);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -71,8 +70,8 @@ private:
     bool setSaveInfo();
     bool saved();
     std::vector<std::unique_ptr<Button>> buttons;
-    std::shared_ptr<PKX> pkm;
-    std::array<u8, SHA256_BLOCK_SIZE> origHash;
+    std::shared_ptr<pksm::PKX> pkm;
+    decltype(pksm::crypto::sha256(nullptr, 0)) origHash;
     int box               = 0;
     int index             = 0;
     int origPartyStats[6] = {0};

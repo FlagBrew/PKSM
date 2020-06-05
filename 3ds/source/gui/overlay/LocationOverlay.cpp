@@ -27,16 +27,16 @@
 #include "LocationOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PKX.hpp"
 #include "utils.hpp"
 
-LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met)
+LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2),
-      validLocations(i18n::rawLocations(Configuration::getInstance().language(), (Generation)pkm->version())),
+      validLocations(i18n::rawLocations(Configuration::getInstance().language(), (pksm::Generation)pkm->version())),
       locations(validLocations),
       met(met)
 {

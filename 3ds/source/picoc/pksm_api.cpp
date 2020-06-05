@@ -28,34 +28,34 @@
 #include "BoxChoice.hpp"
 #include "Configuration.hpp"
 #include "FortyChoice.hpp"
-#include "PB7.hpp"
-#include "PGF.hpp"
-#include "PGT.hpp"
-#include "PK3.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "PkmUtils.hpp"
 #include "STDirectory.hpp"
-#include "Sav4.hpp"
 #include "ThirtyChoice.hpp"
-#include "WB7.hpp"
-#include "WC4.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
-#include "WC8.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "format.h"
-#include "genToPkx.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "random.hpp"
-#include "utils.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
+#include "sav/Sav4.hpp"
+#include "utils/genToPkx.hpp"
+#include "utils/random.hpp"
+#include "utils/utils.hpp"
+#include "wcx/PGF.hpp"
+#include "wcx/PGT.hpp"
+#include "wcx/WB7.hpp"
+#include "wcx/WC4.hpp"
+#include "wcx/WC6.hpp"
+#include "wcx/WC7.hpp"
+#include "wcx/WC8.hpp"
 #include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
@@ -100,19 +100,19 @@ namespace
         std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
     }
 
-    void checkGen(struct ParseState* Parser, Generation gen)
+    void checkGen(struct ParseState* Parser, pksm::Generation gen)
     {
         switch (gen)
         {
-            case Generation::THREE:
-            case Generation::FOUR:
-            case Generation::FIVE:
-            case Generation::SIX:
-            case Generation::SEVEN:
-            case Generation::LGPE:
-            case Generation::EIGHT:
+            case pksm::Generation::THREE:
+            case pksm::Generation::FOUR:
+            case pksm::Generation::FIVE:
+            case pksm::Generation::SIX:
+            case pksm::Generation::SEVEN:
+            case pksm::Generation::LGPE:
+            case pksm::Generation::EIGHT:
                 return;
-            case Generation::UNUSED:
+            case pksm::Generation::UNUSED:
                 break;
         }
         scriptFail(Parser, "Generation is not possible!");
@@ -145,7 +145,7 @@ void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     int options               = Param[1]->Val->Integer;
     char** labels             = (char**)Param[2]->Val->Pointer;
     pkm* pokemon              = (pkm*)Param[3]->Val->Pointer;
-    Generation gen            = Generation(Param[4]->Val->Integer);
+    pksm::Generation gen      = pksm::Generation(Param[4]->Val->Integer);
     ThirtyChoice screen       = ThirtyChoice(question, labels, pokemon, options, gen);
     auto ret                  = Gui::runScreen(screen);
     ReturnValue->Val->Integer = ret;
@@ -163,9 +163,9 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
 
 void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
-        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getSBO();
+        ReturnValue->Val->Integer = ((pksm::Sav4*)TitleLoader::save.get())->getSBO();
     }
     else
     {
@@ -175,9 +175,9 @@ void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value*
 
 void sav_gbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
-        ReturnValue->Val->Integer = ((Sav4*)TitleLoader::save.get())->getGBO();
+        ReturnValue->Val->Integer = ((pksm::Sav4*)TitleLoader::save.get())->getGBO();
     }
     else
     {
@@ -309,14 +309,14 @@ void save_path(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
 
 void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data          = (u8*)Param[0]->Val->Pointer;
-    Generation gen    = Generation(Param[1]->Val->Integer);
-    int box           = Param[2]->Val->Integer;
-    int slot          = Param[3]->Val->Integer;
-    bool doTradeEdits = Param[4]->Val->Integer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    int box              = Param[2]->Val->Integer;
+    int slot             = Param[3]->Val->Integer;
+    bool doTradeEdits    = Param[4]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data, false);
+    std::shared_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, false);
 
     if (pkm)
     {
@@ -327,7 +327,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
-        if (invalidReason != Sav::BadTransferReason::OKAY)
+        if (invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
@@ -341,7 +341,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation gen = Generation(Param[0]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
     checkGen(Parser, gen);
 
@@ -350,7 +350,7 @@ void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation gen = Generation(Param[0]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
     checkGen(Parser, gen);
 
@@ -359,7 +359,7 @@ void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struc
 
 void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation gen = Generation(Param[0]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
     checkGen(Parser, gen);
 
@@ -531,23 +531,23 @@ void net_tcp_sender(struct ParseState* Parser, struct Value* ReturnValue, struct
 
 void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    int box        = Param[2]->Val->Integer;
-    int slot       = Param[3]->Val->Integer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    int box              = Param[2]->Val->Integer;
+    int slot             = Param[3]->Val->Integer;
 
     checkGen(Parser, gen);
 
-    auto pkm = PKX::getPKM(gen, data, false, true);
+    auto pkm = pksm::PKX::getPKM(gen, data, false, true);
 
     Banks::bank->pkm(*pkm, box, slot);
 }
 
 void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation* outGen = (Generation*)Param[0]->Val->Pointer;
-    int box            = Param[1]->Val->Integer;
-    int slot           = Param[2]->Val->Integer;
+    pksm::Generation* outGen = (pksm::Generation*)Param[0]->Val->Pointer;
+    int box                  = Param[1]->Val->Integer;
+    int slot                 = Param[2]->Val->Integer;
 
     if (box + slot / 30 >= Banks::bank->boxes() * 30)
     {
@@ -611,37 +611,37 @@ void party_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct 
 
 void i18n_species(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), Species{u16(Param[0]->Val->Integer)}).c_str();
+    ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), pksm::Species{u16(Param[0]->Val->Integer)}).c_str();
 }
 
 void i18n_form(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = (void*)i18n::form(Configuration::getInstance().language(), GameVersion{u8(Param[0]->Val->Integer)},
-        Species{u16(Param[1]->Val->Integer)}, u8(Param[2]->Val->Integer))
+    ReturnValue->Val->Pointer = (void*)i18n::form(Configuration::getInstance().language(), pksm::GameVersion{u8(Param[0]->Val->Integer)},
+        pksm::Species{u16(Param[1]->Val->Integer)}, u8(Param[2]->Val->Integer))
                                     .c_str();
 }
 
 void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    bool isParty   = (bool)Param[2]->Val->Integer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    bool isParty         = (bool)Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
     // Will automatically decrypt data
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, isParty, true);
+    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    bool isParty   = (bool)Param[2]->Val->Integer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    bool isParty         = (bool)Param[2]->Val->Integer;
 
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, isParty, true);
+    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
     pkm->encrypt();
 }
 
@@ -657,12 +657,12 @@ void pksm_utf16_to_utf8(struct ParseState* Parser, struct Value* ReturnValue, st
 
 void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
-    int slot       = Param[2]->Val->Integer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    int slot             = Param[2]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<PKX> pkm = PKX::getPKM(gen, data);
+    std::shared_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data);
 
     if (pkm)
     {
@@ -673,7 +673,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
-        if (invalidReason != Sav::BadTransferReason::OKAY)
+        if (invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
@@ -687,66 +687,66 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
 
 void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation gen = Generation(Param[0]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
     checkGen(Parser, gen);
 
     switch (gen)
     {
-        case Generation::THREE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::THREE>::PKX::BOX_LENGTH;
+        case pksm::Generation::THREE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH;
             break;
-        case Generation::FOUR:
-            ReturnValue->Val->Integer = GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH;
+        case pksm::Generation::FOUR:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH;
             break;
-        case Generation::FIVE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH;
+        case pksm::Generation::FIVE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH;
             break;
-        case Generation::SIX:
-            ReturnValue->Val->Integer = GenToPkx<Generation::SIX>::PKX::BOX_LENGTH;
+        case pksm::Generation::SIX:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH;
             break;
-        case Generation::SEVEN:
-            ReturnValue->Val->Integer = GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH;
+        case pksm::Generation::SEVEN:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH;
             break;
-        case Generation::LGPE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH;
+        case pksm::Generation::LGPE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH;
             break;
-        case Generation::EIGHT:
-            ReturnValue->Val->Integer = GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH;
+        case pksm::Generation::EIGHT:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH;
             break;
-        case Generation::UNUSED:
+        case pksm::Generation::UNUSED:
             break;
     }
 }
 
 void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    Generation gen = Generation(Param[0]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
     checkGen(Parser, gen);
 
     switch (gen)
     {
-        case Generation::THREE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::THREE>::PKX::PARTY_LENGTH;
+        case pksm::Generation::THREE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::PARTY_LENGTH;
             break;
-        case Generation::FOUR:
-            ReturnValue->Val->Integer = GenToPkx<Generation::FOUR>::PKX::PARTY_LENGTH;
+        case pksm::Generation::FOUR:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::FOUR>::PKX::PARTY_LENGTH;
             break;
-        case Generation::FIVE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::FIVE>::PKX::PARTY_LENGTH;
+        case pksm::Generation::FIVE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::FIVE>::PKX::PARTY_LENGTH;
             break;
-        case Generation::SIX:
-            ReturnValue->Val->Integer = GenToPkx<Generation::SIX>::PKX::PARTY_LENGTH;
+        case pksm::Generation::SIX:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::SIX>::PKX::PARTY_LENGTH;
             break;
-        case Generation::SEVEN:
-            ReturnValue->Val->Integer = GenToPkx<Generation::SEVEN>::PKX::PARTY_LENGTH;
+        case pksm::Generation::SEVEN:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::PARTY_LENGTH;
             break;
-        case Generation::LGPE:
-            ReturnValue->Val->Integer = GenToPkx<Generation::LGPE>::PKX::PARTY_LENGTH;
+        case pksm::Generation::LGPE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::LGPE>::PKX::PARTY_LENGTH;
             break;
-        case Generation::EIGHT:
-            ReturnValue->Val->Integer = GenToPkx<Generation::EIGHT>::PKX::PARTY_LENGTH;
+        case pksm::Generation::EIGHT:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::PARTY_LENGTH;
             break;
-        case Generation::UNUSED:
+        case pksm::Generation::UNUSED:
             break;
     }
 }
@@ -756,33 +756,33 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     u8* data    = (u8*)Param[0]->Val->Pointer;
     int species = Param[1]->Val->Integer;
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(TitleLoader::save->generation(), data, false, true);
-    auto orig                = PkmUtils::getDefault(TitleLoader::save->generation());
+    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(TitleLoader::save->generation(), data, false, true);
+    auto orig                      = PkmUtils::getDefault(TitleLoader::save->generation());
     switch (TitleLoader::save->generation())
     {
-        case Generation::THREE:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::THREE>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::THREE:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::FOUR:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::FOUR>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::FOUR:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::FIVE:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::FIVE>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::FIVE:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::SIX:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::SIX>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::SIX:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::SEVEN:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::SEVEN>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::SEVEN:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::LGPE:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::LGPE>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::LGPE:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH, data);
             break;
-        case Generation::EIGHT:
-            std::copy(orig->rawData(), orig->rawData() + GenToPkx<Generation::EIGHT>::PKX::BOX_LENGTH, data);
+        case pksm::Generation::EIGHT:
+            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH, data);
             break;
         // Should never happen
-        case Generation::UNUSED:
+        case pksm::Generation::UNUSED:
             break;
     }
 
@@ -795,41 +795,41 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
-            case GameVersion::HG:
-            case GameVersion::SS:
+            case pksm::GameVersion::HG:
+            case pksm::GameVersion::SS:
                 pkm->metLocation(0x0095); // Route 1, HGSS
                 break;
-            case GameVersion::D:
-            case GameVersion::P:
-            case GameVersion::Pt:
+            case pksm::GameVersion::D:
+            case pksm::GameVersion::P:
+            case pksm::GameVersion::Pt:
                 pkm->metLocation(0x0010); // Route 201, DPPt
                 break;
-            case GameVersion::B:
-            case GameVersion::W:
-            case GameVersion::B2:
-            case GameVersion::W2:
+            case pksm::GameVersion::B:
+            case pksm::GameVersion::W:
+            case pksm::GameVersion::B2:
+            case pksm::GameVersion::W2:
                 pkm->metLocation(0x000e); // Route 1, BWB2W2
                 break;
-            case GameVersion::X:
-            case GameVersion::Y:
+            case pksm::GameVersion::X:
+            case pksm::GameVersion::Y:
                 pkm->metLocation(0x0008); // Route 1, XY
                 break;
-            case GameVersion::OR:
-            case GameVersion::AS:
+            case pksm::GameVersion::OR:
+            case pksm::GameVersion::AS:
                 pkm->metLocation(0x00cc); // Route 101, ORAS
                 break;
-            case GameVersion::SN:
-            case GameVersion::MN:
-            case GameVersion::US:
-            case GameVersion::UM:
+            case pksm::GameVersion::SN:
+            case pksm::GameVersion::MN:
+            case pksm::GameVersion::US:
+            case pksm::GameVersion::UM:
                 pkm->metLocation(0x0006); // Route 1, SMUSUM
                 break;
-            case GameVersion::GP:
-            case GameVersion::GE:
+            case pksm::GameVersion::GP:
+            case pksm::GameVersion::GE:
                 pkm->metLocation(0x0003); // Route 1, LGPE
                 break;
-            case GameVersion::SW:
-            case GameVersion::SH:
+            case pksm::GameVersion::SW:
+            case pksm::GameVersion::SH:
                 pkm->metLocation(0x000C); // Route 1, SWSH
                 break;
             default:
@@ -838,11 +838,11 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 
     // From SpeciesOverlay
-    pkm->nickname(i18n::species(pkm->language(), Species{u16(species)}));
-    pkm->species(Species{u16(species)});
+    pkm->nickname(i18n::species(pkm->language(), pksm::Species{u16(species)}));
+    pkm->species(pksm::Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
-    pkm->PID(PKX::getRandomPID(
+    pkm->PID(pksm::PKX::getRandomPID(
         pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
 }
 
@@ -878,7 +878,7 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             {
                 scriptFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
             }
-            ReturnValue->Val->Integer = TitleLoader::save->formCount(Species{u16(getNextVarArg(Param[0])->Val->Integer)});
+            ReturnValue->Val->Integer = TitleLoader::save->formCount(pksm::Species{u16(getNextVarArg(Param[0])->Val->Integer)});
             break;
         case MAX_IN_POUCH:
             if (NumArgs != 2)
@@ -887,10 +887,10 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             }
             else
             {
-                auto pouches     = TitleLoader::save->pouches();
-                Sav::Pouch pouch = Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
-                auto found =
-                    std::find_if(pouches.begin(), pouches.end(), [pouch](const std::pair<Sav::Pouch, int>& item) { return item.first == pouch; });
+                auto pouches           = TitleLoader::save->pouches();
+                pksm::Sav::Pouch pouch = pksm::Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
+                auto found             = std::find_if(
+                    pouches.begin(), pouches.end(), [pouch](const std::pair<pksm::Sav::Pouch, int>& item) { return item.first == pouch; });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;
@@ -1010,8 +1010,8 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             }
             else
             {
-                struct Value* nextArg = getNextVarArg(Param[0]);
-                Sav::Pouch pouch      = Sav::Pouch(nextArg->Val->Integer);
+                struct Value* nextArg  = getNextVarArg(Param[0]);
+                pksm::Sav::Pouch pouch = pksm::Sav::Pouch(nextArg->Val->Integer);
                 if (auto item = TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
                 {
                     ReturnValue->Val->Integer = item->id();
@@ -1035,7 +1035,7 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (field)
     {
         case SAV_VALUE_SPECIES:
-            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(Species{u16(value)});
+            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(pksm::Species{u16(value)});
             break;
         case SAV_VALUE_MOVE:
             ReturnValue->Val->Integer = TitleLoader::save->availableMoves().count(value);
@@ -1044,10 +1044,10 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
             ReturnValue->Val->Integer = TitleLoader::save->availableItems().count(value);
             break;
         case SAV_VALUE_ABILITY:
-            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(Ability{u16(value)});
+            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(pksm::Ability{u16(value)});
             break;
         case SAV_VALUE_BALL:
-            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(Ball{u8(value)});
+            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(pksm::Ball{u8(value)});
             break;
         default:
             scriptFail(Parser, "Field number %i is invalid", (int)field);
@@ -1056,13 +1056,13 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
 
 void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data       = (u8*)Param[0]->Val->Pointer;
-    Generation gen = Generation(Param[1]->Val->Integer);
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = PKX::getPKM(gen, data, false, true);
+    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, false, true);
 
-    if (pkm->species() == Species::None || pkm->species() > PKX::PKSM_MAX_SPECIES)
+    if (pkm->species() == pksm::Species::None || pkm->species() > pksm::PKX::PKSM_MAX_SPECIES)
     {
         ReturnValue->Val->Integer = 0;
     }
@@ -1075,13 +1075,13 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
 void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data              = (u8*)Param[0]->Val->Pointer;
-    Generation gen        = Generation(Param[1]->Val->Integer);
+    pksm::Generation gen  = pksm::Generation(Param[1]->Val->Integer);
     PKX_FIELD field       = PKX_FIELD(Param[2]->Val->Integer);
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
     // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic repetition
-    PKX* pkm = PKX::getPKM(gen, data, false, true).release();
+    pksm::PKX* pkm = pksm::PKX::getPKM(gen, data, false, true).release();
 
     switch (field)
     {
@@ -1123,7 +1123,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
-            pkm->language(getSafeLanguage(pkm->generation(), Language(nextArg->Val->Integer)));
+            pkm->language(getSafeLanguage(pkm->generation(), pksm::Language(nextArg->Val->Integer)));
             break;
         case MET_LOCATION:
             if (NumArgs != 4)
@@ -1147,7 +1147,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for BALL", NumArgs);
             }
-            pkm->ball(Ball{u8(nextArg->Val->Integer)});
+            pkm->ball(pksm::Ball{u8(nextArg->Val->Integer)});
             break;
         case LEVEL:
             if (NumArgs != 4)
@@ -1163,7 +1163,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for GENDER", NumArgs);
             }
-            pkm->gender(Gender{u8(nextArg->Val->Integer)});
+            pkm->gender(pksm::Gender{u8(nextArg->Val->Integer)});
             break;
         case ABILITY:
             if (NumArgs != 4)
@@ -1171,7 +1171,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ABILITY", NumArgs);
             }
-            pkm->ability(Ability{u8(nextArg->Val->Integer)});
+            pkm->ability(pksm::Ability{u8(nextArg->Val->Integer)});
             break;
         case IV_HP:
             if (NumArgs != 4)
@@ -1179,7 +1179,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
-            pkm->iv(Stat::HP, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::HP, nextArg->Val->Integer);
             break;
         case IV_ATK:
             if (NumArgs != 4)
@@ -1187,7 +1187,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
-            pkm->iv(Stat::ATK, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::ATK, nextArg->Val->Integer);
             break;
         case IV_DEF:
             if (NumArgs != 4)
@@ -1195,7 +1195,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
-            pkm->iv(Stat::DEF, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::DEF, nextArg->Val->Integer);
             break;
         case IV_SPATK:
             if (NumArgs != 4)
@@ -1203,7 +1203,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
-            pkm->iv(Stat::SPATK, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::SPATK, nextArg->Val->Integer);
             break;
         case IV_SPDEF:
             if (NumArgs != 4)
@@ -1211,7 +1211,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
-            pkm->iv(Stat::SPDEF, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::SPDEF, nextArg->Val->Integer);
             break;
         case IV_SPEED:
             if (NumArgs != 4)
@@ -1219,7 +1219,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
-            pkm->iv(Stat::SPD, nextArg->Val->Integer);
+            pkm->iv(pksm::Stat::SPD, nextArg->Val->Integer);
             break;
         case NICKNAME:
             if (NumArgs != 4)
@@ -1332,7 +1332,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
-            pkm->ev(Stat::HP, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::HP, nextArg->Val->Integer);
             break;
         case EV_ATK:
             if (NumArgs != 4)
@@ -1340,7 +1340,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
-            pkm->ev(Stat::ATK, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::ATK, nextArg->Val->Integer);
             break;
         case EV_DEF:
             if (NumArgs != 4)
@@ -1348,7 +1348,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
-            pkm->ev(Stat::DEF, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::DEF, nextArg->Val->Integer);
             break;
         case EV_SPATK:
             if (NumArgs != 4)
@@ -1356,7 +1356,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
-            pkm->ev(Stat::SPATK, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::SPATK, nextArg->Val->Integer);
             break;
         case EV_SPDEF:
             if (NumArgs != 4)
@@ -1364,7 +1364,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
-            pkm->ev(Stat::SPDEF, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::SPDEF, nextArg->Val->Integer);
             break;
         case EV_SPEED:
             if (NumArgs != 4)
@@ -1372,7 +1372,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
-            pkm->ev(Stat::SPD, nextArg->Val->Integer);
+            pkm->ev(pksm::Stat::SPD, nextArg->Val->Integer);
             break;
         case SPECIES:
             if (NumArgs != 4)
@@ -1380,7 +1380,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for SPECIES", NumArgs);
             }
-            pkm->species(Species{u16(nextArg->Val->Integer)});
+            pkm->species(pksm::Species{u16(nextArg->Val->Integer)});
             break;
         case PID:
             if (NumArgs != 4)
@@ -1396,7 +1396,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for NATURE", NumArgs);
             }
-            pkm->nature(Nature{u8(nextArg->Val->Integer)});
+            pkm->nature(pksm::Nature{u8(nextArg->Val->Integer)});
             break;
         case FATEFUL:
             if (NumArgs != 4)
@@ -1460,7 +1460,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for OT_GENDER", NumArgs);
             }
-            pkm->otGender(Gender{u8(nextArg->Val->Integer)});
+            pkm->otGender(pksm::Gender{u8(nextArg->Val->Integer)});
             break;
         case ORIGINAL_GAME:
             if (NumArgs != 4)
@@ -1468,7 +1468,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for ORIGINAL_GAME", NumArgs);
             }
-            pkm->version(GameVersion(nextArg->Val->Integer));
+            pkm->version(pksm::GameVersion(nextArg->Val->Integer));
             break;
         default:
             delete pkm;
@@ -1480,12 +1480,12 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
 void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data              = (u8*)Param[0]->Val->Pointer;
-    Generation gen        = Generation(Param[1]->Val->Integer);
+    pksm::Generation gen  = pksm::Generation(Param[1]->Val->Integer);
     PKX_FIELD field       = PKX_FIELD(Param[2]->Val->Integer);
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    PKX* pkm = PKX::getPKM(gen, data, false, true).release();
+    pksm::PKX* pkm = pksm::PKX::getPKM(gen, data, false, true).release();
 
     switch (field)
     {
@@ -1583,7 +1583,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_HP", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::HP);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::HP);
             break;
         case IV_ATK:
             if (NumArgs != 3)
@@ -1591,7 +1591,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_ATK", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::ATK);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::ATK);
             break;
         case IV_DEF:
             if (NumArgs != 3)
@@ -1599,7 +1599,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_DEF", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::DEF);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::DEF);
             break;
         case IV_SPATK:
             if (NumArgs != 3)
@@ -1607,7 +1607,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPATK", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPATK);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::SPATK);
             break;
         case IV_SPDEF:
             if (NumArgs != 3)
@@ -1615,7 +1615,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPDEF", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPDEF);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::SPDEF);
             break;
         case IV_SPEED:
             if (NumArgs != 3)
@@ -1623,7 +1623,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for IV_SPEED", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->iv(Stat::SPD);
+            ReturnValue->Val->UnsignedInteger = pkm->iv(pksm::Stat::SPD);
             break;
         case NICKNAME:
             if (NumArgs != 3)
@@ -1711,7 +1711,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_HP", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::HP);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::HP);
             break;
         case EV_ATK:
             if (NumArgs != 3)
@@ -1719,7 +1719,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_ATK", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::ATK);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::ATK);
             break;
         case EV_DEF:
             if (NumArgs != 3)
@@ -1727,7 +1727,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_DEF", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::DEF);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::DEF);
             break;
         case EV_SPATK:
             if (NumArgs != 3)
@@ -1735,7 +1735,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPATK", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::SPATK);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::SPATK);
             break;
         case EV_SPDEF:
             if (NumArgs != 3)
@@ -1743,7 +1743,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPDEF", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::SPDEF);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::SPDEF);
             break;
         case EV_SPEED:
             if (NumArgs != 3)
@@ -1751,7 +1751,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for EV_SPEED", NumArgs);
             }
-            ReturnValue->Val->Integer = pkm->ev(Stat::SPD);
+            ReturnValue->Val->Integer = pkm->ev(pksm::Stat::SPD);
             break;
         case SPECIES:
             if (NumArgs != 3)
@@ -1861,18 +1861,18 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     char* string   = (char*)Param[0]->Val->Pointer;
     u32 offset     = Param[1]->Val->UnsignedInteger;
     u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
         StringUtils::setString4(TitleLoader::save->rawData().get(), string, offset, codepoints);
     }
-    else if (TitleLoader::save->generation() == Generation::THREE)
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        StringUtils::setString3(TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->language() == Language::JPN);
+        StringUtils::setString3(TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
     }
     else
     {
-        StringUtils::setString(
-            TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
+        StringUtils::setString(TitleLoader::save->rawData().get(), string, offset, codepoints,
+            TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
     }
 }
 
@@ -1881,21 +1881,21 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     u32 offset     = Param[0]->Val->UnsignedInteger;
     u32 codepoints = Param[1]->Val->UnsignedInteger; // Includes null terminator
 
-    if (TitleLoader::save->generation() == Generation::FOUR)
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
         std::string data          = StringUtils::getString4(TitleLoader::save->rawData().get(), offset, codepoints);
         ReturnValue->Val->Pointer = strToRet(data);
     }
-    else if (TitleLoader::save->generation() == Generation::THREE)
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
         std::string data =
-            StringUtils::getString3(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->language() == Language::JPN);
+            StringUtils::getString3(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
         ReturnValue->Val->Pointer = strToRet(data);
     }
     else
     {
         std::string data = StringUtils::getString(
-            TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == Generation::FIVE ? u'\uFFFF' : u'\0');
+            TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
         ReturnValue->Val->Pointer = strToRet(data);
     }
 }
@@ -1903,44 +1903,44 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
 void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
-    Generation gen       = Generation(Param[1]->Val->Integer);
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
     int slot             = Param[2]->Val->Integer;
     bool alternateFormat = (bool)(Param[3]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::unique_ptr<WCX> wcx = nullptr;
+    std::unique_ptr<pksm::WCX> wcx = nullptr;
 
     switch (gen)
     {
-        case Generation::FOUR:
+        case pksm::Generation::FOUR:
             if (alternateFormat)
             {
-                wcx = std::make_unique<WC4>(data);
+                wcx = std::make_unique<pksm::WC4>(data);
             }
             else
             {
-                wcx = std::make_unique<PGT>(data);
+                wcx = std::make_unique<pksm::PGT>(data);
             }
             break;
-        case Generation::FIVE:
-            wcx = std::make_unique<PGF>(data);
+        case pksm::Generation::FIVE:
+            wcx = std::make_unique<pksm::PGF>(data);
             break;
-        case Generation::SIX:
-            wcx = std::make_unique<WC6>(data, alternateFormat);
+        case pksm::Generation::SIX:
+            wcx = std::make_unique<pksm::WC6>(data, alternateFormat);
             break;
-        case Generation::SEVEN:
-            wcx = std::make_unique<WC7>(data, alternateFormat);
+        case pksm::Generation::SEVEN:
+            wcx = std::make_unique<pksm::WC7>(data, alternateFormat);
             break;
-        case Generation::LGPE:
-            wcx = std::make_unique<WB7>(data, alternateFormat);
+        case pksm::Generation::LGPE:
+            wcx = std::make_unique<pksm::WB7>(data, alternateFormat);
             break;
-        case Generation::EIGHT:
-            wcx = std::make_unique<WC8>(data);
+        case pksm::Generation::EIGHT:
+            wcx = std::make_unique<pksm::WC8>(data);
             break;
-        case Generation::UNUSED:
-        case Generation::THREE:
-        case Generation::ONE:
-        case Generation::TWO:
+        case pksm::Generation::UNUSED:
+        case pksm::Generation::THREE:
+        case pksm::Generation::ONE:
+        case pksm::Generation::TWO:
             return;
     }
 

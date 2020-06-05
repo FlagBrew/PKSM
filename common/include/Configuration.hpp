@@ -27,11 +27,11 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
-#include "DateTime.hpp"
-#include "GameVersion.hpp"
-#include "Language.hpp"
 #include "coretypes.h"
+#include "enums/GameVersion.hpp"
+#include "enums/Language.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include "utils/DateTime.hpp"
 #include <memory>
 
 class Configuration
@@ -45,7 +45,7 @@ public:
         return config;
     }
 
-    Language language(void) const;
+    pksm::Language language(void) const;
 
     bool autoBackup(void) const;
 
@@ -81,7 +81,7 @@ public:
     std::vector<std::string> extraSaves(const std::string& id) const;
 
     // Allows setting title IDs of versions. Can be used to edit romhacks or GBA VC. Support not guaranteed for the former!
-    std::string titleId(GameVersion version) const;
+    std::string titleId(pksm::GameVersion version) const;
 
     bool writeFileSave(void) const;
 
@@ -101,7 +101,7 @@ public:
 
     bool autoUpdate(void) const;
 
-    void language(Language lang);
+    void language(pksm::Language lang);
 
     void autoBackup(bool backup);
 
@@ -120,7 +120,7 @@ public:
     // I implemented it just in case
     void extraSaves(const std::string& id, std::vector<std::string>& saves);
 
-    void titleId(GameVersion version, const std::string& id);
+    void titleId(pksm::GameVersion version, const std::string& id);
 
     void writeFileSave(bool write);
 
@@ -158,7 +158,7 @@ private:
 
 namespace i18n
 {
-    const std::string& localize(Language lang, const std::string& index);
+    const std::string& localize(pksm::Language lang, const std::string& index);
     inline const std::string& localize(const std::string& index) { return i18n::localize(Configuration::getInstance().language(), index); }
 }
 

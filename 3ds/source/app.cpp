@@ -41,8 +41,8 @@
 #include "nlohmann/json.hpp"
 #include "random.hpp"
 #include "revision.h"
-#include "sha256.h"
 #include "thread.hpp"
+#include "utils/crypto.hpp"
 #include <3ds.h>
 #include <atomic>
 #include <malloc.h>
@@ -65,7 +65,7 @@ namespace
     {
         std::string url;
         std::string path;
-        unsigned char hash[SHA256_BLOCK_SIZE];
+        decltype(pksm::crypto::sha256(nullptr, 0)) hash;
     };
 
     asset assets[2] = {{"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
@@ -75,7 +75,7 @@ namespace
             {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d,
                 0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
 
-    bool matchSha256HashFromFile(const std::string& path, unsigned char* sha)
+    bool matchSha256HashFromFile(const std::string& path, const decltype(pksm::crypto::sha256(nullptr, 0))& sha)
     {
         bool match = false;
         auto in    = Archive::sd().file(path, FS_OPEN_READ);
@@ -84,10 +84,9 @@ namespace
             size_t size = in->size();
             char* data  = new char[size];
             in->read(data, size);
-            char hash[SHA256_BLOCK_SIZE];
-            sha256((unsigned char*)hash, (unsigned char*)data, size);
+            auto hash = pksm::crypto::sha256((u8*)data, size);
             delete[] data;
-            match = memcmp(sha, hash, SHA256_BLOCK_SIZE) == 0;
+            match = sha == hash;
             in->close();
         }
         return match;
@@ -529,8 +528,9 @@ namespace
 
     void i18nThread(void*)
     {
-        constexpr Language languages[] = {Language::JPN, Language::ENG, Language::FRE, Language::ITA, Language::GER, Language::SPA, Language::KOR,
-            Language::CHS, Language::CHT, Language::NL, Language::PT, Language::RU, Language::RO};
+        constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG, pksm::Language::FRE, pksm::Language::ITA,
+            pksm::Language::GER, pksm::Language::SPA, pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
+            pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
         for (auto& i : languages)
         {
             if (continueI18N.test_and_set())
@@ -568,7 +568,7 @@ namespace
 
     // Also checks modified time. If the checksum file is newer than the file, recalculate and write checksum
     // If checksum file doesn't exist, calculate and write checksum
-    std::array<u8, SHA256_BLOCK_SIZE> readGiftChecksum(const std::string& fileName)
+    decltype(pksm::crypto::sha256(nullptr, 0)) readGiftChecksum(const std::string& fileName)
     {
         struct
         {
@@ -579,7 +579,7 @@ namespace
 
         std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
         std::string checksumPath = path + ".sha";
-        std::array<u8, SHA256_BLOCK_SIZE> ret;
+        decltype(pksm::crypto::sha256(nullptr, 0)) ret;
 
         fileInfo.exists = (stat(path.c_str(), &dummy) == 0);
         archive_getmtime(path.c_str(), &fileInfo.mtime);
@@ -592,7 +592,7 @@ namespace
             FILE* correctSum = fopen(checksumPath.c_str(), "rb");
             if (correctSum)
             {
-                fread(ret.data(), 1, SHA256_BLOCK_SIZE, correctSum);
+                fread(ret.data(), 1, 32, correctSum);
                 fclose(correctSum);
                 return ret;
             }
@@ -613,7 +613,7 @@ namespace
             fread(data, 1, size, file);
             fclose(file);
 
-            sha256(ret.data(), data, size);
+            ret = pksm::crypto::sha256(data, size);
 
             file = fopen(checksumPath.c_str(), "wb");
             if (file)
@@ -636,13 +636,10 @@ namespace
 #endif
         struct giftCurlData
         {
-            giftCurlData(FILE* file, std::string fileName) : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
-            {
-                sha256_init(&shaContext);
-            }
+            giftCurlData(FILE* file, std::string fileName) : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false) {}
             std::string fileName;
             FILE* file;
-            SHA256_CTX shaContext;
+            pksm::crypto::SHA256 shaContext;
             long response;
             u32 prevDownload;
             bool addedToTotal;
@@ -653,7 +650,7 @@ namespace
 
             if (data)
             {
-                sha256_update(&writeMe->shaContext, (u8*)data, size * nitems);
+                writeMe->shaContext.update((u8*)data, size * nitems);
 
                 return fwrite(data, size, nitems, writeMe->file);
             }
@@ -663,7 +660,8 @@ namespace
             }
         };
 
-        constexpr std::array<Generation, 4> mgGens = {Generation::FOUR, Generation::FIVE, Generation::SIX, Generation::SEVEN};
+        constexpr std::array<pksm::Generation, 4> mgGens = {
+            pksm::Generation::FOUR, pksm::Generation::FIVE, pksm::Generation::SIX, pksm::Generation::SEVEN};
 
         std::atomic<size_t> filesDone = 0;
         size_t filesToDownload        = 0;
@@ -676,7 +674,7 @@ namespace
         {
             for (const std::string& fileName : {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
             {
-                std::array<u8, SHA256_BLOCK_SIZE> checksum = readGiftChecksum(fileName);
+                decltype(pksm::crypto::sha256(nullptr, 0)) checksum = readGiftChecksum(fileName);
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch = Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
@@ -746,8 +744,7 @@ namespace
             }
             else
             {
-                std::array<u8, SHA256_BLOCK_SIZE> checksum;
-                sha256_final(&info.shaContext, checksum.data());
+                decltype(pksm::crypto::sha256(nullptr, 0)) checksum = info.shaContext.finish();
 
                 FILE* f = fopen(shaFile.c_str(), "wb");
                 if (f)

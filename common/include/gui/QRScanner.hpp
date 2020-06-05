@@ -28,21 +28,21 @@
 #define QRSCANNER_HPP
 
 #include "Configuration.hpp"
-#include "PGF.hpp"
-#include "PGT.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "Sav.hpp"
-#include "WC4.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
-#include "WC8.hpp"
 #include "base64.hpp"
 #include "gui.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 #include "types.h"
+#include "wcx/PGF.hpp"
+#include "wcx/PGT.hpp"
+#include "wcx/WC4.hpp"
+#include "wcx/WC6.hpp"
+#include "wcx/WC7.hpp"
+#include "wcx/WC8.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -51,76 +51,76 @@ template <typename T>
 struct QRModeTraits;
 
 template <>
-struct QRModeTraits<PKX>
+struct QRModeTraits<pksm::PKX>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 template <>
-struct QRModeTraits<PK4>
+struct QRModeTraits<pksm::PK4>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 template <>
-struct QRModeTraits<PK5>
+struct QRModeTraits<pksm::PK5>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 template <>
-struct QRModeTraits<PK6>
+struct QRModeTraits<pksm::PK6>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 template <>
-struct QRModeTraits<PK7>
+struct QRModeTraits<pksm::PK7>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 template <>
-struct QRModeTraits<PK8>
+struct QRModeTraits<pksm::PK8>
 {
-    using ReturnType = std::unique_ptr<PKX>;
+    using ReturnType = std::unique_ptr<pksm::PKX>;
 };
 
 // May actually return a PGT instead of a WC4, but that doesn't matter for usage
 template <>
-struct QRModeTraits<WC4>
+struct QRModeTraits<pksm::WC4>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 // May actually return a WC4 instead of a PGT, but that doesn't matter for usage
 template <>
-struct QRModeTraits<PGT>
+struct QRModeTraits<pksm::PGT>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 
 template <>
-struct QRModeTraits<PGF>
+struct QRModeTraits<pksm::PGF>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 
 template <>
-struct QRModeTraits<WC6>
+struct QRModeTraits<pksm::WC6>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 
 template <>
-struct QRModeTraits<WC7>
+struct QRModeTraits<pksm::WC7>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 
 template <>
-struct QRModeTraits<WC8>
+struct QRModeTraits<pksm::WC8>
 {
-    using ReturnType = std::unique_ptr<WCX>;
+    using ReturnType = std::unique_ptr<pksm::WCX>;
 };
 
 template <>
@@ -161,7 +161,7 @@ public:
             return (typename Traits::ReturnType){};
         }
 
-        if constexpr (std::is_same_v<Mode, PKX>)
+        if constexpr (std::is_same_v<Mode, pksm::PKX>)
         {
             std::string strData{data.begin(), data.end()};
             auto firstColon = strData.find_first_of(':');
@@ -171,8 +171,8 @@ public:
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
             }
-            Generation g = Generation::fromString(((std::string_view)strData).substr(0, firstColon));
-            if (g == Generation::UNUSED)
+            pksm::Generation g = pksm::Generation::fromString(((std::string_view)strData).substr(0, firstColon));
+            if (g == pksm::Generation::UNUSED)
             {
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
@@ -183,11 +183,12 @@ public:
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
             }
-            return PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
+            return pksm::PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
         }
 
-        if constexpr (std::is_same_v<Mode, PK4> || std::is_same_v<Mode, PK5> || std::is_same_v<Mode, PK8> || std::is_same_v<Mode, WC4> ||
-                      std::is_same_v<Mode, PGT> || std::is_same_v<Mode, PGF> || std::is_same_v<Mode, WC7> || std::is_same_v<Mode, WC8>)
+        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK8> ||
+                      std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||
+                      std::is_same_v<Mode, pksm::WC7> || std::is_same_v<Mode, pksm::WC8>)
         {
             if (data.size() <= 6 || !std::equal(data.begin(), data.begin() + 6, "null/#"))
             {
@@ -196,7 +197,7 @@ public:
             }
             b64Begin = 6;
         }
-        if constexpr (std::is_same_v<Mode, PK6>)
+        if constexpr (std::is_same_v<Mode, pksm::PK6>)
         {
             if (data.size() <= 40 || !std::equal(data.begin(), data.begin() + 40, "http://lunarcookies.github.io/b1s1.html#"))
             {
@@ -205,7 +206,7 @@ public:
             }
             b64Begin = 40;
         }
-        if constexpr (std::is_same_v<Mode, WC6>)
+        if constexpr (std::is_same_v<Mode, pksm::WC6>)
         {
             if (data.size() <= 38 || !std::equal(data.begin(), data.begin() + 38, "http://lunarcookies.github.io/wc.html#"))
             {
@@ -214,7 +215,7 @@ public:
             }
             b64Begin = 38;
         }
-        if constexpr (std::is_same_v<Mode, PK7>)
+        if constexpr (std::is_same_v<Mode, pksm::PK7>)
         {
             if (data.size() != 0x1A2 || !std::equal(data.begin(), data.begin() + 4, "POKE"))
             {
@@ -224,62 +225,63 @@ public:
         }
 
         // Uses base64
-        if constexpr (std::is_same_v<Mode, PK4> || std::is_same_v<Mode, PK5> || std::is_same_v<Mode, PK6> || std::is_same_v<Mode, PK8> ||
-                      std::is_same_v<Mode, WC4> || std::is_same_v<Mode, PGT> || std::is_same_v<Mode, PGF> || std::is_same_v<Mode, WC6> ||
-                      std::is_same_v<Mode, WC7> || std::is_same_v<Mode, WC8>)
+        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
+                      std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
+                      std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC6> || std::is_same_v<Mode, pksm::WC7> ||
+                      std::is_same_v<Mode, pksm::WC8>)
         {
             std::vector<u8> decoded = base64_decode((const char*)data.data() + b64Begin, data.size() - b64Begin);
 
-            if constexpr (std::is_same_v<Mode, PK4> || std::is_same_v<Mode, PK5>)
+            if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5>)
             {
-                if (decoded.size() != PK4::BOX_LENGTH) // PK4/PK5 length
+                if (decoded.size() != pksm::PK4::BOX_LENGTH) // PK4/PK5 length
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                if (std::is_same_v<Mode, PK4>)
+                if (std::is_same_v<Mode, pksm::PK4>)
                 {
-                    return PKX::getPKM<Generation::FOUR>(decoded.data());
+                    return pksm::PKX::getPKM<pksm::Generation::FOUR>(decoded.data());
                 }
                 else
                 {
-                    return PKX::getPKM<Generation::FIVE>(decoded.data());
+                    return pksm::PKX::getPKM<pksm::Generation::FIVE>(decoded.data());
                 }
             }
 
-            if constexpr (std::is_same_v<Mode, PK6>)
+            if constexpr (std::is_same_v<Mode, pksm::PK6>)
             {
-                if (decoded.size() != PK6::BOX_LENGTH)
+                if (decoded.size() != pksm::PK6::BOX_LENGTH)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                return PKX::getPKM<Generation::SIX>(decoded.data());
+                return pksm::PKX::getPKM<pksm::Generation::SIX>(decoded.data());
             }
 
-            if constexpr (std::is_same_v<Mode, PK8>)
+            if constexpr (std::is_same_v<Mode, pksm::PK8>)
             {
-                if (decoded.size() != PK8::BOX_LENGTH)
+                if (decoded.size() != pksm::PK8::BOX_LENGTH)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                return PKX::getPKM<Generation::EIGHT>(decoded.data());
+                return pksm::PKX::getPKM<pksm::Generation::EIGHT>(decoded.data());
             }
 
             // Interchangeable, so has to be separate
-            if constexpr (std::is_same_v<Mode, WC4> || std::is_same_v<Mode, PGT>)
+            if constexpr (std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT>)
             {
-                if (decoded.size() == PGT::length)
+                if (decoded.size() == pksm::PGT::length)
                 {
-                    return std::make_unique<PGT>(decoded.data());
+                    return std::make_unique<pksm::PGT>(decoded.data());
                 }
-                else if (decoded.size() == WC4::length)
+                else if (decoded.size() == pksm::WC4::length)
                 {
-                    return std::make_unique<WC4>(decoded.data());
+                    return std::make_unique<pksm::WC4>(decoded.data());
                 }
                 else
                 {
@@ -288,7 +290,7 @@ public:
                 }
             }
 
-            if constexpr (std::is_same_v<Mode, PGF> || std::is_same_v<Mode, WC8>)
+            if constexpr (std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC8>)
             {
                 if (decoded.size() == Mode::length)
                 {
@@ -301,7 +303,7 @@ public:
                 }
             }
 
-            if constexpr (std::is_same_v<Mode, WC6> || std::is_same_v<Mode, WC7>)
+            if constexpr (std::is_same_v<Mode, pksm::WC6> || std::is_same_v<Mode, pksm::WC7>)
             {
                 if (decoded.size() == Mode::length)
                 {
@@ -319,9 +321,9 @@ public:
             }
         }
 
-        if constexpr (std::is_same_v<Mode, PK7>)
+        if constexpr (std::is_same_v<Mode, pksm::PK7>)
         {
-            return PKX::getPKM<Generation::SEVEN>(data.data() + 0x30);
+            return pksm::PKX::getPKM<pksm::Generation::SEVEN>(data.data() + 0x30);
         }
 
         if constexpr (std::is_same_v<Mode, std::string>)

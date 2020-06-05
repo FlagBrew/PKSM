@@ -30,13 +30,12 @@
 #include "Configuration.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-
-class PKX;
+#include "pkx/PKX.hpp"
 
 class NatureOverlay : public ReplaceableScreen
 {
 public:
-    NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
     virtual ~NatureOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -44,7 +43,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
 };
 

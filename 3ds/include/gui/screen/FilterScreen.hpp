@@ -28,22 +28,22 @@
 #define FILTERSCREEN_HPP
 
 #include "Screen.hpp"
+#include "pkx/PKFilter.hpp"
 #include <memory>
 #include <vector>
 
 class Button;
-class PKFilter;
 
 class FilterScreen : public Screen
 {
 public:
-    FilterScreen(std::shared_ptr<PKFilter> filter);
+    FilterScreen(std::shared_ptr<pksm::PKFilter> filter);
     void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;
 
 private:
-    std::shared_ptr<PKFilter> filter;
+    std::shared_ptr<pksm::PKFilter> filter;
     std::vector<std::unique_ptr<Button>> tabButtons;
     std::vector<std::vector<std::unique_ptr<Button>>> buttons;
     int tab           = 0;

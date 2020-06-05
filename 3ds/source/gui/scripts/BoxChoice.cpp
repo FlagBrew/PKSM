@@ -28,8 +28,6 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
 #include "ViewOverlay.hpp"
 #include "banks.hpp"
@@ -37,7 +35,9 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "random.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
+#include "utils/random.hpp"
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
@@ -101,14 +101,14 @@ void BoxChoice::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
-                std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
-                if (pokemon->species() != Species::None)
+                std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
                 }
@@ -175,7 +175,7 @@ void BoxChoice::drawTop() const
             for (u8 column = 0; column < 6; column++)
             {
                 auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
-                if (pkm->species() != Species::None)
+                if (pkm->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pkm, x, y);
                 }
@@ -218,13 +218,13 @@ void BoxChoice::drawTop() const
             Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             switch (infoMon->gender())
             {
-                case Gender::Male:
+                case pksm::Gender::Male:
                     Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
                     break;
-                case Gender::Female:
+                case pksm::Gender::Female:
                     Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
                     break;
-                case Gender::Genderless:
+                case pksm::Gender::Genderless:
                     Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                     break;
             }
@@ -235,8 +235,8 @@ void BoxChoice::drawTop() const
 
             Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
-            Type firstType  = infoMon->type1();
-            Type secondType = infoMon->type2();
+            pksm::Type firstType  = infoMon->type1();
+            pksm::Type secondType = infoMon->type2();
             if (firstType != secondType)
             {
                 Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -256,9 +256,11 @@ void BoxChoice::drawTop() const
             text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             width = text->maxWidth(FONT_SIZE_12);
             Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+            info =
+                fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
             Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+            info = fmt::format(
+                FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
             Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             Gui::format(*infoMon, 276, 213);
         }
@@ -275,7 +277,7 @@ void BoxChoice::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == Species::None)
+    if (infoMon && infoMon->species() == pksm::Species::None)
     {
         infoMon = nullptr;
     }
@@ -474,7 +476,7 @@ bool BoxChoice::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != Species::None)
+    if (infoMon && infoMon->species() != pksm::Species::None)
     {
         addOverlay<ViewOverlay>(infoMon, true);
     }

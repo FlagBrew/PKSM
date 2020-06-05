@@ -116,138 +116,138 @@ namespace
         return "";
     }
 
-    constexpr std::tuple<const char*, Species, int> groupToLabel1(ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel1(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return {"Pt", Species::Giratina, 1};
+                return {"Pt", pksm::Species::Giratina, 1};
             case ExtraSavesSubScreen::Group::DP:
-                return {"D", Species::Dialga, 0};
+                return {"D", pksm::Species::Dialga, 0};
             case ExtraSavesSubScreen::Group::HGSS:
-                return {"HG", Species::HoOh, 0};
+                return {"HG", pksm::Species::HoOh, 0};
             case ExtraSavesSubScreen::Group::BW:
-                return {"B", Species::Reshiram, 0};
+                return {"B", pksm::Species::Reshiram, 0};
             case ExtraSavesSubScreen::Group::B2W2:
-                return {"B2", Species::Kyurem, 2};
+                return {"B2", pksm::Species::Kyurem, 2};
             case ExtraSavesSubScreen::Group::RS:
-                return {"R", Species::Groudon, 0};
+                return {"R", pksm::Species::Groudon, 0};
             case ExtraSavesSubScreen::Group::E:
-                return {"E", Species::Rayquaza, 0};
+                return {"E", pksm::Species::Rayquaza, 0};
             case ExtraSavesSubScreen::Group::FRLG:
-                return {"FR", Species::Charizard, 0};
+                return {"FR", pksm::Species::Charizard, 0};
             case ExtraSavesSubScreen::Group::XY:
-                return {"X", Species::Xerneas, 0};
+                return {"X", pksm::Species::Xerneas, 0};
             case ExtraSavesSubScreen::Group::ORAS:
-                return {"OR", Species::Groudon, 1};
+                return {"OR", pksm::Species::Groudon, 1};
             case ExtraSavesSubScreen::Group::SM:
-                return {"S", Species::Solgaleo, 0};
+                return {"S", pksm::Species::Solgaleo, 0};
             case ExtraSavesSubScreen::Group::USUM:
-                return {"US", Species::Necrozma, 1};
+                return {"US", pksm::Species::Necrozma, 1};
         }
-        return {"", Species::None, 0};
+        return {"", pksm::Species::None, 0};
     }
 
-    constexpr std::tuple<const char*, Species, int> groupToLabel2(ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel2(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return {"Pt", Species::Giratina, 1};
+                return {"Pt", pksm::Species::Giratina, 1};
             case ExtraSavesSubScreen::Group::DP:
-                return {"P", Species::Palkia, 0};
+                return {"P", pksm::Species::Palkia, 0};
             case ExtraSavesSubScreen::Group::HGSS:
-                return {"SS", Species::Lugia, 0};
+                return {"SS", pksm::Species::Lugia, 0};
             case ExtraSavesSubScreen::Group::BW:
-                return {"W", Species::Zekrom, 0};
+                return {"W", pksm::Species::Zekrom, 0};
             case ExtraSavesSubScreen::Group::B2W2:
-                return {"W2", Species::Kyurem, 1};
+                return {"W2", pksm::Species::Kyurem, 1};
             case ExtraSavesSubScreen::Group::RS:
-                return {"S", Species::Kyogre, 0};
+                return {"S", pksm::Species::Kyogre, 0};
             case ExtraSavesSubScreen::Group::E:
-                return {"E", Species::Rayquaza, 0};
+                return {"E", pksm::Species::Rayquaza, 0};
             case ExtraSavesSubScreen::Group::FRLG:
-                return {"LG", Species::Venusaur, 0};
+                return {"LG", pksm::Species::Venusaur, 0};
             case ExtraSavesSubScreen::Group::XY:
-                return {"Y", Species::Yveltal, 0};
+                return {"Y", pksm::Species::Yveltal, 0};
             case ExtraSavesSubScreen::Group::ORAS:
-                return {"AS", Species::Kyogre, 1};
+                return {"AS", pksm::Species::Kyogre, 1};
             case ExtraSavesSubScreen::Group::SM:
-                return {"M", Species::Lunala, 0};
+                return {"M", pksm::Species::Lunala, 0};
             case ExtraSavesSubScreen::Group::USUM:
-                return {"UM", Species::Necrozma, 2};
+                return {"UM", pksm::Species::Necrozma, 2};
         }
-        return {"", Species::None, 0};
+        return {"", pksm::Species::None, 0};
     }
 
-    constexpr GameVersion groupToGameId1(ExtraSavesSubScreen::Group g)
+    constexpr pksm::GameVersion groupToGameId1(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return GameVersion::Pt;
+                return pksm::GameVersion::Pt;
             case ExtraSavesSubScreen::Group::DP:
-                return GameVersion::D;
+                return pksm::GameVersion::D;
             case ExtraSavesSubScreen::Group::HGSS:
-                return GameVersion::HG;
+                return pksm::GameVersion::HG;
             case ExtraSavesSubScreen::Group::BW:
-                return GameVersion::B;
+                return pksm::GameVersion::B;
             case ExtraSavesSubScreen::Group::B2W2:
-                return GameVersion::B2;
+                return pksm::GameVersion::B2;
             case ExtraSavesSubScreen::Group::RS:
-                return GameVersion::R;
+                return pksm::GameVersion::R;
             case ExtraSavesSubScreen::Group::E:
-                return GameVersion::E;
+                return pksm::GameVersion::E;
             case ExtraSavesSubScreen::Group::FRLG:
-                return GameVersion::FR;
+                return pksm::GameVersion::FR;
             case ExtraSavesSubScreen::Group::XY:
-                return GameVersion::X;
+                return pksm::GameVersion::X;
             case ExtraSavesSubScreen::Group::ORAS:
-                return GameVersion::OR;
+                return pksm::GameVersion::OR;
             case ExtraSavesSubScreen::Group::SM:
-                return GameVersion::SN;
+                return pksm::GameVersion::SN;
             case ExtraSavesSubScreen::Group::USUM:
-                return GameVersion::US;
+                return pksm::GameVersion::US;
         }
-        return GameVersion::INVALID;
+        return pksm::GameVersion::INVALID;
     }
 
-    constexpr GameVersion groupToGameId2(ExtraSavesSubScreen::Group g)
+    constexpr pksm::GameVersion groupToGameId2(ExtraSavesSubScreen::Group g)
     {
         switch (g)
         {
             case ExtraSavesSubScreen::Group::Pt:
-                return GameVersion::Pt;
+                return pksm::GameVersion::Pt;
             case ExtraSavesSubScreen::Group::DP:
-                return GameVersion::P;
+                return pksm::GameVersion::P;
             case ExtraSavesSubScreen::Group::HGSS:
-                return GameVersion::SS;
+                return pksm::GameVersion::SS;
             case ExtraSavesSubScreen::Group::BW:
-                return GameVersion::W;
+                return pksm::GameVersion::W;
             case ExtraSavesSubScreen::Group::B2W2:
-                return GameVersion::W2;
+                return pksm::GameVersion::W2;
             case ExtraSavesSubScreen::Group::RS:
-                return GameVersion::S;
+                return pksm::GameVersion::S;
             case ExtraSavesSubScreen::Group::E:
-                return GameVersion::E;
+                return pksm::GameVersion::E;
             case ExtraSavesSubScreen::Group::FRLG:
-                return GameVersion::LG;
+                return pksm::GameVersion::LG;
             case ExtraSavesSubScreen::Group::XY:
-                return GameVersion::Y;
+                return pksm::GameVersion::Y;
             case ExtraSavesSubScreen::Group::ORAS:
-                return GameVersion::AS;
+                return pksm::GameVersion::AS;
             case ExtraSavesSubScreen::Group::SM:
-                return GameVersion::MN;
+                return pksm::GameVersion::MN;
             case ExtraSavesSubScreen::Group::USUM:
-                return GameVersion::UM;
+                return pksm::GameVersion::UM;
         }
-        return GameVersion::INVALID;
+        return pksm::GameVersion::INVALID;
     }
 
-    void drawIcon(std::tuple<const char*, Species, int> label, int x, int y)
+    void drawIcon(std::tuple<const char*, pksm::Species, int> label, int x, int y)
     {
         Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-        Gui::pkm(std::get<1>(label), std::get<2>(label), Generation::SEVEN, Gender::Genderless, x + 8, y);
+        Gui::pkm(std::get<1>(label), std::get<2>(label), pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 8, y);
         Gui::text(std::get<0>(label), x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }
@@ -257,11 +257,12 @@ ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
 {
     for (size_t i = 0; i < 13; i++)
     {
-        static constexpr GameVersion versions[13] = {GameVersion::R, GameVersion::S, GameVersion::E, GameVersion::FR, GameVersion::LG, GameVersion::X,
-            GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
-        std::string id                            = Configuration::getInstance().titleId(versions[i]);
-        u64 tid                                   = strtoull(id.c_str(), nullptr, 16);
-        ctrIds[i]                                 = Title::tidToCheckpointPrefix<std::string>(tid);
+        static constexpr pksm::GameVersion versions[13] = {pksm::GameVersion::R, pksm::GameVersion::S, pksm::GameVersion::E, pksm::GameVersion::FR,
+            pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS, pksm::GameVersion::SN,
+            pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
+        std::string id                                  = Configuration::getInstance().titleId(versions[i]);
+        u64 tid                                         = strtoull(id.c_str(), nullptr, 16);
+        ctrIds[i]                                       = Title::tidToCheckpointPrefix<std::string>(tid);
     }
     updateSaves();
 }

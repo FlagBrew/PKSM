@@ -29,14 +29,14 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "pkx/PKX.hpp"
 
 class Button;
-class PKX;
 
 class PkmItemOverlay : public ReplaceableScreen
 {
 public:
-    PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
     ~PkmItemOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -45,7 +45,7 @@ public:
 
 private:
     void searchBar();
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> items;
     std::vector<std::pair<int, std::string>> validItems;

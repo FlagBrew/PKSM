@@ -35,16 +35,17 @@
 
 namespace
 {
-    constexpr size_t NUM_TITLES                           = 13;
-    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES] = {"R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
-    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES]   = {"", "", "", "", "", "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400",
+    constexpr size_t NUM_TITLES                            = 13;
+    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES]  = {"R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
+    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES]    = {"", "", "", "", "", "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400",
         "0x000400000011C500", "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000", "0x00040000001B5100"};
-    constexpr Species TITLE_SPECIES[NUM_TITLES]      = {Species::Groudon, Species::Kyogre, Species::Rayquaza, Species::Charizard, Species::Venusaur,
-        Species::Xerneas, Species::Yveltal, Species::Groudon, Species::Kyogre, Species::Solgaleo, Species::Lunala, Species::Necrozma,
-        Species::Necrozma};
-    constexpr int TITLE_FORMS[NUM_TITLES]            = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
-    constexpr GameVersion TITLE_VERSIONS[NUM_TITLES] = {GameVersion::R, GameVersion::S, GameVersion::E, GameVersion::FR, GameVersion::LG,
-        GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
+    constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]      = {pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Rayquaza,
+        pksm::Species::Charizard, pksm::Species::Venusaur, pksm::Species::Xerneas, pksm::Species::Yveltal, pksm::Species::Groudon,
+        pksm::Species::Kyogre, pksm::Species::Solgaleo, pksm::Species::Lunala, pksm::Species::Necrozma, pksm::Species::Necrozma};
+    constexpr int TITLE_FORMS[NUM_TITLES]                  = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
+    constexpr pksm::GameVersion TITLE_VERSIONS[NUM_TITLES] = {pksm::GameVersion::R, pksm::GameVersion::S, pksm::GameVersion::E, pksm::GameVersion::FR,
+        pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS, pksm::GameVersion::SN,
+        pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
 }
 
 TitleIdOverlay::TitleIdOverlay(ReplaceableScreen& screen) : ReplaceableScreen(&screen), hid(40, 8) {}
@@ -66,7 +67,7 @@ void TitleIdOverlay::drawTop() const
     {
         int x = i % 8;
         int y = i / 8;
-        Gui::pkm(TITLE_SPECIES[i], TITLE_FORMS[i], (Generation)TITLE_VERSIONS[i], Gender::Genderless, x * 50 + 7, y * 48 + 2);
+        Gui::pkm(TITLE_SPECIES[i], TITLE_FORMS[i], (pksm::Generation)TITLE_VERSIONS[i], pksm::Gender::Genderless, x * 50 + 7, y * 48 + 2);
         Gui::text(TITLE_ABBREVIATIONS[i], x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 }

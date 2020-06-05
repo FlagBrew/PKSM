@@ -32,13 +32,12 @@
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "colors.hpp"
-
-class PKX;
+#include "pkx/PKX.hpp"
 
 class AppLegalityOverlay : public ReplaceableScreen
 {
 public:
-    AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
     ~AppLegalityOverlay() {}
     void drawTop() const override {} // Handled by ImageViewOverlay
     bool replacesTop() const override { return false; }
@@ -47,7 +46,7 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     std::vector<std::unique_ptr<Button>> buttons;
 };
 

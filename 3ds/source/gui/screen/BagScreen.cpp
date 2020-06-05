@@ -29,17 +29,17 @@
 #include "BagItemOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "Item.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "sav/Item.hpp"
 
 BagScreen::BagScreen()
     : Screen(i18n::localize("A_ITEM_EDIT") + '\n' + i18n::localize("L_POUCH") + '\n' + i18n::localize("R_ITEM") + '\n' + i18n::localize("B_BACK")),
       limits(TitleLoader::save->pouches()),
       allowedItems(TitleLoader::save->validItems())
 {
-    currentPouch = limits[0].first;
+    currentPouch = (int)limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
     {
         buttons.push_back(std::make_unique<Button>(3, i * 30 + 1, 100, 30, [this, i]() { return switchPouch(i); }, ui_sheet_emulated_button_pouch_idx,
@@ -126,16 +126,16 @@ void BagScreen::drawBottom() const
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
         u16 id;
-        if (item->generation() == Generation::THREE)
+        if (item->generation() == pksm::Generation::THREE)
         {
-            id = ((Item3*)item.get())->id3();
+            id = ((pksm::Item3*)item.get())->id3();
         }
         else
         {
             id = item->id();
         }
-        const std::string& text = item->generation() == Generation::THREE ? i18n::item3(Configuration::getInstance().language(), id)
-                                                                          : i18n::item(Configuration::getInstance().language(), id);
+        const std::string& text = item->generation() == pksm::Generation::THREE ? i18n::item3(Configuration::getInstance().language(), id)
+                                                                                : i18n::item(Configuration::getInstance().language(), id);
         Gui::text(text, 117 + 131 / 2, 30 + 30 * i, FONT_SIZE_12, canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY,
             TextPosX::CENTER, TextPosY::CENTER);
         if (id > 0)
@@ -368,7 +368,6 @@ bool BagScreen::switchPouch(int newPouch)
 
 void BagScreen::editItem()
 {
-    //! CHECK THAT THIS WORKS
     int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
     std::vector<std::pair<const std::string*, int>> items(limit);
     items[0]         = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
@@ -441,13 +440,13 @@ void BagScreen::editCount(bool up, int selected)
     }
 }
 
-bool BagScreen::canEdit(Sav::Pouch pouch, const Item& item) const
+bool BagScreen::canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const
 {
-    if (pouch == Sav::Pouch::KeyItem)
+    if (pouch == pksm::Sav::Pouch::KeyItem)
     {
         return false;
     }
-    if (TitleLoader::save->generation() != Generation::LGPE)
+    if (TitleLoader::save->generation() != pksm::Generation::LGPE)
     {
         return true;
     }
@@ -473,7 +472,7 @@ void BagScreen::setCount(int selected)
     if (item->id() > 0)
     {
         SwkbdState state;
-        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, item->generation() == Generation::SEVEN ? 4 : 5);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, item->generation() == pksm::Generation::SEVEN ? 4 : 5);
         swkbdSetHintText(&state, i18n::localize("ITEMS").c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
         char input[6]   = {0};

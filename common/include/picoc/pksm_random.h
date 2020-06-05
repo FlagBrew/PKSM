@@ -27,6 +27,8 @@
 #ifndef PKSM_RANDOM_H
 #define PKSM_RANDOM_H
 
+#include "picoc.h"
+
 void PKSM_Rand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs);
 void PKSM_Srand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs);
 

@@ -26,14 +26,15 @@
 
 #include "FormOverlay.hpp"
 #include "Configuration.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 
-FormOverlay::FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, u16 formCount)
+FormOverlay::FormOverlay(
+    ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u16 formCount)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(30, 6), formCount(formCount)
 {
     hid.update(30);
@@ -84,7 +85,8 @@ void FormOverlay::drawTop() const
             {
                 case 0:
                 {
-                    GameVersion v = TitleLoader::save ? TitleLoader::save->version() : GameVersion::oldestVersion(std::get<0>(object)->generation());
+                    pksm::GameVersion v =
+                        TitleLoader::save ? TitleLoader::save->version() : pksm::GameVersion::oldestVersion(std::get<0>(object)->generation());
                     Gui::pkm(std::get<0>(object)->species(), x + y * 6, std::get<0>(object)->generation(), std::get<0>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
                     const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<0>(object)->species(), x + y * 6);
@@ -94,7 +96,8 @@ void FormOverlay::drawTop() const
                 break;
                 case 1:
                 {
-                    GameVersion v = TitleLoader::save ? TitleLoader::save->version() : GameVersion::oldestVersion(std::get<1>(object)->generation());
+                    pksm::GameVersion v =
+                        TitleLoader::save ? TitleLoader::save->version() : pksm::GameVersion::oldestVersion(std::get<1>(object)->generation());
                     Gui::pkm(std::get<1>(object)->species(), x + y * 6, std::get<1>(object)->generation(), std::get<1>(object)->gender(), x * 66 + 19,
                         y * 48 + 1);
                     const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<1>(object)->species(), x + y * 6);

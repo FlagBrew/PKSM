@@ -26,16 +26,16 @@
 
 #include "NatureOverlay.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PKX.hpp"
 
 namespace
 {
     constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
 }
 
-NatureOverlay::NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+NatureOverlay::NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(25, 5)
 {
     hid.update(25);
@@ -74,7 +74,7 @@ void NatureOverlay::drawTop() const
     {
         for (int x = 0; x < 5; x++)
         {
-            Gui::text(i18n::nature(Configuration::getInstance().language(), Nature{u8(x + y * 5)}), x * 67 + 99, y * 40 + 52, FONT_SIZE_11,
+            Gui::text(i18n::nature(Configuration::getInstance().language(), pksm::Nature{u8(x + y * 5)}), x * 67 + 99, y * 40 + 52, FONT_SIZE_11,
                 x == y ? COLOR_YELLOW : COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
@@ -86,7 +86,7 @@ void NatureOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->nature(Nature{u8(hid.fullIndex())});
+        pkm->nature(pksm::Nature{u8(hid.fullIndex())});
         parent->removeOverlay();
         return;
     }

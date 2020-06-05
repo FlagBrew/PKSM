@@ -27,7 +27,6 @@
 #ifndef PKSM_API_H
 #define PKSM_API_H
 
-#include "3ds/types.h"
 #include "picoc.h"
 
 enum PKX_FIELD

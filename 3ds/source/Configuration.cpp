@@ -193,14 +193,14 @@ Configuration::Configuration()
             {
                 (*mJson)["titles"] = nlohmann::json::object();
 
-                (*mJson)["titles"][std::to_string((u32)GameVersion::X)]  = "0x0004000000055D00";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::Y)]  = "0x0004000000055E00";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::OR)] = "0x000400000011C400";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::AS)] = "0x000400000011C500";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::SN)] = "0x0004000000164800";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::MN)] = "0x0004000000175E00";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::US)] = "0x00040000001B5000";
-                (*mJson)["titles"][std::to_string((u32)GameVersion::UM)] = "0x00040000001B5100";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::X)]  = "0x0004000000055D00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::Y)]  = "0x0004000000055E00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::OR)] = "0x000400000011C400";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::AS)] = "0x000400000011C500";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SN)] = "0x0004000000164800";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::MN)] = "0x0004000000175E00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::US)] = "0x00040000001B5000";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::UM)] = "0x00040000001B5100";
             }
 
             (*mJson)["version"] = CURRENT_VERSION;
@@ -307,49 +307,49 @@ void Configuration::loadFromRomfs()
     fclose(in);
 
     // load system language
-    Language systemLanguage;
+    pksm::Language systemLanguage;
     CFGU_GetSystemLanguage((u8*)&systemLanguage);
 
     switch (u8(systemLanguage))
     {
         case CFG_LANGUAGE_JP:
-            systemLanguage = Language::JPN;
+            systemLanguage = pksm::Language::JPN;
             break;
         case CFG_LANGUAGE_EN:
-            systemLanguage = Language::ENG;
+            systemLanguage = pksm::Language::ENG;
             break;
         case CFG_LANGUAGE_FR:
-            systemLanguage = Language::FRE;
+            systemLanguage = pksm::Language::FRE;
             break;
         case CFG_LANGUAGE_DE:
-            systemLanguage = Language::GER;
+            systemLanguage = pksm::Language::GER;
             break;
         case CFG_LANGUAGE_IT:
-            systemLanguage = Language::ITA;
+            systemLanguage = pksm::Language::ITA;
             break;
         case CFG_LANGUAGE_ES:
-            systemLanguage = Language::SPA;
+            systemLanguage = pksm::Language::SPA;
             break;
         case CFG_LANGUAGE_ZH:
-            systemLanguage = Language::CHS;
+            systemLanguage = pksm::Language::CHS;
             break;
         case CFG_LANGUAGE_KO:
-            systemLanguage = Language::KOR;
+            systemLanguage = pksm::Language::KOR;
             break;
         case CFG_LANGUAGE_NL:
-            systemLanguage = Language::NL;
+            systemLanguage = pksm::Language::NL;
             break;
         case CFG_LANGUAGE_PT:
-            systemLanguage = Language::PT;
+            systemLanguage = pksm::Language::PT;
             break;
         case CFG_LANGUAGE_RU:
-            systemLanguage = Language::RU;
+            systemLanguage = pksm::Language::RU;
             break;
         case CFG_LANGUAGE_TW:
-            systemLanguage = Language::CHT;
+            systemLanguage = pksm::Language::CHT;
             break;
         default:
-            systemLanguage = Language::ENG;
+            systemLanguage = pksm::Language::ENG;
             break;
     }
     (*mJson)["language"] = u8(systemLanguage);
@@ -357,9 +357,9 @@ void Configuration::loadFromRomfs()
     save();
 }
 
-Language Configuration::language(void) const
+pksm::Language Configuration::language(void) const
 {
-    return Language((*mJson)["language"].get<u8>());
+    return pksm::Language((*mJson)["language"].get<u8>());
 }
 
 bool Configuration::autoBackup(void) const
@@ -446,7 +446,7 @@ std::vector<std::string> Configuration::extraSaves(const std::string& id) const
     return {};
 }
 
-std::string Configuration::titleId(GameVersion version) const
+std::string Configuration::titleId(pksm::GameVersion version) const
 {
     std::string v = std::to_string((u32)version);
     if ((*mJson)["titles"].count(v) > 0)
@@ -456,7 +456,7 @@ std::string Configuration::titleId(GameVersion version) const
     return "";
 }
 
-void Configuration::language(Language lang)
+void Configuration::language(pksm::Language lang)
 {
     (*mJson)["language"] = u8(lang);
 }
@@ -541,7 +541,7 @@ void Configuration::extraSaves(const std::string& id, std::vector<std::string>& 
     (*mJson)["extraSaves"][id] = value;
 }
 
-void Configuration::titleId(GameVersion version, const std::string& id)
+void Configuration::titleId(pksm::GameVersion version, const std::string& id)
 {
     (*mJson)["titles"][std::to_string((u32)version)] = id;
 }

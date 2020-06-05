@@ -26,16 +26,16 @@
 
 #include "HexEditScreen.hpp"
 #include "Configuration.hpp"
-#include "PB7.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "Sav.hpp"
 #include "endian.hpp"
 #include "format.h"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "sav/Sav.hpp"
 
 namespace
 {
@@ -99,7 +99,7 @@ bool HexEditScreen::checkValue()
     {
         return true;
     }
-    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
+    if (pkm->generation() == pksm::Generation::SIX || pkm->generation() == pksm::Generation::SEVEN || pkm->generation() == pksm::Generation::LGPE)
     {
         int i = hid.fullIndex();
         switch (i)
@@ -273,7 +273,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
 {
     static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNKNOWN = std::make_pair(&i18n::localize("UNKNOWN"), UNRESTRICTED);
     static const std::pair<const std::string*, HexEditScreen::SecurityLevel> UNUSED  = std::make_pair(&i18n::localize("UNUSED"), UNRESTRICTED);
-    if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
+    if (pkm->generation() == pksm::Generation::SIX || pkm->generation() == pksm::Generation::SEVEN || pkm->generation() == pksm::Generation::LGPE)
     {
         switch (i)
         {
@@ -298,7 +298,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x15:
                 return std::make_pair(&i18n::localize("ABILITY_NUMBER"), OPEN);
             case 0x16 ... 0x17:
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->generation() == pksm::Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("TRAINING_BAG_HITS_LEFT"), NORMAL);
                 }
@@ -326,7 +326,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x23:
                 return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
             case 0x24:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_HP"), NORMAL);
                 }
@@ -335,7 +335,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_COOL"), NORMAL);
                 }
             case 0x25:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_ATTACK"), NORMAL);
                 }
@@ -344,7 +344,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_BEAUTY"), NORMAL);
                 }
             case 0x26:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_DEFENSE"), NORMAL);
                 }
@@ -353,7 +353,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_CUTE"), NORMAL);
                 }
             case 0x27:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_SPEED"), NORMAL);
                 }
@@ -362,7 +362,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_SMART"), NORMAL);
                 }
             case 0x28:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_SPATK"), NORMAL);
                 }
@@ -371,7 +371,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_TOUGH"), NORMAL);
                 }
             case 0x29:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("AWAKENED_SPDEF"), NORMAL);
                 }
@@ -380,7 +380,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_VALUE_SHEEN"), NORMAL);
                 }
             case 0x2A:
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->generation() == pksm::Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
                 }
@@ -388,7 +388,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x2B:
                 return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
             case 0x2C ... 0x2F:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("HEIGHT_ABSOLUTE"), OPEN);
                 }
@@ -401,7 +401,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x37:
                 return UNUSED;
             case 0x38:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return UNUSED;
                 }
@@ -410,7 +410,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
             case 0x39:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return UNUSED;
                 }
@@ -419,7 +419,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
                 }
             case 0x3A:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("HEIGHT"), NORMAL);
                 }
@@ -428,7 +428,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     return std::make_pair(&i18n::localize("DISTRIBUTION_SUPER_TRAINING_FLAGS"), NORMAL);
                 }
             case 0x3B:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("WEIGHT"), NORMAL);
                 }
@@ -472,7 +472,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x70 ... 0x71:
                 return std::make_pair(&i18n::localize("RELEARN_MOVE_4_ID"), NORMAL);
             case 0x72:
-                if (pkm->generation() != Generation::LGPE)
+                if (pkm->generation() != pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("SECRET_SUPER_TRAINING_FLAG"), NORMAL);
                 }
@@ -555,7 +555,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0xDD:
                 return std::make_pair(&i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
             case 0xDE:
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->generation() == pksm::Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("GEN_4_ENCOUNTER_TYPE"), NORMAL);
                 }
@@ -581,13 +581,13 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("LEVEL"), NORMAL); // TODO CHECK LGPE
             // Refresh dirt
             case 0xED:
-                if (pkm->generation() != Generation::SIX)
+                if (pkm->generation() != pksm::Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("DIRT_TYPE"), OPEN); // TODO CHECK LGPE
                 }
                 return UNKNOWN;
             case 0xEE:
-                if (pkm->generation() != Generation::SIX)
+                if (pkm->generation() != pksm::Generation::SIX)
                 {
                     return std::make_pair(&i18n::localize("DIRT_LOCATION"), OPEN); // TODO CHECK LGPE
                 }
@@ -609,7 +609,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0xFC ... 0xFD:
                 return std::make_pair(&i18n::localize("SPDEF"), OPEN);
             case 0xFE ... 0xFF:
-                if (pkm->generation() == Generation::LGPE)
+                if (pkm->generation() == pksm::Generation::LGPE)
                 {
                     return std::make_pair(&i18n::localize("CP"), OPEN);
                 }
@@ -618,7 +618,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return UNKNOWN;
         }
     }
-    else if (pkm->generation() == Generation::FIVE)
+    else if (pkm->generation() == pksm::Generation::FIVE)
     {
         switch (i)
         {
@@ -770,7 +770,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return UNKNOWN;
         }
     }
-    else if (pkm->generation() == Generation::FOUR)
+    else if (pkm->generation() == pksm::Generation::FOUR)
     {
         switch (i)
         {
@@ -929,7 +929,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
     return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
 }
 
-HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
+HexEditScreen::HexEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm), hid(240, 16)
 {
     // Set to fast mode
     hidSetRepeatParameters(5, 1);
@@ -945,7 +945,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
             145, 75, 13, 13, [this]() { return editNumber(true, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
         buttons[i].push_back(std::make_unique<HexEditButton>(
             161, 75, 13, 13, [this]() { return editNumber(false, false); }, ui_sheet_button_minus_small_idx, "", false, 0));
-        if (pkm->generation() == Generation::SIX || pkm->generation() == Generation::SEVEN || pkm->generation() == Generation::LGPE)
+        if (pkm->generation() == pksm::Generation::SIX || pkm->generation() == pksm::Generation::SEVEN || pkm->generation() == pksm::Generation::LGPE)
         {
             switch (i)
             {
@@ -957,7 +957,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
                 // Markings
                 case 0x16 ... 0x17:
-                    if (pkm->generation() != Generation::SIX)
+                    if (pkm->generation() != pksm::Generation::SIX)
                     {
                         for (int j = 0; j < 4; j++)
                         {
@@ -974,7 +974,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     break;
                 case 0x2A:
-                    if (pkm->generation() == Generation::SIX)
+                    if (pkm->generation() == pksm::Generation::SIX)
                     {
                         for (int j = 0; j < 4; j++)
                         {
@@ -990,7 +990,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     }
                     break;
                 case 0x36:
-                    if (pkm->generation() == Generation::SIX)
+                    if (pkm->generation() == pksm::Generation::SIX)
                     {
                         for (size_t j = 0; j < 4; j++)
                         {
@@ -1014,7 +1014,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                 // Distribution Super Training (???)
                 case 0x3A:
                     // LGPE height byte
-                    if (pkm->generation() == Generation::LGPE && i == 0x3A)
+                    if (pkm->generation() == pksm::Generation::LGPE && i == 0x3A)
                     {
                         currRibbon += 8;
                         break;
@@ -1026,7 +1026,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 8; j++)
                     {
                         // Early exit to remove last two ribbons
-                        if (pkm->generation() == Generation::SIX && i == 0x35 && j == 6)
+                        if (pkm->generation() == pksm::Generation::SIX && i == 0x35 && j == 6)
                         {
                             currRibbon += 2;
                             buttons[i].push_back(
@@ -1073,7 +1073,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 case 0xDE:
-                    if (pkm->generation() != Generation::SIX)
+                    if (pkm->generation() != pksm::Generation::SIX)
                     {
                         for (int j = 0; j < 4; j++)
                         {
@@ -1108,7 +1108,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
             }
         }
-        else if (pkm->generation() == Generation::FIVE)
+        else if (pkm->generation() == pksm::Generation::FIVE)
         {
             switch (i)
             {
@@ -1193,7 +1193,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm), hid(240, 16)
                     break;
             }
         }
-        else if (pkm->generation() == Generation::FOUR)
+        else if (pkm->generation() == pksm::Generation::FOUR)
         {
             switch (i)
             {
@@ -1473,8 +1473,8 @@ void HexEditScreen::drawMeaning() const
     size_t i = hid.fullIndex();
     switch (pkm->generation())
     {
-        case Generation::FOUR:
-        case Generation::FIVE:
+        case pksm::Generation::FOUR:
+        case pksm::Generation::FIVE:
             switch (i)
             {
                 case 0x8 ... 0x9:
@@ -1505,30 +1505,30 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x44 ... 0x45:
-                    if (pkm->generation() == Generation::FIVE)
+                    if (pkm->generation() == pksm::Generation::FIVE)
                     {
                         break;
                     }
                     // falls through
                 case 0x7E ... 0x7F:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), (Generation)pkm->version(), pkm->eggLocation()), 160, 100,
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->eggLocation()), 160, 100,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x46 ... 0x47:
-                    if (pkm->generation() == Generation::FIVE)
+                    if (pkm->generation() == pksm::Generation::FIVE)
                     {
                         break;
                     }
                     // falls through
                 case 0x80 ... 0x81:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), (Generation)pkm->version(), pkm->metLocation()), 160, 100,
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->metLocation()), 160, 100,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
             break;
-        case Generation::SIX:
-        case Generation::SEVEN:
-        case Generation::LGPE:
+        case pksm::Generation::SIX:
+        case pksm::Generation::SEVEN:
+        case pksm::Generation::LGPE:
             switch (i)
             {
                 case 0x8 ... 0x9:
@@ -1560,11 +1560,11 @@ void HexEditScreen::drawMeaning() const
                         COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xD8 ... 0xD9:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), (Generation)pkm->version(), pkm->eggLocation()), 160, 100,
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->eggLocation()), 160, 100,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xDA ... 0xDB:
-                    Gui::text(i18n::location(Configuration::getInstance().language(), (Generation)pkm->version(), pkm->metLocation()), 160, 100,
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->metLocation()), 160, 100,
                         FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xE0:
@@ -1572,18 +1572,18 @@ void HexEditScreen::drawMeaning() const
                     u8 country = 0;
                     switch (pkm->generation())
                     {
-                        case Generation::SIX:
-                            country = ((PK6*)pkm.get())->country();
+                        case pksm::Generation::SIX:
+                            country = ((pksm::PK6*)pkm.get())->country();
                             break;
-                        case Generation::SEVEN:
-                            country = ((PK7*)pkm.get())->country();
+                        case pksm::Generation::SEVEN:
+                            country = ((pksm::PK7*)pkm.get())->country();
                             break;
-                        case Generation::LGPE:
-                            country = ((PB7*)pkm.get())->country();
+                        case pksm::Generation::LGPE:
+                            country = ((pksm::PB7*)pkm.get())->country();
                             break;
-                        case Generation::FOUR:
-                        case Generation::FIVE:
-                        case Generation::UNUSED:
+                        case pksm::Generation::FOUR:
+                        case pksm::Generation::FIVE:
+                        case pksm::Generation::UNUSED:
                             break;
                     }
                     Gui::text(i18n::country(Configuration::getInstance().language(), country), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
@@ -1596,21 +1596,21 @@ void HexEditScreen::drawMeaning() const
                     u8 region  = 0;
                     switch (pkm->generation())
                     {
-                        case Generation::SIX:
-                            country = ((PK6*)pkm.get())->country();
-                            region  = ((PK6*)pkm.get())->region();
+                        case pksm::Generation::SIX:
+                            country = ((pksm::PK6*)pkm.get())->country();
+                            region  = ((pksm::PK6*)pkm.get())->region();
                             break;
-                        case Generation::SEVEN:
-                            country = ((PK7*)pkm.get())->country();
-                            region  = ((PK7*)pkm.get())->region();
+                        case pksm::Generation::SEVEN:
+                            country = ((pksm::PK7*)pkm.get())->country();
+                            region  = ((pksm::PK7*)pkm.get())->region();
                             break;
-                        case Generation::LGPE:
-                            country = ((PB7*)pkm.get())->country();
-                            region  = ((PB7*)pkm.get())->region();
+                        case pksm::Generation::LGPE:
+                            country = ((pksm::PB7*)pkm.get())->country();
+                            region  = ((pksm::PB7*)pkm.get())->region();
                             break;
-                        case Generation::FOUR:
-                        case Generation::FIVE:
-                        case Generation::UNUSED:
+                        case pksm::Generation::FOUR:
+                        case pksm::Generation::FIVE:
+                        case pksm::Generation::UNUSED:
                             break;
                     }
                     Gui::text(i18n::subregion(Configuration::getInstance().language(), country, region), 160, 100, FONT_SIZE_12, COLOR_WHITE,
@@ -1622,18 +1622,18 @@ void HexEditScreen::drawMeaning() const
                     u8 consoleRegion = 0;
                     switch (pkm->generation())
                     {
-                        case Generation::SIX:
-                            consoleRegion = ((PK6*)pkm.get())->consoleRegion();
+                        case pksm::Generation::SIX:
+                            consoleRegion = ((pksm::PK6*)pkm.get())->consoleRegion();
                             break;
-                        case Generation::SEVEN:
-                            consoleRegion = ((PK7*)pkm.get())->consoleRegion();
+                        case pksm::Generation::SEVEN:
+                            consoleRegion = ((pksm::PK7*)pkm.get())->consoleRegion();
                             break;
-                        case Generation::LGPE:
-                            consoleRegion = ((PB7*)pkm.get())->consoleRegion();
+                        case pksm::Generation::LGPE:
+                            consoleRegion = ((pksm::PB7*)pkm.get())->consoleRegion();
                             break;
-                        case Generation::FOUR:
-                        case Generation::FIVE:
-                        case Generation::UNUSED:
+                        case pksm::Generation::FOUR:
+                        case pksm::Generation::FIVE:
+                        case pksm::Generation::UNUSED:
                             break;
                     }
                     std::string data;
@@ -1672,7 +1672,7 @@ void HexEditScreen::drawMeaning() const
                     break;
             }
             break;
-        case Generation::UNUSED:
+        case pksm::Generation::UNUSED:
             break;
     }
 }

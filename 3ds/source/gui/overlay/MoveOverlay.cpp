@@ -27,12 +27,12 @@
 #include "MoveOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKFilter.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 #include "utils.hpp"
 #include <set>
 
@@ -66,7 +66,8 @@ namespace
     }
 }
 
-MoveOverlay::MoveOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<PKX>, std::shared_ptr<PKFilter>>& object, int moveIndex)
+MoveOverlay::MoveOverlay(
+    ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, int moveIndex)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 2), moveIndex(moveIndex)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);

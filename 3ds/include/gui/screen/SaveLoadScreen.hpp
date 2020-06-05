@@ -27,8 +27,8 @@
 #ifndef SAVELOADSCREEN_HPP
 #define SAVELOADSCREEN_HPP
 
-#include "Language.hpp"
 #include "Screen.hpp"
+#include "enums/Language.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -84,7 +84,7 @@ private:
     int firstSave    = 0;
     int selectedSave = -1;
     int saveGroup    = 0;
-    Language oldLang;
+    pksm::Language oldLang;
     bool selectedGroup = false;
 
     bool mustUpdateTitles = false;

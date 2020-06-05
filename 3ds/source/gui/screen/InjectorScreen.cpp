@@ -27,20 +27,20 @@
 #include "InjectorScreen.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "WC6.hpp"
-#include "WC7.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "wcx/WC6.hpp"
+#include "wcx/WC7.hpp"
 
 namespace
 {
     constexpr std::string_view languages[] = {"JPN", "ENG", "FRE", "ITA", "GER", "UNUSED", "SPA", "KOR", "CHS", "CHT"};
 }
 
-bool InjectorScreen::setLanguage(Language language)
+bool InjectorScreen::setLanguage(pksm::Language language)
 {
     if (isLangAvailable(language))
     {
@@ -64,7 +64,7 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds) : hid(40, 8), ids(std::make
         }
         else
         {
-            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+            gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
         }
     }
     emptySlot = currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
@@ -89,10 +89,10 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds) : hid(40, 8), ids(std::make
     {
         for (int x = 121; x < 274; x += 38)
         {
-            if (langIndex != (int)Language::UNUSED)
+            if (langIndex != (int)pksm::Language::UNUSED)
             {
-                buttons.push_back(std::make_unique<Button>(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+                buttons.push_back(std::make_unique<Button>(x, y, 38, 23, [this, langIndex]() { return this->setLanguage((pksm::Language)langIndex); },
+                    ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
@@ -138,7 +138,7 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds) : hid(40, 8), ids(std::make
     wondercard->date(Configuration::getInstance().date());
 }
 
-InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8)
+InjectorScreen::InjectorScreen(std::unique_ptr<pksm::WCX> wcx) : wondercard(std::move(wcx)), hid(40, 8)
 {
     size_t currentCards = TitleLoader::save->currentGiftAmount();
     for (size_t i = 0; i < currentCards; i++)
@@ -150,12 +150,12 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
         }
         else
         {
-            gifts.emplace_back(gift->title(), "", -1, -1, Gender::Genderless);
+            gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
         }
     }
     emptySlot = currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
 
-    lang = Language::UNUSED;
+    lang = pksm::Language::UNUSED;
 
     slot          = emptySlot + 1;
     int langIndex = 1;
@@ -163,10 +163,10 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
     {
         for (int x = 121; x < 274; x += 38)
         {
-            if (langIndex != (int)Language::UNUSED)
+            if (langIndex != (int)pksm::Language::UNUSED)
             {
-                buttons.push_back(std::make_unique<Button>(
-                    x, y, 38, 23, [this, langIndex]() { return this->setLanguage((Language)langIndex); }, ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+                buttons.push_back(std::make_unique<Button>(x, y, 38, 23, [this, langIndex]() { return this->setLanguage((pksm::Language)langIndex); },
+                    ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
             }
             langIndex++;
         }
@@ -197,7 +197,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
         ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
-            if (TitleLoader::save->generation() == Generation::LGPE)
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
             {
                 Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
                 return false;
@@ -209,8 +209,8 @@ InjectorScreen::InjectorScreen(std::unique_ptr<WCX> wcx) : wondercard(std::move(
                 return true;
             }
         },
-        TitleLoader::save->generation() == Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
-                                                            : ui_sheet_emulated_button_unselected_red_idx,
+        TitleLoader::save->generation() == pksm::Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
+                                                                  : ui_sheet_emulated_button_unselected_red_idx,
         "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
@@ -244,9 +244,9 @@ void InjectorScreen::drawBottom() const
     {
         for (int x = 121; x < 274; x += 38)
         {
-            if (langIndex != (int)Language::UNUSED)
+            if (langIndex != (int)pksm::Language::UNUSED)
             {
-                if (isLangAvailable((Language)langIndex))
+                if (isLangAvailable((pksm::Language)langIndex))
                 {
                     if (langIndex == (int)lang)
                     {
@@ -352,10 +352,10 @@ void InjectorScreen::drawTop() const
         Gui::ball(wondercard->ball(), 4, 6);
         if (wondercard->pokemon())
         {
-            if (wondercard->species() == Species::Manaphy && wondercard->egg())
+            if (wondercard->species() == pksm::Species::Manaphy && wondercard->egg())
             {
-                Gui::pkm(Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
-                Gui::pkm(Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
+                Gui::pkm(pksm::Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
+                Gui::pkm(pksm::Species::Manaphy, -1, wondercard->generation(), wondercard->gender(), 272, 44, 2.0f);
             }
             else
             {
@@ -405,11 +405,11 @@ void InjectorScreen::drawTop() const
             Date date = wondercard->date();
             Gui::text(fmt::format(FMT_STRING("{:d}/{:d}/{:d}"), date.day(), date.month(), date.year()), 87, 155, FONT_SIZE_14, COLOR_BLACK,
                 TextPosX::LEFT, TextPosY::TOP);
-            if (wondercard->generation() == Generation::SEVEN)
+            if (wondercard->generation() == pksm::Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);
                 Gui::text(i18n::localize("ITEM"), 9, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-                u16 additionalItem = ((WC7*)wondercard.get())->additionalItem();
+                u16 additionalItem = ((pksm::WC7*)wondercard.get())->additionalItem();
                 Gui::text(i18n::item(Configuration::getInstance().language(), additionalItem), 87, 175, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
                     TextPosY::TOP);
             }
@@ -420,14 +420,14 @@ void InjectorScreen::drawTop() const
             Gui::text(i18n::localize("NA"), 87, 55, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             const std::string* itemString = &i18n::item(Configuration::getInstance().language(), wondercard->object());
             std::string numString         = "";
-            if (wondercard->generation() == Generation::SIX)
+            if (wondercard->generation() == pksm::Generation::SIX)
             {
-                numString = " x " + std::to_string(((WC6*)wondercard.get())->objectQuantity());
+                numString = " x " + std::to_string(((pksm::WC6*)wondercard.get())->objectQuantity());
             }
-            else if (wondercard->generation() == Generation::SEVEN)
+            else if (wondercard->generation() == pksm::Generation::SEVEN)
             {
-                itemString = &i18n::item(Configuration::getInstance().language(), ((WC7*)wondercard.get())->object(item));
-                numString  = " x " + std::to_string(((WC7*)wondercard.get())->objectQuantity(item));
+                itemString = &i18n::item(Configuration::getInstance().language(), ((pksm::WC7*)wondercard.get())->object(item));
+                numString  = " x " + std::to_string(((pksm::WC7*)wondercard.get())->objectQuantity(item));
             }
             Gui::text(numString.empty() ? *itemString : *itemString + numString, 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(i18n::localize("NA"), 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -482,7 +482,8 @@ void InjectorScreen::drawTop() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(
+                        pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {
@@ -552,20 +553,20 @@ void InjectorScreen::update(touchPosition* touch)
             choosingSlot = false;
         }
     }
-    if (wondercard->generation() == Generation::SEVEN && wondercard->item() && ((WC7*)wondercard.get())->items() > 1)
+    if (wondercard->generation() == pksm::Generation::SEVEN && wondercard->item() && ((pksm::WC7*)wondercard.get())->items() > 1)
     {
         if (downKeys & KEY_L)
         {
             if (item == 0)
             {
-                item = ((WC7*)wondercard.get())->items();
+                item = ((pksm::WC7*)wondercard.get())->items();
             }
             item--;
         }
         else if (downKeys & KEY_R)
         {
             item++;
-            if (item == ((WC7*)wondercard.get())->items())
+            if (item == ((pksm::WC7*)wondercard.get())->items())
             {
                 item = 0;
             }
@@ -573,7 +574,7 @@ void InjectorScreen::update(touchPosition* touch)
     }
 }
 
-bool InjectorScreen::isLangAvailable(Language l) const
+bool InjectorScreen::isLangAvailable(pksm::Language l) const
 {
     return ids && ids->find(i18n::langString(l)) != ids->end();
 }

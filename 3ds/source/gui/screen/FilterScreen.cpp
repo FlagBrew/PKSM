@@ -29,19 +29,19 @@
 #include "EnablableToggleButton.hpp"
 #include "FormOverlay.hpp"
 #include "MoveOverlay.hpp"
-#include "PKFilter.hpp"
-#include "Sav.hpp"
 #include "SpeciesOverlay.hpp"
 #include "ToggleButton.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKFilter.hpp"
+#include "sav/Sav.hpp"
 
-FilterScreen::FilterScreen(std::shared_ptr<PKFilter> filter) : filter(filter)
+FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filter)
 {
-    if (filter->species() == Species::None)
+    if (filter->species() == pksm::Species::None)
     {
-        filter->species(Species::Bulbasaur);
+        filter->species(pksm::Species::Bulbasaur);
     }
 
     buttons.push_back({});

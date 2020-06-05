@@ -27,25 +27,24 @@
 #ifndef VERSIONOVERLAY_HPP
 #define VERSIONOVERLAY_HPP
 
-#include "GameVersion.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-
-class PKX;
+#include "enums/GameVersion.hpp"
+#include "pkx/PKX.hpp"
 
 class VersionOverlay : public ReplaceableScreen
 {
 public:
-    VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm);
+    VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    std::vector<std::pair<GameVersion, const std::string&>> games;
+    std::vector<std::pair<pksm::GameVersion, const std::string&>> games;
 };
 
 #endif

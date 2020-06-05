@@ -27,14 +27,15 @@
 #ifndef PKMUTILS_HPP
 #define PKMUTILS_HPP
 
-#include <PKX.hpp>
+#include "enums/Generation.hpp"
+#include "pkx/PKX.hpp"
 
 namespace PkmUtils
 {
     void initDefaults();
     void saveDefaults();
-    std::unique_ptr<PKX> getDefault(Generation gen);
-    void setDefault(std::unique_ptr<PKX> pkm);
+    std::unique_ptr<pksm::PKX> getDefault(pksm::Generation gen);
+    void setDefault(std::unique_ptr<pksm::PKX> pkm);
 }
 
 #endif

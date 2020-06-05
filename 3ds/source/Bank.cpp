@@ -27,18 +27,18 @@
 #include "Bank.hpp"
 #include "Archive.hpp"
 #include "Configuration.hpp"
-#include "PB7.hpp"
-#include "PK3.hpp"
-#include "PK4.hpp"
-#include "PK5.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
 #include "banks.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
+#include "pkx/PK4.hpp"
+#include "pkx/PK5.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second
@@ -104,7 +104,7 @@ void Bank::load(int maxBoxes)
                 // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
                 struct G7Entry
                 {
-                    Generation gen;
+                    pksm::Generation gen;
                     u8 data[260];
                 };
                 static_assert(sizeof(G7Entry) == 264);
@@ -218,9 +218,9 @@ void Bank::load(int maxBoxes)
         }
         else
         {
-            sha256(prevHash.data(), (u8*)entries, sizeof(BankEntry) * boxes() * 30);
+            prevHash             = pksm::crypto::sha256((u8*)entries, sizeof(BankEntry) * boxes() * 30);
             std::string nameData = boxNames->dump(2);
-            sha256(prevNameHash.data(), (u8*)nameData.data(), nameData.size());
+            prevNameHash         = pksm::crypto::sha256((u8*)nameData.data(), nameData.size());
         }
     }
 }
@@ -245,8 +245,8 @@ bool Bank::saveWithoutBackup() const
         if (out)
         {
             out->write(jsonData.data(), jsonData.size() + 1);
-            sha256(prevHash.data(), (u8*)entries, sizeof(BankEntry) * boxes() * 30);
-            sha256(prevNameHash.data(), (u8*)jsonData.data(), jsonData.size());
+            prevHash     = pksm::crypto::sha256((u8*)entries, sizeof(BankEntry) * boxes() * 30);
+            prevNameHash = pksm::crypto::sha256((u8*)jsonData.data(), jsonData.size());
             out->close();
         }
         else
@@ -301,27 +301,27 @@ void Bank::resize(int boxes)
     }
 }
 
-std::unique_ptr<PKX> Bank::pkm(int box, int slot) const
+std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
 {
     int index = box * 30 + slot;
-    auto ret  = PKX::getPKM(entries[index].gen, entries[index].data, false);
+    auto ret  = pksm::PKX::getPKM(entries[index].gen, entries[index].data, false);
     if (ret)
     {
         return ret;
     }
-    else if (entries[index].gen == Generation::UNUSED)
+    else if (entries[index].gen == pksm::Generation::UNUSED)
     {
-        return PKX::getPKM<Generation::SEVEN>(nullptr);
+        return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
     }
 
     throw BankException(u32(entries[index].gen));
 }
 
-void Bank::pkm(const PKX& pkm, int box, int slot)
+void Bank::pkm(const pksm::PKX& pkm, int box, int slot)
 {
     int index = box * 30 + slot;
     BankEntry newEntry;
-    if (pkm.species() == Species::None)
+    if (pkm.species() == pksm::Species::None)
     {
         std::fill_n((char*)&newEntry, sizeof(BankEntry), 0xFF);
         entries[index] = newEntry;
@@ -391,15 +391,14 @@ bool Bank::hasChanged() const
     {
         return false;
     }
-    u8 hash[SHA256_BLOCK_SIZE];
-    sha256(hash, (u8*)entries, sizeof(BankEntry) * boxes() * 30);
-    if (memcmp(hash, prevHash.data(), SHA256_BLOCK_SIZE))
+    auto hash = pksm::crypto::sha256((u8*)entries, sizeof(BankEntry) * boxes() * 30);
+    if (hash != prevHash)
     {
         return true;
     }
     std::string jsonData = boxNames->dump(2);
-    sha256(hash, (u8*)jsonData.data(), jsonData.size());
-    if (memcmp(hash, prevNameHash.data(), SHA256_BLOCK_SIZE))
+    hash                 = pksm::crypto::sha256((u8*)jsonData.data(), jsonData.size());
+    if (hash != prevNameHash)
     {
         return true;
     }
@@ -415,29 +414,29 @@ void Bank::convertFromBankBin()
     Archive::sd().createFile("/3ds/PKSM/backups/bank.bin", 0, 1);
     auto outStream   = Archive::sd().file("/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE);
     Result outResult = Archive::sd().result();
-    if (inStream && outStream && inStream->size() % PK6::BOX_LENGTH == 0 && (inStream->size() / PK6::BOX_LENGTH) % 30 == 0 &&
+    if (inStream && outStream && inStream->size() % pksm::PK6::BOX_LENGTH == 0 && (inStream->size() / pksm::PK6::BOX_LENGTH) % 30 == 0 &&
         R_SUCCEEDED(outStream->resize(inStream->size())))
     {
         size_t oldSize = inStream->size();
-        std::array<u8, PK6::BOX_LENGTH> pkmData;
+        std::array<u8, pksm::PK6::BOX_LENGTH> pkmData;
         // ANOTHER CONVERSION SECTION
-        entries = new BankEntry[oldSize / PK6::BOX_LENGTH];
+        entries = new BankEntry[oldSize / pksm::PK6::BOX_LENGTH];
         std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
         header.version = BANK_VERSION;
-        header.boxes   = oldSize / PK6::BOX_LENGTH / 30;
+        header.boxes   = oldSize / pksm::PK6::BOX_LENGTH / 30;
         extern nlohmann::json g_banks;
         g_banks["pksm_1"] = header.boxes;
         std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
         boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
 
-        for (int box = 0; box < std::min((int)(oldSize / (PK6::BOX_LENGTH * 30)), boxes()); box++)
+        for (int box = 0; box < std::min((int)(oldSize / (pksm::PK6::BOX_LENGTH * 30)), boxes()); box++)
         {
             for (int slot = 0; slot < 30; slot++)
             {
                 inStream->read(pkmData.data(), pkmData.size());
                 outStream->write(pkmData.data(), pkmData.size());
-                std::unique_ptr<PKX> pkm = PKX::getPKM<Generation::SIX>(pkmData.data());
-                if (pkm->species() == Species::None)
+                std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM<pksm::Generation::SIX>(pkmData.data());
+                if (pkm->species() == pksm::Species::None)
                 {
                     this->pkm(*pkm, box, slot);
                     continue;
@@ -456,18 +455,19 @@ void Bank::convertFromBankBin()
                         break;
                     }
                 }
-                if (pkm->version() > GameVersion::OR || pkm->species() >= Species::Rowlet || pkm->ability() > Ability::DeltaStream ||
-                    pkm->heldItem() > 775 || badMove)
+                if (pkm->version() > pksm::GameVersion::OR || pkm->species() >= pksm::Species::Rowlet ||
+                    pkm->ability() > pksm::Ability::DeltaStream || pkm->heldItem() > 775 || badMove)
                 {
-                    pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
+                    pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
                 }
-                else if (((PK6*)pkm.get())->encounterType() != 0)
+                else if (((pksm::PK6*)pkm.get())->encounterType() != 0)
                 {
-                    if (((PK6*)pkm.get())->level() == 100) // Can be hyper trained
+                    if (((pksm::PK6*)pkm.get())->level() == 100) // Can be hyper trained
                     {
-                        if (!pkm->originGen4() || ((PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
+                        if (!pkm->originGen4() ||
+                            ((pksm::PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
                         {
-                            pkm = PKX::getPKM<Generation::SEVEN>(pkmData.data());
+                            pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
                         }
                     }
                 }

@@ -32,10 +32,7 @@
 #include "Configuration.hpp"
 #include "FilterScreen.hpp"
 #include "GroupCloudScreen.hpp"
-#include "PK7.hpp"
-#include "PKFilter.hpp"
 #include "QRScanner.hpp"
-#include "Sav.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
@@ -44,6 +41,9 @@
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PKFilter.hpp"
+#include "sav/Sav.hpp"
 #include <sys/stat.h>
 
 namespace
@@ -56,34 +56,34 @@ namespace
             tmp = tmp.substr(12);
             if (tmp.find("4") == 0)
             {
-                *(Generation*)(userdata) = Generation::FOUR;
+                *(pksm::Generation*)(userdata) = pksm::Generation::FOUR;
             }
             else if (tmp.find("5") == 0)
             {
-                *(Generation*)(userdata) = Generation::FIVE;
+                *(pksm::Generation*)(userdata) = pksm::Generation::FIVE;
             }
             else if (tmp.find("6") == 0)
             {
-                *(Generation*)(userdata) = Generation::SIX;
+                *(pksm::Generation*)(userdata) = pksm::Generation::SIX;
             }
             else if (tmp.find("7") == 0)
             {
-                *(Generation*)(userdata) = Generation::SEVEN;
+                *(pksm::Generation*)(userdata) = pksm::Generation::SEVEN;
             }
             else if (tmp.find("LGPE") == 0)
             {
-                *(Generation*)(userdata) = Generation::LGPE;
+                *(pksm::Generation*)(userdata) = pksm::Generation::LGPE;
             }
         }
         return nitems * size;
     }
 }
 
-CloudScreen::CloudScreen(int storageBox, std::shared_ptr<PKFilter> filter)
+CloudScreen::CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GROUP_SINGLE") + '\n' +
              i18n::localize("START_SORT_FILTER") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
-      filter(filter == nullptr ? std::make_shared<PKFilter>() : filter),
+      filter(filter == nullptr ? std::make_shared<pksm::PKFilter>() : filter),
       storageBox(storageBox)
 {
     mainButtons[0] = std::make_unique<ClickButton>(212, 78, 108, 28,
@@ -149,7 +149,7 @@ void CloudScreen::drawBottom() const
         for (u8 column = 0; column < 6; column++)
         {
             auto pokemon = Banks::bank->pkm(storageBox, row * 6 + column);
-            if (pokemon->species() != Species::None)
+            if (pokemon->species() != pksm::Species::None)
             {
                 float blend = *pokemon == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
@@ -234,7 +234,7 @@ void CloudScreen::drawTop() const
         for (u8 column = 0; column < 6; column++)
         {
             auto pkm = access.pkm(row * 6 + column);
-            if (pkm->species() != Species::None)
+            if (pkm->species() != pksm::Species::None)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
@@ -290,13 +290,13 @@ void CloudScreen::drawTop() const
         Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         switch (infoMon->gender())
         {
-            case Gender::Male:
+            case pksm::Gender::Male:
                 Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
                 break;
-            case Gender::Female:
+            case pksm::Gender::Female:
                 Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
                 break;
-            case Gender::Genderless:
+            case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
         }
@@ -307,8 +307,8 @@ void CloudScreen::drawTop() const
 
         Gui::text(
             infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Type firstType  = infoMon->type1();
-        Type secondType = infoMon->type2();
+        pksm::Type firstType  = infoMon->type1();
+        pksm::Type secondType = infoMon->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -328,9 +328,10 @@ void CloudScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(
+            FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -398,8 +399,6 @@ void CloudScreen::update(touchPosition* touch)
         if (button->update(touch))
             return;
     }
-
-    static int buttonCooldown = 10;
 
     if (kDown & KEY_A)
     {
@@ -533,7 +532,7 @@ void CloudScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == Species::None)
+    if (infoMon && infoMon->species() == pksm::Species::None)
     {
         infoMon = nullptr;
     }
@@ -546,7 +545,7 @@ void CloudScreen::pickup()
         if (cloudChosen)
         {
             auto cloudMon = access.pkm(cursorIndex - 1);
-            if (cloudMon && cloudMon->species() != Species::None && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
+            if (cloudMon && cloudMon->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("GPSS_DOWNLOAD")))
             {
                 moveMon = access.fetchPkm(cursorIndex - 1);
             }
@@ -560,7 +559,7 @@ void CloudScreen::pickup()
             moveMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         }
 
-        if (moveMon && moveMon->species() == Species::None)
+        if (moveMon && moveMon->species() == pksm::Species::None)
         {
             moveMon = nullptr;
         }
@@ -594,7 +593,7 @@ void CloudScreen::pickup()
             auto oldMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
             Banks::bank->pkm(*moveMon, storageBox, cursorIndex - 1);
 
-            if (oldMon->species() == Species::None)
+            if (oldMon->species() == pksm::Species::None)
             {
                 moveMon = nullptr;
             }
@@ -690,7 +689,7 @@ bool CloudScreen::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != Species::None)
+    if (infoMon && infoMon->species() != pksm::Species::None)
     {
         justSwitched = true;
         addOverlay<CloudViewOverlay>(infoMon);
@@ -703,9 +702,9 @@ bool CloudScreen::releasePkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+        if (pkm->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
-            Banks::bank->pkm(*PKX::getPKM<Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+            Banks::bank->pkm(*pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             return false;
         }
     }
@@ -717,7 +716,7 @@ bool CloudScreen::dumpPkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (dumpMon && dumpMon->species() != Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        if (dumpMon && dumpMon->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             DateTime now     = DateTime::now();
             std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
@@ -858,8 +857,8 @@ void CloudScreen::shareReceive()
         std::string retB64Data = "";
         if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
         {
-            long status_code = 0;
-            Generation gen   = Generation::UNUSED;
+            long status_code     = 0;
+            pksm::Generation gen = pksm::Generation::UNUSED;
             fetch->setopt(CURLOPT_HEADERDATA, &gen);
             fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
 
@@ -892,7 +891,7 @@ void CloudScreen::shareReceive()
                 }
                 auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
-                std::shared_ptr<PKX> pkm = PKX::getPKM(gen, retData.data(), retData.size());
+                std::shared_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, retData.data(), retData.size());
 
                 if (!pkm)
                 {

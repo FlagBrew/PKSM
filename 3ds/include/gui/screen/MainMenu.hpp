@@ -27,12 +27,11 @@
 #ifndef MAINMENU_HPP
 #define MAINMENU_HPP
 
+#include "Button.hpp"
 #include "Language.hpp"
 #include "Screen.hpp"
-#include "sha256.h"
+#include "utils/crypto.hpp"
 #include <array>
-
-class Button;
 
 class MainMenu : public Screen
 {
@@ -49,9 +48,9 @@ public:
 
 private:
     std::array<std::unique_ptr<Button>, 7> buttons;
-    Language oldLang;
+    pksm::Language oldLang;
     bool justSwitched = true;
-    std::array<u8, SHA256_BLOCK_SIZE> oldHash;
+    decltype(pksm::crypto::sha256(nullptr, 0)) oldHash;
 };
 
 #endif

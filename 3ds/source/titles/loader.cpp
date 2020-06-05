@@ -30,12 +30,12 @@
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "Sav.hpp"
 #include "Title.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
-#include "sha256.h"
+#include "sav/Sav.hpp"
+#include "utils/crypto.hpp"
 #include <3ds.h>
 #include <atomic>
 #include <format.h>
@@ -88,10 +88,11 @@ namespace
     std::atomic<bool> cartWasUpdated = false;
     std::atomic_flag continueScan;
 
-    std::array<u64, 5> vcTitleIds                        = {0, 0, 0, 0, 0};
-    std::array<u64, 8> ctrTitleIds                       = {0, 0, 0, 0, 0, 0, 0, 0};
-    constexpr std::array<GameVersion, 13> searchVersions = {GameVersion::S, GameVersion::R, GameVersion::E, GameVersion::FR, GameVersion::LG,
-        GameVersion::X, GameVersion::Y, GameVersion::OR, GameVersion::AS, GameVersion::SN, GameVersion::MN, GameVersion::US, GameVersion::UM};
+    std::array<u64, 5> vcTitleIds                              = {0, 0, 0, 0, 0};
+    std::array<u64, 8> ctrTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0};
+    constexpr std::array<pksm::GameVersion, 13> searchVersions = {pksm::GameVersion::S, pksm::GameVersion::R, pksm::GameVersion::E,
+        pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
+        pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
 
     std::string idToSaveName(const std::string& id)
     {
@@ -267,13 +268,12 @@ namespace
     {
         std::array<u8, 0x10> ret;
         constexpr size_t READBLOCK_SIZE = 0x1000;
-        std::array<u8, SHA256_BLOCK_SIZE> hashData;
+        std::array<u8, 32> hashData;
 
         // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this was a good idea
         // CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" + SHA256(0x30..0x200 + the entire save itself))))
-        // I *think* FSPXI_CalcSavegameMAC should do the AES-CMAC and CTR-SIGN step. It might do the CTR-SAV0 step as well?
-        SHA256_CTX ctx;
-        sha256_init(&ctx);
+        // FSPXI_CalcSavegameMAC does the AES-CMAC, CTR-SIGN, and the CTR-SAV0 step
+        pksm::crypto::SHA256 context;
         file.seek(0x30, SEEK_CUR);
         size_t sha_end_idx = header.saveSize + 0x200 - 0x30;
         u8* readblock      = new u8[READBLOCK_SIZE];
@@ -282,26 +282,12 @@ namespace
         {
             size_t readSize = std::min(sha_end_idx - i, READBLOCK_SIZE);
             read            = file.read(readblock, readSize);
-            sha256_update(&ctx, readblock, readSize);
+            context.update(readblock, readSize);
         }
         delete[] readblock;
 
-        sha256_final(&ctx, hashData.data());
+        hashData = context.finish();
 
-        // FSPXI_CalcSavegameMAC might do CTR-SAV0 step?
-        // sha256_init(&ctx);
-        // sha256_update(&ctx, (u8*)"CTR-SAV0", 8);
-        // sha256_update(&ctx, hashData.data(), hashData.size());
-        // sha256_final(&ctx, hashData.data());
-
-        // FSPXI_CalcSavegameMAC might do CTR-SIGN step?
-        // sha256_init(&ctx);
-        // sha256_update(&ctx, (u8*)"CTR-SIGN", 8);
-        // sha256_update(&ctx, (u8*)&header.titleId, sizeof(u64));
-        // sha256_update(&ctx, hashData.data(), hashData.size());
-        // sha256_final(&ctx, hashData.data());
-
-        // I really, really, really hope this works properly for this
         FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()), hashData.data(), hashData.size(), ret.data(), ret.size());
 
         return ret;
@@ -322,7 +308,7 @@ void TitleLoader::reloadTitleIds(void)
     for (size_t i = 0; i < searchVersions.size(); i++)
     {
         std::string id = Configuration::getInstance().titleId(searchVersions[i]);
-        if ((Generation)searchVersions[i] <= Generation::THREE)
+        if ((pksm::Generation)searchVersions[i] <= pksm::Generation::THREE)
         {
             vcTitleIds[vcIndex++] = strtoull(id.c_str(), nullptr, 16);
         }
@@ -500,7 +486,7 @@ void TitleLoader::backupSave(const std::string& id)
 
 bool TitleLoader::load(std::shared_ptr<u8[]> data, size_t size)
 {
-    save = Sav::getSave(data, size);
+    save = pksm::Sav::getSave(data, size);
     return save != nullptr;
 }
 
@@ -688,7 +674,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                 in->read(data.get(), size);
                 in->close();
             }
-            save = Sav::getSave(data, size);
+            save = pksm::Sav::getSave(data, size);
             if (save)
             {
                 if (Configuration::getInstance().autoBackup())
@@ -727,7 +713,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             SPIReadSaveData(title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
         }
 
-        save = Sav::getSave(data, cap);
+        save = pksm::Sav::getSave(data, cap);
         if (Configuration::getInstance().autoBackup())
         {
             backupSave(title->checkpointPrefix());
@@ -770,7 +756,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath
         saveFileName = "";
         return false;
     }
-    save = Sav::getSave(saveData, size);
+    save = pksm::Sav::getSave(saveData, size);
     if (!save)
     {
         Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
@@ -1151,7 +1137,7 @@ bool TitleLoader::scanCard()
                     }
                 }
 
-                if (R_SUCCEEDED(res) && Sav::isValidDSSave(saveFile))
+                if (R_SUCCEEDED(res) && pksm::Sav::isValidDSSave(saveFile))
                 {
                     cardTitle = title;
                 }

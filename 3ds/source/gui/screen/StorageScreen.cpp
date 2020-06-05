@@ -32,8 +32,6 @@
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
 #include "MainMenu.hpp"
-#include "PK4.hpp"
-#include "SavLGPE.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
 #include "StorageViewOverlay.hpp"
@@ -46,7 +44,9 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include <PB7.hpp>
+#include "pkx/PB7.hpp"
+#include "pkx/PK4.hpp"
+#include "sav/SavLGPE.hpp"
 #include <stack>
 #include <sys/stat.h>
 #include <variant>
@@ -71,8 +71,8 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
-            case Generation::FOUR:
-            case Generation::FIVE:
+            case pksm::Generation::FOUR:
+            case pksm::Generation::FIVE:
             {
                 SwkbdState state;
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
@@ -88,9 +88,9 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
-            case Generation::SIX:
-            case Generation::SEVEN:
-            case Generation::EIGHT:
+            case pksm::Generation::SIX:
+            case pksm::Generation::SEVEN:
+            case pksm::Generation::EIGHT:
             {
                 SwkbdState state;
                 swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 16);
@@ -106,8 +106,8 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
-            case Generation::LGPE:
-            case Generation::UNUSED:
+            case pksm::Generation::LGPE:
+            case pksm::Generation::UNUSED:
                 // Do nothing
                 break;
         }
@@ -176,9 +176,9 @@ StorageScreen::StorageScreen()
 
 StorageScreen::~StorageScreen()
 {
-    if (TitleLoader::save->generation() == Generation::LGPE)
+    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
     {
-        ((SavLGPE*)TitleLoader::save.get())->compressBox();
+        ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
         int occupiedSlots = 0;
         for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
         {
@@ -191,7 +191,7 @@ StorageScreen::~StorageScreen()
                 break;
             }
         }
-        ((SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
+        ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
     }
     TitleLoader::save->cryptBoxData(false);
     TitleLoader::save->currentBox((u8)boxBox);
@@ -215,11 +215,11 @@ void StorageScreen::drawBottom() const
 
     u16 partyPkm[6];
     std::fill_n(partyPkm, 6, 1001);
-    if (TitleLoader::save->generation() == Generation::LGPE)
+    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
     {
         for (int i = 0; i < 6; i++)
         {
-            partyPkm[i] = ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
+            partyPkm[i] = ((pksm::SavLGPE*)TitleLoader::save.get())->partyBoxSlot(i);
         }
     }
 
@@ -235,19 +235,19 @@ void StorageScreen::drawBottom() const
             {
                 Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
-            if (TitleLoader::save->generation() == Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
-                std::shared_ptr<PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
-                if (pokemon->species() != Species::None)
+                std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                if (pokemon->species() != pksm::Species::None)
                 {
                     float blend = *pokemon == *filter ? 0.0f : 0.5f;
                     Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
                 }
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
                     int partySlot = std::distance(partyPkm, std::find(partyPkm, partyPkm + 6, boxBox * 30 + row * 6 + column));
                     if (partySlot < 6)
@@ -369,7 +369,7 @@ void StorageScreen::drawTop() const
                 Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
             auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
-            if (pkm->species() != Species::None)
+            if (pkm->species() != pksm::Species::None)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
@@ -465,13 +465,13 @@ void StorageScreen::drawTop() const
         Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         switch (infoMon->gender())
         {
-            case Gender::Male:
+            case pksm::Gender::Male:
                 Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
                 break;
-            case Gender::Female:
+            case pksm::Gender::Female:
                 Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
                 break;
-            case Gender::Genderless:
+            case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
         }
@@ -482,8 +482,8 @@ void StorageScreen::drawTop() const
 
         Gui::text(
             infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Type firstType  = infoMon->type1();
-        Type secondType = infoMon->type2();
+        pksm::Type firstType  = infoMon->type1();
+        pksm::Type secondType = infoMon->type2();
         if (firstType != secondType)
         {
             Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
@@ -503,9 +503,10 @@ void StorageScreen::drawTop() const
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::HP), infoMon->iv(Stat::ATK), infoMon->iv(Stat::DEF));
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(Stat::SPATK), infoMon->iv(Stat::SPDEF), infoMon->iv(Stat::SPD));
+        info = fmt::format(
+            FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
@@ -677,7 +678,7 @@ void StorageScreen::update(touchPosition* touch)
     {
         infoMon = nullptr;
     }
-    if (infoMon && infoMon->species() == Species::None)
+    if (infoMon && infoMon->species() == pksm::Species::None)
     {
         infoMon = nullptr;
     }
@@ -814,7 +815,7 @@ bool StorageScreen::showViewer()
         return false;
     }
 
-    if (infoMon && infoMon->species() != Species::None)
+    if (infoMon && infoMon->species() != pksm::Species::None)
     {
         justSwitched = true;
         overlay      = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum, selectDimensions, currentlySelecting,
@@ -864,9 +865,9 @@ bool StorageScreen::releasePkm()
             else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
                 TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
-                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                    pksm::SavLGPE* sav = (pksm::SavLGPE*)TitleLoader::save.get();
                     for (int i = 0; i < sav->partyCount(); i++)
                     {
                         if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
@@ -888,10 +889,10 @@ bool StorageScreen::releasePkm()
     return false;
 }
 
-bool StorageScreen::isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer)
+bool StorageScreen::isValidTransfer(std::shared_ptr<pksm::PKX> moveMon, bool bulkTransfer)
 {
     auto invalidReason = TitleLoader::save->invalidTransferReason(*moveMon);
-    if (invalidReason == Sav::BadTransferReason::OKAY)
+    if (invalidReason == pksm::Sav::BadTransferReason::OKAY)
     {
         return true;
     }
@@ -913,9 +914,9 @@ void StorageScreen::pickupSwap()
     else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
         partyNum.push_back(-1);
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        if (TitleLoader::save->generation() == pksm::Generation::LGPE)
         {
-            SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+            pksm::SavLGPE* sav = (pksm::SavLGPE*)TitleLoader::save.get();
             for (int i = 0; i < TitleLoader::save->partyCount(); i++)
             {
                 if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
@@ -936,7 +937,7 @@ void StorageScreen::pickupSwap()
     fromStorage      = storageChosen;
     selectDimensions = std::pair{storageChosen ? storageBox : boxBox, cursorIndex - 1};
 
-    if (moveMon.back()->species() == Species::None)
+    if (moveMon.back()->species() == pksm::Species::None)
     {
         moveMon.back() = nullptr;
     }
@@ -953,9 +954,9 @@ void StorageScreen::pickupSingle()
     else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
         partyNum.push_back(-1);
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        if (TitleLoader::save->generation() == pksm::Generation::LGPE)
         {
-            SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+            pksm::SavLGPE* sav = (pksm::SavLGPE*)TitleLoader::save.get();
             for (int i = 0; i < TitleLoader::save->partyCount(); i++)
             {
                 if (sav->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1)
@@ -976,7 +977,7 @@ void StorageScreen::pickupSingle()
     fromStorage      = storageChosen;
     selectDimensions = std::pair{1, 1};
 
-    if (moveMon.back()->species() == Species::None)
+    if (moveMon.back()->species() == pksm::Species::None)
     {
         moveMon.back() = nullptr;
     }
@@ -1002,7 +1003,7 @@ void StorageScreen::postPickup()
     {
         return;
     }
-    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
+    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<pksm::PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
     {
         moveMon.clear();
         partyNum.clear();
@@ -1050,9 +1051,9 @@ void StorageScreen::putDownSwap()
     {
         TitleLoader::save->pkm(*TitleLoader::save->pkm(boxBox, cursorIndex - 1), selectDimensions.first, selectDimensions.second, false);
         TitleLoader::save->pkm(*moveMon[0], boxBox, cursorIndex - 1, false);
-        if (TitleLoader::save->generation() == Generation::LGPE)
+        if (TitleLoader::save->generation() == pksm::Generation::LGPE)
         {
-            SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
+            pksm::SavLGPE* save = (pksm::SavLGPE*)TitleLoader::save.get();
             if (partyNum[0] != -1)
             {
                 save->partyBoxSlot(partyNum[0], boxBox * 30 + cursorIndex - 1);
@@ -1071,9 +1072,9 @@ void StorageScreen::putDownSwap()
     }
     else
     {
-        std::shared_ptr<PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
-        std::shared_ptr<PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-        if (bankMon->species() == Species::None)
+        std::shared_ptr<pksm::PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
+        std::shared_ptr<pksm::PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        if (bankMon->species() == pksm::Species::None)
         {
             bankMon = TitleLoader::save->emptyPkm();
         }
@@ -1088,7 +1089,7 @@ void StorageScreen::putDownSwap()
                 i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)bankMon->generation(), (std::string)TitleLoader::save->generation()));
             return;
         }
-        if (bankMon->species() == Species::None ||
+        if (bankMon->species() == pksm::Species::None ||
             (Configuration::getInstance().transferEdit() || bankMon->generation() == TitleLoader::save->generation()) ||
             Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2")))
         {
@@ -1096,7 +1097,7 @@ void StorageScreen::putDownSwap()
             {
                 if (partyNum[0] != -1)
                 {
-                    ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
+                    ((pksm::SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[0], 1001);
                     TitleLoader::save->fixParty();
                 }
                 TitleLoader::save->pkm(
@@ -1106,7 +1107,7 @@ void StorageScreen::putDownSwap()
             }
             else
             {
-                SavLGPE* save = (SavLGPE*)TitleLoader::save.get();
+                pksm::SavLGPE* save = (pksm::SavLGPE*)TitleLoader::save.get();
                 for (int i = 0; i < 6; i++)
                 {
                     if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
@@ -1137,8 +1138,8 @@ void StorageScreen::putDownNonSwap()
         {
             for (int x = 0; x < selectDimensions.first; x++)
             {
-                int index                   = x + y * selectDimensions.first;
-                std::shared_ptr<PKX> temPkm = Banks::bank->pkm(storageBox, cursorIndex - 1 + x + y * 6);
+                int index                         = x + y * selectDimensions.first;
+                std::shared_ptr<pksm::PKX> temPkm = Banks::bank->pkm(storageBox, cursorIndex - 1 + x + y * 6);
                 if (moveMon[index])
                 {
                     Banks::bank->pkm(*moveMon[index], storageBox, cursorIndex - 1 + x + y * 6);
@@ -1149,7 +1150,7 @@ void StorageScreen::putDownNonSwap()
                 }
                 moveMon[index] = temPkm;
 
-                if (moveMon[index] && moveMon[index]->species() != Species::None)
+                if (moveMon[index] && moveMon[index]->species() != pksm::Species::None)
                 {
                     fromStorage = true;
                 }
@@ -1167,7 +1168,7 @@ void StorageScreen::putDownNonSwap()
             for (int x = 0; x < selectDimensions.first; x++)
             {
                 int index = x + y * selectDimensions.first;
-                if (!moveMon[index] || moveMon[index]->species() == Species::None)
+                if (!moveMon[index] || moveMon[index]->species() == pksm::Species::None)
                 {
                     moveMon[index] = TitleLoader::save->emptyPkm();
                 }
@@ -1189,7 +1190,7 @@ void StorageScreen::putDownNonSwap()
                     checkedWithUser = true;
                     acceptGenChange = Gui::showChoiceMessage(i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
                 }
-                std::shared_ptr<PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
+                std::shared_ptr<pksm::PKX> temPkm = TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
                 if (moveMon[index]->generation() == TitleLoader::save->generation() || acceptGenChange)
                 {
                     TitleLoader::save->pkm(*TitleLoader::save->transfer(*moveMon[index]), boxBox, cursorIndex - 1 + x + y * 6,
@@ -1197,9 +1198,9 @@ void StorageScreen::putDownNonSwap()
                     TitleLoader::save->dex(*moveMon[index]);
                     if (partyNum[index] != -1)
                     {
-                        ((SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
+                        ((pksm::SavLGPE*)TitleLoader::save.get())->partyBoxSlot(partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
                     }
-                    if (temPkm->species() == Species::None)
+                    if (temPkm->species() == pksm::Species::None)
                     {
                         moveMon[index] = nullptr;
                     }
@@ -1257,7 +1258,7 @@ bool StorageScreen::dumpPkm()
         std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
         mkdir(path.c_str(), 777);
         path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
-        std::shared_ptr<PKX> dumpMon;
+        std::shared_ptr<pksm::PKX> dumpMon;
         if (!storageChosen)
         {
             if (cursorIndex == 0)
@@ -1336,7 +1337,7 @@ bool StorageScreen::duplicate()
                 }
                 moveMon.emplace_back(TitleLoader::save->pkm(boxBox, cursorIndex - 1)->clone());
             }
-            if (moveMon.back()->species() == Species::None)
+            if (moveMon.back()->species() == pksm::Species::None)
             {
                 moveMon.clear();
             }
@@ -1361,8 +1362,8 @@ bool StorageScreen::swapBoxWithStorage()
         {
             break;
         }
-        std::shared_ptr<PKX> temPkm = Banks::bank->pkm(storageBox, i);
-        if (temPkm->species() == Species::None)
+        std::shared_ptr<pksm::PKX> temPkm = Banks::bank->pkm(storageBox, i);
+        if (temPkm->species() == pksm::Species::None)
         {
             temPkm = TitleLoader::save->emptyPkm();
         }
@@ -1377,9 +1378,9 @@ bool StorageScreen::swapBoxWithStorage()
             temPkm = TitleLoader::save->transfer(*temPkm);
             if (temPkm)
             {
-                if (temPkm->species() == Species::None || isValidTransfer(temPkm, true))
+                if (temPkm->species() == pksm::Species::None || isValidTransfer(temPkm, true))
                 {
-                    std::shared_ptr<PKX> otherTemPkm = TitleLoader::save->pkm(boxBox, i);
+                    std::shared_ptr<pksm::PKX> otherTemPkm = TitleLoader::save->pkm(boxBox, i);
                     TitleLoader::save->pkm(*temPkm, boxBox, i, Configuration::getInstance().transferEdit());
                     TitleLoader::save->dex(*temPkm);
                     Banks::bank->pkm(*otherTemPkm, storageBox, i);
@@ -1543,7 +1544,7 @@ void StorageScreen::grabSelection(bool remove)
                 fromStorage = true;
                 moveMon.emplace_back(Banks::bank->pkm(storageBox, pickupIndex));
                 partyNum.push_back(-1);
-                if (moveMon.back()->species() == Species::None)
+                if (moveMon.back()->species() == pksm::Species::None)
                 {
                     *moveMon.rbegin() = nullptr;
                 }
@@ -1556,9 +1557,9 @@ void StorageScreen::grabSelection(bool remove)
             {
                 fromStorage = false;
                 partyNum.push_back(-1);
-                if (TitleLoader::save->generation() == Generation::LGPE)
+                if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
-                    SavLGPE* sav = (SavLGPE*)TitleLoader::save.get();
+                    pksm::SavLGPE* sav = (pksm::SavLGPE*)TitleLoader::save.get();
                     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
                     {
                         if (sav->partyBoxSlot(i) == boxBox * 30 + pickupIndex)
@@ -1569,7 +1570,7 @@ void StorageScreen::grabSelection(bool remove)
                     }
                 }
                 moveMon.emplace_back(TitleLoader::save->pkm(boxBox, pickupIndex));
-                if (moveMon.back()->species() == Species::None)
+                if (moveMon.back()->species() == pksm::Species::None)
                 {
                     *moveMon.rbegin() = nullptr;
                 }
@@ -1585,7 +1586,7 @@ void StorageScreen::grabSelection(bool remove)
         }
     }
     currentlySelecting = false;
-    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
+    if (std::find_if(moveMon.begin(), moveMon.end(), [](const std::shared_ptr<pksm::PKX>& pkm) { return (bool)pkm; }) == moveMon.end())
     {
         moveMon.clear();
         partyNum.clear();

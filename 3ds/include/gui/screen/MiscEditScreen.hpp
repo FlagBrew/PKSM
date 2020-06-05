@@ -28,16 +28,16 @@
 #define MISCEDITSCREEN_HPP
 
 #include "Screen.hpp"
+#include "pkx/PKX.hpp"
 #include <memory>
 #include <vector>
 
-class PKX;
 class Button;
 
 class MiscEditScreen : public Screen
 {
 public:
-    MiscEditScreen(std::shared_ptr<PKX> pkm);
+    MiscEditScreen(std::shared_ptr<pksm::PKX> pkm);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -57,7 +57,7 @@ private:
     void year();
     void validate();
     std::vector<std::unique_ptr<Button>> buttons;
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     bool otAndMet     = true;
     bool justSwitched = true;
 };

@@ -30,13 +30,13 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "FilterScreen.hpp"
-#include "Sav.hpp"
 #include "SortScreen.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "sav/Sav.hpp"
 
-StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox, std::shared_ptr<PKFilter> filter)
+StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : ReplaceableScreen(&screen, i18n::localize("B_BACK")), filter(filter), boxBox(boxBox), storageBox(storageBox), storage(store)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,

@@ -31,11 +31,6 @@
 #include "Configuration.hpp"
 #include "LegalInfoScreen.hpp"
 #include "LocationOverlay.hpp"
-#include "PB7.hpp"
-#include "PK6.hpp"
-#include "PK7.hpp"
-#include "PK8.hpp"
-#include "Sav.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
 #include "base64.hpp"
@@ -43,8 +38,13 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PB7.hpp"
+#include "pkx/PK6.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PK8.hpp"
+#include "sav/Sav.hpp"
 
-MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
+MiscEditScreen::MiscEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
         [this]() {
@@ -121,7 +121,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
 
-    if (pkm->generation() > Generation::FIVE)
+    if (pkm->generation() > pksm::Generation::FIVE)
     {
         buttons.push_back(std::make_unique<AccelButton>(
             94, 154, 13, 13, [this]() { return this->changeEnjoyment(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
@@ -145,7 +145,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
         buttons.push_back(std::make_unique<AccelButton>(
             142, 174, 13, 13, [this]() { return this->changeFullness(true); }, ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
-        if (pkm->generation() < Generation::EIGHT)
+        if (pkm->generation() < pksm::Generation::EIGHT)
         {
             buttons.push_back(std::make_unique<AccelButton>(
                 94, 194, 13, 13, [this]() { return this->changeAffection(false); }, ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
@@ -165,7 +165,7 @@ MiscEditScreen::MiscEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
 
 void MiscEditScreen::drawBottom() const
 {
-    Language lang = Configuration::getInstance().language();
+    pksm::Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
@@ -198,13 +198,13 @@ void MiscEditScreen::drawBottom() const
     Gui::text(i18n::localize(otAndMet ? "MET_LOCATION" : "EGG_LOCATION"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
         TextWidthAction::SQUISH_OR_SCROLL, 87);
     Gui::text(i18n::localize("ORIGIN_GAME"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-    if (pkm->generation() > Generation::FIVE)
+    if (pkm->generation() > pksm::Generation::FIVE)
     {
         Gui::text(
             i18n::localize("ENJOYMENT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
         Gui::text(
             i18n::localize("FULLNESS"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 87);
-        if (pkm->generation() < Generation::EIGHT)
+        if (pkm->generation() < pksm::Generation::EIGHT)
         {
             Gui::text(i18n::localize(otAndMet ? "OT_AFFECTION" : "HT_AFFECTION"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
                 TextWidthAction::SQUISH_OR_SCROLL, 87);
@@ -216,76 +216,76 @@ void MiscEditScreen::drawBottom() const
     Gui::text(std::to_string((int)date.day()), 115, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(std::to_string((int)date.month()), 115, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(std::to_string(date.year()), 115, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::location(lang, (Generation)pkm->version(), otAndMet ? pkm->metLocation() : pkm->eggLocation()), 115, 112, FONT_SIZE_12,
+    Gui::text(i18n::location(lang, (pksm::Generation)pkm->version(), otAndMet ? pkm->metLocation() : pkm->eggLocation()), 115, 112, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::game(lang, pkm->version()), 115, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    if (pkm->generation() > Generation::FIVE)
+    if (pkm->generation() > pksm::Generation::FIVE)
     {
         int print;
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            print = ((PK6*)pkm.get())->enjoyment();
+            print = ((pksm::PK6*)pkm.get())->enjoyment();
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            print = ((PK7*)pkm.get())->enjoyment();
+            print = ((pksm::PK7*)pkm.get())->enjoyment();
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            print = ((PB7*)pkm.get())->enjoyment();
+            print = ((pksm::PB7*)pkm.get())->enjoyment();
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            print = ((PK8*)pkm.get())->enjoyment();
+            print = ((pksm::PK8*)pkm.get())->enjoyment();
         }
         Gui::text(std::to_string(print), 107 + 35 / 2, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            print = ((PK6*)pkm.get())->fullness();
+            print = ((pksm::PK6*)pkm.get())->fullness();
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            print = ((PK7*)pkm.get())->fullness();
+            print = ((pksm::PK7*)pkm.get())->fullness();
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            print = ((PB7*)pkm.get())->fullness();
+            print = ((pksm::PB7*)pkm.get())->fullness();
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            print = ((PK8*)pkm.get())->fullness();
+            print = ((pksm::PK8*)pkm.get())->fullness();
         }
         Gui::text(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        if (pkm->generation() < Generation::EIGHT)
+        if (pkm->generation() < pksm::Generation::EIGHT)
         {
             if (otAndMet)
             {
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->generation() == pksm::Generation::SIX)
                 {
-                    print = ((PK6*)pkm.get())->otAffection();
+                    print = ((pksm::PK6*)pkm.get())->otAffection();
                 }
-                else if (pkm->generation() == Generation::SEVEN)
+                else if (pkm->generation() == pksm::Generation::SEVEN)
                 {
-                    print = ((PK7*)pkm.get())->otAffection();
+                    print = ((pksm::PK7*)pkm.get())->otAffection();
                 }
-                else if (pkm->generation() == Generation::LGPE)
+                else if (pkm->generation() == pksm::Generation::LGPE)
                 {
-                    print = ((PB7*)pkm.get())->otAffection();
+                    print = ((pksm::PB7*)pkm.get())->otAffection();
                 }
             }
             else
             {
-                if (pkm->generation() == Generation::SIX)
+                if (pkm->generation() == pksm::Generation::SIX)
                 {
-                    print = ((PK6*)pkm.get())->htAffection();
+                    print = ((pksm::PK6*)pkm.get())->htAffection();
                 }
-                else if (pkm->generation() == Generation::SEVEN)
+                else if (pkm->generation() == pksm::Generation::SEVEN)
                 {
-                    print = ((PK7*)pkm.get())->htAffection();
+                    print = ((pksm::PK7*)pkm.get())->htAffection();
                 }
-                else if (pkm->generation() == Generation::LGPE)
+                else if (pkm->generation() == pksm::Generation::LGPE)
                 {
-                    print = ((PB7*)pkm.get())->htAffection();
+                    print = ((pksm::PB7*)pkm.get())->htAffection();
                 }
             }
             Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -334,32 +334,32 @@ bool MiscEditScreen::changeAffection(bool up)
     {
         if (up)
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->otAffection(((PK6*)pkm.get())->otAffection() + 1);
+                ((pksm::PK6*)pkm.get())->otAffection(((pksm::PK6*)pkm.get())->otAffection() + 1);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->otAffection(((PK7*)pkm.get())->otAffection() + 1);
+                ((pksm::PK7*)pkm.get())->otAffection(((pksm::PK7*)pkm.get())->otAffection() + 1);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->otAffection(((PB7*)pkm.get())->otAffection() + 1);
+                ((pksm::PB7*)pkm.get())->otAffection(((pksm::PB7*)pkm.get())->otAffection() + 1);
             }
         }
         else
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->otAffection(((PK6*)pkm.get())->otAffection() - 1);
+                ((pksm::PK6*)pkm.get())->otAffection(((pksm::PK6*)pkm.get())->otAffection() - 1);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->otAffection(((PK7*)pkm.get())->otAffection() - 1);
+                ((pksm::PK7*)pkm.get())->otAffection(((pksm::PK7*)pkm.get())->otAffection() - 1);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->otAffection(((PB7*)pkm.get())->otAffection() - 1);
+                ((pksm::PB7*)pkm.get())->otAffection(((pksm::PB7*)pkm.get())->otAffection() - 1);
             }
         }
     }
@@ -367,32 +367,32 @@ bool MiscEditScreen::changeAffection(bool up)
     {
         if (up)
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->htAffection(((PK6*)pkm.get())->htAffection() + 1);
+                ((pksm::PK6*)pkm.get())->htAffection(((pksm::PK6*)pkm.get())->htAffection() + 1);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->htAffection(((PK7*)pkm.get())->htAffection() + 1);
+                ((pksm::PK7*)pkm.get())->htAffection(((pksm::PK7*)pkm.get())->htAffection() + 1);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->htAffection(((PB7*)pkm.get())->htAffection() + 1);
+                ((pksm::PB7*)pkm.get())->htAffection(((pksm::PB7*)pkm.get())->htAffection() + 1);
             }
         }
         else
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->htAffection(((PK6*)pkm.get())->htAffection() - 1);
+                ((pksm::PK6*)pkm.get())->htAffection(((pksm::PK6*)pkm.get())->htAffection() - 1);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->htAffection(((PK7*)pkm.get())->htAffection() - 1);
+                ((pksm::PK7*)pkm.get())->htAffection(((pksm::PK7*)pkm.get())->htAffection() - 1);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->htAffection(((PB7*)pkm.get())->htAffection() - 1);
+                ((pksm::PB7*)pkm.get())->htAffection(((pksm::PB7*)pkm.get())->htAffection() - 1);
             }
         }
     }
@@ -413,32 +413,32 @@ void MiscEditScreen::setAffection()
         u8 affection = (u8)std::min(std::stoi(input), 255);
         if (otAndMet)
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->otAffection(affection);
+                ((pksm::PK6*)pkm.get())->otAffection(affection);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->otAffection(affection);
+                ((pksm::PK7*)pkm.get())->otAffection(affection);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->otAffection(affection);
+                ((pksm::PB7*)pkm.get())->otAffection(affection);
             }
         }
         else
         {
-            if (pkm->generation() == Generation::SIX)
+            if (pkm->generation() == pksm::Generation::SIX)
             {
-                ((PK6*)pkm.get())->htAffection(affection);
+                ((pksm::PK6*)pkm.get())->htAffection(affection);
             }
-            else if (pkm->generation() == Generation::SEVEN)
+            else if (pkm->generation() == pksm::Generation::SEVEN)
             {
-                ((PK7*)pkm.get())->htAffection(affection);
+                ((pksm::PK7*)pkm.get())->htAffection(affection);
             }
-            else if (pkm->generation() == Generation::LGPE)
+            else if (pkm->generation() == pksm::Generation::LGPE)
             {
-                ((PB7*)pkm.get())->htAffection(affection);
+                ((pksm::PB7*)pkm.get())->htAffection(affection);
             }
         }
     }
@@ -448,40 +448,40 @@ bool MiscEditScreen::changeFullness(bool up)
 {
     if (up)
     {
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->fullness(((PK6*)pkm.get())->fullness() + 1);
+            ((pksm::PK6*)pkm.get())->fullness(((pksm::PK6*)pkm.get())->fullness() + 1);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->fullness(((PK7*)pkm.get())->fullness() + 1);
+            ((pksm::PK7*)pkm.get())->fullness(((pksm::PK7*)pkm.get())->fullness() + 1);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->fullness(((PB7*)pkm.get())->fullness() + 1);
+            ((pksm::PB7*)pkm.get())->fullness(((pksm::PB7*)pkm.get())->fullness() + 1);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->fullness(((PK8*)pkm.get())->fullness() + 1);
+            ((pksm::PK8*)pkm.get())->fullness(((pksm::PK8*)pkm.get())->fullness() + 1);
         }
     }
     else
     {
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->fullness(((PK6*)pkm.get())->fullness() - 1);
+            ((pksm::PK6*)pkm.get())->fullness(((pksm::PK6*)pkm.get())->fullness() - 1);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->fullness(((PK7*)pkm.get())->fullness() - 1);
+            ((pksm::PK7*)pkm.get())->fullness(((pksm::PK7*)pkm.get())->fullness() - 1);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->fullness(((PB7*)pkm.get())->fullness() - 1);
+            ((pksm::PB7*)pkm.get())->fullness(((pksm::PB7*)pkm.get())->fullness() - 1);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->fullness(((PK8*)pkm.get())->fullness() - 1);
+            ((pksm::PK8*)pkm.get())->fullness(((pksm::PK8*)pkm.get())->fullness() - 1);
         }
     }
     return false;
@@ -499,21 +499,21 @@ void MiscEditScreen::setFullness()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 fullness = (u8)std::min(std::stoi(input), 255);
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->fullness(fullness);
+            ((pksm::PK6*)pkm.get())->fullness(fullness);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->fullness(fullness);
+            ((pksm::PK7*)pkm.get())->fullness(fullness);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->fullness(fullness);
+            ((pksm::PB7*)pkm.get())->fullness(fullness);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->fullness(fullness);
+            ((pksm::PK8*)pkm.get())->fullness(fullness);
         }
     }
 }
@@ -522,40 +522,40 @@ bool MiscEditScreen::changeEnjoyment(bool up)
 {
     if (up)
     {
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->enjoyment(((PK6*)pkm.get())->enjoyment() + 1);
+            ((pksm::PK6*)pkm.get())->enjoyment(((pksm::PK6*)pkm.get())->enjoyment() + 1);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->enjoyment(((PK7*)pkm.get())->enjoyment() + 1);
+            ((pksm::PK7*)pkm.get())->enjoyment(((pksm::PK7*)pkm.get())->enjoyment() + 1);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->enjoyment(((PB7*)pkm.get())->enjoyment() + 1);
+            ((pksm::PB7*)pkm.get())->enjoyment(((pksm::PB7*)pkm.get())->enjoyment() + 1);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->enjoyment(((PK8*)pkm.get())->enjoyment() + 1);
+            ((pksm::PK8*)pkm.get())->enjoyment(((pksm::PK8*)pkm.get())->enjoyment() + 1);
         }
     }
     else
     {
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->enjoyment(((PK6*)pkm.get())->enjoyment() - 1);
+            ((pksm::PK6*)pkm.get())->enjoyment(((pksm::PK6*)pkm.get())->enjoyment() - 1);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->enjoyment(((PK7*)pkm.get())->enjoyment() - 1);
+            ((pksm::PK7*)pkm.get())->enjoyment(((pksm::PK7*)pkm.get())->enjoyment() - 1);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->enjoyment(((PB7*)pkm.get())->enjoyment() - 1);
+            ((pksm::PB7*)pkm.get())->enjoyment(((pksm::PB7*)pkm.get())->enjoyment() - 1);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->enjoyment(((PK8*)pkm.get())->enjoyment() - 1);
+            ((pksm::PK8*)pkm.get())->enjoyment(((pksm::PK8*)pkm.get())->enjoyment() - 1);
         }
     }
     return false;
@@ -573,21 +573,21 @@ void MiscEditScreen::setEnjoyment()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 enjoyment = (u8)std::min(std::stoi(input), 255);
-        if (pkm->generation() == Generation::SIX)
+        if (pkm->generation() == pksm::Generation::SIX)
         {
-            ((PK6*)pkm.get())->enjoyment(enjoyment);
+            ((pksm::PK6*)pkm.get())->enjoyment(enjoyment);
         }
-        else if (pkm->generation() == Generation::SEVEN)
+        else if (pkm->generation() == pksm::Generation::SEVEN)
         {
-            ((PK7*)pkm.get())->enjoyment(enjoyment);
+            ((pksm::PK7*)pkm.get())->enjoyment(enjoyment);
         }
-        else if (pkm->generation() == Generation::LGPE)
+        else if (pkm->generation() == pksm::Generation::LGPE)
         {
-            ((PB7*)pkm.get())->enjoyment(enjoyment);
+            ((pksm::PB7*)pkm.get())->enjoyment(enjoyment);
         }
-        else if (pkm->generation() == Generation::EIGHT)
+        else if (pkm->generation() == pksm::Generation::EIGHT)
         {
-            ((PK8*)pkm.get())->enjoyment(enjoyment);
+            ((pksm::PK8*)pkm.get())->enjoyment(enjoyment);
         }
     }
 }

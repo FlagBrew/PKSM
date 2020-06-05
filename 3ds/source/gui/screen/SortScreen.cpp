@@ -27,13 +27,13 @@
 #include "SortScreen.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
-#include "Sav.hpp"
 #include "SortOverlay.hpp"
 #include "banks.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKX.hpp"
+#include "sav/Sav.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)
 {
@@ -142,13 +142,13 @@ void SortScreen::sort()
         {
             sortTypes.push_back(SortType::DEX);
         }
-        std::vector<std::shared_ptr<PKX>> sortMe;
+        std::vector<std::shared_ptr<pksm::PKX>> sortMe;
         if (storage)
         {
             for (int i = 0; i < Banks::bank->boxes() * 30; i++)
             {
-                std::shared_ptr<PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
-                if (pkm->species() != Species::None)
+                std::shared_ptr<pksm::PKX> pkm = Banks::bank->pkm(i / 30, i % 30);
+                if (pkm->species() != pksm::Species::None)
                 {
                     sortMe.push_back(pkm);
                 }
@@ -158,14 +158,14 @@ void SortScreen::sort()
         {
             for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
             {
-                std::shared_ptr<PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
-                if (pkm->species() != Species::None)
+                std::shared_ptr<pksm::PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
+                if (pkm->species() != pksm::Species::None)
                 {
                     sortMe.push_back(pkm);
                 }
             }
         }
-        std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<PKX>& pkm1, const std::shared_ptr<PKX>& pkm2) {
+        std::stable_sort(sortMe.begin(), sortMe.end(), [this](const std::shared_ptr<pksm::PKX>& pkm1, const std::shared_ptr<pksm::PKX>& pkm2) {
             for (const auto& type : sortTypes)
             {
                 switch (type)
@@ -195,39 +195,39 @@ void SortScreen::sort()
                             return false;
                         break;
                     case SortType::HP:
-                        if (pkm1->stat(Stat::HP) < pkm2->stat(Stat::HP))
+                        if (pkm1->stat(pksm::Stat::HP) < pkm2->stat(pksm::Stat::HP))
                             return true;
-                        if (pkm2->stat(Stat::HP) < pkm1->stat(Stat::HP))
+                        if (pkm2->stat(pksm::Stat::HP) < pkm1->stat(pksm::Stat::HP))
                             return false;
                         break;
                     case SortType::ATK:
-                        if (pkm1->stat(Stat::ATK) < pkm2->stat(Stat::ATK))
+                        if (pkm1->stat(pksm::Stat::ATK) < pkm2->stat(pksm::Stat::ATK))
                             return true;
-                        if (pkm2->stat(Stat::ATK) < pkm1->stat(Stat::ATK))
+                        if (pkm2->stat(pksm::Stat::ATK) < pkm1->stat(pksm::Stat::ATK))
                             return false;
                         break;
                     case SortType::DEF:
-                        if (pkm1->stat(Stat::DEF) < pkm2->stat(Stat::DEF))
+                        if (pkm1->stat(pksm::Stat::DEF) < pkm2->stat(pksm::Stat::DEF))
                             return true;
-                        if (pkm2->stat(Stat::DEF) < pkm1->stat(Stat::DEF))
+                        if (pkm2->stat(pksm::Stat::DEF) < pkm1->stat(pksm::Stat::DEF))
                             return false;
                         break;
                     case SortType::SATK:
-                        if (pkm1->stat(Stat::SPATK) < pkm2->stat(Stat::SPATK))
+                        if (pkm1->stat(pksm::Stat::SPATK) < pkm2->stat(pksm::Stat::SPATK))
                             return true;
-                        if (pkm2->stat(Stat::SPATK) < pkm1->stat(Stat::SPATK))
+                        if (pkm2->stat(pksm::Stat::SPATK) < pkm1->stat(pksm::Stat::SPATK))
                             return false;
                         break;
                     case SortType::SDEF:
-                        if (pkm1->stat(Stat::SPDEF) < pkm2->stat(Stat::SPDEF))
+                        if (pkm1->stat(pksm::Stat::SPDEF) < pkm2->stat(pksm::Stat::SPDEF))
                             return true;
-                        if (pkm2->stat(Stat::SPDEF) < pkm1->stat(Stat::SPDEF))
+                        if (pkm2->stat(pksm::Stat::SPDEF) < pkm1->stat(pksm::Stat::SPDEF))
                             return false;
                         break;
                     case SortType::SPE:
-                        if (pkm1->stat(Stat::SPDEF) < pkm2->stat(Stat::SPD))
+                        if (pkm1->stat(pksm::Stat::SPDEF) < pkm2->stat(pksm::Stat::SPD))
                             return true;
-                        if (pkm2->stat(Stat::SPDEF) < pkm1->stat(Stat::SPD))
+                        if (pkm2->stat(pksm::Stat::SPDEF) < pkm1->stat(pksm::Stat::SPD))
                             return false;
                         break;
                     case SortType::NATURE:
@@ -249,39 +249,39 @@ void SortScreen::sort()
                             return false;
                         break;
                     case SortType::HPIV:
-                        if (pkm1->iv(Stat::HP) < pkm2->iv(Stat::HP))
+                        if (pkm1->iv(pksm::Stat::HP) < pkm2->iv(pksm::Stat::HP))
                             return true;
-                        if (pkm2->iv(Stat::HP) < pkm1->iv(Stat::HP))
+                        if (pkm2->iv(pksm::Stat::HP) < pkm1->iv(pksm::Stat::HP))
                             return false;
                         break;
                     case SortType::ATKIV:
-                        if (pkm1->iv(Stat::ATK) < pkm2->iv(Stat::ATK))
+                        if (pkm1->iv(pksm::Stat::ATK) < pkm2->iv(pksm::Stat::ATK))
                             return true;
-                        if (pkm2->iv(Stat::ATK) < pkm1->iv(Stat::ATK))
+                        if (pkm2->iv(pksm::Stat::ATK) < pkm1->iv(pksm::Stat::ATK))
                             return false;
                         break;
                     case SortType::DEFIV:
-                        if (pkm1->iv(Stat::DEF) < pkm2->iv(Stat::DEF))
+                        if (pkm1->iv(pksm::Stat::DEF) < pkm2->iv(pksm::Stat::DEF))
                             return true;
-                        if (pkm2->iv(Stat::DEF) < pkm1->iv(Stat::DEF))
+                        if (pkm2->iv(pksm::Stat::DEF) < pkm1->iv(pksm::Stat::DEF))
                             return false;
                         break;
                     case SortType::SATKIV:
-                        if (pkm1->iv(Stat::SPATK) < pkm2->iv(Stat::SPATK))
+                        if (pkm1->iv(pksm::Stat::SPATK) < pkm2->iv(pksm::Stat::SPATK))
                             return true;
-                        if (pkm2->iv(Stat::SPATK) < pkm1->iv(Stat::SPATK))
+                        if (pkm2->iv(pksm::Stat::SPATK) < pkm1->iv(pksm::Stat::SPATK))
                             return false;
                         break;
                     case SortType::SDEFIV:
-                        if (pkm1->iv(Stat::SPDEF) < pkm2->iv(Stat::SPDEF))
+                        if (pkm1->iv(pksm::Stat::SPDEF) < pkm2->iv(pksm::Stat::SPDEF))
                             return true;
-                        if (pkm2->iv(Stat::SPDEF) < pkm1->iv(Stat::SPDEF))
+                        if (pkm2->iv(pksm::Stat::SPDEF) < pkm1->iv(pksm::Stat::SPDEF))
                             return false;
                         break;
                     case SortType::SPEIV:
-                        if (pkm1->iv(Stat::SPD) < pkm2->iv(Stat::SPD))
+                        if (pkm1->iv(pksm::Stat::SPD) < pkm2->iv(pksm::Stat::SPD))
                             return true;
-                        if (pkm2->iv(Stat::SPD) < pkm1->iv(Stat::SPD))
+                        if (pkm2->iv(pksm::Stat::SPD) < pkm1->iv(pksm::Stat::SPD))
                             return false;
                         break;
                     case SortType::HIDDENPOWER:

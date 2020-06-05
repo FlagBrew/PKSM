@@ -28,17 +28,17 @@
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
 #include "HiddenPowerOverlay.hpp"
-#include "PB7.hpp"
 #include "ViewOverlay.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PB7.hpp"
 
 namespace
 {
-    constexpr Stat statValues[] = {Stat::HP, Stat::ATK, Stat::DEF, Stat::SPATK, Stat::SPDEF, Stat::SPD};
+    constexpr pksm::Stat statValues[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK, pksm::Stat::SPDEF, pksm::Stat::SPD};
 }
 
-StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
+StatsEditScreen::StatsEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
         [this]() {
@@ -85,7 +85,7 @@ StatsEditScreen::StatsEditScreen(std::shared_ptr<PKX> pkm) : pkm(pkm)
     addOverlay<ViewOverlay>(this->pkm, false);
 }
 
-void StatsEditScreen::setIV(Stat which)
+void StatsEditScreen::setIV(pksm::Stat which)
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 2);
@@ -101,7 +101,7 @@ void StatsEditScreen::setIV(Stat which)
     }
 }
 
-bool StatsEditScreen::changeIV(Stat which, bool up)
+bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
 {
     if (up)
     {
@@ -128,7 +128,7 @@ bool StatsEditScreen::changeIV(Stat which, bool up)
     return false;
 }
 
-void StatsEditScreen::setSecondaryStat(Stat which)
+void StatsEditScreen::setSecondaryStat(pksm::Stat which)
 {
     SwkbdState state;
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
@@ -140,7 +140,7 @@ void StatsEditScreen::setSecondaryStat(Stat which)
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 val = (u8)std::min(std::stoi(input), 252);
-        if (pkm->generation() != Generation::LGPE)
+        if (pkm->generation() != pksm::Generation::LGPE)
         {
             pkm->ev(which, val);
             u16 total = 0;
@@ -155,16 +155,16 @@ void StatsEditScreen::setSecondaryStat(Stat which)
         }
         else
         {
-            ((PB7*)pkm.get())->awakened(which, std::min((int)val, 200));
+            ((pksm::PB7*)pkm.get())->awakened(which, std::min((int)val, 200));
         }
     }
 }
 
-bool StatsEditScreen::changeSecondaryStat(Stat which, bool up)
+bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm->generation() != Generation::LGPE)
+        if (pkm->generation() != pksm::Generation::LGPE)
         {
             u16 total = 0;
             for (int i = 0; i < 6; i++)
@@ -186,7 +186,7 @@ bool StatsEditScreen::changeSecondaryStat(Stat which, bool up)
         }
         else
         {
-            PB7* pb7 = (PB7*)pkm.get();
+            pksm::PB7* pb7 = (pksm::PB7*)pkm.get();
             if (pb7->awakened(which) < 200)
             {
                 pb7->awakened(which, pb7->awakened(which) + 1);
@@ -199,7 +199,7 @@ bool StatsEditScreen::changeSecondaryStat(Stat which, bool up)
     }
     else
     {
-        if (pkm->generation() != Generation::LGPE)
+        if (pkm->generation() != pksm::Generation::LGPE)
         {
             if (pkm->ev(which) > 0)
             {
@@ -221,7 +221,7 @@ bool StatsEditScreen::changeSecondaryStat(Stat which, bool up)
         }
         else
         {
-            PB7* pb7 = (PB7*)pkm.get();
+            pksm::PB7* pb7 = (pksm::PB7*)pkm.get();
             if (pb7->awakened(which) > 0)
             {
                 pb7->awakened(which, pb7->awakened(which) - 1);
@@ -243,7 +243,7 @@ bool StatsEditScreen::setHP()
 
 void StatsEditScreen::drawBottom() const
 {
-    Language lang = Configuration::getInstance().language();
+    pksm::Language lang = Configuration::getInstance().language();
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
@@ -268,14 +268,14 @@ void StatsEditScreen::drawBottom() const
         button->draw();
     }
 
-    if (pkm->generation() == Generation::LGPE)
+    if (pkm->generation() == pksm::Generation::LGPE)
     {
-        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((pksm::PB7*)pkm.get())->CP()), 4, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
     }
     Gui::text(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("IV"), 132, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->generation() == Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, COLOR_BLACK,
+    Gui::text(pkm->generation() == pksm::Generation::LGPE ? i18n::localize("AWAKENED") : i18n::localize("EV"), 213, 32, FONT_SIZE_12, COLOR_BLACK,
         TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("HP"), 4, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -288,14 +288,14 @@ void StatsEditScreen::drawBottom() const
     for (int i = 0; i < 6; i++)
     {
         Gui::text(std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        if (pkm->generation() != Generation::LGPE)
+        if (pkm->generation() != pksm::Generation::LGPE)
         {
             Gui::text(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
-            Gui::text(std::to_string((int)((PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-                TextPosY::TOP);
+            Gui::text(std::to_string((int)((pksm::PB7*)pkm.get())->awakened(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::CENTER, TextPosY::TOP);
         }
         Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }

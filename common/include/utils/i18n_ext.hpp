@@ -27,19 +27,19 @@
 #ifndef I18N_EXT_HPP
 #define I18N_EXT_HPP
 
-#include "Sav.hpp"
-#include "i18n.hpp"
+#include "sav/Sav.hpp"
+#include "utils/i18n.hpp"
 
 namespace i18n
 {
-    void initGui(Language lang);
-    void exitGui(Language lang);
-    const std::string& localize(Language lang, const std::string& index);
+    void initGui(pksm::Language lang);
+    void exitGui(pksm::Language lang);
+    const std::string& localize(pksm::Language lang, const std::string& index);
 
-    const std::string& pouch(Language lang, Sav::Pouch pouch);
-    const std::string& badTransfer(Language lang, Sav::BadTransferReason reason);
+    const std::string& pouch(pksm::Language lang, pksm::Sav::Pouch pouch);
+    const std::string& badTransfer(pksm::Language lang, pksm::Sav::BadTransferReason reason);
 
-    const std::string& language(Language lang);
+    const std::string& language(pksm::Language lang);
 }
 
 #endif

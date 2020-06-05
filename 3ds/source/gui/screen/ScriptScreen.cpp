@@ -28,64 +28,66 @@
 #include "Archive.hpp"
 #include "Configuration.hpp"
 #include "Directory.hpp"
-#include "Sav.hpp"
-#include "Sav4.hpp"
 #include "ScrollingTextScreen.hpp"
 #include "banks.hpp"
 #include "endian.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "sav/Sav.hpp"
+#include "sav/Sav4.hpp"
+
 #include "picoc.h"
 #undef min // Get rid of picoc's min function
+
 #include <algorithm>
 
 namespace
 {
     constexpr std::string_view MAGIC = "PKSMSCRIPT";
 
-    std::string getScriptDir(GameVersion version)
+    std::string getScriptDir(pksm::GameVersion version)
     {
         switch (version)
         {
-            case GameVersion::R:
-            case GameVersion::S:
+            case pksm::GameVersion::R:
+            case pksm::GameVersion::S:
                 return "/scripts/rs";
-            case GameVersion::E:
+            case pksm::GameVersion::E:
                 return "/scripts/e";
-            case GameVersion::FR:
-            case GameVersion::LG:
+            case pksm::GameVersion::FR:
+            case pksm::GameVersion::LG:
                 return "/scripts/frlg";
-            case GameVersion::HG:
-            case GameVersion::SS:
+            case pksm::GameVersion::HG:
+            case pksm::GameVersion::SS:
                 return "/scripts/hgss";
-            case GameVersion::D:
-            case GameVersion::P:
+            case pksm::GameVersion::D:
+            case pksm::GameVersion::P:
                 return "/scripts/dp";
-            case GameVersion::Pt:
+            case pksm::GameVersion::Pt:
                 return "/scripts/pt";
-            case GameVersion::B:
-            case GameVersion::W:
+            case pksm::GameVersion::B:
+            case pksm::GameVersion::W:
                 return "/scripts/bw";
-            case GameVersion::B2:
-            case GameVersion::W2:
+            case pksm::GameVersion::B2:
+            case pksm::GameVersion::W2:
                 return "/scripts/b2w2";
-            case GameVersion::X:
-            case GameVersion::Y:
+            case pksm::GameVersion::X:
+            case pksm::GameVersion::Y:
                 return "/scripts/xy";
-            case GameVersion::OR:
-            case GameVersion::AS:
+            case pksm::GameVersion::OR:
+            case pksm::GameVersion::AS:
                 return "/scripts/oras";
-            case GameVersion::SN:
-            case GameVersion::MN:
+            case pksm::GameVersion::SN:
+            case pksm::GameVersion::MN:
                 return "/scripts/sm";
-            case GameVersion::US:
-            case GameVersion::UM:
+            case pksm::GameVersion::US:
+            case pksm::GameVersion::UM:
                 return "/scripts/usum";
-            case GameVersion::GP:
-            case GameVersion::GE:
+            case pksm::GameVersion::GP:
+            case pksm::GameVersion::GE:
                 return "/scripts/lgpe";
-            case GameVersion::SW:
-            case GameVersion::SH:
+            case pksm::GameVersion::SW:
+            case pksm::GameVersion::SH:
                 return "/scripts/swsh";
             default:
                 return "/scripts/" + std::to_string((int)version);
@@ -325,10 +327,10 @@ void ScriptScreen::applyScript()
         u32 length = LittleEndian::convertTo<u32>(scriptData.data() + index + 4);
         u32 repeat = LittleEndian::convertTo<u32>(scriptData.data() + index + 8 + length);
 
-        if (TitleLoader::save->generation() == Generation::FOUR)
+        if (TitleLoader::save->generation() == pksm::Generation::FOUR)
         {
-            u32 sbo = ((Sav4*)TitleLoader::save.get())->getSBO();
-            u32 gbo = ((Sav4*)TitleLoader::save.get())->getGBO();
+            u32 sbo = ((pksm::Sav4*)TitleLoader::save.get())->getSBO();
+            u32 gbo = ((pksm::Sav4*)TitleLoader::save.get())->getGBO();
             if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->maxBoxes(), 0) - sbo >= offset)
             {
                 offset += sbo;

@@ -27,14 +27,14 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
-#include "PKFilter.hpp"
 #include "Screen.hpp"
+#include "pkx/PKFilter.hpp"
+#include "pkx/PKX.hpp"
 #include <array>
 #include <memory>
 #include <vector>
 
 class Button;
-class PKX;
 
 class StorageScreen : public Screen
 {
@@ -73,23 +73,23 @@ private:
     void putDownSwap();
     void putDownNonSwap();
     bool checkPutDownBounds();
-    bool isValidTransfer(std::shared_ptr<PKX> moveMon, bool bulkTransfer = false);
+    bool isValidTransfer(std::shared_ptr<pksm::PKX> moveMon, bool bulkTransfer = false);
     void scrunchSelection();
     void grabSelection(bool remove);
 
     std::array<std::unique_ptr<Button>, 10> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<PKX> infoMon = nullptr;
-    std::vector<std::shared_ptr<PKX>> moveMon;
+    std::shared_ptr<pksm::PKX> infoMon = nullptr;
+    std::vector<std::shared_ptr<pksm::PKX>> moveMon;
     std::vector<int> partyNum;
     // While selecting, XY coords of original selection.
     // When selected, dimensions of moveMon
     // If pickupMode == SWAP, box number & slot pair
-    std::pair<int, int> selectDimensions = {0, 0};
-    std::shared_ptr<PKFilter> filter     = std::make_shared<PKFilter>();
-    int cursorIndex                      = 0;
-    int storageBox                       = 0;
-    int boxBox                           = 0;
+    std::pair<int, int> selectDimensions   = {0, 0};
+    std::shared_ptr<pksm::PKFilter> filter = std::make_shared<pksm::PKFilter>();
+    int cursorIndex                        = 0;
+    int storageBox                         = 0;
+    int boxBox                             = 0;
     enum PickupMode : u8
     {
         SINGLE,

@@ -30,7 +30,6 @@
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
 #include "ExtraSavesScreen.hpp"
-#include "PKX.hpp"
 #include "PkmUtils.hpp"
 #include "QRScanner.hpp"
 #include "TitleIdOverlay.hpp"
@@ -40,6 +39,7 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PKX.hpp"
 #include "thread.hpp"
 
 namespace
@@ -185,7 +185,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 52, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::JPN);
+            Configuration::getInstance().language(pksm::Language::JPN);
             initButtons();
             return false;
         },
@@ -194,7 +194,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 74, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::ENG);
+            Configuration::getInstance().language(pksm::Language::ENG);
             initButtons();
             return false;
         },
@@ -203,7 +203,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 96, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::FRE);
+            Configuration::getInstance().language(pksm::Language::FRE);
             initButtons();
             return false;
         },
@@ -212,7 +212,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 118, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::GER);
+            Configuration::getInstance().language(pksm::Language::GER);
             initButtons();
             return false;
         },
@@ -221,7 +221,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 140, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::ITA);
+            Configuration::getInstance().language(pksm::Language::ITA);
             initButtons();
             return false;
         },
@@ -230,7 +230,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 162, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::SPA);
+            Configuration::getInstance().language(pksm::Language::SPA);
             initButtons();
             return false;
         },
@@ -241,7 +241,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 52, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::CHS);
+            Configuration::getInstance().language(pksm::Language::CHS);
             initButtons();
             return false;
         },
@@ -250,7 +250,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 74, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::KOR);
+            Configuration::getInstance().language(pksm::Language::KOR);
             initButtons();
             return false;
         },
@@ -259,7 +259,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 96, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::NL);
+            Configuration::getInstance().language(pksm::Language::NL);
             initButtons();
             return false;
         },
@@ -268,7 +268,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 118, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::PT);
+            Configuration::getInstance().language(pksm::Language::PT);
             initButtons();
             return false;
         },
@@ -277,7 +277,7 @@ void ConfigScreen::initButtons()
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 140, 8, 8,
         [this]() {
             Gui::clearText();
-            Configuration::getInstance().language(Language::RO);
+            Configuration::getInstance().language(pksm::Language::RO);
             initButtons();
             return false;
         },
@@ -286,37 +286,37 @@ void ConfigScreen::initButtons()
 
     switch (Configuration::getInstance().language())
     {
-        case Language::JPN:
+        case pksm::Language::JPN:
             ((ToggleButton*)tabButtons[0][0].get())->setState(true);
             break;
-        case Language::ENG:
+        case pksm::Language::ENG:
             ((ToggleButton*)tabButtons[0][1].get())->setState(true);
             break;
-        case Language::FRE:
+        case pksm::Language::FRE:
             ((ToggleButton*)tabButtons[0][2].get())->setState(true);
             break;
-        case Language::GER:
+        case pksm::Language::GER:
             ((ToggleButton*)tabButtons[0][3].get())->setState(true);
             break;
-        case Language::ITA:
+        case pksm::Language::ITA:
             ((ToggleButton*)tabButtons[0][4].get())->setState(true);
             break;
-        case Language::SPA:
+        case pksm::Language::SPA:
             ((ToggleButton*)tabButtons[0][5].get())->setState(true);
             break;
-        case Language::CHS:
+        case pksm::Language::CHS:
             ((ToggleButton*)tabButtons[0][6].get())->setState(true);
             break;
-        case Language::KOR:
+        case pksm::Language::KOR:
             ((ToggleButton*)tabButtons[0][7].get())->setState(true);
             break;
-        case Language::NL:
+        case pksm::Language::NL:
             ((ToggleButton*)tabButtons[0][8].get())->setState(true);
             break;
-        case Language::PT:
+        case pksm::Language::PT:
             ((ToggleButton*)tabButtons[0][9].get())->setState(true);
             break;
-        case Language::RO:
+        case pksm::Language::RO:
             ((ToggleButton*)tabButtons[0][10].get())->setState(true);
             break;
         default:
@@ -328,43 +328,43 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(140, 32, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::THREE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 52, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::FOUR), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FOUR), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 72, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::FIVE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FIVE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 92, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::SIX), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SIX), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 112, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::SEVEN), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SEVEN), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 132, 15, 12,
         [this]() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::LGPE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::LGPE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 152, 15, 12,
         [this]() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(Generation::EIGHT), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::EIGHT), EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -490,18 +490,18 @@ void ConfigScreen::drawBottom() const
 
     if (currentTab == 0)
     {
-        Gui::text(i18n::language(Language::JPN), 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::ENG), 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::FRE), 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::GER), 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::ITA), 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::SPA), 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::JPN), 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::ENG), 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::FRE), 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::GER), 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::ITA), 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::SPA), 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::language(Language::CHS), 199, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::KOR), 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::NL), 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::PT), 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::CHS), 199, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::KOR), 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::NL), 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::PT), 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
@@ -510,19 +510,19 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::THREE), 19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::THREE), 19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::FOUR), 19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FOUR), 19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::FIVE), 19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FIVE), 19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::SIX), 19, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SIX), 19, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::SEVEN), 19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SEVEN), 19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::LGPE), 19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::LGPE), 19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)Generation::EIGHT), 19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::EIGHT), 19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
         Gui::text(i18n::localize("DAY"), 19, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("MONTH"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);

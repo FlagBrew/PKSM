@@ -29,16 +29,16 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
+#include "pkx/PKX.hpp"
 #include <map>
 #include <memory>
 
 class Button;
-class PKX;
 
 class LocationOverlay : public ReplaceableScreen
 {
 public:
-    LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm, bool met);
+    LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
@@ -46,7 +46,7 @@ public:
 
 private:
     void searchBar();
-    std::shared_ptr<PKX> pkm;
+    std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     const std::map<u16, std::string>& validLocations;
     std::map<u16, std::string> locations;

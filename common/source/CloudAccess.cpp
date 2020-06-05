@@ -26,12 +26,12 @@
 
 #include "CloudAccess.hpp"
 #include "Configuration.hpp"
-#include "PK7.hpp"
-#include "PKX.hpp"
 #include "app.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "nlohmann/json.hpp"
+#include "pkx/PK7.hpp"
+#include "pkx/PKX.hpp"
 #include "thread.hpp"
 #include <unistd.h>
 
@@ -53,7 +53,7 @@ namespace
 CloudAccess::Page::~Page() {}
 
 void CloudAccess::downloadCloudPage(
-    std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
+    std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
     auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal, low, high, LGPE), true, retData, nullptr, "");
@@ -151,7 +151,7 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
 }
 
-std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, Generation low, Generation high, bool LGPE)
+std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
@@ -159,22 +159,22 @@ std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal
            "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
 }
 
-std::shared_ptr<PKX> CloudAccess::pkm(size_t slot) const
+std::shared_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
-        std::string b64Data = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        Generation gen      = Generation::fromString((*current->data)["results"][slot]["generation"].get<std::string>());
+        std::string b64Data  = (*current->data)["results"][slot]["base_64"].get<std::string>();
+        pksm::Generation gen = pksm::Generation::fromString((*current->data)["results"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
-        auto ret = PKX::getPKM(gen, retData.data(), retData.size());
+        auto ret = pksm::PKX::getPKM(gen, retData.data(), retData.size());
         if (ret)
         {
             return ret;
         }
     }
-    return PKX::getPKM<Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
 bool CloudAccess::isLegal(size_t slot) const
@@ -186,7 +186,7 @@ bool CloudAccess::isLegal(size_t slot) const
     return false;
 }
 
-std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
+std::shared_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
@@ -200,7 +200,7 @@ std::shared_ptr<PKX> CloudAccess::fetchPkm(size_t slot) const
 
         return ret;
     }
-    return PKX::getPKM<Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
 bool CloudAccess::nextPage()
@@ -265,7 +265,7 @@ bool CloudAccess::prevPage()
     return isGood;
 }
 
-long CloudAccess::pkm(std::shared_ptr<PKX> mon)
+long CloudAccess::pkm(std::shared_ptr<pksm::PKX> mon)
 {
     long ret            = 0;
     std::string version = "Generation: " + (std::string)mon->generation();
@@ -311,25 +311,25 @@ int CloudAccess::pages() const
     return (*current->data)["pages"].get<int>();
 }
 
-void CloudAccess::filterToGen(Generation g)
+void CloudAccess::filterToGen(pksm::Generation g)
 {
-    if (g != Generation::LGPE)
+    if (g != pksm::Generation::LGPE)
     {
         lowGen = highGen = g;
         showLGPE         = false;
     }
     else
     {
-        lowGen   = Generation::EIGHT;
-        highGen  = Generation::FOUR;
+        lowGen   = pksm::Generation::EIGHT;
+        highGen  = pksm::Generation::FOUR;
         showLGPE = true;
     }
 }
 
 void CloudAccess::removeGenFilter()
 {
-    lowGen   = Generation::THREE;
-    highGen  = Generation::EIGHT;
+    lowGen   = pksm::Generation::THREE;
+    highGen  = pksm::Generation::EIGHT;
     showLGPE = true;
 }
 

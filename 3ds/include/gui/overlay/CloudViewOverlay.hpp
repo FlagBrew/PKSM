@@ -34,7 +34,9 @@
 class CloudViewOverlay : public ViewOverlay
 {
 public:
-    CloudViewOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX>& pk) : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pk, true, "") {}
+    CloudViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pk) : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pk, true, "")
+    {
+    }
     virtual ~CloudViewOverlay() {}
     void update(touchPosition* touch) override;
     void drawBottom() const override { dim(); }

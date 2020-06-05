@@ -26,25 +26,26 @@
 
 #include "VersionOverlay.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "pkx/PKX.hpp"
 #include <algorithm>
 
-VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
+VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
     const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
     for (size_t i = 0; i < gameStrings.size(); i++)
     {
         if (!gameStrings[i].empty())
         {
-            games.emplace_back(GameVersion(i), gameStrings[i]);
+            games.emplace_back(pksm::GameVersion(i), gameStrings[i]);
         }
     }
     hid.update(games.size());
-    hid.select(std::distance(games.begin(), std::find_if(games.begin(), games.end(), [pkm](const std::pair<GameVersion, const std::string&>& pair) {
-        return pair.first == pkm->version();
-    })));
+    hid.select(
+        std::distance(games.begin(), std::find_if(games.begin(), games.end(), [pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
+            return pair.first == pkm->version();
+        })));
 }
 
 void VersionOverlay::drawBottom() const

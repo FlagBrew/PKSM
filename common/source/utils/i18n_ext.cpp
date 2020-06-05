@@ -30,12 +30,12 @@
 
 namespace i18n
 {
-    std::unordered_map<Language, nlohmann::json> gui;
+    std::unordered_map<pksm::Language, nlohmann::json> gui;
 
-    void load(Language lang, const std::string& name, nlohmann::json& json)
+    void load(pksm::Language lang, const std::string& name, nlohmann::json& json)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name) ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                                                                                   : _PKSMCORE_LANG_FOLDER + folder(Language::ENG) + name;
+                                                                                   : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         FILE* values = fopen(path.c_str(), "rt");
         if (values)
@@ -45,16 +45,16 @@ namespace i18n
         }
     }
 
-    void initGui(Language lang)
+    void initGui(pksm::Language lang)
     {
         nlohmann::json j;
         load(lang, "/gui.json", j);
         gui.insert_or_assign(lang, std::move(j));
     }
 
-    void exitGui(Language lang) { gui.erase(lang); }
+    void exitGui(pksm::Language lang) { gui.erase(lang); }
 
-    const std::string& localize(Language lang, const std::string& v)
+    const std::string& localize(pksm::Language lang, const std::string& v)
     {
         checkInitialized(lang);
         auto it = gui.find(lang);
@@ -69,61 +69,61 @@ namespace i18n
         return emptyString;
     }
 
-    const std::string& pouch(Language lang, Sav::Pouch pouch)
+    const std::string& pouch(pksm::Language lang, pksm::Sav::Pouch pouch)
     {
         checkInitialized(lang);
         switch (pouch)
         {
-            case Sav::Pouch::NormalItem:
+            case pksm::Sav::Pouch::NormalItem:
                 return localize(lang, "ITEMS");
-            case Sav::Pouch::KeyItem:
+            case pksm::Sav::Pouch::KeyItem:
                 return localize(lang, "KEY_ITEMS");
-            case Sav::Pouch::Ball:
+            case pksm::Sav::Pouch::Ball:
                 return localize(lang, "BALLS");
-            case Sav::Pouch::TM:
+            case pksm::Sav::Pouch::TM:
                 return localize(lang, "TMHM");
-            case Sav::Pouch::Berry:
+            case pksm::Sav::Pouch::Berry:
                 return localize(lang, "BERRIES");
-            case Sav::Pouch::PCItem:
+            case pksm::Sav::Pouch::PCItem:
                 return localize(lang, "PC_ITEMS");
-            case Sav::Pouch::Mail:
+            case pksm::Sav::Pouch::Mail:
                 return i18n::localize(lang, "MAIL");
-            case Sav::Pouch::Medicine:
+            case pksm::Sav::Pouch::Medicine:
                 return i18n::localize(lang, "MEDICINE");
-            case Sav::Pouch::Battle:
+            case pksm::Sav::Pouch::Battle:
                 return i18n::localize(lang, "BATTLE_ITEMS");
-            case Sav::Pouch::ZCrystals:
+            case pksm::Sav::Pouch::ZCrystals:
                 return i18n::localize(lang, "ZCRYSTALS");
-            case Sav::Pouch::RotomPower:
+            case pksm::Sav::Pouch::RotomPower:
                 return i18n::localize(lang, "ROTOM_POWERS");
-            case Sav::Pouch::Candy:
+            case pksm::Sav::Pouch::Candy:
                 return i18n::localize(lang, "CANDIES");
-            case Sav::Pouch::CatchingItem:
+            case pksm::Sav::Pouch::CatchingItem:
                 return i18n::localize(lang, "CATCHING_ITEMS");
-            case Sav::Pouch::Treasure:
+            case pksm::Sav::Pouch::Treasure:
                 return i18n::localize(lang, "TREASURES");
-            case Sav::Pouch::Ingredient:
+            case pksm::Sav::Pouch::Ingredient:
                 return i18n::localize(lang, "INGREDIENTS");
         }
         return emptyString;
     }
 
-    const std::string& badTransfer(Language lang, Sav::BadTransferReason reason)
+    const std::string& badTransfer(pksm::Language lang, pksm::Sav::BadTransferReason reason)
     {
         checkInitialized(lang);
         switch (reason)
         {
-            case Sav::BadTransferReason::MOVE:
+            case pksm::Sav::BadTransferReason::MOVE:
                 return i18n::localize(lang, "STORAGE_BAD_MOVE");
-            case Sav::BadTransferReason::SPECIES:
+            case pksm::Sav::BadTransferReason::SPECIES:
                 return i18n::localize(lang, "STORAGE_BAD_SPECIES");
-            case Sav::BadTransferReason::FORM:
+            case pksm::Sav::BadTransferReason::FORM:
                 return i18n::localize(lang, "STORAGE_BAD_FORM");
-            case Sav::BadTransferReason::ABILITY:
+            case pksm::Sav::BadTransferReason::ABILITY:
                 return i18n::localize(lang, "STORAGE_BAD_ABILITY");
-            case Sav::BadTransferReason::ITEM:
+            case pksm::Sav::BadTransferReason::ITEM:
                 return i18n::localize(lang, "STORAGE_BAD_ITEM");
-            case Sav::BadTransferReason::BALL:
+            case pksm::Sav::BadTransferReason::BALL:
                 return i18n::localize(lang, "STORAGE_BAD_BALL");
             default:
                 break;
@@ -131,7 +131,7 @@ namespace i18n
         return emptyString;
     }
 
-    const std::string& language(Language lang)
+    const std::string& language(pksm::Language lang)
     {
         static const std::string JPN = "日本語";
         static const std::string ENG = "English";
@@ -146,28 +146,28 @@ namespace i18n
         static const std::string RO  = "Română";
         switch (lang)
         {
-            case Language::JPN:
+            case pksm::Language::JPN:
                 return JPN;
-            case Language::ENG:
+            case pksm::Language::ENG:
                 return ENG;
-            case Language::FRE:
+            case pksm::Language::FRE:
                 return FRE;
-            case Language::GER:
+            case pksm::Language::GER:
                 return GER;
-            case Language::ITA:
+            case pksm::Language::ITA:
                 return ITA;
-            case Language::SPA:
+            case pksm::Language::SPA:
                 return SPA;
-            case Language::CHS:
-            case Language::CHT:
+            case pksm::Language::CHS:
+            case pksm::Language::CHT:
                 return CHN;
-            case Language::KOR:
+            case pksm::Language::KOR:
                 return KOR;
-            case Language::NL:
+            case pksm::Language::NL:
                 return NL;
-            case Language::PT:
+            case pksm::Language::PT:
                 return PT;
-            case Language::RO:
+            case pksm::Language::RO:
                 return RO;
         }
         return emptyString;

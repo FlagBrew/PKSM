@@ -27,11 +27,11 @@
 #ifndef MYSTERYGIFT_HPP
 #define MYSTERYGIFT_HPP
 
-#include "Gender.hpp"
-#include "Sav.hpp"
-#include "Species.hpp"
-#include "WCX.hpp"
+#include "enums/Gender.hpp"
+#include "enums/Species.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include "sav/Sav.hpp"
+#include "wcx/WCX.hpp"
 #include <bzlib.h>
 #include <string>
 
@@ -39,7 +39,7 @@ namespace MysteryGift
 {
     struct giftData
     {
-        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, Gender gender = Gender::Male,
+        giftData(const std::string& name = "", const std::string& game = "", int species = 0, int form = 0, pksm::Gender gender = pksm::Gender::Male,
             bool released = false)
             : name(name), game(game), species(species), form(form), gender(gender), released(released)
         {
@@ -48,14 +48,14 @@ namespace MysteryGift
         std::string game;
         int species;
         int form;
-        Gender gender;
+        pksm::Gender gender;
         bool released;
     };
 
-    void init(Generation gen);
+    void init(pksm::Generation gen);
     std::vector<nlohmann::json> wondercards();
     giftData wondercardInfo(size_t index);
-    std::unique_ptr<WCX> wondercard(size_t index);
+    std::unique_ptr<pksm::WCX> wondercard(size_t index);
     void exit();
 }
 

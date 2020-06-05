@@ -27,19 +27,18 @@
 #ifndef BANK_HPP
 #define BANK_HPP
 
-#include "Generation.hpp"
+#include "enums/Generation.hpp"
 #include "nlohmann/json_fwd.hpp"
-#include "sha256.h"
-
-class PKX;
+#include "pkx/PKX.hpp"
+#include "utils/crypto.hpp"
 
 class Bank
 {
 public:
     Bank(const std::string& name, int maxBoxes);
     ~Bank();
-    std::unique_ptr<PKX> pkm(int box, int slot) const;
-    void pkm(const PKX& pkm, int box, int slot);
+    std::unique_ptr<pksm::PKX> pkm(int box, int slot) const;
+    void pkm(const pksm::PKX& pkm, int box, int slot);
     void resize(int boxes);
     void load(int maxBoxes);
     bool save() const;
@@ -68,14 +67,14 @@ private:
     static_assert(sizeof(BankHeader) == 16);
     struct BankEntry
     {
-        Generation gen;
+        pksm::Generation gen;
         u8 data[0x148];
         u8 padding[4]; // Pad to 8 bytes
     };
     static_assert(sizeof(BankEntry) == 0x150);
     std::unique_ptr<nlohmann::json> boxNames;
-    mutable std::array<u8, SHA256_BLOCK_SIZE> prevHash;
-    mutable std::array<u8, SHA256_BLOCK_SIZE> prevNameHash;
+    mutable std::array<u8, 32> prevHash;
+    mutable std::array<u8, 32> prevNameHash;
     std::string bankName;
     BankHeader header;
     BankEntry* entries      = nullptr;

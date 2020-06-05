@@ -27,13 +27,13 @@
 #ifndef LOADER_HPP
 #define LOADER_HPP
 
+#include "sav/Sav.hpp"
 #include <3ds.h>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-class Sav;
 class Title;
 
 bool isLoadedSaveFromBridge(void);
@@ -64,7 +64,7 @@ namespace TitleLoader
     inline std::vector<std::shared_ptr<Title>> vcTitles;
     inline std::shared_ptr<Title> cardTitle = nullptr;
     inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
-    inline std::shared_ptr<Sav> save;
+    inline std::shared_ptr<pksm::Sav> save;
 }
 
 #endif

@@ -26,10 +26,10 @@
 
 #include "HiddenPowerOverlay.hpp"
 #include "Configuration.hpp"
-#include "PKX.hpp"
 #include "gui.hpp"
+#include "pkx/PKX.hpp"
 
-HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<PKX> pkm)
+HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
 {
     hid.update(16);
@@ -55,7 +55,7 @@ void HiddenPowerOverlay::drawTop() const
     Gui::drawSolidRect(x, y + 58, 99, 1, COLOR_YELLOW);
     for (int i = 0; i < 16; i++)
     {
-        Gui::type(Configuration::getInstance().language(), Type{u8(i + 1)}, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+        Gui::type(Configuration::getInstance().language(), pksm::Type{u8(i + 1)}, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
     }
 }
 
@@ -65,7 +65,7 @@ void HiddenPowerOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->hpType(Type{u8(hid.fullIndex() + 1)});
+        pkm->hpType(pksm::Type{u8(hid.fullIndex() + 1)});
         parent->removeOverlay();
         return;
     }
