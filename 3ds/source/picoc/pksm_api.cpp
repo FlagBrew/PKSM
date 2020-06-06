@@ -2087,35 +2087,35 @@ void json_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct 
 void json_is_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
-    ReturnValue->Val->Integer = check->is_number_integer() ? 0 : 1;
+    ReturnValue->Val->Integer = check->is_number_integer() ? 1 : 0;
 }
 
 // int json_is_bool(struct JSON* check);
 void json_is_bool(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
-    ReturnValue->Val->Integer = check->is_boolean() ? 0 : 1;
+    ReturnValue->Val->Integer = check->is_boolean() ? 1 : 0;
 }
 
 // int json_is_string(struct JSON* check);
 void json_is_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
-    ReturnValue->Val->Integer = check->is_string() ? 0 : 1;
+    ReturnValue->Val->Integer = check->is_string() ? 1 : 0;
 }
 
 // int json_is_array(struct JSON* check);
 void json_is_array(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
-    ReturnValue->Val->Integer = check->is_array() ? 0 : 1;
+    ReturnValue->Val->Integer = check->is_array() ? 1 : 0;
 }
 
 // int json_is_object(struct JSON* check);
 void json_is_object(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
-    ReturnValue->Val->Integer = check->is_object() ? 0 : 1;
+    ReturnValue->Val->Integer = check->is_object() ? 1 : 0;
 }
 
 // int json_get_int(struct JSON* get);
