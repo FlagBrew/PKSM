@@ -126,6 +126,7 @@ namespace
         {
             auto ret = pksm::PKX::getPKM<pksm::Generation::THREE>(nullptr, isParty);
             std::copy(data, data + pksm::PK3::BOX_LENGTH, ret->rawData());
+            return ret;
         }
         else
         {
@@ -552,7 +553,7 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
 
     checkGen(Parser, gen);
 
-    std::unique_ptr<PKX> pkm = getPokemon(data, gen, false);
+    auto pkm = getPokemon(data, gen, false);
 
     pkm->refreshChecksum();
     Banks::bank->pkm(*pkm, box, slot);
@@ -660,7 +661,7 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     pkm->encrypt();
     if (gen == pksm::Generation::THREE)
     {
-        std::copy(pkm->rawData(), pkm->getLength(), data);
+        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
     }
 }
 
@@ -681,7 +682,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
     int slot             = Param[2]->Val->Integer;
     checkGen(Parser, gen);
 
-    auto pkm = getPokemon(data, gen);
+    auto pkm = getPokemon(data, gen, false);
 
     if (pkm)
     {
