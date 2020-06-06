@@ -83,7 +83,7 @@ struct LibraryFunction UnixFunctions[] =
     { pksm_base64_encode,   "void base64_encode(char** out, int* outSize, unsigned char* data, int size);" },
     // json
     { json_new,             "struct JSON* json_new(void);" },
-    { json_parse,           "void json_parse(struct JSON* out, const char* data);" },
+    { json_parse,           "void json_parse(struct JSON* out, char* data);" },
     { json_delete,          "void json_delete(struct JSON* freed);" },
     { json_is_valid,        "int json_is_valid(struct JSON* check);" },
     { json_is_int,          "int json_is_int(struct JSON* check);" },
@@ -93,11 +93,11 @@ struct LibraryFunction UnixFunctions[] =
     { json_is_object,       "int json_is_object(struct JSON* check);" },
     { json_get_int,         "int json_get_int(struct JSON* get);" },
     { json_get_bool,        "int json_get_bool(struct JSON* get);" },
-    { json_get_string,      "const char* json_get_string(struct JSON* get);" },
+    { json_get_string,      "char* json_get_string(struct JSON* get);" },
     { json_array_size,      "int json_array_size(struct JSON* get);" },
     { json_array_element,   "struct JSON* json_array_element(struct JSON* array, int index);" },
     { json_object_contains, "int json_object_contains(struct JSON* get);" },
-    { json_object_element,  "struct JSON* json_object_element(struct JSON* object, const char* elemName);" },
+    { json_object_element,  "struct JSON* json_object_element(struct JSON* object, char* elemName);" },
     // end
     { NULL,                 NULL }
 };

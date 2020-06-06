@@ -368,8 +368,8 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         static constexpr int NUM_ARGS = 1;
         PicocPlatformScanFile(picoc, file.c_str());
         char* args[NUM_ARGS];
-        char version       = (char)TitleLoader::save->version();
-        args[0]            = &version;
+        char version = (char)TitleLoader::save->version();
+        args[0]      = &version;
         PicocCallMain(picoc, NUM_ARGS, args);
     }
 
