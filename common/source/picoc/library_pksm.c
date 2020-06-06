@@ -17,6 +17,8 @@ struct LibraryFunction UnixFunctions[] =
     { gui_numpad,           "void gui_numpad(unsigned int* out, char* hint, int maxDigits);" },
     { gui_boxes,            "int gui_boxes(int* fromStorage, int* box, int* slot, int doCrypt);" },
     // sav and storage
+    { sav_gbo,              "int sav_gbo();" },
+    { sav_sbo,              "int sav_sbo();" },
     { sav_boxDecrypt,       "void sav_box_decrypt();" },
     { sav_boxEncrypt,       "void sav_box_encrypt();" },
     { sav_get_pkx,          "void sav_get_pkx(char* data, int box, int slot);" },
