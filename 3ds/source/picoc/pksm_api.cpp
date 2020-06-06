@@ -119,6 +119,19 @@ namespace
     }
 
     struct Value* getNextVarArg(struct Value* arg) { return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg))); }
+
+    std::unique_ptr<pksm::PKX> getPokemon(u8* data, pksm::Generation gen, bool isParty)
+    {
+        if (gen == pksm::Generation::THREE)
+        {
+            auto ret = pksm::PKX::getPKM<pksm::Generation::THREE>(nullptr, isParty);
+            std::copy(data, data + pksm::PK3::BOX_LENGTH, ret->rawData());
+        }
+        else
+        {
+            return pksm::PKX::getPKM(gen, data, isParty, true);
+        }
+    }
 }
 
 extern "C" {
@@ -316,7 +329,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
     bool doTradeEdits    = Param[4]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, false);
+    auto pkm = getPokemon(data, gen, false);
 
     if (pkm)
     {
@@ -333,6 +346,7 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         }
         else
         {
+            pkm->refreshChecksum();
             TitleLoader::save->pkm(*pkm, box, slot, doTradeEdits);
             TitleLoader::save->dex(*pkm);
         }
@@ -538,8 +552,9 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
 
     checkGen(Parser, gen);
 
-    auto pkm = pksm::PKX::getPKM(gen, data, false, true);
+    std::unique_ptr<PKX> pkm = getPokemon(data, gen, false);
 
+    pkm->refreshChecksum();
     Banks::bank->pkm(*pkm, box, slot);
 }
 
@@ -629,7 +644,7 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
     checkGen(Parser, gen);
 
-    // Will automatically decrypt data
+    // Will automatically decrypt data; explicitly meant to not use getPokemon
     std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
 }
 
@@ -641,8 +656,12 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 
     checkGen(Parser, gen);
 
-    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
+    std::unique_ptr<pksm::PKX> pkm = getPokemon(data, gen, isParty);
     pkm->encrypt();
+    if (gen == pksm::Generation::THREE)
+    {
+        std::copy(pkm->rawData(), pkm->getLength(), data);
+    }
 }
 
 void pksm_utf8_to_utf16(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -662,7 +681,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
     int slot             = Param[2]->Val->Integer;
     checkGen(Parser, gen);
 
-    std::shared_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data);
+    auto pkm = getPokemon(data, gen);
 
     if (pkm)
     {
@@ -679,6 +698,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         }
         else
         {
+            pkm->refreshChecksum();
             TitleLoader::save->pkm(*pkm, slot);
             TitleLoader::save->dex(*pkm);
         }
@@ -756,8 +776,9 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     u8* data    = (u8*)Param[0]->Val->Pointer;
     int species = Param[1]->Val->Integer;
 
-    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(TitleLoader::save->generation(), data, false, true);
-    auto orig                      = PkmUtils::getDefault(TitleLoader::save->generation());
+    // is fine to not use getPokemon
+    auto pkm  = pksm::PKX::getPKM(TitleLoader::save->generation(), data, false, true);
+    auto orig = PkmUtils::getDefault(TitleLoader::save->generation());
     switch (TitleLoader::save->generation())
     {
         case pksm::Generation::THREE:
@@ -1060,7 +1081,7 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
     checkGen(Parser, gen);
 
-    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, false, true);
+    auto pkm = getPokemon(data, gen, false);
 
     if (pkm->species() == pksm::Species::None || pkm->species() > pksm::PKX::PKSM_MAX_SPECIES)
     {
@@ -1081,7 +1102,7 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     checkGen(Parser, gen);
 
     // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic repetition
-    pksm::PKX* pkm = pksm::PKX::getPKM(gen, data, false, true).release();
+    pksm::PKX* pkm = getPokemon(data, gen, false).release();
 
     switch (field)
     {
@@ -1474,6 +1495,10 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             delete pkm;
             scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
+    if (gen == pksm::Generation::THREE)
+    {
+        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+    }
     delete pkm;
 }
 
@@ -1485,7 +1510,7 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    pksm::PKX* pkm = pksm::PKX::getPKM(gen, data, false, true).release();
+    pksm::PKX* pkm = getPokemon(data, gen, false).release();
 
     switch (field)
     {
