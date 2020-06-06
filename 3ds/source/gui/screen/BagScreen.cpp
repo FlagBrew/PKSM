@@ -33,11 +33,13 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "sav/Item.hpp"
+#include "sav/Sav3.hpp"
 
 BagScreen::BagScreen()
     : Screen(i18n::localize("A_ITEM_EDIT") + '\n' + i18n::localize("L_POUCH") + '\n' + i18n::localize("R_ITEM") + '\n' + i18n::localize("B_BACK")),
       limits(TitleLoader::save->pouches()),
-      allowedItems(TitleLoader::save->validItems())
+      allowedItems(TitleLoader::save->generation() == pksm::Generation::THREE ? ((pksm::Sav3*)TitleLoader::save.get())->validItems3()
+                                                                              : TitleLoader::save->validItems())
 {
     currentPouch = (int)limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
