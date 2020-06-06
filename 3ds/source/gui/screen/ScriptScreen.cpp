@@ -365,14 +365,12 @@ void ScriptScreen::parsePicoCScript(std::string& file)
     Picoc* picoc = picoC();
     if (!PicocPlatformSetExitPoint(picoc))
     {
+        static constexpr int NUM_ARGS = 1;
         PicocPlatformScanFile(picoc, file.c_str());
-        char* args[3];
-        args[0]            = (char*)TitleLoader::save->rawData().get();
-        std::string length = std::to_string(TitleLoader::save->getLength());
-        args[1]            = length.data();
+        char* args[NUM_ARGS];
         char version       = (char)TitleLoader::save->version();
-        args[2]            = &version;
-        PicocCallMain(picoc, 3, args);
+        args[0]            = &version;
+        PicocCallMain(picoc, NUM_ARGS, args);
     }
 
     // Restore stdout state
