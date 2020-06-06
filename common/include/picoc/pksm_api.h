@@ -114,16 +114,19 @@ enum SAV_VALUE_CHECK
     SAV_VALUE_BALL
 };
 
+// bank stuff
 void bank_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void bank_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void bank_get_size(struct ParseState*, struct Value*, struct Value**, int);
 void bank_select(struct ParseState*, struct Value*, struct Value**, int);
+// configuration
 void cfg_default_ot(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_tid(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_sid(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_day(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_month(struct ParseState*, struct Value*, struct Value**, int);
 void cfg_default_year(struct ParseState*, struct Value*, struct Value**, int);
+// gui
 void gui_warn(struct ParseState*, struct Value*, struct Value**, int);
 void gui_choice(struct ParseState*, struct Value*, struct Value**, int);
 void gui_splash(struct ParseState*, struct Value*, struct Value**, int);
@@ -132,15 +135,15 @@ void gui_menu20x2(struct ParseState*, struct Value*, struct Value**, int);
 void gui_keyboard(struct ParseState*, struct Value*, struct Value**, int);
 void gui_numpad(struct ParseState*, struct Value*, struct Value**, int);
 void gui_boxes(struct ParseState*, struct Value*, struct Value**, int);
+// networking
 void net_ip(struct ParseState*, struct Value*, struct Value**, int);
 void net_tcp_receiver(struct ParseState*, struct Value*, struct Value**, int);
 void net_tcp_sender(struct ParseState*, struct Value*, struct Value**, int);
 void net_udp_receiver(struct ParseState*, struct Value*, struct Value**, int);
 void fetch_web_content(struct ParseState*, struct Value*, struct Value**, int);
+// save data stuff
 void party_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
 void party_inject_pkx(struct ParseState*, struct Value*, struct Value**, int);
-void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
-void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxEncrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_boxDecrypt(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_pkx(struct ParseState*, struct Value*, struct Value**, int);
@@ -149,15 +152,29 @@ void sav_inject_wcx(struct ParseState*, struct Value*, struct Value**, int);
 void sav_wcx_free_slot(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_value(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
+void sav_check_value(struct ParseState*, struct Value*, struct Value**, int);
+void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
+void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
+// General data handling functions
+void sav_get_data(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_data(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_byte(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_byte(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_short(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_short(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_int(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_int(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
-void sav_check_value(struct ParseState*, struct Value*, struct Value**, int);
+// i/o stuff
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
 void delete_directory(struct ParseState*, struct Value*, struct Value**, int);
 void save_path(struct ParseState*, struct Value*, struct Value**, int);
+// i18n
 void i18n_species(struct ParseState*, struct Value*, struct Value**, int);
 void i18n_form(struct ParseState*, struct Value*, struct Value**, int);
+// pkx
 void pkx_decrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_encrypt(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_box_size(struct ParseState*, struct Value*, struct Value**, int);
@@ -166,10 +183,27 @@ void pkx_generate(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
-// PKSM prefix to prevent name hiding
+// random utilities
 void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_decode(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_encode(struct ParseState*, struct Value*, struct Value**, int);
+// wrappers for nlohmann
+void json_new(struct ParseState*, struct Value*, struct Value**, int);
+void json_parse(struct ParseState*, struct Value*, struct Value**, int);
+void json_delete(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_valid(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_int(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_bool(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_string(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_array(struct ParseState*, struct Value*, struct Value**, int);
+void json_is_object(struct ParseState*, struct Value*, struct Value**, int);
+void json_get_int(struct ParseState*, struct Value*, struct Value**, int);
+void json_get_bool(struct ParseState*, struct Value*, struct Value**, int);
+void json_get_string(struct ParseState*, struct Value*, struct Value**, int);
+void json_array_size(struct ParseState*, struct Value*, struct Value**, int);
+void json_array_element(struct ParseState*, struct Value*, struct Value**, int);
+void json_object_contains(struct ParseState*, struct Value*, struct Value**, int);
+void json_object_element(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

@@ -38,6 +38,7 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
@@ -46,6 +47,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav4.hpp"
+#include "sav/Sav8.hpp"
 #include "utils/genToPkx.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
@@ -63,6 +65,7 @@
 #include <sys/socket.h>
 
 #include "picoc.h"
+#undef min
 
 namespace
 {
@@ -2048,6 +2051,281 @@ void fetch_web_content(struct ParseState* Parser, struct Value* ReturnValue, str
             *outSize                  = 0;
             return;
         }
+    }
+}
+
+// struct JSON* json_new();
+void json_new(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* ret = new nlohmann::json;
+    // explicitly set it to invalid
+    *ret = nlohmann::json::parse("{", nullptr, false);
+}
+
+// void json_parse(struct JSON* out, const char* data);
+void json_parse(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* out = (nlohmann::json*)Param[0]->Val->Pointer;
+    *out                = nlohmann::json::parse((char*)Param[1]->Val->Pointer, nullptr, false);
+}
+
+// void json_delete(struct JSON* freed);
+void json_delete(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    delete ((nlohmann::json*)Param[0]->Val->Pointer);
+}
+
+// int json_is_valid(struct JSON* check);
+void json_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_discarded() ? 0 : 1;
+}
+
+// int json_is_int(struct JSON* check);
+void json_is_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_number_integer() ? 0 : 1;
+}
+
+// int json_is_bool(struct JSON* check);
+void json_is_bool(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_boolean() ? 0 : 1;
+}
+
+// int json_is_string(struct JSON* check);
+void json_is_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_string() ? 0 : 1;
+}
+
+// int json_is_array(struct JSON* check);
+void json_is_array(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_array() ? 0 : 1;
+}
+
+// int json_is_object(struct JSON* check);
+void json_is_object(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = check->is_object() ? 0 : 1;
+}
+
+// int json_get_int(struct JSON* get);
+void json_get_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = get->get<int>();
+}
+
+// int json_get_bool(struct JSON* get);
+void json_get_bool(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = get->get<bool>() ? 1 : 0;
+}
+
+// const char* json_get_string(struct JSON* get);
+void json_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Pointer = strToRet(get->get_ref<std::string&>());
+}
+
+// int json_array_size(struct JSON* get);
+void json_array_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = get->size();
+}
+
+// struct JSON* json_array_element(struct JSON* get, int index);
+void json_array_element(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Pointer = &(*get)[Param[1]->Val->Integer];
+}
+
+// int json_object_contains(struct JSON* get);
+void json_object_contains(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Integer = get->contains((char*)Param[1]->Val->Pointer);
+}
+
+// struct JSON* json_object_element(struct JSON* get, const char* elemName);
+void json_object_element(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
+    ReturnValue->Val->Pointer = &(*get)[(char*)Param[1]->Val->Pointer];
+}
+
+// void sav_get_data(char* dataOut, unsigned int size, int off1, int off2);
+void sav_get_data(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*)Param[0]->Val->Pointer;
+    u32 size   = Param[1]->Val->UnsignedInteger;
+    s32 off1   = Param[2]->Val->Integer;
+    s32 off2   = Param[3]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        std::copy(block->decryptedData() + off2, block->decryptedData() + off2 + size, data);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        std::copy(TitleLoader::save->rawData().get() + off1 + off2, TitleLoader::save->rawData().get() + off1 + off2 + size, data);
+    }
+}
+// void sav_set_data(char* data, unsigned int size, int off1, int off2);
+void sav_set_data(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* data = (char*)Param[0]->Val->Pointer;
+    u32 size   = Param[1]->Val->UnsignedInteger;
+    s32 off1   = Param[2]->Val->Integer;
+    s32 off2   = Param[3]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        std::copy(data, data + size, block->decryptedData() + off2);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        std::copy(data, data + size, TitleLoader::save->rawData().get() + off1 + off2);
+    }
+}
+
+// char sav_get_byte(int off1, int off2);
+void sav_get_byte(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 off1 = Param[0]->Val->Integer;
+    s32 off2 = Param[1]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                          = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->UnsignedCharacter = block->decryptedData()[off2];
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        ReturnValue->Val->UnsignedCharacter = TitleLoader::save->rawData()[off1 + off2];
+    }
+}
+// void sav_set_byte(char data, int off1, int off2);
+void sav_set_byte(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8 data  = Param[0]->Val->UnsignedCharacter;
+    s32 off1 = Param[1]->Val->Integer;
+    s32 off2 = Param[2]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                   = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        block->decryptedData()[off2] = data;
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        TitleLoader::save->rawData()[off1 + off2] = data;
+    }
+}
+
+// short sav_get_short(int off1, int off2);
+void sav_get_short(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 off1 = Param[0]->Val->Integer;
+    s32 off2 = Param[1]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                             = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(block->decryptedData() + off2);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off1 + off2);
+    }
+}
+// void sav_set_short(short data, int off1, int off2);
+void sav_set_short(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u16 data = Param[0]->Val->UnsignedShortInteger;
+    s32 off1 = Param[1]->Val->Integer;
+    s32 off2 = Param[2]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        LittleEndian::convertFrom<u16>(block->decryptedData() + off2, data);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        LittleEndian::convertFrom<u16>(TitleLoader::save->rawData().get() + off1 + off2, data);
+    }
+}
+
+// int sav_get_int(int off1, int off2);
+void sav_get_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 off1 = Param[0]->Val->Integer;
+    s32 off2 = Param[1]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                        = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(block->decryptedData() + off2);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off1 + off2);
+    }
+}
+// void sav_set_int(int data, int off1, int off2);
+void sav_set_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u32 data = Param[0]->Val->UnsignedInteger;
+    s32 off1 = Param[1]->Val->Integer;
+    s32 off2 = Param[2]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        LittleEndian::convertFrom<u32>(block->decryptedData() + off2, data);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        scriptFail(Parser, "G3 editing API is not quite decided yet");
+    }
+    else
+    {
+        LittleEndian::convertFrom<u32>(TitleLoader::save->rawData().get() + off1 + off2, data);
     }
 }
 }
