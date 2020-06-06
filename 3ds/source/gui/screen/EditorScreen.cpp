@@ -297,6 +297,11 @@ void EditorScreen::update(touchPosition* touch)
         {
             return;
         }
+        else if (pkm->species() == pksm::Species::None)
+        {
+            Gui::screenBack();
+            return;
+        }
         else
         {
             justSwitched = false;
