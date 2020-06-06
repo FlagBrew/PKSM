@@ -704,6 +704,7 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         {
             pkm->refreshChecksum();
             TitleLoader::save->pkm(*pkm, slot);
+            TitleLoader::save->fixParty();
             TitleLoader::save->dex(*pkm);
         }
     }
