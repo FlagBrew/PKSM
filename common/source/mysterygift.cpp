@@ -177,6 +177,6 @@ MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
 {
     nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
     giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>(),
-        pksm::Gender(entry["gender"].get<int>()), entry["released"].get<bool>());
+        pksm::Gender(entry["gender"].get<int>()), entry.contains("released") ? entry["released"].get<bool>() : true);
     return ret;
 }
