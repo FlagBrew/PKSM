@@ -2059,7 +2059,8 @@ void json_new(struct ParseState* Parser, struct Value* ReturnValue, struct Value
 {
     nlohmann::json* ret = new nlohmann::json;
     // explicitly set it to invalid
-    *ret = nlohmann::json::parse("{", nullptr, false);
+    *ret                      = nlohmann::json::parse("{", nullptr, false);
+    ReturnValue->Val->Pointer = (void*)ret;
 }
 
 // void json_parse(struct JSON* out, const char* data);
