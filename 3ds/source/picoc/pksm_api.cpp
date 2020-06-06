@@ -2152,7 +2152,7 @@ void json_array_element(struct ParseState* Parser, struct Value* ReturnValue, st
     ReturnValue->Val->Pointer = &(*get)[Param[1]->Val->Integer];
 }
 
-// int json_object_contains(struct JSON* get);
+// int json_object_contains(struct JSON* get, char* elemName);
 void json_object_contains(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;

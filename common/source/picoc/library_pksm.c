@@ -96,7 +96,7 @@ struct LibraryFunction UnixFunctions[] =
     { json_get_string,      "char* json_get_string(struct JSON* get);" },
     { json_array_size,      "int json_array_size(struct JSON* get);" },
     { json_array_element,   "struct JSON* json_array_element(struct JSON* array, int index);" },
-    { json_object_contains, "int json_object_contains(struct JSON* get);" },
+    { json_object_contains, "int json_object_contains(struct JSON* get, char* elemName);" },
     { json_object_element,  "struct JSON* json_object_element(struct JSON* object, char* elemName);" },
     // end
     { NULL,                 NULL }
