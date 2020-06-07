@@ -116,6 +116,10 @@ std::string TitleIdOverlay::getNewTitleId() const
     swkbdSetFilterCallback(&state,
         [](void*, const char** ppMessage, const char* text, size_t textlen) {
             // Explicitly allow setting a TID to nothing
+            if (textlen == 0)
+            {
+                return SWKBD_CALLBACK_OK;
+            }
             u64 tid = strtoull(text, nullptr, 16);
             // If I can't open a title's contents archive, chances are it doesn't exist
             Archive a = Archive::saveAndContents(MEDIATYPE_SD, (u32)tid, (u32)(tid >> 32), false);
@@ -137,7 +141,11 @@ std::string TitleIdOverlay::getNewTitleId() const
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         titleId = input;
-        if (!(titleId[0] == '0' && (titleId[1] == 'x' || titleId[1] == 'X')))
+        if (titleId.empty())
+        {
+            titleId = TITLE_ID_DEFAULTS[hid.fullIndex()];
+        }
+        else if (!(titleId[0] == '0' && (titleId[1] == 'x' || titleId[1] == 'X')))
         {
             titleId = "0x" + titleId;
         }
