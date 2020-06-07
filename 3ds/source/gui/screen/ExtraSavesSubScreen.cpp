@@ -262,7 +262,7 @@ ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
             pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
         std::string id                                  = Configuration::getInstance().titleId(versions[i]);
         u64 tid                                         = strtoull(id.c_str(), nullptr, 16);
-        ctrIds[i]                                       = Title::tidToCheckpointPrefix<std::string>(tid);
+        ctrIds[i]                                       = Title::tidToCheckpointPrefix(tid);
     }
     updateSaves();
 }

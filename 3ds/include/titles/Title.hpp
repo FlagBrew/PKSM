@@ -54,7 +54,7 @@ public:
     std::string checkpointPrefix(void) const;
 
     // clang-format off
-    template <typename StrType>
+    template <typename StrType = std::string>
     requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
     static StrType tidToCheckpointPrefix(u64 tid)
     // clang-format on

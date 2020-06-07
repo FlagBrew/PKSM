@@ -35,14 +35,14 @@
 
 namespace
 {
-    constexpr size_t NUM_TITLES                           = 13;
-    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES] = {"R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
-    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES] = {"1", "2", "3", "4", "5", "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400",
-        "0x000400000011C500", "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000", "0x00040000001B5100"};
-    constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]   = {pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Rayquaza,
+    constexpr size_t NUM_TITLES                            = 13;
+    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES]  = {"R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
+    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES]    = {"0x100", "0x200", "0x300", "0x400", "0x500", "0x0004000000055D00", "0x0004000000055E00",
+        "0x000400000011C400", "0x000400000011C500", "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000", "0x00040000001B5100"};
+    constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]      = {pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Rayquaza,
         pksm::Species::Charizard, pksm::Species::Venusaur, pksm::Species::Xerneas, pksm::Species::Yveltal, pksm::Species::Groudon,
         pksm::Species::Kyogre, pksm::Species::Solgaleo, pksm::Species::Lunala, pksm::Species::Necrozma, pksm::Species::Necrozma};
-    constexpr int TITLE_FORMS[NUM_TITLES]               = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
+    constexpr int TITLE_FORMS[NUM_TITLES]                  = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
     constexpr pksm::GameVersion TITLE_VERSIONS[NUM_TITLES] = {pksm::GameVersion::R, pksm::GameVersion::S, pksm::GameVersion::E, pksm::GameVersion::FR,
         pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS, pksm::GameVersion::SN,
         pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
@@ -104,7 +104,7 @@ std::string TitleIdOverlay::getNewTitleId() const
     swkbdSetButton(&state, SWKBD_BUTTON_MIDDLE, i18n::localize("RESET").c_str(), false);
     swkbdSetHintText(&state, i18n::localize("TITLE_ID").c_str());
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);
-    if (titleId.empty() || titleId.size() == 1) // No title ID can be one character, but that's the default for some
+    if (titleId.size() != 18 || titleId.size() != 16) // All title IDs must be an optional 0x + 16 hex characters
     {
         swkbdSetInitialText(&state, "0x00040000");
     }
