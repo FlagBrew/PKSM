@@ -575,16 +575,27 @@ namespace
             bool exists;
             u64 mtime;
         } fileInfo, checksumFileInfo;
-        struct stat dummy;
+        struct stat mystat;
 
         std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
         std::string checksumPath = path + ".sha";
+        std::string romfsPath    = "romfs:/mg/" + fileName;
         decltype(pksm::crypto::sha256(nullptr, 0)) ret;
 
-        fileInfo.exists = (stat(path.c_str(), &dummy) == 0);
+        fileInfo.exists = (stat(path.c_str(), &mystat) == 0);
         archive_getmtime(path.c_str(), &fileInfo.mtime);
-        checksumFileInfo.exists = (stat(checksumPath.c_str(), &dummy) == 0);
+        checksumFileInfo.exists = (stat(checksumPath.c_str(), &mystat) == 0);
         archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
+        stat(romfsPath.c_str(), &mystat);
+
+        if (mystat.st_mtim.tv_sec > fileInfo.mtime)
+        {
+            Archive::sd().deleteFile(path);
+            Archive::sd().deleteFile(checksumPath);
+
+            fileInfo.exists         = false;
+            checksumFileInfo.exists = false;
+        }
 
         // Either both exist and file was modified before checksum file, or checksum file exists and file doesn't
         if (checksumFileInfo.exists && (!fileInfo.exists || (fileInfo.exists && fileInfo.mtime <= checksumFileInfo.mtime)))
@@ -598,12 +609,7 @@ namespace
             }
         }
 
-        if (!fileInfo.exists)
-        {
-            path = "romfs:/mg/" + fileName;
-        }
-
-        FILE* file = fopen(path.c_str(), "rb");
+        FILE* file = fopen(romfsPath.c_str(), "rb");
         if (file)
         {
             fseek(file, 0, SEEK_END);
