@@ -484,6 +484,11 @@ void SaveLoadScreen::updateTitles()
         ctrIds[i]          = Title::tidToCheckpointPrefix<std::string>(tid);
     }
 
+    for (auto i : saves)
+    {
+        i.clear();
+    }
+
     for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
     {
         if (i->first.size() == 4)
