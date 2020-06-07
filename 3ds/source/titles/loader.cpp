@@ -422,6 +422,8 @@ void TitleLoader::scanSaves(void)
         }
     };
 
+    sdSaves.clear();
+
     scan(vcTitleIds);
     scan(ctrTitleIds);
 
