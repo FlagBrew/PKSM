@@ -193,6 +193,11 @@ Configuration::Configuration()
             {
                 (*mJson)["titles"] = nlohmann::json::object();
 
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::R)]  = "1";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::S)]  = "2";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::E)]  = "3";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::FR)] = "4";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::LG)] = "5";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::X)]  = "0x0004000000055D00";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::Y)]  = "0x0004000000055E00";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::OR)] = "0x000400000011C400";
