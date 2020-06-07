@@ -294,6 +294,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else
         {
+            availableCheckpointSaves = {};
             buttons[0]->update(touch);
             if (buttonsDown & KEY_Y)
             {
