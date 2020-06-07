@@ -484,7 +484,7 @@ void SaveLoadScreen::updateTitles()
         ctrIds[i]          = Title::tidToCheckpointPrefix<std::string>(tid);
     }
 
-    for (auto i : saves)
+    for (auto& i : saves)
     {
         i.clear();
     }
