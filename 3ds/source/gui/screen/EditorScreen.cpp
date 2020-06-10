@@ -85,6 +85,7 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
     if (!pkm || pkm->species() == pksm::Species::None)
     {
         pkm = PkmUtils::getDefault(TitleLoader::save->generation());
+        u8 level = pkm->level();
         pkm->species(pksm::Species::None); // Intentionally set species to none
         if (Configuration::getInstance().useSaveInfo())
         {
@@ -136,7 +137,7 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
                     break;
             }
         }
-        addOverlay<SpeciesOverlay>(pkm);
+        addOverlay<SpeciesOverlay>(pkm, level);
     }
 
     buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));

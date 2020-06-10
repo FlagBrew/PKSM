@@ -40,7 +40,8 @@ class Button;
 class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object);
+    SpeciesOverlay(
+        ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u8 origLevel = 0);
     ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
@@ -56,6 +57,7 @@ private:
     std::string oldSearchString = "";
     std::vector<pksm::Species> dispPkm;
     bool justSwitched = true;
+    u8 origLevel;
 };
 
 #endif

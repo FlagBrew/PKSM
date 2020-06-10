@@ -870,6 +870,7 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pkm->setAbility(0);
     pkm->PID(pksm::PKX::getRandomPID(
         pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
+    pkm->level(orig->level());
 }
 
 void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
