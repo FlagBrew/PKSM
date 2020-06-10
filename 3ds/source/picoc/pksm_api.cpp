@@ -821,6 +821,15 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
+            case pksm::GameVersion::R:
+            case pksm::GameVersion::S:
+            case pksm::GameVersion::E:
+                pkm->metLocation(0x0010); // Route 101, probably RSE
+                break;
+            case pksm::GameVersion::FR:
+            case pksm::GameVersion::LG:
+                pkm->metLocation(0x0065); // Route 1, probably FRLG
+                break;
             case pksm::GameVersion::HG:
             case pksm::GameVersion::SS:
                 pkm->metLocation(0x0095); // Route 1, HGSS

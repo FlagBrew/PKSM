@@ -84,7 +84,7 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
 
     if (!pkm || pkm->species() == pksm::Species::None)
     {
-        pkm = PkmUtils::getDefault(TitleLoader::save->generation());
+        pkm      = PkmUtils::getDefault(TitleLoader::save->generation());
         u8 level = pkm->level();
         pkm->species(pksm::Species::None); // Intentionally set species to none
         if (Configuration::getInstance().useSaveInfo())
@@ -96,6 +96,15 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
             pkm->version(TitleLoader::save->version());
             switch (pkm->version())
             {
+                case pksm::GameVersion::R:
+                case pksm::GameVersion::S:
+                case pksm::GameVersion::E:
+                    pkm->metLocation(0x0010); // Route 101, probably RSE
+                    break;
+                case pksm::GameVersion::FR:
+                case pksm::GameVersion::LG:
+                    pkm->metLocation(0x0065); // Route 1, probably FRLG
+                    break;
                 case pksm::GameVersion::HG:
                 case pksm::GameVersion::SS:
                     pkm->metLocation(0x0095); // Route 1, HGSS
