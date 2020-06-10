@@ -39,6 +39,8 @@
 #include <vector>
 
 class Button;
+class ToggleButton;
+class EnablableToggleButton;
 
 class InjectorScreen : public Screen
 {
@@ -54,8 +56,12 @@ private:
     bool setLanguage(pksm::Language lang);
     bool isLangAvailable(pksm::Language lang) const;
     void changeDate();
+    void makeButtons();
 
-    std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<std::unique_ptr<EnablableToggleButton>> langButtons;
+    std::vector<std::unique_ptr<ToggleButton>> overwriteButtons;
+    std::vector<std::unique_ptr<ToggleButton>> adaptButtons;
+    std::vector<std::unique_ptr<Button>> miscButtons;
     std::unique_ptr<pksm::WCX> wondercard;
     std::string game;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;

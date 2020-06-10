@@ -31,8 +31,9 @@ EnablableToggleButton::EnablableToggleButton(int x, int y, u16 w, u16 h, const s
     int onImage, const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage,
     const std::optional<std::string>& offText, const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
     const std::optional<int>& disabledImage, const std::optional<std::string>& disabledText, const std::optional<FontSize>& disabledFontSize,
-    const std::optional<PKSM_Color> disabledTextColor)
-    : ToggleButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor, offImage, offText, offFontSize, offTextColor, nullptr, true),
+    const std::optional<PKSM_Color> disabledTextColor, std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory, bool canClickToDeselect)
+    : ToggleButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor, offImage, offText, offFontSize, offTextColor,
+          (std::vector<std::unique_ptr<ToggleButton>>*)radioCategory, canClickToDeselect),
       disabled(disabled),
       disabledText(disabledText.value_or(offText.value_or(onText))),
       disabledTextColor(disabledTextColor.value_or(offTextColor.value_or(onTextColor))),

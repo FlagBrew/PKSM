@@ -25,8 +25,9 @@
  */
 
 #include "InjectorScreen.hpp"
-#include "Button.hpp"
 #include "Configuration.hpp"
+#include "EnablableToggleButton.hpp"
+#include "ToggleButton.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -83,57 +84,9 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds) : hid(40, 8), ids(std::make
         lang       = i18n::langFromString(ids->begin().key());
     }
 
-    slot          = emptySlot + 1;
-    int langIndex = 1;
-    for (int y = 46; y < 70; y += 23)
-    {
-        for (int x = 121; x < 274; x += 38)
-        {
-            if (langIndex != (int)pksm::Language::UNUSED)
-            {
-                buttons.push_back(std::make_unique<Button>(x, y, 38, 23, [this, langIndex]() { return this->setLanguage((pksm::Language)langIndex); },
-                    ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-            }
-            langIndex++;
-        }
-    }
-    buttons.push_back(std::make_unique<Button>(235, 102, 38, 23,
-        [this]() {
-            overwriteCard = true;
-            return false;
-        },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
-        [this]() {
-            overwriteCard = false;
-            return false;
-        },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
-        [this]() {
-            adaptLanguage = true;
-            return false;
-        },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
-        [this]() {
-            adaptLanguage = false;
-            return false;
-        },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
-        [this]() {
-            choosingSlot = true;
-            hid.select(slot - 1);
-            return true;
-        },
-        ui_sheet_emulated_button_unselected_red_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
-        []() {
-            Gui::screenBack();
-            return true;
-        },
-        ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
+    slot = emptySlot + 1;
+
+    makeButtons();
 
     wondercard->date(Configuration::getInstance().date());
 }
@@ -157,47 +110,78 @@ InjectorScreen::InjectorScreen(std::unique_ptr<pksm::WCX> wcx) : wondercard(std:
 
     lang = pksm::Language::UNUSED;
 
-    slot          = emptySlot + 1;
+    slot = emptySlot + 1;
+
+    makeButtons();
+}
+
+void InjectorScreen::makeButtons()
+{
     int langIndex = 1;
     for (int y = 46; y < 70; y += 23)
     {
         for (int x = 121; x < 274; x += 38)
         {
-            if (langIndex != (int)pksm::Language::UNUSED)
+            pksm::Language langVal = pksm::Language(langIndex);
+            if (langVal != pksm::Language::UNUSED)
             {
-                buttons.push_back(std::make_unique<Button>(x, y, 38, 23, [this, langIndex]() { return this->setLanguage((pksm::Language)langIndex); },
-                    ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
+                langButtons.push_back(std::make_unique<EnablableToggleButton>(x, y, 38, 23, [this, langVal]() { return this->setLanguage(langVal); },
+                    [this, langVal]() { return this->lang == pksm::Language::UNUSED || !this->isLangAvailable(langVal); },
+                    ui_sheet_emulated_button_selected_red_idx, std::string(languages[langIndex - 1]), FONT_SIZE_14, COLOR_WHITE,
+                    ui_sheet_emulated_button_unselected_red_idx, std::string(languages[langIndex - 1]), FONT_SIZE_14, COLOR_BLACK,
+                    ui_sheet_emulated_button_unavailable_red_idx, std::string(languages[langIndex - 1]), FONT_SIZE_14, COLOR_BLACK, &langButtons,
+                    false));
+
+                if (langVal == lang)
+                {
+                    langButtons.back()->setState(true);
+                }
+                else
+                {
+                    langButtons.back()->setState(false);
+                }
             }
             langIndex++;
         }
     }
-    buttons.push_back(std::make_unique<Button>(235, 102, 38, 23,
+
+    overwriteButtons.push_back(std::make_unique<ToggleButton>(235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(273, 102, 38, 23,
+        ui_sheet_emulated_button_selected_red_idx, i18n::localize("YES"), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_red_idx,
+        i18n::localize("YES"), FONT_SIZE_14, COLOR_BLACK, &overwriteButtons, false));
+    overwriteButtons.push_back(std::make_unique<ToggleButton>(273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(235, 135, 38, 23,
+        ui_sheet_emulated_button_selected_red_idx, i18n::localize("NO"), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_red_idx,
+        i18n::localize("NO"), FONT_SIZE_14, COLOR_BLACK, &overwriteButtons, false));
+
+    overwriteButtons.back()->setState(true);
+
+    adaptButtons.push_back(std::make_unique<ToggleButton>(235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(273, 135, 38, 23,
+        ui_sheet_emulated_button_selected_red_idx, i18n::localize("YES"), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_red_idx,
+        i18n::localize("YES"), FONT_SIZE_14, COLOR_BLACK, &adaptButtons, false));
+    adaptButtons.push_back(std::make_unique<ToggleButton>(273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
         },
-        ui_sheet_res_null_idx, "", 0, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(255, 168, 38, 23,
+        ui_sheet_emulated_button_selected_red_idx, i18n::localize("NO"), FONT_SIZE_14, COLOR_WHITE, ui_sheet_emulated_button_unselected_red_idx,
+        i18n::localize("NO"), FONT_SIZE_14, COLOR_BLACK, &adaptButtons, false));
+
+    adaptButtons.back()->setState(true);
+
+    miscButtons.push_back(std::make_unique<Button>(255, 168, 38, 23,
         [this]() {
-            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
+            if (TitleLoader::save->generation() >= pksm::Generation::LGPE)
             {
                 Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
                 return false;
@@ -212,7 +196,7 @@ InjectorScreen::InjectorScreen(std::unique_ptr<pksm::WCX> wcx) : wondercard(std:
         TitleLoader::save->generation() == pksm::Generation::LGPE ? ui_sheet_emulated_button_unavailable_red_idx
                                                                   : ui_sheet_emulated_button_unselected_red_idx,
         "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(282, 212, 34, 28,
+    miscButtons.push_back(std::make_unique<Button>(282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;
@@ -239,90 +223,24 @@ void InjectorScreen::drawBottom() const
     Gui::sprite(ui_sheet_point_big_idx, 15, 176);
     Gui::text(i18n::localize("INJECT_TO_SLOT"), 26, 171, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-    int langIndex = 1;
-    for (int y = 46; y < 70; y += 23)
+    for (auto& langButton : langButtons)
     {
-        for (int x = 121; x < 274; x += 38)
-        {
-            if (langIndex != (int)pksm::Language::UNUSED)
-            {
-                if (isLangAvailable((pksm::Language)langIndex))
-                {
-                    if (langIndex == (int)lang)
-                    {
-                        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
-                        Gui::text(
-                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    }
-                    else
-                    {
-                        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
-                        Gui::text(
-                            std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-                    }
-                }
-                else
-                {
-                    Gui::sprite(ui_sheet_emulated_button_unavailable_red_idx, x, y);
-                    Gui::text(std::string(languages[langIndex - 1]), x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-                }
-            }
-            langIndex++;
-        }
+        langButton->draw();
     }
 
-    for (auto& button : buttons)
+    for (auto& overwriteButton : overwriteButtons)
+    {
+        overwriteButton->draw();
+    }
+
+    for (auto& adaptButton : adaptButtons)
+    {
+        adaptButton->draw();
+    }
+
+    for (auto& button : miscButtons)
     {
         button->draw();
-    }
-
-    for (int y = 103; y < 138; y += 33)
-    {
-        bool first = true;
-        for (int x = 235; x < 274; x += 38)
-        {
-            const std::string& word = first ? i18n::localize("YES") : i18n::localize("NO");
-            if (overwriteCard)
-            {
-                Gui::sprite(ui_sheet_emulated_button_selected_red_idx, x, y);
-                Gui::text(word, x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-            }
-            else
-            {
-                Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, x, y);
-                Gui::text(word, x + 38 / 2, y + 2, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            }
-            first = false;
-        }
-    }
-    if (overwriteCard)
-    {
-        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 103);
-        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 103);
-        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    }
-    else
-    {
-        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 103);
-        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 106, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 103);
-        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 106, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    }
-
-    if (adaptLanguage)
-    {
-        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 235, 136);
-        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 273, 136);
-        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    }
-    else
-    {
-        Gui::sprite(ui_sheet_emulated_button_unselected_red_idx, 235, 136);
-        Gui::text(i18n::localize("YES"), 235 + 38 / 2, 139, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::sprite(ui_sheet_emulated_button_selected_red_idx, 273, 136);
-        Gui::text(i18n::localize("NO"), 273 + 38 / 2, 139, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     }
 
     Gui::text(std::to_string(slot), 255 + 38 / 2, 170, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
@@ -392,12 +310,12 @@ void InjectorScreen::drawTop() const
             Gui::text(i18n::item(Configuration::getInstance().language(), wondercard->heldItem()), 87, 75, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
             std::string text = wondercard->otName();
-            u16 tid = wondercard->TID(), sid = wondercard->SID();
+            u32 tid = wondercard->formatTID(), sid = wondercard->formatSID();
             if (text.empty())
             {
                 text = TitleLoader::save->otName();
-                tid  = TitleLoader::save->TID();
-                sid  = TitleLoader::save->SID();
+                tid  = TitleLoader::save->displayTID();
+                sid  = TitleLoader::save->displaySID();
             }
             Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
@@ -509,7 +427,28 @@ void InjectorScreen::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (!choosingSlot)
     {
-        for (auto& button : buttons)
+        for (auto& button : miscButtons)
+        {
+            if (button->update(touch))
+            {
+                return;
+            }
+        }
+        for (auto& button : langButtons)
+        {
+            if (button->update(touch))
+            {
+                return;
+            }
+        }
+        for (auto& button : adaptButtons)
+        {
+            if (button->update(touch))
+            {
+                return;
+            }
+        }
+        for (auto& button : overwriteButtons)
         {
             if (button->update(touch))
             {

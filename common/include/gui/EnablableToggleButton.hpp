@@ -37,7 +37,8 @@ public:
         const std::optional<std::string>& offText = std::nullopt, const std::optional<FontSize>& offFontSize = std::nullopt,
         const std::optional<PKSM_Color>& offTextColor = std::nullopt, const std::optional<int>& disabledImage = std::nullopt,
         const std::optional<std::string>& disabledText = std::nullopt, const std::optional<FontSize>& disabledFontSize = std::nullopt,
-        const std::optional<PKSM_Color> disabledTextColor = std::nullopt);
+        const std::optional<PKSM_Color> disabledTextColor                  = std::nullopt,
+        std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory = nullptr, bool canClickToDeselect = true);
 
     virtual bool update(touchPosition* touch) override;
     virtual void draw() const override;
