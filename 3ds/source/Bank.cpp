@@ -361,6 +361,7 @@ std::string Bank::boxName(int box) const
 void Bank::boxName(std::string name, int box)
 {
     (*boxNames)[box] = name;
+    needsCheck       = true;
 }
 
 void Bank::createJSON()
