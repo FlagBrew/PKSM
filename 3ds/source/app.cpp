@@ -477,6 +477,7 @@ namespace
 
     void iconThread(void*)
     {
+        randomNumbers.seed(osGetTime());
         int x = 176, y = 96;
         u16 w, h;
         bool up   = randomNumbers() % 2 ? true : false;
