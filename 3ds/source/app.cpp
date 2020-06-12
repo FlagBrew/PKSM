@@ -772,7 +772,7 @@ Result App::init(const std::string& execPath)
     Threads::init();
 
     moveIcon.test_and_set();
-    Threads::create(iconThread, nullptr, 256);
+    Threads::create(iconThread);
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
