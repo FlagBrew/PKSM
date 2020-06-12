@@ -111,7 +111,7 @@ namespace
         ret->TID(12345);
         ret->SID(54321);
         ret->ball(pksm::Ball::Poke);
-        ret->encryptionConstant((u32)randomNumbers());
+        ret->encryptionConstant((u32)pksm::randomNumber());
         switch (ret->generation())
         {
             case pksm::Generation::THREE:
@@ -146,7 +146,7 @@ namespace
                 break;
         }
         ret->fixMoves();
-        ret->PID((u32)randomNumbers());
+        ret->PID((u32)pksm::randomNumber());
         ret->language(Configuration::getInstance().language());
         ret->metLevel(1);
         if constexpr (gen == pksm::Generation::SIX)

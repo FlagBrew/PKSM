@@ -32,11 +32,11 @@ extern "C" {
 
 void PKSM_Rand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Integer = randomNumbers() >> 1;
+    ReturnValue->Val->Integer = pksm::randomNumber() >> 1;
 }
 
 void PKSM_Srand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    randomNumbers.seed(Param[0]->Val->Integer);
+    pksm::seedRand(Param[0]->Val->Integer);
 }
 }

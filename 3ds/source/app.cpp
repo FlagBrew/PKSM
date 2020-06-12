@@ -477,13 +477,12 @@ namespace
 
     void iconThread(void*)
     {
-        randomNumbers.seed(osGetTime());
         int x = 176, y = 96;
         u16 w, h;
-        bool up   = randomNumbers() % 2 ? true : false;
-        bool left = randomNumbers() % 2 ? true : false;
-        u8 yMag   = randomNumbers() % 2 + 1;
-        u8 xMag   = randomNumbers() % 2 + 1;
+        bool up   = pksm::randomNumber() % 2 ? true : false;
+        bool left = pksm::randomNumber() % 2 ? true : false;
+        u8 yMag   = pksm::randomNumber() % 2 + 1;
+        u8 xMag   = pksm::randomNumber() % 2 + 1;
         while (moveIcon.test_and_set())
         {
             int xOff = 0;
@@ -503,7 +502,7 @@ namespace
             }
             if (y >= 240 - 48 || y <= 0)
             {
-                yMag = randomNumbers() % 2 + 1;
+                yMag = pksm::randomNumber() % 2 + 1;
                 up   = !up;
             }
 
@@ -517,7 +516,7 @@ namespace
             }
             if (x >= 400 - 48 || x <= 0)
             {
-                xMag = randomNumbers() % 2 + 1;
+                xMag = pksm::randomNumber() % 2 + 1;
                 left = !left;
             }
 
@@ -771,7 +770,6 @@ Result App::init(const std::string& execPath)
     hidInit();
     gfxInitDefault();
     Threads::init();
-    randomNumbers.seed(osGetTime());
 
     moveIcon.test_and_set();
     Threads::create(iconThread, nullptr, 256);
