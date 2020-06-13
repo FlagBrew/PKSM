@@ -481,7 +481,7 @@ void SaveLoadScreen::updateTitles()
     {
         std::string tidStr = Configuration::getInstance().titleId(ctrVersions[i]);
         u64 tid            = strtoull(tidStr.c_str(), nullptr, 16);
-        ctrIds[i]          = Title::tidToCheckpointPrefix<std::string>(tid);
+        ctrIds[i]          = Title::tidToCheckpointPrefix(tid);
     }
 
     for (auto& i : saves)

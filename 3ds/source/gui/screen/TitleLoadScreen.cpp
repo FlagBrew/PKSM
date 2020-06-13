@@ -300,6 +300,7 @@ void TitleLoadScreen::update(touchPosition* touch)
             {
                 Gui::screenBack();
                 Gui::setScreen(std::make_unique<SaveLoadScreen>());
+                return;
             }
             else if (buttonsDown & KEY_X)
             {
