@@ -211,6 +211,10 @@ namespace
             {
                 directories.emplace(dir, d);
             }
+            else
+            {
+                return {};
+            }
         }
         else
         {
@@ -221,6 +225,10 @@ namespace
                 if (d)
                 {
                     directories[dir] = d;
+                }
+                else
+                {
+                    return {};
                 }
             }
         }
