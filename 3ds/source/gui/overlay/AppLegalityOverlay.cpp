@@ -31,6 +31,7 @@
 #include "QRScanner.hpp"
 #include "base64.hpp"
 #include "gui.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
@@ -223,6 +224,12 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             auto pkx = QRScanner<pksm::PKX>::scan();
             if (pkx)
             {
+                auto reason = TitleLoader::save->invalidTransferReason(*pkx);
+                if (reason != pksm::Sav::BadTransferReason::OKAY)
+                {
+                    Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
+                    return false;
+                }
                 pkx = TitleLoader::save->transfer(*pkx);
                 if (pkx)
                 {
