@@ -2,7 +2,7 @@
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
 <p align="center"><img src="https://drone.fm1337.com/api/badges/FlagBrew/PKSM/status.svg" /></p>
 
-Multipurpose and portable save manager for generations III to VII, programmed in
+Multipurpose and portable save manager for generations III to VIII, programmed in
 C++.
 
 * Supports original cartridges and digital copies of games from FrLgRSE to SwSh
