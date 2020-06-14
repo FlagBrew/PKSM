@@ -72,7 +72,9 @@ MoveOverlay::MoveOverlay(
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    const std::set<int> availableMoves       = TitleLoader::save->availableMoves();
+    pksm::Generation gen                     = object.index() == 0 ? std::get<0>(object)->generation() : pksm::Generation::EIGHT;
+    const std::set<int> availableMoves =
+        TitleLoader::save ? TitleLoader::save->availableMoves() : pksm::VersionTables::availableMoves(pksm::GameVersion::oldestVersion(gen));
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
         if (*i >= 622 && *i <= 658)

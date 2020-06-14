@@ -48,11 +48,7 @@ namespace
 
 SpeciesOverlay::SpeciesOverlay(
     ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u8 origLevel)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      object(object),
-      hid(40, 8),
-      dispPkm(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end()),
-      origLevel(origLevel)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 8), origLevel(origLevel)
 {
     if (TitleLoader::save)
     {
