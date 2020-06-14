@@ -2,10 +2,10 @@
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
 <p align="center"><img src="https://drone.fm1337.com/api/badges/FlagBrew/PKSM/status.svg" /></p>
 
-Multipurpose and portable save manager for generations IV to VII, programmed in
+Multipurpose and portable save manager for generations III to VII, programmed in
 C++.
 
-* Supports original cartridges and digital copies of games from DPPt to SwSh
+* Supports original cartridges and digital copies of games from FrLgRSE to SwSh
 * Allows on-the-fly modifications to all of your data
 * Allows internal and resizable offline storage to store your Pokémon
 * Capable of running custom scripts to allow injection of arbitrary data into
@@ -117,7 +117,8 @@ all`.
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
 * [Archit Date](https://github.com/architdate) for CoreConsole and PKHeX AutoLegalityMod
-* [Allen](https://github.com/FM1337) for the GPSS and CoreConsole's successor, CoreAPI
+* [Allen](https://github.com/FM1337) for the GPSS, CoreConsole's successor, CoreAPI and GPSS Mobile
+* [LiquidFenrir](https://github.com/LiquidFenrir) for the PoC of session stealing that led to Gen 3 support and GPSS Mobile
 * The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
 * [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
@@ -129,13 +130,14 @@ all`.
 * [nayuki](https://github.com/nayuki) for [QR-Code-generator](https://github.com/nayuki/QR-Code-generator)
 * [jpoirier](https://github.com/jpoirier), [zsaleeba](https://gitlab.com/zsaleeba), and [Jan Švejda](https://gitlab.com/jenda.svejda) for the base and most improvements in [our picoC fork](https://github.com/FlagBrew/picoc)
 * [dlbeer](https://github.com/dlbeer) for [quirc](https://github.com/dlbeer/quirc)
+* [Griffin](https://github.com/GriffinG1) For FlagBot and all the help it has been on the server.
 * All the translators
 * Subject21_J and all the submitters for PKSM's icon
 * Allen, piepie62, SpiredMoth and all the contributors for the documentation
 * All the past contributors to the project
 * All the patrons and the huge amount of supporters that this project has gained
   over the year
-
+  
 Without you, this project wouldn't have existed. Thank you.
 
 ## Support us
