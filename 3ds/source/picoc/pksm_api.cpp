@@ -1896,50 +1896,6 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     delete pkm;
 }
 
-void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    char* string   = (char*)Param[0]->Val->Pointer;
-    u32 offset     = Param[1]->Val->UnsignedInteger;
-    u32 codepoints = Param[2]->Val->UnsignedInteger; // Includes null terminator
-    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
-    {
-        StringUtils::setString4(TitleLoader::save->rawData().get(), string, offset, codepoints);
-    }
-    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
-    {
-        StringUtils::setString3(TitleLoader::save->rawData().get(), string, offset, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
-    }
-    else
-    {
-        StringUtils::setString(TitleLoader::save->rawData().get(), string, offset, codepoints,
-            TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
-    }
-}
-
-void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    u32 offset     = Param[0]->Val->UnsignedInteger;
-    u32 codepoints = Param[1]->Val->UnsignedInteger; // Includes null terminator
-
-    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
-    {
-        std::string data          = StringUtils::getString4(TitleLoader::save->rawData().get(), offset, codepoints);
-        ReturnValue->Val->Pointer = strToRet(data);
-    }
-    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
-    {
-        std::string data =
-            StringUtils::getString3(TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
-        ReturnValue->Val->Pointer = strToRet(data);
-    }
-    else
-    {
-        std::string data = StringUtils::getString(
-            TitleLoader::save->rawData().get(), offset, codepoints, TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
-        ReturnValue->Val->Pointer = strToRet(data);
-    }
-}
-
 void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
@@ -2233,7 +2189,15 @@ void sav_get_byte(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block                          = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            ReturnValue->Val->UnsignedCharacter = block[off2];
+        }
+        else
+        {
+            ReturnValue->Val->UnsignedCharacter = TitleLoader::save->rawData().get()[off2];
+        }
     }
     else
     {
@@ -2253,7 +2217,15 @@ void sav_set_byte(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block  = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            block[off2] = data;
+        }
+        else
+        {
+            TitleLoader::save->rawData().get()[off2] = data;
+        }
     }
     else
     {
@@ -2273,7 +2245,15 @@ void sav_get_short(struct ParseState* Parser, struct Value* ReturnValue, struct 
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block                             = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(block + off2);
+        }
+        else
+        {
+            ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off2);
+        }
     }
     else
     {
@@ -2293,7 +2273,15 @@ void sav_set_short(struct ParseState* Parser, struct Value* ReturnValue, struct 
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            LittleEndian::convertFrom<u16>(block + off2, data);
+        }
+        else
+        {
+            LittleEndian::convertFrom<u16>(TitleLoader::save->rawData().get() + off2, data);
+        }
     }
     else
     {
@@ -2313,7 +2301,15 @@ void sav_get_int(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block                        = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(block + off2);
+        }
+        else
+        {
+            ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off2);
+        }
     }
     else
     {
@@ -2333,11 +2329,94 @@ void sav_set_int(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        if (off1 != -1)
+        {
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            LittleEndian::convertFrom<u32>(block + off2, data);
+        }
+        else
+        {
+            LittleEndian::convertFrom<u32>(TitleLoader::save->rawData().get() + off2, data);
+        }
     }
     else
     {
         LittleEndian::convertFrom<u32>(TitleLoader::save->rawData().get() + off1 + off2, data);
+    }
+}
+
+// void sav_set_string(char* string, int off1, int off2, unsigned int codepoints);
+void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    char* string   = (char*)Param[0]->Val->Pointer;
+    s32 off1       = Param[1]->Val->Integer;
+    s32 off2       = Param[2]->Val->Integer;
+    u32 codepoints = Param[3]->Val->UnsignedInteger; // Includes null terminator
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
+    {
+        StringUtils::setString4(TitleLoader::save->rawData().get(), string, off1 + off2, codepoints);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        if (off1 != -1)
+        {
+            u8* data = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            StringUtils::setString3(data, string, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+        }
+        else
+        {
+            StringUtils::setString3(
+                TitleLoader::save->rawData().get(), string, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+        }
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        StringUtils::setString(block->decryptedData(), string, off2, codepoints, u'\0');
+    }
+    else
+    {
+        StringUtils::setString(TitleLoader::save->rawData().get(), string, off1 + off2, codepoints,
+            TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
+    }
+}
+// char* sav_get_string(int off1, int off2, unsigned int codepoints);
+void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 off1       = Param[0]->Val->Integer;
+    s32 off2       = Param[1]->Val->Integer;
+    u32 codepoints = Param[1]->Val->UnsignedInteger; // Includes null terminator
+
+    if (TitleLoader::save->generation() == pksm::Generation::FOUR)
+    {
+        std::string data          = StringUtils::getString4(TitleLoader::save->rawData().get(), off1 + off2, codepoints);
+        ReturnValue->Val->Pointer = strToRet(data);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        std::string ret;
+        if (off1 != -1)
+        {
+            u8* data = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            ret      = StringUtils::getString3(data, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+        }
+        else
+        {
+            ret = StringUtils::getString3(TitleLoader::save->rawData().get(), off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+        }
+        ReturnValue->Val->Pointer = strToRet(ret);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        std::string data          = StringUtils::getString(block->decryptedData(), off2, codepoints, u'\0');
+        ReturnValue->Val->Pointer = strToRet(data);
+    }
+    else
+    {
+        std::string data          = StringUtils::getString(TitleLoader::save->rawData().get(), off1 + off2, codepoints,
+            TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
+        ReturnValue->Val->Pointer = strToRet(data);
     }
 }
 }
