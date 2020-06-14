@@ -46,6 +46,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "sav/Sav3.hpp"
 #include "sav/Sav4.hpp"
 #include "sav/Sav8.hpp"
 #include "utils/genToPkx.hpp"
