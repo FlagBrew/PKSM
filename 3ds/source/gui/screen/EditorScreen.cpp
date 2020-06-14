@@ -650,7 +650,7 @@ bool EditorScreen::selectNature()
 
 bool EditorScreen::selectAbility()
 {
-    if (pkm->generation() == pksm::Generation::FOUR)
+    if (pkm->generation() == pksm::Generation::FOUR || pkm->generation() == pksm::Generation::THREE)
     {
         pksm::Ability setAbility = pkm->ability();
         if (pkm->abilities(0) != setAbility && pkm->abilities(0) != pksm::Ability::None)
