@@ -131,7 +131,7 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 ifneq ($(strip $(RELEASE)),)
-OPTIMIZE		:=	-O3 -flto
+OPTIMIZE		:=	-O3
 RELEASE_FLAGS	:=	-DNDEBUG
 else
 OPTIMIZE		:=	-Og
