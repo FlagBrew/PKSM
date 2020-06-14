@@ -657,7 +657,7 @@ bool EditorScreen::selectAbility()
         {
             pkm->setAbility(0);
         }
-        else if (pkm->abilities(1) != pksm::Ability::None)
+        else if (pkm->abilities(1) != pksm::Ability::None && pkm->abilities(0) != pkm->abilities(1))
         {
             pkm->setAbility(1);
         }
