@@ -89,8 +89,16 @@ namespace
 AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
     : ReplaceableScreen(&screen, i18n::localize("B_BACK")), pkm(pkm)
 {
-    std::string data = (std::string)pkm->generation() + ":" + std::to_string((u32)TitleLoader::save->version()) + ":" +
-                       base64_encode(pkm->rawData(), pkm->getLength());
+    std::string data = (std::string)pkm->generation() + ":";
+    if (TitleLoader::save)
+    {
+        data += std::to_string((u32)TitleLoader::save->version()) + ":";
+    }
+    else
+    {
+        data += std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation())) + ":";
+    }
+    data += base64_encode(pkm->rawData(), pkm->getLength());
     qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(data.c_str(), qrcodegen::QrCode::Ecc::MEDIUM);
 
     C2D_Image image;
@@ -205,7 +213,20 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             auto pkx = pksm::PKX::getPKM(this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
             if (pkx)
             {
-                pkx = TitleLoader::save->transfer(*pkx);
+                if (pkx->generation() != this->pkm->generation() && TitleLoader::save)
+                {
+                    auto reason = TitleLoader::save->invalidTransferReason(*pkx);
+                    if (reason != pksm::Sav::BadTransferReason::OKAY)
+                    {
+                        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
+                        return false;
+                    }
+                    pkx = TitleLoader::save->transfer(*pkx);
+                }
+                else
+                {
+                    pkx = nullptr;
+                }
                 if (pkx)
                 {
                     std::copy(pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
@@ -224,13 +245,20 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             auto pkx = QRScanner<pksm::PKX>::scan();
             if (pkx)
             {
-                auto reason = TitleLoader::save->invalidTransferReason(*pkx);
-                if (reason != pksm::Sav::BadTransferReason::OKAY)
+                if (pkx->generation() != this->pkm->generation() && TitleLoader::save)
                 {
-                    Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
-                    return false;
+                    auto reason = TitleLoader::save->invalidTransferReason(*pkx);
+                    if (reason != pksm::Sav::BadTransferReason::OKAY)
+                    {
+                        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
+                        return false;
+                    }
+                    pkx = TitleLoader::save->transfer(*pkx);
                 }
-                pkx = TitleLoader::save->transfer(*pkx);
+                else
+                {
+                    pkx = nullptr;
+                }
                 if (pkx)
                 {
                     std::copy(pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());

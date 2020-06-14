@@ -84,8 +84,16 @@ void LegalInfoScreen::update(touchPosition* touch)
 
 void LegalInfoScreen::attemptLegalization()
 {
-    long status_code       = 0;
-    std::string version    = "version: " + std::to_string((int)TitleLoader::save->version());
+    long status_code = 0;
+    std::string version;
+    if (TitleLoader::save)
+    {
+        version = "version: " + std::to_string((int)TitleLoader::save->version());
+    }
+    else
+    {
+        version = "version: " + std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation()));
+    }
     std::string generation = "Generation: " + (std::string)pkm->generation();
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
