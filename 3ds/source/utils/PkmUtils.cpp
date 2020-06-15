@@ -163,9 +163,9 @@ namespace
         else if constexpr (gen == pksm::Generation::SEVEN)
         {
             // Japan, Tokyo, JPN
-            ((pksm::PK6*)ret.get())->geoCountry(1);
-            ((pksm::PK6*)ret.get())->geoRegion(2);
-            ((pksm::PK6*)ret.get())->consoleRegion(0);
+            ((pksm::PK7*)ret.get())->geoCountry(1);
+            ((pksm::PK7*)ret.get())->geoRegion(2);
+            ((pksm::PK7*)ret.get())->consoleRegion(0);
         }
 
         ret->species(pksm::Species::Bulbasaur);
