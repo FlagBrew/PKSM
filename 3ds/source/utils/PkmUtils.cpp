@@ -37,6 +37,7 @@
 #include "utils/genToPkx.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
+#include <3ds.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
@@ -154,6 +155,17 @@ namespace
             ((pksm::PK6*)ret.get())->otMemory(1);
             ((pksm::PK6*)ret.get())->otFeeling(0);
             ((pksm::PK6*)ret.get())->otIntensity(1);
+            // Japan, Tokyo, JPN
+            ((pksm::PK6*)ret.get())->geoCountry(1);
+            ((pksm::PK6*)ret.get())->geoRegion(2);
+            ((pksm::PK6*)ret.get())->consoleRegion(0);
+        }
+        else if constexpr (gen == pksm::Generation::SEVEN)
+        {
+            // Japan, Tokyo, JPN
+            ((pksm::PK6*)ret.get())->geoCountry(1);
+            ((pksm::PK6*)ret.get())->geoRegion(2);
+            ((pksm::PK6*)ret.get())->consoleRegion(0);
         }
 
         ret->species(pksm::Species::Bulbasaur);
