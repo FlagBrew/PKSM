@@ -49,6 +49,7 @@
 #include "sav/Sav3.hpp"
 #include "sav/Sav4.hpp"
 #include "sav/Sav8.hpp"
+#include "utils/flagUtil.hpp"
 #include "utils/genToPkx.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
@@ -2175,6 +2176,64 @@ void sav_set_data(struct ParseState* Parser, struct Value* ReturnValue, struct V
     else
     {
         std::copy(data, data + size, TitleLoader::save->rawData().get() + off1 + off2);
+    }
+}
+
+// int sav_get_bit(int off1, int off2, int bit);
+void sav_get_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 off1 = Param[0]->Val->Integer;
+    s32 off2 = Param[1]->Val->Integer;
+    s32 bit  = Param[2]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block                = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(block->decryptedData(), off2, bit);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        if (off1 != -1)
+        {
+            auto block                = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(block, off2, bit);
+        }
+        else
+        {
+            ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off2, bit);
+        }
+    }
+    else
+    {
+        ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off1 + off2, bit);
+    }
+}
+// void sav_set_bit(int bitVal, int off1, int off2, int bit);
+void sav_set_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    s32 data = Param[0]->Val->Integer;
+    s32 off1 = Param[1]->Val->Integer;
+    s32 off2 = Param[2]->Val->Integer;
+    s32 bit  = Param[3]->Val->Integer;
+    if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
+    {
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        pksm::FlagUtil::setFlag(block->decryptedData(), off2, bit, data);
+    }
+    else if (TitleLoader::save->generation() == pksm::Generation::THREE)
+    {
+        if (off1 != -1)
+        {
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            pksm::FlagUtil::setFlag(block, off2, bit, data);
+        }
+        else
+        {
+            pksm::FlagUtil::setFlag(TitleLoader::save->rawData().get(), off2, bit, data);
+        }
+    }
+    else
+    {
+        pksm::FlagUtil::setFlag(TitleLoader::save->rawData().get(), off1 + off2, bit, data);
     }
 }
 

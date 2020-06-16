@@ -588,7 +588,7 @@ namespace
         archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
         stat(romfsPath.c_str(), &mystat);
 
-        if (mystat.st_mtim.tv_sec > fileInfo.mtime)
+        if (mystat.st_mtim.tv_sec > (s64)fileInfo.mtime)
         {
             Archive::sd().deleteFile(path);
             Archive::sd().deleteFile(checksumPath);

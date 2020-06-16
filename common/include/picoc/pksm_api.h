@@ -158,6 +158,8 @@ void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
 // General data handling functions
 void sav_get_data(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_data(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_bit(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_bit(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_byte(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_byte(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_short(struct ParseState*, struct Value*, struct Value**, int);

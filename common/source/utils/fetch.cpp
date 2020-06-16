@@ -156,7 +156,6 @@ void Fetch::multiMainThread(void*)
     while (multiThreadInfo)
     {
         CURLMcode mc;
-        int active;
 
         __lock_acquire(multiHandleMutex);
         mc = curl_multi_perform(multiHandle, &trash);

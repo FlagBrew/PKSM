@@ -37,6 +37,8 @@ struct LibraryFunction UnixFunctions[] =
     // general data handling
     { sav_get_data,         "void sav_get_data(char* dataOut, unsigned int size, int off1, int off2);" },
     { sav_set_data,         "void sav_set_data(char* data, unsigned int size, int off1, int off2);" },
+    { sav_get_bit,          "int sav_get_bit(int off1, int off2, int bit);" },
+    { sav_set_bit,          "void sav_set_bit(int bitVal, int off1, int off2, int bit);" },
     { sav_get_byte,         "char sav_get_byte(int off1, int off2);" },
     { sav_set_byte,         "void sav_set_byte(char data, int off1, int off2);" },
     { sav_get_short,        "short sav_get_short(int off1, int off2);" },
