@@ -130,7 +130,7 @@ namespace
         if (gen == pksm::Generation::THREE)
         {
             auto ret = pksm::PKX::getPKM<pksm::Generation::THREE>(nullptr, isParty);
-            std::copy(data, data + pksm::PK3::BOX_LENGTH, ret->rawData());
+            std::copy(data, data + ret->getLength(), ret->rawData());
             return ret;
         }
         else
