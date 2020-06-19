@@ -2150,7 +2150,16 @@ void sav_get_data(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        u8* block = nullptr;
+        if (off1 == -1)
+        {
+            block = TitleLoader::save->rawData().get();
+        }
+        else
+        {
+            block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+        }
+        std::copy(block + off2, block + off2 + size, data);
     }
     else
     {
@@ -2171,7 +2180,16 @@ void sav_set_data(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
-        scriptFail(Parser, "G3 editing API is not quite decided yet");
+        u8* block = nullptr;
+        if (off1 == -1)
+        {
+            block = TitleLoader::save->rawData().get();
+        }
+        else
+        {
+            block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+        }
+        std::copy(data, data + size, block + off2);
     }
     else
     {
