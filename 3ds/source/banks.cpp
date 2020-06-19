@@ -143,8 +143,8 @@ void Banks::removeBank(const std::string& name)
             }
             loadBank(i.key(), i.value());
         }
-        remove(("/3ds/PKSM/banks/" + name + ".bnk").c_str());
-        remove(("/3ds/PKSM/banks/" + name + ".json").c_str());
+        Archive::sd().deleteFile("/3ds/PKSM/banks/" + name + ".bnk");
+        Archive::sd().deleteFile("/3ds/PKSM/banks/" + name + ".json");
         Archive::data().deleteFile("/banks/" + name + ".bnk");
         Archive::data().deleteFile("/banks/" + name + ".json");
         for (auto i = g_banks.begin(); i != g_banks.end(); i++)

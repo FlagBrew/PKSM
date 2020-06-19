@@ -185,6 +185,7 @@ Archive& Archive::operator=(Archive&& other)
 Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
 {
     Result res;
+    dst.deleteDir(dest);
     if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
         return res;
     auto d                = src.directory(dir);
@@ -197,17 +198,24 @@ Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, c
             if (d->folder(i))
             {
                 if (R_FAILED(res = moveDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                {
+                    dst.deleteDir(dest);
                     return res;
+                }
             }
             else
             {
                 if (R_FAILED(res = moveFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                {
+                    dst.deleteDir(dest);
                     return res;
+                }
             }
         }
     }
     else
     {
+        dst.deleteDir(dest);
         return src.result();
     }
 
@@ -222,6 +230,7 @@ Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, c
 Result Archive::copyDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
 {
     Result res;
+    dst.deleteDir(dest);
     if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
         return res;
     auto d                = src.directory(dir);
@@ -234,17 +243,24 @@ Result Archive::copyDir(Archive& src, const std::u16string& dir, Archive& dst, c
             if (d->folder(i))
             {
                 if (R_FAILED(res = copyDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                {
+                    dst.deleteDir(dest);
                     return res;
+                }
             }
             else
             {
                 if (R_FAILED(res = copyFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                {
+                    dst.deleteDir(dest);
                     return res;
+                }
             }
         }
     }
     else
     {
+        dst.deleteDir(dest);
         return src.result();
     }
 
@@ -292,11 +308,13 @@ Result Archive::moveFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest)
         else
         {
             res = dst.result();
+            dst.deleteFile(dest);
             stream->close();
         }
     }
     else
     {
+        dst.deleteFile(dest);
         res = src.result();
     }
     return res;
@@ -342,6 +360,11 @@ Result Archive::copyFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest)
     else
     {
         res = src.result();
+    }
+
+    if (R_FAILED(res))
+    {
+        dst.deleteFile(dest);
     }
     return res;
 }

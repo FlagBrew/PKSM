@@ -291,11 +291,7 @@ void Configuration::save()
     writeData.shrink_to_fit();
     size_t size = writeData.size();
 
-    if (oldSize != size)
-    {
-        Archive::data().deleteFile("/config.json");
-    }
-
+    Archive::data().deleteFile("/config.json");
     Archive::data().createFile(u"/config.json", 0, oldSize = size);
     auto stream = Archive::data().file(u"/config.json", FS_OPEN_WRITE, oldSize = size);
     if (stream)

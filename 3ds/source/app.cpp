@@ -177,13 +177,11 @@ namespace
 
     void backupExtData()
     {
-        Archive::sd().deleteDir(u"/3ds/PKSM/extDataBackup");
         Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
     }
 
     void backupBanks()
     {
-        Archive::sd().deleteDir(u"/3ds/PKSM/banksBkp");
         Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
     }
 
