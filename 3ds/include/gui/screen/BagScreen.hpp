@@ -55,6 +55,7 @@ private:
     void editCount(bool up, int selected);
     void setCount(int selected);
     bool canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const;
+    void updateFirstEmpty();
 
     int currentPouch    = 0;
     int selectedItem    = 0;

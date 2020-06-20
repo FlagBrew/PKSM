@@ -84,16 +84,7 @@ BagScreen::BagScreen()
             ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, COLOR_BLACK));
     }
 
-    firstEmpty = limits[0].second - 1;
-    for (int i = 0; i < limits[0].second; i++)
-    {
-        auto item = TitleLoader::save->item(limits[0].first, i);
-        if (item && item->id() == 0)
-        {
-            firstEmpty = i;
-            break;
-        }
-    }
+    updateFirstEmpty();
 }
 
 void BagScreen::drawTop() const
@@ -148,8 +139,10 @@ void BagScreen::drawBottom() const
         }
     }
 
-    u8 mod = 0;
-    if (TitleLoader::save->item(limits[currentPouch].first, firstEmpty)->id() > 0)
+    u8 mod    = 0;
+    auto item = TitleLoader::save->item(limits[currentPouch].first, firstEmpty);
+    u16 id    = pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    if (id > 0)
     {
         mod = 1;
     }
@@ -293,8 +286,10 @@ void BagScreen::update(touchPosition* touch)
         button->update(touch);
     }
 
-    u8 mod = 0;
-    if (TitleLoader::save->item(limits[currentPouch].first, firstEmpty)->id() > 0)
+    u8 mod    = 0;
+    auto item = TitleLoader::save->item(limits[currentPouch].first, firstEmpty);
+    u16 id    = pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    if (id > 0)
     {
         mod = 1;
     }
@@ -353,16 +348,7 @@ bool BagScreen::switchPouch(int newPouch)
 {
     currentPouch = newPouch;
 
-    firstEmpty = limits[newPouch].second - 1;
-    for (int i = 0; i < limits[newPouch].second; i++)
-    {
-        auto item = TitleLoader::save->item(limits[newPouch].first, i);
-        if (item && item->id() == 0)
-        {
-            firstEmpty = i;
-            break;
-        }
-    }
+    updateFirstEmpty();
 
     firstItem    = 0;
     selectedItem = 0;
@@ -430,7 +416,8 @@ void BagScreen::editCount(bool up, int selected)
         return;
     }
 
-    if (item->id() > 0)
+    u16 id = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    if (id > 0)
     {
         if (up)
         {
@@ -487,7 +474,8 @@ void BagScreen::setCount(int selected)
         return;
     }
 
-    if (item->id() > 0)
+    u16 id = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    if (id > 0)
     {
         SwkbdState state;
         swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, item->generation() == pksm::Generation::SEVEN ? 4 : 5);
@@ -501,6 +489,21 @@ void BagScreen::setCount(int selected)
             int newCount = std::atoi(input);
             item->count(std::min((int)item->maxCount(), newCount));
             TitleLoader::save->item(*item, limits[currentPouch].first, firstItem + selected);
+        }
+    }
+}
+
+void BagScreen::updateFirstEmpty()
+{
+    firstEmpty = limits[currentPouch].second - 1;
+    for (int i = 0; i < limits[currentPouch].second; i++)
+    {
+        auto item = TitleLoader::save->item(limits[currentPouch].first, i);
+        u16 id    = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+        if (id == 0)
+        {
+            firstEmpty = i;
+            break;
         }
     }
 }
