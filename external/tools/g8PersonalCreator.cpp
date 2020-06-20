@@ -48,7 +48,9 @@ struct SWSHPersonalEntry
     u16 flags;
     u16 pokedexIndex;
     u16 formIndex;
-    u8 padding[72];
+    u8 padding[76];
+    u16 armordexIndex;
+    u16 crowndexIndex;
 };
 
 struct PKSMPersonalEntry
@@ -70,12 +72,15 @@ struct PKSMPersonalEntry
     u16 abilityH;
     u16 formStatIndex;
     u16 pokedexIndex;
+    u16 armordexIndex;
+    u16 crowndexIndex;
     u8 TRFlags[14]; // Not 13 because padding
 };
 
 int main()
 {
-    assert(sizeof(PKSMPersonalEntry) == 36);
+    static_assert(sizeof(SWSHPersonalEntry) == 0xB0);
+    static_assert(sizeof(PKSMPersonalEntry) == 40);
     FILE* personalFile = fopen("personal_swsh", "rb");
     fseek(personalFile, 0, SEEK_END);
     auto size = ftell(personalFile);
@@ -106,6 +111,8 @@ int main()
         outEntries[i].abilityH       = inEntries[i].abilityH;
         outEntries[i].formStatIndex  = inEntries[i].formStatIndex;
         outEntries[i].pokedexIndex   = inEntries[i].pokedexIndex;
+        outEntries[i].armordexIndex  = inEntries[i].armordexIndex;
+        outEntries[i].crowndexIndex  = inEntries[i].crowndexIndex;
 
         for (size_t j = 0; j < 14; j++)
         {

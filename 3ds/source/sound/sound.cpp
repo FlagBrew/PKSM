@@ -122,7 +122,7 @@ namespace
         {
             if (Configuration::getInstance().randomMusic())
             {
-                currentSong = pksm::randomNumber() % bgm.size();
+                currentSong = pksm::randomNumber(0, bgm.size() - 1);
             }
             else
             {

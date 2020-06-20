@@ -477,10 +477,10 @@ namespace
     {
         int x = 176, y = 96;
         u16 w, h;
-        bool up   = pksm::randomNumber() % 2 ? true : false;
-        bool left = pksm::randomNumber() % 2 ? true : false;
-        u8 yMag   = pksm::randomNumber() % 2 + 1;
-        u8 xMag   = pksm::randomNumber() % 2 + 1;
+        bool up   = pksm::randomNumber(0, 1) ? true : false;
+        bool left = pksm::randomNumber(0, 1) ? true : false;
+        u8 yMag   = pksm::randomNumber(0, 1) + 1;
+        u8 xMag   = pksm::randomNumber(0, 1) + 1;
         while (moveIcon.test_and_set())
         {
             int xOff = 0;
@@ -500,7 +500,7 @@ namespace
             }
             if (y >= 240 - 48 || y <= 0)
             {
-                yMag = pksm::randomNumber() % 2 + 1;
+                yMag = pksm::randomNumber(0, 1) + 1;
                 up   = !up;
             }
 
@@ -514,7 +514,7 @@ namespace
             }
             if (x >= 400 - 48 || x <= 0)
             {
-                xMag = pksm::randomNumber() % 2 + 1;
+                xMag = pksm::randomNumber(0, 1) + 1;
                 left = !left;
             }
 
