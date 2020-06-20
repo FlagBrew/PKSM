@@ -259,12 +259,14 @@ void MainMenu::save()
     {
         if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
         {
+            TitleLoader::save->finishEditing();
             bool sent = sendSaveToBridge();
             if (!sent)
             {
                 // save a copy of the modified save to the SD card
                 backupBridgeChanges();
             }
+            TitleLoader::save->beginEditing();
         }
     }
     else
