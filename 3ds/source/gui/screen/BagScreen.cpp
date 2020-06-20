@@ -84,6 +84,7 @@ BagScreen::BagScreen()
             ui_sheet_emulated_button_plus_small_black_idx, "", 0.0f, COLOR_BLACK));
     }
 
+    firstEmpty = limits[0].second - 1;
     for (int i = 0; i < limits[0].second; i++)
     {
         auto item = TitleLoader::save->item(limits[0].first, i);
