@@ -189,7 +189,6 @@ bool sendSaveToBridge(void)
     }
 
     close(fd);
-    saveFromBridge = false;
     return result;
 }
 
