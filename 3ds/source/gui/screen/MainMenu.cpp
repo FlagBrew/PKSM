@@ -259,6 +259,10 @@ void MainMenu::save()
     {
         if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
         {
+            if (TitleLoader::save->generation() == pksm::Generation::FIVE)
+            {
+                ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+            }
             TitleLoader::save->finishEditing();
             bool sent = sendSaveToBridge();
             if (!sent)
@@ -267,6 +271,10 @@ void MainMenu::save()
                 backupBridgeChanges();
             }
             TitleLoader::save->beginEditing();
+            if (TitleLoader::save->generation() == pksm::Generation::FIVE)
+            {
+                ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+            }
         }
     }
     else
