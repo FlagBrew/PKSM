@@ -1074,6 +1074,7 @@ void StorageScreen::putDownSwap()
     {
         std::shared_ptr<pksm::PKX> bankMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : moveMon[0];
         std::shared_ptr<pksm::PKX> saveMon = storageChosen ? moveMon[0] : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        pksm::Generation origGen           = bankMon->generation();
         if (bankMon->species() == pksm::Species::None)
         {
             bankMon = TitleLoader::save->emptyPkm();
@@ -1085,8 +1086,7 @@ void StorageScreen::putDownSwap()
         bankMon = TitleLoader::save->transfer(*bankMon);
         if (!bankMon)
         {
-            Gui::warn(fmt::format(
-                i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)bankMon->generation(), (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)origGen, (std::string)TitleLoader::save->generation()));
             return;
         }
         if (bankMon->species() == pksm::Species::None ||
