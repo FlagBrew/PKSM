@@ -608,7 +608,10 @@ void net_ip(struct ParseState* Parser, struct Value* ReturnValue, struct Value**
     {
         ReturnValue->Val->Pointer = (void*)"";
     }
-    ReturnValue->Val->Pointer = (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
+    else
+    {
+        ReturnValue->Val->Pointer = (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
+    }
 }
 
 void sav_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -651,7 +654,7 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     checkGen(Parser, gen);
 
     // Will automatically decrypt data; explicitly meant to not use getPokemon
-    std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
+    [[maybe_unused]] std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
 }
 
 void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
