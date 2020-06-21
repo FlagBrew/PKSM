@@ -365,7 +365,7 @@ void BagScreen::editItem()
     std::pair<const std::string*, int> currentItemPair;
     if (currentItem->generation() == pksm::Generation::THREE)
     {
-        std::make_pair(&i18n::item3(Configuration::getInstance().language(), ((pksm::Item3*)currentItem.get())->id3()),
+        currentItemPair = std::make_pair(&i18n::item3(Configuration::getInstance().language(), ((pksm::Item3*)currentItem.get())->id3()),
             ((pksm::Item3*)currentItem.get())->id3());
     }
     else
