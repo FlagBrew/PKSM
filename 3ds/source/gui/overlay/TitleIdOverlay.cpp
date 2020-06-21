@@ -104,7 +104,7 @@ std::string TitleIdOverlay::getNewTitleId() const
     swkbdSetButton(&state, SWKBD_BUTTON_MIDDLE, i18n::localize("RESET").c_str(), false);
     swkbdSetHintText(&state, i18n::localize("TITLE_ID").c_str());
     std::string titleId = Configuration::getInstance().titleId(TITLE_VERSIONS[hid.fullIndex()]);
-    if (titleId.size() != 18 || titleId.size() != 16) // All title IDs must be an optional 0x + 16 hex characters
+    if (titleId.size() != 18 && titleId.size() != 16) // All title IDs must be an optional 0x + 16 hex characters
     {
         swkbdSetInitialText(&state, "0x00040000");
     }
