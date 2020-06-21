@@ -74,7 +74,6 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/source/sav \
 					../core/source/utils \
 					../core/source/wcx \
-					../core/swshcrypto \
 					../external/picoc/source/interpreter \
 					../external/qrgen
 
@@ -105,7 +104,6 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/utils \
 					../core/include/wcx \
 					../core/memecrypto \
-					../core/swshcrypto \
 					../external/picoc/include \
 					../external/qrgen
 

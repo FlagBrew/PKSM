@@ -1,10 +1,10 @@
 APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
+APP_DESCRIPTION	:=	Gen III to Gen VIII save manager
 APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR	:=	9
-VERSION_MINOR	:=	0
-VERSION_MICRO	:=	1
+VERSION_MINOR	:=	1
+VERSION_MICRO	:=	0
 GIT_REV="$(shell git rev-parse --short HEAD)"
 
 OUTDIR			:= 	out

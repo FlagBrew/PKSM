@@ -175,15 +175,8 @@ namespace
         return rc;
     }
 
-    void backupExtData()
-    {
-        Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
-    }
-
-    void backupBanks()
-    {
-        Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
-    }
+    void backupExtData() { Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup"); }
+    void backupBanks() { Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp"); }
 
     bool update(std::string execPath)
     {
