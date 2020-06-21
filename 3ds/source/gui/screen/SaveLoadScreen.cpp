@@ -500,7 +500,7 @@ void SaveLoadScreen::updateTitles()
                 auto num = std::distance(dsIds.begin(), found);
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
-                    saves[dsGroups[num]].emplace_back(std::make_pair(std::string(dsPrefixes[num]), i->second[j]));
+                    saves[dsGroups[num]].emplace_back(std::string(dsPrefixes[num]), i->second[j]);
                 }
             }
         }
@@ -512,7 +512,7 @@ void SaveLoadScreen::updateTitles()
                 auto num = std::distance(ctrIds.begin(), found);
                 for (size_t j = 0; j < i->second.size(); j++)
                 {
-                    saves[ctrGroups[num]].emplace_back(std::make_pair(std::string(ctrPrefixes[num]), i->second[j]));
+                    saves[ctrGroups[num]].emplace_back(std::string(ctrPrefixes[num]), i->second[j]);
                 }
             }
         }
