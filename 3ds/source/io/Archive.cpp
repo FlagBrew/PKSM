@@ -635,6 +635,7 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
         }
         else
         {
+            delete smdh;
             return -errno;
         }
     }
