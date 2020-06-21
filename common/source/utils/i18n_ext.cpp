@@ -144,6 +144,7 @@ namespace i18n
         static const std::string NL  = "Nederlands";
         static const std::string PT  = "Português";
         static const std::string RO  = "Română";
+        static const std::string RU  = "русский";
         switch (lang)
         {
             case pksm::Language::JPN:
@@ -169,6 +170,8 @@ namespace i18n
                 return PT;
             case pksm::Language::RO:
                 return RO;
+            case pksm::Language::RU:
+                return RU;
         }
         return emptyString;
     }

@@ -52,7 +52,7 @@ namespace
             in->read(data, size);
             data[size] = '\0';
             in->close();
-            g_banks = nlohmann::json::parse(data, nullptr, false);
+            g_banks = nlohmann::json::parse((char*)data, nullptr, false);
         }
         else
         {
