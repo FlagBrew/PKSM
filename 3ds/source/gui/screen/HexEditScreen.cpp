@@ -41,6 +41,9 @@ namespace
 {
     constexpr std::string_view hyperVals[]        = {"HYPER_HP", "HYPER_ATTACK", "HYPER_DEFENSE", "HYPER_SPATK", "HYPER_SPDEF", "HYPER_SPEED"};
     constexpr std::string_view marks[]            = {"CIRCLE", "TRIANGLE", "SQUARE", "HEART", "STAR", "DIAMOND"};
+    constexpr std::string_view gen3ToggleTexts[]  = {"BAD_EGG", "HAS_SPECIES", "EGG", "HOENN_CHAMPION_RIBBON", "WINNING_RIBBON", "VICTORY_RIBBON",
+        "ARTIST_RIBBON", "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON",
+        "NATIONAL_RIBBON", "EARTH_RIBBON", "WORLD_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "FATEFUL_ENCOUNTER"};
     constexpr std::string_view gen4ToggleTexts[]  = {"SINNOH_CHAMP_RIBBON", "ABILITY_RIBBON", "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON",
         "MULTI_ABILITY_RIBBON", "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON", "CARELESS_RIBBON",
         "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON",
@@ -168,7 +171,7 @@ bool HexEditScreen::checkValue()
                 return true;
         }
     }
-    else
+    else if (pkm->generation() == pksm::Generation::FOUR)
     {
         int i = hid.fullIndex();
         switch (i)
@@ -198,7 +201,7 @@ bool HexEditScreen::checkValue()
                 }
                 return true;
             case 0x34 ... 0x37:
-                if (pkm->PPUp(i - 0x66) > 3)
+                if (pkm->PPUp(i - 0x34) > 3)
                 {
                     return false;
                 }
@@ -225,6 +228,43 @@ bool HexEditScreen::checkValue()
                 if (pkm->metDate().day() > 31 || pkm->metDate().day() == 0)
                 {
                     return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+    else if (pkm->generation() == pksm::Generation::THREE)
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x20 ... 0x21:
+                if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x22 ... 0x23:
+                if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x2C ... 0x33:
+                if (TitleLoader::save->availableMoves().count(pkm->move((i - 0x2C) / 2)) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x28:
+                // Technically cannot happen. Going to leave it here anyways.
+                for (int j = 0; j < 4; j++)
+                {
+                    if (pkm->PPUp(j) > 3)
+                    {
+                        return false;
+                    }
                 }
                 return true;
             default:
@@ -926,6 +966,114 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("SEAL_COORDINATES"), OPEN);
         }
     }
+    else if (pkm->generation() == pksm::Generation::THREE)
+    {
+        switch (i)
+        {
+            case 0x0 ... 0x3:
+                return std::make_pair(&i18n::localize("PID"), NORMAL);
+            case 0x4 ... 0x5:
+                return std::make_pair(&i18n::localize("TID"), NORMAL);
+            case 0x6 ... 0x7:
+                return std::make_pair(&i18n::localize("SID"), NORMAL);
+            case 0x8 ... 0x11:
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+            case 0x12:
+                return std::make_pair(&i18n::localize("LANGUAGE"), NORMAL);
+            case 0x13:
+                return std::make_pair(&i18n::localize("BAD_EGG_HAS_SPECIES_IS_EGG"), NORMAL);
+            case 0x14 ... 0x1A:
+                return std::make_pair(&i18n::localize("OT_NAME"), NORMAL);
+            case 0x1B:
+                return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
+            case 0x1C ... 0x1D:
+                return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
+            case 0x1E ... 0x1F:
+                return std::make_pair(&i18n::localize("SANITY"), UNRESTRICTED);
+            case 0x20 ... 0x21:
+                return std::make_pair(&i18n::localize("G3_SPECIES"), OPEN);
+            case 0x22 ... 0x23:
+                return std::make_pair(&i18n::localize("G3_ITEM"), OPEN);
+            case 0x24 ... 0x27:
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
+            case 0x28:
+                return std::make_pair(&i18n::localize("PP_UPS"), NORMAL);
+            case 0x29:
+                return std::make_pair(&i18n::localize("OT_FRIENDSHIP"), NORMAL);
+            case 0x2A ... 0x2B:
+                return UNUSED;
+            case 0x2C ... 0x2D:
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
+            case 0x2E ... 0x2F:
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
+            case 0x30 ... 0x31:
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
+            case 0x32 ... 0x33:
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
+            case 0x34:
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), NORMAL);
+            case 0x35:
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), NORMAL);
+            case 0x36:
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), NORMAL);
+            case 0x37:
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), NORMAL);
+            case 0x38:
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
+            case 0x39:
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
+            case 0x3A:
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
+            case 0x3B:
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
+            case 0x3C:
+                return std::make_pair(&i18n::localize("SPATK_EV"), NORMAL);
+            case 0x3D:
+                return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
+            case 0x3E:
+                return std::make_pair(&i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
+            case 0x3F:
+                return std::make_pair(&i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
+            case 0x40:
+                return std::make_pair(&i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
+            case 0x41:
+                return std::make_pair(&i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
+            case 0x42:
+                return std::make_pair(&i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
+            case 0x43:
+                return std::make_pair(&i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
+            case 0x44:
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
+            case 0x45:
+                return std::make_pair(&i18n::localize("MET_LOCATION"), NORMAL);
+            case 0x46 ... 0x47:
+                return std::make_pair(&i18n::localize("MET_LEVEL_VERSION_BALL_OT_GENDER"), NORMAL);
+            case 0x48 ... 0x4B:
+                return std::make_pair(&i18n::localize("IVS_EGG_ABILITY_BIT"), NORMAL);
+            case 0x4C ... 0x4F:
+                return std::make_pair(&i18n::localize("RIBBONS_FATEFUL_ENCOUNTER"), NORMAL);
+            case 0x50 ... 0x53:
+                return std::make_pair(&i18n::localize("STATUS_CONDITION"), OPEN);
+            case 0x54:
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
+            case 0x55:
+                return std::make_pair(&i18n::localize("MAIL_ID"), OPEN);
+            case 0x56 ... 0x57:
+                return std::make_pair(&i18n::localize("CURRENT_HP"), NORMAL);
+            case 0x58 ... 0x59:
+                return std::make_pair(&i18n::localize("HP"), NORMAL);
+            case 0x5A ... 0x5B:
+                return std::make_pair(&i18n::localize("ATTACK"), NORMAL);
+            case 0x5C ... 0x5D:
+                return std::make_pair(&i18n::localize("DEFENSE"), NORMAL);
+            case 0x5E ... 0x5F:
+                return std::make_pair(&i18n::localize("SPEED"), NORMAL);
+            case 0x60 ... 0x61:
+                return std::make_pair(&i18n::localize("SPATK"), NORMAL);
+            case 0x62 ... 0x63:
+                return std::make_pair(&i18n::localize("SPDEF"), NORMAL);
+        }
+    }
     return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
 }
 
@@ -1283,6 +1431,76 @@ HexEditScreen::HexEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm), hid(240
                     buttons[i].push_back(std::make_unique<HexEditButton>(30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
                         ui_sheet_emulated_toggle_green_idx, i18n::localize("TOXIC"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+            }
+        }
+        else if (pkm->generation() == pksm::Generation::THREE)
+        {
+            switch (i)
+            {
+                // Egg, bad egg, and has species flags
+                case 0x13:
+                    for (int j = 0; j < 3; j++)
+                    {
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        currRibbon++;
+                    }
+                    break;
+                // markings
+                case 0x1B:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (int j = 0; j < 6; j++)
+                    {
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(marks[j])), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                    }
+                    break;
+                // OT Gender
+                case 0x47:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("OT_GENDER"), true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // Egg and ability bit
+                case 0x4B:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90 + 0 * 16, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90 + 1 * 16, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("ABILITY_BIT"), true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                case 0x4D:
+                    for (int j = 6; j < 8; j++)
+                    {
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + (j - 6) * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        currRibbon++;
+                    }
+                    break;
+                case 0x4E ... 0x4F:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (int j = 0; j < 8; j++)
+                    {
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        currRibbon++;
+                    }
                     break;
             }
         }
