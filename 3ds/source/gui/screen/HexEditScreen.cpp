@@ -31,6 +31,7 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -1711,11 +1712,12 @@ void HexEditScreen::drawMeaning() const
                     Gui::text(i18n::language(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x20 ... 0x21:
-                    Gui::text(i18n::species(pkm->species()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(pkm->species().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
                     break;
                 case 0x22 ... 0x23:
-                    Gui::text(
-                        i18n::item3(((pksm::PK3*)pkm.get())->heldItem3()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::item3(Configuration::getInstance().language(), ((pksm::PK3*)pkm.get())->heldItem3()), 160, 100, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28:
                     Gui::text(i18n::localize("MOVE_1") + " - " + std::to_string((int)pkm->PPUp(0)), 160, 70, FONT_SIZE_12, COLOR_WHITE,
