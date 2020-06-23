@@ -59,6 +59,37 @@ namespace
     bool lgpeSave                          = false;
 
     template <pksm::Generation::EnumType gen>
+    void updatePkm(typename pksm::GenToPkx<gen>::PKX& pkm)
+    {
+        if constexpr (gen == pksm::Generation::SIX)
+        {
+            if (pkm.country() == 0)
+            {
+                pkm.country(1);
+                g6Save = true;
+            }
+            if (pkm.region() == 0)
+            {
+                pkm.region(2);
+                g6Save = true;
+            }
+        }
+        else if constexpr (gen == pksm::Generation::SEVEN)
+        {
+            if (pkm.country() == 0)
+            {
+                pkm.country(1);
+                g7Save = true;
+            }
+            if (pkm.region() == 0)
+            {
+                pkm.region(2);
+                g7Save = true;
+            }
+        }
+    }
+
+    template <pksm::Generation::EnumType gen>
     std::unique_ptr<typename pksm::GenToPkx<gen>::PKX> loadPkm(const std::string& fileName)
     {
         std::string pkmFile = "/3ds/PKSM/defaults/" + fileName;
@@ -77,6 +108,7 @@ namespace
                     fclose(file);
                     ret = pksm::PKX::getPKM<gen>(data);
                     delete[] data;
+                    updatePkm<gen>(*ret);
                     return ret;
                 }
             }
@@ -156,15 +188,15 @@ namespace
             ((pksm::PK6*)ret.get())->otFeeling(0);
             ((pksm::PK6*)ret.get())->otIntensity(1);
             // Japan, Tokyo, JPN
-            ((pksm::PK6*)ret.get())->geoCountry(1);
-            ((pksm::PK6*)ret.get())->geoRegion(2);
+            ((pksm::PK6*)ret.get())->country(1);
+            ((pksm::PK6*)ret.get())->region(2);
             ((pksm::PK6*)ret.get())->consoleRegion(0);
         }
         else if constexpr (gen == pksm::Generation::SEVEN)
         {
             // Japan, Tokyo, JPN
-            ((pksm::PK7*)ret.get())->geoCountry(1);
-            ((pksm::PK7*)ret.get())->geoRegion(2);
+            ((pksm::PK7*)ret.get())->country(1);
+            ((pksm::PK7*)ret.get())->region(2);
             ((pksm::PK7*)ret.get())->consoleRegion(0);
         }
 
