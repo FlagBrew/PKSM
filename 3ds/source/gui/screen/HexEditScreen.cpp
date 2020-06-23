@@ -989,7 +989,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x1C ... 0x1D:
                 return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
             case 0x1E ... 0x1F:
-                return std::make_pair(&i18n::localize("SANITY"), UNRESTRICTED);
+                return std::make_pair(&i18n::localize("SANITY_PLACEHOLDER"), UNRESTRICTED);
             case 0x20 ... 0x21:
                 return std::make_pair(&i18n::localize("G3_SPECIES"), OPEN);
             case 0x22 ... 0x23:
@@ -999,7 +999,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x28:
                 return std::make_pair(&i18n::localize("PP_UPS"), NORMAL);
             case 0x29:
-                return std::make_pair(&i18n::localize("OT_FRIENDSHIP"), NORMAL);
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_FRIENDSHIP"), NORMAL);
             case 0x2A ... 0x2B:
                 return UNUSED;
             case 0x2C ... 0x2D:
@@ -1053,7 +1053,7 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x4C ... 0x4F:
                 return std::make_pair(&i18n::localize("RIBBONS_FATEFUL_ENCOUNTER"), NORMAL);
             case 0x50 ... 0x53:
-                return std::make_pair(&i18n::localize("STATUS_CONDITION"), OPEN);
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), OPEN);
             case 0x54:
                 return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
             case 0x55:
@@ -1072,6 +1072,12 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("SPATK"), NORMAL);
             case 0x62 ... 0x63:
                 return std::make_pair(&i18n::localize("SPDEF"), NORMAL);
+        }
+    }
+    else if (pkm->generation() == pksm::Generation::EIGHT)
+    {
+        switch (i)
+        {
         }
     }
     return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
@@ -1466,7 +1472,7 @@ HexEditScreen::HexEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm), hid(240
                 // OT Gender
                 case 0x47:
                     buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
-                        ui_sheet_emulated_toggle_green_idx, i18n::localize("OT_GENDER"), true, 7));
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 // Egg and ability bit
@@ -1475,14 +1481,14 @@ HexEditScreen::HexEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm), hid(240
                         ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
                     buttons[i].push_back(std::make_unique<HexEditButton>(30, 90 + 1 * 16, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
-                        ui_sheet_emulated_toggle_green_idx, i18n::localize("ABILITY_BIT"), true, 7));
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("ABILITY_NUMBER"), true, 7));
                     buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
                     break;
                 case 0x4D:
-                    for (int j = 6; j < 8; j++)
+                    for (int j = 7; j < 8; j++)
                     {
                         buttons[i].push_back(
-                            std::make_unique<HexEditButton>(30, 90 + (j - 6) * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                            std::make_unique<HexEditButton>(30, 90 + (j - 7) * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
                                 ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
                         currRibbon++;
