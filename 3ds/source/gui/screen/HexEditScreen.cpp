@@ -89,6 +89,27 @@ namespace
         "BATTLE_TREE_GREAT_RIBBON", "BATTLE_TREE_MASTER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
         "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS", "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG", "DAZZLING_DIZZYING_DANCE_SPOONS",
         "WHAT_UPSTART_MAGIKARP_MOVING_UP", "WATCH_MULTIPLE_MEGA", "UNUSED", "UNUSED"};
+    constexpr std::array<pksm::Ribbon, 98> gen8Ribbons = {pksm::Ribbon::ChampionKalos, pksm::Ribbon::ChampionG3Hoenn, pksm::Ribbon::ChampionSinnoh,
+        pksm::Ribbon::BestFriends, pksm::Ribbon::Training, pksm::Ribbon::BattlerSkillful, pksm::Ribbon::BattlerExpert, pksm::Ribbon::Effort,
+        pksm::Ribbon::Alert, pksm::Ribbon::Shock, pksm::Ribbon::Downcast, pksm::Ribbon::Careless, pksm::Ribbon::Relax, pksm::Ribbon::Snooze,
+        pksm::Ribbon::Smile, pksm::Ribbon::Gorgeous, pksm::Ribbon::Royal, pksm::Ribbon::GorgeousRoyal, pksm::Ribbon::Artist, pksm::Ribbon::Footprint,
+        pksm::Ribbon::Record, pksm::Ribbon::Legend, pksm::Ribbon::Country, pksm::Ribbon::National, pksm::Ribbon::Earth, pksm::Ribbon::World,
+        pksm::Ribbon::Classic, pksm::Ribbon::Premier, pksm::Ribbon::Event, pksm::Ribbon::Birthday, pksm::Ribbon::Special, pksm::Ribbon::Souvenir,
+        pksm::Ribbon::Wishing, pksm::Ribbon::ChampionBattle, pksm::Ribbon::ChampionRegional, pksm::Ribbon::ChampionNational,
+        pksm::Ribbon::ChampionWorld, pksm::Ribbon::MemoryContest, pksm::Ribbon::MemoryBattle, pksm::Ribbon::ChampionG6Hoenn,
+        pksm::Ribbon::ContestStar, pksm::Ribbon::MasterCoolness, pksm::Ribbon::MasterBeauty, pksm::Ribbon::MasterCuteness,
+        pksm::Ribbon::MasterCleverness, pksm::Ribbon::MasterToughness, pksm::Ribbon::ChampionAlola, pksm::Ribbon::BattleRoyale,
+        pksm::Ribbon::BattleTreeGreat, pksm::Ribbon::BattleTreeMaster, pksm::Ribbon::ChampionGalar, pksm::Ribbon::TowerMaster,
+        pksm::Ribbon::MasterRank, pksm::Ribbon::MarkLunchtime, pksm::Ribbon::MarkSleepyTime, pksm::Ribbon::MarkDusk, pksm::Ribbon::MarkDawn,
+        pksm::Ribbon::MarkCloudy, pksm::Ribbon::MarkRainy, pksm::Ribbon::MarkStormy, pksm::Ribbon::MarkSnowy, pksm::Ribbon::MarkBlizzard,
+        pksm::Ribbon::MarkDry, pksm::Ribbon::MarkSandstorm, pksm::Ribbon::MarkMisty, pksm::Ribbon::MarkDestiny, pksm::Ribbon::MarkFishing,
+        pksm::Ribbon::MarkCurry, pksm::Ribbon::MarkUncommon, pksm::Ribbon::MarkRare, pksm::Ribbon::MarkRowdy, pksm::Ribbon::MarkAbsentMinded,
+        pksm::Ribbon::MarkJittery, pksm::Ribbon::MarkExcited, pksm::Ribbon::MarkCharismatic, pksm::Ribbon::MarkCalmness, pksm::Ribbon::MarkIntense,
+        pksm::Ribbon::MarkZonedOut, pksm::Ribbon::MarkJoyful, pksm::Ribbon::MarkAngry, pksm::Ribbon::MarkSmiley, pksm::Ribbon::MarkTeary,
+        pksm::Ribbon::MarkUpbeat, pksm::Ribbon::MarkPeeved, pksm::Ribbon::MarkIntellectual, pksm::Ribbon::MarkFerocious, pksm::Ribbon::MarkCrafty,
+        pksm::Ribbon::MarkScowling, pksm::Ribbon::MarkKindly, pksm::Ribbon::MarkFlustered, pksm::Ribbon::MarkPumpedUp, pksm::Ribbon::MarkZeroEnergy,
+        pksm::Ribbon::MarkPrideful, pksm::Ribbon::MarkUnsure, pksm::Ribbon::MarkHumble, pksm::Ribbon::MarkThorny, pksm::Ribbon::MarkVigor,
+        pksm::Ribbon::MarkSlump};
 }
 
 bool HexEditScreen::toggleBit(int selected, int offset)
@@ -266,6 +287,75 @@ bool HexEditScreen::checkValue()
                     {
                         return false;
                     }
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+    else if (pkm->generation() == pksm::Generation::EIGHT)
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x8 ... 0x9:
+                if (TitleLoader::save->availableSpecies().count(pkm->species()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0xA ... 0xB:
+                if (TitleLoader::save->availableItems().count(pkm->heldItem()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x14 ... 0x15:
+                if (TitleLoader::save->availableAbilities().count(pkm->ability()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x72 ... 0x79:
+                if (TitleLoader::save->availableMoves().count(pkm->move((i - 0x72) / 2)) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x7A ... 0x7D:
+                if (pkm->PPUp(i - 0x7A) > 3)
+                {
+                    return false;
+                }
+                return true;
+            case 0x82 ... 0x89:
+                if (TitleLoader::save->availableMoves().count(pkm->relearnMove((i - 0x82) / 2)) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x11A:
+                if (pkm->eggDate().month() > 12 || pkm->eggDate().month() == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x11B:
+                if (pkm->metDate().month() > 12 || pkm->metDate().month() == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x11D:
+                if (pkm->eggDate().day() > 31 || pkm->eggDate().day() == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x11E:
+                if (pkm->metDate().day() > 31 || pkm->metDate().day() == 0)
+                {
+                    return false;
                 }
                 return true;
             default:
@@ -1079,6 +1169,250 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
     {
         switch (i)
         {
+            case 0x00 ... 0x03:
+                return std::make_pair(&i18n::localize("ENCRYPTION_KEY"), UNRESTRICTED);
+            case 0x04 ... 0x05:
+                return std::make_pair(&i18n::localize("SANITY_PLACEHOLDER"), UNRESTRICTED);
+            case 0x06 ... 0x07:
+                return std::make_pair(&i18n::localize("CHECKSUM"), UNRESTRICTED);
+            case 0x08 ... 0x09:
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
+            case 0x0A ... 0x0B:
+                return std::make_pair(&i18n::localize("ITEM"), NORMAL);
+            case 0x0C ... 0x0D:
+                return std::make_pair(&i18n::localize("OT_ID"), NORMAL);
+            case 0x0E ... 0x0F:
+                return std::make_pair(&i18n::localize("OT_SID"), NORMAL);
+            case 0x10 ... 0x13:
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
+            case 0x14 ... 0x15:
+                return std::make_pair(&i18n::localize("ABILITY"), NORMAL);
+            case 0x16:
+                return std::make_pair(&i18n::localize("ABILITY_NUMBER_FAVORITE_GIGANTAMAX_FACTOR"), NORMAL);
+            case 0x17:
+                return UNUSED;
+            case 0x18 ... 0x19:
+                return std::make_pair(&i18n::localize("MARKINGS"), NORMAL);
+            case 0x1A ... 0x1B:
+                return UNUSED;
+            case 0x1C ... 0x1F:
+                return std::make_pair(&i18n::localize("PID"), NORMAL);
+            case 0x20:
+                return std::make_pair(&i18n::localize("ORIGINAL_NATURE"), NORMAL);
+            case 0x21:
+                return std::make_pair(&i18n::localize("NATURE"), NORMAL);
+            case 0x22:
+                return std::make_pair(&i18n::localize("GENDER_FATEFUL_ENCOUNTER"), NORMAL);
+            case 0x23:
+                return UNUSED;
+            case 0x24 ... 0x25:
+                return std::make_pair(&i18n::localize("FORM"), NORMAL);
+            case 0x26:
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
+            case 0x27:
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
+            case 0x28:
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
+            case 0x29:
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
+            case 0x2A:
+                return std::make_pair(&i18n::localize("SPATK_EV"), NORMAL);
+            case 0x2B:
+                return std::make_pair(&i18n::localize("SPDEF_EV"), NORMAL);
+            case 0x2C:
+                return std::make_pair(&i18n::localize("COOL_CONTEST_VALUE"), NORMAL);
+            case 0x2D:
+                return std::make_pair(&i18n::localize("BEAUTY_CONTEST_VALUE"), NORMAL);
+            case 0x2E:
+                return std::make_pair(&i18n::localize("CUTE_CONTEST_VALUE"), NORMAL);
+            case 0x2F:
+                return std::make_pair(&i18n::localize("SMART_CONTEST_VALUE"), NORMAL);
+            case 0x30:
+                return std::make_pair(&i18n::localize("TOUGH_CONTEST_VALUE"), NORMAL);
+            case 0x31:
+                return std::make_pair(&i18n::localize("SHEEN_CONTEST_VALUE"), NORMAL);
+            case 0x32:
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
+            case 0x33 ... 0x3B:
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
+            case 0x3C:
+                return std::make_pair(&i18n::localize("RIBBON_MEMORY_CONTEST_COUNT"), NORMAL);
+            case 0x3D:
+                return std::make_pair(&i18n::localize("RIBBON_MEMORY_BATTLE_COUNT"), NORMAL);
+            case 0x3E ... 0x3F:
+                return UNUSED;
+            case 0x40 ... 0x47:
+                return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
+            case 0x48 ... 0x4B:
+                return UNKNOWN; // Unknown u32
+            case 0x4C ... 0x4F:
+                return UNUSED; // Unused byte array
+            case 0x50:
+                return std::make_pair(&i18n::localize("HEIGHT"), NORMAL);
+            case 0x51:
+                return std::make_pair(&i18n::localize("WEIGHT"), NORMAL);
+            case 0x52 ... 0x57:
+                return UNKNOWN;
+            case 0x58 ... 0x6F:
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+            case 0x70 ... 0x71:
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+            case 0x72 ... 0x73:
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
+            case 0x74 ... 0x75:
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
+            case 0x76 ... 0x77:
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
+            case 0x78 ... 0x79:
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
+            case 0x7A:
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), NORMAL);
+            case 0x7B:
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), NORMAL);
+            case 0x7C:
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), NORMAL);
+            case 0x7D:
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), NORMAL);
+            case 0x7E:
+                return std::make_pair(&i18n::localize("MOVE_1_PP_UPS"), NORMAL);
+            case 0x7F:
+                return std::make_pair(&i18n::localize("MOVE_2_PP_UPS"), NORMAL);
+            case 0x80:
+                return std::make_pair(&i18n::localize("MOVE_3_PP_UPS"), NORMAL);
+            case 0x81:
+                return std::make_pair(&i18n::localize("MOVE_4_PP_UPS"), NORMAL);
+            case 0x82 ... 0x83:
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_1_ID"), NORMAL);
+            case 0x84 ... 0x85:
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_2_ID"), NORMAL);
+            case 0x86 ... 0x87:
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_3_ID"), NORMAL);
+            case 0x88 ... 0x89:
+                return std::make_pair(&i18n::localize("RELEARN_MOVE_4_ID"), NORMAL);
+            case 0x8A ... 0x8B:
+                return std::make_pair(&i18n::localize("CURRENT_HP"), NORMAL);
+            case 0x8C ... 0x8F:
+                return std::make_pair(&i18n::localize("IVS_EGG_AND_NICKNAMED_FLAGS"), NORMAL);
+            case 0x90:
+                return std::make_pair(&i18n::localize("DYNAMAX_LEVEL"), NORMAL);
+            case 0x91 ... 0x93:
+                return UNUSED;
+            case 0x94 ... 0x97:
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
+            case 0x98 ... 0x9B:
+                return UNKNOWN;
+            case 0x9C ... 0xA7:
+                return UNUSED;
+            case 0xA8 ... 0xBF:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_NAME"), NORMAL);
+            case 0xC0 ... 0xC1:
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+            case 0xC2:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_GENDER"), NORMAL);
+            case 0xC3:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_LANGUAGE"), NORMAL);
+            case 0xC4:
+                return std::make_pair(&i18n::localize("CURRENT_HANDLER"), NORMAL);
+            case 0xC5:
+                return UNUSED;
+            case 0xC6 ... 0xC7:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_ID"), NORMAL);
+            case 0xC8:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_FRIENDSHIP"), NORMAL);
+            case 0xC9:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_INTENSITY"), OPEN);
+            case 0xCA:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_LINE"), OPEN);
+            case 0xCB:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_FEELING"), OPEN);
+            case 0xCC ... 0xCD:
+                return std::make_pair(&i18n::localize("CURRENT_TRAINER_MEMORY_TEXTVAR"), OPEN);
+            case 0xCE ... 0xDB:
+                return UNUSED;
+            case 0xDC:
+                return std::make_pair(&i18n::localize("FULLNESS"), NORMAL);
+            case 0xDD:
+                return std::make_pair(&i18n::localize("ENJOYMENT"), NORMAL);
+            case 0xDE:
+                return std::make_pair(&i18n::localize("ORIGIN_GAME"), NORMAL);
+            case 0xDF:
+                return std::make_pair(&i18n::localize("BATTLE_VERSION"), NORMAL);
+            case 0xE0 ... 0xE1:
+                return UNUSED;
+            case 0xE2:
+                return std::make_pair(&i18n::localize("LANGUAGE"), NORMAL);
+            case 0xE3:
+                return UNKNOWN;
+            case 0xE4 ... 0xE7:
+                return std::make_pair(&i18n::localize("FORM_ARGUMENT"), NORMAL);
+            case 0xE8:
+                return std::make_pair(&i18n::localize("FAVORITE_RIBBON"), NORMAL);
+            case 0xE9 ... 0xF7:
+                return UNUSED;
+            case 0xF8 ... 0x10F:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_NAME"), NORMAL);
+            case 0x110 ... 0x111:
+                return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+            case 0x112:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_FRIENDSHIP"), NORMAL);
+            case 0x113:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_INTENSITY"), OPEN);
+            case 0x114:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_LINE"), OPEN);
+            case 0x115:
+                return UNUSED;
+            case 0x116 ... 0x117:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_TEXTVAR"), OPEN);
+            case 0x118:
+                return std::make_pair(&i18n::localize("ORIGINAL_TRAINER_MEMORY_FEELING"), OPEN);
+            case 0x119:
+                return std::make_pair(&i18n::localize("EGG_YEAR"), NORMAL);
+            case 0x11A:
+                return std::make_pair(&i18n::localize("EGG_MONTH"), NORMAL);
+            case 0x11B:
+                return std::make_pair(&i18n::localize("EGG_DAY"), NORMAL);
+            case 0x11C:
+                return std::make_pair(&i18n::localize("MET_YEAR"), NORMAL);
+            case 0x11D:
+                return std::make_pair(&i18n::localize("MET_MONTH"), NORMAL);
+            case 0x11E:
+                return std::make_pair(&i18n::localize("MET_DAY"), NORMAL);
+            case 0x11F:
+                return UNUSED;
+            case 0x120 ... 0x121:
+                return std::make_pair(&i18n::localize("EGG_LOCATION"), NORMAL);
+            case 0x122 ... 0x123:
+                return std::make_pair(&i18n::localize("MET_LOCATION"), NORMAL);
+            case 0x124:
+                return std::make_pair(&i18n::localize("BALL"), NORMAL);
+            case 0x125:
+                return std::make_pair(&i18n::localize("MET_LEVEL_&_ORIGINAL_TRAINER_GENDER"), NORMAL);
+            case 0x126:
+                return std::make_pair(&i18n::localize("HYPER_TRAIN_FLAGS"), NORMAL);
+            case 0x127 ... 0x134:
+                return std::make_pair(&i18n::localize("TECHNICAL_RECORD_FLAGS"), NORMAL);
+            case 0x135 ... 0x13C:
+                return std::make_pair(&i18n::localize("HOME_TRACKER"), OPEN);
+            case 0x13D ... 0x147:
+                return UNUSED;
+            case 0x148:
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
+            case 0x149:
+                return UNUSED;
+            case 0x14A ... 0x14B:
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
+            case 0x14C ... 0x14D:
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
+            case 0x14E ... 0x14F:
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
+            case 0x150 ... 0x151:
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
+            case 0x152 ... 0x153:
+                return std::make_pair(&i18n::localize("SPATK"), OPEN);
+            case 0x154 ... 0x155:
+                return std::make_pair(&i18n::localize("SPDEF"), OPEN);
+            case 0x156 ... 0x157:
+                return std::make_pair(&i18n::localize("DYNAMAX_TYPE"), OPEN);
         }
     }
     return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
@@ -1511,6 +1845,113 @@ HexEditScreen::HexEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm), hid(240
                     break;
             }
         }
+        else if (pkm->generation() == pksm::Generation::EIGHT)
+        {
+            switch (i)
+            {
+                // Favorite, can gigamax
+                case 0x16:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FAVORITE"), true, 3));
+                    buttons[i].back()->setToggled(pkm->rawData()[i] & 8);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90 + 16, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("GIGATIMAX_FACTOR"), true, 4));
+                    buttons[i].back()->setToggled(pkm->rawData()[i] & 16);
+                    break;
+                // Markings
+                case 0x18 ... 0x19:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (int j = 0; j < (i == 0x18 ? 4 : 2); j++)
+                    {
+                        u8 currentMark = i == 0x18 ? j : j + 4;
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, currentMark]() { return this->rotateMark(currentMark); },
+                                ui_sheet_emulated_toggle_gray_idx, i18n::localize(std::string(marks[currentMark])), false, currentMark, true));
+                        buttons[i].back()->setColor((pkm->rawData()[i] >> (j * 2)) & 0x3);
+                    }
+                    break;
+                // Fateful Encounter
+                case 0x22:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 0); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FATEFUL_ENCOUNTER"), true, 0));
+                    buttons[i].back()->setToggled(pkm->rawData()[i] & 0x1);
+                    break;
+                // Ribbons
+                case 0x34 ... 0x3B:
+                case 0x40 ... 0x47:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (size_t j = 0; j < 8; j++)
+                    {
+                        const std::string& text = (size_t)currRibbon < gen8Ribbons.size()
+                                                      ? i18n::ribbon(Configuration::getInstance().language(), gen8Ribbons[currRibbon])
+                                                      : i18n::localize("UNUSED");
+                        buttons[i].push_back(std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13,
+                            [this, i, j]() { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx, text, true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        currRibbon++;
+                    }
+                    break;
+                // Egg, & Nicknamed Flag
+                case 0x8F:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("EGG"), true, 6));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("NICKNAMED"), true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // OT Gender
+                case 0x125:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
+                    buttons[i].back()->setToggled((pkm->rawData()[i] >> 7) & 0x1);
+                    break;
+                // Hyper training
+                case 0x126:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (int j = 0; j < 6; j++)
+                    {
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::localize(std::string(hyperVals[j])), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                    }
+                    break;
+                // technical records
+                case 0x127:
+                    currRibbon = 0; // Reset the counter so that I can reuse it
+                    // falls through
+                case 0x128 ... 0x134:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        buttons[i].pop_back();
+                    }
+                    for (size_t j = 0; j < 8; j++)
+                    {
+                        // Only 100 TRs
+                        if (currRibbon > 99)
+                        {
+                            break;
+                        }
+                        // TR00 is item 1130
+                        buttons[i].push_back(
+                            std::make_unique<HexEditButton>(30, 90 + j * 16, 13, 13, [this, i, j]() { return this->toggleBit(i, j); },
+                                ui_sheet_emulated_toggle_green_idx, i18n::item(Configuration::getInstance().language(), 1130 + currRibbon), true, j));
+                        buttons[i].back()->setToggled((pkm->rawData()[i] >> j) & 0x1);
+                        currRibbon++;
+                    }
+                    break;
+            }
+        }
     }
     hid.update(pkm->getLength());
     selectedDescription = describe(0);
@@ -1933,6 +2374,50 @@ void HexEditScreen::drawMeaning() const
                     break;
             }
             break;
+        case pksm::Generation::EIGHT:
+            switch (i)
+            {
+                case 0x8 ... 0x9:
+                    Gui::text(pkm->species().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
+                    break;
+                case 0xA ... 0xB:
+                    Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xC ... 0xF:
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), pkm->formatTID(), pkm->formatSID(), pkm->TSV()), 160, 100, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x14 ... 0x15:
+                    Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+                        TextPosY::TOP);
+                    break;
+                case 0x72 ... 0x79:
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move((i - 0x72) / 2)), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x82 ... 0x89:
+                    Gui::text(i18n::move(Configuration::getInstance().language(), pkm->relearnMove((i - 0x82) / 2)), 160, 100, FONT_SIZE_12,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xDE:
+                    Gui::text(i18n::game(Configuration::getInstance().language(), pkm->version()), 160, 100, FONT_SIZE_12, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xE2:
+                    Gui::text(i18n::language(pkm->language()), 160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x120 ... 0x121:
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->eggLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x122 ... 0x123:
+                    Gui::text(i18n::location(Configuration::getInstance().language(), (pksm::Generation)pkm->version(), pkm->metLocation()), 160, 100,
+                        FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+            }
+            break;
         case pksm::Generation::UNUSED:
             break;
     }
@@ -1940,7 +2425,22 @@ void HexEditScreen::drawMeaning() const
 
 bool HexEditScreen::rotateMark(u8 mark)
 {
-    u16 markData = LittleEndian::convertTo<u16>(pkm->rawData() + 0x16);
+    int offset = -1;
+    if (pkm->generation() == pksm::Generation::SEVEN || pkm->generation() == pksm::Generation::LGPE)
+    {
+        offset = 0x16;
+    }
+    else if (pkm->generation() == pksm::Generation::EIGHT)
+    {
+        offset = 0x18;
+    }
+
+    if (offset == -1)
+    {
+        return false;
+    }
+
+    u16 markData = LittleEndian::convertTo<u16>(pkm->rawData() + offset);
     switch ((markData >> (mark * 2)) & 0x3)
     {
         case 0:
@@ -1956,6 +2456,6 @@ bool HexEditScreen::rotateMark(u8 mark)
             markData &= (0xFFFF ^ (0x3 << (mark * 2)));
             break;
     }
-    LittleEndian::convertFrom<u16>(pkm->rawData() + 0x16, markData);
+    LittleEndian::convertFrom<u16>(pkm->rawData() + offset, markData);
     return false;
 }
