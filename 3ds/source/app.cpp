@@ -49,9 +49,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-// increase the stack in order to allow quirc to decode large qrs
-int __stacksize__ = 64 * 1024;
-
 namespace
 {
     u32 old_time_limit;

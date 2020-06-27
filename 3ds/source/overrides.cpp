@@ -24,50 +24,41 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "app.hpp"
-#include "gui.hpp"
-#include "revision.h"
 #include <3ds.h>
+#include <stdio.h>
+#include <string>
 
 namespace
 {
-    void consoleDisplayError(const char* message)
+    class AbortException : public std::exception
     {
-        consoleInit(GFX_TOP, nullptr);
-        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-        printf("\x1b[5;1HAn exception has occurred during execution\x1b[0m");
-        printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message);
-        printf("\x1b[29;16HPress START to exit.");
-        gfxFlushBuffers();
-        gfxSwapBuffers();
-        gspWaitForVBlank();
-        while (aptMainLoop() && !(hidKeysDown() & KEY_START))
-        {
-            hidScanInput();
-        }
-    }
+    public:
+        AbortException() noexcept {}
+
+        const char* what() const noexcept override { return "Abort called"; }
+    };
+
+    bool prettyAbort = true;
 }
 
-int main(int argc, char* argv[])
+// These are necessary because of the 3DS's bad exit semantics.
+// We *have* to clean up; not doing so ends in terrible, terrible things happening (mainly infinite hangs)
+extern "C" {
+extern void __real_abort();
+
+void __wrap_abort(void)
 {
-    Result res = App::init(argc > 0 ? argv[0] : "");
-    if (R_FAILED(res))
+    if (prettyAbort)
     {
-        App::exit();
-        App::end();
-        return res;
+        prettyAbort = false;
+        throw AbortException();
     }
-
-    try
+    else
     {
-        Gui::mainLoop();
+        __real_abort();
     }
-    catch (std::exception& e)
-    {
-        consoleDisplayError(e.what());
-    }
-
-    res = App::exit();
-    App::end();
-    return res;
 }
+}
+
+// increase the stack in order to allow quirc to decode large qrs
+[[maybe_unused]] int __stacksize__ = 64 * 1024;

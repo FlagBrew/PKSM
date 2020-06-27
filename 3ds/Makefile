@@ -129,7 +129,7 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 ifneq ($(strip $(RELEASE)),)
-OPTIMIZE		:=	-O3
+OPTIMIZE		:=	-O3 -flto
 RELEASE_FLAGS	:=	-DNDEBUG
 else
 OPTIMIZE		:=	-Og
@@ -324,6 +324,9 @@ $(GFXBUILD)/%.bcfnt :		%.ttf
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
+
+overrides.o:CXXFLAGS+=-fno-lto
+
 else
 
 #---------------------------------------------------------------------------------
@@ -385,6 +388,8 @@ endef
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@mkbcfnt -o $*.bcfnt $<
+
+overrides.o:CXXFLAGS+=-fno-lto
 
 -include $(DEPSDIR)/*.d
 
