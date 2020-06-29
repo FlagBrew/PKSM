@@ -325,8 +325,6 @@ $(GFXBUILD)/%.bcfnt :		%.ttf
 	@echo $(notdir $<)
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
 
-overrides.o:CXXFLAGS+=-fno-lto
-
 else
 
 #---------------------------------------------------------------------------------
