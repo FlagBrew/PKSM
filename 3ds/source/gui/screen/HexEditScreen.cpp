@@ -2175,6 +2175,7 @@ void HexEditScreen::drawMeaning() const
                         TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
+            break;
         case pksm::Generation::FOUR:
         case pksm::Generation::FIVE:
             switch (i)
