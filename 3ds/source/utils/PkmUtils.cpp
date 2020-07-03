@@ -97,6 +97,7 @@ namespace
 
         if (stat(pkmFile.c_str(), &statStruct) == 0)
         {
+            // Check that the size matches a valid size
             auto ret = pksm::PKX::getPKM<gen>(nullptr, size_t(statStruct.st_size));
             if (ret)
             {
