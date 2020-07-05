@@ -189,47 +189,65 @@ Result Archive::moveDir(
     Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
 {
     Result res;
+
     dst.deleteDir(dest);
-    if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
-        res != (long)0xC82044B9)
-        return res;
-    auto d                = src.directory(dir);
-    std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
-    std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
-    if (d)
+
+    if (src.mHandle == dst.mHandle && !src.mPXI && !dst.mPXI)
     {
-        for (size_t i = 0; i < d->count(); i++)
-        {
-            if (d->folder(i))
-            {
-                if (R_FAILED(res = moveDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
-                {
-                    dst.deleteDir(dest);
-                    return res;
-                }
-            }
-            else
-            {
-                if (R_FAILED(res = moveFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
-                {
-                    dst.deleteDir(dest);
-                    return res;
-                }
-            }
-        }
+        res = FSUSER_RenameDirectory(src.mHandle, fsMakePath(PATH_UTF16, dir.c_str()), dst.mHandle,
+            fsMakePath(PATH_UTF16, dest.c_str()));
+        return res;
+    }
+    else if (src.mHandle == dst.mHandle && src.mPXI && dst.mPXI)
+    {
+        res = FSPXI_RenameDirectory(fspxiHandle, src.mHandle, fsMakePath(PATH_UTF16, dir.c_str()),
+            dst.mHandle, fsMakePath(PATH_UTF16, dest.c_str()));
+        return res;
     }
     else
     {
-        dst.deleteDir(dest);
-        return src.result();
+        if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
+            res != (long)0xC82044B9)
+            return res;
+        auto d                = src.directory(dir);
+        std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
+        std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
+        if (d)
+        {
+            for (size_t i = 0; i < d->count(); i++)
+            {
+                if (d->folder(i))
+                {
+                    if (R_FAILED(res = moveDir(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                    {
+                        dst.deleteDir(dest);
+                        return res;
+                    }
+                }
+                else
+                {
+                    if (R_FAILED(
+                            res = moveFile(src, srcDir + d->item(i), dst, dstDir + d->item(i))))
+                    {
+                        dst.deleteDir(dest);
+                        return res;
+                    }
+                }
+            }
+        }
+        else
+        {
+            dst.deleteDir(dest);
+            return src.result();
+        }
+
+        res = src.deleteDir(dir);
+
+        if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+            return 0;
+
+        return res;
     }
-
-    res = src.deleteDir(dir);
-
-    if (res == (long)0xC82044BE || res == (long)0xC82044B9)
-        return 0;
-
-    return res;
 }
 
 Result Archive::copyDir(
@@ -279,52 +297,67 @@ Result Archive::copyDir(
 
 Result Archive::moveFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest)
 {
-    Result res  = 0;
-    auto stream = src.file(file, FS_OPEN_READ);
-    if (stream)
+    Result res;
+
+    dst.deleteFile(dest);
+
+    if (src.mHandle == dst.mHandle && !src.mPXI && !dst.mPXI)
     {
-        u64 target = stream->size();
-        dst.deleteFile(dest);
-        dst.createFile(dest, 0, target);
-        auto out = dst.file(dest, FS_OPEN_WRITE);
-        if (out)
+        res = FSUSER_RenameFile(src.mHandle, file, dst.mHandle, dest);
+        return res;
+    }
+    else if (src.mHandle == dst.mHandle && src.mPXI && dst.mPXI)
+    {
+        res = FSPXI_RenameFile(fspxiHandle, src.mHandle, file, dst.mHandle, dest);
+        return res;
+    }
+    else
+    {
+        auto stream = src.file(file, FS_OPEN_READ);
+        if (stream)
         {
-            size_t written = 0;
-            u8* data       = new u8[MOVE_BUFFER_SIZE];
-            while (written < target)
+            u64 target = stream->size();
+            dst.createFile(dest, 0, target);
+            auto out = dst.file(dest, FS_OPEN_WRITE);
+            if (out)
             {
-                stream->read(data, std::min(MOVE_BUFFER_SIZE, target - written));
-                if (R_FAILED(res = stream->result()))
+                size_t written = 0;
+                u8* data       = new u8[MOVE_BUFFER_SIZE];
+                while (written < target)
                 {
-                    break;
+                    stream->read(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                    if (R_FAILED(res = stream->result()))
+                    {
+                        break;
+                    }
+                    written += out->write(data, std::min(MOVE_BUFFER_SIZE, target - written));
+                    if (R_FAILED(res = out->result()))
+                    {
+                        break;
+                    }
                 }
-                written += out->write(data, std::min(MOVE_BUFFER_SIZE, target - written));
-                if (R_FAILED(res = out->result()))
+                stream->close();
+                out->close();
+                delete[] data;
+                if (R_SUCCEEDED(res))
                 {
-                    break;
+                    src.deleteFile(file);
                 }
             }
-            stream->close();
-            out->close();
-            delete[] data;
-            if (R_SUCCEEDED(res))
+            else
             {
-                src.deleteFile(file);
+                res = dst.result();
+                dst.deleteFile(dest);
+                stream->close();
             }
         }
         else
         {
-            res = dst.result();
             dst.deleteFile(dest);
-            stream->close();
+            res = src.result();
         }
+        return res;
     }
-    else
-    {
-        dst.deleteFile(dest);
-        res = src.result();
-    }
-    return res;
 }
 
 Result Archive::copyFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest)
