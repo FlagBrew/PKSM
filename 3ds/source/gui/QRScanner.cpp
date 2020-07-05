@@ -26,6 +26,7 @@
 
 #include "QRScanner.hpp"
 #include "quirc/quirc.h"
+#include "thread.hpp"
 #include <atomic>
 
 namespace
@@ -290,7 +291,7 @@ std::vector<u8> QR_Internal::scan()
     std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
     aptSetHomeAllowed(false);
-    threadCreate((ThreadFunc)&drawHelp, data.get(), 0x10000, 0x1A, 1, true);
+    Threads::create(&drawHelp, data.get(), 0x10000);
     while (!data->done())
     {
         data->handler(out);
