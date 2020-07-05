@@ -41,15 +41,19 @@
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
-    mainButtons[0] = std::make_unique<Button>(
-        212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = std::make_unique<Button>(4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
-    mainButtons[2] =
-        std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[0] =
+        std::make_unique<Button>(212, 47, 108, 28, [this]() { return this->showViewer(); },
+            ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[1] = std::make_unique<Button>(
+        4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[2] = std::make_unique<Button>(283, 211, 34, 28,
+        [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[3] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[4] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -59,7 +63,8 @@ BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)),
         for (u8 column = 0; column < 6; column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
-                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
+                ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
@@ -101,13 +106,15 @@ void BoxChoice::drawBottom() const
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            if (TitleLoader::save->generation() == pksm::Generation::LGPE && row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE &&
+                row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
             else
             {
-                std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(boxBox, row * 6 + column);
+                std::shared_ptr<pksm::PKX> pokemon =
+                    TitleLoader::save->pkm(boxBox, row * 6 + column);
                 if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
@@ -159,9 +166,12 @@ void BoxChoice::drawTop() const
         Gui::text("PKSM", 394, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-        Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        Gui::text(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(
+            "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(
+            "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(Banks::bank->boxName(storageBox), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK,
+            TextPosX::CENTER, TextPosY::TOP);
 
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
         Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -209,13 +219,15 @@ void BoxChoice::drawTop() const
 
         if (infoMon)
         {
-            Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
             std::string info = "#" + std::to_string(int(infoMon->species()));
             Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info      = i18n::localize("LV") + std::to_string(infoMon->level());
             auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             int width = text->maxWidth(FONT_SIZE_12);
-            Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             switch (infoMon->gender())
             {
                 case pksm::Gender::Male:
@@ -233,8 +245,8 @@ void BoxChoice::drawTop() const
                 Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
             }
 
-            Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98,
+                FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             pksm::Type firstType  = infoMon->type1();
             pksm::Type secondType = infoMon->type2();
             if (firstType != secondType)
@@ -247,21 +259,25 @@ void BoxChoice::drawTop() const
                 Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
             }
 
-            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->TID());
+            info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") +
+                   std::to_string(infoMon->TID());
             Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP);
+            Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181,
+                FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info  = i18n::localize("IV") + ": ";
             text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
             width = text->maxWidth(FONT_SIZE_12);
-            Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            info =
-                fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
-            Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-            info = fmt::format(
-                FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
-            Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+                TextPosY::TOP);
+            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP),
+                infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
+            Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::TOP);
+            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK),
+                infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
+            Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+                TextPosY::TOP);
             Gui::format(*infoMon, 276, 213);
         }
     }
@@ -271,7 +287,8 @@ void BoxChoice::update(touchPosition* touch)
 {
     if (cursorIndex != 0)
     {
-        infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1) : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1)
+                                : TitleLoader::save->pkm(boxBox, cursorIndex - 1);
     }
     else
     {
@@ -312,8 +329,9 @@ void BoxChoice::update(touchPosition* touch)
         {
             if (cursorIndex != 0)
             {
-                finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-                done       = true;
+                finalValue = std::make_tuple(
+                    storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+                done = true;
             }
         }
         else if (kDown & KEY_B)
@@ -471,7 +489,8 @@ bool BoxChoice::backButton()
 
 bool BoxChoice::showViewer()
 {
-    if (cursorIndex == 0 || (!storageChosen && boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
+    if (cursorIndex == 0 ||
+        (!storageChosen && boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
     {
         return false;
     }
@@ -489,8 +508,9 @@ bool BoxChoice::clickBottomIndex(int index)
     {
         if (cursorIndex != 0)
         {
-            finalValue = std::make_tuple(storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
-            done       = true;
+            finalValue = std::make_tuple(
+                storageChosen ? 1 : 0, storageChosen ? storageBox : boxBox, cursorIndex);
+            done = true;
         }
     }
     else

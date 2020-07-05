@@ -32,13 +32,19 @@
 class EnablableToggleButton : public ToggleButton
 {
 public:
-    EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled, int onImage,
-        const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt,
-        const std::optional<std::string>& offText = std::nullopt, const std::optional<FontSize>& offFontSize = std::nullopt,
-        const std::optional<PKSM_Color>& offTextColor = std::nullopt, const std::optional<int>& disabledImage = std::nullopt,
-        const std::optional<std::string>& disabledText = std::nullopt, const std::optional<FontSize>& disabledFontSize = std::nullopt,
+    EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback,
+        const std::function<bool()>& disabled, int onImage, const std::string& onText,
+        FontSize onFontSize, PKSM_Color onTextColor,
+        const std::optional<int>& offImage                                 = std::nullopt,
+        const std::optional<std::string>& offText                          = std::nullopt,
+        const std::optional<FontSize>& offFontSize                         = std::nullopt,
+        const std::optional<PKSM_Color>& offTextColor                      = std::nullopt,
+        const std::optional<int>& disabledImage                            = std::nullopt,
+        const std::optional<std::string>& disabledText                     = std::nullopt,
+        const std::optional<FontSize>& disabledFontSize                    = std::nullopt,
         const std::optional<PKSM_Color> disabledTextColor                  = std::nullopt,
-        std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory = nullptr, bool canClickToDeselect = true);
+        std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory = nullptr,
+        bool canClickToDeselect                                            = true);
 
     virtual bool update(touchPosition* touch) override;
     virtual void draw() const override;

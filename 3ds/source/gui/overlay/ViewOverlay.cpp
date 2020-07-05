@@ -33,9 +33,11 @@
 
 namespace
 {
-    constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM", "ESV_TSV", "TID_SID", "CTOT_FSHIP", "HIDDEN_POWER",
-        "HP", "ATTACK", "DEFENSE", "SPATK.", "SPDEF.", "SPEED"};
-    constexpr std::array<float, 16> displayWidths = {75, 75, 75, 75, 75, 75, 75, 75, 110, 110, 60, 60, 60, 60, 60, 60};
+    constexpr const char* displayKeys[] = {"TYPE", "NICKNAME", "OT", "NATURE", "ABILITY", "ITEM",
+        "ESV_TSV", "TID_SID", "CTOT_FSHIP", "HIDDEN_POWER", "HP", "ATTACK", "DEFENSE", "SPATK.",
+        "SPDEF.", "SPEED"};
+    constexpr std::array<float, 16> displayWidths = {
+        75, 75, 75, 75, 75, 75, 75, 75, 110, 110, 60, 60, 60, 60, 60, 60};
 }
 
 void ViewOverlay::drawTop() const
@@ -83,19 +85,22 @@ void ViewOverlay::drawTop() const
 
     for (int i = 0; i < 10; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH, displayWidths[i]);
+        Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12,
+            COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i]);
     }
     for (int i = 0; i < 6; i++)
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH, displayWidths[i + 10]);
+        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12,
+            COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH,
+            displayWidths[i + 10]);
     }
-    Gui::text(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
 
     if (pkm)
     {
-        Gui::text(pkm->species().localize(Configuration::getInstance().language()), 25, 7, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->species().localize(Configuration::getInstance().language()), 25, 7,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::ball(pkm->ball(), 4, 6);
         Gui::generation(*pkm, 115, 11);
         switch (pkm->gender())
@@ -110,7 +115,8 @@ void ViewOverlay::drawTop() const
                 Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
                 break;
         }
-        Gui::text(fmt::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("LVL"), pkm->level()), 143, 10, FONT_SIZE_9,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         if (pkm->shiny())
         {
             Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);
@@ -151,42 +157,50 @@ void ViewOverlay::drawTop() const
             Gui::type(Configuration::getInstance().language(), firstType, 83, 35);
         }
 
-        Gui::text(pkm->nickname(), 87, 56, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(
+            pkm->nickname(), 87, 56, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(pkm->otName(), 87, 76, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(pkm->nature().localize(Configuration::getInstance().language()), 87, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->nature().localize(Configuration::getInstance().language()), 87, 96,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(pkm->ability().localize(Configuration::getInstance().language()), 87, 116,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->PSV(), pkm->TSV()), 87, 156,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->versionTID(), pkm->versionSID()), 87,
+            176, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(
-            pkm->ability().localize(Configuration::getInstance().language()), 87, 116, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            i18n::item(Configuration::getInstance().language(), pkm->heldItem()), 87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->PSV(), pkm->TSV()), 87, 156, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->versionTID(), pkm->versionSID()), 87, 176, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm->currentFriendship(), pkm->otFriendship()), 122, 196, FONT_SIZE_12, COLOR_BLACK,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(
-            i18n::type(Configuration::getInstance().language(), pkm->hpType()), 122, 216, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            fmt::format(FMT_STRING("{:d}/{:d}"), pkm->currentFriendship(), pkm->otFriendship()),
+            122, 196, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::type(Configuration::getInstance().language(), pkm->hpType()), 122, 216,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        static constexpr pksm::Stat statValues[] = {
-            pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK, pksm::Stat::SPDEF, pksm::Stat::SPD};
+        static constexpr pksm::Stat statValues[] = {pksm::Stat::HP, pksm::Stat::ATK,
+            pksm::Stat::DEF, pksm::Stat::SPATK, pksm::Stat::SPDEF, pksm::Stat::SPD};
         for (int i = 0; i < 6; i++)
         {
-            Gui::text(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(std::to_string((int)pkm->iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12,
+                COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
             if (pkm->generation() == pksm::Generation::LGPE)
             {
-                Gui::text(std::to_string((int)((pksm::PB7*)pkm.get())->awakened(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK,
-                    TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string((int)((pksm::PB7*)pkm.get())->awakened(statValues[i])),
+                    342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::text(std::to_string((int)pkm->ev(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string((int)pkm->ev(statValues[i])), 342, 16 + i * 20,
+                    FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
             }
-            Gui::text(std::to_string((int)pkm->stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string((int)pkm->stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12,
+                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252, 156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                TextPosY::TOP, TextWidthAction::SQUISH, 144.0f);
+            Gui::text(i18n::move(Configuration::getInstance().language(), pkm->move(i)), 252,
+                156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP,
+                TextWidthAction::SQUISH, 144.0f);
         }
     }
     else
@@ -194,8 +208,8 @@ void ViewOverlay::drawTop() const
         Gui::ball(pksm::Ball::None, 4, 6);
         for (int i = 0; i < 4; i++)
         {
-            Gui::text(
-                i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20,
+                FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 }

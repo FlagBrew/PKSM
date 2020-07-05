@@ -38,7 +38,9 @@ class SortOverlay : public ReplaceableScreen
 {
 public:
     SortOverlay(ReplaceableScreen& screen, SortScreen::SortType& type)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), hid(40, 2), out(type)
+        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+          hid(40, 2),
+          out(type)
     {
         hid.update(vals.size());
         hid.select(int(type));
@@ -51,12 +53,15 @@ public:
 
 private:
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    static constexpr std::array<SortScreen::SortType, 26> vals = {SortScreen::SortType::NONE, SortScreen::SortType::DEX,
-        SortScreen::SortType::SPECIESNAME, SortScreen::SortType::FORM, SortScreen::SortType::TYPE1, SortScreen::SortType::TYPE2,
-        SortScreen::SortType::HP, SortScreen::SortType::ATK, SortScreen::SortType::DEF, SortScreen::SortType::SATK, SortScreen::SortType::SDEF,
-        SortScreen::SortType::SPE, SortScreen::SortType::HPIV, SortScreen::SortType::ATKIV, SortScreen::SortType::DEFIV, SortScreen::SortType::SATKIV,
-        SortScreen::SortType::SDEFIV, SortScreen::SortType::SPEIV, SortScreen::SortType::NATURE, SortScreen::SortType::LEVEL,
-        SortScreen::SortType::TID, SortScreen::SortType::HIDDENPOWER, SortScreen::SortType::FRIENDSHIP, SortScreen::SortType::NICKNAME,
+    static constexpr std::array<SortScreen::SortType, 26> vals = {SortScreen::SortType::NONE,
+        SortScreen::SortType::DEX, SortScreen::SortType::SPECIESNAME, SortScreen::SortType::FORM,
+        SortScreen::SortType::TYPE1, SortScreen::SortType::TYPE2, SortScreen::SortType::HP,
+        SortScreen::SortType::ATK, SortScreen::SortType::DEF, SortScreen::SortType::SATK,
+        SortScreen::SortType::SDEF, SortScreen::SortType::SPE, SortScreen::SortType::HPIV,
+        SortScreen::SortType::ATKIV, SortScreen::SortType::DEFIV, SortScreen::SortType::SATKIV,
+        SortScreen::SortType::SDEFIV, SortScreen::SortType::SPEIV, SortScreen::SortType::NATURE,
+        SortScreen::SortType::LEVEL, SortScreen::SortType::TID, SortScreen::SortType::HIDDENPOWER,
+        SortScreen::SortType::FRIENDSHIP, SortScreen::SortType::NICKNAME,
         SortScreen::SortType::OTNAME, SortScreen::SortType::SHINY};
     SortScreen::SortType& out;
     bool finished = false;

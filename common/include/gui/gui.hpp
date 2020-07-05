@@ -67,23 +67,28 @@ namespace Gui
     void format(const pksm::PKX& pkm, int x, int y);
     void sprite(int key, int x, int y);
     void sprite(int key, int x, int y, PKSM_Color color);
-    void pkm(const pksm::PKX& pkm, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
-    void pkm(pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender, int x, int y, float scale = 1.0f,
-        PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
+    void pkm(const pksm::PKX& pkm, int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK,
+        float blend = 0.0f);
+    void pkm(pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender,
+        int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
 
     int pointerBob();
 #if defined(_3DS)
-    void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f);
+    void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr,
+        float scaleX = 1.0f, float scaleY = 1.0f);
 #elif defined(__SWITCH__)
     // Not sure what the image format is
-    void drawImageAt(const Image& img, float x, float y, const Tint* tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f);
+    void drawImageAt(const Image& img, float x, float y, const Tint* tint = nullptr,
+        float scaleX = 1.0f, float scaleY = 1.0f);
 #endif
     void drawSolidRect(float x, float y, float w, float h, PKSM_Color color);
     void drawSolidCircle(float x, float y, float radius, PKSM_Color color);
-    void drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color);
+    void drawSolidTriangle(
+        float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color);
     void drawLine(float x1, float y1, float x2, float y2, float thickness, PKSM_Color color);
     void drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Color color);
-    void drawLinedPolygon(std::vector<std::pair<float, float>> points, float width, PKSM_Color color);
+    void drawLinedPolygon(
+        std::vector<std::pair<float, float>> points, float width, PKSM_Color color);
 
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);
@@ -95,12 +100,14 @@ namespace Gui
     u8 transparencyWaver();
 
     // Used to get text width/number of lines
-    std::shared_ptr<TextParse::Text> parseText(const std::string& str, FontSize size, float maxWidth = 0.0f);
+    std::shared_ptr<TextParse::Text> parseText(
+        const std::string& str, FontSize size, float maxWidth = 0.0f);
     void clearText(void);
-    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX,
-        TextPosY positionY);
-    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
-        TextWidthAction action = TextWidthAction::IGNORE, float maxWidth = 0.0f);
+    void text(const std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX,
+        FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY);
+    void text(const std::string& str, float x, float y, FontSize size, PKSM_Color color,
+        TextPosX positionX, TextPosY positionY, TextWidthAction action = TextWidthAction::IGNORE,
+        float maxWidth = 0.0f);
 
     void setScreen(std::unique_ptr<Screen> screen);
     void screenBack(void);

@@ -45,10 +45,13 @@
 namespace
 {
     constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
-        "Credits:", "piepie62 and Admiral-Fish for their dedication", "dsoldier for the gorgeous graphic work",
-        "SpiredMoth, trainboy2019 and all the scripters", "The whole FlagBrew team for collaborating with us",
-        "Kaphotics and SciresM for PKHeX documentation", "fincs and WinterMute for citro2d and devkitARM",
-        "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators", "Subject21_J and all the submitters for PKSM's icon",
+        "Credits:", "piepie62 and Admiral-Fish for their dedication",
+        "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters",
+        "The whole FlagBrew team for collaborating with us",
+        "Kaphotics and SciresM for PKHeX documentation",
+        "fincs and WinterMute for citro2d and devkitARM",
+        "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators",
+        "Subject21_J and all the submitters for PKSM's icon",
         "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
 
     void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
@@ -75,7 +78,8 @@ namespace
         std::string patronCode = Configuration::getInstance().patronCode();
         swkbdSetInitialText(&state, patronCode.c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
+        swkbdSetButton(
+            &state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
         char input[45]  = {0};
         SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
         input[44]       = '\0';
@@ -117,9 +121,11 @@ namespace
 
     u8 getNextAlpha(int off)
     {
-        static u8 retVals[14] = {190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
-        static bool up[14]    = {false, false, false, false, false, false, false, false, false, false, false, false, false};
-        static u8 timers[14]  = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+        static u8 retVals[14] = {
+            190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255};
+        static bool up[14] = {false, false, false, false, false, false, false, false, false, false,
+            false, false, false};
+        static u8 timers[14] = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
         if (timers[off] == 0)
         {
             if (retVals[off] < 105 && !up[off])
@@ -163,22 +169,25 @@ void ConfigScreen::initButtons()
             currentTab = 0;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_3_unselected_idx,
-        i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11, COLOR_WHITE,
+        ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("LANGUAGE"), FONT_SIZE_11,
+        COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(108, 2, 104, 17,
         [&]() {
             currentTab = 1;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_3_unselected_idx,
-        i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11, COLOR_WHITE,
+        ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11,
+        COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(215, 2, 104, 17,
         [&]() {
             currentTab = 2;
             return false;
         },
-        ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE, ui_sheet_emulated_button_tabs_3_unselected_idx,
-        i18n::localize("MISC"), FONT_SIZE_11, COLOR_BLACK, &tabs, false));
+        ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE,
+        ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("MISC"), FONT_SIZE_11,
+        COLOR_BLACK, &tabs, false));
     tabs[0]->setState(true);
 
     // First column of language buttons
@@ -189,7 +198,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 74, 8, 8,
         [this]() {
@@ -198,7 +208,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 96, 8, 8,
         [this]() {
@@ -207,7 +218,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 118, 8, 8,
         [this]() {
@@ -216,7 +228,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 140, 8, 8,
         [this]() {
@@ -225,7 +238,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(37, 162, 8, 8,
         [this]() {
@@ -234,7 +248,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
 
     // Second column of language buttons
@@ -245,7 +260,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 74, 8, 8,
         [this]() {
@@ -254,7 +270,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 96, 8, 8,
         [this]() {
@@ -263,7 +280,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 118, 8, 8,
         [this]() {
@@ -272,7 +290,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(177, 140, 8, 8,
         [this]() {
@@ -281,7 +300,8 @@ void ConfigScreen::initButtons()
             initButtons();
             return false;
         },
-        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_lang_disabled_idx, "", 0.0f, COLOR_BLACK,
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
 
     switch (Configuration::getInstance().language())
@@ -328,43 +348,57 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(140, 32, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 52, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FOUR), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FOUR),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 72, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FIVE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FIVE),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(140, 92, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SIX), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SIX),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 112, 15, 12,
         []() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SEVEN), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SEVEN),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 132, 15, 12,
         [this]() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::LGPE), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::LGPE),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(140, 152, 15, 12,
         [this]() {
-            Gui::setScreen(std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::EIGHT), EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::EIGHT),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -402,7 +436,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(247, 72, 15, 12,
         []() {
-            Configuration::getInstance().writeFileSave(!Configuration::getInstance().writeFileSave());
+            Configuration::getInstance().writeFileSave(
+                !Configuration::getInstance().writeFileSave());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -490,18 +525,29 @@ void ConfigScreen::drawBottom() const
 
     if (currentTab == 0)
     {
-        Gui::text(i18n::language(pksm::Language::JPN), 59, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::ENG), 59, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::FRE), 59, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::GER), 59, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::ITA), 59, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::SPA), 59, 157, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::JPN), 59, 47, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::ENG), 59, 69, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::FRE), 59, 91, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::GER), 59, 113, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::ITA), 59, 135, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::SPA), 59, 157, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(i18n::language(pksm::Language::CHS), 199, 47, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::KOR), 199, 69, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::NL), 199, 91, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::PT), 199, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::language(pksm::Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::CHS), 199, 47, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::KOR), 199, 69, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::NL), 199, 91, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::PT), 199, 113, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::language(pksm::Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
@@ -510,29 +556,34 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::THREE), 19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::THREE),
+            19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FOUR),
+            19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FIVE),
+            19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SIX), 19,
+            90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SEVEN),
+            19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::LGPE),
+            19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::EIGHT),
+            19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DAY"), 19, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FOUR), 19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("MONTH"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FIVE), 19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("YEAR"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SIX), 19, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SEVEN), 19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::LGPE), 19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::EIGHT), 19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(i18n::localize("DAY"), 19, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("MONTH"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("YEAR"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        // Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // std::string data;
-        // switch (Configuration::getInstance().nationality())
+        // Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36,
+        // FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(std::to_string(Configuration::getInstance().defaultSID()), 150, 57,
+        // FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(Configuration::getInstance().defaultOT(), 150, 78, FONT_SIZE_12, COLOR_WHITE,
+        // TextPosX::LEFT, TextPosY::TOP); std::string data; switch
+        // (Configuration::getInstance().nationality())
         // {
         //     case 0:
         //         data = "JPN";
@@ -559,15 +610,20 @@ void ConfigScreen::drawBottom() const
         //         data = "USA";
         //         break;
         // }
-        // Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // Gui::text(i18n::country(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
+        // Gui::text(i18n::localize(data), 150, 99, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        // TextPosY::TOP); Gui::text(i18n::country(Configuration::getInstance().language(),
+        // Configuration::getInstance().defaultCountry()), 150, 120, FONT_SIZE_12,
         //     COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // Gui::text(i18n::subregion(Configuration::getInstance().language(), Configuration::getInstance().defaultCountry(),
+        // Gui::text(i18n::subregion(Configuration::getInstance().language(),
+        // Configuration::getInstance().defaultCountry(),
         //               Configuration::getInstance().defaultRegion()),
         //     150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().day()), 168, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().month()), 168, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().year()), 168, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().day()), 168, 170, FONT_SIZE_12,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().month()), 168, 190, FONT_SIZE_12,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().year()), 168, 210, FONT_SIZE_12,
+            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
@@ -576,63 +632,74 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 2)
     {
-        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
-            TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(
-            i18n::localize("EXTRA_SAVES"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(
-            i18n::localize("TITLE_IDS"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 30, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 50, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 70, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 90, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 110, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 130, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 150, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 170, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("EXTRA_SAVES"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("TITLE_IDS"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
 
         for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES") : i18n::localize("NO"), 270, 30, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES") : i18n::localize("NO"), 270, 50, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES") : i18n::localize("NO"), 270, 70, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES") : i18n::localize("NO"), 270, 90, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES") : i18n::localize("NO"), 270, 110, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES") : i18n::localize("NO"), 270, 130, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES") : i18n::localize("NO"), 270, 150, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES") : i18n::localize("NO"), 270, 170, FONT_SIZE_12, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES")
+                                                            : i18n::localize("NO"),
+            270, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES")
+                                                              : i18n::localize("NO"),
+            270, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES")
+                                                               : i18n::localize("NO"),
+            270, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES")
+                                                             : i18n::localize("NO"),
+            270, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES")
+                                                            : i18n::localize("NO"),
+            270, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES")
+                                                             : i18n::localize("NO"),
+            270, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES")
+                                                             : i18n::localize("NO"),
+            270, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES")
+                                                            : i18n::localize("NO"),
+            270, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 3)
     {
         Gui::text("Patrons", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text(i18n::localize("PATRON_CODE"), 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("PATRON_CODE"), 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
+        Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
 
         for (auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES")
+                                                              : i18n::localize("NO"),
+            270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 4)
     {
@@ -646,8 +713,9 @@ void ConfigScreen::drawBottom() const
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"), 270, 108, FONT_SIZE_14, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(
+            Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"),
+            270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -828,11 +896,12 @@ void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
     Gui::text("PKSM", 200, 12.5f, FONT_SIZE_12, COLOR_BLUE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::text(std::string(credits[0]), 200, 30, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(0)), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::string(credits[0]), 200, 30, FONT_SIZE_14,
+        PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(0)), TextPosX::CENTER, TextPosY::TOP);
     int y = 35;
     for (size_t i = 1; i < credits.size(); i++)
     {
-        Gui::text(
-            std::string(credits[i]), 200, y += 15, FONT_SIZE_14, PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(std::string(credits[i]), 200, y += 15, FONT_SIZE_14,
+            PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(i)), TextPosX::CENTER, TextPosY::TOP);
     }
 }

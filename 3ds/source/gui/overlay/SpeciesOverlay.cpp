@@ -46,21 +46,30 @@ namespace
     };
 }
 
-SpeciesOverlay::SpeciesOverlay(
-    ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u8 origLevel)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 8), origLevel(origLevel)
+SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen,
+    const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
+    u8 origLevel)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      object(object),
+      hid(40, 8),
+      origLevel(origLevel)
 {
     if (TitleLoader::save)
     {
-        dispPkm = std::vector<pksm::Species>(TitleLoader::save->availableSpecies().begin(), TitleLoader::save->availableSpecies().end());
+        dispPkm = std::vector<pksm::Species>(TitleLoader::save->availableSpecies().begin(),
+            TitleLoader::save->availableSpecies().end());
     }
     else
     {
         if (object.index() == 0)
         {
             dispPkm = std::vector<pksm::Species>(
-                pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation())).begin(),
-                pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation())).end());
+                pksm::VersionTables::availableSpecies(
+                    pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()))
+                    .begin(),
+                pksm::VersionTables::availableSpecies(
+                    pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()))
+                    .end());
         }
         else
         {
@@ -94,14 +103,16 @@ SpeciesOverlay::SpeciesOverlay(
         {
             it = dispPkm.begin();
         }
-        hid.select(filter->species() == pksm::Species::None ? 0 : std::distance(dispPkm.begin(), it));
+        hid.select(
+            filter->species() == pksm::Species::None ? 0 : std::distance(dispPkm.begin(), it));
     }
 }
 
 void SpeciesOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -133,7 +144,8 @@ void SpeciesOverlay::drawTop() const
                 break;
             }
             pksm::Species species = dispPkm[pkmIndex];
-            pksm::Gender gender   = object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
+            pksm::Gender gender =
+                object.index() == 0 ? std::get<0>(object)->gender() : std::get<1>(object)->gender();
             pksm::Generation gen;
             if (object.index() == 0)
             {
@@ -148,7 +160,8 @@ void SpeciesOverlay::drawTop() const
                 throw SpeciesException{};
             }
             Gui::pkm(species, 0, gen, gender, x * 50 + 7, y * 48 + 2);
-            Gui::text(std::to_string(size_t(species)), x * 50 + 25, y * 48 + 34, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string(size_t(species)), x * 50 + 25, y * 48 + 34, FONT_SIZE_9,
+                COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
         }
     }
 }
@@ -173,11 +186,14 @@ void SpeciesOverlay::update(touchPosition* touch)
     {
         dispPkm.clear();
         const std::set<pksm::Species>& set =
-            TitleLoader::save ? TitleLoader::save->availableSpecies()
-                              : pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
+            TitleLoader::save
+                ? TitleLoader::save->availableSpecies()
+                : pksm::VersionTables::availableSpecies(
+                      pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
         for (auto i = set.begin(); i != set.end(); i++)
         {
-            std::string speciesName = i18n::species(Configuration::getInstance().language(), *i).substr(0, searchString.size());
+            std::string speciesName = i18n::species(Configuration::getInstance().language(), *i)
+                                          .substr(0, searchString.size());
             StringUtils::toLower(speciesName);
             if (speciesName == searchString)
             {
@@ -191,8 +207,10 @@ void SpeciesOverlay::update(touchPosition* touch)
     {
         dispPkm.clear();
         const std::set<pksm::Species>& set =
-            TitleLoader::save ? TitleLoader::save->availableSpecies()
-                              : pksm::VersionTables::availableSpecies(pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
+            TitleLoader::save
+                ? TitleLoader::save->availableSpecies()
+                : pksm::VersionTables::availableSpecies(
+                      pksm::GameVersion::oldestVersion(std::get<0>(object)->generation()));
         dispPkm.insert(dispPkm.begin(), set.begin(), set.end());
         std::sort(dispPkm.begin(), dispPkm.end());
         oldSearchString = searchString = "";
@@ -223,8 +241,9 @@ void SpeciesOverlay::update(touchPosition* touch)
                 pkm->species(species);
                 pkm->alternativeForm(0);
                 pkm->setAbility(0);
-                pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(),
-                    pkm->abilityNumber(), pkm->PID(), pkm->generation()));
+                pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(),
+                    pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(),
+                    pkm->generation()));
                 if (origLevel != 0)
                 {
                     pkm->level(origLevel);

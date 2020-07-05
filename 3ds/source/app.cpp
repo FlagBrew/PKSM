@@ -65,14 +65,20 @@ namespace
         decltype(pksm::crypto::sha256(nullptr, 0)) hash;
     };
 
-    asset assets[2] = {{"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x", "/3ds/PKSM/assets/pkm_spritesheet.t3x",
-                           {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b, 0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d,
-                               0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4, 0xe7, 0x6d, 0xcc, 0x48}},
-        {"https://raw.githubusercontent.com/piepie62/PKResources/master/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
-            {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60, 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d,
-                0xdb, 0xac, 0x59, 0xeb, 0xf1, 0x66, 0x34, 0xa4, 0x91}}};
+    asset assets[2] = {
+        {"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x",
+            "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+            {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b,
+                0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4,
+                0xe7, 0x6d, 0xcc, 0x48}},
+        {"https://raw.githubusercontent.com/piepie62/PKResources/master/types_spritesheet.t3x",
+            "/3ds/PKSM/assets/types_spritesheet.t3x",
+            {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60,
+                0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1,
+                0x66, 0x34, 0xa4, 0x91}}};
 
-    bool matchSha256HashFromFile(const std::string& path, const decltype(pksm::crypto::sha256(nullptr, 0))& sha)
+    bool matchSha256HashFromFile(
+        const std::string& path, const decltype(pksm::crypto::sha256(nullptr, 0))& sha)
     {
         bool match = false;
         auto in    = Archive::sd().file(path, FS_OPEN_READ);
@@ -143,7 +149,8 @@ namespace
     {
         moveIcon.clear();
         consoleInit(GFX_TOP, nullptr);
-        fmt::print(FMT_STRING("\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        fmt::print(FMT_STRING("\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m"), VERSION_MAJOR,
+            VERSION_MINOR, VERSION_MICRO, GIT_REV);
         fmt::print(FMT_STRING("\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m"), (u32)res);
         fmt::print(FMT_STRING("\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m"), message);
         fmt::print(FMT_STRING("\x1b[29;16HPress START to exit."));
@@ -172,8 +179,14 @@ namespace
         return rc;
     }
 
-    void backupExtData() { Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup"); }
-    void backupBanks() { Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp"); }
+    void backupExtData()
+    {
+        Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
+    }
+    void backupBanks()
+    {
+        Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
+    }
 
     bool update(std::string execPath)
     {
@@ -188,7 +201,8 @@ namespace
         const std::string patronCode = Configuration::getInstance().patronCode();
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
-            if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true, &retString, nullptr, "code=" + patronCode))
+            if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true,
+                    &retString, nullptr, "code=" + patronCode))
             {
                 moveIcon.clear();
                 Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -225,7 +239,8 @@ namespace
                                 Gui::warn(i18n::localize("UPDATE_MISSING"));
                                 break;
                             case 401:
-                                Gui::warn(i18n::localize("NOT_PATRON") + '\n' + i18n::localize("INCIDENT_LOGGED"));
+                                Gui::warn(i18n::localize("NOT_PATRON") + '\n' +
+                                          i18n::localize("INCIDENT_LOGGED"));
                                 break;
                             case 502:
                                 Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
@@ -238,7 +253,9 @@ namespace
                 }
             }
         }
-        else if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true, &retString, nullptr, ""))
+        else if (auto fetch =
+                     Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true,
+                         &retString, nullptr, ""))
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -257,10 +274,13 @@ namespace
                     {
                         case 200:
                         {
-                            nlohmann::json retJson = nlohmann::json::parse(retString, nullptr, false);
-                            if (retJson.is_discarded() || !retJson.contains("tag_name") || !retJson["tag_name"].is_string())
+                            nlohmann::json retJson =
+                                nlohmann::json::parse(retString, nullptr, false);
+                            if (retJson.is_discarded() || !retJson.contains("tag_name") ||
+                                !retJson["tag_name"].is_string())
                             {
-                                Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' + i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
+                                Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' +
+                                          i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
                             }
                             else
                             {
@@ -268,13 +288,16 @@ namespace
                                 size_t pos             = 0;
                                 size_t pos2            = 0;
                                 int newMajor           = std::stoi(newVersion, &pos);
-                                int newMinor           = std::stoi(newVersion.substr(pos + 1), &pos2);
-                                int newMicro           = std::stoi(newVersion.substr(pos + pos2 + 2));
+                                int newMinor = std::stoi(newVersion.substr(pos + 1), &pos2);
+                                int newMicro = std::stoi(newVersion.substr(pos + pos2 + 2));
 
-                                if (newMajor > VERSION_MAJOR || (newMajor == VERSION_MAJOR && newMinor > VERSION_MINOR) ||
-                                    (newMajor == VERSION_MAJOR && newMinor == VERSION_MINOR && newMicro > VERSION_MICRO))
+                                if (newMajor > VERSION_MAJOR ||
+                                    (newMajor == VERSION_MAJOR && newMinor > VERSION_MINOR) ||
+                                    (newMajor == VERSION_MAJOR && newMinor == VERSION_MINOR &&
+                                        newMicro > VERSION_MICRO))
                                 {
-                                    url = "https://github.com/FlagBrew/PKSM/releases/download/" + newVersion + "/PKSM";
+                                    url = "https://github.com/FlagBrew/PKSM/releases/download/" +
+                                          newVersion + "/PKSM";
                                     if (execPath != "")
                                     {
                                         url += ".3dsx";
@@ -306,8 +329,10 @@ namespace
             backupBanks();
             Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"));
             std::string fileName = path.substr(path.find_last_of('/') + 1);
-            Result res           = Fetch::download(url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
-                [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
+            Result res           = Fetch::download(url, path,
+                Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
+                [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal,
+                    curl_off_t ulnow) {
                     Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
                     return 0;
                 },
@@ -333,7 +358,8 @@ namespace
                 auto ciaFile = Archive::sd().file(path, FS_OPEN_READ);
                 if (ciaFile)
                 {
-                    if (R_FAILED(res = AM_GetCiaFileInfo(MEDIATYPE_SD, &title, std::get<0>(ciaFile->getRawHandle()))))
+                    if (R_FAILED(res = AM_GetCiaFileInfo(
+                                     MEDIATYPE_SD, &title, std::get<0>(ciaFile->getRawHandle()))))
                     {
                         Gui::error(i18n::localize("BAD_CIA_FILE"), res);
                         ciaFile->close();
@@ -371,7 +397,8 @@ namespace
                             return false;
                         }
 
-                        if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf, bytesRead, FS_WRITE_FLUSH)))
+                        if (R_FAILED(res = FSFILE_Write(dstHandle, &bytesWritten, offset, buf,
+                                         bytesRead, FS_WRITE_FLUSH)))
                         {
                             Gui::error(i18n::localize("CIA_UPDATE_WRITE_FAIL"), res);
                             ciaFile->close();
@@ -396,7 +423,9 @@ namespace
                     {
                         AM_CancelCIAInstall(dstHandle);
                         ciaFile->close();
-                        Gui::warn("Bytes written doesn't match bytes read:\n" + std::to_string(bytesWritten) + " vs " + std::to_string(bytesRead));
+                        Gui::warn("Bytes written doesn't match bytes read:\n" +
+                                  std::to_string(bytesWritten) + " vs " +
+                                  std::to_string(bytesRead));
                         return false;
                     }
 
@@ -477,7 +506,8 @@ namespace
             std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
             for (auto& line : bootSplash)
             {
-                std::copy(line.begin(), line.end(), gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
+                std::copy(line.begin(), line.end(),
+                    gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
             }
 
             if (up)
@@ -516,8 +546,9 @@ namespace
 
     void i18nThread(void*)
     {
-        constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG, pksm::Language::FRE, pksm::Language::ITA,
-            pksm::Language::GER, pksm::Language::SPA, pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
+        constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
+            pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
+            pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
             pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
         for (auto& i : languages)
         {
@@ -549,13 +580,14 @@ namespace
         }
         if (R_FAILED(res))
         {
-            Gui::warn(i18n::localize("UPDATE_SUCCESS_1") + '\n' + i18n::localize("UPDATE_SUCCESS_2"));
+            Gui::warn(
+                i18n::localize("UPDATE_SUCCESS_1") + '\n' + i18n::localize("UPDATE_SUCCESS_2"));
         }
         return -1;
     }
 
-    // Also checks modified time. If the checksum file is newer than the file, recalculate and write checksum
-    // If checksum file doesn't exist, calculate and write checksum
+    // Also checks modified time. If the checksum file is newer than the file, recalculate and write
+    // checksum If checksum file doesn't exist, calculate and write checksum
     decltype(pksm::crypto::sha256(nullptr, 0)) readGiftChecksum(const std::string& fileName)
     {
         struct
@@ -585,8 +617,10 @@ namespace
             checksumFileInfo.exists = false;
         }
 
-        // Either both exist and file was modified before checksum file, or checksum file exists and file doesn't
-        if (checksumFileInfo.exists && (!fileInfo.exists || (fileInfo.exists && fileInfo.mtime <= checksumFileInfo.mtime)))
+        // Either both exist and file was modified before checksum file, or checksum file exists and
+        // file doesn't
+        if (checksumFileInfo.exists &&
+            (!fileInfo.exists || (fileInfo.exists && fileInfo.mtime <= checksumFileInfo.mtime)))
         {
             FILE* correctSum = fopen(checksumPath.c_str(), "rb");
             if (correctSum)
@@ -630,7 +664,10 @@ namespace
 #endif
         struct giftCurlData
         {
-            giftCurlData(FILE* file, std::string fileName) : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false) {}
+            giftCurlData(FILE* file, std::string fileName)
+                : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
+            {
+            }
             std::string fileName;
             FILE* file;
             pksm::crypto::SHA256 shaContext;
@@ -654,8 +691,8 @@ namespace
             }
         };
 
-        constexpr std::array<pksm::Generation, 4> mgGens = {
-            pksm::Generation::FOUR, pksm::Generation::FIVE, pksm::Generation::SIX, pksm::Generation::SEVEN};
+        constexpr std::array<pksm::Generation, 4> mgGens = {pksm::Generation::FOUR,
+            pksm::Generation::FIVE, pksm::Generation::SIX, pksm::Generation::SEVEN};
 
         std::atomic<size_t> filesDone = 0;
         size_t filesToDownload        = 0;
@@ -666,18 +703,23 @@ namespace
 
         for (auto& gen : mgGens)
         {
-            for (const std::string& fileName : {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
+            for (const std::string& fileName :
+                {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
             {
                 decltype(pksm::crypto::sha256(nullptr, 0)) checksum = readGiftChecksum(fileName);
 
                 std::vector<u8> recvChecksum;
-                if (auto fetch = Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
+                if (auto fetch =
+                        Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha",
+                            true, nullptr, nullptr, ""))
                 {
-                    fetch->setopt(CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size, size_t items, void* userThing) {
-                        std::vector<u8>* recv = (std::vector<u8>*)userThing;
-                        recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
-                        return size * items;
-                    });
+                    fetch->setopt(
+                        CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
+                                                   size_t items, void* userThing) {
+                            std::vector<u8>* recv = (std::vector<u8>*)userThing;
+                            recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
+                            return size * items;
+                        });
                     fetch->setopt(CURLOPT_WRITEDATA, &recvChecksum);
 
                     Fetch::perform(fetch);
@@ -687,9 +729,12 @@ namespace
                     fetch->getinfo(CURLINFO_RESPONSE_CODE, &response);
                     if (response == 200)
                     {
-                        if (memcmp(recvChecksum.data(), checksum.data(), std::min(checksum.size(), recvChecksum.size())))
+                        if (memcmp(recvChecksum.data(), checksum.data(),
+                                std::min(checksum.size(), recvChecksum.size())))
                         {
-                            if (fetch = Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName, true, nullptr, nullptr, ""))
+                            if (fetch = Fetch::init(
+                                    "https://flagbrew.org/static/other/gifts/" + fileName, true,
+                                    nullptr, nullptr, ""))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
                                 FILE* outFile       = fopen(outPath.c_str(), "wb");
@@ -700,11 +745,13 @@ namespace
                                     fetch->setopt(CURLOPT_WRITEFUNCTION, giftWriteFunc);
                                     fetch->setopt(CURLOPT_WRITEDATA, &curlVars.back());
 
-                                    if (Fetch::performAsync(
-                                            fetch, [progress = curlVars.end() - 1, &filesDone](CURLcode code, std::shared_ptr<Fetch> fetch) {
+                                    if (Fetch::performAsync(fetch,
+                                            [progress = curlVars.end() - 1, &filesDone](
+                                                CURLcode code, std::shared_ptr<Fetch> fetch) {
                                                 filesDone++;
                                                 fclose(progress->file);
-                                                fetch->getinfo(CURLINFO_RESPONSE_CODE, &progress->response);
+                                                fetch->getinfo(
+                                                    CURLINFO_RESPONSE_CODE, &progress->response);
                                             }) != CURLM_OK)
                                     {
                                         filesDone++;
@@ -724,7 +771,8 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(fmt::format(i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
+            Gui::waitFrame(fmt::format(
+                i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
             svcSleepThread(50'000'000);
         }
 
@@ -764,7 +812,9 @@ Result App::init(const std::string& execPath)
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
-        return consoleDisplayError("Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.", res);
+        return consoleDisplayError(
+            "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
+            res);
 #endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
@@ -803,8 +853,9 @@ Result App::init(const std::string& execPath)
     }
 
     if (R_FAILED(res = downloadAdditionalAssets()))
-        return consoleDisplayError(
-            "Additional assets download failed.\n\nAlways make sure you're connected to the internet and on the lastest version.", res);
+        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're "
+                                   "connected to the internet and on the lastest version.",
+            res);
     if (R_FAILED(res = Gui::init()))
         return consoleDisplayError("Gui::init failed.", res);
 

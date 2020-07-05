@@ -33,7 +33,10 @@
 class MessageScreen : public RunnableScreen<std::nullptr_t>
 {
 public:
-    MessageScreen(const std::string& message, pksm::Language lang = pksm::Language::ENG) : RunnableScreen(nullptr), message(message), lang(lang) {}
+    MessageScreen(const std::string& message, pksm::Language lang = pksm::Language::ENG)
+        : RunnableScreen(nullptr), message(message), lang(lang)
+    {
+    }
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

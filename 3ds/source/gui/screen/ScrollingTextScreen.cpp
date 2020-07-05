@@ -30,7 +30,8 @@
 #include "gui.hpp"
 
 ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_ptr<pksm::PKX> pk)
-    : Screen(i18n::localize("UP_SCROLL_UP") + '\n' + i18n::localize("DOWN_SCROLL_DOWN") + '\n' + i18n::localize("B_BACK")),
+    : Screen(i18n::localize("UP_SCROLL_UP") + '\n' + i18n::localize("DOWN_SCROLL_DOWN") + '\n' +
+             i18n::localize("B_BACK")),
       pkm(pk),
       text(Gui::parseText(text, FONT_SIZE_12, 300.0f))
 {
@@ -43,7 +44,10 @@ ScrollingTextScreen::ScrollingTextScreen(const std::string& text, std::shared_pt
 void ScrollingTextScreen::update(touchPosition* touch)
 {
     u32 down = hidKeysDown();
-    if (down & KEY_DOWN && lineOffset + SHOWN_LINES < text->lines() + 2) // 2 to allow for a little bit of space at the end when fully scrolled down
+    if (down & KEY_DOWN &&
+        lineOffset + SHOWN_LINES <
+            text->lines() +
+                2) // 2 to allow for a little bit of space at the end when fully scrolled down
     {
         lineOffset++;
     }
@@ -79,7 +83,8 @@ void ScrollingTextScreen::drawBottom() const
     Gui::drawSolidCircle(10, 230, 5, COLOR_WHITE);
 
     auto draw = text->truncate(SHOWN_LINES + 2, lineOffset > 0 ? lineOffset - 1 : 0);
-    Gui::text(draw, 10, 7 - lineMod * std::min((size_t)1, lineOffset), FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(draw, 10, 7 - lineMod * std::min((size_t)1, lineOffset), FONT_SIZE_12, FONT_SIZE_12,
+        COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::drawSolidRect(0, 0, 320, 5, COLOR_MENUBLUE);
     Gui::drawSolidRect(0, 235, 320, 5, COLOR_MENUBLUE);
 

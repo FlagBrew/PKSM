@@ -62,7 +62,8 @@ public:
 
     bool good() const { return isGood; }
     nlohmann::json grabPage(int page);
-    static std::string makeURL(int page, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
+    static std::string makeURL(
+        int page, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
 
 private:
     struct Page
@@ -72,7 +73,8 @@ private:
         std::atomic<bool> available = false;
     };
     void refreshPages();
-    static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
+    static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
+        pksm::Generation low, pksm::Generation high, bool LGPE);
     static bool pageIsGood(const nlohmann::json& page);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;

@@ -39,10 +39,12 @@
 class BagItemOverlay : public ReplaceableScreen
 {
 public:
-    BagItemOverlay(ReplaceableScreen& screen, std::vector<std::pair<const std::string*, int>>& items, size_t selected,
+    BagItemOverlay(ReplaceableScreen& screen,
+        std::vector<std::pair<const std::string*, int>>& items, size_t selected,
         std::pair<pksm::Sav::Pouch, int> pouch, int slot, int& firstEmpty)
-        : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' +
-                                         i18n::localize("B_BACK")),
+        : ReplaceableScreen(
+              &screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' +
+                           i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")),
           validItems(items),
           items(items),
           pouch(pouch),
@@ -51,7 +53,8 @@ public:
           slot(slot),
           firstEmpty(firstEmpty)
     {
-        instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
+        instructions.addBox(
+            false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
         searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
             [this]() {
                 searchBar();

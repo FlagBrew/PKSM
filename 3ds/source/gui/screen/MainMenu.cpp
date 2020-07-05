@@ -50,7 +50,8 @@ namespace
             case 0:
                 if (TitleLoader::save->partyCount() < 1)
                 {
-                    Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
+                    Gui::warn(
+                        i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                     return false;
                 }
                 Gui::setScreen(std::make_unique<StorageScreen>());
@@ -58,13 +59,15 @@ namespace
             case 1:
                 if (TitleLoader::save->partyCount() < 1)
                 {
-                    Gui::warn(i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
+                    Gui::warn(
+                        i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                     return false;
                 }
                 Gui::setScreen(std::make_unique<EditSelectorScreen>());
                 return true;
             case 2:
-                if (TitleLoader::save->generation() >= pksm::Generation::LGPE || TitleLoader::save->generation() <= pksm::Generation::THREE)
+                if (TitleLoader::save->generation() >= pksm::Generation::LGPE ||
+                    TitleLoader::save->generation() <= pksm::Generation::THREE)
                 {
                     Gui::warn(i18n::localize("NO_WONDERCARDS"));
                     return false;
@@ -92,7 +95,8 @@ MainMenu::MainMenu()
     {
         ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
     }
-    oldHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    oldHash =
+        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     makeButtons();
     makeInstructions();
 }
@@ -101,18 +105,18 @@ MainMenu::~MainMenu() {}
 
 void MainMenu::makeButtons()
 {
-    buttons[0] = std::make_unique<MainMenuButton>(
-        15, 20, 140, 53, []() { return goToScreen(0); }, ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
-    buttons[1] = std::make_unique<MainMenuButton>(
-        165, 20, 140, 53, []() { return goToScreen(1); }, ui_sheet_icon_editor_idx, i18n::localize("EDITOR"), FONT_SIZE_15, COLOR_WHITE, 28);
-    buttons[2] = std::make_unique<MainMenuButton>(
-        15, 83, 140, 53, []() { return goToScreen(2); }, ui_sheet_icon_events_idx, i18n::localize("EVENTS"), FONT_SIZE_15, COLOR_WHITE, 93);
-    buttons[3] = std::make_unique<MainMenuButton>(
-        165, 83, 140, 53, []() { return goToScreen(3); }, ui_sheet_icon_scripts_idx, i18n::localize("SCRIPTS"), FONT_SIZE_15, COLOR_WHITE, 91);
-    buttons[4] = std::make_unique<MainMenuButton>(
-        15, 146, 140, 53, []() { return goToScreen(4); }, ui_sheet_icon_bag_idx, i18n::localize("BAG"), FONT_SIZE_15, COLOR_WHITE, 157);
-    buttons[5] = std::make_unique<MainMenuButton>(
-        165, 146, 140, 53, []() { return goToScreen(5); }, ui_sheet_icon_settings_idx, i18n::localize("SETTINGS"), FONT_SIZE_15, COLOR_WHITE, 160);
+    buttons[0] = std::make_unique<MainMenuButton>(15, 20, 140, 53, []() { return goToScreen(0); },
+        ui_sheet_icon_storage_idx, i18n::localize("STORAGE"), FONT_SIZE_15, COLOR_WHITE, 27);
+    buttons[1] = std::make_unique<MainMenuButton>(165, 20, 140, 53, []() { return goToScreen(1); },
+        ui_sheet_icon_editor_idx, i18n::localize("EDITOR"), FONT_SIZE_15, COLOR_WHITE, 28);
+    buttons[2] = std::make_unique<MainMenuButton>(15, 83, 140, 53, []() { return goToScreen(2); },
+        ui_sheet_icon_events_idx, i18n::localize("EVENTS"), FONT_SIZE_15, COLOR_WHITE, 93);
+    buttons[3] = std::make_unique<MainMenuButton>(165, 83, 140, 53, []() { return goToScreen(3); },
+        ui_sheet_icon_scripts_idx, i18n::localize("SCRIPTS"), FONT_SIZE_15, COLOR_WHITE, 91);
+    buttons[4] = std::make_unique<MainMenuButton>(15, 146, 140, 53, []() { return goToScreen(4); },
+        ui_sheet_icon_bag_idx, i18n::localize("BAG"), FONT_SIZE_15, COLOR_WHITE, 157);
+    buttons[5] = std::make_unique<MainMenuButton>(165, 146, 140, 53, []() { return goToScreen(5); },
+        ui_sheet_icon_settings_idx, i18n::localize("SETTINGS"), FONT_SIZE_15, COLOR_WHITE, 160);
     buttons[6] = std::make_unique<ClickButton>(289, 211, 28, 28,
         [this]() {
             if (needsSave())
@@ -127,7 +131,8 @@ void MainMenu::makeButtons()
 void MainMenu::makeInstructions()
 {
     instructions = Instructions(i18n::localize("B_BACK"));
-    instructions.addBox(false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
+    instructions.addBox(
+        false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
     instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
 }
@@ -156,42 +161,47 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)TitleLoader::save->generation()), 10, y, FONT_SIZE_12, COLOR_BLACK,
-                    TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(fmt::format(i18n::localize("GENERATION"),
+                              (std::string)TitleLoader::save->generation()),
+                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(fmt::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName()), 10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                    TextPosY::TOP);
+                Gui::text(fmt::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName()),
+                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
-                Gui::text(i18n::localize("TID_SID") + ": " + std::to_string(TitleLoader::save->displayTID()) + "/" +
+                Gui::text(i18n::localize("TID_SID") + ": " +
+                              std::to_string(TitleLoader::save->displayTID()) + "/" +
                               std::to_string(TitleLoader::save->displaySID()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(
-                    fmt::format(TitleLoader::save->generation() == pksm::Generation::SEVEN ? i18n::localize("STAMPS") : i18n::localize("BADGES"),
-                        TitleLoader::save->badges()),
+                Gui::text(fmt::format(TitleLoader::save->generation() == pksm::Generation::SEVEN
+                                          ? i18n::localize("STAMPS")
+                                          : i18n::localize("BADGES"),
+                              TitleLoader::save->badges()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(fmt::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGiftAmount()), 10, y, FONT_SIZE_12, COLOR_BLACK,
-                    TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(
+                    fmt::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGiftAmount()),
+                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(fmt::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                    TextPosY::TOP);
+                Gui::text(fmt::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10,
+                    y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(fmt::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-                    TextPosY::TOP);
+                Gui::text(fmt::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()),
+                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
                 break;
         }
     }
 
-    const std::string version = fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    const std::string version = fmt::format(
+        FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     Gui::text("PKSM", 282, 16, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::CENTER);
     Gui::text(version, 398, 17, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::CENTER);
 }
@@ -245,7 +255,8 @@ void MainMenu::update(touchPosition* touch)
 
 bool MainMenu::needsSave()
 {
-    auto newHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    auto newHash =
+        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
     if (newHash != oldHash)
     {
         return true;
@@ -257,7 +268,8 @@ void MainMenu::save()
 {
     if (isLoadedSaveFromBridge())
     {
-        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' + i18n::localize("BRIDGE_SHOULD_SEND_2")))
+        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' +
+                                   i18n::localize("BRIDGE_SHOULD_SEND_2")))
         {
             if (TitleLoader::save->generation() == pksm::Generation::FIVE)
             {
@@ -290,5 +302,6 @@ void MainMenu::save()
             ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
     }
-    oldHash = pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+    oldHash =
+        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
 }

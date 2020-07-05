@@ -48,8 +48,9 @@
 #include <sys/stat.h>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' + i18n::localize("Y_GROUP_SINGLE") + '\n' +
-             i18n::localize("START_FILTER_LEGAL") + '\n' + i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
+    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
+             i18n::localize("Y_GROUP_SINGLE") + '\n' + i18n::localize("START_FILTER_LEGAL") + '\n' +
+             i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
       filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
       storageBox(storageBox)
@@ -60,18 +61,23 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] = std::make_unique<Button>(
-        212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] = std::make_unique<Button>(
-        212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] = std::make_unique<Button>(
-        212, 171, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] =
-        std::make_unique<Button>(283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[1] =
+        std::make_unique<Button>(212, 109, 108, 28, [this]() { return this->showViewer(); },
+            ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[2] =
+        std::make_unique<Button>(212, 140, 108, 28, [this]() { return this->releasePkm(); },
+            ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[3] =
+        std::make_unique<Button>(212, 171, 108, 28, [this]() { return this->dumpPkm(); },
+            ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28,
+        [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
     mainButtons[5] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
     mainButtons[6] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -81,13 +87,15 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
         for (u8 column = 0; column < 6; column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
-                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
+                ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
     }
-    clickButtons[30] =
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+    clickButtons[30] = std::make_unique<ClickButton>(25, 15, 164, 24,
+        [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK);
 }
 
 void GroupCloudScreen::drawBottom() const
@@ -134,7 +142,8 @@ void GroupCloudScreen::drawBottom() const
         y += 30;
     }
 
-    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(Banks::bank->boxName(storageBox), 25 + 164 / 2, 18, FONT_SIZE_14, COLOR_BLACK,
+        TextPosX::CENTER, TextPosY::TOP);
 
     if (!cloudChosen)
     {
@@ -191,19 +200,24 @@ void GroupCloudScreen::drawTop() const
         if (access.isLegal((cursorIndex - 1) / 6, (cursorIndex - 1) % 6))
         {
             Gui::sprite(ui_sheet_textbox_legal_idx, 261, 34);
-            Gui::text(i18n::localize("LEGALITY_LEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(i18n::localize("LEGALITY_LEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE,
+                TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {
             Gui::sprite(ui_sheet_emulated_textbox_illegal_idx, 261, 34);
-            Gui::text(i18n::localize("LEGALITY_ILLEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(i18n::localize("LEGALITY_ILLEGAL"), 394, 38, FONT_SIZE_14, COLOR_WHITE,
+                TextPosX::RIGHT, TextPosY::TOP);
         }
     }
 
     Gui::sprite(ui_sheet_bar_boxname_empty_idx, 44, 21);
-    Gui::text("\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text("\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(fmt::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(
+        "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(
+        "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(fmt::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24,
+        FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -272,13 +286,15 @@ void GroupCloudScreen::drawTop() const
 
     if (infoMon)
     {
-        Gui::text(infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(
+            infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         std::string info = "#" + std::to_string(size_t(infoMon->species()));
         Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info      = i18n::localize("LV") + std::to_string(infoMon->level());
         auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         int width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
         switch (infoMon->gender())
         {
             case pksm::Gender::Male:
@@ -296,8 +312,8 @@ void GroupCloudScreen::drawTop() const
             Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
         }
 
-        Gui::text(
-            infoMon->species().localize(Configuration::getInstance().language()), 276, 98, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         pksm::Type firstType  = infoMon->type1();
         pksm::Type secondType = infoMon->type2();
         if (firstType != secondType)
@@ -310,20 +326,25 @@ void GroupCloudScreen::drawTop() const
             Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
         }
 
-        info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") + std::to_string(infoMon->versionTID());
+        info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") +
+               std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(
-            infoMon->nature().localize(Configuration::getInstance().language()), 276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP), infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
-        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        info = fmt::format(
-            FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK), infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
-        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(
+            text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP),
+            infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
+        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+            TextPosY::TOP);
+        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK),
+            infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
+        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+            TextPosY::TOP);
         Gui::format(*infoMon, 276, 213);
     }
 }
@@ -556,10 +577,13 @@ void GroupCloudScreen::pickup()
             auto it                      = std::find(toSend.begin(), toSend.end(), thisPair);
             if (it == toSend.end())
             {
-                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() != pksm::Species::None && toSend.size() < 6)
+                if (Banks::bank->pkm(storageBox, cursorIndex - 1)->species() !=
+                        pksm::Species::None &&
+                    toSend.size() < 6)
                 {
                     toSend.push_back(thisPair);
-                    if (toSend.size() == 6 && Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
+                    if (toSend.size() == 6 &&
+                        Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
                     {
                         shareSend();
                     }
@@ -571,7 +595,8 @@ void GroupCloudScreen::pickup()
             }
         }
     }
-    else if (!cloudChosen && Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == pksm::Species::None)
+    else if (!cloudChosen &&
+             Banks::bank->pkm(storageBox, cursorIndex - 1)->species() == pksm::Species::None)
     {
         Banks::bank->pkm(*groupPkm.back(), storageBox, cursorIndex - 1);
         groupPkm.pop_back();
@@ -680,14 +705,17 @@ bool GroupCloudScreen::releasePkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto pkm = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (pkm && pkm->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
+        if (pkm && pkm->species() != pksm::Species::None &&
+            Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
-            auto it = std::find(toSend.begin(), toSend.end(), std::pair<int, int>{storageBox, cursorIndex - 1});
+            auto it = std::find(
+                toSend.begin(), toSend.end(), std::pair<int, int>{storageBox, cursorIndex - 1});
             if (it != toSend.end())
             {
                 toSend.erase(it);
             }
-            Banks::bank->pkm(*pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+            Banks::bank->pkm(
+                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
             return false;
         }
     }
@@ -699,19 +727,23 @@ bool GroupCloudScreen::dumpPkm()
     if (!cloudChosen && cursorIndex != 0)
     {
         auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (dumpMon && dumpMon->species() != pksm::Species::None && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+        if (dumpMon && dumpMon->species() != pksm::Species::None &&
+            Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             DateTime now     = DateTime::now();
-            std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
+            std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"),
+                now.year(), now.month(), now.day());
             mkdir(path.c_str(), 777);
-            path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
+            path += fmt::format(
+                FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
             if (cursorIndex == 0)
             {
                 return false;
             }
             else
             {
-                path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() + " - " +
+                path += " - " + std::to_string(int(dumpMon->species())) + " - " +
+                        dumpMon->nickname() + " - " +
                         fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
                 FILE* out = fopen(path.c_str(), "wb");
                 if (out)
@@ -781,7 +813,8 @@ void GroupCloudScreen::shareReceive()
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 3, 10);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_FIXEDLEN, 0, 0);
-    swkbdSetButton(&state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
+    swkbdSetButton(
+        &state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
     char input[11]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[10]       = '\0';
@@ -836,7 +869,8 @@ void GroupCloudScreen::shareReceive()
                 }
                 nlohmann::json groupJson = nlohmann::json::parse(jsonData, nullptr, false);
 
-                if (groupJson.is_object() && groupJson.contains("pokemon") && groupJson["pokemon"].is_array())
+                if (groupJson.is_object() && groupJson.contains("pokemon") &&
+                    groupJson["pokemon"].is_array())
                 {
                     groupPkm.clear();
                     std::string badVersions;
@@ -848,7 +882,8 @@ void GroupCloudScreen::shareReceive()
                             pkm.contains("base64") && pkm["base64"].is_string())
                         {
                             // clang-format on
-                            pksm::Generation gen = pksm::Generation::fromString(pkm["generation"].get<std::string>());
+                            pksm::Generation gen =
+                                pksm::Generation::fromString(pkm["generation"].get<std::string>());
                             std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
 
                             if (gen != pksm::Generation::UNUSED)

@@ -35,7 +35,8 @@
 class FileChooseOverlay : public ReplaceableScreen
 {
 public:
-    FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString = "/");
+    FileChooseOverlay(
+        ReplaceableScreen& screen, std::string& retString, const std::string& rootString = "/");
 
     void update(touchPosition* touch) override;
     void drawTop() const override;

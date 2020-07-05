@@ -112,7 +112,8 @@ namespace
         {
             for (u8 col = 0; col < cols; col++)
             {
-                Gui::drawImageAt(sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height);
+                Gui::drawImageAt(
+                    sprite, x + col * sprite.subtex->width, y + row * sprite.subtex->height);
             }
         }
     }
@@ -370,30 +371,39 @@ namespace
         switch (lang)
         {
             case pksm::Language::SPA:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_es_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_es_00_idx + size_t(type));
             case pksm::Language::GER:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_de_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_de_00_idx + size_t(type));
             case pksm::Language::FRE:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_fr_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_fr_00_idx + size_t(type));
             case pksm::Language::ITA:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_it_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_it_00_idx + size_t(type));
             case pksm::Language::JPN:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_jp_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_jp_00_idx + size_t(type));
             case pksm::Language::KOR:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_ko_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_ko_00_idx + size_t(type));
             case pksm::Language::CHT:
             case pksm::Language::CHS:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_zh_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_zh_00_idx + size_t(type));
             case pksm::Language::ENG:
             case pksm::Language::PT:
             case pksm::Language::NL:
             default:
-                return C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_en_00_idx + size_t(type));
+                return C2D_SpriteSheetGetImage(
+                    spritesheet_types, types_spritesheet_en_00_idx + size_t(type));
         }
     }
 }
 
-void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
+void Gui::drawImageAt(
+    const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
 {
     flushText();
     C2D_DrawImageAt(img, x, y, 0.5f, tint, scaleX, scaleY);
@@ -411,10 +421,12 @@ void Gui::drawSolidRect(float x, float y, float w, float h, PKSM_Color color)
     C2D_DrawRectSolid(x, y, 0.5f, w, h, colorToFormat(color));
 }
 
-void Gui::drawSolidTriangle(float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color)
+void Gui::drawSolidTriangle(
+    float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color)
 {
     flushText();
-    C2D_DrawTriangle(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), x3, y3, colorToFormat(color), 0.5f);
+    C2D_DrawTriangle(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), x3, y3,
+        colorToFormat(color), 0.5f);
 }
 
 void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Color color)
@@ -434,12 +446,14 @@ void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Col
     {
         for (size_t currentPoint = 2; currentPoint < points.size(); currentPoint++)
         {
-            drawSolidTriangle(points[0].first, points[0].second, points[currentPoint - 1].first, points[currentPoint - 1].second,
-                points[currentPoint].first, points[currentPoint].second, color);
+            drawSolidTriangle(points[0].first, points[0].second, points[currentPoint - 1].first,
+                points[currentPoint - 1].second, points[currentPoint].first,
+                points[currentPoint].second, color);
         }
     }
 }
-void Gui::drawLinedPolygon(std::vector<std::pair<float, float>> points, float width, PKSM_Color color)
+void Gui::drawLinedPolygon(
+    std::vector<std::pair<float, float>> points, float width, PKSM_Color color)
 {
     if (points.size() > 2)
     {
@@ -488,8 +502,10 @@ void Gui::drawLinedPolygon(std::vector<std::pair<float, float>> points, float wi
                 dabLength = width / sinf(dabPhi - baAngle);
             }
 
-            std::pair<float, float> trapPointD = {a.first + dabLength * cosf(dabPhi), a.second + dabLength * sinf(dabPhi)};
-            drawSolidTriangle(a.first, a.second, b.first, b.second, trapPointD.first, trapPointD.second, color);
+            std::pair<float, float> trapPointD = {
+                a.first + dabLength * cosf(dabPhi), a.second + dabLength * sinf(dabPhi)};
+            drawSolidTriangle(
+                a.first, a.second, b.first, b.second, trapPointD.first, trapPointD.second, color);
 
             // Angle of line segment AB with respect to BC
             float abcTheta = abAngle + bcAngle;
@@ -505,8 +521,10 @@ void Gui::drawLinedPolygon(std::vector<std::pair<float, float>> points, float wi
                 abcLength = width / sinf(abcPhi - bcAngle);
             }
 
-            std::pair<float, float> trapPointC = {b.first + abcLength * cosf(abcPhi), b.second + abcLength * sinf(abcPhi)};
-            drawSolidTriangle(b.first, b.second, trapPointD.first, trapPointD.second, trapPointC.first, trapPointC.second, color);
+            std::pair<float, float> trapPointC = {
+                b.first + abcLength * cosf(abcPhi), b.second + abcLength * sinf(abcPhi)};
+            drawSolidTriangle(b.first, b.second, trapPointD.first, trapPointD.second,
+                trapPointC.first, trapPointC.second, color);
         }
     }
 }
@@ -523,7 +541,8 @@ void Gui::drawNoHome()
     if (noHomeAlpha > 0.0f)
     {
         C2D_AlphaImageTint(&tint, noHomeAlpha);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f, 90.0f, &tint);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f,
+            90.0f, &tint);
         noHomeAlpha -= dNoHomeAlpha;
         dNoHomeAlpha += NOHOMEALPHA_ACCEL;
     }
@@ -638,15 +657,16 @@ void Gui::clearText(void)
     textBuffer->clearUnconditional();
 }
 
-std::shared_ptr<TextParse::Text> Gui::parseText(const std::string& str, FontSize size, float maxWidth)
+std::shared_ptr<TextParse::Text> Gui::parseText(
+    const std::string& str, FontSize size, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
     maxWidth /= size;
     return textBuffer->parse(str, maxWidth);
 }
 
-void Gui::text(
-    std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX, FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
+void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX,
+    FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
@@ -667,8 +687,8 @@ void Gui::text(
     currentText->addText(text, x, y, 0.5f, sizeX, sizeY, positionX, color);
 }
 
-void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color, TextPosX positionX, TextPosY positionY,
-    TextWidthAction action, float maxWidth)
+void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color,
+    TextPosX positionX, TextPosY positionY, TextWidthAction action, float maxWidth)
 {
     static_assert(std::is_same<FontSize, float>::value);
     if (maxWidth == 0)
@@ -772,7 +792,9 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             else
             {
                 // Won't be terribly less performant because of string caching
-                TextWidthAction nextAction = action == TextWidthAction::SQUISH_OR_SCROLL ? TextWidthAction::SCROLL : TextWidthAction::SLICE;
+                TextWidthAction nextAction = action == TextWidthAction::SQUISH_OR_SCROLL
+                                                 ? TextWidthAction::SCROLL
+                                                 : TextWidthAction::SLICE;
                 Gui::text(str, x, y, size, color, positionX, positionY, nextAction, maxWidth);
             }
         }
@@ -923,7 +945,8 @@ void Gui::sprite(int key, int x, int y)
     {
         return;
     }
-    else if (key == ui_sheet_eventmenu_bar_selected_idx || key == ui_sheet_eventmenu_bar_unselected_idx)
+    else if (key == ui_sheet_eventmenu_bar_selected_idx ||
+             key == ui_sheet_eventmenu_bar_unselected_idx)
     {
         u8 off = 4, rep = 174;
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
@@ -1000,7 +1023,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(201, 95, 84, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(239, 163, 151, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(214, 117, 106, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_top_blue)
     {
@@ -1009,7 +1033,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(93, 134, 193, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(158, 186, 233, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(113, 150, 205, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_top_green)
     {
@@ -1018,7 +1043,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(101, 193, 93, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(161, 233, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(119, 205, 113, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_red)
     {
@@ -1027,7 +1053,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 163, 151, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(201, 95, 84, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(224, 134, 123, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_blue)
     {
@@ -1036,7 +1063,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(158, 186, 233, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(93, 134, 193, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(131, 165, 217, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_green)
     {
@@ -1045,12 +1073,14 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(161, 233, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(101, 193, 93, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(136, 217, 131, 255), 1);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, 1.0f);
@@ -1061,7 +1091,8 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Left side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, 1.0f, -1.0f);
@@ -1072,7 +1103,8 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_selected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, -1.0f);
@@ -1083,7 +1115,8 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, 1.0f);
@@ -1094,7 +1127,8 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Left side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x, y, nullptr, 1.0f, -1.0f);
@@ -1105,7 +1139,8 @@ void Gui::sprite(int key, int x, int y)
     else if (key == ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx)
     {
         u8 off = 4, rep = 174;
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_eventmenu_bar_unselected_idx);
         // Right side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, off, 0);
         Gui::drawImageAt({sprite.tex, &tex}, x + rep, y, nullptr, -1.0f, -1.0f);
@@ -1115,15 +1150,18 @@ void Gui::sprite(int key, int x, int y)
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, -1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx),
+            x, y, nullptr, -1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_vertical_idx)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, 1.0f, -1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx),
+            x, y, nullptr, 1.0f, -1.0f);
     }
     else if (key == ui_sheet_emulated_storage_box_corner_flipped_both_idx)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx), x, y, nullptr, -1.0f, -1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_storage_box_corner_idx),
+            x, y, nullptr, -1.0f, -1.0f);
     }
     else if (key == ui_sheet_emulated_toggle_green_idx)
     {
@@ -1137,7 +1175,8 @@ void Gui::sprite(int key, int x, int y)
     {
         u8 off = 5, rep = 197;
         /* LEFT */
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         Gui::drawImageAt({sprite.tex, &tex}, x, y);
@@ -1196,13 +1235,15 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_BLACK), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_minus_small_black_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_BLACK), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx),
+            x, y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_box_search_idx)
     {
@@ -1257,37 +1298,43 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTBLUE), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_blue_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNSELECTBLUE), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_blue_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNAVAILBLUE), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_selected_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_SELECTRED), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unselected_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNSELECTRED), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_unavailable_red_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_UNAVAILRED), 1.0f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_greyscale_idx), x,
+            y, &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_button_pouch_idx)
     {
@@ -1307,7 +1354,8 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, C2D_Color32(0xFF, 0, 0, 0xFF), 0.1f);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_textbox_pksm_idx), x, y, &tint, 1.0f, 1.0f);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_textbox_pksm_idx), x, y,
+            &tint, 1.0f, 1.0f);
     }
     else if (key == ui_sheet_emulated_bg_top_yellow_idx)
     {
@@ -1316,7 +1364,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 202, 43, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(246, 230, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(244, 212, 81, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x,
+            y, 0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_yellow_idx)
     {
@@ -1325,7 +1374,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(246, 230, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(242, 211, 78, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(242, 221, 131, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx),
+            x, y, 0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_lang_disabled_idx)
     {
@@ -1339,19 +1389,23 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y,
+            0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_filter_positive_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, C2D_Color32(0x10, 0x87, 0x1e, 255), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x,
+            y, 0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_filter_negative_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, C2D_Color32(0xbd, 0x30, 0x26, 255), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x,
+            y, 0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_tabs_3_unselected_idx)
     {
@@ -1361,7 +1415,8 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y, 0.5f, &tint);
+        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y,
+            0.5f, &tint);
     }
     else if (key == ui_sheet_emulated_button_tabs_2_unselected_idx)
     {
@@ -1371,7 +1426,8 @@ void Gui::sprite(int key, int x, int y)
     {
         u8 off = 5, rep = 197;
         /* LEFT */
-        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
+        C2D_Image sprite =
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         Tex3DS_SubTexture tex = _select_box(sprite, 0, 0, 0, off);
         Gui::drawImageAt({sprite.tex, &tex}, x, y);
@@ -1493,7 +1549,8 @@ void Gui::generation(const pksm::PKX& pkm, int x, int y)
 
 void Gui::sprite(int key, int x, int y, PKSM_Color color)
 {
-    if (key == ui_sheet_button_editor_idx || key == ui_sheet_icon_item_idx || key == ui_sheet_pointer_arrow_idx)
+    if (key == ui_sheet_button_editor_idx || key == ui_sheet_icon_item_idx ||
+        key == ui_sheet_pointer_arrow_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);
         C2D_ImageTint tint;
@@ -1511,77 +1568,93 @@ void Gui::pkm(const pksm::PKX& pokemon, int x, int y, float scale, PKSM_Color co
     {
         if (pokemon.species() != pksm::Species::Manaphy)
         {
-            pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
-            Gui::drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), &tint);
+            pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(),
+                pokemon.gender(), x, y, scale, color, blend);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx),
+                x - 13 + ceilf(3 * scale), y + 4 + 30 * (scale - 1), &tint);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y,
+                &tint, scale, scale);
         }
     }
     else
     {
-        pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x, y, scale, color, blend);
+        pkm(pokemon.species(), pokemon.alternativeForm(), pokemon.generation(), pokemon.gender(), x,
+            y, scale, color, blend);
         if (pokemon.heldItem() > 0)
         {
-            Gui::drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx), x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), &tint);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_item_idx),
+                x + ceilf(3 * scale), y + 21 + ceilf(30 * (scale - 1)), &tint);
         }
     }
 
     if (pokemon.shiny())
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, &tint);
     }
 }
 
-void Gui::pkm(
-    pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender, int x, int y, float scale, PKSM_Color color, float blend)
+void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender,
+    int x, int y, float scale, PKSM_Color color, float blend)
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, colorToFormat(color), blend);
     Date date = Date::today();
-    if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) && date.month() == ((u16)(~magicNumber) ^ 0xB542))
+    if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
+        date.month() == ((u16)(~magicNumber) ^ 0xB542))
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^ 184), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^ 184),
+            x, y, &tint, scale, scale);
         return;
     }
     if (species == pksm::Species::Manaphy && form == -1)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x,
+            y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Unown)
     {
         if (form == 0 || form > 27)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x,
+                y, &tint, scale, scale);
         }
     }
     // For possible hex editor mishaps
     else if (species > pksm::Species::Melmetal)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
+            &tint, scale, scale);
     }
     else if (species == pksm::Species::Unfezant && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x,
+            y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Frillish && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x,
+            y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Jellicent && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x,
+            y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Pyroar && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x,
+            y, &tint, scale, scale);
     }
     else if (form == 0)
     {
@@ -1594,71 +1667,93 @@ void Gui::pkm(
         {
             species = pksm::Species::None;
         }
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Mimikyu)
     {
         if (form == 1 || form > pksm::PersonalSMUSUM::formCount(778))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x,
+                y, &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y,
+                &tint, scale, scale);
         }
     }
     else if (species == pksm::Species::Minior)
     {
         if (form < 7 || form > pksm::PersonalSMUSUM::formCount(774))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x,
+                y, &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7),
+                x, y, &tint, scale, scale);
         }
     }
-    else if (species == pksm::Species::Pumpkaboo || species == pksm::Species::Gourgeist || species == pksm::Species::Genesect)
+    else if (species == pksm::Species::Pumpkaboo || species == pksm::Species::Gourgeist ||
+             species == pksm::Species::Genesect)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     // Pikachu
     else if (species == pksm::Species::Pikachu)
     {
-        if (generation == pksm::Generation::SIX && form < pksm::PersonalXYORAS::formCount(size_t(species)))
+        if (generation == pksm::Generation::SIX &&
+            form < pksm::PersonalXYORAS::formCount(size_t(species)))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y,
+                &tint, scale, scale);
         }
         else if (form < pksm::PersonalSMUSUM::formCount(size_t(species)))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y,
+                &tint, scale, scale);
         }
         else if (form == pksm::PersonalLGPE::formCount(size_t(species)) - 1)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
+                x + 25 + 34 * (scale - 1), y + 5);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                scale, scale);
         }
     }
     else if (species == pksm::Species::Eevee)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x + 25 + 34 * (scale - 1), y + 5);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
+            x + 25 + 34 * (scale - 1), y + 5);
     }
     else if (species == pksm::Species::Arceus)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Scatterbug || species == pksm::Species::Spewpa)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Silvally)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else
     {
@@ -1687,7 +1782,8 @@ void Gui::pkm(
         }
         if (form > formCountGetter(size_t(species)))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                scale, scale);
             return;
         }
         int imageOffsetFromBack = 0;
@@ -2043,11 +2139,13 @@ void Gui::pkm(
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, &tint, scale, scale);
+            Gui::drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
+            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
+                &tint, scale, scale);
         }
     }
 }
@@ -2056,11 +2154,14 @@ void Gui::ball(pksm::Ball ball, int x, int y)
 {
     if (ball <= pksm::Ball::Beast)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, size_t(ball) + types_spritesheet_empty_idx), x, y);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_types, size_t(ball) + types_spritesheet_empty_idx),
+            x, y);
     }
     else
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_empty_idx), x, y);
     }
 }
 
@@ -2140,11 +2241,13 @@ void Gui::waitFrame(const std::string& message)
     auto parsed   = parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15,
+        PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lines();
 
-    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 
     flushText();
 
@@ -2185,8 +2288,10 @@ void Gui::showRestoreProgress(u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(i18n::localize("SAVING"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
+    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12,
+        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -2214,8 +2319,10 @@ void Gui::showDownloadProgress(const std::string& path, u32 partial, u32 total)
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(fmt::format(i18n::localize("DOWNLOADING_FILE"), path), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(fmt::format(i18n::localize("DOWNLOADING_FILE"), path), 200, 95, FONT_SIZE_15, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
+    text(fmt::format(i18n::localize("SAVE_PROGRESS"), partial, total), 200, 130, FONT_SIZE_12,
+        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -2243,7 +2350,8 @@ void Gui::showResizeStorage()
     Gui::clearScreen(GFX_BOTTOM);
     target(GFX_TOP);
     sprite(ui_sheet_part_info_top_idx, 0, 0);
-    text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    text(i18n::localize("STORAGE_RESIZE"), 200, 95, FONT_SIZE_15, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
     flushText();
 
     target(GFX_BOTTOM);
@@ -2277,11 +2385,13 @@ void Gui::error(const std::string& message, Result errorCode)
         target(GFX_TOP);
         sprite(ui_sheet_part_info_top_idx, 0, 0);
         u8 transparency = transparencyWaver();
-        text(message, 200, 85, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
-        text(fmt::format(i18n::localize("ERROR_CODE"), (u32)errorCode), 200, 105, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency),
+        text(message, 200, 85, FONT_SIZE_15, PKSM_Color(255, 255, 255, transparency),
             TextPosX::CENTER, TextPosY::TOP);
+        text(fmt::format(i18n::localize("ERROR_CODE"), (u32)errorCode), 200, 105, FONT_SIZE_15,
+            PKSM_Color(255, 255, 255, transparency), TextPosX::CENTER, TextPosY::TOP);
 
-        text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        text(i18n::localize("CONTINUE"), 200, 130, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER,
+            TextPosY::TOP);
 
         flushText();
 
@@ -2313,8 +2423,8 @@ void Gui::drawSelector(float x, float y)
     u8 r                       = COLOR_SELECTOR.r;
     u8 g                       = COLOR_SELECTOR.g;
     u8 b                       = COLOR_SELECTOR.b;
-    PKSM_Color color =
-        PKSM_Color(r + (255 - r) * highlight_multiplier, g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+    PKSM_Color color           = PKSM_Color(r + (255 - r) * highlight_multiplier,
+        g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
 
     Gui::drawSolidRect(x, y, 50, 50, PKSM_Color(255, 255, 255, 100));
     Gui::drawSolidRect(x, y, 50, w, color);                      // top

@@ -36,7 +36,8 @@ void StorageViewOverlay::drawBottom() const
     dim();
     if (clone.empty())
     {
-        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, COLOR_WHITE,
+            TextPosX::CENTER, TextPosY::TOP);
     }
 }
 
@@ -126,7 +127,8 @@ void StorageViewOverlay::update(touchPosition* touch)
     {
         if (emergencyMode[8] && emergencyInfo.first != -1)
         {
-            Gui::setScreen(std::make_unique<EditorScreen>(pkm, emergencyInfo.first, emergencyInfo.second, true));
+            Gui::setScreen(std::make_unique<EditorScreen>(
+                pkm, emergencyInfo.first, emergencyInfo.second, true));
         }
         parent->removeOverlay();
     }

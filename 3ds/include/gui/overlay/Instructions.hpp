@@ -42,17 +42,25 @@ public:
 #elif defined(__SWITCH__)
     void draw() const;
 #endif
-    void addBox(bool top, int x, int y, int width, int height, PKSM_Color color, const std::string& text = "", PKSM_Color textColor = COLOR_BLACK);
-    void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color, const std::string& text);
+    void addBox(bool top, int x, int y, int width, int height, PKSM_Color color,
+        const std::string& text = "", PKSM_Color textColor = COLOR_BLACK);
+    void addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos,
+        PKSM_Color color, const std::string& text);
     void addCircle(bool top, int x, int y, int radius, PKSM_Color color);
     void addLine(bool top, int x1, int y1, int x2, int y2, int width, PKSM_Color color);
-    bool empty() const { return boxes.empty() && texts.empty() && circles.empty() && lines.empty(); }
+    bool empty() const
+    {
+        return boxes.empty() && texts.empty() && circles.empty() && lines.empty();
+    }
 
 private:
     void dim() const;
     struct Box
     {
-        Box(bool top, int x, int y, int w, int h, PKSM_Color color) : top(top), x(x), y(y), w(w), h(h), color(color) {}
+        Box(bool top, int x, int y, int w, int h, PKSM_Color color)
+            : top(top), x(x), y(y), w(w), h(h), color(color)
+        {
+        }
         bool top;
         int x;
         int y;
@@ -62,7 +70,10 @@ private:
     };
     struct Line
     {
-        Line(bool top, int x1, int y1, int x2, int y2, int w, PKSM_Color color) : top(top), x1(x1), y1(y1), x2(x2), y2(y2), w(w), color(color) {}
+        Line(bool top, int x1, int y1, int x2, int y2, int w, PKSM_Color color)
+            : top(top), x1(x1), y1(y1), x2(x2), y2(y2), w(w), color(color)
+        {
+        }
         bool top;
         int x1;
         int y1;
@@ -73,8 +84,16 @@ private:
     };
     struct Text
     {
-        Text(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color, const std::string& string)
-            : top(top), x(x), y(y), maxWidth(maxWidth), xPos(xPos), yPos(yPos), color(color), string(string)
+        Text(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color,
+            const std::string& string)
+            : top(top),
+              x(x),
+              y(y),
+              maxWidth(maxWidth),
+              xPos(xPos),
+              yPos(yPos),
+              color(color),
+              string(string)
         {
         }
         bool top;
@@ -88,7 +107,10 @@ private:
     };
     struct Circle
     {
-        Circle(bool top, int x, int y, int radius, PKSM_Color color) : top(top), x(x), y(y), radius(radius), color(color) {}
+        Circle(bool top, int x, int y, int radius, PKSM_Color color)
+            : top(top), x(x), y(y), radius(radius), color(color)
+        {
+        }
         bool top;
         int x;
         int y;

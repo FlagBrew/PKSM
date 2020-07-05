@@ -52,11 +52,12 @@ namespace
 
 CloudAccess::Page::~Page() {}
 
-void CloudAccess::downloadCloudPage(
-    std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
+void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
+    bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
-    auto fetch           = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal, low, high, LGPE), true, retData, nullptr, "");
+    auto fetch = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal, low, high, LGPE),
+        true, retData, nullptr, "");
     Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
@@ -65,7 +66,8 @@ void CloudAccess::downloadCloudPage(
             switch (status_code)
             {
                 case 200:
-                    page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
+                    page->data = std::make_unique<nlohmann::json>(
+                        nlohmann::json::parse(*retData, nullptr, false));
                     if (!page->data || !pageIsGood(*page->data))
                     {
                         page->data = nullptr;
@@ -126,8 +128,9 @@ void CloudAccess::refreshPages()
 nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
-    auto fetch = Fetch::init(makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE), true, &retData, nullptr, "");
-    auto res   = Fetch::perform(fetch);
+    auto fetch = Fetch::init(
+        makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE), true, &retData, nullptr, "");
+    auto res = Fetch::perform(fetch);
     if (res.index() == 0)
     {
         return {};
@@ -151,12 +154,15 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
 }
 
-std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
+std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal,
+    pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
-           "&legal_only=" + (legal ? std::string("True") : std::string("False")) + "&page=" + std::to_string(num) + "&min_gen=" + (std::string)low +
-           "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
+           "&legal_only=" + (legal ? std::string("True") : std::string("False")) +
+           "&page=" + std::to_string(num) + "&min_gen=" + (std::string)low +
+           "&max_gen=" + (std::string)high +
+           "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
 }
 
 std::shared_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
@@ -164,7 +170,8 @@ std::shared_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
     if (slot < (*current->data)["results"].size())
     {
         std::string b64Data  = (*current->data)["results"][slot]["base_64"].get<std::string>();
-        pksm::Generation gen = pksm::Generation::fromString((*current->data)["results"][slot]["generation"].get<std::string>());
+        pksm::Generation gen = pksm::Generation::fromString(
+            (*current->data)["results"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
@@ -192,8 +199,10 @@ std::shared_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
     {
         auto ret = pkm(slot);
 
-        if (auto fetch = Fetch::init(
-                "https://flagbrew.org/gpss/download/" + (*current->data)["results"][slot]["code"].get<std::string>(), true, nullptr, nullptr, ""))
+        if (auto fetch =
+                Fetch::init("https://flagbrew.org/gpss/download/" +
+                                (*current->data)["results"][slot]["code"].get<std::string>(),
+                    true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }

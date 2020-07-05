@@ -92,7 +92,8 @@ u32 File::write(const void* buf, u32 sz)
             mResult = FSFILE_Write(std::get<0>(mHandle), &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
             break;
         case 1:
-            mResult = FSPXI_WriteFile(fspxiHandle, std::get<1>(mHandle), &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
+            mResult = FSPXI_WriteFile(
+                fspxiHandle, std::get<1>(mHandle), &wt, mOffset, buf, sz, FS_WRITE_FLUSH);
             break;
     }
     mOffset += wt;

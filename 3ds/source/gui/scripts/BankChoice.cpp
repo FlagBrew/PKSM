@@ -34,22 +34,26 @@
 BankChoice::BankChoice() : RunnableScreen(nullptr), hid(40, 2), strings(Banks::bankNames())
 {
     int newBankNum = 0;
-    while (std::find_if(strings.begin(), strings.end(),
-               [&newBankNum](const std::pair<std::string, int>& v) { return v.first == "New Bank " + std::to_string(newBankNum); }) != strings.end())
+    while (std::find_if(
+               strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v) {
+                   return v.first == "New Bank " + std::to_string(newBankNum);
+               }) != strings.end())
     {
         newBankNum++;
     }
     strings.emplace_back(("New Bank " + std::to_string(newBankNum)).substr(0, 10), 1);
     hid.update(strings.size());
     hid.select(std::distance(strings.begin(),
-        std::find_if(strings.begin(), strings.end(), [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
+        std::find_if(strings.begin(), strings.end(),
+            [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
 }
 
 void BankChoice::drawBottom() const
 {
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
-    Gui::text(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" + i18n::localize("START_DELETE"), 160, 120, FONT_SIZE_18,
-        COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("X_RENAME") + "\n" + i18n::localize("Y_RESIZE") + "\n" +
+                  i18n::localize("START_DELETE"),
+        160, 120, FONT_SIZE_18, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER);
 }
 
 void BankChoice::drawTop() const
@@ -67,10 +71,12 @@ void BankChoice::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
-                TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second), x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12,
-                FONT_SIZE_9, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x,
+                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+                TextPosY::TOP);
+            Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second),
+                x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::RIGHT, TextPosY::TOP);
         }
         else
         {
@@ -88,7 +94,8 @@ void BankChoice::update(touchPosition* touch)
         auto& res = strings[hid.fullIndex()];
         if (res.first != Banks::bank->name())
         {
-            if (Banks::bank->hasChanged() && Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
+            if (Banks::bank->hasChanged() &&
+                Gui::showChoiceMessage(i18n::localize("BANK_SAVE_CHANGES")))
             {
                 Banks::bank->save();
             }
@@ -113,7 +120,8 @@ void BankChoice::update(touchPosition* touch)
         }
         if (strings.size() > 2)
         {
-            if (Gui::showChoiceMessage(fmt::format(i18n::localize("BANK_DELETE"), strings[hid.fullIndex()].first)))
+            if (Gui::showChoiceMessage(
+                    fmt::format(i18n::localize("BANK_DELETE"), strings[hid.fullIndex()].first)))
             {
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);
@@ -135,7 +143,8 @@ void BankChoice::renameBank()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         std::string string(input);
-        if (std::find_if(strings.begin(), strings.end(), [&string](const std::pair<std::string, int>& v) { return v.first == string; }) !=
+        if (std::find_if(strings.begin(), strings.end(),
+                [&string](const std::pair<std::string, int>& v) { return v.first == string; }) !=
             strings.end())
         {
             Gui::warn(i18n::localize("NO_DUPES"));

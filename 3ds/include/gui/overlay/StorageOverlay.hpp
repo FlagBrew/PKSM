@@ -37,7 +37,8 @@ class Button;
 class StorageOverlay : public ReplaceableScreen
 {
 public:
-    StorageOverlay(ReplaceableScreen& screen, bool storage, int& boxBox, int& storageBox, std::shared_ptr<pksm::PKFilter> filter);
+    StorageOverlay(ReplaceableScreen& screen, bool storage, int& boxBox, int& storageBox,
+        std::shared_ptr<pksm::PKFilter> filter);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

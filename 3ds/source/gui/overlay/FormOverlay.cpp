@@ -33,9 +33,13 @@
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 
-FormOverlay::FormOverlay(
-    ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u16 formCount)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(30, 6), formCount(formCount)
+FormOverlay::FormOverlay(ReplaceableScreen& screen,
+    const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
+    u16 formCount)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      object(object),
+      hid(30, 6),
+      formCount(formCount)
 {
     hid.update(30);
     if (object.index() == 0)
@@ -51,7 +55,8 @@ FormOverlay::FormOverlay(
 void FormOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 }
 
 void FormOverlay::drawTop() const
@@ -86,23 +91,31 @@ void FormOverlay::drawTop() const
                 case 0:
                 {
                     pksm::GameVersion v =
-                        TitleLoader::save ? TitleLoader::save->version() : pksm::GameVersion::oldestVersion(std::get<0>(object)->generation());
-                    Gui::pkm(std::get<0>(object)->species(), x + y * 6, std::get<0>(object)->generation(), std::get<0>(object)->gender(), x * 66 + 19,
-                        y * 48 + 1);
-                    const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<0>(object)->species(), x + y * 6);
-                    Gui::text(
-                        text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
+                        TitleLoader::save
+                            ? TitleLoader::save->version()
+                            : pksm::GameVersion::oldestVersion(std::get<0>(object)->generation());
+                    Gui::pkm(std::get<0>(object)->species(), x + y * 6,
+                        std::get<0>(object)->generation(), std::get<0>(object)->gender(),
+                        x * 66 + 19, y * 48 + 1);
+                    const std::string& text = i18n::form(Configuration::getInstance().language(), v,
+                        std::get<0>(object)->species(), x + y * 6);
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
                 break;
                 case 1:
                 {
                     pksm::GameVersion v =
-                        TitleLoader::save ? TitleLoader::save->version() : pksm::GameVersion::oldestVersion(std::get<1>(object)->generation());
-                    Gui::pkm(std::get<1>(object)->species(), x + y * 6, std::get<1>(object)->generation(), std::get<1>(object)->gender(), x * 66 + 19,
-                        y * 48 + 1);
-                    const std::string& text = i18n::form(Configuration::getInstance().language(), v, std::get<1>(object)->species(), x + y * 6);
-                    Gui::text(
-                        text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
+                        TitleLoader::save
+                            ? TitleLoader::save->version()
+                            : pksm::GameVersion::oldestVersion(std::get<1>(object)->generation());
+                    Gui::pkm(std::get<1>(object)->species(), x + y * 6,
+                        std::get<1>(object)->generation(), std::get<1>(object)->gender(),
+                        x * 66 + 19, y * 48 + 1);
+                    const std::string& text = i18n::form(Configuration::getInstance().language(), v,
+                        std::get<1>(object)->species(), x + y * 6);
+                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE,
+                        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
                 }
                 break;
             }

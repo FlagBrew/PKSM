@@ -40,10 +40,12 @@
 
 GroupCloudAccess::Page::~Page() {}
 
-void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
+void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
+    pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
-    auto fetch           = Fetch::init(GroupCloudAccess::makeURL(number, legal, low, high, LGPE), true, retData, nullptr, "");
+    auto fetch           = Fetch::init(
+        GroupCloudAccess::makeURL(number, legal, low, high, LGPE), true, retData, nullptr, "");
     Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
@@ -52,7 +54,8 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
             switch (status_code)
             {
                 case 200:
-                    page->data = std::make_unique<nlohmann::json>(nlohmann::json::parse(*retData, nullptr, false));
+                    page->data = std::make_unique<nlohmann::json>(
+                        nlohmann::json::parse(*retData, nullptr, false));
                     // clang-format off
                     if (!page->data || !pageIsGood(*page->data))
                     // clang-format on
@@ -140,11 +143,13 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
     }
 }
 
-std::string GroupCloudAccess::makeURL(int num, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
+std::string GroupCloudAccess::makeURL(
+    int num, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) + "&min_gen=" + (std::string)low +
-           "&max_gen=" + (std::string)high + "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) + "&page=" + std::to_string(num) +
-           (legal ? "&legal_only=yes" : "");
+    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) +
+           "&min_gen=" + (std::string)low + "&max_gen=" + (std::string)high +
+           "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) +
+           "&page=" + std::to_string(num) + (legal ? "&legal_only=yes" : "");
 }
 
 bool GroupCloudAccess::nextPage()
@@ -223,7 +228,8 @@ std::shared_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeI
         {
             auto& poke           = group["pokemon"][pokeIndex];
             std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
-            pksm::Generation gen = pksm::Generation::fromString(poke["generation"].get<std::string>());
+            pksm::Generation gen =
+                pksm::Generation::fromString(poke["generation"].get<std::string>());
 
             auto ret = pksm::PKX::getPKM(gen, data.data(), data.size());
             if (ret)
@@ -258,7 +264,9 @@ std::shared_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
             auto& poke = group["pokemon"][pokeIndex];
             auto ret   = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init("https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true, nullptr, nullptr, ""))
+            if (auto fetch = Fetch::init(
+                    "https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true,
+                    nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
             }
@@ -291,10 +299,13 @@ std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
         auto& group = (*current->data)["results"][groupIndex];
         for (size_t i = 0; i < group["pokemon"].size(); i++)
         {
-            // When the full group is downloaded, all the individual download counters will be incremented
+            // When the full group is downloaded, all the individual download counters will be
+            // incremented
             ret.push_back(pkm(groupIndex, i));
         }
-        if (auto fetch = Fetch::init("https://github.com/gpss/download/bundle/" + group["code"].get<std::string>(), true, nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init(
+                "https://github.com/gpss/download/bundle/" + group["code"].get<std::string>(), true,
+                nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }

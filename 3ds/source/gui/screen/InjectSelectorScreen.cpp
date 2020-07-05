@@ -44,12 +44,13 @@
 
 namespace
 {
-    constexpr std::string_view langs[] = {"JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
+    constexpr std::string_view langs[] = {
+        "JPN", "ENG", "FRE", "ITA", "GER", "SPA", "KOR", "CHS", "CHT"};
 }
 
 InjectSelectorScreen::InjectSelectorScreen()
-    : Screen(
-          i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' + i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")),
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' +
+             i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")),
       hid(10, 2),
       dumpHid(40, 8)
 {
@@ -62,7 +63,8 @@ InjectSelectorScreen::InjectSelectorScreen()
         auto gift = TitleLoader::save->mysteryGift(i);
         if (gift->pokemon())
         {
-            gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+            gifts.emplace_back(
+                gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
         }
         else
         {
@@ -73,9 +75,11 @@ InjectSelectorScreen::InjectSelectorScreen()
     // QR
     instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
     instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
-    instructions.addBox(false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
-    buttons.push_back(std::make_unique<Button>(
-        160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); }, ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+    instructions.addBox(
+        false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
+    buttons.push_back(
+        std::make_unique<Button>(160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); },
+            ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
     // Filter
     for (int i = 0; i < 9; i++)
     {
@@ -84,8 +88,9 @@ InjectSelectorScreen::InjectSelectorScreen()
                 hid.select(0);
                 return this->toggleFilter(std::string(langs[i]));
             },
-            ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14, COLOR_WHITE,
-            ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt, COLOR_BLACK, &langFilters, true));
+            ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14,
+            COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt,
+            COLOR_BLACK, &langFilters, true));
         langFilters.back()->setState(false);
     }
 }
@@ -107,7 +112,8 @@ void InjectSelectorScreen::update(touchPosition* touch)
             auto gift = TitleLoader::save->mysteryGift(i);
             if (gift->pokemon())
             {
-                gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+                gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(),
+                    gift->gender());
             }
             else
             {
@@ -140,7 +146,9 @@ void InjectSelectorScreen::update(touchPosition* touch)
                     break;
                 }
             }
-            if (allReleased || Gui::showChoiceMessage("Not all of these wonder card(s) are released.\nContinue to injection screen?"))
+            if (allReleased ||
+                Gui::showChoiceMessage(
+                    "Not all of these wonder card(s) are released.\nContinue to injection screen?"))
             {
                 Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
                 updateGifts = true;
@@ -202,14 +210,18 @@ void InjectSelectorScreen::update(touchPosition* touch)
 void InjectSelectorScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
-    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("WC_INST1"), 160, 222, FONT_SIZE_11, PKSM_Color(197, 202, 233, 255),
+        TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_eventmenu_page_indicator_idx, 65, 13);
 
-    Gui::text("\uE004", 75, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
-    Gui::text("\uE005", 228, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT, TextPosY::TOP);
+    Gui::text("\uE004", 75, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text("\uE005", 228, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT,
+        TextPosY::TOP);
     Gui::text(
-        fmt::format(FMT_STRING("{:d}/{:d}"), hid.page() + 1, wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1),
+        fmt::format(FMT_STRING("{:d}/{:d}"), hid.page() + 1,
+            wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1),
         160, 20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
     for (auto& button : buttons)
@@ -227,12 +239,14 @@ void InjectSelectorScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text("\uE004+\uE005 \uE01E", 160, 207 - 21, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 
     if (dump)
     {
         Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
-        Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("WC_DUMP1"), 160, 107, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+            TextPosY::TOP);
     }
 }
 
@@ -242,7 +256,8 @@ void InjectSelectorScreen::drawTop() const
     {
         Gui::backgroundTop(true);
 
-        Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14, PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14,
+            PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
         for (size_t i = 0; i < 10; i++)
         {
@@ -252,17 +267,23 @@ void InjectSelectorScreen::drawTop() const
                 int y = 41 + (i / 2) * 37;
                 if (i == 0)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_eventmenu_bar_selected_idx : ui_sheet_eventmenu_bar_unselected_idx, x, y);
+                    Gui::sprite(i == hid.index() ? ui_sheet_eventmenu_bar_selected_idx
+                                                 : ui_sheet_eventmenu_bar_unselected_idx,
+                        x, y);
                 }
                 else if (i == 8)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx
-                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx,
+                    Gui::sprite(
+                        i == hid.index()
+                            ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx
+                            : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx,
                         x, y);
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF) : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34,
+                        i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
+                                         : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
             else
@@ -271,19 +292,24 @@ void InjectSelectorScreen::drawTop() const
                 int y = 41 + (i / 2) * 37;
                 if (i == 1)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx
-                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx,
+                    Gui::sprite(
+                        i == hid.index()
+                            ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx
+                            : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx,
                         x, y);
                 }
                 else if (i == 9)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
-                                                 : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
+                    Gui::sprite(i == hid.index()
+                                    ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
+                                    : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
                         x, y);
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34, i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF) : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    Gui::drawSolidRect(x, y, 178, 34,
+                        i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
+                                         : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                 }
             }
         }
@@ -314,11 +340,15 @@ void InjectSelectorScreen::drawTop() const
                 }
                 else
                 {
-                    Gui::pkm(pksm::Species{u16(data.species)}, data.form, TitleLoader::save->generation(), data.gender, x, y);
+                    Gui::pkm(pksm::Species{u16(data.species)}, data.form,
+                        TitleLoader::save->generation(), data.gender, x, y);
                 }
-                PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255) : PKSM_Color(26, 35, 126, 255);
-                TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL : TextWidthAction::SQUISH_OR_SLICE;
-                Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER, TextPosY::CENTER, action, 138.0f);
+                PKSM_Color color = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
+                                                        : PKSM_Color(26, 35, 126, 255);
+                TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL
+                                                              : TextWidthAction::SQUISH_OR_SLICE;
+                Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER,
+                    TextPosY::CENTER, action, 138.0f);
             }
         }
     }
@@ -343,19 +373,21 @@ void InjectSelectorScreen::drawTop() const
             {
                 if (gifts[fullI].species > -1)
                 {
-                    Gui::pkm(
-                        pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form, saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    Gui::pkm(pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form,
+                        saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
                 }
                 else
                 {
                     Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
                 }
 
-                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
+                    COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
             else
             {
-                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9, COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
+                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
+                    COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
             }
         }
     }
@@ -398,10 +430,11 @@ void InjectSelectorScreen::dumpCard(void) const
 {
     auto wc          = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
     DateTime now     = DateTime::now();
-    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
+    std::string path = fmt::format(
+        FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
     mkdir(path.c_str(), 777);
-    path += fmt::format(
-        FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(), now.minute(), now.second(), wc->ID(), wc->title(), wc->extension());
+    path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(),
+        now.minute(), now.second(), wc->ID(), wc->title(), wc->extension());
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

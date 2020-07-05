@@ -94,7 +94,8 @@ void QRData::buffToImage()
         for (u32 y = 0; y < 240; y++)
         {
             u32 dstPos = ((((y >> 3) * (512 >> 3) + (x >> 3)) << 6) +
-                             ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3))) *
+                             ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) |
+                                 ((x & 4) << 2) | ((y & 4) << 3))) *
                          2;
             u32 srcPos = (y * 400 + x) * 2;
             memcpy(((u8*)image.tex->data) + dstPos, ((u8*)cameraBuffer.data()) + srcPos, 2);
@@ -129,7 +130,8 @@ void QRData::drawThread()
         Gui::backgroundBottom(false);
         Gui::backgroundAnimatedBottom();
         Gui::drawSolidRect(0, 0, 320.0f, 240.0f, COLOR_MASKBLACK);
-        Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("SCANNER_EXIT"), 160, 115, FONT_SIZE_18, COLOR_WHITE,
+            TextPosX::CENTER, TextPosY::TOP);
         Gui::flushText();
 
         if (!aptIsHomeAllowed() && aptIsHomePressed())
@@ -187,13 +189,15 @@ void QRData::captureThread()
                 memcpy(cameraBuffer.data(), buffer, 400 * 240 * sizeof(u16));
                 GSPGPU_FlushDataCache(cameraBuffer.data(), 400 * 240 * sizeof(u16));
                 LightLock_Unlock(&bufferLock);
-                CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                CAMU_SetReceiving(
+                    &events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
                 break;
             case 2:
                 svcCloseHandle(events[1]);
                 events[1] = 0;
                 CAMU_ClearBuffer(PORT_CAM1);
-                CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                CAMU_SetReceiving(
+                    &events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
                 CAMU_StartCapture(PORT_CAM1);
                 break;
             default:
@@ -261,7 +265,8 @@ void QRData::handler(std::vector<u8>& out)
         for (ssize_t y = 0; y < h; y++)
         {
             u16 px           = cameraBuffer[y * 400 + x];
-            image[y * w + x] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
+            image[y * w + x] = (u8)(
+                ((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
         }
     }
     LightLock_Unlock(&bufferLock);

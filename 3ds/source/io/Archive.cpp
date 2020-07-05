@@ -59,10 +59,12 @@ namespace
                     // This is not in the correct format, abort
                     continue;
                 }
-                else if (abbreviation == "P" || abbreviation == "D" || abbreviation == "PL" || abbreviation == "HG" || abbreviation == "SS" ||
-                         abbreviation == "B" || abbreviation == "W" || abbreviation == "B2" || abbreviation == "W2")
+                else if (abbreviation == "P" || abbreviation == "D" || abbreviation == "PL" ||
+                         abbreviation == "HG" || abbreviation == "SS" || abbreviation == "B" ||
+                         abbreviation == "W" || abbreviation == "B2" || abbreviation == "W2")
                 {
-                    Archive::moveFile(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i) + "/main", Archive::sd(),
+                    Archive::moveFile(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i) + "/main",
+                        Archive::sd(),
                         "/3ds/PKSM/backup/" + d.item(i) + "/POKEMON " + abbreviation + ".sav");
                 }
 
@@ -139,7 +141,8 @@ namespace
 
                 mkdir(destFolder.c_str(), 777);
 
-                Archive::moveDir(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i), Archive::sd(), destFolder + '/' + d.item(i));
+                Archive::moveDir(Archive::sd(), "/3ds/PKSM/backup/" + d.item(i), Archive::sd(),
+                    destFolder + '/' + d.item(i));
             }
         }
     }
@@ -182,11 +185,13 @@ Archive& Archive::operator=(Archive&& other)
     return *this;
 }
 
-Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
+Result Archive::moveDir(
+    Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
 {
     Result res;
     dst.deleteDir(dest);
-    if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
+    if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
+        res != (long)0xC82044B9)
         return res;
     auto d                = src.directory(dir);
     std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
@@ -227,11 +232,13 @@ Result Archive::moveDir(Archive& src, const std::u16string& dir, Archive& dst, c
     return res;
 }
 
-Result Archive::copyDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
+Result Archive::copyDir(
+    Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest)
 {
     Result res;
     dst.deleteDir(dest);
-    if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE && res != (long)0xC82044B9)
+    if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
+        res != (long)0xC82044B9)
         return res;
     auto d                = src.directory(dir);
     std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
@@ -386,7 +393,8 @@ std::unique_ptr<File> Archive::file(FS_Path file, u32 flags, u32 attributes)
     if (mPXI)
     {
         FSPXI_File f;
-        if (R_SUCCEEDED(mResult = FSPXI_OpenFile(fspxiHandle, &f, mHandle, file, flags, attributes)))
+        if (R_SUCCEEDED(
+                mResult = FSPXI_OpenFile(fspxiHandle, &f, mHandle, file, flags, attributes)))
         {
             return std::unique_ptr<File>(new File(f));
         }
@@ -500,7 +508,8 @@ Result Archive::init(const std::string& execPath)
 
         dataArchive = extdata(UNIQUE_ID, false);
 
-        if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
+        if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
+            res != (long)0xC82044B9)
             return res;
     }
     else
@@ -523,7 +532,8 @@ Result Archive::init(const std::string& execPath)
             if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
                 return res;
 
-            if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) && res != (long)0xC82044B9)
+            if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
+                res != (long)0xC82044B9)
                 return res;
         }
         else
@@ -574,7 +584,8 @@ Archive Archive::save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
     return Archive{ARCHIVE_USER_SAVEDATA, {PATH_BINARY, sizeof(path), path}, pxi};
 }
 
-Archive Archive::saveAndContents(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4)
+Archive Archive::saveAndContents(
+    FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4)
 {
     const u32 path[4] = {lowid, highid, mediatype, pathWord4};
     return Archive{ARCHIVE_SAVEDATA_AND_CONTENT, {PATH_BINARY, sizeof(path), path}, pxi};
@@ -602,11 +613,13 @@ Result Archive::commit()
 {
     if (mPXI)
     {
-        return mResult = FSPXI_CommitSaveData(fspxiHandle, mHandle, ARCHIVE_ACTION_COMMIT_SAVE_DATA);
+        return mResult =
+                   FSPXI_CommitSaveData(fspxiHandle, mHandle, ARCHIVE_ACTION_COMMIT_SAVE_DATA);
     }
     else
     {
-        return mResult = FSUSER_ControlArchive(mHandle, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
+        return mResult = FSUSER_ControlArchive(
+                   mHandle, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
     }
 }
 
@@ -641,7 +654,8 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
         }
     }
 
-    Result res = FSUSER_CreateExtSaveData(PKSM_ARCHIVE_DATA, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);
+    Result res = FSUSER_CreateExtSaveData(
+        PKSM_ARCHIVE_DATA, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);
     delete smdh;
     return res;
 }

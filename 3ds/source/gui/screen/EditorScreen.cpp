@@ -53,9 +53,12 @@
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
 
-#define NO_TEXT_BUTTON(x, y, w, h, function, image) std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
-#define NO_TEXT_ACCEL(x, y, w, h, function, image) std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
-#define NO_TEXT_CLICK(x, y, w, h, function, image) std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
+#define NO_TEXT_BUTTON(x, y, w, h, function, image)                                                \
+    std::make_unique<Button>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
+#define NO_TEXT_ACCEL(x, y, w, h, function, image)                                                 \
+    std::make_unique<AccelButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
+#define NO_TEXT_CLICK(x, y, w, h, function, image)                                                 \
+    std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 
 EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int index, bool emergency)
     : pkm(pokemon), box(box), index(index), emergency(emergency)
@@ -69,7 +72,8 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
             pkm = pkm->partyClone();
         }
 
-        constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
+        constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
+            pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
         for (int i = 0; i < 6; i++)
         {
             origPartyStats[i] = pkm->partyStat(stats[i]);
@@ -149,35 +153,47 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
         addOverlay<SpeciesOverlay>(pkm, level);
     }
 
-    buttons.push_back(NO_TEXT_CLICK(9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
+    buttons.push_back(NO_TEXT_CLICK(
+        9, 211, 34, 28, [this]() { return this->goBack(); }, ui_sheet_button_back_idx));
     instructions.addCircle(false, 12, 11, 4, COLOR_GREY);
     instructions.addLine(false, 12, 11, 12, 43, 4, COLOR_GREY);
     instructions.addBox(false, 10, 43, 50, 16, COLOR_GREY, i18n::localize("BALL"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(4, 3, 20, 19, [this]() { return this->selectBall(); }, ui_sheet_res_null_idx));
-    instructions.addBox(false, 224, 33, 60, 68, COLOR_GREY, i18n::localize("CHANGE_FORM"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(224, 33, 60, 68, [this]() { return this->selectForm(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_BUTTON(
+        4, 3, 20, 19, [this]() { return this->selectBall(); }, ui_sheet_res_null_idx));
+    instructions.addBox(
+        false, 224, 33, 60, 68, COLOR_GREY, i18n::localize("CHANGE_FORM"), COLOR_WHITE);
+    buttons.push_back(NO_TEXT_BUTTON(
+        224, 33, 60, 68, [this]() { return this->selectForm(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 305, 14, 11, COLOR_GREY);
     instructions.addLine(false, 305, 14, 305, 106, 4, COLOR_GREY);
-    instructions.addBox(false, 207, 106, 100, 16, COLOR_GREY, i18n::localize("HEX_EDIT"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
-    buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); }, ui_sheet_button_minus_small_idx));
+    instructions.addBox(
+        false, 207, 106, 100, 16, COLOR_GREY, i18n::localize("HEX_EDIT"), COLOR_WHITE);
+    buttons.push_back(NO_TEXT_BUTTON(
+        291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
+    buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); },
+        ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13,
         [this]() {
             setLevel();
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this]() { return this->changeLevel(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this]() { return this->selectNature(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this]() { return this->selectAbility(); }, ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this]() { return this->selectItem(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this]() { return this->changeLevel(true); },
+        ui_sheet_button_plus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this]() { return this->selectNature(); },
+        ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this]() { return this->selectAbility(); },
+        ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this]() { return this->selectItem(); },
+        ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_CLICK(75, 114, 15, 12,
         [this]() {
             pkm->shiny(!pkm->shiny());
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); }, ui_sheet_button_info_detail_editor_dark_idx));
+    buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); },
+        ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12,
         [this]() {
             setOT();
@@ -190,14 +206,16 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13, [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13,
+        [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13,
         [this]() {
             setFriendship();
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13, [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
+    buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13,
+        [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
     buttons.push_back(std::make_unique<Button>(204, 109, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<StatsEditScreen>(pkm));
@@ -226,17 +244,22 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_SAVE"), FONT_SIZE_12, COLOR_BLACK));
-    instructions.addBox(false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_BUTTON(25, 5, 120, 13, [this]() { return this->selectSpecies(); }, ui_sheet_res_null_idx));
+    instructions.addBox(
+        false, 25, 5, 120, 15, COLOR_GREY, i18n::localize("CHANGE_SPECIES"), COLOR_WHITE);
+    buttons.push_back(NO_TEXT_BUTTON(
+        25, 5, 120, 13, [this]() { return this->selectSpecies(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 192, 13, 6, COLOR_GREY);
     instructions.addLine(false, 192, 13, 192, 45, 4, COLOR_GREY);
     instructions.addBox(false, 124, 43, 70, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
+    buttons.push_back(NO_TEXT_CLICK(
+        186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
     instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
     instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
     instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
-    instructions.addBox(false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); }, ui_sheet_button_trainer_info_idx));
+    instructions.addBox(
+        false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
+    buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
+        ui_sheet_button_trainer_info_idx));
 
     origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
 }
@@ -261,18 +284,28 @@ void EditorScreen::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
-    Gui::text(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("OT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
-    Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
+    Gui::text(i18n::localize("LEVEL"), 5, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
+    Gui::text(i18n::localize("NATURE"), 5, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("ABILITY"), 5, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("ITEM"), 5, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("SHINY"), 5, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("POKERUS"), 5, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("OT"), 5, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("NICKNAME"), 5, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 65);
+    Gui::text(i18n::localize("FRIENDSHIP"), 5, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 86);
 
     Gui::ball(pkm->ball(), 4, 3);
-    Gui::text(pkm->species().localize(lang), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->species().localize(lang), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::TOP);
     switch (pkm->gender())
     {
         case pksm::Gender::Male:
@@ -286,15 +319,22 @@ void EditorScreen::drawBottom() const
         default:
             break;
     }
-    Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->nature().localize(lang), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK,
+        TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(pkm->nature().localize(lang), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12,
+        COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132,
+        FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->otName(), 95, 152, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->nickname(), 95, 172, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::to_string((int)pkm->currentFriendship()), 107 + 35 / 2, 192, FONT_SIZE_12,
+        COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::pkm(*pkm, 228, 38, 2.0f, COLOR_GREY_BLEND, 1.0f);
     Gui::pkm(*pkm, 224, 33, 2.0f);
 }
@@ -497,7 +537,8 @@ bool EditorScreen::togglePokerus()
 void EditorScreen::setOT()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (8 - 1));
+    swkbdInit(
+        &state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (8 - 1));
     swkbdSetHintText(&state, i18n::localize("OT_NAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -512,7 +553,8 @@ void EditorScreen::setOT()
 void EditorScreen::setNick()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (11 - 1));
+    swkbdInit(
+        &state, SWKBD_TYPE_NORMAL, 2, pkm->generation() >= pksm::Generation::SIX ? 12 : (11 - 1));
     swkbdSetHintText(&state, i18n::localize("NICKNAME").c_str());
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
     char input[25]  = {0};
@@ -522,9 +564,11 @@ void EditorScreen::setNick()
     {
         pkm->nickname(input);
         std::string speciesName = pkm->species().localize(pkm->language());
-        if (pkm->generation() == pksm::Generation::FOUR || pkm->version() <= pksm::GameVersion::CXD ||
+        if (pkm->generation() == pksm::Generation::FOUR ||
+            pkm->version() <= pksm::GameVersion::CXD ||
             (pkm->version() >= pksm::GameVersion::RD &&
-                pkm->version() <= pksm::GameVersion::C)) // Gen 4, less than or equal to Colosseum/XD, or in VC territory
+                pkm->version() <= pksm::GameVersion::C)) // Gen 4, less than or equal to
+                                                         // Colosseum/XD, or in VC territory
         {
             StringUtils::toUpper(speciesName);
         }
@@ -577,7 +621,8 @@ void EditorScreen::setFriendship()
 void EditorScreen::partyUpdate()
 {
     // Update party values IF the user hasn't edited them themselves
-    constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
+    constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
+        pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {
         if (pkm->partyStat(stats[i]) == origPartyStats[i])
@@ -625,7 +670,8 @@ bool EditorScreen::save()
     {
         if (box != PARTY_MAGIC_NUM)
         {
-            if (TitleLoader::save->generation() == pksm::Generation::LGPE || TitleLoader::save->generation() == pksm::Generation::EIGHT)
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE ||
+                TitleLoader::save->generation() == pksm::Generation::EIGHT)
             {
                 partyUpdate();
             }
@@ -759,8 +805,10 @@ bool EditorScreen::selectItem()
 bool EditorScreen::selectForm()
 {
     static constexpr std::array<pksm::Species, 2> noChange = {pksm::Species::Xerneas,
-        pksm::Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing and we don't have sprites for them
-    if (std::any_of(noChange.begin(), noChange.end(), [this](const pksm::Species& badSpecies) { return badSpecies == pkm->species(); }))
+        pksm::Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing
+                                 // and we don't have sprites for them
+    if (std::any_of(noChange.begin(), noChange.end(),
+            [this](const pksm::Species& badSpecies) { return badSpecies == pkm->species(); }))
     {
         return false;
     }
@@ -776,7 +824,8 @@ bool EditorScreen::selectForm()
     }
     else
     {
-        count = pksm::VersionTables::formCount(pksm::GameVersion::oldestVersion(pkm->generation()), formCountSpec);
+        count = pksm::VersionTables::formCount(
+            pksm::GameVersion::oldestVersion(pkm->generation()), formCountSpec);
     }
     if (count > 1)
     {

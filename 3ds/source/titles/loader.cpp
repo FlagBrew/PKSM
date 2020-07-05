@@ -56,7 +56,8 @@ namespace
         u32 saveOffset; // Always 0x200
         u32 saveSize;
         u8 padding3[8];      // Always 0xFF
-        u8 arm7Registers[8]; // Not really sure what to do with this. Seems to be 0x7F 00 00 00 00 00 00 00?
+        u8 arm7Registers[8]; // Not really sure what to do with this. Seems to be 0x7F 00 00 00 00
+                             // 00 00 00?
         u8 padding4[0x198];  // Get it to the proper size
     };
 
@@ -90,8 +91,9 @@ namespace
 
     std::array<u64, 5> vcTitleIds                              = {0, 0, 0, 0, 0};
     std::array<u64, 8> ctrTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0};
-    constexpr std::array<pksm::GameVersion, 13> searchVersions = {pksm::GameVersion::S, pksm::GameVersion::R, pksm::GameVersion::E,
-        pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
+    constexpr std::array<pksm::GameVersion, 13> searchVersions = {pksm::GameVersion::S,
+        pksm::GameVersion::R, pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG,
+        pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
         pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
 
     std::string idToSaveName(const std::string& id)
@@ -251,7 +253,9 @@ namespace
                                 if (subdir->folder(k))
                                 {
                                     std::string savePath =
-                                        StringUtils::UTF16toUTF8(dir + u"/" + fileName + u"/" + subdir->item(k) + u"/") + idToSaveName(id);
+                                        StringUtils::UTF16toUTF8(
+                                            dir + u"/" + fileName + u"/" + subdir->item(k) + u"/") +
+                                        idToSaveName(id);
                                     if (io::exists(savePath))
                                     {
                                         ret.emplace_back(savePath);
@@ -271,16 +275,18 @@ namespace
         return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
     }
 
-    // file must be at header address. On return, will be at the end of the save described by the header.
+    // file must be at header address. On return, will be at the end of the save described by the
+    // header.
     std::array<u8, 0x10> calcGbaCMAC(File& file, const GbaHeader& header)
     {
         std::array<u8, 0x10> ret;
         constexpr size_t READBLOCK_SIZE = 0x1000;
         std::array<u8, 32> hashData;
 
-        // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this was a good idea
-        // CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" + SHA256(0x30..0x200 + the entire save itself))))
-        // FSPXI_CalcSavegameMAC does the AES-CMAC, CTR-SIGN, and the CTR-SAV0 step
+        // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this
+        // was a good idea CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" +
+        // SHA256(0x30..0x200 + the entire save itself)))) FSPXI_CalcSavegameMAC does the AES-CMAC,
+        // CTR-SIGN, and the CTR-SAV0 step
         pksm::crypto::SHA256 context;
         file.seek(0x30, SEEK_CUR);
         size_t sha_end_idx = header.saveSize + 0x200 - 0x30;
@@ -296,7 +302,8 @@ namespace
 
         hashData = context.finish();
 
-        FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()), hashData.data(), hashData.size(), ret.data(), ret.size());
+        FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()), hashData.data(),
+            hashData.size(), ret.data(), ret.size());
 
         return ret;
     }
@@ -472,8 +479,8 @@ void TitleLoader::backupSave(const std::string& id)
     DateTime now     = DateTime::now();
     std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/{0:s}"), id);
     mkdir(path.c_str(), 777);
-    path +=
-        fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+    path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(),
+        now.month(), now.day(), now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
     path += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
@@ -504,13 +511,15 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
 {
     saveIsFile  = false;
     loadedTitle = title;
-    if (title->mediaType() == FS_MediaType::MEDIATYPE_SD || title->cardType() == FS_CardType::CARD_CTR)
+    if (title->mediaType() == FS_MediaType::MEDIATYPE_SD ||
+        title->cardType() == FS_CardType::CARD_CTR)
     {
         Archive archive;
         std::unique_ptr<File> in;
         if (title->gba())
         {
-            archive                   = Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
+            archive =
+                Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
             constexpr u32 pathData[5] = {
                 1,   // Save data
                 1,   // TMD content index
@@ -531,9 +540,10 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
             // Have to get to the correct GBA save and sidestep the stupid size shit
             if (title->gba())
             {
-                static constexpr u8 ZEROS[0x20]    = {0};
-                static constexpr u8 FULL_FS[0x20]  = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+                static constexpr u8 ZEROS[0x20]   = {0};
+                static constexpr u8 FULL_FS[0x20] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
                 std::unique_ptr<GbaHeader> header1 = std::make_unique<GbaHeader>();
                 in->read(header1.get(), sizeof(GbaHeader));
                 // Save uninitialized; we'd get garbage that probably goes out of bounds
@@ -548,8 +558,9 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                 else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                 {
                     Gui::warn("First save absent");
-                    // If the first header is garbage FF, we have to search for the second. It can only be at one of these possible sizes + 0x200 (for
-                    // the size of the first header)
+                    // If the first header is garbage FF, we have to search for the second. It can
+                    // only be at one of these possible sizes + 0x200 (for the size of the first
+                    // header)
                     static constexpr u32 POSSIBLE_SAVE_SIZES[] = {
                         0x400,   // 8kbit
                         0x2000,  // 64kbit
@@ -592,7 +603,8 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                             in->close();
                         }
                     }
-                    // Reached end of file? No header present at all? Something weird happened; we can't handle that
+                    // Reached end of file? No header present at all? Something weird happened; we
+                    // can't handle that
                     else
                     {
                         data = std::shared_ptr<u8[]>(new u8[1]);
@@ -654,7 +666,8 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                         else
                         {
                             // Will include rollover (header1->savesMade == 0xFFFFFFFF)
-                            // This is proper logic according to https://github.com/d0k3/GodMode9/issues/494
+                            // This is proper logic according to
+                            // https://github.com/d0k3/GodMode9/issues/494
                             if (header2->savesMade == header1->savesMade + 1)
                             {
                                 size = header2->saveSize;
@@ -720,7 +733,8 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
 
         for (u32 i = 0; i < cap / sectorSize; ++i)
         {
-            SPIReadSaveData(title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
+            SPIReadSaveData(
+                title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
         }
 
         save = pksm::Sav::getSave(data, cap);
@@ -806,12 +820,14 @@ void TitleLoader::saveToTitle(bool ask)
     if (loadedTitle)
     {
         if (TitleLoader::cardTitle == loadedTitle &&
-            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_CARD"))))
+            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
+                                            i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
             auto& title = TitleLoader::cardTitle;
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
-                Archive archive           = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
+                Archive archive =
+                    Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
                 std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_WRITE);
 
                 if (out)
@@ -838,7 +854,8 @@ void TitleLoader::saveToTitle(bool ask)
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
-                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i, &save->rawData()[pageSize * i], pageSize);
+                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i,
+                        &save->rawData()[pageSize * i], pageSize);
                     if (R_FAILED(res))
                     {
                         break;
@@ -854,25 +871,29 @@ void TitleLoader::saveToTitle(bool ask)
                 for (auto& title : titles)
                 {
                     if (title == loadedTitle &&
-                        (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' + i18n::localize("SAVE_OVERWRITE_INSTALL"))))
+                        (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
+                                                        i18n::localize("SAVE_OVERWRITE_INSTALL"))))
                     {
                         Archive archive;
                         std::unique_ptr<File> out;
                         if (title->gba())
                         {
-                            archive                   = Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
+                            archive = Archive::saveAndContents(
+                                title->mediaType(), title->lowId(), title->highId(), true);
                             constexpr u32 pathData[5] = {
                                 1,   // Save data
                                 1,   // TMD content index
                                 3,   // Type: save data?
                                 0, 0 // No EXEFS file name needed
                             };
-                            out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ | FS_OPEN_WRITE);
+                            out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData},
+                                FS_OPEN_READ | FS_OPEN_WRITE);
                         }
                         else
                         {
-                            archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-                            out     = archive.file(u"/main", FS_OPEN_WRITE);
+                            archive = Archive::save(
+                                title->mediaType(), title->lowId(), title->highId(), false);
+                            out = archive.file(u"/main", FS_OPEN_WRITE);
                         }
 
                         if (out)
@@ -880,8 +901,10 @@ void TitleLoader::saveToTitle(bool ask)
                             if (title->gba())
                             {
                                 static constexpr u8 ZEROS[0x20]   = {0};
-                                static constexpr u8 FULL_FS[0x20] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+                                static constexpr u8 FULL_FS[0x20] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
                                 // Get which slot to save to
                                 std::unique_ptr<GbaHeader> header1 = std::make_unique<GbaHeader>();
@@ -889,7 +912,8 @@ void TitleLoader::saveToTitle(bool ask)
                                 // No clue how to handle an uninitialized save.
                                 if (memcmp(header1.get(), ZEROS, sizeof(ZEROS)))
                                 {
-                                    // If the top save is uninitialized, grab the bottom save's header and copy it to the top's. Then write data
+                                    // If the top save is uninitialized, grab the bottom save's
+                                    // header and copy it to the top's. Then write data
                                     if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                                     {
                                         static constexpr u32 POSSIBLE_SAVE_SIZES[] = {
@@ -907,14 +931,16 @@ void TitleLoader::saveToTitle(bool ask)
                                             // Read what may be a header
                                             out->read(header1.get(), sizeof(GbaHeader));
                                             // If it's a header, we found it! Break.
-                                            if (R_SUCCEEDED(out->result()) && !memcmp(header1->magic, ".SAV", 4))
+                                            if (R_SUCCEEDED(out->result()) &&
+                                                !memcmp(header1->magic, ".SAV", 4))
                                             {
                                                 break;
                                             }
                                         }
                                         if (R_SUCCEEDED(out->result()))
                                         {
-                                            // Doesn't matter whether this CMAC is valid or not. We just need to update it
+                                            // Doesn't matter whether this CMAC is valid or not. We
+                                            // just need to update it
                                             out->seek(0, SEEK_SET);
                                             // Increment save count
                                             header1->savesMade++;
@@ -928,28 +954,33 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->close();
                                         }
                                     }
-                                    // Otherwise, compare the top and bottom save counts. If we loaded from the top, save in the bottom; if we loaded
-                                    // from the bottom, save in the top
+                                    // Otherwise, compare the top and bottom save counts. If we
+                                    // loaded from the top, save in the bottom; if we loaded from
+                                    // the bottom, save in the top
                                     else
                                     {
-                                        std::unique_ptr<GbaHeader> header2 = std::make_unique<GbaHeader>();
+                                        std::unique_ptr<GbaHeader> header2 =
+                                            std::make_unique<GbaHeader>();
                                         out->seek(header1->saveSize, SEEK_CUR);
                                         out->read(header2.get(), sizeof(GbaHeader));
 
                                         // Check the first CMAC
                                         out->seek(0, SEEK_SET);
-                                        auto cmac         = calcGbaCMAC(*out, *header1);
-                                        bool firstInvalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
+                                        auto cmac = calcGbaCMAC(*out, *header1);
+                                        bool firstInvalid =
+                                            (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
 
                                         // Check the second CMAC
                                         out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
-                                        cmac               = calcGbaCMAC(*out, *header2);
-                                        bool secondInvalid = (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
+                                        cmac = calcGbaCMAC(*out, *header2);
+                                        bool secondInvalid =
+                                            (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
 
                                         if (firstInvalid)
                                         {
-                                            // Just save to the first with header2->savesMade+1 as save number for simplicity; whether or not the
-                                            // second save was valid to begin with is immaterial
+                                            // Just save to the first with header2->savesMade+1 as
+                                            // save number for simplicity; whether or not the second
+                                            // save was valid to begin with is immaterial
                                             header1->savesMade = header2->savesMade + 1;
                                             out->seek(0, SEEK_SET);
                                             out->write(header1.get(), sizeof(GbaHeader));
@@ -963,13 +994,16 @@ void TitleLoader::saveToTitle(bool ask)
                                         }
                                         else
                                         {
-                                            // If the second is valid and we loaded from it, save over first save
-                                            if (!secondInvalid && header2->savesMade == header1->savesMade + 1)
+                                            // If the second is valid and we loaded from it, save
+                                            // over first save
+                                            if (!secondInvalid &&
+                                                header2->savesMade == header1->savesMade + 1)
                                             {
                                                 header1->savesMade = header2->savesMade + 1;
                                                 out->seek(0, SEEK_SET);
                                                 out->write(header1.get(), sizeof(GbaHeader));
-                                                out->write(save->rawData().get(), save->getLength());
+                                                out->write(
+                                                    save->rawData().get(), save->getLength());
                                                 out->seek(0, SEEK_SET);
 
                                                 cmac = calcGbaCMAC(*out, *header1);
@@ -980,14 +1014,19 @@ void TitleLoader::saveToTitle(bool ask)
                                             // Otherwise, save over the second save
                                             else
                                             {
-                                                out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+                                                out->seek(sizeof(GbaHeader) + header1->saveSize,
+                                                    SEEK_SET);
                                                 header2->savesMade = header1->savesMade + 1;
                                                 out->write(header2.get(), sizeof(GbaHeader));
-                                                out->write(save->rawData().get(), save->getLength());
-                                                out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
+                                                out->write(
+                                                    save->rawData().get(), save->getLength());
+                                                out->seek(sizeof(GbaHeader) + header1->saveSize,
+                                                    SEEK_SET);
 
                                                 cmac = calcGbaCMAC(*out, *header1);
-                                                out->seek(sizeof(GbaHeader) + header1->saveSize + offsetof(GbaHeader, cmac), SEEK_SET);
+                                                out->seek(sizeof(GbaHeader) + header1->saveSize +
+                                                              offsetof(GbaHeader, cmac),
+                                                    SEEK_SET);
                                                 out->write(cmac.data(), cmac.size());
                                                 out->close();
                                             }
@@ -1028,7 +1067,7 @@ void TitleLoader::saveToTitle(bool ask)
 
         u8 out;
         u64 secureValue = ((u64)SECUREVALUE_SLOT_SD << 32) | (loadedTitle->lowId() & 0xFFFFFF00);
-        res             = FSUSER_ControlSecureSave(SECURESAVE_ACTION_DELETE, &secureValue, 8, &out, 1);
+        res = FSUSER_ControlSecureSave(SECURESAVE_ACTION_DELETE, &secureValue, 8, &out, 1);
         if (R_FAILED(res))
         {
             Gui::error(i18n::localize("SECURE_VALUE_ERROR"), res);
@@ -1116,7 +1155,8 @@ bool TitleLoader::scanCard()
                 u64 id;
                 res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, count, &id);
                 // check if this id is in our list
-                if (R_SUCCEEDED(res) && std::find(originalIDs.begin(), originalIDs.end(), id) != originalIDs.end())
+                if (R_SUCCEEDED(res) &&
+                    std::find(originalIDs.begin(), originalIDs.end(), id) != originalIDs.end())
                 {
                     auto title = std::make_shared<Title>();
                     if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
@@ -1140,7 +1180,8 @@ bool TitleLoader::scanCard()
                 std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
                 for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
-                    res = SPIReadSaveData(spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
+                    res = SPIReadSaveData(
+                        spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
                     if (R_FAILED(res))
                     {
                         break;

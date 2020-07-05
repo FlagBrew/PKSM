@@ -33,7 +33,10 @@
 class Clickable
 {
 public:
-    Clickable(int x, int y, u16 w, u16 h, const std::function<bool()>& function) : noArg(function), xPos(x), yPos(y), width(w), height(h) {}
+    Clickable(int x, int y, u16 w, u16 h, const std::function<bool()>& function)
+        : noArg(function), xPos(x), yPos(y), width(w), height(h)
+    {
+    }
     virtual ~Clickable(){};
 
     // returns return value of callback, or, if it's not executed, false
@@ -42,7 +45,8 @@ public:
     // Useful for toggle buttons that need to only be used once and not again until they're released
     virtual bool clicked(touchPosition* touch)
     {
-        return touch->px >= xPos && touch->px <= xPos + width && touch->py >= yPos && touch->py <= yPos + height;
+        return touch->px >= xPos && touch->px <= xPos + width && touch->py >= yPos &&
+               touch->py <= yPos + height;
     }
 
 protected:

@@ -60,7 +60,8 @@ void setLoadedSaveFromBridge(bool v)
 
 bool receiveSaveFromBridge(void)
 {
-    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' + fmt::format(i18n::localize("WIRELESS_IP"), getHostId())))
+    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' +
+                                fmt::format(i18n::localize("WIRELESS_IP"), getHostId())))
     {
         return false;
     }
@@ -194,10 +195,11 @@ bool sendSaveToBridge(void)
 
 void backupBridgeChanges()
 {
-    DateTime now     = DateTime::now();
-    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak"), now.year(), now.month(), now.day(),
-        now.hour(), now.minute(), now.second());
-    FILE* out        = fopen(path.c_str(), "wb");
+    DateTime now = DateTime::now();
+    std::string path =
+        fmt::format(FMT_STRING("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak"),
+            now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+    FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {
         fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), out);

@@ -38,7 +38,9 @@
 class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, u16 formCount);
+    FormOverlay(ReplaceableScreen& screen,
+        const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
+        u16 formCount);
     virtual ~FormOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }

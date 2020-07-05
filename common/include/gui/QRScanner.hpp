@@ -171,7 +171,8 @@ public:
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
             }
-            pksm::Generation g = pksm::Generation::fromString(((std::string_view)strData).substr(0, firstColon));
+            pksm::Generation g =
+                pksm::Generation::fromString(((std::string_view)strData).substr(0, firstColon));
             if (g == pksm::Generation::UNUSED)
             {
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
@@ -186,8 +187,9 @@ public:
             return pksm::PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
         }
 
-        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK8> ||
-                      std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||
+        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> ||
+                      std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> ||
+                      std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||
                       std::is_same_v<Mode, pksm::WC7> || std::is_same_v<Mode, pksm::WC8>)
         {
             if (data.size() <= 6 || !std::equal(data.begin(), data.begin() + 6, "null/#"))
@@ -199,7 +201,8 @@ public:
         }
         if constexpr (std::is_same_v<Mode, pksm::PK6>)
         {
-            if (data.size() <= 40 || !std::equal(data.begin(), data.begin() + 40, "http://lunarcookies.github.io/b1s1.html#"))
+            if (data.size() <= 40 || !std::equal(data.begin(), data.begin() + 40,
+                                         "http://lunarcookies.github.io/b1s1.html#"))
             {
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
@@ -208,7 +211,8 @@ public:
         }
         if constexpr (std::is_same_v<Mode, pksm::WC6>)
         {
-            if (data.size() <= 38 || !std::equal(data.begin(), data.begin() + 38, "http://lunarcookies.github.io/wc.html#"))
+            if (data.size() <= 38 || !std::equal(data.begin(), data.begin() + 38,
+                                         "http://lunarcookies.github.io/wc.html#"))
             {
                 Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                 return nullptr;
@@ -225,12 +229,14 @@ public:
         }
 
         // Uses base64
-        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
-                      std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
-                      std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC6> || std::is_same_v<Mode, pksm::WC7> ||
-                      std::is_same_v<Mode, pksm::WC8>)
+        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> ||
+                      std::is_same_v<Mode, pksm::PK6> || std::is_same_v<Mode, pksm::PK8> ||
+                      std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
+                      std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC6> ||
+                      std::is_same_v<Mode, pksm::WC7> || std::is_same_v<Mode, pksm::WC8>)
         {
-            std::vector<u8> decoded = base64_decode((const char*)data.data() + b64Begin, data.size() - b64Begin);
+            std::vector<u8> decoded =
+                base64_decode((const char*)data.data() + b64Begin, data.size() - b64Begin);
 
             if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5>)
             {

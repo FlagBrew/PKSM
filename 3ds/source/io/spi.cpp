@@ -46,21 +46,25 @@
 
 u8* fill_buf = NULL;
 
-Result SPIWriteRead(CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize)
+Result SPIWriteRead(
+    CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize)
 {
-    u8 transferOp = pxiDevMakeTransferOption(BAUDRATE_4MHZ, BUSMODE_1BIT), transferOp2 = pxiDevMakeTransferOption(BAUDRATE_1MHZ, BUSMODE_1BIT);
+    u8 transferOp       = pxiDevMakeTransferOption(BAUDRATE_4MHZ, BUSMODE_1BIT),
+       transferOp2      = pxiDevMakeTransferOption(BAUDRATE_1MHZ, BUSMODE_1BIT);
     u64 waitOp          = pxiDevMakeWaitOperation(WAIT_NONE, DEASSERT_NONE, 0LL);
     u64 headerFooterVal = 0;
     bool b              = type == FLASH_512KB_INFRARED || type == FLASH_256KB_INFRARED;
 
-    PXIDEV_SPIBuffer headerBuffer = {&headerFooterVal, (b) ? 1U : 0U, (b) ? transferOp2 : transferOp, waitOp};
+    PXIDEV_SPIBuffer headerBuffer = {
+        &headerFooterVal, (b) ? 1U : 0U, (b) ? transferOp2 : transferOp, waitOp};
     PXIDEV_SPIBuffer cmdBuffer    = {cmd, cmdSize, transferOp, waitOp};
     PXIDEV_SPIBuffer answerBuffer = {answer, answerSize, transferOp, waitOp};
     PXIDEV_SPIBuffer dataBuffer   = {data, dataSize, transferOp, waitOp};
     PXIDEV_SPIBuffer nullBuffer   = {NULL, 0U, transferOp, waitOp};
     PXIDEV_SPIBuffer footerBuffer = {&headerFooterVal, 0U, transferOp, waitOp};
 
-    return PXIDEV_SPIMultiWriteRead(&headerBuffer, &cmdBuffer, &answerBuffer, &dataBuffer, &nullBuffer, &footerBuffer);
+    return PXIDEV_SPIMultiWriteRead(
+        &headerBuffer, &cmdBuffer, &answerBuffer, &dataBuffer, &nullBuffer, &footerBuffer);
 }
 
 Result SPIWaitWriteEnd(CardType type)
@@ -85,7 +89,8 @@ Result SPIEnableWriting(CardType type)
     Result res = SPIWriteRead(type, &cmd, 1, NULL, 0, 0, 0);
 
     if (res || type == EEPROM_512B)
-        return res; // Weird, but works (otherwise we're getting an infinite loop for that chip type).
+        return res; // Weird, but works (otherwise we're getting an infinite loop for that chip
+                    // type).
     cmd = SPI_CMD_RDSR;
 
     do
@@ -214,7 +219,8 @@ Result SPIWriteSaveData(CardType type, u32 offset, void* data, u32 size)
 
         if ((res = SPIEnableWriting(type)))
             return res;
-        if ((res = SPIWriteRead(type, cmd, cmdSize, NULL, 0, (void*)((u8*)data - offset + pos), dataSize)))
+        if ((res = SPIWriteRead(
+                 type, cmd, cmdSize, NULL, 0, (void*)((u8*)data - offset + pos), dataSize)))
             return res;
         if ((res = SPIWaitWriteEnd(type)))
             return res;
@@ -253,7 +259,8 @@ Result _SPIReadSaveData_512B_impl(u32 pos, void* data, u32 size)
         cmd[0] = SPI_512B_EEPROM_CMD_RDHI;
         cmd[1] = (u8)(pos + read);
 
-        Result res = SPIWriteRead(EEPROM_512B, cmd, cmdSize, (void*)((u8*)data + read), len, NULL, 0);
+        Result res =
+            SPIWriteRead(EEPROM_512B, cmd, cmdSize, (void*)((u8*)data + read), len, NULL, 0);
         if (res)
             return res;
     }
@@ -506,7 +513,8 @@ Result SPIGetCardType(CardType* type, int infrared)
             if (jedec == jedecOrderedList[i])
             {
                 *type = (CardType)((int)FLASH_256KB_1 + i);
-                // fprintf(stderr, "Found a jedec equal to one in the ordered list. Type: %016lX", *type);
+                // fprintf(stderr, "Found a jedec equal to one in the ordered list. Type: %016lX",
+                // *type);
                 return 0;
             }
         }

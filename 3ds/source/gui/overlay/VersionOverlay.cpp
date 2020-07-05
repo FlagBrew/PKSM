@@ -31,7 +31,8 @@
 #include "pkx/PKX.hpp"
 #include <algorithm>
 
-VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm) : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
+VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+    : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
     const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
     for (size_t i = 0; i < gameStrings.size(); i++)
@@ -42,16 +43,18 @@ VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::
         }
     }
     hid.update(games.size());
-    hid.select(
-        std::distance(games.begin(), std::find_if(games.begin(), games.end(), [pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
-            return pair.first == pkm->version();
-        })));
+    hid.select(std::distance(
+        games.begin(), std::find_if(games.begin(), games.end(),
+                           [pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
+                               return pair.first == pkm->version();
+                           })));
 }
 
 void VersionOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 }
 
 void VersionOverlay::drawTop() const
@@ -69,9 +72,10 @@ void VersionOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < games.size())
         {
-            Gui::text(std::to_string((int)games[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                          games[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string((int)games[hid.page() * hid.maxVisibleEntries() + i].first) +
+                          " - " + games[hid.page() * hid.maxVisibleEntries() + i].second,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

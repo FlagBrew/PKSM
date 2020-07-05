@@ -33,7 +33,10 @@
 class ReplaceableScreen
 {
 public:
-    ReplaceableScreen(ReplaceableScreen* parent, const std::string& instructions = "") : parent(parent), instructions(instructions) {}
+    ReplaceableScreen(ReplaceableScreen* parent, const std::string& instructions = "")
+        : parent(parent), instructions(instructions)
+    {
+    }
     virtual ~ReplaceableScreen() {}
     template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
@@ -80,7 +83,8 @@ public:
     void dim(void) const;
     const Instructions& getInstructions() const
     {
-        return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions() : instructions;
+        return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions()
+                                                                : instructions;
     }
 
 protected:

@@ -26,8 +26,9 @@
 
 #include "ToggleButton.hpp"
 
-ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText,
-    FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage, const std::optional<std::string>& offText,
+ToggleButton::ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback,
+    int onImage, const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor,
+    const std::optional<int>& offImage, const std::optional<std::string>& offText,
     const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
     std::vector<std::unique_ptr<ToggleButton>>* radioCategory, bool disablable)
     : ClickButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor),

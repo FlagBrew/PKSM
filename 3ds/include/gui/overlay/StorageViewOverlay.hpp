@@ -35,10 +35,12 @@
 class StorageViewOverlay : public ViewOverlay
 {
 public:
-    StorageViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pkm, std::vector<std::shared_ptr<pksm::PKX>>& clone,
-        std::vector<int>& partyNum, std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
+    StorageViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pkm,
+        std::vector<std::shared_ptr<pksm::PKX>>& clone, std::vector<int>& partyNum,
+        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
         : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pkm, true,
-              i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK")),
+              i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' +
+                  i18n::localize("B_BACK")),
           clone(clone),
           partyNum(partyNum),
           cloneDims(cloneDims),

@@ -63,7 +63,8 @@ namespace
     }
 
     static in_addr serverAddr;
-    SwkbdCallbackResult parseIpCallback(void* user, const char** ppMessage, const char* text, size_t textlen)
+    SwkbdCallbackResult parseIpCallback(
+        void* user, const char** ppMessage, const char* text, size_t textlen)
     {
         if (textlen < 7)
         {
@@ -99,7 +100,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
         data += std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation())) + ":";
     }
     data += base64_encode(pkm->rawData(), pkm->getLength());
-    qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(data.c_str(), qrcodegen::QrCode::Ecc::MEDIUM);
+    qrcodegen::QrCode code =
+        qrcodegen::QrCode::encodeText(data.c_str(), qrcodegen::QrCode::Ecc::MEDIUM);
 
     C2D_Image image;
     image.tex = new C3D_Tex;
@@ -110,9 +112,13 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
         for (int x = 0; x < code.getSize(); x++)
         {
             // Yay swizzling
-            u32 dst                      = ((((y >> 3) * (po2 >> 3) + (x >> 3)) << 6) +
-                       ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
-            ((u16*)image.tex->data)[dst] = code.getModule(x, y) ? 0 : 0xFFFF; // true indicates white, false black. However, image is inverted
+            u32 dst = ((((y >> 3) * (po2 >> 3) + (x >> 3)) << 6) +
+                       ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) |
+                           ((x & 4) << 2) | ((y & 4) << 3)));
+            ((u16*)image.tex->data)[dst] =
+                code.getModule(x, y)
+                    ? 0
+                    : 0xFFFF; // true indicates white, false black. However, image is inverted
         }
     }
 
@@ -210,7 +216,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 return true;
             }
 
-            auto pkx = pksm::PKX::getPKM(this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
+            auto pkx = pksm::PKX::getPKM(
+                this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
             if (pkx)
             {
                 if (pkx->generation() != this->pkm->generation() && TitleLoader::save)
@@ -218,7 +225,9 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                     auto reason = TitleLoader::save->invalidTransferReason(*pkx);
                     if (reason != pksm::Sav::BadTransferReason::OKAY)
                     {
-                        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
+                        Gui::warn(
+                            i18n::localize("NO_TRANSFER_PATH") + '\n' +
+                            i18n::badTransfer(Configuration::getInstance().language(), reason));
                         return false;
                     }
                     pkx = TitleLoader::save->transfer(*pkx);
@@ -229,7 +238,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 }
                 if (pkx)
                 {
-                    std::copy(pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
+                    std::copy(
+                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
                 }
             }
 
@@ -250,7 +260,9 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                     auto reason = TitleLoader::save->invalidTransferReason(*pkx);
                     if (reason != pksm::Sav::BadTransferReason::OKAY)
                     {
-                        Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), reason));
+                        Gui::warn(
+                            i18n::localize("NO_TRANSFER_PATH") + '\n' +
+                            i18n::badTransfer(Configuration::getInstance().language(), reason));
                         return false;
                     }
                     pkx = TitleLoader::save->transfer(*pkx);
@@ -261,7 +273,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 }
                 if (pkx)
                 {
-                    std::copy(pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
+                    std::copy(
+                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
                 }
             }
             // remove image view
@@ -281,11 +294,11 @@ void AppLegalityOverlay::drawBottom() const
         button->draw();
     }
 
-    Gui::text(i18n::localize("APP_SCAN_QR"), 258, 155, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
-        TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
+    Gui::text(i18n::localize("APP_SCAN_QR"), 258, 155, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
+        TextPosY::CENTER, TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
 
-    Gui::text(i18n::localize("APP_USE_SOCKETS"), 258, 186, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
-        TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
+    Gui::text(i18n::localize("APP_USE_SOCKETS"), 258, 186, FONT_SIZE_12, COLOR_BLACK,
+        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::SQUISH_OR_SCROLL, 100.0f);
 }
 
 void AppLegalityOverlay::update(touchPosition* touch)

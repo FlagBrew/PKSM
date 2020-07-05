@@ -67,38 +67,47 @@ namespace
 }
 
 PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(40, 2)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    const std::vector<std::string>& rawItems = pkm->generation() == pksm::Generation::THREE ? i18n::rawItems3(Configuration::getInstance().language())
-                                                                                            : i18n::rawItems(Configuration::getInstance().language());
-    const std::set<int>& availableItems = TitleLoader::save
-                                              ? TitleLoader::save->availableItems()
-                                              : pksm::VersionTables::availableItems(pksm::GameVersion::oldestVersion(pkm->generation()));
+    const std::vector<std::string>& rawItems =
+        pkm->generation() == pksm::Generation::THREE
+            ? i18n::rawItems3(Configuration::getInstance().language())
+            : i18n::rawItems(Configuration::getInstance().language());
+    const std::set<int>& availableItems =
+        TitleLoader::save ? TitleLoader::save->availableItems()
+                          : pksm::VersionTables::availableItems(
+                                pksm::GameVersion::oldestVersion(pkm->generation()));
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
-        if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos || rawItems[*i].find("???") != std::string::npos) ||
+        if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
+                rawItems[*i].find("???") != std::string::npos) ||
             (*i >= 807 && *i <= 835) || (*i >= 927 && *i <= 932))
             continue; // Invalid items and bag Z-Crystals
         items.emplace_back(*i, rawItems[*i]);
     }
-    std::sort(items.begin(), items.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-        if (pair1.first == 0)
-        {
-            return pair2.first != 0;
-        }
-        if (pair2.first == 0)
-        {
-            return false;
-        }
-        return pair1.second < pair2.second;
-    });
+    std::sort(items.begin(), items.end(),
+        [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+            if (pair1.first == 0)
+            {
+                return pair2.first != 0;
+            }
+            if (pair2.first == 0)
+            {
+                return false;
+            }
+            return pair1.second < pair2.second;
+        });
     validItems = items;
 
     hid.update(items.size());
-    u16 item      = pkm->generation() == pksm::Generation::THREE ? ((pksm::PK3*)pkm.get())->heldItem3() : pkm->heldItem();
-    int itemIndex = index(items, pkm->generation() == pksm::Generation::THREE ? i18n::item3(Configuration::getInstance().language(), item)
-                                                                              : i18n::item(Configuration::getInstance().language(), item));
+    u16 item = pkm->generation() == pksm::Generation::THREE ? ((pksm::PK3*)pkm.get())->heldItem3()
+                                                            : pkm->heldItem();
+    int itemIndex = index(items, pkm->generation() == pksm::Generation::THREE
+                                     ? i18n::item3(Configuration::getInstance().language(), item)
+                                     : i18n::item(Configuration::getInstance().language(), item));
     // Checks to make sure that it's the correct item and not one with a duplicate name
     if (items[itemIndex].first != item)
     {
@@ -123,7 +132,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::
 void PkmItemOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -144,9 +154,10 @@ void PkmItemOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < items.size())
         {
-            Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                          items[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) +
+                          " - " + items[hid.page() * hid.maxVisibleEntries() + i].second,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

@@ -50,7 +50,8 @@ Configuration::Configuration()
         if (!mJson->is_object())
         {
             loadFromRomfs();
-            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_FILE_CORRUPTED_1") + '\n' +
+            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_FILE_CORRUPTED_1") +
+                          '\n' +
                           i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                 (*mJson)["language"]);
             return;
@@ -59,7 +60,8 @@ Configuration::Configuration()
         if (!(mJson->contains("version") && (*mJson)["version"].is_number_integer()))
         {
             loadFromRomfs();
-            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                          '\n' +
                           i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                 (*mJson)["language"]);
             return;
@@ -68,7 +70,8 @@ Configuration::Configuration()
         if (!(mJson->contains("language") && (*mJson)["language"].is_number_integer()))
         {
             loadFromRomfs();
-            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                          '\n' +
                           i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                 (*mJson)["language"]);
             return;
@@ -79,7 +82,8 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() > CURRENT_VERSION)
             {
                 loadFromRomfs();
-                Gui::warn(i18n::localize((*mJson)["language"], "THE_FUCK") + '\n' + i18n::localize((*mJson)["language"], "DO_NOT_DOWNGRADE"),
+                Gui::warn(i18n::localize((*mJson)["language"], "THE_FUCK") + '\n' +
+                              i18n::localize((*mJson)["language"], "DO_NOT_DOWNGRADE"),
                     (*mJson)["language"]);
                 return;
             }
@@ -98,8 +102,10 @@ Configuration::Configuration()
                 if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()))
                 {
                     loadFromRomfs();
-                    Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
-                                  i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                    Gui::warn(
+                        i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                            '\n' +
+                            i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                         (*mJson)["language"]);
                     return;
                 }
@@ -116,8 +122,11 @@ Configuration::Configuration()
                         if (!game.is_object())
                         {
                             loadFromRomfs();
-                            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
-                                          i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                            Gui::warn(i18n::localize(
+                                          (*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                                          '\n' +
+                                          i18n::localize(
+                                              (*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                                 (*mJson)["language"]);
                             return;
                         }
@@ -142,11 +151,14 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() < 7)
             {
                 if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
-                    !((*mJson)["defaults"].contains("pid") && (*mJson)["defaults"]["pid"].is_number_integer()))
+                    !((*mJson)["defaults"].contains("pid") &&
+                        (*mJson)["defaults"]["pid"].is_number_integer()))
                 {
                     loadFromRomfs();
-                    Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
-                                  i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                    Gui::warn(
+                        i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                            '\n' +
+                            i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                         (*mJson)["language"]);
                     return;
                 }
@@ -163,16 +175,24 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() < 9)
             {
                 if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
-                    !((*mJson)["defaults"].contains("sid") && (*mJson)["defaults"]["sid"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("tid") && (*mJson)["defaults"]["tid"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("ot") && (*mJson)["defaults"]["ot"].is_string()) ||
-                    !((*mJson)["defaults"].contains("nationality") && (*mJson)["defaults"]["nationality"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("country") && (*mJson)["defaults"]["country"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("region") && (*mJson)["defaults"]["region"].is_number_integer()))
+                    !((*mJson)["defaults"].contains("sid") &&
+                        (*mJson)["defaults"]["sid"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("tid") &&
+                        (*mJson)["defaults"]["tid"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("ot") &&
+                        (*mJson)["defaults"]["ot"].is_string()) ||
+                    !((*mJson)["defaults"].contains("nationality") &&
+                        (*mJson)["defaults"]["nationality"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("country") &&
+                        (*mJson)["defaults"]["country"].is_number_integer()) ||
+                    !((*mJson)["defaults"].contains("region") &&
+                        (*mJson)["defaults"]["region"].is_number_integer()))
                 {
                     loadFromRomfs();
-                    Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
-                                  i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                    Gui::warn(
+                        i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                            '\n' +
+                            i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                         (*mJson)["language"]);
                     return;
                 }
@@ -198,14 +218,22 @@ Configuration::Configuration()
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::E)]  = "0x300";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::FR)] = "0x400";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::LG)] = "0x500";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::X)]  = "0x0004000000055D00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::Y)]  = "0x0004000000055E00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::OR)] = "0x000400000011C400";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::AS)] = "0x000400000011C500";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SN)] = "0x0004000000164800";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::MN)] = "0x0004000000175E00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::US)] = "0x00040000001B5000";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::UM)] = "0x00040000001B5100";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::X)] =
+                    "0x0004000000055D00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::Y)] =
+                    "0x0004000000055E00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::OR)] =
+                    "0x000400000011C400";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::AS)] =
+                    "0x000400000011C500";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SN)] =
+                    "0x0004000000164800";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::MN)] =
+                    "0x0004000000175E00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::US)] =
+                    "0x00040000001B5000";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::UM)] =
+                    "0x00040000001B5100";
             }
 
             (*mJson)["version"] = CURRENT_VERSION;
@@ -237,7 +265,8 @@ Configuration::Configuration()
         // clang-format on
         {
             loadFromRomfs();
-            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+            Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                          '\n' +
                           i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                 (*mJson)["language"]);
             return;
@@ -252,8 +281,10 @@ Configuration::Configuration()
                     if (!save.is_string())
                     {
                         loadFromRomfs();
-                        Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
-                                      i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
+                        Gui::warn(
+                            i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                                '\n' +
+                                i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                             (*mJson)["language"]);
                         return;
                     }
@@ -262,7 +293,8 @@ Configuration::Configuration()
             else
             {
                 loadFromRomfs();
-                Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                              '\n' +
                               i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                     (*mJson)["language"]);
                 return;
@@ -274,7 +306,8 @@ Configuration::Configuration()
             if (!version.is_string())
             {
                 loadFromRomfs();
-                Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") + '\n' +
+                Gui::warn(i18n::localize((*mJson)["language"], "CONFIGURATION_INCORRECT_FORMAT") +
+                              '\n' +
                               i18n::localize((*mJson)["language"], "CONFIGURATION_USING_DEFAULT"),
                     (*mJson)["language"]);
                 return;

@@ -81,7 +81,8 @@ public:
     void filterToGen(pksm::Generation g);
     void removeGenFilter();
     bool good() const { return isGood; }
-    static std::string makeURL(int page, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
+    static std::string makeURL(int page, SortType type, bool ascend, bool legal,
+        pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
 
 private:
@@ -92,8 +93,8 @@ private:
         std::atomic<bool> available = false;
     };
     void refreshPages();
-    static void downloadCloudPage(
-        std::shared_ptr<Page> page, int number, SortType type, bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
+    static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
+        bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
     static bool pageIsGood(const nlohmann::json& json);
     std::shared_ptr<Page> current, next, prev;
     int pageNumber;

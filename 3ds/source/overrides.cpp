@@ -42,7 +42,8 @@ namespace
 }
 
 // These are necessary because of the 3DS's bad exit semantics.
-// We *have* to clean up; not doing so ends in terrible, terrible things happening (mainly infinite hangs)
+// We *have* to clean up; not doing so ends in terrible, terrible things happening (mainly infinite
+// hangs)
 extern "C" {
 extern void __real_abort();
 

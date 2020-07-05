@@ -30,12 +30,14 @@ extern "C" {
 #include "picoc.h"
 #include "pksm_random.h"
 
-void PKSM_Rand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void PKSM_Rand(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = pksm::randomNumber(0, 0x7FFFFFFF);
 }
 
-void PKSM_Srand(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void PKSM_Srand(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::seedRand(Param[0]->Val->Integer);
 }

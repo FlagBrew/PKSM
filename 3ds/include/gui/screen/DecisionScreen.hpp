@@ -33,7 +33,8 @@
 class DecisionScreen : public RunnableScreen<bool>
 {
 public:
-    DecisionScreen(const std::string& question, const std::string& clickInfo = i18n::localize("CONTINUE_CANCEL"))
+    DecisionScreen(const std::string& question,
+        const std::string& clickInfo = i18n::localize("CONTINUE_CANCEL"))
         : RunnableScreen(false), question(question), clickInfo(clickInfo)
     {
     }

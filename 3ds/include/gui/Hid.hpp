@@ -36,7 +36,10 @@ template <HidDirection ListDirection, HidDirection PageDirection>
 class Hid : public IHid<ListDirection, PageDirection, DELAY_TICKS>
 {
 public:
-    Hid(size_t entries, size_t columns) : IHid<ListDirection, PageDirection, DELAY_TICKS>(entries, columns) {}
+    Hid(size_t entries, size_t columns)
+        : IHid<ListDirection, PageDirection, DELAY_TICKS>(entries, columns)
+    {
+    }
 
 private:
     bool downDown() const override { return hidKeysDown() & KEY_DOWN; }

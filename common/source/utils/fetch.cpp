@@ -36,7 +36,8 @@ namespace
 {
     struct MultiFetchRecord
     {
-        MultiFetchRecord(std::shared_ptr<Fetch> fetch = nullptr, std::function<void(CURLcode, std::shared_ptr<Fetch>)> function = nullptr)
+        MultiFetchRecord(std::shared_ptr<Fetch> fetch                      = nullptr,
+            std::function<void(CURLcode, std::shared_ptr<Fetch>)> function = nullptr)
             : fetch(fetch), function(function)
         {
         }
@@ -61,10 +62,12 @@ namespace
     }
 }
 
-std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata)
+std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string* writeData,
+    struct curl_slist* headers, const std::string& postdata)
 {
-    auto fetch  = std::shared_ptr<Fetch>(new Fetch);
-    fetch->curl = std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
+    auto fetch = std::shared_ptr<Fetch>(new Fetch);
+    fetch->curl =
+        std::unique_ptr<CURL, decltype(curl_easy_cleanup)*>(curl_easy_init(), &curl_easy_cleanup);
     if (fetch->curl)
     {
         fetch->setopt(CURLOPT_URL, url.c_str());
@@ -96,8 +99,8 @@ std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string
     return fetch;
 }
 
-Result Fetch::download(
-    const std::string& url, const std::string& path, const std::string& postData, curl_xferinfo_callback progress, void* progressInfo)
+Result Fetch::download(const std::string& url, const std::string& path, const std::string& postData,
+    curl_xferinfo_callback progress, void* progressInfo)
 {
     FILE* file = fopen(path.c_str(), "wb");
     if (!file)
@@ -145,7 +148,8 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
 {
     if (curl)
     {
-        return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(curl_mime_init(curl.get()), &curl_mime_free);
+        return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(
+            curl_mime_init(curl.get()), &curl_mime_free);
     }
     return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
 }
@@ -180,7 +184,9 @@ void Fetch::multiMainThread(void*)
             // Find the done handle
             __lock_acquire(fetchesMutex);
             auto it = std::find_if(
-                fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) { return record.fetch->curl.get() == msg->easy_handle; });
+                fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) {
+                    return record.fetch->curl.get() == msg->easy_handle;
+                });
             // And delete it
             if (it != fetches.end())
             {
@@ -244,7 +250,8 @@ void Fetch::exitMulti()
     }
 }
 
-CURLMcode Fetch::performAsync(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
+CURLMcode Fetch::performAsync(
+    std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
 {
     if (multiInitialized)
     {

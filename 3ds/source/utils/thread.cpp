@@ -32,7 +32,10 @@ namespace
 {
     struct ThreadRecord
     {
-        ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread) : entrypoint(entrypoint), arg(arg), thread(thread) {}
+        ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread)
+            : entrypoint(entrypoint), arg(arg), thread(thread)
+        {
+        }
         void (*entrypoint)(void*);
         void* arg;
         Thread thread;
@@ -65,7 +68,8 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
     LightLock_Lock(&listLock);
     threads.emplace_front(entrypoint, arg, nullptr);
     threads.front().listPos = threads.begin();
-    threads.front().thread  = threadCreate(threadWrap, (void*)&threads.front(), stackSize.value_or(4 * 1024), prio - 1, -2, true);
+    threads.front().thread  = threadCreate(
+        threadWrap, (void*)&threads.front(), stackSize.value_or(4 * 1024), prio - 1, -2, true);
     if (!threads.front().thread)
     {
         threads.erase(threads.begin());

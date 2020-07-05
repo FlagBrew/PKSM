@@ -52,12 +52,15 @@ public:
     static Archive& sd(void);
     static Archive& data(void);
     static Archive save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi);
-    static Archive saveAndContents(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4 = 0);
+    static Archive saveAndContents(
+        FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4 = 0);
     static Archive extdata(u32 extdata, bool pxi);
 
     // As these do manual directory traversal, an FS_Path overload is not possible
-    static Result moveDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest);
-    static Result copyDir(Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest);
+    static Result moveDir(
+        Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest);
+    static Result copyDir(
+        Archive& src, const std::u16string& dir, Archive& dst, const std::u16string& dest);
     Result deleteDir(const std::u16string& path);
 
     static Result moveFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest);
@@ -68,39 +71,59 @@ public:
     std::unique_ptr<File> file(FS_Path file, u32 flags, u32 attributes = 0);
     Result deleteFile(FS_Path file);
 
-    static Result moveDir(Archive& src, const std::string& dir, Archive& dst, const std::string& dest)
+    static Result moveDir(
+        Archive& src, const std::string& dir, Archive& dst, const std::string& dest)
     {
         return moveDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
     }
 
-    static Result moveFile(Archive& src, const std::u16string& file, Archive& dst, const std::u16string& dest)
+    static Result moveFile(
+        Archive& src, const std::u16string& file, Archive& dst, const std::u16string& dest)
     {
-        return moveFile(src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
+        return moveFile(
+            src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
     }
-    static Result moveFile(Archive& src, const std::string& file, Archive& dst, const std::string& dest)
+    static Result moveFile(
+        Archive& src, const std::string& file, Archive& dst, const std::string& dest)
     {
         return moveFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
 
-    static Result copyDir(Archive& src, const std::string& dir, Archive& dst, const std::string& dest)
+    static Result copyDir(
+        Archive& src, const std::string& dir, Archive& dst, const std::string& dest)
     {
         return copyDir(src, StringUtils::UTF8toUTF16(dir), dst, StringUtils::UTF8toUTF16(dest));
     }
 
-    static Result copyFile(Archive& src, const std::u16string& file, Archive& dst, const std::u16string& dest)
+    static Result copyFile(
+        Archive& src, const std::u16string& file, Archive& dst, const std::u16string& dest)
     {
-        return copyFile(src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
+        return copyFile(
+            src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
     }
-    static Result copyFile(Archive& src, const std::string& file, Archive& dst, const std::string& dest)
+    static Result copyFile(
+        Archive& src, const std::string& file, Archive& dst, const std::string& dest)
     {
         return copyFile(src, StringUtils::UTF8toUTF16(file), dst, StringUtils::UTF8toUTF16(dest));
     }
 
-    Result createDir(const std::u16string& path, u32 attributes) { return createDir(fsMakePath(PATH_UTF16, path.c_str()), attributes); }
-    Result createDir(const std::string& path, u32 attributes) { return createDir(StringUtils::UTF8toUTF16(path), attributes); }
+    Result createDir(const std::u16string& path, u32 attributes)
+    {
+        return createDir(fsMakePath(PATH_UTF16, path.c_str()), attributes);
+    }
+    Result createDir(const std::string& path, u32 attributes)
+    {
+        return createDir(StringUtils::UTF8toUTF16(path), attributes);
+    }
 
-    std::unique_ptr<Directory> directory(const std::u16string& path) { return directory(fsMakePath(PATH_UTF16, path.c_str())); }
-    std::unique_ptr<Directory> directory(const std::string& path) { return directory(StringUtils::UTF8toUTF16(path)); }
+    std::unique_ptr<Directory> directory(const std::u16string& path)
+    {
+        return directory(fsMakePath(PATH_UTF16, path.c_str()));
+    }
+    std::unique_ptr<Directory> directory(const std::string& path)
+    {
+        return directory(StringUtils::UTF8toUTF16(path));
+    }
 
     Result deleteDir(const std::string& path) { return deleteDir(StringUtils::UTF8toUTF16(path)); }
 
@@ -108,7 +131,10 @@ public:
     {
         return createFile(fsMakePath(PATH_UTF16, path.c_str()), attributes, size);
     }
-    Result createFile(const std::string& path, u32 attributes, u64 size) { return createFile(StringUtils::UTF8toUTF16(path), attributes, size); }
+    Result createFile(const std::string& path, u32 attributes, u64 size)
+    {
+        return createFile(StringUtils::UTF8toUTF16(path), attributes, size);
+    }
 
     std::unique_ptr<File> file(const std::u16string& path, u32 flags, u32 attributes = 0)
     {
@@ -119,8 +145,14 @@ public:
         return file(StringUtils::UTF8toUTF16(path), flags, attributes);
     }
 
-    Result deleteFile(const std::u16string& path) { return deleteFile(fsMakePath(PATH_UTF16, path.c_str())); }
-    Result deleteFile(const std::string& path) { return deleteFile(StringUtils::UTF8toUTF16(path)); }
+    Result deleteFile(const std::u16string& path)
+    {
+        return deleteFile(fsMakePath(PATH_UTF16, path.c_str()));
+    }
+    Result deleteFile(const std::string& path)
+    {
+        return deleteFile(StringUtils::UTF8toUTF16(path));
+    }
 
     Result commit();
     Result close();

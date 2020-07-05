@@ -66,32 +66,41 @@ namespace
     }
 }
 
-MoveOverlay::MoveOverlay(
-    ReplaceableScreen& screen, const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object, int moveIndex)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), object(object), hid(40, 2), moveIndex(moveIndex)
+MoveOverlay::MoveOverlay(ReplaceableScreen& screen,
+    const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
+    int moveIndex)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      object(object),
+      hid(40, 2),
+      moveIndex(moveIndex)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    const std::vector<std::string>& rawMoves = i18n::rawMoves(Configuration::getInstance().language());
-    pksm::Generation gen                     = object.index() == 0 ? std::get<0>(object)->generation() : pksm::Generation::EIGHT;
+    const std::vector<std::string>& rawMoves =
+        i18n::rawMoves(Configuration::getInstance().language());
+    pksm::Generation gen =
+        object.index() == 0 ? std::get<0>(object)->generation() : pksm::Generation::EIGHT;
     const std::set<int> availableMoves =
-        TitleLoader::save ? TitleLoader::save->availableMoves() : pksm::VersionTables::availableMoves(pksm::GameVersion::oldestVersion(gen));
+        TitleLoader::save
+            ? TitleLoader::save->availableMoves()
+            : pksm::VersionTables::availableMoves(pksm::GameVersion::oldestVersion(gen));
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
         if (*i >= 622 && *i <= 658)
             continue;
         moves.emplace_back(*i, rawMoves[*i]);
     }
-    std::sort(moves.begin(), moves.end(), [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-        if (pair1.first == 0)
-        {
-            return pair2.first != 0;
-        }
-        if (pair2.first == 0)
-        {
-            return false;
-        }
-        return pair1.second < pair2.second;
-    });
+    std::sort(moves.begin(), moves.end(),
+        [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+            if (pair1.first == 0)
+            {
+                return pair2.first != 0;
+            }
+            if (pair2.first == 0)
+            {
+                return false;
+            }
+            return pair1.second < pair2.second;
+        });
     validMoves = moves;
 
     hid.update(moves.size());
@@ -99,11 +108,13 @@ MoveOverlay::MoveOverlay(
     {
         if (object.index() == 0)
         {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<0>(object)->move(moveIndex))));
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
+                                             std::get<0>(object)->move(moveIndex))));
         }
         else
         {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<1>(object)->move(moveIndex))));
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
+                                             std::get<1>(object)->move(moveIndex))));
         }
     }
     else
@@ -111,11 +122,13 @@ MoveOverlay::MoveOverlay(
         if (object.index() == 0)
         {
             auto pkm = std::get<0>(object);
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), pkm->relearnMove(moveIndex - 4))));
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
+                                             pkm->relearnMove(moveIndex - 4))));
         }
         else
         {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(), std::get<1>(object)->relearnMove(moveIndex - 4))));
+            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
+                                             std::get<1>(object)->relearnMove(moveIndex - 4))));
         }
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
@@ -137,7 +150,8 @@ MoveOverlay::~MoveOverlay()
 void MoveOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -158,9 +172,10 @@ void MoveOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
         {
-            Gui::text(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) + " - " +
-                          moves[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) +
+                          " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

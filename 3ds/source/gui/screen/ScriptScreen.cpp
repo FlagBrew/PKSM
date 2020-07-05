@@ -125,7 +125,11 @@ namespace
 }
 
 ScriptScreen::ScriptScreen()
-    : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())), currDir(currDirString), hid(8, 1), sdSearch(false), cScripts(false)
+    : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
+      currDir(currDirString),
+      hid(8, 1),
+      sdSearch(false),
+      cScripts(false)
 {
     if (!currDir.good())
     {
@@ -155,12 +159,14 @@ void ScriptScreen::drawTop() const
 
     // Leaving space for the icon
     Gui::text(currDirString, 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP, TextWidthAction::SQUISH, 398);
+    Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP, TextWidthAction::SQUISH, 398);
 
     Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
     Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
 
-    for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
+    for (size_t i = hid.page() * hid.maxVisibleEntries();
+         i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
         if (i >= currFiles.size())
         {
@@ -168,8 +174,10 @@ void ScriptScreen::drawTop() const
         }
         else
         {
-            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
+                3, 23 + i % hid.maxVisibleEntries() * 25);
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
+                COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 }
@@ -179,9 +187,11 @@ void ScriptScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::drawSolidRect(20, 40, 280, 60, PKSM_Color(128, 128, 128, 255));
     Gui::drawSolidRect(21, 41, 278, 58, COLOR_MASKBLACK);
-    Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP, TextWidthAction::SQUISH, 318);
+    Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP, TextWidthAction::SQUISH, 318);
 
-    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
+    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
 }
 
 void ScriptScreen::update(touchPosition* touch)
@@ -190,8 +200,9 @@ void ScriptScreen::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString ==
-            (sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version())))
+        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") +
+                                 (cScripts ? std::string("/scripts/universal")
+                                           : getScriptDir(TitleLoader::save->version())))
         {
             Gui::screenBack();
             return;
@@ -215,7 +226,8 @@ void ScriptScreen::update(touchPosition* touch)
             }
             else
             {
-                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE") + "\n" + ('\'' + currFiles[hid.fullIndex()].first + '\'')))
+                if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE") + "\n" +
+                                           ('\'' + currFiles[hid.fullIndex()].first + '\'')))
                 {
                     applyScript();
                 }
@@ -224,8 +236,9 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_X)
     {
-        std::string dirString =
-            (!sdSearch ? "/3ds/PKSM" : "romfs:") + (cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        std::string dirString = (!sdSearch ? "/3ds/PKSM" : "romfs:") +
+                                (cScripts ? std::string("/scripts/universal")
+                                          : getScriptDir(TitleLoader::save->version()));
         STDirectory dir = STDirectory(dirString);
         if (dir.good())
         {
@@ -241,8 +254,9 @@ void ScriptScreen::update(touchPosition* touch)
     }
     else if (down & KEY_Y)
     {
-        std::string dirString =
-            (sdSearch ? "/3ds/PKSM" : "romfs:") + (!cScripts ? std::string("/scripts/universal") : getScriptDir(TitleLoader::save->version()));
+        std::string dirString = (sdSearch ? "/3ds/PKSM" : "romfs:") +
+                                (!cScripts ? std::string("/scripts/universal")
+                                           : getScriptDir(TitleLoader::save->version()));
         STDirectory dir = STDirectory(dirString);
         if (dir.good())
         {
@@ -280,20 +294,22 @@ void ScriptScreen::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
-        if ((first.second && second.second) || (!first.second && !second.second))
-        {
-            return first.first < second.first;
-        }
-        else if (first.second)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
+    std::sort(currFiles.begin(), currFiles.end(),
+        [this](
+            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
+            if ((first.second && second.second) || (!first.second && !second.second))
+            {
+                return first.first < second.first;
+            }
+            else if (first.second)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        });
 }
 
 void ScriptScreen::applyScript()
@@ -331,7 +347,8 @@ void ScriptScreen::applyScript()
         {
             u32 sbo = ((pksm::Sav4*)TitleLoader::save.get())->getSBO();
             u32 gbo = ((pksm::Sav4*)TitleLoader::save.get())->getGBO();
-            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset && TitleLoader::save->boxOffset(TitleLoader::save->maxBoxes(), 0) - sbo >= offset)
+            if (TitleLoader::save->boxOffset(0, 0) - sbo <= offset &&
+                TitleLoader::save->boxOffset(TitleLoader::save->maxBoxes(), 0) - sbo >= offset)
             {
                 offset += sbo;
             }
@@ -343,7 +360,8 @@ void ScriptScreen::applyScript()
 
         for (size_t i = 0; i < repeat; i++)
         {
-            std::copy(scriptData.data() + index + 8, scriptData.data() + index + 8 + length, &TitleLoader::save->rawData()[offset + i * length]);
+            std::copy(scriptData.data() + index + 8, scriptData.data() + index + 8 + length,
+                &TitleLoader::save->rawData()[offset + i * length]);
         }
 
         index += 12 + length;

@@ -26,9 +26,12 @@
 
 #include "AccelButton.hpp"
 
-AccelButton::AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int image, const std::string& text, FontSize size,
-    PKSM_Color textColor, int slowTime, int fastTime)
-    : Button(x, y, w, h, callback, image, text, size, textColor), slowTime(slowTime), fastTime(fastTime)
+AccelButton::AccelButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback,
+    int image, const std::string& text, FontSize size, PKSM_Color textColor, int slowTime,
+    int fastTime)
+    : Button(x, y, w, h, callback, image, text, size, textColor),
+      slowTime(slowTime),
+      fastTime(fastTime)
 {
 }
 

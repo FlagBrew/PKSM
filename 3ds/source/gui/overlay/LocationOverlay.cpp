@@ -32,11 +32,13 @@
 #include "pkx/PKX.hpp"
 #include "utils.hpp"
 
-LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met)
+LocationOverlay::LocationOverlay(
+    ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2),
-      validLocations(i18n::rawLocations(Configuration::getInstance().language(), (pksm::Generation)pkm->version())),
+      validLocations(i18n::rawLocations(
+          Configuration::getInstance().language(), (pksm::Generation)pkm->version())),
       locations(validLocations),
       met(met)
 {
@@ -48,15 +50,18 @@ LocationOverlay::LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm
         },
         ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
     hid.update(locations.size());
-    hid.select(std::distance(locations.begin(), std::find_if(locations.begin(), locations.end(), [pkm, met](const std::pair<u16, std::string>& pair) {
-        return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());
-    })));
+    hid.select(std::distance(locations.begin(),
+        std::find_if(locations.begin(), locations.end(),
+            [pkm, met](const std::pair<u16, std::string>& pair) {
+                return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());
+            })));
 }
 
 void LocationOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
     searchButton->draw();
     Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
     Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
@@ -83,8 +88,9 @@ void LocationOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < locations.size())
         {
-            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x,
+                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+                TextPosY::TOP);
             ++locIt;
         }
         else

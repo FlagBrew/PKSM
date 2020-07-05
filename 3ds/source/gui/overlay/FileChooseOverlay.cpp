@@ -30,7 +30,8 @@
 #include "i18n_ext.hpp"
 #include <algorithm>
 
-FileChooseOverlay::FileChooseOverlay(ReplaceableScreen& screen, std::string& retString, const std::string& rootString)
+FileChooseOverlay::FileChooseOverlay(
+    ReplaceableScreen& screen, std::string& retString, const std::string& rootString)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       currDirString("/"),
       rootString(rootString),
@@ -57,7 +58,8 @@ void FileChooseOverlay::drawTop() const
         Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
     }
 
-    for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
+    for (size_t i = hid.page() * hid.maxVisibleEntries();
+         i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
         if (i >= currFiles.size())
         {
@@ -65,10 +67,12 @@ void FileChooseOverlay::drawTop() const
         }
         else
         {
-            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx, 3, 23 + i % hid.maxVisibleEntries() * 25);
+            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
+                3, 23 + i % hid.maxVisibleEntries() * 25);
         }
     }
-    for (size_t i = hid.page() * hid.maxVisibleEntries(); i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
+    for (size_t i = hid.page() * hid.maxVisibleEntries();
+         i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
         if (i >= currFiles.size())
         {
@@ -76,7 +80,8 @@ void FileChooseOverlay::drawTop() const
         }
         else
         {
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
+                COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 
@@ -101,20 +106,22 @@ void FileChooseOverlay::updateEntries()
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
     }
-    std::sort(currFiles.begin(), currFiles.end(), [this](const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
-        if ((first.second && second.second) || (!first.second && !second.second))
-        {
-            return first.first < second.first;
-        }
-        else if (first.second)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
+    std::sort(currFiles.begin(), currFiles.end(),
+        [this](
+            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
+            if ((first.second && second.second) || (!first.second && !second.second))
+            {
+                return first.first < second.first;
+            }
+            else if (first.second)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        });
 }
 
 void FileChooseOverlay::update(touchPosition* touch)
@@ -130,8 +137,9 @@ void FileChooseOverlay::update(touchPosition* touch)
         }
         else
         {
-            currDirString = currDirString.substr(0, currDirString.substr(0, currDirString.size() - 1).find_last_of('/') + 1);
-            currDir       = STDirectory(currDirString);
+            currDirString = currDirString.substr(
+                0, currDirString.substr(0, currDirString.size() - 1).find_last_of('/') + 1);
+            currDir = STDirectory(currDirString);
             updateEntries();
         }
     }
@@ -147,7 +155,8 @@ void FileChooseOverlay::update(touchPosition* touch)
             }
             else
             {
-                if (Gui::showChoiceMessage((i18n::localize("FILE_CONFIRM_CHOICE") + '\n') + '\'' + currFiles[hid.fullIndex()].first + '\''))
+                if (Gui::showChoiceMessage((i18n::localize("FILE_CONFIRM_CHOICE") + '\n') + '\'' +
+                                           currFiles[hid.fullIndex()].first + '\''))
                 {
                     string = currDirString + currFiles[hid.fullIndex()].first;
                     parent->removeOverlay();

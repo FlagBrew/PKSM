@@ -30,7 +30,8 @@
 void BoxOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 }
 
 void BoxOverlay::drawTop() const
@@ -48,8 +49,9 @@ void BoxOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
-            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i], x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
-                TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i], x,
+                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+                TextPosY::TOP);
         }
         else
         {

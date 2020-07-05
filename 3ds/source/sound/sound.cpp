@@ -67,12 +67,14 @@ namespace
 
     void fillBuffers(int channel, std::unique_ptr<Decoder>& decoder)
     {
-        for (size_t buffer = channel * BUFFERS_PER_CHANNEL; buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
+        for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
+             buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
         {
             if (buffers[buffer].status == NDSP_WBUF_DONE)
             {
                 // Decode data into the done buffer
-                buffers[buffer].nsamples = decoder->decode((void*)buffers[buffer].data_pcm16, BUFFER_SIZE);
+                buffers[buffer].nsamples =
+                    decoder->decode((void*)buffers[buffer].data_pcm16, BUFFER_SIZE);
                 // Correct size for stereo mode
                 if (decoder->stereo())
                 {
@@ -100,12 +102,15 @@ namespace
         if (decoder)
         {
             ndspChnReset(channel);
-            ndspChnSetInterp(channel, decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
+            ndspChnSetInterp(
+                channel, decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
             ndspChnSetRate(channel, decoder->sampleRate());
-            ndspChnSetFormat(channel, decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
+            ndspChnSetFormat(
+                channel, decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
 
             // Set all channels into the done state to be decoded into
-            for (size_t buffer = channel * BUFFERS_PER_CHANNEL; buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
+            for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
+                 buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
             {
                 buffers[buffer].status = NDSP_WBUF_DONE;
             }
@@ -145,10 +150,10 @@ namespace
             // Get volume for later usage
             HIDUSER_GetSoundVolume(&currentVolume);
             // Explicitly do the BGM channel with its special handling:
-            // Replace the song if the volume slider is pushed all the way down and we haven't already replaced it or the decoder is gone and the
-            // channel is done or paused
-            bool replaceBGM =
-                (currentVolume == 0 && bgm.size() > 1 && !ndspChnIsPaused(0)) || (!decoders[0] && (!ndspChnIsPlaying(0) || ndspChnIsPaused(0)));
+            // Replace the song if the volume slider is pushed all the way down and we haven't
+            // already replaced it or the decoder is gone and the channel is done or paused
+            bool replaceBGM = (currentVolume == 0 && bgm.size() > 1 && !ndspChnIsPaused(0)) ||
+                              (!decoders[0] && (!ndspChnIsPlaying(0) || ndspChnIsPaused(0)));
             // If the decoder still exists and we're not about to replace it, fill the buffers
             if (!replaceBGM && decoders[0])
             {

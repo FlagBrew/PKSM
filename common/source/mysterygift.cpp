@@ -141,15 +141,18 @@ std::unique_ptr<pksm::WCX> MysteryGift::wondercard(size_t index)
     }
     else if (gen == "6")
     {
-        return std::make_unique<pksm::WC6>(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
+        return std::make_unique<pksm::WC6>(mysteryGiftData + offset,
+            entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "7")
     {
-        return std::make_unique<pksm::WC7>(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
+        return std::make_unique<pksm::WC7>(mysteryGiftData + offset,
+            entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "LGPE")
     {
-        return std::make_unique<pksm::WB7>(mysteryGiftData + offset, entry["type"].get<std::string>().find("full") != std::string::npos);
+        return std::make_unique<pksm::WB7>(mysteryGiftData + offset,
+            entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "8")
     {
@@ -176,7 +179,9 @@ std::vector<nlohmann::json> MysteryGift::wondercards()
 MysteryGift::giftData MysteryGift::wondercardInfo(size_t index)
 {
     nlohmann::json entry = mysteryGiftSheet["wondercards"][index];
-    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(), entry["species"].get<int>(), entry["form"].get<int>(),
-        pksm::Gender(entry["gender"].get<int>()), entry.contains("released") ? entry["released"].get<bool>() : true);
+    giftData ret(entry["name"].get<std::string>(), entry["game"].get<std::string>(),
+        entry["species"].get<int>(), entry["form"].get<int>(),
+        pksm::Gender(entry["gender"].get<int>()),
+        entry.contains("released") ? entry["released"].get<bool>() : true);
     return ret;
 }

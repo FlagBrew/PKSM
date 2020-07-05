@@ -72,7 +72,8 @@ std::vector<unsigned char> base64_decode(const char* data, size_t input_length)
         uint32_t sextet_c = data[i] == '=' ? 0 & i++ : decoding_table[(size_t)data[i++]];
         uint32_t sextet_d = data[i] == '=' ? 0 & i++ : decoding_table[(size_t)data[i++]];
 
-        uint32_t triple = (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
+        uint32_t triple =
+            (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
 
         if (j < output_length)
             ret[j++] = (triple >> 2 * 8) & 0xFF;

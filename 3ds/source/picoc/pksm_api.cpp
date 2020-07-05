@@ -123,7 +123,11 @@ namespace
         scriptFail(Parser, "Generation is not possible!");
     }
 
-    struct Value* getNextVarArg(struct Value* arg) { return (struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg))); }
+    struct Value* getNextVarArg(struct Value* arg)
+    {
+        return (
+            struct Value*)((char*)arg + MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(arg)));
+    }
 
     std::unique_ptr<pksm::PKX> getPokemon(u8* data, pksm::Generation gen, bool isParty)
     {
@@ -143,22 +147,26 @@ namespace
 extern "C" {
 #include "pksm_api.h"
 
-void gui_warn(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_warn(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     Gui::warn((char*)Param[0]->Val->Pointer);
 }
 
-void gui_choice(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_choice(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = (int)Gui::showChoiceMessage((char*)Param[0]->Val->Pointer);
 }
 
-void gui_splash(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_splash(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     Gui::waitFrame((char*)Param[0]->Val->Pointer);
 }
 
-void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_menu6x5(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* question            = (char*)Param[0]->Val->Pointer;
     int options               = Param[1]->Val->Integer;
@@ -170,7 +178,8 @@ void gui_menu6x5(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     ReturnValue->Val->Integer = ret;
 }
 
-void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_menu20x2(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* question            = (char*)Param[0]->Val->Pointer;
     int options               = Param[1]->Val->Integer;
@@ -180,7 +189,8 @@ void gui_menu20x2(struct ParseState* Parser, struct Value* ReturnValue, struct V
     ReturnValue->Val->Integer = ret;
 }
 
-void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_sbo(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
@@ -192,7 +202,8 @@ void sav_sbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value*
     }
 }
 
-void sav_gbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_gbo(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
@@ -204,17 +215,20 @@ void sav_gbo(struct ParseState* Parser, struct Value* ReturnValue, struct Value*
     }
 }
 
-void sav_boxDecrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_boxDecrypt(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     TitleLoader::save->cryptBoxData(true);
 }
 
-void sav_boxEncrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_boxEncrypt(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     TitleLoader::save->cryptBoxData(false);
 }
 
-void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_keyboard(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* out    = (char*)Param[0]->Val->Pointer;
     char* hint   = (char*)Param[1]->Val->Pointer;
@@ -224,11 +238,14 @@ void gui_keyboard(struct ParseState* Parser, struct Value* ReturnValue, struct V
     swkbdInit(&state, SWKBD_TYPE_NORMAL, 1, numChars - 1);
     swkbdSetHintText(&state, hint);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, SWKBD_FILTER_PROFANITY, 0);
-    swkbdInputText(&state, out, numChars * 3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so
+    swkbdInputText(&state, out,
+        numChars *
+            3); // numChars is UTF-16 codepoints, each UTF-8 codepoint needs up to 3 bytes, so
     out[numChars * 3 - 1] = '\0';
 }
 
-void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_numpad(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     unsigned int* out = (unsigned int*)Param[0]->Val->Pointer;
     std::string hint  = (char*)Param[1]->Val->Pointer;
@@ -253,14 +270,16 @@ void gui_numpad(struct ParseState* Parser, struct Value* ReturnValue, struct Val
     *out             = std::atoi(number);
 }
 
-void current_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void current_directory(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     std::string fileName      = Parser->FileName;
     fileName                  = fileName.substr(0, fileName.rfind('/'));
     ReturnValue->Val->Pointer = strToRet(fileName);
 }
 
-void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void read_directory(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     std::string dir = (char*)Param[0]->Val->Pointer;
     STDirectory directory(dir);
@@ -294,7 +313,8 @@ void read_directory(struct ParseState* Parser, struct Value* ReturnValue, struct
     ReturnValue->Val->Pointer = ret;
 }
 
-void delete_directory(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void delete_directory(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     struct dirData
     {
@@ -313,7 +333,8 @@ void delete_directory(struct ParseState* Parser, struct Value* ReturnValue, stru
     }
 }
 
-void save_path(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int numArgs)
+void save_path(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int numArgs)
 {
     auto savePath = TitleLoader::savePath();
     if (savePath.empty())
@@ -326,7 +347,8 @@ void save_path(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
     }
 }
 
-void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_inject_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -342,13 +364,15 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
+                (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
         if (invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
-            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' +
+                      i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
         else
         {
@@ -359,7 +383,8 @@ void sav_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
 }
 
-void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_ot(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
@@ -368,7 +393,8 @@ void cfg_default_ot(struct ParseState* Parser, struct Value* ReturnValue, struct
     ReturnValue->Val->Pointer = strToRet(PkmUtils::getDefault(gen)->otName());
 }
 
-void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_tid(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
@@ -377,7 +403,8 @@ void cfg_default_tid(struct ParseState* Parser, struct Value* ReturnValue, struc
     ReturnValue->Val->UnsignedShortInteger = PkmUtils::getDefault(gen)->TID();
 }
 
-void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_sid(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
 
@@ -386,22 +413,26 @@ void cfg_default_sid(struct ParseState* Parser, struct Value* ReturnValue, struc
     ReturnValue->Val->UnsignedShortInteger = PkmUtils::getDefault(gen)->SID();
 }
 
-void cfg_default_day(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_day(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = Configuration::getInstance().date().day();
 }
 
-void cfg_default_month(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_month(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = Configuration::getInstance().date().month();
 }
 
-void cfg_default_year(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void cfg_default_year(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = Configuration::getInstance().date().year();
 }
 
-void gui_boxes(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void gui_boxes(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     int* fromStorage = (int*)Param[0]->Val->Pointer;
     int* box         = (int*)Param[1]->Val->Pointer;
@@ -411,13 +442,15 @@ void gui_boxes(struct ParseState* Parser, struct Value* ReturnValue, struct Valu
     BoxChoice screen = BoxChoice((bool)doCrypt);
     auto result      = Gui::runScreen(screen);
 
-    *fromStorage              = std::get<0>(result);
-    *box                      = std::get<1>(result);
-    *slot                     = std::get<2>(result) - 1;
-    ReturnValue->Val->Integer = std::get<0>(result) == 0 && std::get<1>(result) == -1 && std::get<2>(result) == -1 ? -1 : 0;
+    *fromStorage = std::get<0>(result);
+    *box         = std::get<1>(result);
+    *slot        = std::get<2>(result) - 1;
+    ReturnValue->Val->Integer =
+        std::get<0>(result) == 0 && std::get<1>(result) == -1 && std::get<2>(result) == -1 ? -1 : 0;
 }
 
-void net_udp_receiver(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void net_udp_receiver(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* buffer       = (char*)Param[0]->Val->Pointer;
     int size           = (int)Param[1]->Val->Integer;
@@ -454,7 +487,8 @@ void net_udp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     ReturnValue->Val->Integer = 0;
 }
 
-void net_tcp_receiver(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void net_tcp_receiver(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* buffer       = (char*)Param[0]->Val->Pointer;
     int size           = (int)Param[1]->Val->Integer;
@@ -505,7 +539,8 @@ void net_tcp_receiver(struct ParseState* Parser, struct Value* ReturnValue, stru
     ReturnValue->Val->Integer = 0;
 }
 
-void net_tcp_sender(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void net_tcp_sender(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* ip     = (char*)Param[0]->Val->Pointer;
     int port     = (int)Param[1]->Val->Integer;
@@ -549,7 +584,8 @@ void net_tcp_sender(struct ParseState* Parser, struct Value* ReturnValue, struct
     ReturnValue->Val->Integer = total == size ? 0 : errno;
 }
 
-void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void bank_inject_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -564,7 +600,8 @@ void bank_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struc
     Banks::bank->pkm(*pkm, box, slot);
 }
 
-void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void bank_get_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation* outGen = (pksm::Generation*)Param[0]->Val->Pointer;
     int box                  = Param[1]->Val->Integer;
@@ -585,12 +622,14 @@ void bank_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 }
 
-void bank_get_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void bank_get_size(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Integer = Banks::bank->boxes();
 }
 
-void bank_select(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void bank_select(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     BankChoice screen;
     Gui::runScreen(screen);
@@ -610,11 +649,13 @@ void net_ip(struct ParseState* Parser, struct Value* ReturnValue, struct Value**
     }
     else
     {
-        ReturnValue->Val->Pointer = (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
+        ReturnValue->Val->Pointer =
+            (void*)inet_ntoa(*((struct in_addr*)host_entry->h_addr_list[0]));
     }
 }
 
-void sav_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data = (u8*)Param[0]->Val->Pointer;
     int box  = Param[1]->Val->Integer;
@@ -624,7 +665,8 @@ void sav_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
 }
 
-void party_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void party_get_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data = (u8*)Param[0]->Val->Pointer;
     int slot = Param[1]->Val->Integer;
@@ -633,19 +675,25 @@ void party_get_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct 
     memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
 }
 
-void i18n_species(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void i18n_species(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = (void*)i18n::species(Configuration::getInstance().language(), pksm::Species{u16(Param[0]->Val->Integer)}).c_str();
-}
-
-void i18n_form(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
-{
-    ReturnValue->Val->Pointer = (void*)i18n::form(Configuration::getInstance().language(), pksm::GameVersion{u8(Param[0]->Val->Integer)},
-        pksm::Species{u16(Param[1]->Val->Integer)}, u8(Param[2]->Val->Integer))
+    ReturnValue->Val->Pointer = (void*)i18n::species(
+        Configuration::getInstance().language(), pksm::Species{u16(Param[0]->Val->Integer)})
                                     .c_str();
 }
 
-void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void i18n_form(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    ReturnValue->Val->Pointer = (void*)i18n::form(Configuration::getInstance().language(),
+        pksm::GameVersion{u8(Param[0]->Val->Integer)}, pksm::Species{u16(Param[1]->Val->Integer)},
+        u8(Param[2]->Val->Integer))
+                                    .c_str();
+}
+
+void pkx_decrypt(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -657,7 +705,8 @@ void pkx_decrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     [[maybe_unused]] std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
 }
 
-void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_encrypt(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -673,17 +722,21 @@ void pkx_encrypt(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     }
 }
 
-void pksm_utf8_to_utf16(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pksm_utf8_to_utf16(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Pointer = strToRet(StringUtils::UTF8toUTF16((char*)Param[0]->Val->Pointer));
 }
 
-void pksm_utf16_to_utf8(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pksm_utf16_to_utf8(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    ReturnValue->Val->Pointer = strToRet(StringUtils::UTF16toUTF8((char16_t*)Param[0]->Val->Pointer));
+    ReturnValue->Val->Pointer =
+        strToRet(StringUtils::UTF16toUTF8((char16_t*)Param[0]->Val->Pointer));
 }
 
-void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void party_inject_pkx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -697,13 +750,15 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
+                (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
         if (invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
-            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' + i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' +
+                      i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
         }
         else
         {
@@ -715,7 +770,8 @@ void party_inject_pkx(struct ParseState* Parser, struct Value* ReturnValue, stru
     }
 }
 
-void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_box_size(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
     checkGen(Parser, gen);
@@ -748,7 +804,8 @@ void pkx_box_size(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 }
 
-void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_party_size(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
     checkGen(Parser, gen);
@@ -781,7 +838,8 @@ void pkx_party_size(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
 }
 
-void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_generate(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data    = (u8*)Param[0]->Val->Pointer;
     int species = Param[1]->Val->Integer;
@@ -792,25 +850,32 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     switch (TitleLoader::save->generation())
     {
         case pksm::Generation::THREE:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::FOUR:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::FIVE:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::SIX:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::SEVEN:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::LGPE:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH, data);
             break;
         case pksm::Generation::EIGHT:
-            std::copy(orig->rawData(), orig->rawData() + pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH, data);
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH, data);
             break;
         // Should never happen
         case pksm::Generation::UNUSED:
@@ -882,12 +947,13 @@ void pkx_generate(struct ParseState* Parser, struct Value* ReturnValue, struct V
     pkm->species(pksm::Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
-    pkm->PID(pksm::PKX::getRandomPID(
-        pkm->species(), pkm->gender(), pkm->version(), pkm->nature(), pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
+    pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(),
+        pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
     pkm->level(orig->level());
 }
 
-void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_max(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     SAV_MAX_FIELD field = SAV_MAX_FIELD(Param[0]->Val->Integer);
 
@@ -919,7 +985,8 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             {
                 scriptFail(Parser, "Incorrect number of args (%i) for MAX_FORM", NumArgs);
             }
-            ReturnValue->Val->Integer = TitleLoader::save->formCount(pksm::Species{u16(getNextVarArg(Param[0])->Val->Integer)});
+            ReturnValue->Val->Integer = TitleLoader::save->formCount(
+                pksm::Species{u16(getNextVarArg(Param[0])->Val->Integer)});
             break;
         case MAX_IN_POUCH:
             if (NumArgs != 2)
@@ -930,8 +997,10 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
             {
                 auto pouches           = TitleLoader::save->pouches();
                 pksm::Sav::Pouch pouch = pksm::Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
-                auto found             = std::find_if(
-                    pouches.begin(), pouches.end(), [pouch](const std::pair<pksm::Sav::Pouch, int>& item) { return item.first == pouch; });
+                auto found             = std::find_if(pouches.begin(), pouches.end(),
+                    [pouch](const std::pair<pksm::Sav::Pouch, int>& item) {
+                        return item.first == pouch;
+                    });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;
@@ -947,7 +1016,8 @@ void sav_get_max(struct ParseState* Parser, struct Value* ReturnValue, struct Va
     }
 }
 
-void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_value(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     SAV_FIELD field = SAV_FIELD(Param[0]->Val->Integer);
 
@@ -1053,7 +1123,8 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
             {
                 struct Value* nextArg  = getNextVarArg(Param[0]);
                 pksm::Sav::Pouch pouch = pksm::Sav::Pouch(nextArg->Val->Integer);
-                if (auto item = TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
+                if (auto item =
+                        TitleLoader::save->item(pouch, getNextVarArg(nextArg)->Val->Integer))
                 {
                     ReturnValue->Val->Integer = item->id();
                 }
@@ -1068,7 +1139,8 @@ void sav_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     }
 }
 
-void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_check_value(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     SAV_VALUE_CHECK field = SAV_VALUE_CHECK(Param[0]->Val->Integer);
     int value             = Param[1]->Val->Integer;
@@ -1076,7 +1148,8 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
     switch (field)
     {
         case SAV_VALUE_SPECIES:
-            ReturnValue->Val->Integer = TitleLoader::save->availableSpecies().count(pksm::Species{u16(value)});
+            ReturnValue->Val->Integer =
+                TitleLoader::save->availableSpecies().count(pksm::Species{u16(value)});
             break;
         case SAV_VALUE_MOVE:
             ReturnValue->Val->Integer = TitleLoader::save->availableMoves().count(value);
@@ -1085,17 +1158,20 @@ void sav_check_value(struct ParseState* Parser, struct Value* ReturnValue, struc
             ReturnValue->Val->Integer = TitleLoader::save->availableItems().count(value);
             break;
         case SAV_VALUE_ABILITY:
-            ReturnValue->Val->Integer = TitleLoader::save->availableAbilities().count(pksm::Ability{u16(value)});
+            ReturnValue->Val->Integer =
+                TitleLoader::save->availableAbilities().count(pksm::Ability{u16(value)});
             break;
         case SAV_VALUE_BALL:
-            ReturnValue->Val->Integer = TitleLoader::save->availableBalls().count(pksm::Ball{u8(value)});
+            ReturnValue->Val->Integer =
+                TitleLoader::save->availableBalls().count(pksm::Ball{u8(value)});
             break;
         default:
             scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
 }
 
-void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_is_valid(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -1113,7 +1189,8 @@ void pkx_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 }
 
-void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_set_value(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data              = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen  = pksm::Generation(Param[1]->Val->Integer);
@@ -1121,7 +1198,8 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     struct Value* nextArg = getNextVarArg(Param[2]);
     checkGen(Parser, gen);
 
-    // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic repetition
+    // Slight overhead from constructing and deconstructing the unique_ptr, but avoids a logic
+    // repetition
     pksm::PKX* pkm = getPokemon(data, gen, false).release();
 
     switch (field)
@@ -1164,7 +1242,8 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for LANGUAGE", NumArgs);
             }
-            pkm->language(getSafeLanguage(pkm->generation(), pksm::Language(nextArg->Val->Integer)));
+            pkm->language(
+                getSafeLanguage(pkm->generation(), pksm::Language(nextArg->Val->Integer)));
             break;
         case MET_LOCATION:
             if (NumArgs != 4)
@@ -1522,7 +1601,8 @@ void pkx_set_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     delete pkm;
 }
 
-void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_get_value(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data              = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen  = pksm::Generation(Param[1]->Val->Integer);
@@ -1901,7 +1981,8 @@ void pkx_get_value(struct ParseState* Parser, struct Value* ReturnValue, struct 
     delete pkm;
 }
 
-void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_inject_wcx(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
@@ -1951,7 +2032,8 @@ void sav_inject_wcx(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
 }
 
-void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_wcx_free_slot(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     int ret = TitleLoader::save->currentGiftAmount();
     if ((size_t)ret == TitleLoader::save->maxWondercards())
@@ -1961,7 +2043,8 @@ void sav_wcx_free_slot(struct ParseState* Parser, struct Value* ReturnValue, str
     ReturnValue->Val->Integer = ret;
 }
 
-void pksm_base64_decode(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pksm_base64_decode(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8** out     = (u8**)Param[0]->Val->Pointer;
     int* outSize = (int*)Param[1]->Val->Pointer;
@@ -1978,7 +2061,8 @@ void pksm_base64_decode(struct ParseState* Parser, struct Value* ReturnValue, st
     }
 }
 
-void pksm_base64_encode(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pksm_base64_encode(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char** out   = (char**)Param[0]->Val->Pointer;
     int* outSize = (int*)Param[1]->Val->Pointer;
@@ -1991,7 +2075,8 @@ void pksm_base64_encode(struct ParseState* Parser, struct Value* ReturnValue, st
     *out     = (char*)strToRet(data);
 }
 
-void fetch_web_content(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void fetch_web_content(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char** out   = (char**)Param[0]->Val->Pointer;
     int* outSize = (int*)Param[1]->Val->Pointer;
@@ -2027,7 +2112,8 @@ void fetch_web_content(struct ParseState* Parser, struct Value* ReturnValue, str
 }
 
 // struct JSON* json_new();
-void json_new(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_new(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* ret = new nlohmann::json;
     // explicitly set it to invalid
@@ -2036,111 +2122,127 @@ void json_new(struct ParseState* Parser, struct Value* ReturnValue, struct Value
 }
 
 // void json_parse(struct JSON* out, const char* data);
-void json_parse(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_parse(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* out = (nlohmann::json*)Param[0]->Val->Pointer;
     *out                = nlohmann::json::parse((char*)Param[1]->Val->Pointer, nullptr, false);
 }
 
 // void json_delete(struct JSON* freed);
-void json_delete(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_delete(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     delete ((nlohmann::json*)Param[0]->Val->Pointer);
 }
 
 // int json_is_valid(struct JSON* check);
-void json_is_valid(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_valid(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_discarded() ? 0 : 1;
 }
 
 // int json_is_int(struct JSON* check);
-void json_is_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_int(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_number_integer() ? 1 : 0;
 }
 
 // int json_is_bool(struct JSON* check);
-void json_is_bool(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_bool(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_boolean() ? 1 : 0;
 }
 
 // int json_is_string(struct JSON* check);
-void json_is_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_string(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_string() ? 1 : 0;
 }
 
 // int json_is_array(struct JSON* check);
-void json_is_array(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_array(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_array() ? 1 : 0;
 }
 
 // int json_is_object(struct JSON* check);
-void json_is_object(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_is_object(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* check     = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = check->is_object() ? 1 : 0;
 }
 
 // int json_get_int(struct JSON* get);
-void json_get_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_get_int(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = get->get<int>();
 }
 
 // int json_get_bool(struct JSON* get);
-void json_get_bool(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_get_bool(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = get->get<bool>() ? 1 : 0;
 }
 
 // const char* json_get_string(struct JSON* get);
-void json_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_get_string(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Pointer = strToRet(get->get_ref<std::string&>());
 }
 
 // int json_array_size(struct JSON* get);
-void json_array_size(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_array_size(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = get->size();
 }
 
 // struct JSON* json_array_element(struct JSON* get, int index);
-void json_array_element(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_array_element(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Pointer = &(*get)[Param[1]->Val->Integer];
 }
 
 // int json_object_contains(struct JSON* get, char* elemName);
-void json_object_contains(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_object_contains(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Integer = get->contains((char*)Param[1]->Val->Pointer);
 }
 
 // struct JSON* json_object_element(struct JSON* get, const char* elemName);
-void json_object_element(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void json_object_element(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     nlohmann::json* get       = (nlohmann::json*)Param[0]->Val->Pointer;
     ReturnValue->Val->Pointer = &(*get)[(char*)Param[1]->Val->Pointer];
 }
 
 // void sav_get_data(char* dataOut, unsigned int size, int off1, int off2);
-void sav_get_data(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_data(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* data = (char*)Param[0]->Val->Pointer;
     u32 size   = Param[1]->Val->UnsignedInteger;
@@ -2166,11 +2268,13 @@ void sav_get_data(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
     else
     {
-        std::copy(TitleLoader::save->rawData().get() + off1 + off2, TitleLoader::save->rawData().get() + off1 + off2 + size, data);
+        std::copy(TitleLoader::save->rawData().get() + off1 + off2,
+            TitleLoader::save->rawData().get() + off1 + off2 + size, data);
     }
 }
 // void sav_set_data(char* data, unsigned int size, int off1, int off2);
-void sav_set_data(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_data(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* data = (char*)Param[0]->Val->Pointer;
     u32 size   = Param[1]->Val->UnsignedInteger;
@@ -2201,7 +2305,8 @@ void sav_set_data(struct ParseState* Parser, struct Value* ReturnValue, struct V
 }
 
 // int sav_get_bit(int off1, int off2, int bit);
-void sav_get_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_bit(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 off1 = Param[0]->Val->Integer;
     s32 off2 = Param[1]->Val->Integer;
@@ -2220,16 +2325,19 @@ void sav_get_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Va
         }
         else
         {
-            ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off2, bit);
+            ReturnValue->Val->Integer =
+                pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off2, bit);
         }
     }
     else
     {
-        ReturnValue->Val->Integer = pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off1 + off2, bit);
+        ReturnValue->Val->Integer =
+            pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off1 + off2, bit);
     }
 }
 // void sav_set_bit(int bitVal, int off1, int off2, int bit);
-void sav_set_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_bit(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 data = Param[0]->Val->Integer;
     s32 off1 = Param[1]->Val->Integer;
@@ -2259,20 +2367,21 @@ void sav_set_bit(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 }
 
 // char sav_get_byte(int off1, int off2);
-void sav_get_byte(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_byte(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 off1 = Param[0]->Val->Integer;
     s32 off2 = Param[1]->Val->Integer;
     if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
     {
-        auto block                          = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
         ReturnValue->Val->UnsignedCharacter = block->decryptedData()[off2];
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
         if (off1 != -1)
         {
-            auto block                          = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
             ReturnValue->Val->UnsignedCharacter = block[off2];
         }
         else
@@ -2286,7 +2395,8 @@ void sav_get_byte(struct ParseState* Parser, struct Value* ReturnValue, struct V
     }
 }
 // void sav_set_byte(char data, int off1, int off2);
-void sav_set_byte(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_byte(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u8 data  = Param[0]->Val->UnsignedCharacter;
     s32 off1 = Param[1]->Val->Integer;
@@ -2315,34 +2425,39 @@ void sav_set_byte(struct ParseState* Parser, struct Value* ReturnValue, struct V
 }
 
 // short sav_get_short(int off1, int off2);
-void sav_get_short(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_short(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 off1 = Param[0]->Val->Integer;
     s32 off2 = Param[1]->Val->Integer;
     if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
     {
-        auto block                             = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
-        ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(block->decryptedData() + off2);
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->UnsignedShortInteger =
+            LittleEndian::convertTo<u16>(block->decryptedData() + off2);
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
         if (off1 != -1)
         {
-            auto block                             = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
             ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(block + off2);
         }
         else
         {
-            ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off2);
+            ReturnValue->Val->UnsignedShortInteger =
+                LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off2);
         }
     }
     else
     {
-        ReturnValue->Val->UnsignedShortInteger = LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off1 + off2);
+        ReturnValue->Val->UnsignedShortInteger =
+            LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off1 + off2);
     }
 }
 // void sav_set_short(short data, int off1, int off2);
-void sav_set_short(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_short(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u16 data = Param[0]->Val->UnsignedShortInteger;
     s32 off1 = Param[1]->Val->Integer;
@@ -2371,34 +2486,39 @@ void sav_set_short(struct ParseState* Parser, struct Value* ReturnValue, struct 
 }
 
 // int sav_get_int(int off1, int off2);
-void sav_get_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_int(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 off1 = Param[0]->Val->Integer;
     s32 off2 = Param[1]->Val->Integer;
     if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
     {
-        auto block                        = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
-        ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(block->decryptedData() + off2);
+        auto block = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        ReturnValue->Val->UnsignedInteger =
+            LittleEndian::convertTo<u32>(block->decryptedData() + off2);
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
         if (off1 != -1)
         {
-            auto block                        = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
+            auto block = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
             ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(block + off2);
         }
         else
         {
-            ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off2);
+            ReturnValue->Val->UnsignedInteger =
+                LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off2);
         }
     }
     else
     {
-        ReturnValue->Val->UnsignedInteger = LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off1 + off2);
+        ReturnValue->Val->UnsignedInteger =
+            LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off1 + off2);
     }
 }
 // void sav_set_int(int data, int off1, int off2);
-void sav_set_int(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_int(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     u32 data = Param[0]->Val->UnsignedInteger;
     s32 off1 = Param[1]->Val->Integer;
@@ -2427,7 +2547,8 @@ void sav_set_int(struct ParseState* Parser, struct Value* ReturnValue, struct Va
 }
 
 // void sav_set_string(char* string, int off1, int off2, unsigned int codepoints);
-void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_set_string(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* string   = (char*)Param[0]->Val->Pointer;
     s32 off1       = Param[1]->Val->Integer;
@@ -2435,19 +2556,21 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     u32 codepoints = Param[3]->Val->UnsignedInteger; // Includes null terminator
     if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
-        StringUtils::setString4(TitleLoader::save->rawData().get(), string, off1 + off2, codepoints);
+        StringUtils::setString4(
+            TitleLoader::save->rawData().get(), string, off1 + off2, codepoints);
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
     {
         if (off1 != -1)
         {
             u8* data = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
-            StringUtils::setString3(data, string, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+            StringUtils::setString3(data, string, off2, codepoints,
+                TitleLoader::save->language() == pksm::Language::JPN);
         }
         else
         {
-            StringUtils::setString3(
-                TitleLoader::save->rawData().get(), string, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+            StringUtils::setString3(TitleLoader::save->rawData().get(), string, off2, codepoints,
+                TitleLoader::save->language() == pksm::Language::JPN);
         }
     }
     else if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
@@ -2462,7 +2585,8 @@ void sav_set_string(struct ParseState* Parser, struct Value* ReturnValue, struct
     }
 }
 // char* sav_get_string(int off1, int off2, unsigned int codepoints);
-void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void sav_get_string(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     s32 off1       = Param[0]->Val->Integer;
     s32 off2       = Param[1]->Val->Integer;
@@ -2470,7 +2594,8 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
 
     if (TitleLoader::save->generation() == pksm::Generation::FOUR)
     {
-        std::string data          = StringUtils::getString4(TitleLoader::save->rawData().get(), off1 + off2, codepoints);
+        std::string data =
+            StringUtils::getString4(TitleLoader::save->rawData().get(), off1 + off2, codepoints);
         ReturnValue->Val->Pointer = strToRet(data);
     }
     else if (TitleLoader::save->generation() == pksm::Generation::THREE)
@@ -2479,24 +2604,27 @@ void sav_get_string(struct ParseState* Parser, struct Value* ReturnValue, struct
         if (off1 != -1)
         {
             u8* data = ((pksm::Sav3*)TitleLoader::save.get())->getBlock(off1);
-            ret      = StringUtils::getString3(data, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+            ret      = StringUtils::getString3(
+                data, off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
         }
         else
         {
-            ret = StringUtils::getString3(TitleLoader::save->rawData().get(), off2, codepoints, TitleLoader::save->language() == pksm::Language::JPN);
+            ret = StringUtils::getString3(TitleLoader::save->rawData().get(), off2, codepoints,
+                TitleLoader::save->language() == pksm::Language::JPN);
         }
         ReturnValue->Val->Pointer = strToRet(ret);
     }
     else if (TitleLoader::save->generation() == pksm::Generation::EIGHT)
     {
-        auto block                = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
-        std::string data          = StringUtils::getString(block->decryptedData(), off2, codepoints, u'\0');
+        auto block       = ((pksm::Sav8*)TitleLoader::save.get())->getBlock(off1);
+        std::string data = StringUtils::getString(block->decryptedData(), off2, codepoints, u'\0');
         ReturnValue->Val->Pointer = strToRet(data);
     }
     else
     {
-        std::string data          = StringUtils::getString(TitleLoader::save->rawData().get(), off1 + off2, codepoints,
-            TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
+        std::string data =
+            StringUtils::getString(TitleLoader::save->rawData().get(), off1 + off2, codepoints,
+                TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
         ReturnValue->Val->Pointer = strToRet(data);
     }
 }

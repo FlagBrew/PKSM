@@ -32,7 +32,10 @@
 #include "loader.hpp"
 #include "thread.hpp"
 
-ExtraSavesScreen::ExtraSavesScreen() : Screen(i18n::localize("A_CHOOSE_GROUP") + '\n' + i18n::localize("B_BACK")) {}
+ExtraSavesScreen::ExtraSavesScreen()
+    : Screen(i18n::localize("A_CHOOSE_GROUP") + '\n' + i18n::localize("B_BACK"))
+{
+}
 
 ExtraSavesScreen::~ExtraSavesScreen()
 {
@@ -54,84 +57,116 @@ void ExtraSavesScreen::drawTop() const
     int x = 116, y = 49;
     // draw GBA game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Groudon, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 2, y - 2);
-    Gui::text("R", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyogre, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Groudon, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 2, y - 2);
+    Gui::text(
+        "R", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Kyogre, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 16,
+        y + 20);
     Gui::text("S", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Rayquaza, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 8, y);
+    Gui::pkm(
+        pksm::Species::Rayquaza, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 8, y);
     Gui::text("E", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Charizard, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("FR", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Venusaur, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 17, y + 20);
+    Gui::pkm(pksm::Species::Charizard, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 3,
+        y - 2);
+    Gui::text(
+        "FR", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Venusaur, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 17,
+        y + 20);
     Gui::text("LG", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x = 86, y += 60;
     // draw 3DS game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Xerneas, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Yveltal, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Xerneas, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x - 3, y - 2);
+    Gui::text(
+        "X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Yveltal, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Groudon, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x - 2, y - 2);
-    Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyogre, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Groudon, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x - 2, y - 2);
+    Gui::text(
+        "OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Kyogre, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Solgaleo, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 4, y - 2);
-    Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Lunala, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(pksm::Species::Solgaleo, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 4,
+        y - 2);
+    Gui::text(
+        "S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Lunala, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 18,
+        y + 20);
     Gui::text("M", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Necrozma, 1, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Necrozma, 2, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 19, y + 20);
+    Gui::pkm(pksm::Species::Necrozma, 1, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 3,
+        y - 2);
+    Gui::text(
+        "US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Necrozma, 2, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 19,
+        y + 20);
     Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x = 56, y += 60;
     // draw DS game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Dialga, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 4, y - 2);
-    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Palkia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(
+        pksm::Species::Dialga, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 4, y - 2);
+    Gui::text(
+        "D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Palkia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 18, y + 20);
     Gui::text("P", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::HoOh, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 5, y - 2);
-    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Lugia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 17, y + 20);
+    Gui::pkm(
+        pksm::Species::HoOh, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 5, y - 2);
+    Gui::text(
+        "HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Lugia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 17, y + 20);
     Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Giratina, 1, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 8, y);
+    Gui::pkm(
+        pksm::Species::Giratina, 1, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 8, y);
     Gui::text("Pt", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Reshiram, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Zekrom, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(
+        pksm::Species::Reshiram, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 3, y - 2);
+    Gui::text(
+        "B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Zekrom, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 18, y + 20);
     Gui::text("W", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Kyurem, 2, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 6, y - 2);
-    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyurem, 1, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Kyurem, 2, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 6, y - 2);
+    Gui::text(
+        "B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Kyurem, 1, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     if (saveGroup < 3)
@@ -147,7 +182,8 @@ void ExtraSavesScreen::drawTop() const
         Gui::drawSelector(55 + (saveGroup - 7) * 60, 168);
     }
 
-    Gui::text(i18n::localize("GROUP_CHOICE_INSTR"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("GROUP_CHOICE_INSTR"), 200, 8, FONT_SIZE_11, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 }
 
 void ExtraSavesScreen::update(touchPosition* touch)
@@ -239,7 +275,8 @@ void ExtraSavesScreen::update(touchPosition* touch)
     }
     if (downKeys & KEY_A)
     {
-        Gui::setScreen(std::make_unique<ExtraSavesSubScreen>(ExtraSavesSubScreen::Group(saveGroup)));
+        Gui::setScreen(
+            std::make_unique<ExtraSavesSubScreen>(ExtraSavesSubScreen::Group(saveGroup)));
     }
     else if (downKeys & KEY_B)
     {

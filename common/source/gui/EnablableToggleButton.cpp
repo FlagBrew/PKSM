@@ -27,12 +27,17 @@
 #include "EnablableToggleButton.hpp"
 #include "gui.hpp"
 
-EnablableToggleButton::EnablableToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, const std::function<bool()>& disabled,
-    int onImage, const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor, const std::optional<int>& offImage,
-    const std::optional<std::string>& offText, const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
-    const std::optional<int>& disabledImage, const std::optional<std::string>& disabledText, const std::optional<FontSize>& disabledFontSize,
-    const std::optional<PKSM_Color> disabledTextColor, std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory, bool canClickToDeselect)
-    : ToggleButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor, offImage, offText, offFontSize, offTextColor,
+EnablableToggleButton::EnablableToggleButton(int x, int y, u16 w, u16 h,
+    const std::function<bool()>& callback, const std::function<bool()>& disabled, int onImage,
+    const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor,
+    const std::optional<int>& offImage, const std::optional<std::string>& offText,
+    const std::optional<FontSize>& offFontSize, const std::optional<PKSM_Color>& offTextColor,
+    const std::optional<int>& disabledImage, const std::optional<std::string>& disabledText,
+    const std::optional<FontSize>& disabledFontSize,
+    const std::optional<PKSM_Color> disabledTextColor,
+    std::vector<std::unique_ptr<EnablableToggleButton>>* radioCategory, bool canClickToDeselect)
+    : ToggleButton(x, y, w, h, callback, onImage, onText, onFontSize, onTextColor, offImage,
+          offText, offFontSize, offTextColor,
           (std::vector<std::unique_ptr<ToggleButton>>*)radioCategory, canClickToDeselect),
       disabled(disabled),
       disabledText(disabledText.value_or(offText.value_or(onText))),
@@ -49,7 +54,8 @@ void EnablableToggleButton::draw() const
         Gui::sprite(disabledImage, xPos, yPos);
         if (!text.empty())
         {
-            Gui::text(disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize, disabledTextColor, TextPosX::CENTER, TextPosY::CENTER,
+            Gui::text(disabledText, xPos + width / 2, yPos + height / 2, disabledFontSize,
+                disabledTextColor, TextPosX::CENTER, TextPosY::CENTER,
                 TextWidthAction::SQUISH_OR_SCROLL, width - 10);
         }
     }

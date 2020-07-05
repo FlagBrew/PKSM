@@ -43,8 +43,10 @@ namespace
 
     Result read()
     {
-        std::string path = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
-        auto in          = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).file(path, FS_OPEN_READ);
+        std::string path =
+            Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
+        auto in = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd())
+                      .file(path, FS_OPEN_READ);
         if (in)
         {
             size_t size = in->size();
@@ -65,10 +67,13 @@ namespace
 Result Banks::saveJson()
 {
     std::string jsonData = g_banks.dump(2);
-    std::string path     = Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
+    std::string path =
+        Configuration::getInstance().useExtData() ? "/banks.json" : "/3ds/PKSM/banks.json";
     (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).deleteFile(path);
-    (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).createFile(path, 0, jsonData.size());
-    auto out = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd()).file(path, FS_OPEN_WRITE);
+    (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd())
+        .createFile(path, 0, jsonData.size());
+    auto out = (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd())
+                   .file(path, FS_OPEN_WRITE);
     if (out)
     {
         out->write(jsonData.data(), jsonData.size() + 1);
@@ -182,10 +187,14 @@ void Banks::renameBank(const std::string& oldName, const std::string& newName)
         }
         else
         {
-            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".bnk", Archive::data(), "/banks/" + newName + ".bnk");
-            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".json", Archive::data(), "/banks/" + newName + ".json");
-            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".bnk", Archive::sd(), "/3ds/PKSM/banks/" + newName + ".bnk");
-            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".json", Archive::sd(), "/3ds/PKSM/banks/" + newName + ".json");
+            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".bnk", Archive::data(),
+                "/banks/" + newName + ".bnk");
+            Archive::moveFile(Archive::data(), "/banks/" + oldName + ".json", Archive::data(),
+                "/banks/" + newName + ".json");
+            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".bnk", Archive::sd(),
+                "/3ds/PKSM/banks/" + newName + ".bnk");
+            Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks/" + oldName + ".json", Archive::sd(),
+                "/3ds/PKSM/banks/" + newName + ".json");
         }
         g_banks[newName] = g_banks[oldName];
         g_banks.erase(oldName);
@@ -211,16 +220,20 @@ Result Banks::swapSD(bool toSD)
     Result res = 0;
     if (toSD)
     {
-        if (R_FAILED(res = Archive::moveDir(Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks")))
+        if (R_FAILED(res = Archive::moveDir(
+                         Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks")))
             return res;
-        if (R_FAILED(res = Archive::moveFile(Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json")))
+        if (R_FAILED(res = Archive::moveFile(
+                         Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json")))
             return res;
     }
     else
     {
-        if (R_FAILED(res = Archive::moveDir(Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks")))
+        if (R_FAILED(res = Archive::moveDir(
+                         Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks")))
             return res;
-        if (R_FAILED(res = Archive::moveFile(Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json")))
+        if (R_FAILED(res = Archive::moveFile(
+                         Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json")))
             return res;
     }
     return res;

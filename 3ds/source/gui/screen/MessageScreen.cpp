@@ -34,10 +34,12 @@ void MessageScreen::drawTop() const
     auto parsed   = Gui::parseText(message, FONT_SIZE_15);
     float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15, PKSM_Color(255, 255, 255, Gui::transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15,
+        PKSM_Color(255, 255, 255, Gui::transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
     float continueY = 110 + (lineMod / 2) * parsed->lines();
-    Gui::text(i18n::localize(lang, "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize(lang, "CONTINUE"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 }
 
 void MessageScreen::drawBottom() const

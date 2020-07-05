@@ -30,7 +30,9 @@
 #include "pkx/PKX.hpp"
 
 HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(16, 4)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(16, 4)
 {
     hid.update(16);
     hid.select(size_t(pkm->hpType()));
@@ -39,7 +41,8 @@ HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_pt
 void HiddenPowerOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 }
 
 void HiddenPowerOverlay::drawTop() const
@@ -55,7 +58,8 @@ void HiddenPowerOverlay::drawTop() const
     Gui::drawSolidRect(x, y + 58, 99, 1, COLOR_YELLOW);
     for (int i = 0; i < 16; i++)
     {
-        Gui::type(Configuration::getInstance().language(), pksm::Type{u8(i + 1)}, 23 + (i % 4) * 100, 20 + (i / 4) * 60);
+        Gui::type(Configuration::getInstance().language(), pksm::Type{u8(i + 1)},
+            23 + (i % 4) * 100, 20 + (i / 4) * 60);
     }
 }
 

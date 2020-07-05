@@ -34,7 +34,8 @@ namespace
     void consoleDisplayError(const char* message)
     {
         consoleInit(GFX_TOP, nullptr);
-        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR,
+            VERSION_MICRO, GIT_REV);
         printf("\x1b[5;1HAn exception has occurred during execution\x1b[0m");
         printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message);
         printf("\x1b[29;16HPress START to exit.");

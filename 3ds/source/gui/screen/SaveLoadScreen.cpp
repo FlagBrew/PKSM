@@ -49,47 +49,56 @@ namespace
         "IRE", // Black 2
         "IRD"  // White 2
     };
-    constexpr std::array<std::string_view, 9> dsPrefixes = {"D: ", "P: ", "Pt: ", "HG: ", "SS: ", "B: ", "W: ", "B2: ", "W2: "};
-    constexpr std::array<int, 9> dsGroups                = {7, 7, 9, 8, 8, 10, 10, 11, 11};
+    constexpr std::array<std::string_view, 9> dsPrefixes = {
+        "D: ", "P: ", "Pt: ", "HG: ", "SS: ", "B: ", "W: ", "B2: ", "W2: "};
+    constexpr std::array<int, 9> dsGroups = {7, 7, 9, 8, 8, 10, 10, 11, 11};
 
     constexpr size_t CTR_TITLES = 13;
 
     std::array<std::string, CTR_TITLES> ctrIds;
     // Used to get ctrIds
-    constexpr std::array<pksm::GameVersion, CTR_TITLES> ctrVersions = {pksm::GameVersion::R, pksm::GameVersion::S, pksm::GameVersion::E,
-        pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
+    constexpr std::array<pksm::GameVersion, CTR_TITLES> ctrVersions = {pksm::GameVersion::R,
+        pksm::GameVersion::S, pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG,
+        pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
         pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
-    constexpr std::array<std::string_view, CTR_TITLES> ctrPrefixes  = {
-        "R: ", "S: ", "E: ", "FR: ", "LG: ", "X: ", "Y: ", "OR: ", "AS: ", "SU: ", "MO: ", "US: ", "UM: "};
+    constexpr std::array<std::string_view, CTR_TITLES> ctrPrefixes  = {"R: ", "S: ", "E: ", "FR: ",
+        "LG: ", "X: ", "Y: ", "OR: ", "AS: ", "SU: ", "MO: ", "US: ", "UM: "};
     constexpr std::array<int, CTR_TITLES> ctrGroups = {0, 0, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
 
-    constexpr std::array<std::string_view, 12> names = {"RS", "E", "FRLG", "XY", "ORAS", "SUMO", "USUM", "DP", "HGSS", "Pt", "BW", "B2W2"};
+    constexpr std::array<std::string_view, 12> names = {
+        "RS", "E", "FRLG", "XY", "ORAS", "SUMO", "USUM", "DP", "HGSS", "Pt", "BW", "B2W2"};
 }
 
 SaveLoadScreen::SaveLoadScreen()
-    : Screen(
-          i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' +
+             i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"))
 {
     oldLang = Configuration::getInstance().language();
-    buttons.push_back(std::make_unique<Button>(200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<AccelButton>(
-        24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
+    buttons.push_back(std::make_unique<Button>(
+        200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<AccelButton>(24, 96, 175, 16,
+        [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK,
+        10, 10));
     for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(std::make_unique<ClickButton>(
-            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+        buttons.push_back(std::make_unique<ClickButton>(24, 96 + 17 * i, 175, 16,
+            [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f,
+            COLOR_BLACK));
     }
-    buttons.push_back(std::make_unique<AccelButton>(
-        24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 10));
-    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<AccelButton>(24, 181, 175, 16,
+        [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK,
+        10, 10));
+    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51,
+        [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
 
     updateTitles();
 }
 
 void SaveLoadScreen::makeInstructions()
 {
-    instructions = Instructions(
-        i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' + i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"));
+    instructions =
+        Instructions(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_SETTINGS") + '\n' +
+                     i18n::localize("Y_PRESENT") + '\n' + i18n::localize("START_EXIT"));
 }
 
 void SaveLoadScreen::drawTop(void) const
@@ -102,84 +111,116 @@ void SaveLoadScreen::drawTop(void) const
     int x = 116, y = 49;
     // draw GBA game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Groudon, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 2, y - 2);
-    Gui::text("R", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyogre, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Groudon, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 2, y - 2);
+    Gui::text(
+        "R", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Kyogre, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 16,
+        y + 20);
     Gui::text("S", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Rayquaza, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 8, y);
+    Gui::pkm(
+        pksm::Species::Rayquaza, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 8, y);
     Gui::text("E", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Charizard, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("FR", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Venusaur, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 17, y + 20);
+    Gui::pkm(pksm::Species::Charizard, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x - 3,
+        y - 2);
+    Gui::text(
+        "FR", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Venusaur, 0, pksm::Generation::THREE, pksm::Gender::Genderless, x + 17,
+        y + 20);
     Gui::text("LG", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x = 86, y += 60;
     // draw 3DS game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Xerneas, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Yveltal, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Xerneas, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x - 3, y - 2);
+    Gui::text(
+        "X", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Yveltal, 0, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("Y", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Groudon, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x - 2, y - 2);
-    Gui::text("OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyogre, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Groudon, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x - 2, y - 2);
+    Gui::text(
+        "OR", x + 48 - 7, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Kyogre, 1, pksm::Generation::SIX, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("AS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Solgaleo, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 4, y - 2);
-    Gui::text("S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Lunala, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(pksm::Species::Solgaleo, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 4,
+        y - 2);
+    Gui::text(
+        "S", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Lunala, 0, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 18,
+        y + 20);
     Gui::text("M", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Necrozma, 1, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Necrozma, 2, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 19, y + 20);
+    Gui::pkm(pksm::Species::Necrozma, 1, pksm::Generation::SEVEN, pksm::Gender::Genderless, x - 3,
+        y - 2);
+    Gui::text(
+        "US", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(pksm::Species::Necrozma, 2, pksm::Generation::SEVEN, pksm::Gender::Genderless, x + 19,
+        y + 20);
     Gui::text("UM", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x = 56, y += 60;
     // draw DS game boxes
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Dialga, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 4, y - 2);
-    Gui::text("D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Palkia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(
+        pksm::Species::Dialga, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 4, y - 2);
+    Gui::text(
+        "D", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Palkia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 18, y + 20);
     Gui::text("P", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::HoOh, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 5, y - 2);
-    Gui::text("HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Lugia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 17, y + 20);
+    Gui::pkm(
+        pksm::Species::HoOh, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x - 5, y - 2);
+    Gui::text(
+        "HG", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Lugia, 0, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 17, y + 20);
     Gui::text("SS", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Giratina, 1, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 8, y);
+    Gui::pkm(
+        pksm::Species::Giratina, 1, pksm::Generation::FOUR, pksm::Gender::Genderless, x + 8, y);
     Gui::text("Pt", x + 24, y + 30, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Reshiram, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 3, y - 2);
-    Gui::text("B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Zekrom, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 18, y + 20);
+    Gui::pkm(
+        pksm::Species::Reshiram, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 3, y - 2);
+    Gui::text(
+        "B", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Zekrom, 0, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 18, y + 20);
     Gui::text("W", x + 9, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     x += 60;
     Gui::drawSolidRect(x, y, 48, 48, COLOR_HIGHBLUE);
-    Gui::pkm(pksm::Species::Kyurem, 2, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 6, y - 2);
-    Gui::text("B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::pkm(pksm::Species::Kyurem, 1, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 16, y + 20);
+    Gui::pkm(
+        pksm::Species::Kyurem, 2, pksm::Generation::FIVE, pksm::Gender::Genderless, x - 6, y - 2);
+    Gui::text(
+        "B2", x + 48 - 9, y + 12, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
+    Gui::pkm(
+        pksm::Species::Kyurem, 1, pksm::Generation::FIVE, pksm::Gender::Genderless, x + 16, y + 20);
     Gui::text("W2", x + 11, y + 37, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 
     if (saveGroup < 3)
@@ -195,7 +236,8 @@ void SaveLoadScreen::drawTop(void) const
         Gui::drawSelector(55 + (saveGroup - 7) * 60, 168);
     }
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_PRESENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 }
 
 void SaveLoadScreen::drawBottom() const
@@ -203,7 +245,8 @@ void SaveLoadScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    Gui::text(std::string(names[saveGroup]), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::string(names[saveGroup]), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -215,16 +258,19 @@ void SaveLoadScreen::drawBottom() const
     {
         if (i < (int)saves[saveGroup].size())
         {
-            std::string save = saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
-            save             = save.substr(save.find_last_of('/') + 1);
-            save             = saves[saveGroup][i].first + save;
+            std::string save =
+                saves[saveGroup][i].second.substr(0, saves[saveGroup][i].second.find_last_of('/'));
+            save = save.substr(save.find_last_of('/') + 1);
+            save = saves[saveGroup][i].first + save;
             if (i - firstSave == selectedSave)
             {
-                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 169.0f);
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                    TextWidthAction::SCROLL, 169.0f);
             }
             else
             {
-                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SLICE, 169.0f);
+                Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
+                    TextWidthAction::SLICE, 169.0f);
             }
         }
         else
@@ -240,16 +286,20 @@ void SaveLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    if (selectedSave < 5 && saves[saveGroup].size() != 0 && (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
+    if (selectedSave < 5 && saves[saveGroup].size() != 0 &&
+        (size_t)firstSave + 5 < saves[saveGroup].size() - 1)
     {
         Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 163, FONT_SIZE_14, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 
-    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::TOP);
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));

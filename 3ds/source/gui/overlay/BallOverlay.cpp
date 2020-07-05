@@ -34,16 +34,22 @@
 #include <algorithm>
 
 BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")), pkm(pkm), hid(30, 6)
+    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+      pkm(pkm),
+      hid(30, 6)
 {
     if (TitleLoader::save)
     {
-        balls = std::vector<pksm::Ball>(TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end());
+        balls = std::vector<pksm::Ball>(
+            TitleLoader::save->availableBalls().begin(), TitleLoader::save->availableBalls().end());
     }
     else
     {
-        balls = std::vector<pksm::Ball>(pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation())).begin(),
-            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation())).end());
+        balls = std::vector<pksm::Ball>(
+            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation()))
+                .begin(),
+            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation()))
+                .end());
     }
     std::sort(balls.begin(), balls.end());
     hid.update(balls.size());
@@ -61,7 +67,8 @@ BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> p
 void BallOverlay::drawBottom() const
 {
     dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 }
 
 void BallOverlay::drawTop() const
@@ -86,8 +93,9 @@ void BallOverlay::drawTop() const
                 break;
             }
             Gui::ball(balls[x + y * 6], x * 67 + 24, y * 48 + 8);
-            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6]), x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE,
-                TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(i18n::ball(Configuration::getInstance().language(), balls[x + y * 6]),
+                x * 67 + 33, y * 48 + 30, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
+                TextPosY::TOP);
         }
     }
 }

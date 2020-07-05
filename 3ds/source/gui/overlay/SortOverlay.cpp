@@ -48,8 +48,10 @@ void SortOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < vals.size())
         {
-            Gui::text(i18n::localize(std::string(SortScreen::sortTypeToString(vals[hid.page() * hid.maxVisibleEntries() + i]))), x,
-                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(i18n::localize(std::string(SortScreen::sortTypeToString(
+                          vals[hid.page() * hid.maxVisibleEntries() + i]))),
+                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

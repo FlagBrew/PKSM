@@ -79,7 +79,8 @@ namespace
                 }
 
                 u32 dst     = ((((y >> 3) * (WIDTH_POW2 >> 3) + (x >> 3)) << 6) +
-                           ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) | ((x & 4) << 2) | ((y & 4) << 3)));
+                           ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) |
+                               ((x & 4) << 2) | ((y & 4) << 3)));
                 output[dst] = color;
             }
         }
@@ -150,7 +151,8 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
                     3,   // Type: save data?
                     0, 0 // No EXEFS file name needed
                 };
-                auto out = archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
+                auto out =
+                    archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
                 if (out)
                 {
                     mGba      = true;

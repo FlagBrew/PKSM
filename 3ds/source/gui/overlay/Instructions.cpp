@@ -34,16 +34,19 @@ Instructions::Instructions(const std::string& simpleInstructions)
         auto instrText = Gui::parseText(simpleInstructions, FONT_SIZE_12, 300);
         int height     = fontGetInfo(NULL)->lineFeed * FONT_SIZE_12 * instrText->lines() + 20;
         addBox(true, 40, 220 - height, 320, height, COLOR_GREY);
-        addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, simpleInstructions, COLOR_WHITE);
+        addBox(true, 44, 224 - height, 312, height - 8, COLOR_DARKGREY, simpleInstructions,
+            COLOR_WHITE);
     }
 }
 
-void Instructions::addBox(bool top, int x, int y, int width, int height, PKSM_Color color, const std::string& text, PKSM_Color textColor)
+void Instructions::addBox(bool top, int x, int y, int width, int height, PKSM_Color color,
+    const std::string& text, PKSM_Color textColor)
 {
     boxes.emplace_back(top, x, y, width, height, color);
     if (!text.empty())
     {
-        addText(top, x + width / 2, y + height / 2, width, TextPosX::CENTER, TextPosY::CENTER, textColor, text);
+        addText(top, x + width / 2, y + height / 2, width, TextPosX::CENTER, TextPosY::CENTER,
+            textColor, text);
     }
 }
 
@@ -52,7 +55,8 @@ void Instructions::addLine(bool top, int x1, int y1, int x2, int y2, int w, PKSM
     lines.emplace_back(top, x1, y1, x2, y2, w, color);
 }
 
-void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color, const std::string& text)
+void Instructions::addText(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos,
+    PKSM_Color color, const std::string& text)
 {
     texts.emplace_back(top, x, y, maxWidth, xPos, yPos, color, text);
 }
@@ -91,7 +95,8 @@ void Instructions::drawTop() const
     {
         if (text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, TextWidthAction::WRAP, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos,
+                TextWidthAction::WRAP, text.maxWidth);
         }
     }
 }
@@ -125,7 +130,8 @@ void Instructions::drawBottom() const
     {
         if (!text.top)
         {
-            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos, TextWidthAction::WRAP, text.maxWidth);
+            Gui::text(text.string, text.x, text.y, FONT_SIZE_12, text.color, text.xPos, text.yPos,
+                TextWidthAction::WRAP, text.maxWidth);
         }
     }
 }

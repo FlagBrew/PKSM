@@ -55,7 +55,8 @@ private:
     bool prevBoxTop();
     bool nextBoxTop();
     bool clickBottomIndex(int index);
-    // Clones from storage (bottom), clones and increments download counter (top), places in storage (bottom), or uploads (top)
+    // Clones from storage (bottom), clones and increments download counter (top), places in storage
+    // (bottom), or uploads (top)
     void pickup();
 
     void shareSend();

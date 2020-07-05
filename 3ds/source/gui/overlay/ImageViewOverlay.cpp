@@ -27,13 +27,21 @@
 #include "ImageViewOverlay.hpp"
 #include "gui.hpp"
 
-ImageViewOverlay::ImageViewOverlay(ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background)
-    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), image(image), bg(background), deleteImage(false)
+ImageViewOverlay::ImageViewOverlay(
+    ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")),
+      image(image),
+      bg(background),
+      deleteImage(false)
 {
 }
 
-ImageViewOverlay::ImageViewOverlay(ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background)
-    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), image(image), bg(background), deleteImage(true)
+ImageViewOverlay::ImageViewOverlay(
+    ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")),
+      image(image),
+      bg(background),
+      deleteImage(true)
 {
 }
 

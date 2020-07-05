@@ -43,7 +43,8 @@ Mp3Decoder::Mp3Decoder(const std::string& filename)
         return;
     }
 
-    if (mpg123_open(mh, filename.c_str()) != MPG123_OK || mpg123_getformat(mh, (long*)&rate, (int*)&channels, &encoding) != MPG123_OK)
+    if (mpg123_open(mh, filename.c_str()) != MPG123_OK ||
+        mpg123_getformat(mh, (long*)&rate, (int*)&channels, &encoding) != MPG123_OK)
     {
         // fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
         return;

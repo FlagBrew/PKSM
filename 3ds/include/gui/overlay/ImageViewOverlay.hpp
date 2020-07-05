@@ -37,8 +37,10 @@ class PKX;
 class ImageViewOverlay : public ReplaceableScreen
 {
 public:
-    ImageViewOverlay(ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background = COLOR_WHITE);
-    ImageViewOverlay(ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background = COLOR_WHITE);
+    ImageViewOverlay(
+        ReplaceableScreen& screen, C2D_Image& image, PKSM_Color background = COLOR_WHITE);
+    ImageViewOverlay(
+        ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background = COLOR_WHITE);
     ~ImageViewOverlay();
     void drawTop() const override;
     bool replacesTop() const override { return true; }

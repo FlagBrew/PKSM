@@ -34,10 +34,14 @@
 class ToggleButton : public ClickButton
 {
 public:
-    ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage, const std::string& onText, FontSize onFontSize,
-        PKSM_Color onTextColor, const std::optional<int>& offImage = std::nullopt, const std::optional<std::string>& offText = std::nullopt,
-        const std::optional<FontSize>& offFontSize = std::nullopt, const std::optional<PKSM_Color>& offTextColor = std::nullopt,
-        std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr, bool disablable = false);
+    ToggleButton(int x, int y, u16 w, u16 h, const std::function<bool()>& callback, int onImage,
+        const std::string& onText, FontSize onFontSize, PKSM_Color onTextColor,
+        const std::optional<int>& offImage                        = std::nullopt,
+        const std::optional<std::string>& offText                 = std::nullopt,
+        const std::optional<FontSize>& offFontSize                = std::nullopt,
+        const std::optional<PKSM_Color>& offTextColor             = std::nullopt,
+        std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr,
+        bool disablable                                           = false);
     ~ToggleButton(void) {}
 
     virtual bool update(touchPosition* touch) override;

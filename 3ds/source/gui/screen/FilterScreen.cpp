@@ -53,7 +53,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
                 this->filter->moveEnabled(i, !this->filter->moveEnabled(i));
                 return false;
             },
-            ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+            ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f,
+            COLOR_BLACK, nullptr, true));
         ((ToggleButton*)buttons[0].back().get())->setState(filter->moveEnabled(i));
 
         buttons[0].push_back(std::make_unique<ToggleButton>(53, 130 + 24 * i, 13, 13,
@@ -61,8 +62,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
                 this->filter->moveInversed(i, !this->filter->moveInversed(i));
                 return false;
             },
-            ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
-            nullptr, true));
+            ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK,
+            ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
         ((ToggleButton*)buttons[0].back().get())->setState(!filter->moveInversed(i));
 
         buttons[0].push_back(std::make_unique<ClickButton>(70, 131 + 24 * i, 15, 12,
@@ -89,7 +90,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
             }
             return false;
         },
-        ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
+        ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f,
+        COLOR_BLACK, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(filter->speciesEnabled());
 
     buttons[0].push_back(std::make_unique<ToggleButton>(105, 68, 13, 13,
@@ -97,15 +99,16 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
             this->filter->speciesInversed(!this->filter->speciesInversed());
             return false;
         },
-        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
-        nullptr, true));
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->speciesInversed());
 
     buttons[0].push_back(std::make_unique<ClickButton>(172, 53, 50, 44,
         [this]() {
             if (TitleLoader::save->formCount(this->filter->species()) > 1)
             {
-                this->addOverlay<FormOverlay>(this->filter, TitleLoader::save->formCount(this->filter->species()));
+                this->addOverlay<FormOverlay>(
+                    this->filter, TitleLoader::save->formCount(this->filter->species()));
             }
             return false;
         },
@@ -116,8 +119,9 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
             this->filter->alternativeFormEnabled(!this->filter->alternativeFormEnabled());
             return false;
         },
-        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f, COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f,
-        COLOR_BLACK, ui_sheet_emulated_checkbox_disabled_idx, "", 0.0f, COLOR_BLACK));
+        [this]() { return !this->filter->speciesEnabled(); }, ui_sheet_checkbox_on_idx, "", 0.0f,
+        COLOR_BLACK, ui_sheet_checkbox_blank_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_checkbox_disabled_idx, "", 0.0f, COLOR_BLACK));
     ((EnablableToggleButton*)buttons[0].back().get())->setState(filter->alternativeFormEnabled());
 
     buttons[0].push_back(std::make_unique<ToggleButton>(226, 68, 13, 13,
@@ -125,8 +129,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
             this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
             return false;
         },
-        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK, ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK,
-        nullptr, true));
+        ui_sheet_emulated_button_filter_positive_idx, "", 0.0f, COLOR_BLACK,
+        ui_sheet_emulated_button_filter_negative_idx, "", 0.0f, COLOR_BLACK, nullptr, true));
     ((ToggleButton*)buttons[0].back().get())->setState(!filter->alternativeFormInversed());
 }
 
@@ -153,17 +157,22 @@ void FilterScreen::drawBottom() const
     }
 
     Gui::pkm(filter->species(), 0, TitleLoader::save->generation(), filter->gender(), 58, 60);
-    Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(), filter->gender(), 179, 60);
+    Gui::pkm(filter->species(), filter->alternativeForm(), TitleLoader::save->generation(),
+        filter->gender(), 179, 60);
 
-    Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
-    Gui::text(i18n::localize("SPECIES"), 10, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
-    Gui::text(i18n::localize("MOVES"), 10, 111, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
+    Gui::text(i18n::localize("FILTER_OPTIONS"), 160, 14, FONT_SIZE_14, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::CENTER);
+    Gui::text(i18n::localize("B_BACK"), 160, 230.5f, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::CENTER);
+    Gui::text(i18n::localize("SPECIES"), 10, 38, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::CENTER);
+    Gui::text(i18n::localize("MOVES"), 10, 111, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::CENTER);
 
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95, 138 + i * 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::CENTER);
+        Gui::text(i18n::move(Configuration::getInstance().language(), filter->move(i)), 95,
+            138 + i * 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::CENTER);
     }
 }
 

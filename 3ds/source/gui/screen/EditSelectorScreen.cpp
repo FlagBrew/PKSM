@@ -117,14 +117,17 @@ bool EditSelectorScreen::doQR()
 
     if (pkm)
     {
-        int slot = cursorPos ? cursorPos - 1 : 0; // make sure it writes to a good position, AKA not the title bar
+        int slot = cursorPos ? cursorPos - 1
+                             : 0; // make sure it writes to a good position, AKA not the title bar
         TitleLoader::save->pkm(*pkm, box, slot, false);
         return true;
     }
     return false;
 }
 
-EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' + i18n::localize("B_BACK"))
+EditSelectorScreen::EditSelectorScreen()
+    : Screen(i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' +
+             i18n::localize("B_BACK"))
 {
     addOverlay<ViewOverlay>(infoMon, false);
 
@@ -134,20 +137,24 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
             return goBack();
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
-    instructions.addBox(false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    buttons.push_back(
-        std::make_unique<ClickButton>(25, 15, 164, 24, [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
-    buttons.push_back(
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
+    instructions.addBox(
+        false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
+    buttons.push_back(std::make_unique<ClickButton>(25, 15, 164, 24,
+        [this]() { return this->clickIndex(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<AccelButton>(8, 15, 17, 24,
+        [this]() { return this->prevBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
+    buttons.push_back(std::make_unique<AccelButton>(189, 15, 17, 24,
+        [this]() { return this->nextBox(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5));
     auto cameraButtonText = Gui::parseText("\uE004+\uE005 \uE01E", FONT_SIZE_14, 0.0f);
-    instructions.addCircle(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
-    instructions.addLine(
-        false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 4, COLOR_GREY);
-    instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16, COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
-    buttons.push_back(std::make_unique<ClickButton>(310 - cameraButtonText->maxWidth(FONT_SIZE_14), 16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2,
-        16, [this]() { return this->doQR(); }, ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
+    instructions.addCircle(
+        false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24, 8, COLOR_GREY);
+    instructions.addLine(false, 310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 24,
+        310 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 4, COLOR_GREY);
+    instructions.addBox(false, 222 - cameraButtonText->maxWidth(FONT_SIZE_14) / 2, 44, 90, 16,
+        COLOR_GREY, i18n::localize("QR_SCANNER"), COLOR_WHITE);
+    buttons.push_back(std::make_unique<ClickButton>(310 - cameraButtonText->maxWidth(FONT_SIZE_14),
+        16, cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16, [this]() { return this->doQR(); },
+        ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
     // Pokemon buttons
     for (u8 row = 0; row < 5; row++)
@@ -156,32 +163,37 @@ EditSelectorScreen::EditSelectorScreen() : Screen(i18n::localize("A_SELECT") + '
         for (u8 column = 0; column < 6; column++)
         {
             u16 x                        = 4 + column * 34;
-            pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30, [this, row, column]() { return this->clickIndex(row * 6 + column + 1); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+            pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+                [this, row, column]() { return this->clickIndex(row * 6 + column + 1); },
+                ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
         }
     }
     for (int i = 0; i < 6; i++)
     {
         int x              = (i % 2 == 0 ? 221 : 271);
         int y              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = std::make_unique<ClickButton>(
-            x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
+        pkmButtons[30 + i] = std::make_unique<ClickButton>(x, y, 34, 30,
+            [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx, "", 0.0f,
+            COLOR_BLACK);
     }
 
-    viewerButtons.push_back(std::make_unique<ClickButton>(212, 47, 108, 28, [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
+    viewerButtons.push_back(std::make_unique<ClickButton>(212, 47, 108, 28,
+        [this]() { return this->editPokemon(); }, ui_sheet_button_editor_idx,
         "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
     viewerButtons.push_back(std::make_unique<ClickButton>(212, 78, 108, 28,
         [this]() {
             menu = false;
             return this->releasePokemon();
         },
-        ui_sheet_button_editor_idx, "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK));
+        ui_sheet_button_editor_idx, "\uE003: " + i18n::localize("RELEASE"), FONT_SIZE_12,
+        COLOR_BLACK));
     viewerButtons.push_back(std::make_unique<ClickButton>(212, 109, 108, 28,
         [this]() {
             menu = false;
             return this->clonePkm();
         },
-        ui_sheet_button_editor_idx, "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK));
+        ui_sheet_button_editor_idx, "\uE002: " + i18n::localize("CLONE"), FONT_SIZE_12,
+        COLOR_BLACK));
     TitleLoader::save->cryptBoxData(true);
     box = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
@@ -253,7 +265,8 @@ void EditSelectorScreen::drawBottom() const
         for (u8 column = 0; column < 6; column++)
         {
             u16 x = 4 + column * 34;
-            if (TitleLoader::save->generation() == pksm::Generation::LGPE && row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE &&
+                row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
                 Gui::drawSolidRect(x, y, 34, 30, PKSM_Color(128, 128, 128, 128));
             }
@@ -266,10 +279,12 @@ void EditSelectorScreen::drawBottom() const
                 }
                 if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
-                    int partySlot = std::distance(partyPkm, std::find(partyPkm, partyPkm + 6, box * 30 + row * 6 + column));
+                    int partySlot = std::distance(
+                        partyPkm, std::find(partyPkm, partyPkm + 6, box * 30 + row * 6 + column));
                     if (partySlot < 6)
                     {
-                        Gui::sprite(ui_sheet_emulated_party_indicator_1_idx + partySlot, x + 26, y + 24);
+                        Gui::sprite(
+                            ui_sheet_emulated_party_indicator_1_idx + partySlot, x + 26, y + 24);
                     }
                 }
             }
@@ -316,7 +331,8 @@ void EditSelectorScreen::drawBottom() const
     else
     {
         int x = 238 + ((cursorPos - 1) % 2) * 50;
-        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 + Gui::pointerBob();
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 +
+                Gui::pointerBob();
         if (moveMon)
         {
             Gui::pkm(*moveMon, x - 12, y + 9);
@@ -326,8 +342,9 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV()), 160, 224, FONT_SIZE_9,
-            COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(),
+                      infoMon->formatSID(), infoMon->TSV()),
+            160, 224, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
     if (menu)
@@ -645,14 +662,16 @@ bool EditSelectorScreen::editPokemon()
         if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             justSwitched = true;
-            Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
+            Gui::setScreen(std::make_unique<EditorScreen>(
+                TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
             return true;
         }
     }
     else if (cursorPos > 30)
     {
         justSwitched = true;
-        Gui::setScreen(std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - 31), EditorScreen::PARTY_MAGIC_NUM, cursorPos - 31));
+        Gui::setScreen(std::make_unique<EditorScreen>(
+            TitleLoader::save->pkm(cursorPos - 31), EditorScreen::PARTY_MAGIC_NUM, cursorPos - 31));
         return true;
     }
 

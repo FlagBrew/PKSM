@@ -36,8 +36,13 @@
 #include "loader.hpp"
 #include "sav/Sav.hpp"
 
-StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox, std::shared_ptr<pksm::PKFilter> filter)
-    : ReplaceableScreen(&screen, i18n::localize("B_BACK")), filter(filter), boxBox(boxBox), storageBox(storageBox), storage(store)
+StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox,
+    std::shared_ptr<pksm::PKFilter> filter)
+    : ReplaceableScreen(&screen, i18n::localize("B_BACK")),
+      filter(filter),
+      boxBox(boxBox),
+      storageBox(storageBox),
+      storage(store)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
         [this]() {
@@ -53,8 +58,9 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(
-        106, 125, 108, 28, [this]() { return selectBox(); }, ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(
+        std::make_unique<ClickButton>(106, 125, 108, 28, [this]() { return selectBox(); },
+            ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));

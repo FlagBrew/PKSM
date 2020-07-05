@@ -24,7 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-// TODO: Make this work for both 3DS and Switch, as I really like the interface and it's just better overall than parsing strings multiple times
+// TODO: Make this work for both 3DS and Switch, as I really like the interface and it's just better
+// overall than parsing strings multiple times
 #ifndef TextBUF_HPP
 #define TextBUF_HPP
 
@@ -72,7 +73,8 @@ namespace TextParse
 #if defined(_3DS)
     struct Glyph
     {
-        Glyph(const Tex3DS_SubTexture& subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr, u32 line = 0, float xPos = 0.0f, float width = 0.0f)
+        Glyph(const Tex3DS_SubTexture& subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr,
+            u32 line = 0, float xPos = 0.0f, float width = 0.0f)
             : subtex(subtex), tex(tex), font(font), line(line), xPos(xPos), width(width)
         {
         }
@@ -86,7 +88,10 @@ namespace TextParse
 #elif defined(__SWITCH__)
     struct Glyph
     {
-        Glyph(FT_Glyph ftGlyph, FTC_Node node, u32 line = 0, float xPos = 0.0f) : ftGlyph(ftGlyph), line(line), xPos(xPos) {}
+        Glyph(FT_Glyph ftGlyph, FTC_Node node, u32 line = 0, float xPos = 0.0f)
+            : ftGlyph(ftGlyph), line(line), xPos(xPos)
+        {
+        }
         Glyph(const Glyph& other) = delete;
         Glyph(const Glyph&& other)
         {
@@ -109,15 +114,18 @@ namespace TextParse
         friend class ScreenText;
 
     public:
-        Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {}, float maxLineWidth = 0.0f)
+        Text(const std::vector<Glyph>& glyphs = {}, const std::vector<float>& lineWidths = {},
+            float maxLineWidth = 0.0f)
             : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
         {
         }
         std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
-        // These should ONLY be used when drawing text directly instead of using ScreenText, which shouldn't happen often!
+        // These should ONLY be used when drawing text directly instead of using ScreenText, which
+        // shouldn't happen often!
         void optimize();
-        void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK) const;
+        void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos,
+            PKSM_Color color = COLOR_BLACK) const;
         float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
         size_t lines() const { return lineWidths.size(); }
 
@@ -125,13 +133,15 @@ namespace TextParse
         std::vector<Glyph> glyphs;
         std::vector<float> lineWidths;
         float maxLineWidth;
-        void addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
+        void addWord(
+            std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
     };
 
     class TextBuf
     {
     public:
-        // maxChars is more of a suggestion than a limit. If it's necessary, things can extend farther
+        // maxChars is more of a suggestion than a limit. If it's necessary, things can extend
+        // farther
         TextBuf(size_t maxGlyphs, const std::vector<FontType>& fonts = {nullptr});
         std::shared_ptr<Text> parse(const std::string& str, float maxWidth = 0.0f);
         void addFont(FontType font);
@@ -147,7 +157,8 @@ namespace TextParse
         std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
         void makeGlyphSheets(C2D_Font font);
 #endif
-        std::pair<std::vector<Glyph>, std::vector<float>> parseWord(std::string::const_iterator& str, float maxWidth);
+        std::pair<std::vector<Glyph>, std::vector<float>> parseWord(
+            std::string::const_iterator& str, float maxWidth);
         std::variant<float, size_t> parseWhitespace(std::string::const_iterator& str);
         std::vector<FontType> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
@@ -160,8 +171,8 @@ namespace TextParse
     public:
         ScreenText() { glyphs.reserve(1024); }
         // y is always from baseline
-        void addText(
-            std::shared_ptr<Text> text, float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
+        void addText(std::shared_ptr<Text> text, float x, float y, float z, FontSize sizeX,
+            FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
         void optimize();
         void draw() const;
         void clear();
@@ -169,7 +180,8 @@ namespace TextParse
     private:
         struct DrawableGlyph
         {
-            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize sizeX, FontSize sizeY, PKSM_Color color = COLOR_BLACK)
+            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize sizeX,
+                FontSize sizeY, PKSM_Color color = COLOR_BLACK)
                 : x(x), y(y), z(z), sizeX(sizeX), sizeY(sizeY), color(color), glyph(glyph)
             {
             }

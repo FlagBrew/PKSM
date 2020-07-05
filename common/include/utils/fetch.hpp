@@ -39,16 +39,19 @@ extern "C" {
 #include <variant>
 #include <vector>
 
-// This should theoretically be thread-safe, but on the 3DS it is not, because SOC stuff is not thread safe. Whee
+// This should theoretically be thread-safe, but on the 3DS it is not, because SOC stuff is not
+// thread safe. Whee
 class Fetch
 {
 public:
-    [[nodiscard]] static std::shared_ptr<Fetch> init(
-        const std::string& url, bool ssl, std::string* writeData, struct curl_slist* headers, const std::string& postdata);
-    static Result download(const std::string& url, const std::string& path, const std::string& postData = "",
-        curl_xferinfo_callback progress = nullptr, void* progressInfo = nullptr);
+    [[nodiscard]] static std::shared_ptr<Fetch> init(const std::string& url, bool ssl,
+        std::string* writeData, struct curl_slist* headers, const std::string& postdata);
+    static Result download(const std::string& url, const std::string& path,
+        const std::string& postData = "", curl_xferinfo_callback progress = nullptr,
+        void* progressInfo = nullptr);
 
-    static CURLMcode performAsync(std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete = nullptr);
+    static CURLMcode performAsync(std::shared_ptr<Fetch> fetch,
+        std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete = nullptr);
     static std::variant<CURLMcode, CURLcode> perform(std::shared_ptr<Fetch> fetch);
 
     static Result initMulti();

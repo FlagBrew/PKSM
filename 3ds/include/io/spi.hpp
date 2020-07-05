@@ -93,13 +93,15 @@ typedef enum
     FLASH_STD_DUMMY = 4,
 
     FLASH_512KB_INFRARED = 10,
-    FLASH_256KB_INFRARED = 11, // AFAIK, only "Active Health with Carol Vorderman" has such a flash save memory
+    FLASH_256KB_INFRARED =
+        11, // AFAIK, only "Active Health with Carol Vorderman" has such a flash save memory
     FLASH_INFRARED_DUMMY = 9,
 
     CHIP_LAST = 11,
 } CardType;
 
-Result SPIWriteRead(CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize);
+Result SPIWriteRead(
+    CardType type, void* cmd, u32 cmdSize, void* answer, u32 answerSize, void* data, u32 dataSize);
 Result SPIWaitWriteEnd(CardType type);
 Result SPIEnableWriting(CardType type);
 Result SPIReadJEDECIDAndStatusReg(CardType type, u32* id, u8* statusReg);

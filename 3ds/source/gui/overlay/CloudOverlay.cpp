@@ -47,7 +47,8 @@ namespace
     }
 }
 
-CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : ReplaceableScreen(&screen), access(acc)
+CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
+    : ReplaceableScreen(&screen), access(acc)
 {
     buttons.push_back(std::make_unique<ClickButton>(106, 82, 108, 28,
         [this]() {
@@ -68,8 +69,9 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : Replac
             access.sortDir(!access.sortAscending());
             return access.sortAscending();
         },
-        ui_sheet_button_editor_idx, i18n::localize("ASCENDING"), FONT_SIZE_12, COLOR_BLACK, ui_sheet_button_editor_idx, i18n::localize("DESCENDING"),
-        FONT_SIZE_12, COLOR_BLACK, nullptr, true);
+        ui_sheet_button_editor_idx, i18n::localize("ASCENDING"), FONT_SIZE_12, COLOR_BLACK,
+        ui_sheet_button_editor_idx, i18n::localize("DESCENDING"), FONT_SIZE_12, COLOR_BLACK,
+        nullptr, true);
     tbutton->setState(access.sortAscending());
     buttons.push_back(std::move(tbutton));
     tbutton = std::make_unique<ToggleButton>(106, 144, 108, 28,
@@ -77,8 +79,9 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc) : Replac
             access.filterLegal(!access.filterLegal());
             return access.filterLegal();
         },
-        ui_sheet_button_editor_idx, i18n::localize("LEGALITY_LEGAL"), FONT_SIZE_12, COLOR_BLACK, ui_sheet_button_editor_idx,
-        i18n::localize("LEGALITY_ANY"), FONT_SIZE_12, COLOR_BLACK, nullptr, true);
+        ui_sheet_button_editor_idx, i18n::localize("LEGALITY_LEGAL"), FONT_SIZE_12, COLOR_BLACK,
+        ui_sheet_button_editor_idx, i18n::localize("LEGALITY_ANY"), FONT_SIZE_12, COLOR_BLACK,
+        nullptr, true);
     tbutton->setState(access.filterLegal());
     buttons.push_back(std::move(tbutton));
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
@@ -104,9 +107,10 @@ void CloudOverlay::drawBottom() const
     {
         button->draw();
     }
-    Gui::text(i18n::localize("CLOUD_SORT_FILTER"), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::localize(sortTypeToString(access.sortType())), 160, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER,
-        TextWidthAction::WRAP, 108);
+    Gui::text(i18n::localize("CLOUD_SORT_FILTER"), 25, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        TextPosY::TOP);
+    Gui::text(i18n::localize(sortTypeToString(access.sortType())), 160, 96, FONT_SIZE_12,
+        COLOR_BLACK, TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 108);
 }
 
 void CloudOverlay::update(touchPosition* touch)

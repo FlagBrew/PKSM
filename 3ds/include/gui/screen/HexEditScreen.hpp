@@ -54,9 +54,12 @@ private:
     class HexEditButton : public Button
     {
     public:
-        HexEditButton(
-            int x, int y, int w, int h, std::function<bool()> callback, int image, const std::string& text, bool toggle, u8 bit, bool mark = false)
-            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE), toggle(toggle), mark(mark), bitVal(bit)
+        HexEditButton(int x, int y, int w, int h, std::function<bool()> callback, int image,
+            const std::string& text, bool toggle, u8 bit, bool mark = false)
+            : Button(x, y, w, h, callback, image, text, FONT_SIZE_11, COLOR_WHITE),
+              toggle(toggle),
+              mark(mark),
+              bitVal(bit)
         {
         }
         void draw() const override
@@ -70,7 +73,9 @@ private:
             {
                 if (!isClicked && clicked(touch))
                 {
-                    key       = key == ui_sheet_emulated_toggle_green_idx ? ui_sheet_emulated_toggle_gray_idx : ui_sheet_emulated_toggle_green_idx;
+                    key = key == ui_sheet_emulated_toggle_green_idx
+                              ? ui_sheet_emulated_toggle_gray_idx
+                              : ui_sheet_emulated_toggle_green_idx;
                     isClicked = clicked(touch);
                     return noArg();
                 }
@@ -118,7 +123,10 @@ private:
             }
             return false;
         }
-        void setToggled(bool flag) { key = flag ? ui_sheet_emulated_toggle_green_idx : ui_sheet_emulated_toggle_gray_idx; }
+        void setToggled(bool flag)
+        {
+            key = flag ? ui_sheet_emulated_toggle_green_idx : ui_sheet_emulated_toggle_gray_idx;
+        }
         bool isToggle() { return toggle; }
         bool isMark() { return mark; }
         void rotateColor()
@@ -173,9 +181,10 @@ private:
     std::vector<int> selectBytes;
     std::shared_ptr<pksm::PKX> pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
-    // Normally I would just use the same buttons for every byte, but since there are some odd things that can be done,
-    // I think that this is the better solution. It allows for every byte to have its own set of buttons, allowing bytes
-    // to have toggles, bitsetters, and just plain hexediting
+    // Normally I would just use the same buttons for every byte, but since there are some odd
+    // things that can be done, I think that this is the better solution. It allows for every byte
+    // to have its own set of buttons, allowing bytes to have toggles, bitsetters, and just plain
+    // hexediting
     std::vector<std::vector<std::unique_ptr<HexEditButton>>> buttons;
     SecurityLevel level = SecurityLevel::NORMAL;
 

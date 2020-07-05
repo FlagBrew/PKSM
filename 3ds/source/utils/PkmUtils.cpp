@@ -211,8 +211,9 @@ namespace
         ret->nicknamed(false);
         ret->alternativeForm(0);
         ret->setAbility(0);
-        ret->PID(pksm::PKX::getRandomPID(ret->species(), ret->gender(), ret->version(), ret->nature(), ret->alternativeForm(), ret->abilityNumber(),
-            ret->PID(), ret->generation()));
+        ret->PID(
+            pksm::PKX::getRandomPID(ret->species(), ret->gender(), ret->version(), ret->nature(),
+                ret->alternativeForm(), ret->abilityNumber(), ret->PID(), ret->generation()));
 
         return ret;
     }

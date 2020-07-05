@@ -80,7 +80,8 @@ public:
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;
 
-    // Allows setting title IDs of versions. Can be used to edit romhacks or GBA VC. Support not guaranteed for the former!
+    // Allows setting title IDs of versions. Can be used to edit romhacks or GBA VC. Support not
+    // guaranteed for the former!
     std::string titleId(pksm::GameVersion version) const;
 
     bool writeFileSave(void) const;
@@ -115,9 +116,9 @@ public:
 
     void year(int year);
 
-    // This assumes that we'll have a way to set them in the config screen, something that I'm not sure about
-    // as that would require basically implementing a file browser. Maybe have it be manual, just like Checkpoint?
-    // I implemented it just in case
+    // This assumes that we'll have a way to set them in the config screen, something that I'm not
+    // sure about as that would require basically implementing a file browser. Maybe have it be
+    // manual, just like Checkpoint? I implemented it just in case
     void extraSaves(const std::string& id, std::vector<std::string>& saves);
 
     void titleId(pksm::GameVersion version, const std::string& id);
@@ -159,7 +160,10 @@ private:
 namespace i18n
 {
     const std::string& localize(pksm::Language lang, const std::string& index);
-    inline const std::string& localize(const std::string& index) { return i18n::localize(Configuration::getInstance().language(), index); }
+    inline const std::string& localize(const std::string& index)
+    {
+        return i18n::localize(Configuration::getInstance().language(), index);
+    }
 }
 
 #endif

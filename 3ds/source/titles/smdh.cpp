@@ -37,7 +37,8 @@ smdh_s* loadSMDH(u32 low, u32 high, u8 media)
     FS_Path binArchPath = {PATH_BINARY, 0x10, archPath};
     FS_Path binFilePath = {PATH_BINARY, 0x14, filePath};
 
-    Result res = FSUSER_OpenFileDirectly(&fileHandle, ARCHIVE_SAVEDATA_AND_CONTENT, binArchPath, binFilePath, FS_OPEN_READ, 0);
+    Result res = FSUSER_OpenFileDirectly(
+        &fileHandle, ARCHIVE_SAVEDATA_AND_CONTENT, binArchPath, binFilePath, FS_OPEN_READ, 0);
     if (R_SUCCEEDED(res))
     {
         u32 read;

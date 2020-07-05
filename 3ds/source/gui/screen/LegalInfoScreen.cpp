@@ -35,7 +35,8 @@
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 
-LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<pksm::PKX> pk) : ScrollingTextScreen(string, pk)
+LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<pksm::PKX> pk)
+    : ScrollingTextScreen(string, pk)
 {
     if (string.substr(0, 6) != "Legal!")
     {
@@ -48,7 +49,8 @@ LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<pksm
 
         instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
         instructions.addLine(false, 17, 175, 17, 225, 4, COLOR_GREY);
-        instructions.addBox(false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("LEGALIZE"), COLOR_WHITE);
+        instructions.addBox(
+            false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("LEGALIZE"), COLOR_WHITE);
     }
 }
 
@@ -92,14 +94,17 @@ void LegalInfoScreen::attemptLegalization()
     }
     else
     {
-        version = "version: " + std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation()));
+        version =
+            "version: " + std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation()));
     }
     std::string generation = "Generation: " + (std::string)pkm->generation();
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());
 
-    std::string url = Configuration::getInstance().useApiUrl() ? Configuration::getInstance().apiUrl() : "https://flagbrew.org/";
+    std::string url = Configuration::getInstance().useApiUrl()
+                          ? Configuration::getInstance().apiUrl()
+                          : "https://flagbrew.org/";
 
     std::string writeData;
     if (auto fetch = Fetch::init(url + "api/v1/bot/auto_legality", true, &writeData, headers, ""))
@@ -150,19 +155,25 @@ void LegalInfoScreen::attemptLegalization()
                         }
                         else if (!retJson["Pokemon"].is_null())
                         {
-                            std::vector<u8> pkmData = base64_decode(retJson["Pokemon"].get<std::string>());
-                            auto fixed              = pksm::PKX::getPKM(pkm->generation(), pkmData.data(), pkmData.size(), true);
+                            std::vector<u8> pkmData =
+                                base64_decode(retJson["Pokemon"].get<std::string>());
+                            auto fixed = pksm::PKX::getPKM(
+                                pkm->generation(), pkmData.data(), pkmData.size(), true);
                             if (fixed)
                             {
-                                std::copy(fixed->rawData(), fixed->rawData() + std::min(pkm->getLength(), fixed->getLength()), pkm->rawData());
+                                std::copy(fixed->rawData(),
+                                    fixed->rawData() +
+                                        std::min(pkm->getLength(), fixed->getLength()),
+                                    pkm->rawData());
                                 Gui::warn(i18n::localize("PKM_LEGALIZED"));
                                 Gui::screenBack();
                                 return;
                             }
                             else
                             {
-                                Gui::error(
-                                    i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' + i18n::localize("REPORT_THIS_TO_FLAGBREW"), pkmData.size());
+                                Gui::error(i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' +
+                                               i18n::localize("REPORT_THIS_TO_FLAGBREW"),
+                                    pkmData.size());
                                 return;
                             }
                         }
@@ -173,7 +184,8 @@ void LegalInfoScreen::attemptLegalization()
                     Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                     return;
                 case 503:
-                    Gui::warn(i18n::localize("LEGALIZE_IN_QUEUE") + '\n' + i18n::localize("PLEASE_WAIT"));
+                    Gui::warn(
+                        i18n::localize("LEGALIZE_IN_QUEUE") + '\n' + i18n::localize("PLEASE_WAIT"));
                     return;
             }
         }

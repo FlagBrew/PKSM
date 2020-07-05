@@ -34,7 +34,8 @@ class ViewOverlay : public ReplaceableScreen
 {
 public:
     // if it's not green, it's blue
-    ViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pokemon, bool green, const std::string& instr = "")
+    ViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pokemon, bool green,
+        const std::string& instr = "")
         : ReplaceableScreen(&screen, instr), pkm(pokemon), green(green)
     {
     }

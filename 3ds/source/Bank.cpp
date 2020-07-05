@@ -48,7 +48,10 @@
 class BankException : public std::exception
 {
 public:
-    BankException(u32 badVal) : string(fmt::format("BankException: Bad generation value: 0x{:X}", badVal)) {}
+    BankException(u32 badVal)
+        : string(fmt::format("BankException: Bad generation value: 0x{:X}", badVal))
+    {
+    }
 
     const char* what() const noexcept override { return string.c_str(); }
 
@@ -101,7 +104,8 @@ void Bank::load(int maxBoxes)
             }
             else
             {
-                // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS CHANGED
+                // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS
+                // CHANGED
                 struct G7Entry
                 {
                     pksm::Generation gen;
@@ -110,8 +114,9 @@ void Bank::load(int maxBoxes)
                 static_assert(sizeof(G7Entry) == 264);
                 if (header.version == 1)
                 {
-                    header.boxes = (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(G7Entry) / 30;
-                    maxBoxes     = header.boxes;
+                    header.boxes =
+                        (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(G7Entry) / 30;
+                    maxBoxes = header.boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
                     Banks::saveJson();
@@ -122,7 +127,8 @@ void Bank::load(int maxBoxes)
                     for (int i = 0; i < boxes() * 30; i++)
                     {
                         in->read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
+                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry),
+                            sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
                     in->close();
                 }
@@ -136,7 +142,8 @@ void Bank::load(int maxBoxes)
                     for (int i = 0; i < boxes() * 30; i++)
                     {
                         in->read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry), sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
+                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry),
+                            sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
                     }
                     in->close();
                 }
@@ -150,7 +157,8 @@ void Bank::load(int maxBoxes)
                 }
                 else
                 {
-                    Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
+                    Gui::warn(
+                        i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
                     Gui::waitFrame(i18n::localize("BANK_CREATE"));
                     in->close();
                     createBank(maxBoxes);
@@ -175,7 +183,8 @@ void Bank::load(int maxBoxes)
             json->read(jsonData, jsonSize);
             json->close();
             jsonData[jsonSize] = '\0';
-            boxNames           = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
+            boxNames =
+                std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
             delete[] jsonData;
             if (boxNames->is_discarded())
             {
@@ -218,7 +227,7 @@ void Bank::load(int maxBoxes)
         }
         else
         {
-            prevHash             = pksm::crypto::sha256((u8*)entries, sizeof(BankEntry) * boxes() * 30);
+            prevHash = pksm::crypto::sha256((u8*)entries, sizeof(BankEntry) * boxes() * 30);
             std::string nameData = boxNames->dump(2);
             prevNameHash         = pksm::crypto::sha256((u8*)nameData.data(), nameData.size());
         }
@@ -267,7 +276,8 @@ bool Bank::save() const
 {
     if (Configuration::getInstance().autoBackup())
     {
-        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1") + '\n' + i18n::localize("BACKUP_FAIL_SAVE_2")))
+        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1") + '\n' +
+                                                 i18n::localize("BACKUP_FAIL_SAVE_2")))
         {
             return false;
         }
@@ -286,7 +296,8 @@ void Bank::resize(int boxes)
         delete[] entries;
         if (boxes > this->boxes())
         {
-            std::fill_n((u8*)(newEntries + this->boxes() * 30), (boxes - this->boxes()) * 30 * sizeof(BankEntry), 0xFF);
+            std::fill_n((u8*)(newEntries + this->boxes() * 30),
+                (boxes - this->boxes()) * 30 * sizeof(BankEntry), 0xFF);
         }
         entries = newEntries;
 
@@ -329,10 +340,12 @@ void Bank::pkm(const pksm::PKX& pkm, int box, int slot)
         return;
     }
     newEntry.gen = pkm.generation();
-    std::copy(pkm.rawData(), pkm.rawData() + std::min((u32)sizeof(BankEntry::data), pkm.getLength()), newEntry.data);
+    std::copy(pkm.rawData(),
+        pkm.rawData() + std::min((u32)sizeof(BankEntry::data), pkm.getLength()), newEntry.data);
     if (pkm.getLength() < sizeof(BankEntry::data))
     {
-        std::fill_n(newEntry.data + pkm.getLength(), sizeof(BankEntry::data) - pkm.getLength(), 0xFF);
+        std::fill_n(
+            newEntry.data + pkm.getLength(), sizeof(BankEntry::data) - pkm.getLength(), 0xFF);
     }
     entries[index] = newEntry;
     needsCheck     = true;
@@ -342,14 +355,18 @@ bool Bank::backup() const
 {
     Gui::waitFrame(i18n::localize("BANK_BACKUP"));
     auto paths = this->paths();
-    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
-    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
-    Result res = Archive::copyFile(ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak");
+    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(),
+        "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
+    Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak", Archive::sd(),
+        "/3ds/PKSM/backups/" + bankName + ".json.bak.old");
+    Result res = Archive::copyFile(
+        ARCHIVE, BANK(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak");
     if (R_FAILED(res))
     {
         return false;
     }
-    Archive::copyFile(ARCHIVE, JSON(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak");
+    Archive::copyFile(
+        ARCHIVE, JSON(paths), Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".json.bak");
     return true;
 }
 
@@ -415,7 +432,8 @@ void Bank::convertFromBankBin()
     Archive::sd().createFile("/3ds/PKSM/backups/bank.bin", 0, 1);
     auto outStream   = Archive::sd().file("/3ds/PKSM/backups/bank.bin", FS_OPEN_WRITE);
     Result outResult = Archive::sd().result();
-    if (inStream && outStream && inStream->size() % pksm::PK6::BOX_LENGTH == 0 && (inStream->size() / pksm::PK6::BOX_LENGTH) % 30 == 0 &&
+    if (inStream && outStream && inStream->size() % pksm::PK6::BOX_LENGTH == 0 &&
+        (inStream->size() / pksm::PK6::BOX_LENGTH) % 30 == 0 &&
         R_SUCCEEDED(outStream->resize(inStream->size())))
     {
         size_t oldSize = inStream->size();
@@ -430,13 +448,15 @@ void Bank::convertFromBankBin()
         std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
         boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
 
-        for (int box = 0; box < std::min((int)(oldSize / (pksm::PK6::BOX_LENGTH * 30)), boxes()); box++)
+        for (int box = 0; box < std::min((int)(oldSize / (pksm::PK6::BOX_LENGTH * 30)), boxes());
+             box++)
         {
             for (int slot = 0; slot < 30; slot++)
             {
                 inStream->read(pkmData.data(), pkmData.size());
                 outStream->write(pkmData.data(), pkmData.size());
-                std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM<pksm::Generation::SIX>(pkmData.data());
+                std::unique_ptr<pksm::PKX> pkm =
+                    pksm::PKX::getPKM<pksm::Generation::SIX>(pkmData.data());
                 if (pkm->species() == pksm::Species::None)
                 {
                     this->pkm(*pkm, box, slot);
@@ -456,7 +476,8 @@ void Bank::convertFromBankBin()
                         break;
                     }
                 }
-                if (pkm->version() > pksm::GameVersion::OR || pkm->species() >= pksm::Species::Rowlet ||
+                if (pkm->version() > pksm::GameVersion::OR ||
+                    pkm->species() >= pksm::Species::Rowlet ||
                     pkm->ability() > pksm::Ability::DeltaStream || pkm->heldItem() > 775 || badMove)
                 {
                     pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
@@ -466,7 +487,8 @@ void Bank::convertFromBankBin()
                     if (((pksm::PK6*)pkm.get())->level() == 100) // Can be hyper trained
                     {
                         if (!pkm->originGen4() ||
-                            ((pksm::PK6*)pkm.get())->encounterType() > 24) // Either isn't from Gen 4 or has invalid encounter type
+                            ((pksm::PK6*)pkm.get())->encounterType() >
+                                24) // Either isn't from Gen 4 or has invalid encounter type
                         {
                             pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
                         }
@@ -521,7 +543,8 @@ bool Bank::setName(const std::string& name)
         bankName = oldName;
         if (R_FAILED(Archive::moveFile(ARCHIVE, BANK(newPaths), ARCHIVE, BANK(oldPaths))))
         {
-            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1") + '\n' + i18n::localize("CRITICAL_BANK_ERROR_2"));
+            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1") + '\n' +
+                      i18n::localize("CRITICAL_BANK_ERROR_2"));
             return false;
         }
         return false;
