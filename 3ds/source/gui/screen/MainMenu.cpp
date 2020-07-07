@@ -69,7 +69,8 @@ namespace
                 if (TitleLoader::save->generation() >= pksm::Generation::LGPE ||
                     TitleLoader::save->generation() <= pksm::Generation::THREE)
                 {
-                    Gui::warn(i18n::localize("NO_WONDERCARDS"));
+                    Gui::warn(
+                        i18n::localize("NO_WONDERCARDS") + '\n' + i18n::localize("USE_INJECTOR_C"));
                     return false;
                 }
                 Gui::setScreen(std::make_unique<InjectSelectorScreen>());
