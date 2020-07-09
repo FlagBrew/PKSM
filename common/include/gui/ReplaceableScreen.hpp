@@ -37,7 +37,7 @@ public:
         : parent(parent), instructions(instructions)
     {
     }
-    virtual ~ReplaceableScreen() {}
+    virtual ~ReplaceableScreen() = default;
     template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
     {

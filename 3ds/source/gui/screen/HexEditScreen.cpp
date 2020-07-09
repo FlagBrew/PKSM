@@ -2450,9 +2450,7 @@ void HexEditScreen::drawMeaning() const
                         case pksm::Generation::LGPE:
                             country = ((pksm::PB7*)pkm.get())->country();
                             break;
-                        case pksm::Generation::FOUR:
-                        case pksm::Generation::FIVE:
-                        case pksm::Generation::UNUSED:
+                        default:
                             break;
                     }
                     Gui::text(i18n::country(Configuration::getInstance().language(), country), 160,
@@ -2477,9 +2475,7 @@ void HexEditScreen::drawMeaning() const
                             country = ((pksm::PB7*)pkm.get())->country();
                             region  = ((pksm::PB7*)pkm.get())->region();
                             break;
-                        case pksm::Generation::FOUR:
-                        case pksm::Generation::FIVE:
-                        case pksm::Generation::UNUSED:
+                        default:
                             break;
                     }
                     Gui::text(
@@ -2501,9 +2497,7 @@ void HexEditScreen::drawMeaning() const
                         case pksm::Generation::LGPE:
                             consoleRegion = ((pksm::PB7*)pkm.get())->consoleRegion();
                             break;
-                        case pksm::Generation::FOUR:
-                        case pksm::Generation::FIVE:
-                        case pksm::Generation::UNUSED:
+                        default:
                             break;
                     }
                     std::string data;

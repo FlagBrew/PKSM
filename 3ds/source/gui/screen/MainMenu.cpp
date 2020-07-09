@@ -89,7 +89,7 @@ namespace
     }
 }
 
-MainMenu::MainMenu()
+MainMenu::MainMenu() : Screen(i18n::localize("X_SAVE"))
 {
     oldLang = Configuration::getInstance().language();
     if (TitleLoader::save->generation() == pksm::Generation::FIVE)
@@ -250,6 +250,13 @@ void MainMenu::update(touchPosition* touch)
             setLoadedSaveFromBridge(false);
             Gui::screenBack();
             return;
+        }
+    }
+    else if (keysDown() & KEY_X)
+    {
+        if (needsSave())
+        {
+            save();
         }
     }
 }
