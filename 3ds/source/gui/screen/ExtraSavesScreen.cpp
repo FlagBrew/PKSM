@@ -37,11 +37,6 @@ ExtraSavesScreen::ExtraSavesScreen()
 {
 }
 
-ExtraSavesScreen::~ExtraSavesScreen()
-{
-    Threads::create([](void*) { TitleLoader::scanSaves(); }, nullptr, 16 * 1024);
-}
-
 void ExtraSavesScreen::drawBottom() const
 {
     Gui::sprite(ui_sheet_part_info_bottom_idx, 0, 0);
@@ -280,6 +275,7 @@ void ExtraSavesScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
+        Threads::create([](void*) { TitleLoader::scanSaves(); }, nullptr, 16 * 1024);
         Gui::screenBack();
         return;
     }

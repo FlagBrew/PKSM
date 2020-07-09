@@ -42,7 +42,6 @@ public:
         const std::optional<PKSM_Color>& offTextColor             = std::nullopt,
         std::vector<std::unique_ptr<ToggleButton>>* radioCategory = nullptr,
         bool disablable                                           = false);
-    ~ToggleButton(void) {}
 
     virtual bool update(touchPosition* touch) override;
     virtual void setState(bool newState);

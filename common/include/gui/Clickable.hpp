@@ -37,7 +37,7 @@ public:
         : noArg(function), xPos(x), yPos(y), width(w), height(h)
     {
     }
-    virtual ~Clickable(){};
+    virtual ~Clickable() = default;
 
     // returns return value of callback, or, if it's not executed, false
     virtual bool update(touchPosition* touch);

@@ -36,7 +36,6 @@ class NatureOverlay : public ReplaceableScreen
 {
 public:
     NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
-    virtual ~NatureOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

@@ -35,7 +35,7 @@ class Mp3Decoder : public Decoder
 public:
     Mp3Decoder(const std::string& filename);
 
-    ~Mp3Decoder(void);
+    ~Mp3Decoder();
 
     uint32_t pos(void) override;
 

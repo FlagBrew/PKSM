@@ -189,29 +189,6 @@ StorageScreen::StorageScreen()
     boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
 
-StorageScreen::~StorageScreen()
-{
-    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
-    {
-        ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
-        int occupiedSlots = 0;
-        for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
-        {
-            if (TitleLoader::save->pkm(u8(0), i)->species())
-            {
-                occupiedSlots++;
-            }
-            else
-            {
-                break;
-            }
-        }
-        ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
-    }
-    TitleLoader::save->cryptBoxData(false);
-    TitleLoader::save->currentBox((u8)boxBox);
-}
-
 void StorageScreen::drawBottom() const
 {
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
@@ -841,6 +818,26 @@ bool StorageScreen::backButton()
                     Banks::bank->load(Banks::bank->boxes());
                 }
             }
+
+            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
+            {
+                ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
+                int occupiedSlots = 0;
+                for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
+                {
+                    if (TitleLoader::save->pkm(u8(0), i)->species())
+                    {
+                        occupiedSlots++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
+            }
+            TitleLoader::save->cryptBoxData(false);
+            TitleLoader::save->currentBox((u8)boxBox);
             Gui::screenBack();
         }
     }

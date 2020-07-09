@@ -43,7 +43,6 @@ public:
     SpeciesOverlay(ReplaceableScreen& screen,
         const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
         u8 origLevel = 0);
-    ~SpeciesOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

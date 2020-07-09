@@ -34,7 +34,6 @@ class TitleIdOverlay : public ReplaceableScreen
 {
 public:
     TitleIdOverlay(ReplaceableScreen& screen);
-    ~TitleIdOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

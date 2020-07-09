@@ -42,7 +42,6 @@ class StorageScreen : public Screen
 
 public:
     StorageScreen();
-    ~StorageScreen();
 
     void update(touchPosition* touch) override;
     void drawTop() const override;

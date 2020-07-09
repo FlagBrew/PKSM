@@ -37,7 +37,6 @@ class PkmItemOverlay : public ReplaceableScreen
 {
 public:
     PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
-    ~PkmItemOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

@@ -37,7 +37,6 @@ class MainMenu : public Screen
 {
 public:
     MainMenu();
-    ~MainMenu();
     void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;

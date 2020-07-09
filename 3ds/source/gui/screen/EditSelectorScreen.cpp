@@ -198,29 +198,6 @@ EditSelectorScreen::EditSelectorScreen()
     box = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
 
-EditSelectorScreen::~EditSelectorScreen()
-{
-    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
-    {
-        ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
-        int occupiedSlots = 0;
-        for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
-        {
-            if (TitleLoader::save->pkm(u8(0), i)->species())
-            {
-                occupiedSlots++;
-            }
-            else
-            {
-                break;
-            }
-        }
-        ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
-    }
-    TitleLoader::save->cryptBoxData(false);
-    TitleLoader::save->currentBox((u8)box);
-}
-
 void EditSelectorScreen::drawBottom() const
 {
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
@@ -493,7 +470,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else
             {
-                Gui::screenBack();
+                goBack();
                 return;
             }
         }
@@ -759,6 +736,25 @@ bool EditSelectorScreen::goBack()
     }
     else
     {
+        if (TitleLoader::save->generation() == pksm::Generation::LGPE)
+        {
+            ((pksm::SavLGPE*)TitleLoader::save.get())->compressBox();
+            int occupiedSlots = 0;
+            for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
+            {
+                if (TitleLoader::save->pkm(u8(0), i)->species())
+                {
+                    occupiedSlots++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ((pksm::SavLGPE*)TitleLoader::save.get())->boxedPkm(occupiedSlots);
+        }
+        TitleLoader::save->cryptBoxData(false);
+        TitleLoader::save->currentBox((u8)box);
         Gui::screenBack();
     }
     return true;

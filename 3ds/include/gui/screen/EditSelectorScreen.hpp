@@ -37,7 +37,6 @@ class Button;
 class EditSelectorScreen : public Screen
 {
 public:
-    ~EditSelectorScreen();
     EditSelectorScreen();
     // Done with Overlay
     void drawTop() const override {}

@@ -139,14 +139,6 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen,
         ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
-MoveOverlay::~MoveOverlay()
-{
-    if (object.index() == 0)
-    {
-        std::get<0>(object)->fixMoves();
-    }
-}
-
 void MoveOverlay::drawBottom() const
 {
     dim();
@@ -259,6 +251,10 @@ void MoveOverlay::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
+        if (object.index() == 0)
+        {
+            std::get<0>(object)->fixMoves();
+        }
         parent->removeOverlay();
         return;
     }

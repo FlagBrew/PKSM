@@ -36,7 +36,6 @@ class HiddenPowerOverlay : public ReplaceableScreen
 {
 public:
     HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
-    virtual ~HiddenPowerOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

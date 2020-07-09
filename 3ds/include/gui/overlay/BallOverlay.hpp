@@ -37,7 +37,6 @@ class BallOverlay : public ReplaceableScreen
 {
 public:
     BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
-    virtual ~BallOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

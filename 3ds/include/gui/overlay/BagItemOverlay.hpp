@@ -64,7 +64,6 @@ public:
         hid.update(items.size());
         hid.select(selected);
     }
-    ~BagItemOverlay() {}
     void drawTop() const override;
     void drawBottom() const override;
     bool replacesTop() const override { return true; }

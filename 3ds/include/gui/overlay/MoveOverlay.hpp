@@ -41,7 +41,6 @@ public:
     MoveOverlay(ReplaceableScreen& screen,
         const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& pkm,
         int moveIndex);
-    ~MoveOverlay();
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

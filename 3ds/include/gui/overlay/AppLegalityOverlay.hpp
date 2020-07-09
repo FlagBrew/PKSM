@@ -38,7 +38,6 @@ class AppLegalityOverlay : public ReplaceableScreen
 {
 public:
     AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
-    ~AppLegalityOverlay() {}
     void drawTop() const override {} // Handled by ImageViewOverlay
     bool replacesTop() const override { return false; }
     void drawBottom() const override;

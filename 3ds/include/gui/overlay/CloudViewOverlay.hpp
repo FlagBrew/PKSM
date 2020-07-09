@@ -38,7 +38,6 @@ public:
         : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pk, true, "")
     {
     }
-    virtual ~CloudViewOverlay() {}
     void update(touchPosition* touch) override;
     void drawBottom() const override { dim(); }
     bool handlesUpdate() const override { return true; }

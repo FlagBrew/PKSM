@@ -37,7 +37,6 @@ class ExtraSavesScreen : public Screen
 {
 public:
     ExtraSavesScreen();
-    virtual ~ExtraSavesScreen();
 
     void update(touchPosition* touch) override;
     void drawTop(void) const override;

@@ -145,7 +145,7 @@ public:
 
 private:
     Configuration(void);
-    ~Configuration(void);
+    ~Configuration();
 
     Configuration(const Configuration&) = delete;
     void operator=(const Configuration&) = delete;

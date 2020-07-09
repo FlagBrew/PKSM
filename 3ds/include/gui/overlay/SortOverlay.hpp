@@ -45,7 +45,6 @@ public:
         hid.update(vals.size());
         hid.select(int(type));
     }
-    virtual ~SortOverlay() {}
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;

@@ -48,7 +48,6 @@ public:
           currentlySelecting(currentlySelecting)
     {
     }
-    virtual ~StorageViewOverlay() {}
     void update(touchPosition* touch) override;
     void drawBottom() const override;
     bool handlesUpdate() const override { return true; }

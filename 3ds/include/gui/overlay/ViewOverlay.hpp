@@ -39,7 +39,6 @@ public:
         : ReplaceableScreen(&screen, instr), pkm(pokemon), green(green)
     {
     }
-    virtual ~ViewOverlay() {}
     virtual void drawTop() const override;
     bool replacesTop() const override { return true; }
     virtual void drawBottom() const override {}

@@ -44,7 +44,6 @@ class STDirectory
 {
 public:
     STDirectory(const std::string& root);
-    ~STDirectory(void){};
 
     Result error(void);
     std::string item(size_t index);

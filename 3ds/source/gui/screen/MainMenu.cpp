@@ -102,8 +102,6 @@ MainMenu::MainMenu() : Screen(i18n::localize("X_SAVE"))
     makeInstructions();
 }
 
-MainMenu::~MainMenu() {}
-
 void MainMenu::makeButtons()
 {
     buttons[0] = std::make_unique<MainMenuButton>(15, 20, 140, 53, []() { return goToScreen(0); },
