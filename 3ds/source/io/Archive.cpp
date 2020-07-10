@@ -317,8 +317,8 @@ Result Archive::moveFile(Archive& src, FS_Path file, Archive& dst, FS_Path dest)
         if (stream)
         {
             u64 target = stream->size();
-            dst.createFile(dest, 0, target);
-            auto out = dst.file(dest, FS_OPEN_WRITE);
+            res        = dst.createFile(dest, 0, target);
+            auto out   = dst.file(dest, FS_OPEN_WRITE);
             if (out)
             {
                 size_t written = 0;
