@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STRINGS="./assets/romfs/i18n/en/gui.json"
+STRINGS="./assets/gui_strings/eng/gui.json"
 
 while IFS= read -r line
 do

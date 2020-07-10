@@ -550,7 +550,7 @@ Result Archive::init(const std::string& execPath)
         auto checkFile = data().file(fsMakePath(PATH_UTF16, u"/sizeCheck"), FS_OPEN_READ);
         if (!checkFile)
         {
-            if (R_FAILED(res = moveDir(data(), u"/", sd(), u"/3ds/PKSM/extdata")))
+            if (R_FAILED(res = copyDir(data(), u"/", sd(), u"/3ds/PKSM/extdata")))
                 return res;
 
             if (R_FAILED(res = data().close()))
