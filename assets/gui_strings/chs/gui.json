@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "豪华高贵奖章",
     "GPSS_BANNED": "You have been banned from the GPSS!",
     "GPSS_BROWSE": "浏览GPSS",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "下载此GPSS Pok\u00e9mon?",
     "GPSS_DOWNLOAD_GROUP": "Download group from GPSS?",
     "GPSS_TEMP_DISABLED": "Uploading to the GPSS has been temporarily disabled!",

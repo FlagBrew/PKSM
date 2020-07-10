@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "Hinrei\u00dfendes K\u00f6nigliches Band",
     "GPSS_BANNED": "Du wurdest aus dem GPSS verbannt!",
     "GPSS_BROWSE": "Durchsuche GPSS",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "Dieses GPSS Pok\u00e9mon runterladen?",
     "GPSS_DOWNLOAD_GROUP": "Gruppe von GPSS herunterladen?",
     "GPSS_TEMP_DISABLED": "Das Hochladen zum GPSS wurde vorübergehend deaktiviert!",

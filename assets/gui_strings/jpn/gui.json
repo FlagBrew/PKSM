@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "ゴージャスロイヤルリボン",
     "GPSS_BANNED": "あなたはGPSSから禁止されています!",
     "GPSS_BROWSE": "GPSSをブラウズ",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "このGPSSポケモンをダウンロードしますか?",
     "GPSS_DOWNLOAD_GROUP": "GPSSからグループをダウンロードしますか?",
     "GPSS_TEMP_DISABLED": "GPSSへのアップロードは一時的に無効しました!",

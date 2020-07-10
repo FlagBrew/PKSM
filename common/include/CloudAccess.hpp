@@ -49,8 +49,8 @@ public:
     long pkm(std::shared_ptr<pksm::PKX> pk);
     int pages() const;
     int page() const { return pageNumber; }
-    bool nextPage();
-    bool prevPage();
+    std::optional<int> nextPage();
+    std::optional<int> prevPage();
     void sortType(SortType type)
     {
         if (sort != type)
@@ -81,6 +81,7 @@ public:
     void filterToGen(pksm::Generation g);
     void removeGenFilter();
     bool good() const { return isGood; }
+    int currentPageError() const { return current->siteJsonErrorCode; }
     static std::string makeURL(int page, SortType type, bool ascend, bool legal,
         pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
@@ -90,7 +91,8 @@ private:
     {
         ~Page();
         std::unique_ptr<nlohmann::json> data;
-        std::atomic<bool> available = false;
+        std::atomic<bool> available        = false;
+        std::atomic<int> siteJsonErrorCode = 0;
     };
     void refreshPages();
     static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,

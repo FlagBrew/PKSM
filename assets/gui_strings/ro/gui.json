@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "Panglică Regală Minunată",
     "GPSS_BANNED": "Accesul la GPSS este interzis!",
     "GPSS_BROWSE": "Uită-te prin GPSS",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "Downloadezi acest Pok\u00e9mon GPSS?",
     "GPSS_DOWNLOAD_GROUP": "Downloadezi acest grup GPSS?",
     "GPSS_TEMP_DISABLED": "Upload-urile către GPSS au fost dezactivate temporar!",

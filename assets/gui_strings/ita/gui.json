@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "Fiocco Meraviglia Reale",
     "GPSS_BANNED": "Sei stato bannato dal GPSS!",
     "GPSS_BROWSE": "Naviga GPSS",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "Scaricare questo Pok\u00e9mon dal GPSS?",
     "GPSS_DOWNLOAD_GROUP": "Scaricare questo gruppo dal GPSS?",
     "GPSS_TEMP_DISABLED": "L'upload verso il GPSS è stato disabilitato temporaneamente!",

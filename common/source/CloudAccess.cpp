@@ -73,6 +73,15 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
                         page->data = nullptr;
                     }
                     break;
+                case 401:
+                {
+                    nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
+                    if (retJson.contains("error_code") && retJson["error_code"].is_number_integer())
+                    {
+                        page->siteJsonErrorCode = retJson["error_code"].get<int>();
+                    }
+                }
+                break;
                 default:
                     break;
             }
@@ -92,13 +101,45 @@ void CloudAccess::refreshPages()
     current            = std::make_shared<Page>();
     current->data      = std::make_unique<nlohmann::json>(grabPage(pageNumber));
     current->available = true;
-    isGood             = (bool)current->data && pageIsGood(*current->data);
+    if (current->data)
+    {
+        if (pageIsGood(*current->data))
+        {
+            isGood = true;
+        }
+        else
+        {
+            isGood = false;
+            if (current->data->contains("error_code") &&
+                (*current->data)["error_code"].is_number_integer())
+            {
+                current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                current->data              = nullptr;
+            }
+        }
+    }
     if (isGood && pageNumber >= pages())
     {
         pageNumber         = pages();
         current->data      = std::make_unique<nlohmann::json>(grabPage(pages()));
         current->available = true;
-        isGood             = (bool)current->data && pageIsGood(*current->data);
+        if (current->data)
+        {
+            if (pageIsGood(*current->data))
+            {
+                isGood = true;
+            }
+            else
+            {
+                isGood = false;
+                if (current->data->contains("error_code") &&
+                    (*current->data)["error_code"].is_number_integer())
+                {
+                    current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                    current->data              = nullptr;
+                }
+            }
+        }
     }
     if (isGood)
     {
@@ -137,15 +178,6 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
     else if (std::get<1>(res) == CURLE_OK)
     {
-        long status_code;
-        fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-        switch (status_code)
-        {
-            case 200:
-                break;
-            default:
-                return {};
-        }
         return nlohmann::json::parse(retData, nullptr, false);
     }
     else
@@ -212,7 +244,7 @@ std::shared_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
     return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
-bool CloudAccess::nextPage()
+std::optional<int> CloudAccess::nextPage()
 {
     while (!next->available)
     {
@@ -221,7 +253,8 @@ bool CloudAccess::nextPage()
     }
     if (!next->data || next->data->is_discarded())
     {
-        return isGood = false;
+        isGood = false;
+        return next->siteJsonErrorCode;
     }
     // Update data
     pageNumber = (pageNumber % pages()) + 1;
@@ -240,10 +273,10 @@ bool CloudAccess::nextPage()
         downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
     }
 
-    return isGood;
+    return std::nullopt;
 }
 
-bool CloudAccess::prevPage()
+std::optional<int> CloudAccess::prevPage()
 {
     while (!prev->available)
     {
@@ -252,7 +285,8 @@ bool CloudAccess::prevPage()
     }
     if (!prev->data || prev->data->is_discarded())
     {
-        return isGood = false;
+        isGood = false;
+        return prev->siteJsonErrorCode;
     }
     // Update data
     pageNumber = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
@@ -271,7 +305,7 @@ bool CloudAccess::prevPage()
         downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
     }
 
-    return isGood;
+    return std::nullopt;
 }
 
 long CloudAccess::pkm(std::shared_ptr<pksm::PKX> mon)

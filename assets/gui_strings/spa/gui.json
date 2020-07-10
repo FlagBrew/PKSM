@@ -282,6 +282,7 @@
     "GORGEOUS_ROYAL_RIBBON": "Cinta Realeza Maravilla",
     "GPSS_BANNED": "¡Has sido vetado del uso de GPSS!",
     "GPSS_BROWSE": "Navegar GPSS",
+    "GPSS_COMMUNICATION_ERROR": "Error communicating with GPSS:\n{:d}",
     "GPSS_DOWNLOAD": "¿Descargar este Pok\u00e9mon de la GPSS?",
     "GPSS_DOWNLOAD_GROUP": "¿Descargar este grupo de la GPPSS?",
     "GPSS_TEMP_DISABLED": "El GPSS ha sido desactivado temporalmente.",
