@@ -27,6 +27,7 @@
 #include "PkmUtils.hpp"
 #include "Configuration.hpp"
 #include "enums/Generation.hpp"
+#include "gui.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
@@ -63,26 +64,18 @@ namespace
     {
         if constexpr (gen == pksm::Generation::SIX)
         {
-            if (pkm.country() == 0)
+            if (pkm.consoleRegion() == 0 && pkm.country() == 0 && pkm.region() == 0)
             {
                 pkm.country(1);
-                g6Save = true;
-            }
-            if (pkm.region() == 0)
-            {
                 pkm.region(2);
                 g6Save = true;
             }
         }
         else if constexpr (gen == pksm::Generation::SEVEN)
         {
-            if (pkm.country() == 0)
+            if (pkm.consoleRegion() == 0 && pkm.country() == 0 && pkm.region() == 0)
             {
                 pkm.country(1);
-                g7Save = true;
-            }
-            if (pkm.region() == 0)
-            {
                 pkm.region(2);
                 g7Save = true;
             }
@@ -98,16 +91,16 @@ namespace
         if (stat(pkmFile.c_str(), &statStruct) == 0)
         {
             // Check that the size matches a valid size
-            auto ret = pksm::PKX::getPKM<gen>(nullptr, size_t(statStruct.st_size));
-            if (ret)
+            if (pksm::GenToPkx<gen>::PKX::BOX_LENGTH == statStruct.st_size ||
+                pksm::GenToPkx<gen>::PKX::PARTY_LENGTH == statStruct.st_size)
             {
-                FILE* file = fopen(fileName.c_str(), "rb");
+                FILE* file = fopen(pkmFile.c_str(), "rb");
                 if (file)
                 {
-                    u8* data = new u8[ret->getLength()];
-                    fread(data, 1, ret->getLength(), file);
+                    u8* data = new u8[pksm::GenToPkx<gen>::PKX::BOX_LENGTH];
+                    fread(data, 1, pksm::GenToPkx<gen>::PKX::BOX_LENGTH, file);
                     fclose(file);
-                    ret = pksm::PKX::getPKM<gen>(data);
+                    auto ret = pksm::PKX::getPKM<gen>(data);
                     delete[] data;
                     updatePkm<gen>(*ret);
                     return ret;
