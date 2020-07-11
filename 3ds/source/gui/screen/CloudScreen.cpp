@@ -642,7 +642,7 @@ bool CloudScreen::prevBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        prevBoxTop();
+        return prevBoxTop();
     }
     else
     {
@@ -677,7 +677,7 @@ bool CloudScreen::nextBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        nextBoxTop();
+        return nextBoxTop();
     }
     else
     {

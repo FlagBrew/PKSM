@@ -353,7 +353,15 @@ void GroupCloudScreen::update(touchPosition* touch)
 {
     if (!access.good())
     {
-        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        if (access.currentPageError() != 0)
+        {
+            Gui::warn(
+                fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), access.currentPageError()));
+        }
+        else
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        }
         Gui::screenBack();
         return;
     }
@@ -607,12 +615,7 @@ bool GroupCloudScreen::prevBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        if (!access.prevPage())
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-            Gui::screenBack();
-            return true;
-        }
+        return prevBoxTop();
     }
     else
     {
@@ -627,9 +630,16 @@ bool GroupCloudScreen::prevBox(bool forceBottom)
 
 bool GroupCloudScreen::prevBoxTop()
 {
-    if (!access.prevPage())
+    if (auto err = access.prevPage())
     {
-        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        if (*err != 0)
+        {
+            Gui::warn(fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+        }
+        else
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        }
         Gui::screenBack();
         return true;
     }
@@ -640,12 +650,7 @@ bool GroupCloudScreen::nextBox(bool forceBottom)
 {
     if (cloudChosen && !forceBottom)
     {
-        if (!access.nextPage())
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-            Gui::screenBack();
-            return true;
-        }
+        return nextBoxTop();
     }
     else
     {
@@ -660,9 +665,16 @@ bool GroupCloudScreen::nextBox(bool forceBottom)
 
 bool GroupCloudScreen::nextBoxTop()
 {
-    if (!access.nextPage())
+    if (auto err = access.nextPage())
     {
-        Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        if (*err != 0)
+        {
+            Gui::warn(fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+        }
+        else
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        }
         Gui::screenBack();
         return true;
     }

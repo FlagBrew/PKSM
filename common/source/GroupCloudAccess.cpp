@@ -63,6 +63,15 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
                         page->data = nullptr;
                     }
                     break;
+                case 401:
+                {
+                    nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
+                    if (retJson.contains("error_code") && retJson["error_code"].is_number_integer())
+                    {
+                        page->siteJsonErrorCode = retJson["error_code"].get<int>();
+                    }
+                }
+                break;
                 default:
                     break;
             }
@@ -82,13 +91,45 @@ void GroupCloudAccess::refreshPages()
     current            = std::make_shared<Page>();
     current->data      = std::make_unique<nlohmann::json>(grabPage(pageNumber));
     current->available = true;
-    isGood             = (bool)current->data && pageIsGood(*current->data);
+    if (current->data)
+    {
+        if (pageIsGood(*current->data))
+        {
+            isGood = true;
+        }
+        else
+        {
+            isGood = false;
+            if (current->data->contains("error_code") &&
+                (*current->data)["error_code"].is_number_integer())
+            {
+                current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                current->data              = nullptr;
+            }
+        }
+    }
     if (isGood && pageNumber >= pages())
     {
         pageNumber         = pages();
         current->data      = std::make_unique<nlohmann::json>(grabPage(pages()));
         current->available = true;
-        isGood             = (bool)current->data && pageIsGood(*current->data);
+        if (current->data)
+        {
+            if (pageIsGood(*current->data))
+            {
+                isGood = true;
+            }
+            else
+            {
+                isGood = false;
+                if (current->data->contains("error_code") &&
+                    (*current->data)["error_code"].is_number_integer())
+                {
+                    current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                    current->data              = nullptr;
+                }
+            }
+        }
     }
     if (isGood)
     {
@@ -126,15 +167,6 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
     }
     else if (std::get<1>(res) == CURLE_OK)
     {
-        long status_code;
-        fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-        switch (status_code)
-        {
-            case 200:
-                break;
-            default:
-                return {};
-        }
         return nlohmann::json::parse(retData, nullptr, false);
     }
     else
@@ -152,7 +184,7 @@ std::string GroupCloudAccess::makeURL(
            "&page=" + std::to_string(num) + (legal ? "&legal_only=yes" : "");
 }
 
-bool GroupCloudAccess::nextPage()
+std::optional<int> GroupCloudAccess::nextPage()
 {
     while (!next->available)
     {
@@ -161,7 +193,8 @@ bool GroupCloudAccess::nextPage()
     }
     if (!next->data || next->data->is_discarded())
     {
-        return isGood = false;
+        isGood = false;
+        return next->siteJsonErrorCode;
     }
     // Update data
     pageNumber = (pageNumber % pages()) + 1;
@@ -180,10 +213,10 @@ bool GroupCloudAccess::nextPage()
         downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
     }
 
-    return isGood;
+    return std::nullopt;
 }
 
-bool GroupCloudAccess::prevPage()
+std::optional<int> GroupCloudAccess::prevPage()
 {
     while (!prev->available)
     {
@@ -192,7 +225,8 @@ bool GroupCloudAccess::prevPage()
     }
     if (!prev->data || prev->data->is_discarded())
     {
-        return isGood = false;
+        isGood = false;
+        return prev->siteJsonErrorCode;
     }
     // Update data
     pageNumber = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
@@ -211,7 +245,7 @@ bool GroupCloudAccess::prevPage()
         downloadGroupPage(next, nextPage, legal, low, high, LGPE);
     }
 
-    return isGood;
+    return std::nullopt;
 }
 
 int GroupCloudAccess::pages() const
