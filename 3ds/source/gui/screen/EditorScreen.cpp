@@ -406,7 +406,7 @@ bool EditorScreen::goBack()
     if (saved() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
     {
         Gui::screenBack();
-        if (!emergency)
+        if (!emergency && TitleLoader::save)
         {
             TitleLoader::save->fixParty();
         }
