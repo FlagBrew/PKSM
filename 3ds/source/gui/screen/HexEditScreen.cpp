@@ -1290,9 +1290,9 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             case 0x33 ... 0x3B:
                 return std::make_pair(&i18n::localize("RIBBONS"), NORMAL);
             case 0x3C:
-                return std::make_pair(&i18n::localize("RIBBON_MEMORY_CONTEST_COUNT"), NORMAL);
+                return std::make_pair(&i18n::localize("BATTLE_MEMORY_RIBBON_COUNT"), NORMAL);
             case 0x3D:
-                return std::make_pair(&i18n::localize("RIBBON_MEMORY_BATTLE_COUNT"), NORMAL);
+                return std::make_pair(&i18n::localize("CONTEST_MEMORY_RIBBON_COUNT"), NORMAL);
             case 0x3E ... 0x3F:
                 return UNUSED;
             case 0x40 ... 0x47:
