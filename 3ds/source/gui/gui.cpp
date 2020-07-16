@@ -871,7 +871,7 @@ void Gui::mainLoop(void)
             screens.top()->getInstructions().drawBottom();
             flushText();
 
-            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
             {
                 setDoHomeDraw();
             }
@@ -891,7 +891,7 @@ void Gui::mainLoop(void)
             screens.top()->doBottomDraw();
             flushText();
 
-            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
             {
                 setDoHomeDraw();
             }
@@ -2398,7 +2398,7 @@ void Gui::error(const std::string& message, Result errorCode)
         target(GFX_BOTTOM);
         sprite(ui_sheet_part_info_bottom_idx, 0, 0);
 
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
         {
             setDoHomeDraw();
         }

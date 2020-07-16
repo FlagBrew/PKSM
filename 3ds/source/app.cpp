@@ -56,7 +56,6 @@ namespace
     std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
     std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
     std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
-    u64 endTid                    = 0;
 
     struct asset
     {
@@ -568,8 +567,8 @@ namespace
         Result res = -1;
         if (execPath.empty())
         {
-            endTid = 0x000400000EC10000;
-            res    = APT_PrepareToDoApplicationJump(0, endTid, MEDIATYPE_SD);
+            aptSetChainloaderToSelf();
+            res = 0;
         }
         else
         {
@@ -941,13 +940,4 @@ Result App::exit(void)
     return 0;
 }
 
-void App::end()
-{
-    if (endTid != 0)
-    {
-        u8 param[0x300];
-        u8 hmac[0x20];
-        APT_DoApplicationJump(param, sizeof(param), hmac);
-        while (true) {}
-    }
-}
+void App::end() {}

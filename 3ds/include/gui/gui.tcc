@@ -26,7 +26,7 @@
 
 namespace Gui
 {
-    template<typename T>
+    template <typename T>
     T Gui::runScreen(RunnableScreen<T>& s)
     {
         while (aptMainLoop() && !s.finished())
@@ -48,7 +48,7 @@ namespace Gui
             hidTouchRead(&touch);
             s.doUpdate(&touch);
 
-            if (!aptIsHomeAllowed() && aptIsHomePressed())
+            if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
             {
                 Gui::setDoHomeDraw();
             }

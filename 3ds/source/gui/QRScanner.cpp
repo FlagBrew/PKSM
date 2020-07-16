@@ -135,7 +135,7 @@ void QRData::drawThread()
             TextPosX::CENTER, TextPosY::TOP);
         Gui::flushText();
 
-        if (!aptIsHomeAllowed() && aptIsHomePressed())
+        if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
         {
             Gui::setDoHomeDraw();
         }
