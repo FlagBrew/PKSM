@@ -57,6 +57,12 @@ struct QRModeTraits<pksm::PKX>
 };
 
 template <>
+struct QRModeTraits<pksm::PK3>
+{
+    using ReturnType = std::unique_ptr<pksm::PKX>;
+};
+
+template <>
 struct QRModeTraits<pksm::PK4>
 {
     using ReturnType = std::unique_ptr<pksm::PKX>;
@@ -187,10 +193,11 @@ public:
             return pksm::PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
         }
 
-        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> ||
-                      std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> ||
-                      std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||
-                      std::is_same_v<Mode, pksm::WC7> || std::is_same_v<Mode, pksm::WC8>)
+        if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+                      std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK8> ||
+                      std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
+                      std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC7> ||
+                      std::is_same_v<Mode, pksm::WC8>)
         {
             if (data.size() <= 6 || !std::equal(data.begin(), data.begin() + 6, "null/#"))
             {
@@ -229,53 +236,28 @@ public:
         }
 
         // Uses base64
-        if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5> ||
-                      std::is_same_v<Mode, pksm::PK6> || std::is_same_v<Mode, pksm::PK8> ||
-                      std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
-                      std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC6> ||
-                      std::is_same_v<Mode, pksm::WC7> || std::is_same_v<Mode, pksm::WC8>)
+        if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+                      std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
+                      std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> ||
+                      std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||
+                      std::is_same_v<Mode, pksm::WC6> || std::is_same_v<Mode, pksm::WC7> ||
+                      std::is_same_v<Mode, pksm::WC8>)
         {
             std::vector<u8> decoded =
                 base64_decode((const char*)data.data() + b64Begin, data.size() - b64Begin);
 
-            if constexpr (std::is_same_v<Mode, pksm::PK4> || std::is_same_v<Mode, pksm::PK5>)
+            if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+                          std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
+                          std::is_same_v<Mode, pksm::PK8>)
             {
-                if (decoded.size() != pksm::PK4::BOX_LENGTH) // PK4/PK5 length
+                auto ret = pksm::PKX::getPKM<Mode>(decoded.data(), decoded.size());
+                if (!ret)
                 {
                     Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
                     return nullptr;
                 }
 
-                if (std::is_same_v<Mode, pksm::PK4>)
-                {
-                    return pksm::PKX::getPKM<pksm::Generation::FOUR>(decoded.data());
-                }
-                else
-                {
-                    return pksm::PKX::getPKM<pksm::Generation::FIVE>(decoded.data());
-                }
-            }
-
-            if constexpr (std::is_same_v<Mode, pksm::PK6>)
-            {
-                if (decoded.size() != pksm::PK6::BOX_LENGTH)
-                {
-                    Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
-                    return nullptr;
-                }
-
-                return pksm::PKX::getPKM<pksm::Generation::SIX>(decoded.data());
-            }
-
-            if constexpr (std::is_same_v<Mode, pksm::PK8>)
-            {
-                if (decoded.size() != pksm::PK8::BOX_LENGTH)
-                {
-                    Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
-                    return nullptr;
-                }
-
-                return pksm::PKX::getPKM<pksm::Generation::EIGHT>(decoded.data());
+                return ret;
             }
 
             // Interchangeable, so has to be separate

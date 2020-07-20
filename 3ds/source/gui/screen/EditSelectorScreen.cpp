@@ -95,6 +95,9 @@ bool EditSelectorScreen::doQR()
     std::shared_ptr<pksm::PKX> pkm;
     switch (TitleLoader::save->generation())
     {
+        case pksm::Generation::THREE:
+            pkm = QRScanner<pksm::PK3>::scan();
+            break;
         case pksm::Generation::FOUR:
             pkm = QRScanner<pksm::PK4>::scan();
             break;
