@@ -231,8 +231,8 @@ void SpeciesOverlay::update(touchPosition* touch)
                 auto pkm = std::get<0>(object);
                 if (pkm->species() == pksm::Species::None || !pkm->nicknamed())
                 {
-                    std::string nick = i18n::species(pkm->language(), species);
-                    if (pkm->generation() == pksm::Generation::FOUR)
+                    std::string nick = species.localize(pkm->language());
+                    if (pkm->generation() <= pksm::Generation::FOUR)
                     {
                         nick = StringUtils::toUpper(nick);
                     }

@@ -943,7 +943,12 @@ void pkx_generate(
     }
 
     // From SpeciesOverlay
-    pkm->nickname(i18n::species(pkm->language(), pksm::Species{u16(species)}));
+    std::string nick = pkm->species().localize(pkm->language());
+    if (pkm->generation() <= pksm::Generation::FOUR)
+    {
+        nick = StringUtils::toUpper(nick);
+    }
+    pkm->nickname(nick);
     pkm->species(pksm::Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
