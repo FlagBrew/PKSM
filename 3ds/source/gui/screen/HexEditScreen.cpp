@@ -2317,17 +2317,17 @@ void HexEditScreen::drawMeaning() const
                     break;
                 case 0x28:
                     Gui::text(i18n::localize("MOVE_1") + " - " + std::to_string((int)pkm->PPUp(0)),
-                        160, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    Gui::text(i18n::localize("MOVE_2") + " - " + std::to_string((int)pkm->PPUp(1)),
-                        160, 85, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    Gui::text(i18n::localize("MOVE_3") + " - " + std::to_string((int)pkm->PPUp(2)),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-                    Gui::text(i18n::localize("MOVE_4") + " - " + std::to_string((int)pkm->PPUp(3)),
+                    Gui::text(i18n::localize("MOVE_2") + " - " + std::to_string((int)pkm->PPUp(1)),
                         160, 115, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::localize("MOVE_3") + " - " + std::to_string((int)pkm->PPUp(2)),
+                        160, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    Gui::text(i18n::localize("MOVE_4") + " - " + std::to_string((int)pkm->PPUp(3)),
+                        160, 145, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x2C ... 0x33:
                     Gui::text(i18n::move(Configuration::getInstance().language(),
-                                  pkm->move((i - 0x28) / 2)),
+                                  pkm->move((i - 0x2C) / 2)),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
