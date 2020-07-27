@@ -718,6 +718,7 @@ bool StorageScreen::prevBox(bool forceBottom)
             boxBox = TitleLoader::save->maxBoxes() - 1;
         }
     }
+    currentlySelecting = false;
     return false;
 }
 
@@ -728,6 +729,7 @@ bool StorageScreen::prevBoxTop()
     {
         storageBox = Banks::bank->boxes() - 1;
     }
+    currentlySelecting = false;
     return false;
 }
 
@@ -749,6 +751,7 @@ bool StorageScreen::nextBox(bool forceBottom)
             boxBox = 0;
         }
     }
+    currentlySelecting = false;
     return false;
 }
 
@@ -759,6 +762,7 @@ bool StorageScreen::nextBoxTop()
     {
         storageBox = 0;
     }
+    currentlySelecting = false;
     return false;
 }
 
@@ -1316,7 +1320,31 @@ void StorageScreen::pickup()
 
 bool StorageScreen::dumpPkm()
 {
-    if (cursorIndex != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
+    std::unique_ptr<pksm::PKX> dumpMon;
+    if (cursorIndex == 0)
+    {
+        return false;
+    }
+
+    if (storageChosen)
+    {
+        dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
+    }
+    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    {
+        dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+    }
+    else
+    {
+        return false;
+    }
+
+    if (dumpMon->species() == pksm::Species::None)
+    {
+        return false;
+    }
+
+    if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
         DateTime now     = DateTime::now();
         std::string path = fmt::format(
@@ -1324,58 +1352,17 @@ bool StorageScreen::dumpPkm()
         mkdir(path.c_str(), 777);
         path +=
             fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
-        std::shared_ptr<pksm::PKX> dumpMon;
-        if (!storageChosen)
+        path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() +
+                " - " + fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
+        FILE* out = fopen(path.c_str(), "wb");
+        if (out)
         {
-            if (cursorIndex == 0)
-            {
-                return false;
-            }
-            else
-            {
-                if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
-                {
-                    return false;
-                }
-                dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
-                path += " - " + std::to_string(int(dumpMon->species())) + " - " +
-                        dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-                FILE* out = fopen(path.c_str(), "wb");
-                if (out)
-                {
-                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
-                    fclose(out);
-                }
-                else
-                {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
-                }
-            }
+            fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+            fclose(out);
         }
         else
         {
-            if (cursorIndex == 0)
-            {
-                return false;
-            }
-            else
-            {
-                dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-                path += " - " + std::to_string(int(dumpMon->species())) + " - " +
-                        dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-                FILE* out = fopen(path.c_str(), "wb");
-                if (out)
-                {
-                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
-                    fclose(out);
-                }
-                else
-                {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
-                }
-            }
+            Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
         }
         return true;
     }
