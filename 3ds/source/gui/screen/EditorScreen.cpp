@@ -804,9 +804,11 @@ bool EditorScreen::selectItem()
 
 bool EditorScreen::selectForm()
 {
-    static constexpr std::array<pksm::Species, 2> noChange = {pksm::Species::Xerneas,
-        pksm::Species::Yveltal}; // Xerneas & Yveltal because their forms are dumb and do nothing
-                                 // and we don't have sprites for them
+    static constexpr std::array<pksm::Species, 3> noChange = {pksm::Species::Xerneas,
+        pksm::Species::Yveltal,
+        pksm::Species::Mothim}; // Xerneas & Yveltal because their forms are dumb and do nothing
+                                // and we don't have sprites for them
+                                // Mothim because there's no difference
     if (std::any_of(noChange.begin(), noChange.end(),
             [this](const pksm::Species& badSpecies) { return badSpecies == pkm->species(); }))
     {
