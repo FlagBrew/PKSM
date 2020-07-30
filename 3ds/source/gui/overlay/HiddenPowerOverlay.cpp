@@ -35,7 +35,7 @@ HiddenPowerOverlay::HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_pt
       hid(16, 4)
 {
     hid.update(16);
-    hid.select(size_t(pkm->hpType()));
+    hid.select(size_t(pkm->hpType()) - 1);
 }
 
 void HiddenPowerOverlay::drawBottom() const
