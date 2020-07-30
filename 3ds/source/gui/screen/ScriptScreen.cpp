@@ -284,11 +284,6 @@ void ScriptScreen::updateEntries()
         currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
         return;
     }
-    if (currDir.count() == 0)
-    {
-        currFiles.push_back({i18n::localize("EMPTY"), false});
-        return;
-    }
     for (size_t i = 0; i < currDir.count(); i++)
     {
         std::string item = currDir.item(i);
@@ -296,6 +291,10 @@ void ScriptScreen::updateEntries()
         {
             currFiles.push_back(std::make_pair(item, currDir.folder(i)));
         }
+    }
+    if (currFiles.empty())
+    {
+        currFiles.push_back({i18n::localize("EMPTY"), false});
     }
     std::sort(currFiles.begin(), currFiles.end(),
         [this](
