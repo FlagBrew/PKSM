@@ -25,6 +25,7 @@
  */
 
 #include "STDirectory.hpp"
+#include <string.h>
 
 STDirectory::STDirectory(const std::string& root) : mError(0), mGood(false)
 {
@@ -41,7 +42,11 @@ STDirectory::STDirectory(const std::string& root) : mError(0), mGood(false)
         struct dirent* ent;
         while ((ent = readdir(dir)))
         {
-            mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);
+            // Don't insert the implicit . and .. folders because ew
+            if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, ".."))
+            {
+                mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);
+            }
         }
     }
 

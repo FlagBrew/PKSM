@@ -190,8 +190,11 @@ void ScriptScreen::drawBottom() const
     Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP, TextWidthAction::SQUISH, 318);
 
-    Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT,
-        TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
+    if (!currFiles.empty())
+    {
+        Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
+    }
 }
 
 void ScriptScreen::update(touchPosition* touch)
