@@ -38,7 +38,7 @@ class Bank;
 
 namespace Banks
 {
-    inline std::shared_ptr<Bank> bank = nullptr;
+    inline std::unique_ptr<Bank> bank = nullptr;
     Result init();
     Result swapSD(bool toSD);
     Result saveJson();

@@ -124,7 +124,7 @@ bool Banks::loadBank(const std::string& name, const std::optional<int>& maxBoxes
             saveJson();
             found = g_banks.find(name);
         }
-        bank = std::make_shared<Bank>(found.key(), found.value().get<int>());
+        bank = std::make_unique<Bank>(found.key(), found.value().get<int>());
         return true;
     }
     return false;
