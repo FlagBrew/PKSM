@@ -43,6 +43,7 @@
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "io.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK4.hpp"
@@ -1318,51 +1319,91 @@ void StorageScreen::pickup()
     postPickup();
 }
 
-bool StorageScreen::dumpPkm()
+void StorageScreen::doDump(const pksm::PKX& dumpMon)
 {
-    std::unique_ptr<pksm::PKX> dumpMon;
-    if (cursorIndex == 0)
-    {
-        return false;
-    }
+    DateTime now       = DateTime::now();
+    std::string folder = fmt::format(
+        FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
+    mkdir(folder.c_str(), 777);
+    std::string outPath;
+    size_t newFileNumber = 0;
 
-    if (storageChosen)
+    // Makes sure to handle possible dumping of duplicates in the same second
+    // Not really a likely scenario, but much better than overwriting the old one
+    do
     {
-        dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-    }
-    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        if (newFileNumber == 0)
+        {
+            outPath = fmt::format(FMT_STRING("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}{:s}"),
+                folder, now.hour(), now.minute(), now.second(), int(dumpMon.species()),
+                dumpMon.nickname(), dumpMon.PID(), dumpMon.extension());
+        }
+        else
+        {
+            outPath =
+                fmt::format(FMT_STRING("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}({:d}){:s}"),
+                    folder, now.hour(), now.minute(), now.second(), int(dumpMon.species()),
+                    dumpMon.nickname(), dumpMon.PID(), newFileNumber, dumpMon.extension());
+        }
+        newFileNumber++;
+    } while (io::exists(outPath));
+
+    FILE* out = fopen(outPath.c_str(), "wb");
+    if (out)
     {
-        dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        fwrite(dumpMon.rawData(), 1, dumpMon.getLength(), out);
+        fclose(out);
     }
     else
     {
+        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
+    }
+}
+
+bool StorageScreen::dumpPkm()
+{
+    std::unique_ptr<pksm::PKX> dumpMon;
+    if (cursorIndex == 0 && moveMon.empty())
+    {
         return false;
     }
 
-    if (dumpMon->species() == pksm::Species::None)
+    if (moveMon.empty())
     {
-        return false;
+        if (storageChosen)
+        {
+            dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
+        }
+        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        {
+            dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
+        }
+        else
+        {
+            return false;
+        }
+
+        if (!dumpMon || dumpMon->species() == pksm::Species::None)
+        {
+            return false;
+        }
     }
 
     if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
     {
-        DateTime now     = DateTime::now();
-        std::string path = fmt::format(
-            FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
-        mkdir(path.c_str(), 777);
-        path +=
-            fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
-        path += " - " + std::to_string(int(dumpMon->species())) + " - " + dumpMon->nickname() +
-                " - " + fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
-        FILE* out = fopen(path.c_str(), "wb");
-        if (out)
+        if (moveMon.empty())
         {
-            fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
-            fclose(out);
+            doDump(*dumpMon);
         }
         else
         {
-            Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
+            for (const auto& pkm : moveMon)
+            {
+                if (pkm)
+                {
+                    doDump(*pkm);
+                }
+            }
         }
         return true;
     }

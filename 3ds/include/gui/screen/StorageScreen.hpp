@@ -49,6 +49,7 @@ public:
 
 private:
     static constexpr PKSM_Color COLOR_GREEN_HIGHLIGHT = PKSM_Color(0x50, 0xC0, 0x40, 0xC0);
+    static void doDump(const pksm::PKX& dumpMon);
 
     bool swapBoxWithStorage();
     bool showViewer();
