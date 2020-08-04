@@ -504,8 +504,7 @@ void BagScreen::setCount(int selected)
     if (id > 0)
     {
         SwkbdState state;
-        swkbdInit(
-            &state, SWKBD_TYPE_NUMPAD, 2, item->maxCount() < 10000 ? 4 : 5);
+        swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, item->maxCount() < 10000 ? 4 : 5);
         swkbdSetHintText(&state, i18n::localize("ITEMS").c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
         char input[6]   = {0};
