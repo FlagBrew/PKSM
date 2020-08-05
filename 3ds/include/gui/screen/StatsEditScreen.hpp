@@ -38,7 +38,7 @@ class Button;
 class StatsEditScreen : public Screen
 {
 public:
-    StatsEditScreen(std::shared_ptr<pksm::PKX> pkm);
+    StatsEditScreen(pksm::PKX& pkm);
     // Done in Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -51,7 +51,7 @@ private:
     bool changeSecondaryStat(pksm::Stat which, bool up);
     void setSecondaryStat(pksm::Stat which);
     bool setHP();
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     std::vector<std::unique_ptr<Button>> buttons;
 };
 

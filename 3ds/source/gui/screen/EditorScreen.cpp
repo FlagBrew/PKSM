@@ -60,8 +60,8 @@
 #define NO_TEXT_CLICK(x, y, w, h, function, image)                                                 \
     std::make_unique<ClickButton>(x, y, w, h, function, image, "", 0.0f, COLOR_BLACK)
 
-EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int index, bool emergency)
-    : pkm(pokemon), box(box), index(index), emergency(emergency)
+EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int index, bool emergency)
+    : pkm(std::move(pokemon)), box(box), index(index), emergency(emergency)
 {
     addOverlay<ViewOverlay>(pkm, false);
 
@@ -150,7 +150,7 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
                     break;
             }
         }
-        addOverlay<SpeciesOverlay>(pkm, level);
+        addOverlay<SpeciesOverlay>(*pkm, level);
     }
 
     buttons.push_back(NO_TEXT_CLICK(
@@ -218,21 +218,21 @@ EditorScreen::EditorScreen(std::shared_ptr<pksm::PKX> pokemon, int box, int inde
         [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
     buttons.push_back(std::make_unique<Button>(204, 109, 108, 30,
         [this]() {
-            Gui::setScreen(std::make_unique<StatsEditScreen>(pkm));
+            Gui::setScreen(std::make_unique<StatsEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(204, 140, 108, 30,
         [this]() {
-            Gui::setScreen(std::make_unique<MoveEditScreen>(pkm));
+            Gui::setScreen(std::make_unique<MoveEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(204, 171, 108, 30,
         [this]() {
-            Gui::setScreen(std::make_unique<MiscEditScreen>(pkm));
+            Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
@@ -377,7 +377,7 @@ void EditorScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_Y)
     {
-        Gui::setScreen(std::make_unique<MiscEditScreen>(pkm));
+        Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
         justSwitched = true;
         return;
     }
@@ -482,7 +482,7 @@ bool EditorScreen::advanceMon(bool forward)
 
 bool EditorScreen::hexEdit()
 {
-    Gui::setScreen(std::make_unique<HexEditScreen>(pkm));
+    Gui::setScreen(std::make_unique<HexEditScreen>(*pkm));
     return false;
 }
 
@@ -690,7 +690,7 @@ bool EditorScreen::save()
 
 bool EditorScreen::selectNature()
 {
-    addOverlay<NatureOverlay>(pkm);
+    addOverlay<NatureOverlay>(*pkm);
     return false;
 }
 
@@ -798,7 +798,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    addOverlay<PkmItemOverlay>(pkm);
+    addOverlay<PkmItemOverlay>(*pkm);
     return false;
 }
 
@@ -831,20 +831,20 @@ bool EditorScreen::selectForm()
     }
     if (count > 1)
     {
-        addOverlay<FormOverlay>(pkm, count);
+        addOverlay<FormOverlay>(*pkm, count);
     }
     return false;
 }
 
 bool EditorScreen::selectBall()
 {
-    addOverlay<BallOverlay>(pkm);
+    addOverlay<BallOverlay>(*pkm);
     return false;
 }
 
 bool EditorScreen::selectSpecies()
 {
-    addOverlay<SpeciesOverlay>(pkm);
+    addOverlay<SpeciesOverlay>(*pkm);
     return false;
 }
 

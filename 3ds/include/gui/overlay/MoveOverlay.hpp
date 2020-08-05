@@ -29,8 +29,7 @@
 
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "pkx/PKFilter.hpp"
-#include "pkx/PKX.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include <variant>
 
 class Button;
@@ -38,9 +37,7 @@ class Button;
 class MoveOverlay : public ReplaceableScreen
 {
 public:
-    MoveOverlay(ReplaceableScreen& screen,
-        const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& pkm,
-        int moveIndex);
+    MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm, int moveIndex);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
@@ -48,7 +45,7 @@ public:
 
 private:
     void searchBar();
-    std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>> object;
+    pksm::IPKFilterable& object;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> moves;
     std::vector<std::pair<int, std::string>> validMoves;

@@ -29,6 +29,8 @@
 
 #include "Screen.hpp"
 #include "pkx/PKX.hpp"
+#include <functional>
+#include <optional>
 
 namespace TextParse
 {
@@ -38,13 +40,14 @@ namespace TextParse
 class ScrollingTextScreen : public Screen
 {
 public:
-    ScrollingTextScreen(const std::string& text, std::shared_ptr<pksm::PKX> pkm);
+    ScrollingTextScreen(
+        const std::string& text, std::optional<std::reference_wrapper<pksm::PKX>> pkm);
     void update(touchPosition* touch) override;
     void drawTop() const override;
     void drawBottom() const override;
 
 protected:
-    std::shared_ptr<pksm::PKX> pkm;
+    std::optional<std::reference_wrapper<pksm::PKX>> pkm;
 
 private:
     std::shared_ptr<TextParse::Text> text;

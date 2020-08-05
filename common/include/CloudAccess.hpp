@@ -42,11 +42,11 @@ public:
         POPULAR
     };
     CloudAccess();
-    std::shared_ptr<pksm::PKX> pkm(size_t slot) const;
+    std::unique_ptr<pksm::PKX> pkm(size_t slot) const;
     bool isLegal(size_t slot) const;
     // Gets the Pokémon and increments the server-side download counter
-    std::shared_ptr<pksm::PKX> fetchPkm(size_t slot) const;
-    long pkm(std::shared_ptr<pksm::PKX> pk);
+    std::unique_ptr<pksm::PKX> fetchPkm(size_t slot) const;
+    long pkm(std::unique_ptr<pksm::PKX> pk);
     int pages() const;
     int page() const { return pageNumber; }
     std::optional<int> nextPage();

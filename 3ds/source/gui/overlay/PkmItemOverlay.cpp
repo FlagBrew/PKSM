@@ -66,20 +66,20 @@ namespace
     }
 }
 
-PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems =
-        pkm->generation() == pksm::Generation::THREE
+        pkm.generation() == pksm::Generation::THREE
             ? i18n::rawItems3(Configuration::getInstance().language())
             : i18n::rawItems(Configuration::getInstance().language());
     const std::set<int>& availableItems =
         TitleLoader::save ? TitleLoader::save->availableItems()
                           : pksm::VersionTables::availableItems(
-                                pksm::GameVersion::oldestVersion(pkm->generation()));
+                                pksm::GameVersion::oldestVersion(pkm.generation()));
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
         if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
@@ -103,9 +103,10 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::
     validItems = items;
 
     hid.update(items.size());
-    u16 item = pkm->generation() == pksm::Generation::THREE ? ((pksm::PK3*)pkm.get())->heldItem3()
-                                                            : pkm->heldItem();
-    int itemIndex = index(items, pkm->generation() == pksm::Generation::THREE
+    u16 item = pkm.generation() == pksm::Generation::THREE
+                   ? reinterpret_cast<pksm::PK3&>(pkm).heldItem3()
+                   : pkm.heldItem();
+    int itemIndex = index(items, pkm.generation() == pksm::Generation::THREE
                                      ? i18n::item3(Configuration::getInstance().language(), item)
                                      : i18n::item(Configuration::getInstance().language(), item));
     // Checks to make sure that it's the correct item and not one with a duplicate name
@@ -212,13 +213,13 @@ void PkmItemOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        if (pkm->generation() == pksm::Generation::THREE)
+        if (pkm.generation() == pksm::Generation::THREE)
         {
-            ((pksm::PK3*)pkm.get())->heldItem3((u16)items[hid.fullIndex()].first);
+            reinterpret_cast<pksm::PK3&>(pkm).heldItem3((u16)items[hid.fullIndex()].first);
         }
         else
         {
-            pkm->heldItem((u16)items[hid.fullIndex()].first);
+            pkm.heldItem((u16)items[hid.fullIndex()].first);
         }
         parent->removeOverlay();
         return;

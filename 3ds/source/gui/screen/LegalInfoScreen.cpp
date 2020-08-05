@@ -35,7 +35,7 @@
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 
-LegalInfoScreen::LegalInfoScreen(const std::string& string, std::shared_ptr<pksm::PKX> pk)
+LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
     : ScrollingTextScreen(string, pk)
 {
     if (string.substr(0, 6) != "Legal!")
@@ -94,10 +94,10 @@ void LegalInfoScreen::attemptLegalization()
     }
     else
     {
-        version =
-            "version: " + std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation()));
+        version = "version: " +
+                  std::to_string((int)pksm::GameVersion::oldestVersion(pkm->get().generation()));
     }
-    std::string generation = "Generation: " + (std::string)pkm->generation();
+    std::string generation = "Generation: " + (std::string)pkm->get().generation();
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());
@@ -112,7 +112,7 @@ void LegalInfoScreen::attemptLegalization()
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)pkm->rawData(), pkm->getLength());
+        curl_mime_data(field, (char*)pkm->get().rawData(), pkm->get().getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
@@ -158,13 +158,13 @@ void LegalInfoScreen::attemptLegalization()
                             std::vector<u8> pkmData =
                                 base64_decode(retJson["Pokemon"].get<std::string>());
                             auto fixed = pksm::PKX::getPKM(
-                                pkm->generation(), pkmData.data(), pkmData.size(), true);
+                                pkm->get().generation(), pkmData.data(), pkmData.size(), true);
                             if (fixed)
                             {
                                 std::copy(fixed->rawData(),
                                     fixed->rawData() +
-                                        std::min(pkm->getLength(), fixed->getLength()),
-                                    pkm->rawData());
+                                        std::min(pkm->get().getLength(), fixed->getLength()),
+                                    pkm->get().rawData());
                                 Gui::warn(i18n::localize("PKM_LEGALIZED"));
                                 Gui::screenBack();
                                 return;

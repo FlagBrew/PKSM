@@ -64,8 +64,8 @@ private:
 
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<pksm::PKX> infoMon = nullptr;
-    std::vector<std::shared_ptr<pksm::PKX>> groupPkm;
+    std::unique_ptr<pksm::PKX> infoMon = nullptr;
+    std::vector<std::unique_ptr<pksm::PKX>> groupPkm;
     // box-index pairs
     std::vector<std::pair<int, int>> toSend;
     std::shared_ptr<pksm::PKFilter> filter;

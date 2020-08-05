@@ -574,7 +574,7 @@ void GroupCloudScreen::pickup()
                     auto temp = access.fetchGroup((cursorIndex - 1) / 6);
                     for (auto it = temp.rbegin(); it != temp.rend(); ++it)
                     {
-                        groupPkm.emplace_back(*it);
+                        groupPkm.emplace_back(std::move(*it));
                     }
                 }
             }
@@ -589,7 +589,7 @@ void GroupCloudScreen::pickup()
                         pksm::Species::None &&
                     toSend.size() < 6)
                 {
-                    toSend.push_back(thisPair);
+                    toSend.emplace_back(thisPair);
                     if (toSend.size() == 6 &&
                         Gui::showChoiceMessage(i18n::localize("UPLOAD_GROUP")))
                     {
@@ -790,12 +790,12 @@ bool GroupCloudScreen::clickBottomIndex(int index)
 
 void GroupCloudScreen::shareSend()
 {
-    std::vector<std::shared_ptr<pksm::PKX>> sendMe;
+    std::vector<std::unique_ptr<pksm::PKX>> sendMe;
     for (auto& index : toSend)
     {
-        sendMe.push_back(Banks::bank->pkm(index.first, index.second));
+        sendMe.emplace_back(Banks::bank->pkm(index.first, index.second));
     }
-    long status_code = access.group(sendMe);
+    long status_code = access.group(std::move(sendMe));
     switch (status_code)
     {
         case 200:
@@ -886,7 +886,7 @@ void GroupCloudScreen::shareReceive()
                 {
                     groupPkm.clear();
                     std::string badVersions;
-                    std::vector<std::shared_ptr<pksm::PKX>> temPkm;
+                    std::vector<std::unique_ptr<pksm::PKX>> temPkm;
                     for (auto& pkm : groupJson["pokemon"])
                     {
                         // clang-format off
@@ -900,7 +900,7 @@ void GroupCloudScreen::shareReceive()
 
                             if (gen != pksm::Generation::UNUSED)
                             {
-                                temPkm.push_back(pksm::PKX::getPKM(gen, data.data()));
+                                temPkm.emplace_back(pksm::PKX::getPKM(gen, data.data()));
                             }
                             else
                             {
@@ -911,7 +911,7 @@ void GroupCloudScreen::shareReceive()
 
                     for (auto it = temPkm.rbegin(); it != temPkm.rend(); ++it)
                     {
-                        groupPkm.push_back(*it);
+                        groupPkm.emplace_back(std::move(*it));
                     }
 
                     if (!badVersions.empty())

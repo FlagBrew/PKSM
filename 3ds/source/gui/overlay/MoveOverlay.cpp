@@ -30,7 +30,6 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 #include "utils.hpp"
@@ -66,9 +65,7 @@ namespace
     }
 }
 
-MoveOverlay::MoveOverlay(ReplaceableScreen& screen,
-    const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
-    int moveIndex)
+MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, int moveIndex)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       object(object),
       hid(40, 2),
@@ -77,8 +74,7 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen,
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves =
         i18n::rawMoves(Configuration::getInstance().language());
-    pksm::Generation gen =
-        object.index() == 0 ? std::get<0>(object)->generation() : pksm::Generation::EIGHT;
+    pksm::Generation gen = !object.isFilter() ? object.generation() : pksm::Generation::EIGHT;
     const std::set<int> availableMoves =
         TitleLoader::save
             ? TitleLoader::save->availableMoves()
@@ -106,30 +102,13 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen,
     hid.update(moves.size());
     if (moveIndex < 4)
     {
-        if (object.index() == 0)
-        {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
-                                             std::get<0>(object)->move(moveIndex))));
-        }
-        else
-        {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
-                                             std::get<1>(object)->move(moveIndex))));
-        }
+        hid.select((u16)index(
+            moves, i18n::move(Configuration::getInstance().language(), object.move(moveIndex))));
     }
     else
     {
-        if (object.index() == 0)
-        {
-            auto pkm = std::get<0>(object);
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
-                                             pkm->relearnMove(moveIndex - 4))));
-        }
-        else
-        {
-            hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
-                                             std::get<1>(object)->relearnMove(moveIndex - 4))));
-        }
+        hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
+                                         object.relearnMove(moveIndex - 4))));
     }
     searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
         [this]() {
@@ -224,36 +203,24 @@ void MoveOverlay::update(touchPosition* touch)
     {
         if (moveIndex < 4)
         {
-            switch (object.index())
-            {
-                case 0:
-                    std::get<0>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
-                    break;
-                case 1:
-                    std::get<1>(object)->move(moveIndex, (u16)moves[hid.fullIndex()].first);
-                    break;
-            }
+            object.move(moveIndex, (u16)moves[hid.fullIndex()].first);
         }
         else
         {
-            if (object.index() == 0)
-            {
-                auto pkm = std::get<0>(object);
-                pkm->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-            }
-            else
-            {
-                std::get<1>(object)->relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
-            }
+            object.relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+        }
+        if (!object.isFilter())
+        {
+            reinterpret_cast<pksm::PKX&>(object).fixMoves();
         }
         parent->removeOverlay();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        if (object.index() == 0)
+        if (!object.isFilter())
         {
-            std::get<0>(object)->fixMoves();
+            reinterpret_cast<pksm::PKX&>(object).fixMoves();
         }
         parent->removeOverlay();
         return;

@@ -38,7 +38,7 @@ class Button;
 class LocationOverlay : public ReplaceableScreen
 {
 public:
-    LocationOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met);
+    LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
@@ -46,7 +46,7 @@ public:
 
 private:
     void searchBar();
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     const std::map<u16, std::string>& validLocations;
     std::map<u16, std::string> locations;

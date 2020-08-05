@@ -38,7 +38,7 @@
 class EditorScreen : public Screen
 {
 public:
-    EditorScreen(std::shared_ptr<pksm::PKX> pkm, int box, int index, bool emergency = false);
+    EditorScreen(std::unique_ptr<pksm::PKX> pkm, int box, int index, bool emergency = false);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -70,7 +70,7 @@ private:
     bool setSaveInfo();
     bool saved();
     std::vector<std::unique_ptr<Button>> buttons;
-    std::shared_ptr<pksm::PKX> pkm;
+    std::unique_ptr<pksm::PKX> pkm;
     decltype(pksm::crypto::sha256(nullptr, 0)) origHash;
     int box               = 0;
     int index             = 0;

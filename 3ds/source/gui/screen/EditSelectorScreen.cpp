@@ -92,7 +92,7 @@ void EditSelectorScreen::changeBoxName()
 
 bool EditSelectorScreen::doQR()
 {
-    std::shared_ptr<pksm::PKX> pkm;
+    std::unique_ptr<pksm::PKX> pkm;
     switch (TitleLoader::save->generation())
     {
         case pksm::Generation::THREE:
@@ -252,7 +252,7 @@ void EditSelectorScreen::drawBottom() const
             }
             else
             {
-                std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
+                std::unique_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
                 if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
@@ -275,7 +275,7 @@ void EditSelectorScreen::drawBottom() const
     {
         int x                              = (i % 2 == 0 ? 221 : 271);
         int y                              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        std::shared_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(i);
+        std::unique_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(i);
         if (pokemon->species() != pksm::Species::None)
         {
             Gui::pkm(*pokemon, x, y);
@@ -354,7 +354,7 @@ void EditSelectorScreen::update(touchPosition* touch)
 
     if (moveMon)
     {
-        infoMon = moveMon;
+        infoMon = moveMon->clone();
     }
     else if (cursorPos != 0)
     {
@@ -432,7 +432,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else if (moveMon && cursorPos < 31)
             {
-                std::shared_ptr<pksm::PKX> tmpMon = nullptr;
+                std::unique_ptr<pksm::PKX> tmpMon = nullptr;
                 if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
@@ -441,12 +441,12 @@ void EditSelectorScreen::update(touchPosition* touch)
                         tmpMon = nullptr;
                     }
                     TitleLoader::save->pkm(*moveMon, box, cursorPos - 1, false);
-                    moveMon = tmpMon;
+                    moveMon = std::move(tmpMon);
                 }
             }
             else if (moveMon)
             {
-                std::shared_ptr<pksm::PKX> tmpMon = nullptr;
+                std::unique_ptr<pksm::PKX> tmpMon = nullptr;
                 if (cursorPos - 31 < TitleLoader::save->partyCount())
                 {
                     tmpMon = TitleLoader::save->pkm(cursorPos - 31);
@@ -456,7 +456,7 @@ void EditSelectorScreen::update(touchPosition* touch)
                     tmpMon = nullptr;
                 }
                 TitleLoader::save->pkm(*moveMon, cursorPos - 31);
-                moveMon = tmpMon;
+                moveMon = std::move(tmpMon);
                 TitleLoader::save->fixParty();
             }
             else
@@ -696,13 +696,13 @@ bool EditSelectorScreen::clonePkm()
             }
             else
             {
-                std::shared_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                std::unique_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
                 if (tmpMon && tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
                 TitleLoader::save->pkm(*moveMon, cursorPos - 31);
-                moveMon = tmpMon;
+                moveMon = std::move(tmpMon);
                 TitleLoader::save->fixParty();
             }
         }
@@ -718,13 +718,13 @@ bool EditSelectorScreen::clonePkm()
             }
             else
             {
-                std::shared_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
+                std::unique_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
                 if (tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
                 TitleLoader::save->pkm(*moveMon, box, cursorPos - 1, false);
-                moveMon = tmpMon;
+                moveMon = std::move(tmpMon);
             }
         }
     }

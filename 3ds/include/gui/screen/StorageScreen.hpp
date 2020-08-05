@@ -73,14 +73,14 @@ private:
     void putDownSwap();
     void putDownNonSwap();
     bool checkPutDownBounds();
-    bool isValidTransfer(std::shared_ptr<pksm::PKX> moveMon, bool bulkTransfer = false);
+    bool isValidTransfer(const pksm::PKX& moveMon, bool bulkTransfer = false);
     void scrunchSelection();
     void grabSelection(bool remove);
 
     std::array<std::unique_ptr<Button>, 10> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<pksm::PKX> infoMon = nullptr;
-    std::vector<std::shared_ptr<pksm::PKX>> moveMon;
+    std::unique_ptr<pksm::PKX> infoMon = nullptr;
+    std::vector<std::unique_ptr<pksm::PKX>> moveMon;
     std::vector<int> partyNum;
     // While selecting, XY coords of original selection.
     // When selected, dimensions of moveMon

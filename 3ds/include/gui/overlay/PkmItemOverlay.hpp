@@ -36,7 +36,7 @@ class Button;
 class PkmItemOverlay : public ReplaceableScreen
 {
 public:
-    PkmItemOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
+    PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
@@ -44,7 +44,7 @@ public:
 
 private:
     void searchBar();
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> items;
     std::vector<std::pair<int, std::string>> validItems;

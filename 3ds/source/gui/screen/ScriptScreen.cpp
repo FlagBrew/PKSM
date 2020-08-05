@@ -403,7 +403,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         {
             Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
             show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
-            Gui::setScreen(std::make_unique<ScrollingTextScreen>(show, nullptr));
+            Gui::setScreen(std::make_unique<ScrollingTextScreen>(show, std::nullopt));
         }
     }
 

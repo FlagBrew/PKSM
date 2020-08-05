@@ -31,7 +31,7 @@
 #include "pkx/PKX.hpp"
 #include <algorithm>
 
-VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+VersionOverlay::VersionOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
 {
     const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
@@ -45,8 +45,8 @@ VersionOverlay::VersionOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::
     hid.update(games.size());
     hid.select(std::distance(
         games.begin(), std::find_if(games.begin(), games.end(),
-                           [pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
-                               return pair.first == pkm->version();
+                           [&pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
+                               return pair.first == pkm.version();
                            })));
 }
 
@@ -90,7 +90,7 @@ void VersionOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->version(games[hid.fullIndex()].first);
+        pkm.version(games[hid.fullIndex()].first);
         parent->removeOverlay();
         return;
     }

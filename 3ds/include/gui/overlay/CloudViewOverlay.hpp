@@ -34,7 +34,7 @@
 class CloudViewOverlay : public ViewOverlay
 {
 public:
-    CloudViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pk)
+    CloudViewOverlay(ReplaceableScreen& screen, std::unique_ptr<pksm::PKX>& pk)
         : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pk, true, "")
     {
     }

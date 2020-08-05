@@ -253,7 +253,7 @@ int GroupCloudAccess::pages() const
     return (*current->data)["pages"].get<int>();
 }
 
-std::shared_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) const
+std::unique_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) const
 {
     if (groupIndex < (*current->data)["results"].size())
     {
@@ -288,7 +288,7 @@ bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
     return false;
 }
 
-std::shared_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
+std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
 {
     if (groupIndex < (*current->data)["results"].size())
     {
@@ -311,23 +311,23 @@ std::shared_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
     return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
 }
 
-std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const
+std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const
 {
-    std::vector<std::shared_ptr<pksm::PKX>> ret;
+    std::vector<std::unique_ptr<pksm::PKX>> ret;
     if (groupIndex < (*current->data)["results"].size())
     {
         auto& group = (*current->data)["results"][groupIndex];
         for (size_t i = 0; i < group["pokemon"].size(); i++)
         {
-            ret.push_back(pkm(groupIndex, i));
+            ret.emplace_back(pkm(groupIndex, i));
         }
     }
     return ret;
 }
 
-std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex) const
+std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex) const
 {
-    std::vector<std::shared_ptr<pksm::PKX>> ret;
+    std::vector<std::unique_ptr<pksm::PKX>> ret;
     if (groupIndex < (*current->data)["results"].size())
     {
         auto& group = (*current->data)["results"][groupIndex];
@@ -335,7 +335,7 @@ std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
         {
             // When the full group is downloaded, all the individual download counters will be
             // incremented
-            ret.push_back(pkm(groupIndex, i));
+            ret.emplace_back(pkm(groupIndex, i));
         }
         if (auto fetch = Fetch::init(
                 "https://github.com/gpss/download/bundle/" + group["code"].get<std::string>(), true,
@@ -348,13 +348,13 @@ std::vector<std::shared_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
     return ret;
 }
 
-long GroupCloudAccess::group(std::vector<std::shared_ptr<pksm::PKX>> sendMe)
+long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
 {
     long ret               = 0;
     std::string amount     = "amount: " + std::to_string(sendMe.size());
     std::string code       = Configuration::getInstance().patronCode();
     std::string generation = "Generations: ";
-    for (auto& mon : sendMe)
+    for (const auto& mon : sendMe)
     {
         generation += (std::string)mon->generation() + ',';
     }

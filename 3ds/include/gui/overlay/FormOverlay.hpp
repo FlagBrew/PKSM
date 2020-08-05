@@ -30,24 +30,21 @@
 #include "Configuration.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "pkx/PKFilter.hpp"
-#include "pkx/PKX.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include <memory>
 #include <variant>
 
 class FormOverlay : public ReplaceableScreen
 {
 public:
-    FormOverlay(ReplaceableScreen& screen,
-        const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
-        u16 formCount);
+    FormOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u16 formCount);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>> object;
+    pksm::IPKFilterable& object;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     u16 formCount;
 };

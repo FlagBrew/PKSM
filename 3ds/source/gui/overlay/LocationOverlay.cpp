@@ -32,13 +32,12 @@
 #include "pkx/PKX.hpp"
 #include "utils.hpp"
 
-LocationOverlay::LocationOverlay(
-    ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm, bool met)
+LocationOverlay::LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(40, 2),
       validLocations(i18n::rawLocations(
-          Configuration::getInstance().language(), (pksm::Generation)pkm->version())),
+          Configuration::getInstance().language(), (pksm::Generation)pkm.version())),
       locations(validLocations),
       met(met)
 {
@@ -52,8 +51,8 @@ LocationOverlay::LocationOverlay(
     hid.update(locations.size());
     hid.select(std::distance(locations.begin(),
         std::find_if(locations.begin(), locations.end(),
-            [pkm, met](const std::pair<u16, std::string>& pair) {
-                return pair.first == (met ? pkm->metLocation() : pkm->eggLocation());
+            [&pkm, met](const std::pair<u16, std::string>& pair) {
+                return pair.first == (met ? pkm.metLocation() : pkm.eggLocation());
             })));
 }
 
@@ -154,11 +153,11 @@ void LocationOverlay::update(touchPosition* touch)
             }
             if (met)
             {
-                pkm->metLocation(locIt->first);
+                pkm.metLocation(locIt->first);
             }
             else
             {
-                pkm->eggLocation(locIt->first);
+                pkm.eggLocation(locIt->first);
             }
         }
         parent->removeOverlay();

@@ -29,14 +29,21 @@
 
 #include "ReplaceableScreen.hpp"
 #include "pkx/PKX.hpp"
+#include <functional>
+#include <variant>
 
 class ViewOverlay : public ReplaceableScreen
 {
 public:
     // if it's not green, it's blue
-    ViewOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX>& pokemon, bool green,
+    ViewOverlay(ReplaceableScreen& screen, std::unique_ptr<pksm::PKX>& pkm, bool green,
         const std::string& instr = "")
-        : ReplaceableScreen(&screen, instr), pkm(pokemon), green(green)
+        : ReplaceableScreen(&screen, instr), pokemon(pkm), green(green)
+    {
+    }
+    ViewOverlay(
+        ReplaceableScreen& screen, pksm::PKX& pkm, bool green, const std::string& instr = "")
+        : ReplaceableScreen(&screen, instr), pokemon(pkm), green(green)
     {
     }
     virtual void drawTop() const override;
@@ -46,8 +53,15 @@ public:
     void update(touchPosition* touch) override {}
 
 protected:
-    std::shared_ptr<pksm::PKX>& pkm;
+    std::variant<std::reference_wrapper<std::unique_ptr<pksm::PKX>>,
+        std::reference_wrapper<pksm::PKX>>
+        pokemon;
+    pksm::PKX& getPKM() const;
     bool green;
+
+private:
+    void drawPkm(pksm::PKX& pkm) const;
+    void drawEmpty() const;
 };
 
 #endif

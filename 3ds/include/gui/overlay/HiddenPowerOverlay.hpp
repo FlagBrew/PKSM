@@ -35,14 +35,14 @@
 class HiddenPowerOverlay : public ReplaceableScreen
 {
 public:
-    HiddenPowerOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
+    HiddenPowerOverlay(ReplaceableScreen& screen, pksm::PKX& pkm);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
 };
 

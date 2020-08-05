@@ -35,13 +35,13 @@ namespace
     constexpr std::string_view stats[] = {"ATTACK", "DEFENSE", "SPEED", "SPATK.", "SPDEF."};
 }
 
-NatureOverlay::NatureOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+NatureOverlay::NatureOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
       hid(25, 5)
 {
     hid.update(25);
-    hid.select(size_t(pkm->nature()));
+    hid.select(size_t(pkm.nature()));
 }
 
 void NatureOverlay::drawBottom() const
@@ -92,7 +92,7 @@ void NatureOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->nature(pksm::Nature{u8(hid.fullIndex())});
+        pkm.nature(pksm::Nature{u8(hid.fullIndex())});
         parent->removeOverlay();
         return;
     }

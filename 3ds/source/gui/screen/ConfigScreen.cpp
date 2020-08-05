@@ -44,6 +44,7 @@
 
 namespace
 {
+    // TODO: change these to use i18n
     constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
         "Credits:", "piepie62 and Admiral-Fish for their dedication",
         "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters",

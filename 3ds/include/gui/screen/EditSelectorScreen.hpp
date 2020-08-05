@@ -56,8 +56,8 @@ private:
     std::vector<std::unique_ptr<Button>> buttons;
     std::array<std::unique_ptr<Button>, 36> pkmButtons;
     std::vector<std::unique_ptr<Button>> viewerButtons;
-    std::shared_ptr<pksm::PKX> moveMon = nullptr;
-    std::shared_ptr<pksm::PKX> infoMon = nullptr;
+    std::unique_ptr<pksm::PKX> moveMon = nullptr;
+    std::unique_ptr<pksm::PKX> infoMon = nullptr;
     int cursorPos                      = 0;
     int box                            = 0;
     bool justSwitched                  = true;

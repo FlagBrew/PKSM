@@ -38,11 +38,11 @@ class GroupCloudAccess
 public:
     static constexpr int NUM_GROUPS = 5;
     GroupCloudAccess();
-    std::vector<std::shared_ptr<pksm::PKX>> group(size_t groupIndex) const;
-    std::vector<std::shared_ptr<pksm::PKX>> fetchGroup(size_t groupIndex) const;
-    long group(std::vector<std::shared_ptr<pksm::PKX>> pokemon);
-    std::shared_ptr<pksm::PKX> pkm(size_t groupIndex, size_t pkm) const;
-    std::shared_ptr<pksm::PKX> fetchPkm(size_t groupIndex, size_t pkm) const;
+    std::vector<std::unique_ptr<pksm::PKX>> group(size_t groupIndex) const;
+    std::vector<std::unique_ptr<pksm::PKX>> fetchGroup(size_t groupIndex) const;
+    long group(std::vector<std::unique_ptr<pksm::PKX>> pokemon);
+    std::unique_ptr<pksm::PKX> pkm(size_t groupIndex, size_t pkm) const;
+    std::unique_ptr<pksm::PKX> fetchPkm(size_t groupIndex, size_t pkm) const;
     bool isLegal(size_t groupIndex, size_t pkm) const;
 
     int pages() const;

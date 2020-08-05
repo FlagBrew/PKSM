@@ -30,20 +30,20 @@
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "enums/Ball.hpp"
-#include "pkx/PKX.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include <memory>
 
 class BallOverlay : public ReplaceableScreen
 {
 public:
-    BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm);
+    BallOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 
 private:
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::IPKFilterable& object;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::vector<pksm::Ball> balls;
 };

@@ -29,27 +29,16 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "pkx/PKFilter.hpp"
-#include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 
-FormOverlay::FormOverlay(ReplaceableScreen& screen,
-    const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
-    u16 formCount)
+FormOverlay::FormOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u16 formCount)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       object(object),
       hid(30, 6),
       formCount(formCount)
 {
     hid.update(30);
-    if (object.index() == 0)
-    {
-        hid.select(std::get<0>(object)->alternativeForm());
-    }
-    else
-    {
-        hid.select(std::get<1>(object)->alternativeForm());
-    }
+    hid.select(object.alternativeForm());
 }
 
 void FormOverlay::drawBottom() const
@@ -86,39 +75,15 @@ void FormOverlay::drawTop() const
             {
                 break;
             }
-            switch (object.index())
-            {
-                case 0:
-                {
-                    pksm::GameVersion v =
-                        TitleLoader::save
-                            ? TitleLoader::save->version()
-                            : pksm::GameVersion::oldestVersion(std::get<0>(object)->generation());
-                    Gui::pkm(std::get<0>(object)->species(), x + y * 6,
-                        std::get<0>(object)->generation(), std::get<0>(object)->gender(),
-                        x * 66 + 19, y * 48 + 1);
-                    const std::string& text = i18n::form(Configuration::getInstance().language(), v,
-                        std::get<0>(object)->species(), x + y * 6);
-                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
-                }
-                break;
-                case 1:
-                {
-                    pksm::GameVersion v =
-                        TitleLoader::save
-                            ? TitleLoader::save->version()
-                            : pksm::GameVersion::oldestVersion(std::get<1>(object)->generation());
-                    Gui::pkm(std::get<1>(object)->species(), x + y * 6,
-                        std::get<1>(object)->generation(), std::get<1>(object)->gender(),
-                        x * 66 + 19, y * 48 + 1);
-                    const std::string& text = i18n::form(Configuration::getInstance().language(), v,
-                        std::get<1>(object)->species(), x + y * 6);
-                    Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE,
-                        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
-                }
-                break;
-            }
+            pksm::GameVersion v = TitleLoader::save
+                                      ? TitleLoader::save->version()
+                                      : pksm::GameVersion::oldestVersion(object.generation());
+            Gui::pkm(object.species(), x + y * 6, object.generation(), object.gender(), x * 66 + 19,
+                y * 48 + 1);
+            const std::string& text =
+                i18n::form(Configuration::getInstance().language(), v, object.species(), x + y * 6);
+            Gui::text(text, x * 67 + 32, y * 48 + 39, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
+                TextPosY::CENTER, TextWidthAction::WRAP, 65.0f);
         }
     }
 }
@@ -129,15 +94,7 @@ void FormOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        switch (object.index())
-        {
-            case 0:
-                std::get<0>(object)->alternativeForm(hid.fullIndex());
-                break;
-            case 1:
-                std::get<1>(object)->alternativeForm(hid.fullIndex());
-                break;
-        }
+        object.alternativeForm(hid.fullIndex());
         parent->removeOverlay();
         return;
     }

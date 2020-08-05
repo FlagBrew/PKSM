@@ -197,7 +197,7 @@ std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal
            "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
 }
 
-std::shared_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
+std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
@@ -225,7 +225,7 @@ bool CloudAccess::isLegal(size_t slot) const
     return false;
 }
 
-std::shared_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
+std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 {
     if (slot < (*current->data)["results"].size())
     {
@@ -308,7 +308,7 @@ std::optional<int> CloudAccess::prevPage()
     return std::nullopt;
 }
 
-long CloudAccess::pkm(std::shared_ptr<pksm::PKX> mon)
+long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 {
     long ret            = 0;
     std::string version = "Generation: " + (std::string)mon->generation();

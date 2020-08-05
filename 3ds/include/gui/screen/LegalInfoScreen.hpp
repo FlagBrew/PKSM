@@ -34,7 +34,7 @@ class Button;
 class LegalInfoScreen : public ScrollingTextScreen
 {
 public:
-    LegalInfoScreen(const std::string& text, std::shared_ptr<pksm::PKX> pk);
+    LegalInfoScreen(const std::string& text, pksm::PKX& pk);
     void update(touchPosition* touch) override;
     void drawBottom() const override;
 

@@ -39,7 +39,7 @@ namespace
         pksm::Stat::SPATK, pksm::Stat::SPDEF, pksm::Stat::SPD};
 }
 
-StatsEditScreen::StatsEditScreen(std::shared_ptr<pksm::PKX> pkm) : pkm(pkm)
+StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
         [this]() {
@@ -102,7 +102,7 @@ void StatsEditScreen::setIV(pksm::Stat which)
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 iv = (u8)std::stoi(input);
-        pkm->iv(which, std::min((u8)31, iv));
+        pkm.iv(which, std::min((u8)31, iv));
     }
 }
 
@@ -110,24 +110,24 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm->iv(which) < 31)
+        if (pkm.iv(which) < 31)
         {
-            pkm->iv(which, pkm->iv(which) + 1);
+            pkm.iv(which, pkm.iv(which) + 1);
         }
         else
         {
-            pkm->iv(which, 0);
+            pkm.iv(which, 0);
         }
     }
     else
     {
-        if (pkm->iv(which) > 0)
+        if (pkm.iv(which) > 0)
         {
-            pkm->iv(which, pkm->iv(which) - 1);
+            pkm.iv(which, pkm.iv(which) - 1);
         }
         else
         {
-            pkm->iv(which, 31);
+            pkm.iv(which, 31);
         }
     }
     return false;
@@ -145,22 +145,22 @@ void StatsEditScreen::setSecondaryStat(pksm::Stat which)
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 val = (u8)std::min(std::stoi(input), 252);
-        if (pkm->generation() != pksm::Generation::LGPE)
+        if (pkm.generation() != pksm::Generation::LGPE)
         {
-            pkm->ev(which, val);
+            pkm.ev(which, val);
             u16 total = 0;
             for (int i = 0; i < 6; i++)
             {
-                total += statValues[i] != which ? pkm->ev(statValues[i]) : 0;
+                total += statValues[i] != which ? pkm.ev(statValues[i]) : 0;
             }
             if (total + val > 510)
             {
-                pkm->ev(which, 510 - total);
+                pkm.ev(which, 510 - total);
             }
         }
         else
         {
-            ((pksm::PB7*)pkm.get())->awakened(which, std::min((int)val, 200));
+            reinterpret_cast<pksm::PB7&>(pkm).awakened(which, std::min((int)val, 200));
         }
     }
 }
@@ -169,71 +169,71 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm->generation() != pksm::Generation::LGPE)
+        if (pkm.generation() != pksm::Generation::LGPE)
         {
             u16 total = 0;
             for (int i = 0; i < 6; i++)
             {
-                total += pkm->ev(statValues[i]);
+                total += pkm.ev(statValues[i]);
             }
             // TODO: remove hardcoded value and set it in classes
-            if (total < 510 || pkm->ev(which) == 0xFC)
+            if (total < 510 || pkm.ev(which) == 0xFC)
             {
-                if (pkm->ev(which) < 0xFC)
+                if (pkm.ev(which) < 0xFC)
                 {
-                    pkm->ev(which, pkm->ev(which) + 1);
+                    pkm.ev(which, pkm.ev(which) + 1);
                 }
                 else
                 {
-                    pkm->ev(which, 0);
+                    pkm.ev(which, 0);
                 }
             }
         }
         else
         {
-            pksm::PB7* pb7 = (pksm::PB7*)pkm.get();
-            if (pb7->awakened(which) < 200)
+            pksm::PB7& pb7 = reinterpret_cast<pksm::PB7&>(pkm);
+            if (pb7.awakened(which) < 200)
             {
-                pb7->awakened(which, pb7->awakened(which) + 1);
+                pb7.awakened(which, pb7.awakened(which) + 1);
             }
             else
             {
-                pb7->awakened(which, 0);
+                pb7.awakened(which, 0);
             }
         }
     }
     else
     {
-        if (pkm->generation() != pksm::Generation::LGPE)
+        if (pkm.generation() != pksm::Generation::LGPE)
         {
-            if (pkm->ev(which) > 0)
+            if (pkm.ev(which) > 0)
             {
-                pkm->ev(which, pkm->ev(which) - 1);
+                pkm.ev(which, pkm.ev(which) - 1);
             }
             else
             {
                 u16 total = 0xFC;
                 for (int i = 0; i < 6; i++)
                 {
-                    total += pkm->ev(statValues[i]);
+                    total += pkm.ev(statValues[i]);
                 }
                 // TODO: remove hardcoded value and set it in classes
                 if (total <= 510)
                 {
-                    pkm->ev(which, 0xFC);
+                    pkm.ev(which, 0xFC);
                 }
             }
         }
         else
         {
-            pksm::PB7* pb7 = (pksm::PB7*)pkm.get();
-            if (pb7->awakened(which) > 0)
+            pksm::PB7& pb7 = reinterpret_cast<pksm::PB7&>(pkm);
+            if (pb7.awakened(which) > 0)
             {
-                pb7->awakened(which, pb7->awakened(which) - 1);
+                pb7.awakened(which, pb7.awakened(which) - 1);
             }
             else
             {
-                pb7->awakened(which, 200);
+                pb7.awakened(which, 200);
             }
         }
     }
@@ -273,17 +273,18 @@ void StatsEditScreen::drawBottom() const
         button->draw();
     }
 
-    if (pkm->generation() == pksm::Generation::LGPE)
+    if (pkm.generation() == pksm::Generation::LGPE)
     {
-        Gui::text(i18n::localize("EDITOR_CP") + std::to_string((int)((pksm::PB7*)pkm.get())->CP()),
+        Gui::text(i18n::localize("EDITOR_CP") +
+                      std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).CP()),
             4, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     Gui::text(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
     Gui::text(
         i18n::localize("IV"), 132, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->generation() == pksm::Generation::LGPE ? i18n::localize("AWAKENED")
-                                                          : i18n::localize("EV"),
+    Gui::text(pkm.generation() == pksm::Generation::LGPE ? i18n::localize("AWAKENED")
+                                                         : i18n::localize("EV"),
         213, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(i18n::localize("TOTAL"), 274, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
         TextPosY::TOP);
@@ -302,22 +303,23 @@ void StatsEditScreen::drawBottom() const
 
     for (int i = 0; i < 6; i++)
     {
-        Gui::text(std::to_string((int)pkm->iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12,
+        Gui::text(std::to_string((int)pkm.iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        if (pkm->generation() != pksm::Generation::LGPE)
+        if (pkm.generation() != pksm::Generation::LGPE)
         {
-            Gui::text(std::to_string((int)pkm->ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12,
+            Gui::text(std::to_string((int)pkm.ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12,
                 COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {
-            Gui::text(std::to_string((int)((pksm::PB7*)pkm.get())->awakened(statValues[i])), 213,
+            Gui::text(
+                std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).awakened(statValues[i])), 213,
                 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
-        Gui::text(std::to_string((int)pkm->stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12,
+        Gui::text(std::to_string((int)pkm.stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
-    Gui::text(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::type(lang, pkm->hpType()), 295, 181,
+    Gui::text(i18n::localize("EDITOR_HIDDEN_POWER") + i18n::type(lang, pkm.hpType()), 295, 181,
         FONT_SIZE_12, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 }
 

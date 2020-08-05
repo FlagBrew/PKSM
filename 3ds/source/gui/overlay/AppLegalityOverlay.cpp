@@ -87,19 +87,19 @@ namespace
     }
 }
 
-AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     : ReplaceableScreen(&screen, i18n::localize("B_BACK")), pkm(pkm)
 {
-    std::string data = (std::string)pkm->generation() + ":";
+    std::string data = (std::string)pkm.generation() + ":";
     if (TitleLoader::save)
     {
         data += std::to_string((u32)TitleLoader::save->version()) + ":";
     }
     else
     {
-        data += std::to_string((int)pksm::GameVersion::oldestVersion(pkm->generation())) + ":";
+        data += std::to_string((int)pksm::GameVersion::oldestVersion(pkm.generation())) + ":";
     }
-    data += base64_encode(pkm->rawData(), pkm->getLength());
+    data += base64_encode(pkm.rawData(), pkm.getLength());
     qrcodegen::QrCode code =
         qrcodegen::QrCode::encodeText(data.c_str(), qrcodegen::QrCode::Ecc::MEDIUM);
 
@@ -169,7 +169,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             }
 
             ssize_t dataTransmitted    = 0;
-            std::string generationStr  = std::string(this->pkm->generation());
+            std::string generationStr  = std::string(this->pkm.generation());
             u32 sendableGenerationSize = htonl(generationStr.size());
             dataTransmitted            = send(sockfd, &sendableGenerationSize, sizeof(u32), 0);
             if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
@@ -184,7 +184,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 return true;
             }
 
-            u32 sendableVersion = htonl(static_cast<u32>(static_cast<u8>(this->pkm->version())));
+            u32 sendableVersion = htonl(static_cast<u32>(static_cast<u8>(this->pkm.version())));
             dataTransmitted     = send(sockfd, &sendableVersion, sizeof(u32), 0);
             if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
             {
@@ -192,8 +192,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 return true;
             }
 
-            const u8* pkmData   = this->pkm->rawData();
-            u32 pkmSize         = this->pkm->getLength();
+            const u8* pkmData   = this->pkm.rawData();
+            u32 pkmSize         = this->pkm.getLength();
             u32 sendablePkmSize = htonl(pkmSize);
             dataTransmitted     = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
             if (0 > dataTransmitted || u32(dataTransmitted) < sizeof(u32))
@@ -217,10 +217,10 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             }
 
             auto pkx = pksm::PKX::getPKM(
-                this->pkm->generation(), receivedBytes.get(), size_t(pkmSize), false);
+                this->pkm.generation(), receivedBytes.get(), size_t(pkmSize), false);
             if (pkx)
             {
-                if (pkx->generation() != this->pkm->generation() && TitleLoader::save)
+                if (pkx->generation() != this->pkm.generation() && TitleLoader::save)
                 {
                     auto reason = TitleLoader::save->invalidTransferReason(*pkx);
                     if (reason != pksm::Sav::BadTransferReason::OKAY)
@@ -239,7 +239,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 if (pkx)
                 {
                     std::copy(
-                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
+                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm.rawData());
                 }
             }
 
@@ -255,7 +255,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
             auto pkx = QRScanner<pksm::PKX>::scan();
             if (pkx)
             {
-                if (pkx->generation() != this->pkm->generation() && TitleLoader::save)
+                if (pkx->generation() != this->pkm.generation() && TitleLoader::save)
                 {
                     auto reason = TitleLoader::save->invalidTransferReason(*pkx);
                     if (reason != pksm::Sav::BadTransferReason::OKAY)
@@ -274,7 +274,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, std::shared_pt
                 if (pkx)
                 {
                     std::copy(
-                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm->rawData());
+                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm.rawData());
                 }
             }
             // remove image view

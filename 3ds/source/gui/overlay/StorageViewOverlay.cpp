@@ -46,7 +46,7 @@ void StorageViewOverlay::update(touchPosition* touch)
     u32 kDown = hidKeysDown();
     if (clone.empty() && kDown & KEY_X)
     {
-        clone.emplace_back(pkm->clone());
+        clone.emplace_back(getPKM().clone());
         partyNum.push_back(-1);
         cloneDims          = {1, 1};
         currentlySelecting = false;
@@ -128,7 +128,7 @@ void StorageViewOverlay::update(touchPosition* touch)
         if (emergencyMode[8] && emergencyInfo.first != -1)
         {
             Gui::setScreen(std::make_unique<EditorScreen>(
-                pkm, emergencyInfo.first, emergencyInfo.second, true));
+                getPKM().clone(), emergencyInfo.first, emergencyInfo.second, true));
         }
         parent->removeOverlay();
     }

@@ -37,7 +37,7 @@ class Button;
 class MoveEditScreen : public Screen
 {
 public:
-    MoveEditScreen(std::shared_ptr<pksm::PKX> pkm);
+    MoveEditScreen(pksm::PKX& pkm);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -45,7 +45,7 @@ public:
 
 private:
     void changeMove();
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     std::vector<std::unique_ptr<Button>> buttons;
     int moveSelected = 0;
 };

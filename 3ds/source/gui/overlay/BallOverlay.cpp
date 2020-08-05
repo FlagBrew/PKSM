@@ -33,9 +33,9 @@
 #include "sav/Sav.hpp"
 #include <algorithm>
 
-BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> pkm)
+BallOverlay::BallOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      pkm(pkm),
+      object(pkm),
       hid(30, 6)
 {
     if (TitleLoader::save)
@@ -45,15 +45,16 @@ BallOverlay::BallOverlay(ReplaceableScreen& screen, std::shared_ptr<pksm::PKX> p
     }
     else
     {
-        balls = std::vector<pksm::Ball>(
-            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation()))
-                .begin(),
-            pksm::VersionTables::availableBalls(pksm::GameVersion::oldestVersion(pkm->generation()))
+        balls = std::vector<pksm::Ball>(pksm::VersionTables::availableBalls(
+                                            pksm::GameVersion::oldestVersion(object.generation()))
+                                            .begin(),
+            pksm::VersionTables::availableBalls(
+                pksm::GameVersion::oldestVersion(object.generation()))
                 .end());
     }
     std::sort(balls.begin(), balls.end());
     hid.update(balls.size());
-    auto index = std::find(balls.begin(), balls.end(), pkm->ball());
+    auto index = std::find(balls.begin(), balls.end(), object.ball());
     if (index != balls.end())
     {
         hid.select(std::distance(balls.begin(), index));
@@ -106,7 +107,7 @@ void BallOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        pkm->ball(balls[hid.fullIndex()]);
+        object.ball(balls[hid.fullIndex()]);
         parent->removeOverlay();
         return;
     }

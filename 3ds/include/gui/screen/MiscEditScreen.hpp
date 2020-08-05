@@ -37,7 +37,7 @@ class Button;
 class MiscEditScreen : public Screen
 {
 public:
-    MiscEditScreen(std::shared_ptr<pksm::PKX> pkm);
+    MiscEditScreen(pksm::PKX& pkm);
     // Done with Overlay
     void drawTop() const override {}
     void drawBottom() const override;
@@ -57,7 +57,7 @@ private:
     void year();
     void validate();
     std::vector<std::unique_ptr<Button>> buttons;
-    std::shared_ptr<pksm::PKX> pkm;
+    pksm::PKX& pkm;
     bool otAndMet     = true;
     bool justSwitched = true;
 };

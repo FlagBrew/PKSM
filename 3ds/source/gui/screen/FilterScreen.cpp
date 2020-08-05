@@ -68,7 +68,7 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
         buttons[0].push_back(std::make_unique<ClickButton>(70, 131 + 24 * i, 15, 12,
             [this, i]() {
-                this->addOverlay<MoveOverlay>(this->filter, i);
+                this->addOverlay<MoveOverlay>(*this->filter, i);
                 return false;
             },
             ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -76,7 +76,7 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ClickButton>(51, 53, 50, 44,
         [this]() {
-            this->addOverlay<SpeciesOverlay>(this->filter);
+            this->addOverlay<SpeciesOverlay>(*this->filter);
             return false;
         },
         ui_sheet_icon_party_idx, "", 0.0f, COLOR_BLACK));
@@ -108,7 +108,7 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
             if (TitleLoader::save->formCount(this->filter->species()) > 1)
             {
                 this->addOverlay<FormOverlay>(
-                    this->filter, TitleLoader::save->formCount(this->filter->species()));
+                    *this->filter, TitleLoader::save->formCount(this->filter->species()));
             }
             return false;
         },

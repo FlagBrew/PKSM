@@ -30,8 +30,7 @@
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
 #include "enums/Species.hpp"
-#include "pkx/PKFilter.hpp"
-#include "pkx/PKX.hpp"
+#include "pkx/IPKFilterable.hpp"
 #include <memory>
 #include <variant>
 
@@ -40,9 +39,7 @@ class Button;
 class SpeciesOverlay : public ReplaceableScreen
 {
 public:
-    SpeciesOverlay(ReplaceableScreen& screen,
-        const std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>>& object,
-        u8 origLevel = 0);
+    SpeciesOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u8 origLevel = 0);
     void drawTop() const override;
     bool replacesTop() const override { return true; }
     void drawBottom() const override;
@@ -50,7 +47,7 @@ public:
 
 private:
     void searchBar();
-    std::variant<std::shared_ptr<pksm::PKX>, std::shared_ptr<pksm::PKFilter>> object;
+    pksm::IPKFilterable& object;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     std::unique_ptr<Button> searchButton;
     std::string searchString    = "";

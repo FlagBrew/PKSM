@@ -64,8 +64,8 @@ private:
 
     std::array<std::unique_ptr<Button>, 7> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::shared_ptr<pksm::PKX> infoMon = nullptr;
-    std::shared_ptr<pksm::PKX> moveMon;
+    std::unique_ptr<pksm::PKX> infoMon = nullptr;
+    std::unique_ptr<pksm::PKX> moveMon;
     CloudAccess access;
     std::shared_ptr<pksm::PKFilter> filter;
     int cursorIndex   = 0;

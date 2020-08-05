@@ -600,7 +600,7 @@ void CloudScreen::pickup()
     {
         if (cloudChosen && Gui::showChoiceMessage(i18n::localize("SHARE_SEND_CONFIRM")))
         {
-            switch (long status_code = access.pkm(moveMon))
+            switch (long status_code = access.pkm(std::move(moveMon)))
             {
                 case 200:
                 case 201:
@@ -936,7 +936,7 @@ void CloudScreen::shareReceive()
                 }
                 auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
-                std::shared_ptr<pksm::PKX> pkm =
+                std::unique_ptr<pksm::PKX> pkm =
                     pksm::PKX::getPKM(gen, retData.data(), retData.size());
 
                 if (!pkm)
@@ -951,7 +951,7 @@ void CloudScreen::shareReceive()
                 }
                 else
                 {
-                    moveMon = pkm;
+                    moveMon = std::move(pkm);
                 }
             }
         }
