@@ -37,7 +37,8 @@ class StorageViewOverlay : public ViewOverlay
 public:
     StorageViewOverlay(ReplaceableScreen& screen, std::unique_ptr<pksm::PKX>& pkm,
         std::vector<std::unique_ptr<pksm::PKX>>& clone, std::vector<int>& partyNum,
-        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo)
+        std::pair<int, int>& cloneDims, bool& currentlySelecting, std::pair<int, int> emergencyInfo,
+        bool allowClone)
         : ViewOverlay(std::forward<ReplaceableScreen&>(screen), pkm, true,
               i18n::localize("A_SELECT") + '\n' + i18n::localize("X_CLONE") + '\n' +
                   i18n::localize("B_BACK")),
@@ -45,7 +46,8 @@ public:
           partyNum(partyNum),
           cloneDims(cloneDims),
           emergencyInfo(emergencyInfo),
-          currentlySelecting(currentlySelecting)
+          currentlySelecting(currentlySelecting),
+          allowClone(allowClone)
     {
     }
     void update(touchPosition* touch) override;
@@ -59,6 +61,7 @@ private:
     std::pair<int, int> emergencyInfo;
     std::bitset<9> emergencyMode;
     bool& currentlySelecting;
+    bool allowClone;
 };
 
 #endif

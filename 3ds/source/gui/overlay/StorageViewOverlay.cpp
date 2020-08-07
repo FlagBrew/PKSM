@@ -34,7 +34,7 @@
 void StorageViewOverlay::drawBottom() const
 {
     dim();
-    if (clone.empty())
+    if (clone.empty() && allowClone)
     {
         Gui::text(i18n::localize("PRESS_TO_CLONE"), 160, 110, FONT_SIZE_18, COLOR_WHITE,
             TextPosX::CENTER, TextPosY::TOP);
@@ -46,11 +46,14 @@ void StorageViewOverlay::update(touchPosition* touch)
     u32 kDown = hidKeysDown();
     if (clone.empty() && kDown & KEY_X)
     {
-        clone.emplace_back(getPKM().clone());
-        partyNum.push_back(-1);
-        cloneDims          = {1, 1};
-        currentlySelecting = false;
-        parent->removeOverlay();
+        if (allowClone)
+        {
+            clone.emplace_back(getPKM().clone());
+            partyNum.push_back(-1);
+            cloneDims          = {1, 1};
+            currentlySelecting = false;
+            parent->removeOverlay();
+        }
     }
     else if (kDown & KEY_UP)
     {

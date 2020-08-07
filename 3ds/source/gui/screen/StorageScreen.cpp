@@ -862,7 +862,8 @@ bool StorageScreen::showViewer()
         justSwitched = true;
         overlay      = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum,
             selectDimensions, currentlySelecting,
-            std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1});
+            std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1},
+            pickupMode != PickupMode::SWAP);
     }
     return true;
 }
