@@ -88,11 +88,100 @@ void ViewOverlay::drawTop() const
         Gui::text(i18n::localize(std::string(displayKeys[i])), 10, 36 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i]);
     }
-    for (int i = 0; i < 6; i++)
+
+    constexpr PKSM_Color statDisplayColors[3] = {
+        COLOR_UNSELECTBLUE, COLOR_BLACK, COLOR_UNSELECTRED};
+    int statColorIndex[6] = {1, 1, 1, 1, 1, 1};
+    if (pokemon.index() != 0 || std::get<0>(pokemon).get())
     {
-        Gui::text(i18n::localize(std::string(displayKeys[i + 10])), 238, 16 + i * 20, FONT_SIZE_12,
-            COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH,
-            displayWidths[i + 10]);
+        // Subtract from the ones that are affected negatively
+        switch (getPKM().nature())
+        {
+            case pksm::Nature::Hardy:
+            case pksm::Nature::Bold:
+            case pksm::Nature::Modest:
+            case pksm::Nature::Calm:
+            case pksm::Nature::Timid:
+                statColorIndex[u8(pksm::Stat::ATK)]--;
+                break;
+            case pksm::Nature::Lonely:
+            case pksm::Nature::Docile:
+            case pksm::Nature::Mild:
+            case pksm::Nature::Gentle:
+            case pksm::Nature::Hasty:
+                statColorIndex[u8(pksm::Stat::DEF)]--;
+                break;
+            case pksm::Nature::Adamant:
+            case pksm::Nature::Impish:
+            case pksm::Nature::Bashful:
+            case pksm::Nature::Careful:
+            case pksm::Nature::Jolly:
+                statColorIndex[u8(pksm::Stat::SPATK)]--;
+                break;
+            case pksm::Nature::Naughty:
+            case pksm::Nature::Lax:
+            case pksm::Nature::Rash:
+            case pksm::Nature::Quirky:
+            case pksm::Nature::Naive:
+                statColorIndex[u8(pksm::Stat::SPDEF)]--;
+                break;
+            case pksm::Nature::Brave:
+            case pksm::Nature::Relaxed:
+            case pksm::Nature::Quiet:
+            case pksm::Nature::Sassy:
+            case pksm::Nature::Serious:
+                statColorIndex[u8(pksm::Stat::SPD)]--;
+                break;
+        }
+        // Add to the ones that are affected positively
+        switch (getPKM().nature())
+        {
+            case pksm::Nature::Hardy:
+            case pksm::Nature::Lonely:
+            case pksm::Nature::Adamant:
+            case pksm::Nature::Naughty:
+            case pksm::Nature::Brave:
+                statColorIndex[u8(pksm::Stat::ATK)]++;
+                break;
+            case pksm::Nature::Bold:
+            case pksm::Nature::Docile:
+            case pksm::Nature::Impish:
+            case pksm::Nature::Lax:
+            case pksm::Nature::Relaxed:
+                statColorIndex[u8(pksm::Stat::DEF)]++;
+                break;
+            case pksm::Nature::Modest:
+            case pksm::Nature::Mild:
+            case pksm::Nature::Bashful:
+            case pksm::Nature::Rash:
+            case pksm::Nature::Quiet:
+                statColorIndex[u8(pksm::Stat::SPATK)]++;
+                break;
+            case pksm::Nature::Calm:
+            case pksm::Nature::Gentle:
+            case pksm::Nature::Careful:
+            case pksm::Nature::Quirky:
+            case pksm::Nature::Sassy:
+                statColorIndex[u8(pksm::Stat::SPDEF)]++;
+                break;
+            case pksm::Nature::Timid:
+            case pksm::Nature::Hasty:
+            case pksm::Nature::Jolly:
+            case pksm::Nature::Naive:
+            case pksm::Nature::Serious:
+                statColorIndex[u8(pksm::Stat::SPD)]++;
+                break;
+        }
+    }
+
+    int statIndex = 0;
+    for (auto stat : {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK,
+             pksm::Stat::SPDEF, pksm::Stat::SPD})
+    {
+        Gui::text(i18n::localize(std::string(displayKeys[statIndex + 10])), 238,
+            16 + statIndex * 20, FONT_SIZE_12, statDisplayColors[statColorIndex[u8(stat)]],
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[statIndex + 10]);
+        statIndex++;
     }
     Gui::text(i18n::localize("MOVES"), 252, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
