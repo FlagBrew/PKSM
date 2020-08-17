@@ -369,7 +369,7 @@ void sav_inject_pkx(
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
-        if (invalidReason != pksm::Sav::BadTransferReason::OKAY)
+        if (!(pkm->species() == pksm::Species::None && invalidReason == pksm::Sav::BadTransferReason::SPECIES) && invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' +
                       i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
