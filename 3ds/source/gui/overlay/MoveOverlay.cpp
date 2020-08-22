@@ -37,7 +37,7 @@
 
 namespace
 {
-    int index(std::vector<std::pair<int, std::string>>& search, const std::string& v)
+    int index(std::vector<std::pair<pksm::Move, std::string>>& search, const std::string& v)
     {
         if (v == search[0].second || v == "")
         {
@@ -75,23 +75,25 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
     const std::vector<std::string>& rawMoves =
         i18n::rawMoves(Configuration::getInstance().language());
     pksm::Generation gen = !object.isFilter() ? object.generation() : pksm::Generation::EIGHT;
-    const std::set<int> availableMoves =
+    const std::set<pksm::Move> availableMoves =
         TitleLoader::save
             ? TitleLoader::save->availableMoves()
             : pksm::VersionTables::availableMoves(pksm::GameVersion::oldestVersion(gen));
+    moves.reserve(availableMoves.size());
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
-        if (*i >= 622 && *i <= 658)
+        if (*i >= pksm::Move::BreakneckBlitzA && *i <= pksm::Move::TwinkleTackleB)
             continue;
-        moves.emplace_back(*i, rawMoves[*i]);
+        moves.emplace_back(*i, rawMoves[u16(*i)]);
     }
     std::sort(moves.begin(), moves.end(),
-        [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
-            if (pair1.first == 0)
+        [](const std::pair<pksm::Move, std::string>& pair1,
+            const std::pair<pksm::Move, std::string>& pair2) {
+            if (pair1.first == pksm::Move::None)
             {
-                return pair2.first != 0;
+                return pair2.first != pksm::Move::None;
             }
-            if (pair2.first == 0)
+            if (pair2.first == pksm::Move::None)
             {
                 return false;
             }
@@ -143,7 +145,7 @@ void MoveOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
         {
-            Gui::text(std::to_string(moves[hid.page() * hid.maxVisibleEntries() + i].first) +
+            Gui::text(std::to_string(u16(moves[hid.page() * hid.maxVisibleEntries() + i].first)) +
                           " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second,
                 x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
@@ -203,15 +205,16 @@ void MoveOverlay::update(touchPosition* touch)
     {
         if (moveIndex < 4)
         {
-            object.move(moveIndex, (u16)moves[hid.fullIndex()].first);
+            object.move(moveIndex, moves[hid.fullIndex()].first);
         }
         else
         {
-            object.relearnMove(moveIndex - 4, (u16)moves[hid.fullIndex()].first);
+            object.relearnMove(moveIndex - 4, moves[hid.fullIndex()].first);
         }
         if (!object.isFilter())
         {
             reinterpret_cast<pksm::PKX&>(object).fixMoves();
+            reinterpret_cast<pksm::PKX&>(object).healPP();
         }
         parent->removeOverlay();
         return;

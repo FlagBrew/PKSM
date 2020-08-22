@@ -47,8 +47,8 @@ private:
     void searchBar();
     pksm::IPKFilterable& object;
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    std::vector<std::pair<int, std::string>> moves;
-    std::vector<std::pair<int, std::string>> validMoves;
+    std::vector<std::pair<pksm::Move, std::string>> moves;
+    std::vector<std::pair<pksm::Move, std::string>> validMoves;
     std::string searchString    = "";
     std::string oldSearchString = "";
     std::unique_ptr<Button> searchButton;

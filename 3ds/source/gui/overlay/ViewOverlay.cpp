@@ -307,8 +307,8 @@ void ViewOverlay::drawEmpty() const
     Gui::ball(pksm::Ball::None, 4, 6);
     for (int i = 0; i < 4; i++)
     {
-        Gui::text(i18n::move(Configuration::getInstance().language(), 0), 252, 156 + i * 20,
-            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::move(Configuration::getInstance().language(), pksm::Move::None), 252,
+            156 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

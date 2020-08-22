@@ -369,7 +369,9 @@ void sav_inject_pkx(
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
-        if (!(pkm->species() == pksm::Species::None && invalidReason == pksm::Sav::BadTransferReason::SPECIES) && invalidReason != pksm::Sav::BadTransferReason::OKAY)
+        if (!(pkm->species() == pksm::Species::None &&
+                invalidReason == pksm::Sav::BadTransferReason::SPECIES) &&
+            invalidReason != pksm::Sav::BadTransferReason::OKAY)
         {
             Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' +
                       i18n::badTransfer(Configuration::getInstance().language(), invalidReason));
@@ -1157,7 +1159,8 @@ void sav_check_value(
                 TitleLoader::save->availableSpecies().count(pksm::Species{u16(value)});
             break;
         case SAV_VALUE_MOVE:
-            ReturnValue->Val->Integer = TitleLoader::save->availableMoves().count(value);
+            ReturnValue->Val->Integer =
+                TitleLoader::save->availableMoves().count(pksm::Move{u16(value)});
             break;
         case SAV_VALUE_ITEM:
             ReturnValue->Val->Integer = TitleLoader::save->availableItems().count(value);
@@ -1264,7 +1267,7 @@ void pkx_set_value(
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
             }
-            pkm->move(nextArg->Val->Integer, getNextVarArg(nextArg)->Val->Integer);
+            pkm->move(nextArg->Val->Integer, pksm::Move{u16(getNextVarArg(nextArg)->Val->Integer)});
             break;
         case BALL:
             if (NumArgs != 4)
@@ -1673,7 +1676,7 @@ void pkx_get_value(
                 delete pkm;
                 scriptFail(Parser, "Incorrect number of args (%i) for MOVE", NumArgs);
             }
-            ReturnValue->Val->UnsignedInteger = pkm->move(nextArg->Val->Integer);
+            ReturnValue->Val->UnsignedInteger = u16(pkm->move(nextArg->Val->Integer));
             break;
         case BALL:
             if (NumArgs != 3)

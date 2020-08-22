@@ -39,6 +39,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "utils/VersionTables.hpp"
 
 #define BANK(paths) paths.first
 #define JSON(paths) paths.second
@@ -465,12 +466,12 @@ void Bank::convertFromBankBin()
                 bool badMove = false;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (pkm->move(i) > 621)
+                    if (pkm->move(i) > pksm::VersionTables::maxMove(pksm::GameVersion::OR))
                     {
                         badMove = true;
                         break;
                     }
-                    if (pkm->relearnMove(i) > 621)
+                    if (pkm->relearnMove(i) > pksm::VersionTables::maxMove(pksm::GameVersion::OR))
                     {
                         badMove = true;
                         break;
