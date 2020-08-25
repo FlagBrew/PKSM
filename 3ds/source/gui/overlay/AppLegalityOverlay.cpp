@@ -121,6 +121,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
                     : 0xFFFF; // true indicates white, false black. However, image is inverted
         }
     }
+    C3D_TexFlush(image.tex);
 
     image.subtex = new Tex3DS_SubTexture{.width = (u16)code.getSize(),
         .height                                 = (u16)code.getSize(),
