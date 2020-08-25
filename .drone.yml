@@ -7,12 +7,9 @@ steps:
   commands:
   - git submodule update --init --force --remote --recursive
 - name: compile_pksm
-  environment:
-    private_reg:
-      from_secret: private_repo
   image_pull_secrets:
       - private_docker_auth
-  image: $private_reg
+  image: pksm_docker
   commands:
   - make
   when:
