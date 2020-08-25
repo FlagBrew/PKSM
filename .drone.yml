@@ -9,14 +9,14 @@ steps:
 - name: compile_pksm
   image_pull_secrets:
       - private_docker_auth
-  image: goat:5000/pksm_docker
+  image: goat/pksm_docker
   commands:
   - make
   when:
     event:
     - push
 - name: push_update
-  image: goat:5000/pksm_docker:latest
+  image: goat/pksm_docker:latest
   environment:
     TOKEN:
       from_secret: token
