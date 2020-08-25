@@ -7,7 +7,7 @@ steps:
   commands:
   - git submodule update --init --force --remote --recursive
 - name: compile_pksm
-  image: fmcore/pksm_docker:latest
+  image: $PRIVATE_REG/pksm_docker:latest
   commands:
   - make
   when:
@@ -18,6 +18,10 @@ steps:
   environment:
     TOKEN:
       from_secret: token
+    PRIVATE_REG:
+      from_secret: private_docker_repo_url
+  image_pull_secrets:
+  - private_docker_auth
   commands:
   - zip -r PKSM.zip out/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
   - "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header \"secret: $TOKEN\" --header \"commit: $DRONE_COMMIT\" https://flagbrew.org\"$endpoint\""
