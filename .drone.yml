@@ -9,10 +9,10 @@ steps:
 - name: compile_pksm
   environment:
     PRIVATE_REG:
-      from_secret: private_docker_repo_url
+      from_secret: private_repo
   image_pull_secrets:
       - private_docker_auth
-  image: private_repo
+  image: $PRIVATE_REG
   commands:
   - make
   when:
