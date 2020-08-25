@@ -31,7 +31,9 @@
 
 namespace Threads
 {
-    void init(void);
+    static constexpr int MAX_THREADS = 32;
+
+    bool init(void);
     // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN
     // MIND IF YOU ARE PORTING
     bool create(void (*entrypoint)(void*), void* arg = nullptr,

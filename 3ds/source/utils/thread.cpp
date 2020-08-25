@@ -26,69 +26,90 @@
 
 #include "thread.hpp"
 #include <3ds.h>
-#include <list>
+#include <algorithm>
 
 namespace
 {
-    struct ThreadRecord
+    constexpr int MIN_HANDLES = 2;
+    Thread reaperThread;
+    // Exit event, "update your list" event, and threads themselves
+    Handle reaperThreadHandles[MIN_HANDLES + Threads::MAX_THREADS];
+    Thread threads[Threads::MAX_THREADS];
+    s32 currentThreads = 0;
+    LightLock currentThreadsLock;
+
+    void reapThread(void* arg)
     {
-        ThreadRecord(void (*entrypoint)(void*), void* arg, Thread thread)
-            : entrypoint(entrypoint), arg(arg), thread(thread)
+        while (true)
         {
+            s32 signaledHandle;
+            svcWaitSynchronizationN(
+                &signaledHandle, reaperThreadHandles, MIN_HANDLES + currentThreads, false, U64_MAX);
+            switch (signaledHandle)
+            {
+                case 0:
+                    for (int i = 0; i < currentThreads; i++)
+                    {
+                        svcWaitSynchronization(reaperThreadHandles[MIN_HANDLES + i], U64_MAX);
+                    }
+                    return;
+                case 1:
+                    continue;
+                default:
+                    LightLock_Lock(&currentThreadsLock);
+                    currentThreads--;
+                    threadFree(threads[signaledHandle - 2]);
+                    std::swap(threads[signaledHandle - 2], threads[currentThreads]);
+                    reaperThreadHandles[signaledHandle] = 0xFFFFFFFF;
+                    std::swap(reaperThreadHandles[signaledHandle],
+                        reaperThreadHandles[MIN_HANDLES + currentThreads]);
+                    LightLock_Unlock(&currentThreadsLock);
+                    break;
+            }
         }
-        void (*entrypoint)(void*);
-        void* arg;
-        Thread thread;
-        std::list<ThreadRecord>::iterator listPos;
-    };
-
-    std::list<ThreadRecord> threads;
-    LightLock listLock;
-
-    void threadWrap(void* arg)
-    {
-        ThreadRecord* record = (ThreadRecord*)arg;
-        record->entrypoint(record->arg);
-        LightLock_Lock(&listLock);
-        std::list<ThreadRecord>::iterator it = record->listPos;
-        threads.erase(it);
-        LightLock_Unlock(&listLock);
     }
 }
 
-void Threads::init()
+bool Threads::init()
 {
-    LightLock_Init(&listLock);
+    LightLock_Init(&currentThreadsLock);
+    svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT);
+    svcCreateEvent(&reaperThreadHandles[1], RESET_ONESHOT);
+    s32 prio = 0;
+    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+    reaperThread = threadCreate(reapThread, nullptr, 0x400, prio - 3, -2, false);
+    return reaperThread != nullptr;
 }
 
 bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
 {
-    s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    LightLock_Lock(&listLock);
-    threads.emplace_front(entrypoint, arg, nullptr);
-    threads.front().listPos = threads.begin();
-    threads.front().thread  = threadCreate(
-        threadWrap, (void*)&threads.front(), stackSize.value_or(4 * 1024), prio - 1, -2, true);
-    if (!threads.front().thread)
+    if (currentThreads >= Threads::MAX_THREADS)
     {
-        threads.erase(threads.begin());
-        LightLock_Unlock(&listLock);
         return false;
     }
-    else
+    s32 prio = 0;
+    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+    Thread thread =
+        threadCreate(entrypoint, arg, stackSize.value_or(4 * 1024), prio - 1, -2, false);
+
+    if (thread)
     {
-        LightLock_Unlock(&listLock);
+        LightLock_Lock(&currentThreadsLock);
+        reaperThreadHandles[currentThreads++] = threadGetHandle(thread);
+        LightLock_Unlock(&currentThreadsLock);
+        svcSignalEvent(reaperThreadHandles[1]);
         return true;
     }
+
+    return false;
 }
 
 void Threads::exit(void)
 {
-    while (!threads.empty())
-    {
-        threadJoin(threads.back().thread, U64_MAX);
-        // All detached, so no deallocation necessary
-    }
+    svcSignalEvent(reaperThreadHandles[0]);
+    threadJoin(reaperThread, U64_MAX);
+    threadFree(reaperThread);
+    svcCloseHandle(reaperThreadHandles[0]);
+    svcCloseHandle(reaperThreadHandles[1]);
     // All remove themselves, so no extra removal necessary
 }
