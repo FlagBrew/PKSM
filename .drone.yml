@@ -12,7 +12,7 @@ steps:
       from_secret: private_repo
   image_pull_secrets:
       - private_docker_auth
-  image: ${PRIVATE_REG}
+  image: ${{ secrets.TESTING }}
   commands:
   - make
   when:
