@@ -12,8 +12,7 @@ steps:
       from_secret: private_docker_repo_url
   image_pull_secrets:
       - private_docker_auth
-  image:
-      from_secret: private_repo
+  image: private_repo
   commands:
   - make
   when:
