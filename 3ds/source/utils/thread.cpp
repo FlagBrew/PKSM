@@ -51,6 +51,7 @@ namespace
                     for (int i = 0; i < currentThreads; i++)
                     {
                         svcWaitSynchronization(reaperThreadHandles[MIN_HANDLES + i], U64_MAX);
+                        threadFree(threads[i]);
                     }
                     return;
                 case 1:
@@ -68,17 +69,63 @@ namespace
             }
         }
     }
+
+    struct Task
+    {
+        void (*entrypoint)(void*);
+        void* arg;
+    };
+    std::vector<Task> workerTasks;
+    LightLock workerTaskLock;
+    LightEvent moreWorkers;
+
+    void taskWorkerThread(void* arg)
+    {
+        while (true)
+        {
+            size_t size = 0;
+            LightEvent_Wait(&moreWorkers);
+            do
+            {
+                LightLock_Lock(&workerTaskLock);
+                Task t = workerTasks[0];
+                if (size == 0 && workerTasks.size() == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    workerTasks.erase(workerTasks.begin());
+                    size = workerTasks.size();
+                }
+                LightLock_Unlock(&workerTaskLock);
+
+                t.entrypoint(t.arg);
+            } while (size > 0);
+            LightEvent_Clear(&moreWorkers);
+        }
+    }
 }
 
 bool Threads::init()
 {
     LightLock_Init(&currentThreadsLock);
-    svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT);
-    svcCreateEvent(&reaperThreadHandles[1], RESET_ONESHOT);
+    if (R_FAILED(svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT)))
+        return false;
+    if (R_FAILED(svcCreateEvent(&reaperThreadHandles[1], RESET_ONESHOT)))
+        return false;
     s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+    if (R_FAILED(svcGetThreadPriority(&prio, CUR_THREAD_HANDLE)))
+        return false;
     reaperThread = threadCreate(reapThread, nullptr, 0x400, prio - 3, -2, false);
-    return reaperThread != nullptr;
+    if (!reaperThread)
+        return false;
+
+    LightLock_Init(&workerTaskLock);
+    LightEvent_Init(&moreWorkers, RESET_STICKY);
+    if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
+        return false;
+    return true;
 }
 
 bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
@@ -102,6 +149,14 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
     }
 
     return false;
+}
+
+void Threads::executeTask(void (*task)(void*), void* arg)
+{
+    LightLock_Lock(&workerTaskLock);
+    workerTasks.emplace_back(task, arg);
+    LightEvent_Signal(&moreWorkers);
+    LightLock_Unlock(&workerTaskLock);
 }
 
 void Threads::exit(void)

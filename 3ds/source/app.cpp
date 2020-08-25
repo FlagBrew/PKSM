@@ -862,8 +862,6 @@ Result App::init(const std::string& execPath)
     moveIcon.clear();
     i18n::init(Configuration::getInstance().language());
 
-    continueI18N.test_and_set();
-    Threads::create(i18nThread, nullptr, 16 * 1024);
     PkmUtils::initDefaults();
 
     if (!assetsMatch())
@@ -895,12 +893,14 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    if (!Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024))
-        return consoleDisplayError("TitleLoader::scanTitles failed to start", -1);
+    Threads::executeTask([](void*) { TitleLoader::scanTitles(); }, nullptr);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
     Threads::create(cartScan, nullptr);
+
+    continueI18N.test_and_set();
+    Threads::executeTask(i18nThread, nullptr);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB

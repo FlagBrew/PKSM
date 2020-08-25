@@ -96,7 +96,7 @@ void TitleIdOverlay::update(touchPosition* touch)
     if (kDown & KEY_B)
     {
         TitleLoader::reloadTitleIds();
-        Threads::create([](void*) { TitleLoader::scanTitles(); }, nullptr, 16 * 1024);
+        Threads::executeTask([](void*) { TitleLoader::scanTitles(); }, nullptr);
         parent->removeOverlay();
         return;
     }

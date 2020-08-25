@@ -38,6 +38,8 @@ namespace Threads
     // MIND IF YOU ARE PORTING
     bool create(void (*entrypoint)(void*), void* arg = nullptr,
         std::optional<size_t> stackSize = std::nullopt);
+    // Executes task on a worker thread with stack size of 0x8000 (if settable).
+    void executeTask(void (*task)(void*), void* arg);
     void exit(void);
 }
 

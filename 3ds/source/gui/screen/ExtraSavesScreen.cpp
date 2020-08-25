@@ -275,7 +275,7 @@ void ExtraSavesScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
-        Threads::create([](void*) { TitleLoader::scanSaves(); }, nullptr, 16 * 1024);
+        Threads::executeTask([](void*) { TitleLoader::scanSaves(); }, nullptr);
         Gui::screenBack();
         return;
     }
