@@ -8,11 +8,11 @@ steps:
   - git submodule update --init --force --remote --recursive
 - name: compile_pksm
   environment:
-    PRIVATE_REG:
+    private_reg:
       from_secret: private_repo
   image_pull_secrets:
       - private_docker_auth
-  image: {$PRIVATE_REG}
+  image: $private_reg
   commands:
   - make
   when:
