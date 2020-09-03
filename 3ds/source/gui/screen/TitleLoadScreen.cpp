@@ -126,7 +126,7 @@ void TitleLoadScreen::refreshLanguage()
         ui_sheet_emulated_button_tabs_2_unselected_idx, i18n::localize("VC_TITLES"), FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
 
-    tabs[0]->setState(titles = &TitleLoader::ctrTitles);
+    tabs[0]->setState(titles == &TitleLoader::ctrTitles);
 }
 
 void TitleLoadScreen::drawTop() const
