@@ -726,7 +726,8 @@ bool EditorScreen::selectAbility()
                         pk5->hiddenAbility(true);
                     }
                 }
-                else if (pkm->abilities(2) != pksm::Ability::None)
+                else if (pkm->abilities(2) != pkm->ability() &&
+                         pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
@@ -736,7 +737,8 @@ bool EditorScreen::selectAbility()
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != pksm::Ability::None)
+                else if (pkm->abilities(0) != pkm->ability() &&
+                         pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
@@ -746,7 +748,8 @@ bool EditorScreen::selectAbility()
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != pksm::Ability::None)
+                else if (pkm->abilities(1) != pkm->ability() &&
+                         pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                     if (pkm->abilities(1) == pkm->abilities(2))
@@ -754,6 +757,9 @@ bool EditorScreen::selectAbility()
                         pk5->hiddenAbility(true);
                     }
                 }
+                break;
+            default: // should never happen, but just in case
+                pkm->setAbility(0);
                 break;
         }
     }
@@ -766,7 +772,8 @@ bool EditorScreen::selectAbility()
                 {
                     pkm->setAbility(1);
                 }
-                else if (pkm->abilities(2) != pksm::Ability::None)
+                else if (pkm->abilities(2) != pkm->ability() &&
+                         pkm->abilities(2) != pksm::Ability::None)
                 {
                     pkm->setAbility(2);
                 }
@@ -776,7 +783,8 @@ bool EditorScreen::selectAbility()
                 {
                     pkm->setAbility(2);
                 }
-                else if (pkm->abilities(0) != pksm::Ability::None)
+                else if (pkm->abilities(0) != pkm->ability() &&
+                         pkm->abilities(0) != pksm::Ability::None)
                 {
                     pkm->setAbility(0);
                 }
@@ -786,10 +794,14 @@ bool EditorScreen::selectAbility()
                 {
                     pkm->setAbility(0);
                 }
-                else if (pkm->abilities(1) != pksm::Ability::None)
+                else if (pkm->abilities(1) != pkm->ability() &&
+                         pkm->abilities(1) != pksm::Ability::None)
                 {
                     pkm->setAbility(1);
                 }
+                break;
+            default: // should never happen, but just in case
+                pkm->setAbility(0);
                 break;
         }
     }
