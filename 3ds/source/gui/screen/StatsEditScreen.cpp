@@ -304,7 +304,8 @@ void StatsEditScreen::drawBottom() const
     for (int i = 0; i < 6; i++)
     {
         Gui::text(std::to_string((int)pkm.iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12,
-            COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            pkm.hyperTrain(statValues[i]) ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::CENTER,
+            TextPosY::TOP);
         if (pkm.generation() != pksm::Generation::LGPE)
         {
             Gui::text(std::to_string((int)pkm.ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12,

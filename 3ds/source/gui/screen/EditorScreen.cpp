@@ -323,8 +323,8 @@ void EditorScreen::drawBottom() const
         TextPosX::CENTER, TextPosY::TOP);
     Gui::text(pkm->nature().localize(lang), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
-    Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-        TextPosY::TOP);
+    Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12,
+        pkm->abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
     Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12,

@@ -261,7 +261,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
     Gui::text(pkm.nature().localize(Configuration::getInstance().language()), 87, 96, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm.ability().localize(Configuration::getInstance().language()), 87, 116,
-        FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        FONT_SIZE_12, pkm.abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT,
+        TextPosY::TOP);
     Gui::text(i18n::item(Configuration::getInstance().language(), pkm.heldItem()), 87, 136,
         FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.PSV(), pkm.TSV()), 87, 156, FONT_SIZE_12,
@@ -278,7 +279,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
     for (int i = 0; i < 6; i++)
     {
         Gui::text(std::to_string((int)pkm.iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12,
-            COLOR_BLACK, TextPosX::RIGHT, TextPosY::TOP);
+            pkm.hyperTrain(statValues[i]) ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::RIGHT,
+            TextPosY::TOP);
         if (pkm.generation() == pksm::Generation::LGPE)
         {
             Gui::text(

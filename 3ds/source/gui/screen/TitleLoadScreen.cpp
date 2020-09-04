@@ -68,7 +68,7 @@ std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
     {
         return nullptr;
     }
-    else if ((size_t)i < (*titles).size())
+    else if ((size_t)i < titles->size())
     {
         return (*titles)[i];
     }
@@ -152,13 +152,13 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    for (size_t i = 0; i < (*titles).size(); i++)
+    for (size_t i = 0; i < titles->size(); i++)
     {
-        int y = (*titles).size() > 4 ? (i / 4) * 60 + 68 : 98;
-        int x = 150 + (4 - ((*titles).size() % 4 == 0 ? 4 : (*titles).size() % 4)) * 30 +
+        int y = titles->size() > 4 ? (i / 4) * 60 + 68 : 98;
+        int x = 150 + (4 - (titles->size() % 4 == 0 ? 4 : titles->size() % 4)) * 30 +
                 (i > 3 ? i - 4 : i) * 60;
 
-        if ((*titles).size() > 4 && i < 4)
+        if (titles->size() > 4 && i < 4)
         {
             x = 150 + (i > 3 ? i - 4 : i) * 60;
         }
@@ -305,7 +305,7 @@ void TitleLoadScreen::update(touchPosition* touch)
     }
     if (selectedTitle == -2)
     {
-        if (TitleLoader::cardTitle == nullptr && !(*titles).empty())
+        if (TitleLoader::cardTitle == nullptr && !titles->empty())
         {
             selectedTitle = 0;
         }
@@ -413,23 +413,23 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
             {
-                if ((*titles).size() > 4)
+                if (titles->size() > 4)
                 {
                     selectedTitle = 4;
                 }
-                else if (!(*titles).empty())
+                else if (!titles->empty())
                 {
                     selectedTitle = 0;
                 }
             }
             else
             {
-                if ((*titles).size() > 4)
+                if (titles->size() > 4)
                 {
                     if (selectedTitle < 4)
                     {
-                        selectedTitle = selectedTitle + 4 > (int)(*titles).size() - 1
-                                            ? (*titles).size() - 1
+                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
+                                            ? titles->size() - 1
                                             : selectedTitle + 4;
                     }
                     else
@@ -437,10 +437,10 @@ void TitleLoadScreen::update(touchPosition* touch)
                         selectedTitle -= 4;
                     }
                 }
-                else if ((*titles).size() < 5)
+                else if (titles->size() < 5)
                 {
                     selectedTitle++;
-                    if (selectedTitle == (int)(*titles).size())
+                    if (selectedTitle == (int)titles->size())
                     {
                         if (TitleLoader::cardTitle)
                         {
@@ -458,18 +458,18 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
             {
-                if ((*titles).size() > 4)
+                if (titles->size() > 4)
                 {
                     selectedTitle = 0;
                 }
                 else
                 {
-                    selectedTitle = (*titles).size() - 1;
+                    selectedTitle = titles->size() - 1;
                 }
             }
             else
             {
-                if ((*titles).size() > 4)
+                if (titles->size() > 4)
                 {
                     if (selectedTitle > 3)
                     {
@@ -477,24 +477,24 @@ void TitleLoadScreen::update(touchPosition* touch)
                     }
                     else
                     {
-                        selectedTitle = selectedTitle + 4 > (int)(*titles).size() - 1
-                                            ? (*titles).size() - 1
+                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
+                                            ? titles->size() - 1
                                             : selectedTitle + 4;
                     }
                 }
-                else if ((*titles).size() < 5 && selectedTitle > -2)
+                else if (titles->size() < 5 && selectedTitle > -2)
                 {
                     selectedTitle--;
                     if (selectedTitle == -1 && !TitleLoader::cardTitle)
                     {
-                        selectedTitle = (*titles).size() - 1;
+                        selectedTitle = titles->size() - 1;
                     }
                 }
             }
         }
         else if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == (int)(*titles).size() - 1 || selectedTitle == 3)
+            if (selectedTitle == (int)titles->size() - 1 || selectedTitle == 3)
             {
                 if (TitleLoader::cardTitle)
                 {
@@ -502,7 +502,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    if ((*titles).size() > 4 && selectedTitle > 3)
+                    if (titles->size() > 4 && selectedTitle > 3)
                     {
                         if (selectedTitle > 3)
                         {
@@ -528,7 +528,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (selectedTitle == -1)
             {
-                selectedTitle = (*titles).size() < 4 ? (*titles).size() - 1 : 3;
+                selectedTitle = titles->size() < 4 ? titles->size() - 1 : 3;
             }
             else if (selectedTitle == 4)
             {
@@ -538,7 +538,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle = (int)(*titles).size() - 1;
+                    selectedTitle = (int)titles->size() - 1;
                 }
             }
             else if (selectedTitle == 0)
@@ -549,7 +549,7 @@ void TitleLoadScreen::update(touchPosition* touch)
                 }
                 else
                 {
-                    selectedTitle = (*titles).size() > 4 ? 3 : (int)(*titles).size() - 1;
+                    selectedTitle = titles->size() > 4 ? 3 : (int)titles->size() - 1;
                 }
             }
             else
