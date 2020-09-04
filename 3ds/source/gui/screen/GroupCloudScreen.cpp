@@ -113,7 +113,7 @@ void GroupCloudScreen::drawBottom() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (auto& b : mainButtons)
+    for (const auto& b : mainButtons)
     {
         b->draw();
     }
@@ -791,7 +791,7 @@ bool GroupCloudScreen::clickBottomIndex(int index)
 void GroupCloudScreen::shareSend()
 {
     std::vector<std::unique_ptr<pksm::PKX>> sendMe;
-    for (auto& index : toSend)
+    for (const auto& index : toSend)
     {
         sendMe.emplace_back(Banks::bank->pkm(index.first, index.second));
     }
@@ -887,7 +887,7 @@ void GroupCloudScreen::shareReceive()
                     groupPkm.clear();
                     std::string badVersions;
                     std::vector<std::unique_ptr<pksm::PKX>> temPkm;
-                    for (auto& pkm : groupJson["pokemon"])
+                    for (const auto& pkm : groupJson["pokemon"])
                     {
                         // clang-format off
                         if (pkm.is_object() && pkm.contains("generation") && pkm["generation"].is_string() &&

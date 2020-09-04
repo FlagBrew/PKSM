@@ -247,22 +247,22 @@ void InjectorScreen::drawBottom() const
     Gui::text(i18n::localize("INJECT_TO_SLOT"), 26, 171, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
         TextPosY::TOP);
 
-    for (auto& langButton : langButtons)
+    for (const auto& langButton : langButtons)
     {
         langButton->draw();
     }
 
-    for (auto& overwriteButton : overwriteButtons)
+    for (const auto& overwriteButton : overwriteButtons)
     {
         overwriteButton->draw();
     }
 
-    for (auto& adaptButton : adaptButtons)
+    for (const auto& adaptButton : adaptButtons)
     {
         adaptButton->draw();
     }
 
-    for (auto& button : miscButtons)
+    for (const auto& button : miscButtons)
     {
         button->draw();
     }

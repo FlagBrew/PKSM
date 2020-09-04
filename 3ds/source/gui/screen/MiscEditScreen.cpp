@@ -188,7 +188,7 @@ void MiscEditScreen::drawBottom() const
         Gui::sprite(ui_sheet_stripe_info_row_idx, 0, 30 + i * 40);
     }
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

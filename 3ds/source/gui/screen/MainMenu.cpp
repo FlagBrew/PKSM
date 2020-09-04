@@ -211,7 +211,7 @@ void MainMenu::drawBottom() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_blue_idx, 0, 206);
     Gui::backgroundAnimatedBottom();
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

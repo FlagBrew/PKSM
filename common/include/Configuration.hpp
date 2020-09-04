@@ -119,7 +119,7 @@ public:
     // This assumes that we'll have a way to set them in the config screen, something that I'm not
     // sure about as that would require basically implementing a file browser. Maybe have it be
     // manual, just like Checkpoint? I implemented it just in case
-    void extraSaves(const std::string& id, std::vector<std::string>& saves);
+    void extraSaves(const std::string& id, const std::vector<std::string>& saves);
 
     void titleId(pksm::GameVersion version, const std::string& id);
 

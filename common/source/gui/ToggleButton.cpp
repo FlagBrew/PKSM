@@ -80,7 +80,7 @@ void ToggleButton::setState(bool state)
     {
         if (radioCategory)
         {
-            for (auto& button : *radioCategory)
+            for (const auto& button : *radioCategory)
             {
                 if (button.get() != this)
                 {

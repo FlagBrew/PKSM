@@ -2148,7 +2148,7 @@ void HexEditScreen::drawBottom() const
         160, 52, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     if (level >= selectedDescription.second)
     {
-        for (auto& button : buttons[hid.fullIndex()])
+        for (const auto& button : buttons[hid.fullIndex()])
         {
             button->draw();
         }

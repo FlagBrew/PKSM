@@ -85,7 +85,7 @@ void StorageOverlay::drawBottom() const
 {
     dim();
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

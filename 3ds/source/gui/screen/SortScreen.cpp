@@ -73,7 +73,7 @@ void SortScreen::drawBottom() const
     Gui::backgroundBottom(false);
     Gui::backgroundAnimatedBottom();
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

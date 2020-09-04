@@ -213,7 +213,7 @@ void EditSelectorScreen::drawBottom() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (auto& b : buttons)
+    for (const auto& b : buttons)
     {
         b->draw();
     }
@@ -330,7 +330,7 @@ void EditSelectorScreen::drawBottom() const
     if (menu)
     {
         Gui::drawSolidRect(0, 0, 320, 240, COLOR_MASKBLACK);
-        for (auto& button : viewerButtons)
+        for (const auto& button : viewerButtons)
         {
             button->draw();
         }

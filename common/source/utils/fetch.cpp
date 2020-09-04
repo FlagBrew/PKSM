@@ -237,7 +237,7 @@ void Fetch::exitMulti()
         // And finally clean up
         __lock_acquire(fetchesMutex);
         __lock_acquire(multiHandleMutex);
-        for (auto& i : fetches)
+        for (const auto& i : fetches)
         {
             curl_multi_remove_handle(multiHandle, i.fetch->curl.get());
         }

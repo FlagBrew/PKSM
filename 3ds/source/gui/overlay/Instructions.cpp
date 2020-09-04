@@ -70,28 +70,28 @@ void Instructions::drawTop() const
 {
     dim();
 
-    for (auto& box : boxes)
+    for (const auto& box : boxes)
     {
         if (box.top)
         {
             Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
         }
     }
-    for (auto& line : lines)
+    for (const auto& line : lines)
     {
         if (line.top)
         {
             Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
         }
     }
-    for (auto& circle : circles)
+    for (const auto& circle : circles)
     {
         if (circle.top)
         {
             Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
         }
     }
-    for (auto& text : texts)
+    for (const auto& text : texts)
     {
         if (text.top)
         {
@@ -105,28 +105,28 @@ void Instructions::drawBottom() const
 {
     dim();
 
-    for (auto& box : boxes)
+    for (const auto& box : boxes)
     {
         if (!box.top)
         {
             Gui::drawSolidRect(box.x, box.y, box.w, box.h, box.color);
         }
     }
-    for (auto& line : lines)
+    for (const auto& line : lines)
     {
         if (!line.top)
         {
             Gui::drawLine(line.x1, line.y1, line.x2, line.y2, line.w, line.color);
         }
     }
-    for (auto& circle : circles)
+    for (const auto& circle : circles)
     {
         if (!circle.top)
         {
             Gui::drawSolidCircle(circle.x, circle.y, circle.radius, circle.color);
         }
     }
-    for (auto& text : texts)
+    for (const auto& text : texts)
     {
         if (!text.top)
         {

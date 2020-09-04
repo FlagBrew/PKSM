@@ -519,7 +519,7 @@ void ConfigScreen::drawBottom() const
     // Color entire screen the nice medium blue without bars
     Gui::drawSolidRect(0, 0, 320, 240, PKSM_Color(40, 53, 147, 255));
 
-    for (auto& button : tabs)
+    for (const auto& button : tabs)
     {
         button->draw();
     }
@@ -550,7 +550,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::language(pksm::Language::RO), 199, 135, FONT_SIZE_14, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -626,7 +626,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(std::to_string(Configuration::getInstance().year()), 168, 210, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -654,7 +654,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("TITLE_IDS"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
 
-        for (auto& button : tabButtons[currentTab])
+        for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -693,7 +693,7 @@ void ConfigScreen::drawBottom() const
         Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
@@ -709,7 +709,7 @@ void ConfigScreen::drawBottom() const
         Gui::text("URL", 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
-        for (auto& button : tabButtons[currentTab])
+        for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }

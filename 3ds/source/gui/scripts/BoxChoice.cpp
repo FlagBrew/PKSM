@@ -95,7 +95,7 @@ void BoxChoice::drawBottom() const
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
     Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
-    for (auto& b : mainButtons)
+    for (const auto& b : mainButtons)
     {
         b->draw();
     }

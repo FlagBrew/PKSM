@@ -175,7 +175,7 @@ void ViewOverlay::drawTop() const
     }
 
     int statIndex = 0;
-    for (auto stat : {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK,
+    for (const auto& stat : {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF, pksm::Stat::SPATK,
              pksm::Stat::SPDEF, pksm::Stat::SPD})
     {
         Gui::text(i18n::localize(std::string(displayKeys[statIndex + 10])), 238,

@@ -119,7 +119,7 @@ void MoveEditScreen::drawBottom() const
         Gui::sprite(ui_sheet_point_small_idx, 15, 37 + i * 20);
         Gui::sprite(ui_sheet_point_small_idx, 15, 146 + i * 20);
     }
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

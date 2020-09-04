@@ -104,7 +104,7 @@ namespace TextParse
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(color), 1.0f);
-        for (auto& glyph : glyphs)
+        for (const auto& glyph : glyphs)
         {
             float drawY = y + sizeY * (lineFeed * glyph.line -
                                           C2D_FontGetInfo(glyph.font)->tglp->baselinePos);
@@ -148,7 +148,7 @@ namespace TextParse
     std::shared_ptr<Text> Text::slice(float maxWidth, float offset) const
     {
         std::shared_ptr<Text> ret = std::make_shared<Text>();
-        for (auto& width : lineWidths)
+        for (const auto& width : lineWidths)
         {
             ret->lineWidths.push_back(width > maxWidth ? maxWidth : width);
         }
@@ -208,7 +208,7 @@ namespace TextParse
     TextBuf::TextBuf(size_t maxGlyphs, const std::vector<C2D_Font>& fonts)
         : fonts(fonts), maxGlyphs(maxGlyphs), currentGlyphs(0)
     {
-        for (auto& font : this->fonts)
+        for (const auto& font : this->fonts)
         {
             TGLP_s* glyphInfo = C2D_FontGetInfo(font)->tglp;
             std::vector<C3D_Tex> fontSheets(glyphInfo->nSheets);
@@ -432,7 +432,7 @@ namespace TextParse
         if (!text || text->glyphs.empty())
             return;
 
-        for (auto& glyph : text->glyphs)
+        for (const auto& glyph : text->glyphs)
         {
             float glyphX = x + sizeX * glyph.xPos;
             switch (textPos)
@@ -473,7 +473,7 @@ namespace TextParse
     {
         static_assert(std::is_same<FontSize, float>::value);
         C2D_ImageTint tint;
-        for (auto& glyph : glyphs)
+        for (const auto& glyph : glyphs)
         {
             C2D_PlainImageTint(&tint, colorToFormat(glyph.color), 1.0f);
             // The one exception to using Gui::drawImageAt: we want to control depth here, and not

@@ -929,7 +929,7 @@ void Gui::exit(void)
     {
         delete textBuffer;
     }
-    for (auto font : fonts)
+    for (const auto& font : fonts)
     {
         if (font)
             C2D_FontFree(font);

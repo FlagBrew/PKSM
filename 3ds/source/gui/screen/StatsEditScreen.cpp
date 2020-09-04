@@ -268,7 +268,7 @@ void StatsEditScreen::drawBottom() const
         Gui::sprite(ui_sheet_point_big_idx, 252, 57 + i * 20);
     }
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

@@ -290,7 +290,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
 void AppLegalityOverlay::drawBottom() const
 {
     dim();
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

@@ -108,7 +108,7 @@ void BagScreen::drawBottom() const
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::drawSolidRect(0, 0, 110, 240, COLOR_DARKYELLOW);
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

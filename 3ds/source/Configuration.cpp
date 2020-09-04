@@ -272,11 +272,11 @@ Configuration::Configuration()
             return;
         }
 
-        for (auto& game : (*mJson)["extraSaves"])
+        for (const auto& game : (*mJson)["extraSaves"])
         {
             if (game.is_array())
             {
-                for (auto& save : game)
+                for (const auto& save : game)
                 {
                     if (!save.is_string())
                     {
@@ -301,7 +301,7 @@ Configuration::Configuration()
             }
         }
 
-        for (auto& version : (*mJson)["titles"])
+        for (const auto& version : (*mJson)["titles"])
         {
             if (!version.is_string())
             {
@@ -570,7 +570,7 @@ void Configuration::autoUpdate(bool value)
     (*mJson)["autoUpdate"] = value;
 }
 
-void Configuration::extraSaves(const std::string& id, std::vector<std::string>& value)
+void Configuration::extraSaves(const std::string& id, const std::vector<std::string>& value)
 {
     (*mJson)["extraSaves"][id] = value;
 }

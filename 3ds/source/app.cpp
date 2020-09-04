@@ -503,7 +503,7 @@ namespace
         {
             int xOff = 0;
             std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
-            for (auto& line : bootSplash)
+            for (const auto& line : bootSplash)
             {
                 std::copy(line.begin(), line.end(),
                     gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
@@ -549,7 +549,7 @@ namespace
             pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
             pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
             pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
-        for (auto& i : languages)
+        for (const auto& i : languages)
         {
             if (continueI18N.test_and_set())
             {
@@ -700,7 +700,7 @@ namespace
 
         Gui::waitFrame(i18n::localize("MYSTERY_GIFT_CHECK"));
 
-        for (auto& gen : mgGens)
+        for (const auto& gen : mgGens)
         {
             for (const std::string& fileName :
                 {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})

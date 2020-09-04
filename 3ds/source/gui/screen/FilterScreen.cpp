@@ -143,7 +143,7 @@ void FilterScreen::drawTop() const
 void FilterScreen::drawBottom() const
 {
     Gui::backgroundBottom(false);
-    for (auto& button : buttons[tab])
+    for (const auto& button : buttons[tab])
     {
         button->draw();
     }

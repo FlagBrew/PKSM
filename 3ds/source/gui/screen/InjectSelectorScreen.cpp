@@ -224,17 +224,17 @@ void InjectSelectorScreen::drawBottom() const
             wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1),
         160, 20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }
 
-    for (auto& button : langFilters)
+    for (const auto& button : langFilters)
     {
         button->draw();
     }
 
-    for (auto& button : typeFilters)
+    for (const auto& button : typeFilters)
     {
         button->draw();
     }

@@ -297,7 +297,7 @@ void ExtraSavesSubScreen::updateSaves()
     switch (group)
     {
         case ExtraSavesSubScreen::Group::Pt:
-            for (auto& postfix : dsPostfixes)
+            for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves =
                     Configuration::getInstance().extraSaves(std::string(dsIds[0]) + postfix);
@@ -309,7 +309,7 @@ void ExtraSavesSubScreen::updateSaves()
             }
             break;
         case ExtraSavesSubScreen::Group::DP:
-            for (auto& postfix : dsPostfixes)
+            for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
                     std::string(secondSelected ? dsIds[2] : dsIds[1]) + postfix);
@@ -323,7 +323,7 @@ void ExtraSavesSubScreen::updateSaves()
             }
             break;
         case ExtraSavesSubScreen::Group::HGSS:
-            for (auto& postfix : dsPostfixes)
+            for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
                     std::string(secondSelected ? dsIds[4] : dsIds[3]) + postfix);
@@ -337,7 +337,7 @@ void ExtraSavesSubScreen::updateSaves()
             }
             break;
         case ExtraSavesSubScreen::Group::BW:
-            for (auto& postfix : dsPostfixes)
+            for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
                     std::string(secondSelected ? dsIds[6] : dsIds[5]) + postfix);
@@ -351,7 +351,7 @@ void ExtraSavesSubScreen::updateSaves()
             }
             break;
         case ExtraSavesSubScreen::Group::B2W2:
-            for (auto& postfix : dsPostfixes)
+            for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
                     std::string(secondSelected ? dsIds[8] : dsIds[7]) + postfix);
@@ -413,7 +413,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
             {
                 dsCurrentSaves.begin()->second.emplace_back(std::move(addString));
             }
-            for (auto& saves : dsCurrentSaves)
+            for (const auto& saves : dsCurrentSaves)
             {
                 Configuration::getInstance().extraSaves(saves.first, saves.second);
             }
@@ -513,13 +513,13 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     }
     else if (down & KEY_X && selectedSave != -1)
     {
-        std::string* entry = nullptr;
+        const std::string* entry = nullptr;
         if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
             group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
             group == ExtraSavesSubScreen::Group::B2W2)
         {
             int i = 0;
-            for (auto& idGroup : dsCurrentSaves)
+            for (const auto& idGroup : dsCurrentSaves)
             {
                 if (i + (int)idGroup.second.size() > selectedSave + firstSave)
                 {
@@ -581,7 +581,7 @@ void ExtraSavesSubScreen::drawBottom() const
         int y    = 97;
         size_t i = 0;
         size_t j = 0;
-        for (auto& idSaves : dsCurrentSaves)
+        for (const auto& idSaves : dsCurrentSaves)
         {
             if (i + idSaves.second.size() >= (size_t)firstSave)
             {

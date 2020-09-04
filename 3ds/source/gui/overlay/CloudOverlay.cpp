@@ -103,7 +103,7 @@ void CloudOverlay::drawBottom() const
 
     Gui::sprite(ui_sheet_textbox_name_bottom_idx, 0, 1);
 
-    for (auto& button : buttons)
+    for (const auto& button : buttons)
     {
         button->draw();
     }

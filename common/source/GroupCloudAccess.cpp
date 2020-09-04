@@ -414,7 +414,7 @@ bool GroupCloudAccess::pageIsGood(const nlohmann::json& page)
     }
     else
     {
-        for (auto& group : page["results"])
+        for (const auto& group : page["results"])
         {
             // clang-format off
             if (!group.is_object() ||
@@ -426,7 +426,7 @@ bool GroupCloudAccess::pageIsGood(const nlohmann::json& page)
             }
             else
             {
-                for (auto& pkm : group["pokemon"])
+                for (const auto& pkm : group["pokemon"])
                 {
                     // clang-format off
                     if (!pkm.is_object() ||

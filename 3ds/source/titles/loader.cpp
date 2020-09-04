@@ -368,7 +368,7 @@ void TitleLoader::scanTitles(void)
         return;
     }
 
-    for (u64& id : ctrTitleIds)
+    for (const u64& id : ctrTitleIds)
     {
         if (continueScan.test_and_set())
         {
@@ -387,7 +387,7 @@ void TitleLoader::scanTitles(void)
         }
     }
 
-    for (u64& id : vcTitleIds)
+    for (const u64& id : vcTitleIds)
     {
         if (continueScan.test_and_set())
         {
@@ -413,7 +413,7 @@ void TitleLoader::scanSaves(void)
 {
     Gui::waitFrame(i18n::localize("SCAN_SAVES"));
     auto scan = [](auto& tids) {
-        for (auto& tid : tids)
+        for (const auto& tid : tids)
         {
             std::string id                 = fmt::format(FMT_STRING("0x{:05X}"), ((u32)tid) >> 8);
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
@@ -425,7 +425,7 @@ void TitleLoader::scanSaves(void)
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
             {
-                for (auto& save : extraSaves)
+                for (const auto& save : extraSaves)
                 {
                     if (io::exists(save))
                     {
@@ -456,7 +456,7 @@ void TitleLoader::scanSaves(void)
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
             {
-                for (auto& save : extraSaves)
+                for (const auto& save : extraSaves)
                 {
                     if (io::exists(save))
                     {
@@ -568,7 +568,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                         0x10000, // 512kbit
                         0x20000, // 1024kbit/1Mbit
                     };
-                    for (auto& size : POSSIBLE_SAVE_SIZES)
+                    for (const auto& size : POSSIBLE_SAVE_SIZES)
                     {
                         // Go to the possible offset
                         in->seek(size + sizeof(GbaHeader), SEEK_SET);
@@ -868,7 +868,7 @@ void TitleLoader::saveToTitle(bool ask)
         {
             // Just a linear search because it's a maximum of thirteen titles
             auto doSave = [&](const auto& titles) {
-                for (auto& title : titles)
+                for (const auto& title : titles)
                 {
                     if (title == loadedTitle &&
                         (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
@@ -924,7 +924,7 @@ void TitleLoader::saveToTitle(bool ask)
                                             0x20000, // 1024kbit/1Mbit
                                         };
                                         // Search for bottom header
-                                        for (auto& size : POSSIBLE_SAVE_SIZES)
+                                        for (const auto& size : POSSIBLE_SAVE_SIZES)
                                         {
                                             // Go to the possible offset
                                             out->seek(size + sizeof(GbaHeader), SEEK_SET);
