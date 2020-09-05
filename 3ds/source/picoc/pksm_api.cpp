@@ -724,13 +724,13 @@ void pkx_encrypt(
     }
 }
 
-void pksm_utf8_to_utf16(
+void pksm_utf8_to_ucs2(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Pointer = strToRet(StringUtils::UTF8toUTF16((char*)Param[0]->Val->Pointer));
 }
 
-void pksm_utf16_to_utf8(
+void pksm_ucs2_to_utf8(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     ReturnValue->Val->Pointer =

@@ -186,8 +186,8 @@ void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 // random utilities
-void pksm_utf8_to_utf16(struct ParseState*, struct Value*, struct Value**, int);
-void pksm_utf16_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_utf8_to_ucs2(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_ucs2_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_decode(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_encode(struct ParseState*, struct Value*, struct Value**, int);
 // wrappers for nlohmann

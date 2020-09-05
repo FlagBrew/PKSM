@@ -78,8 +78,8 @@ struct LibraryFunction UnixFunctions[] =
     { i18n_species,         "char* i18n_species(int species);" },
     { i18n_form,            "char* i18n_form(int gameVersion, int species, int form);" },
     // text conversion
-    { pksm_utf16_to_utf8,   "char* utf16_to_utf8(char* data);" },
-    { pksm_utf8_to_utf16,   "char* utf8_to_utf16(char* data);" },
+    { pksm_ucs2_to_utf8,   "char* ucs2_to_utf8(char* data);" },
+    { pksm_utf8_to_ucs2,   "char* utf8_to_ucs2(char* data);" },
     // misc
     { pksm_base64_decode,   "void base64_decode(unsigned char** out, int* outSize, char* data, int size);" },
     { pksm_base64_encode,   "void base64_encode(char** out, int* outSize, unsigned char* data, int size);" },
