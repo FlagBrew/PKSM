@@ -29,6 +29,7 @@
 
 #include "sav/Sav.hpp"
 #include <3ds.h>
+#include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -59,10 +60,20 @@ namespace TitleLoader
     std::string savePath(void);
     void reloadTitleIds(void);
 
-    // Title list
-    inline std::vector<std::shared_ptr<Title>> ctrTitles;
-    inline std::vector<std::shared_ptr<Title>> vcTitles;
-    inline std::shared_ptr<Title> cardTitle = nullptr;
+    // Title lists
+    // Note that there can only be up to 8 installed titles of either type, which means a threaded
+    // push_back can only edit the end pointer and will not change the storage used
+    inline std::vector<std::shared_ptr<Title>> ctrTitles = std::invoke([] {
+        std::vector<std::shared_ptr<Title>> ret;
+        ret.reserve(8);
+        return ret;
+    });
+    inline std::vector<std::shared_ptr<Title>> vcTitles  = std::invoke([] {
+        std::vector<std::shared_ptr<Title>> ret;
+        ret.reserve(8);
+        return ret;
+    });
+    inline std::shared_ptr<Title> cardTitle              = nullptr;
     inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
     inline std::shared_ptr<pksm::Sav> save;
 }
