@@ -77,13 +77,14 @@ InjectSelectorScreen::InjectSelectorScreen()
     instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
     instructions.addBox(
         false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
-    buttons.push_back(
-        std::make_unique<Button>(160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); },
-            ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+    buttons.push_back(std::make_unique<Button>(
+        160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); },
+        ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
     // Filter
     for (int i = 0; i < 9; i++)
     {
-        langFilters.push_back(std::make_unique<ToggleButton>(268, 3 + i * 24, 38, 23,
+        langFilters.push_back(std::make_unique<ToggleButton>(
+            268, 3 + i * 24, 38, 23,
             [this, i]() {
                 hid.select(0);
                 return this->toggleFilter(std::string(langs[i]));

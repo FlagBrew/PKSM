@@ -170,74 +170,91 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         false, 207, 106, 100, 16, COLOR_GREY, i18n::localize("HEX_EDIT"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_BUTTON(
         291, 2, 27, 23, [this]() { return this->hexEdit(); }, ui_sheet_icon_hex_idx));
-    buttons.push_back(NO_TEXT_ACCEL(94, 34, 13, 13, [this]() { return this->changeLevel(false); },
+    buttons.push_back(NO_TEXT_ACCEL(
+        94, 34, 13, 13, [this]() { return this->changeLevel(false); },
         ui_sheet_button_minus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(109, 34, 31, 13,
+    buttons.push_back(NO_TEXT_BUTTON(
+        109, 34, 31, 13,
         [this]() {
             setLevel();
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(142, 34, 13, 13, [this]() { return this->changeLevel(true); },
+    buttons.push_back(NO_TEXT_ACCEL(
+        142, 34, 13, 13, [this]() { return this->changeLevel(true); },
         ui_sheet_button_plus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 54, 15, 12, [this]() { return this->selectNature(); },
+    buttons.push_back(NO_TEXT_BUTTON(
+        75, 54, 15, 12, [this]() { return this->selectNature(); },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(75, 74, 15, 12, [this]() { return this->selectAbility(); },
+    buttons.push_back(NO_TEXT_CLICK(
+        75, 74, 15, 12, [this]() { return this->selectAbility(); },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 94, 15, 12, [this]() { return this->selectItem(); },
+    buttons.push_back(NO_TEXT_BUTTON(
+        75, 94, 15, 12, [this]() { return this->selectItem(); },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(75, 114, 15, 12,
+    buttons.push_back(NO_TEXT_CLICK(
+        75, 114, 15, 12,
         [this]() {
             pkm->shiny(!pkm->shiny());
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_CLICK(75, 134, 15, 12, [this]() { return this->togglePokerus(); },
+    buttons.push_back(NO_TEXT_CLICK(
+        75, 134, 15, 12, [this]() { return this->togglePokerus(); },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 154, 15, 12,
+    buttons.push_back(NO_TEXT_BUTTON(
+        75, 154, 15, 12,
         [this]() {
             setOT();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_BUTTON(75, 174, 15, 12,
+    buttons.push_back(NO_TEXT_BUTTON(
+        75, 174, 15, 12,
         [this]() {
             setNick();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
-    buttons.push_back(NO_TEXT_ACCEL(94, 194, 13, 13,
-        [this]() { return this->changeFriendship(false); }, ui_sheet_button_minus_small_idx));
-    buttons.push_back(NO_TEXT_BUTTON(109, 194, 31, 13,
+    buttons.push_back(NO_TEXT_ACCEL(
+        94, 194, 13, 13, [this]() { return this->changeFriendship(false); },
+        ui_sheet_button_minus_small_idx));
+    buttons.push_back(NO_TEXT_BUTTON(
+        109, 194, 31, 13,
         [this]() {
             setFriendship();
             return false;
         },
         ui_sheet_res_null_idx));
-    buttons.push_back(NO_TEXT_ACCEL(142, 194, 13, 13,
-        [this]() { return this->changeFriendship(true); }, ui_sheet_button_plus_small_idx));
-    buttons.push_back(std::make_unique<Button>(204, 109, 108, 30,
+    buttons.push_back(NO_TEXT_ACCEL(
+        142, 194, 13, 13, [this]() { return this->changeFriendship(true); },
+        ui_sheet_button_plus_small_idx));
+    buttons.push_back(std::make_unique<Button>(
+        204, 109, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<StatsEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(204, 140, 108, 30,
+    buttons.push_back(std::make_unique<Button>(
+        204, 140, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MoveEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(204, 171, 108, 30,
+    buttons.push_back(std::make_unique<Button>(
+        204, 171, 108, 30,
         [this]() {
             Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(204, 202, 108, 30,
+    buttons.push_back(std::make_unique<ClickButton>(
+        204, 202, 108, 30,
         [this]() {
             this->save();
             this->goBack();
@@ -258,7 +275,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
     instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
     instructions.addBox(
         false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
+    buttons.push_back(NO_TEXT_CLICK(
+        239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
         ui_sheet_button_trainer_info_idx));
 
     origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());

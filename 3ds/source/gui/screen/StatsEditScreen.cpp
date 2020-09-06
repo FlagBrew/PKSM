@@ -41,7 +41,8 @@ namespace
 
 StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        283, 211, 34, 28,
         [this]() {
             Gui::screenBack();
             return true;
@@ -50,10 +51,11 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
     for (int i = 0; i < 6; i++)
     {
         int y = 54 + i * 20;
-        buttons.push_back(std::make_unique<AccelButton>(106, y, 13, 13,
-            [this, i = i]() { return this->changeIV(statValues[i], false); },
+        buttons.push_back(std::make_unique<AccelButton>(
+            106, y, 13, 13, [this, i = i]() { return this->changeIV(statValues[i], false); },
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
-        buttons.push_back(std::make_unique<Button>(121, y, 23, 13,
+        buttons.push_back(std::make_unique<Button>(
+            121, y, 23, 13,
             [this, i = i]() {
                 setIV(statValues[i]);
                 return false;
@@ -61,14 +63,16 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         instructions.addCircle(false, 132, y + 6, 9, COLOR_GREY);
 
-        buttons.push_back(std::make_unique<AccelButton>(146, y, 13, 13,
-            [this, i = i]() { return this->changeIV(statValues[i], true); },
+        buttons.push_back(std::make_unique<AccelButton>(
+            146, y, 13, 13, [this, i = i]() { return this->changeIV(statValues[i], true); },
             ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
-        buttons.push_back(std::make_unique<AccelButton>(182, y, 13, 13,
+        buttons.push_back(std::make_unique<AccelButton>(
+            182, y, 13, 13,
             [this, i = i]() { return this->changeSecondaryStat(statValues[i], false); },
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
-        buttons.push_back(std::make_unique<Button>(197, y, 32, 13,
+        buttons.push_back(std::make_unique<Button>(
+            197, y, 32, 13,
             [this, i = i]() {
                 setSecondaryStat(statValues[i]);
                 return false;
@@ -76,7 +80,8 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         instructions.addCircle(false, 213, y + 6, 9, COLOR_GREY);
 
-        buttons.push_back(std::make_unique<AccelButton>(231, y, 13, 13,
+        buttons.push_back(std::make_unique<AccelButton>(
+            231, y, 13, 13,
             [this, i = i]() { return this->changeSecondaryStat(statValues[i], true); },
             ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
     }
@@ -84,7 +89,8 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
     instructions.addLine(false, 213, 34, 213, 168, 4, COLOR_GREY);
     instructions.addBox(false, 130, 18, 85, 16, COLOR_GREY, i18n::localize("EDIT"), COLOR_WHITE);
 
-    buttons.push_back(std::make_unique<Button>(300, 184, 15, 12, [this]() { return this->setHP(); },
+    buttons.push_back(std::make_unique<Button>(
+        300, 184, 15, 12, [this]() { return this->setHP(); },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 
     addOverlay<ViewOverlay>(this->pkm, false);

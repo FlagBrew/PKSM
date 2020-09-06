@@ -132,8 +132,8 @@ void InjectorScreen::makeButtons()
             pksm::Language langVal = pksm::Language(langIndex);
             if (langVal != pksm::Language::UNUSED)
             {
-                langButtons.push_back(std::make_unique<EnablableToggleButton>(x, y, 38, 23,
-                    [this, langVal]() { return this->setLanguage(langVal); },
+                langButtons.push_back(std::make_unique<EnablableToggleButton>(
+                    x, y, 38, 23, [this, langVal]() { return this->setLanguage(langVal); },
                     [this, langVal]() {
                         return this->lang == pksm::Language::UNUSED ||
                                !this->isLangAvailable(langVal);
@@ -159,7 +159,8 @@ void InjectorScreen::makeButtons()
         }
     }
 
-    overwriteButtons.push_back(std::make_unique<ToggleButton>(235, 102, 38, 23,
+    overwriteButtons.push_back(std::make_unique<ToggleButton>(
+        235, 102, 38, 23,
         [this]() {
             overwriteCard = true;
             return false;
@@ -167,7 +168,8 @@ void InjectorScreen::makeButtons()
         ui_sheet_emulated_button_selected_red_idx, i18n::localize("YES"), FONT_SIZE_14, COLOR_WHITE,
         ui_sheet_emulated_button_unselected_red_idx, i18n::localize("YES"), FONT_SIZE_14,
         COLOR_BLACK, &overwriteButtons, false));
-    overwriteButtons.push_back(std::make_unique<ToggleButton>(273, 102, 38, 23,
+    overwriteButtons.push_back(std::make_unique<ToggleButton>(
+        273, 102, 38, 23,
         [this]() {
             overwriteCard = false;
             return false;
@@ -178,7 +180,8 @@ void InjectorScreen::makeButtons()
 
     overwriteButtons.back()->setState(true);
 
-    adaptButtons.push_back(std::make_unique<ToggleButton>(235, 135, 38, 23,
+    adaptButtons.push_back(std::make_unique<ToggleButton>(
+        235, 135, 38, 23,
         [this]() {
             adaptLanguage = true;
             return false;
@@ -186,7 +189,8 @@ void InjectorScreen::makeButtons()
         ui_sheet_emulated_button_selected_red_idx, i18n::localize("YES"), FONT_SIZE_14, COLOR_WHITE,
         ui_sheet_emulated_button_unselected_red_idx, i18n::localize("YES"), FONT_SIZE_14,
         COLOR_BLACK, &adaptButtons, false));
-    adaptButtons.push_back(std::make_unique<ToggleButton>(273, 135, 38, 23,
+    adaptButtons.push_back(std::make_unique<ToggleButton>(
+        273, 135, 38, 23,
         [this]() {
             adaptLanguage = false;
             return false;
@@ -197,7 +201,8 @@ void InjectorScreen::makeButtons()
 
     adaptButtons.back()->setState(true);
 
-    miscButtons.push_back(std::make_unique<Button>(255, 168, 38, 23,
+    miscButtons.push_back(std::make_unique<Button>(
+        255, 168, 38, 23,
         [this]() {
             if (TitleLoader::save->generation() >= pksm::Generation::LGPE)
             {
@@ -215,7 +220,8 @@ void InjectorScreen::makeButtons()
             ? ui_sheet_emulated_button_unavailable_red_idx
             : ui_sheet_emulated_button_unselected_red_idx,
         "", 0.0f, COLOR_BLACK));
-    miscButtons.push_back(std::make_unique<Button>(282, 212, 34, 28,
+    miscButtons.push_back(std::make_unique<Button>(
+        282, 212, 34, 28,
         []() {
             Gui::screenBack();
             return true;

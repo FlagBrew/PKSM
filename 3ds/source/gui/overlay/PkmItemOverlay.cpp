@@ -122,7 +122,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
         }
     }
     hid.select(itemIndex);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(
+        75, 30, 170, 23,
         [this]() {
             searchBar();
             return false;

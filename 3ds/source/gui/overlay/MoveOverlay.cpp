@@ -112,7 +112,8 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
         hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
                                          object.relearnMove(moveIndex - 4))));
     }
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(
+        75, 30, 170, 23,
         [this]() {
             searchBar();
             return false;

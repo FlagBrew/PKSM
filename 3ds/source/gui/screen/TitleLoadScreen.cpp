@@ -81,20 +81,21 @@ TitleLoadScreen::TitleLoadScreen()
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(
         200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<AccelButton>(24, 96, 175, 16,
-        [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK,
-        10, 10));
+    buttons.push_back(std::make_unique<AccelButton>(
+        24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "",
+        0.0f, COLOR_BLACK, 10, 10));
     for (int i = 1; i < 5; i++)
     {
-        buttons.push_back(std::make_unique<ClickButton>(24, 96 + 17 * i, 175, 16,
-            [this, i]() { return this->setSelectedSave(i); }, ui_sheet_res_null_idx, "", 0.0f,
-            COLOR_BLACK));
+        buttons.push_back(std::make_unique<ClickButton>(
+            24, 96 + 17 * i, 175, 16, [this, i]() { return this->setSelectedSave(i); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     }
-    buttons.push_back(std::make_unique<AccelButton>(24, 181, 175, 16,
-        [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK,
-        10, 10));
-    buttons.push_back(std::make_unique<Button>(200, 95, 96, 51,
-        [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<AccelButton>(
+        24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "",
+        0.0f, COLOR_BLACK, 10, 10));
+    buttons.push_back(std::make_unique<Button>(
+        200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK));
 
     titles = &TitleLoader::ctrTitles;
 }
@@ -107,7 +108,8 @@ void TitleLoadScreen::refreshLanguage()
         "\n\uE005: " + i18n::localize("VC_TITLES") + '\n' + i18n::localize("START_EXIT"));
 
     tabs.clear();
-    tabs.push_back(std::make_unique<ToggleButton>(1, 2, 158, 17,
+    tabs.push_back(std::make_unique<ToggleButton>(
+        1, 2, 158, 17,
         [&]() {
             titles = &TitleLoader::ctrTitles;
             resetTitles();
@@ -116,7 +118,8 @@ void TitleLoadScreen::refreshLanguage()
         ui_sheet_res_null_idx, i18n::localize("3DS_TITLES"), FONT_SIZE_11, COLOR_WHITE,
         ui_sheet_emulated_button_tabs_2_unselected_idx, i18n::localize("3DS_TITLES"), FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
-    tabs.push_back(std::make_unique<ToggleButton>(161, 2, 158, 17,
+    tabs.push_back(std::make_unique<ToggleButton>(
+        161, 2, 158, 17,
         [&]() {
             titles = &TitleLoader::vcTitles;
             resetTitles();

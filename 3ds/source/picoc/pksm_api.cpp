@@ -94,13 +94,15 @@ namespace
     }
 
     template <typename... Ts>
-    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args) {
+    [[noreturn]] void scriptFail(struct ParseState* Parser, const std::string& str, Ts... args)
+    {
         ProgramFail(Parser, str.c_str(), args...);
         std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
     }
 
     template <>
-    [[noreturn]] void scriptFail<>(struct ParseState* Parser, const std::string& str) {
+    [[noreturn]] void scriptFail<>(struct ParseState* Parser, const std::string& str)
+    {
         ProgramFail(Parser, str.c_str());
         std::abort(); // Dummy call to suppress compiler warning: ProgramFail does not return
     }

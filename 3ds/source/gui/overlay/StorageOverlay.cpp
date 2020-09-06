@@ -44,31 +44,35 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
       storageBox(storageBox),
       storage(store)
 {
-    buttons.push_back(std::make_unique<ClickButton>(106, 63, 108, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 63, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<SortScreen>(storage));
             parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(106, 94, 108, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 94, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
             parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(
-        std::make_unique<ClickButton>(106, 125, 108, 28, [this]() { return selectBox(); },
-            ui_sheet_button_editor_idx, i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(106, 156, 108, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 125, 108, 28, [this]() { return selectBox(); }, ui_sheet_button_editor_idx,
+        i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
+    buttons.push_back(std::make_unique<ClickButton>(
+        106, 156, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
             parent->removeOverlay();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(283, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        283, 211, 34, 28,
         [this]() {
             parent->removeOverlay();
             return true;

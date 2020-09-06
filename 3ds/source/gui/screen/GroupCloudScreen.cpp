@@ -55,29 +55,31 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
       filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
       storageBox(storageBox)
 {
-    mainButtons[0] = std::make_unique<ClickButton>(212, 78, 108, 28,
+    mainButtons[0] = std::make_unique<ClickButton>(
+        212, 78, 108, 28,
         [this]() {
             Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[1] =
-        std::make_unique<Button>(212, 109, 108, 28, [this]() { return this->showViewer(); },
-            ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] =
-        std::make_unique<Button>(212, 140, 108, 28, [this]() { return this->releasePkm(); },
-            ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] =
-        std::make_unique<Button>(212, 171, 108, 28, [this]() { return this->dumpPkm(); },
-            ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] = std::make_unique<Button>(283, 211, 34, 28,
-        [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
-    mainButtons[5] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
-    mainButtons[6] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+    mainButtons[1] = std::make_unique<Button>(
+        212, 109, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx,
+        i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[2] = std::make_unique<Button>(
+        212, 140, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx,
+        i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[3] = std::make_unique<Button>(
+        212, 171, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx,
+        i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[4] = std::make_unique<Button>(
+        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "",
+        0.0f, COLOR_BLACK);
+    mainButtons[5] = std::make_unique<AccelButton>(
+        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
+    mainButtons[6] = std::make_unique<AccelButton>(
+        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -86,16 +88,17 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
+                x, y, 34, 30,
                 [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
         y += 30;
     }
-    clickButtons[30] = std::make_unique<ClickButton>(25, 15, 164, 24,
-        [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f,
-        COLOR_BLACK);
+    clickButtons[30] = std::make_unique<ClickButton>(
+        25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
+        0.0f, COLOR_BLACK);
 }
 
 void GroupCloudScreen::drawBottom() const

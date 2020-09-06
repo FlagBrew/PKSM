@@ -75,7 +75,8 @@ SpeciesOverlay::SpeciesOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& o
     }
     std::sort(dispPkm.begin(), dispPkm.end());
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(75, 30, 170, 23,
+    searchButton = std::make_unique<ClickButton>(
+        75, 30, 170, 23,
         [this]() {
             searchBar();
             return false;

@@ -127,38 +127,40 @@ StorageScreen::StorageScreen()
     instructions.addLine(false, 266, 23, 266, 73, 4, COLOR_GREY);
     instructions.addBox(
         false, 148, 57, 120, 16, COLOR_GREY, i18n::localize("BOX_SWAP"), COLOR_WHITE);
-    mainButtons[0] = std::make_unique<ClickButton>(242, 12, 47, 22,
-        [this]() { return this->swapBoxWithStorage(); }, ui_sheet_button_swap_boxes_idx, "", 0.0f,
-        COLOR_BLACK);
-    mainButtons[1] =
-        std::make_unique<Button>(212, 47, 108, 28, [this]() { return this->showViewer(); },
-            ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[2] =
-        std::make_unique<Button>(212, 78, 108, 28, [this]() { return this->clearBox(); },
-            ui_sheet_button_editor_idx, i18n::localize("CLEAR"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[3] =
-        std::make_unique<Button>(212, 109, 108, 28, [this]() { return this->releasePkm(); },
-            ui_sheet_button_editor_idx, i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[4] =
-        std::make_unique<Button>(212, 140, 108, 28, [this]() { return this->dumpPkm(); },
-            ui_sheet_button_editor_idx, i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[5] =
-        std::make_unique<Button>(212, 171, 108, 28, [this]() { return this->duplicate(); },
-            ui_sheet_button_editor_idx, i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
-    mainButtons[6] = std::make_unique<Button>(283, 211, 34, 28,
-        [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
-    mainButtons[7] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
-    mainButtons[8] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+    mainButtons[0] = std::make_unique<ClickButton>(
+        242, 12, 47, 22, [this]() { return this->swapBoxWithStorage(); },
+        ui_sheet_button_swap_boxes_idx, "", 0.0f, COLOR_BLACK);
+    mainButtons[1] = std::make_unique<Button>(
+        212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx,
+        i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[2] = std::make_unique<Button>(
+        212, 78, 108, 28, [this]() { return this->clearBox(); }, ui_sheet_button_editor_idx,
+        i18n::localize("CLEAR"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[3] = std::make_unique<Button>(
+        212, 109, 108, 28, [this]() { return this->releasePkm(); }, ui_sheet_button_editor_idx,
+        i18n::localize("RELEASE"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[4] = std::make_unique<Button>(
+        212, 140, 108, 28, [this]() { return this->dumpPkm(); }, ui_sheet_button_editor_idx,
+        i18n::localize("DUMP"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[5] = std::make_unique<Button>(
+        212, 171, 108, 28, [this]() { return this->duplicate(); }, ui_sheet_button_editor_idx,
+        i18n::localize("CLONE"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[6] = std::make_unique<Button>(
+        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "",
+        0.0f, COLOR_BLACK);
+    mainButtons[7] = std::make_unique<AccelButton>(
+        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
+    mainButtons[8] = std::make_unique<AccelButton>(
+        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
 
     instructions.addCircle(false, 17, 225, 8, COLOR_GREY);
     instructions.addLine(false, 17, 175, 17, 225, 4, COLOR_GREY);
     instructions.addBox(
         false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
-    mainButtons[9] = std::make_unique<ClickButton>(3, 211, 28, 28,
+    mainButtons[9] = std::make_unique<ClickButton>(
+        3, 211, 28, 28,
         [this]() {
             Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
@@ -173,7 +175,8 @@ StorageScreen::StorageScreen()
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
+                x, y, 34, 30,
                 [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
@@ -182,9 +185,9 @@ StorageScreen::StorageScreen()
     }
     instructions.addBox(
         false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    clickButtons[30] = std::make_unique<ClickButton>(25, 15, 164, 24,
-        [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "", 0.0f,
-        COLOR_BLACK);
+    clickButtons[30] = std::make_unique<ClickButton>(
+        25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
+        0.0f, COLOR_BLACK);
     TitleLoader::save->cryptBoxData(true);
 
     boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();

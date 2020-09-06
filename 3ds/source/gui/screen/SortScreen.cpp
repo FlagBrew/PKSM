@@ -39,14 +39,16 @@ SortScreen::SortScreen(bool storage) : storage(storage)
 {
     for (int i = 0; i < 5; i++)
     {
-        buttons.push_back(std::make_unique<ClickButton>(106, 15 + i * 35, 108, 28,
+        buttons.push_back(std::make_unique<ClickButton>(
+            106, 15 + i * 35, 108, 28,
             [this, i]() {
                 pickSort(i);
                 return false;
             },
             ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
     }
-    buttons.push_back(std::make_unique<ClickButton>(212, 210, 108, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        212, 210, 108, 28,
         [this]() {
             justSwitched = true;
             this->sort();
@@ -54,7 +56,8 @@ SortScreen::SortScreen(bool storage) : storage(storage)
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
-    buttons.push_back(std::make_unique<ClickButton>(1, 211, 34, 28,
+    buttons.push_back(std::make_unique<ClickButton>(
+        1, 211, 34, 28,
         []() {
             Gui::screenBack();
             return true;

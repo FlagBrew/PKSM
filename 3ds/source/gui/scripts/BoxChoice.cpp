@@ -41,19 +41,20 @@
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
-    mainButtons[0] =
-        std::make_unique<Button>(212, 47, 108, 28, [this]() { return this->showViewer(); },
-            ui_sheet_button_editor_idx, i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
+    mainButtons[0] = std::make_unique<Button>(
+        212, 47, 108, 28, [this]() { return this->showViewer(); }, ui_sheet_button_editor_idx,
+        i18n::localize("VIEW"), FONT_SIZE_12, COLOR_BLACK);
     mainButtons[1] = std::make_unique<Button>(
         4, 212, 33, 28, [this]() { return false; }, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
-    mainButtons[2] = std::make_unique<Button>(283, 211, 34, 28,
-        [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK);
-    mainButtons[3] =
-        std::make_unique<AccelButton>(8, 15, 17, 24, [this]() { return this->prevBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
-    mainButtons[4] =
-        std::make_unique<AccelButton>(189, 15, 17, 24, [this]() { return this->nextBox(true); },
-            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK, 10, 5);
+    mainButtons[2] = std::make_unique<Button>(
+        283, 211, 34, 28, [this]() { return this->backButton(); }, ui_sheet_button_back_idx, "",
+        0.0f, COLOR_BLACK);
+    mainButtons[3] = std::make_unique<AccelButton>(
+        8, 15, 17, 24, [this]() { return this->prevBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
+    mainButtons[4] = std::make_unique<AccelButton>(
+        189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK, 10, 5);
 
     // Pokemon buttons
     u16 y = 45;
@@ -62,7 +63,8 @@ BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)),
         u16 x = 4;
         for (u8 column = 0; column < 6; column++)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(x, y, 34, 30,
+            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
+                x, y, 34, 30,
                 [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;

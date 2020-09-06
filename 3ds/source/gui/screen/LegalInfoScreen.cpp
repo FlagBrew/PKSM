@@ -40,7 +40,8 @@ LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
 {
     if (string.substr(0, 6) != "Legal!")
     {
-        legalButton = std::make_unique<ClickButton>(3, 211, 28, 28,
+        legalButton = std::make_unique<ClickButton>(
+            3, 211, 28, 28,
             [this]() {
                 this->attemptLegalization();
                 return false;
