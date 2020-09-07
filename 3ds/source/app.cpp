@@ -219,6 +219,8 @@ namespace
                         switch (status_code)
                         {
                             case 200:
+                                Gui::warn(retString);
+                                Gui::warn((retString.substr(0, 8) + "==") + GIT_REV);
                                 if (retString.substr(0, 8) != GIT_REV)
                                 {
                                     url = "https://flagbrew.org/patron/downloadLatest/";
