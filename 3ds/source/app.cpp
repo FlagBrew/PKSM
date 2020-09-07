@@ -219,8 +219,6 @@ namespace
                         switch (status_code)
                         {
                             case 200:
-                                Gui::warn(retString);
-                                Gui::warn((retString.substr(0, 8) + "==") + GIT_REV);
                                 if (retString.substr(0, 8) != GIT_REV)
                                 {
                                     url = "https://flagbrew.org/patron/downloadLatest/";
@@ -348,8 +346,22 @@ namespace
             Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
             if (execPath != "")
             {
-                Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath);
-                return true;
+                // Stop using the 3DSX
+                romfsExit();
+                if (R_FAILED(Archive::moveFile(Archive::sd(), path, Archive::sd(), execPath)))
+                {
+                    // RUN, THE INSTALL FAILED
+                    romfsInit();
+                    Archive::sd().deleteFile(path);
+                    return false;
+                }
+                else
+                {
+                    // No need to reinit ROMFS, as we're definitely about to reboot
+                    // And if we don't reboot, then catastrophic errors are likely. Honestly,
+                    // probably a good thing
+                    return true;
+                }
             }
             else
             {
