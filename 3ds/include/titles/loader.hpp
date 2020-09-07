@@ -63,12 +63,12 @@ namespace TitleLoader
     // Title lists
     // Note that there can only be up to 8 installed titles of either type, which means a threaded
     // push_back can only edit the end pointer and will not change the storage used
-    inline std::vector<std::shared_ptr<Title>> ctrTitles = std::invoke([] {
+    inline std::vector<std::shared_ptr<Title>> ctrTitles = std::invoke([]() {
         std::vector<std::shared_ptr<Title>> ret;
         ret.reserve(8);
         return ret;
     });
-    inline std::vector<std::shared_ptr<Title>> vcTitles  = std::invoke([] {
+    inline std::vector<std::shared_ptr<Title>> vcTitles  = std::invoke([]() {
         std::vector<std::shared_ptr<Title>> ret;
         ret.reserve(8);
         return ret;
