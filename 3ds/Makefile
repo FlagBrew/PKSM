@@ -252,7 +252,7 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all binaries deps clean spotless no-deps format cppcheck cppclean
+.PHONY: all binaries deps directories clean spotless no-deps format cppcheck cppclean
 
 check_defined = \
     $(strip $(foreach 1,$1, \
@@ -292,13 +292,16 @@ clean:
 	@rm -fr $(ROMFS)/i18n/
 	@touch $(ROMFS)/mg/.gitkeep
 	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
+	@rm -fr $(GFXBUILD)
 #---------------------------------------------------------------------------------
 spotless: clean
 	@rm -fr $(OUT_RELEASE)
 	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
-binaries: $(ROMFS_FONTFILES) $(_BINARIES_DEPS)
+directories:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
+#---------------------------------------------------------------------------------
+binaries: directories $(ROMFS_FONTFILES) $(_BINARIES_DEPS)
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 	@echo Copying strings to romfs...
 	@cp -r ../assets/gui_strings/* $(ROMFS)/i18n
@@ -325,7 +328,7 @@ cppclean:
 	@echo build/cppclean.log created
 
 #---------------------------------------------------------------------------------
-$(GFXBUILD)/%.bcfnt :		%.ttf
+$(GFXBUILD)/%.bcfnt :		%.ttf directories
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
