@@ -267,8 +267,7 @@ _BINARIES_DEPS :=
 all: _BINARIES_DEPS+=deps
 all: binaries
 #---------------------------------------------------------------------------------
-deps:
-	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
+deps: directories
 ifeq ($(OS),Windows_NT)
 	@cd $(PACKER) && py -3 pack.py
 else

@@ -11,7 +11,7 @@ steps:
       - private_docker_auth
   image: registry.external.fm1337.com:1337/pksm_docker
   commands:
-  - make
+  - make -j$(nproc)
   when:
     event:
     - push
