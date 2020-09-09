@@ -252,7 +252,7 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all deps clean spotless no-deps format cppcheck cppclean
+.PHONY: all binaries deps clean spotless no-deps format cppcheck cppclean
 
 check_defined = \
     $(strip $(foreach 1,$1, \
@@ -261,8 +261,11 @@ __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $2, ($2))))
 
+_BINARIES_DEPS :=
+
 #---------------------------------------------------------------------------------
-all: deps no-deps
+all: _BINARIES_DEPS+=deps
+all: binaries
 #---------------------------------------------------------------------------------
 deps:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR)
@@ -280,6 +283,8 @@ endif
 	@rm -fr ../assets/romfs/scripts
 	@cd $(SCRIPTS) && mv -f scripts ../../assets/romfs
 #---------------------------------------------------------------------------------
+no-deps: binaries
+#---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(OUT_DEBUG)
@@ -292,7 +297,7 @@ spotless: clean
 	@rm -fr $(OUT_RELEASE)
 	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
-no-deps: $(ROMFS_FONTFILES)
+binaries: $(ROMFS_FONTFILES) $(_BINARIES_DEPS)
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 	@echo Copying strings to romfs...
