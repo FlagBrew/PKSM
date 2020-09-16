@@ -818,7 +818,7 @@ Result App::init(const std::string& execPath)
 
     hidInit();
     gfxInitDefault();
-    Threads::init();
+    Threads::init(1);
 
     moveIcon.test_and_set();
     Threads::create(iconThread);

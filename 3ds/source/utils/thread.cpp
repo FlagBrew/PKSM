@@ -77,37 +77,33 @@ namespace
     };
     std::vector<Task> workerTasks;
     LightLock workerTaskLock;
-    LightEvent moreWorkers;
+    LightSemaphore moreTasks;
+    u8 numWorkers;
 
     void taskWorkerThread(void* arg)
     {
         while (true)
         {
-            size_t size = 0;
-            LightEvent_Wait(&moreWorkers);
-            do
-            {
-                LightLock_Lock(&workerTaskLock);
-                Task t = workerTasks[0];
-                if (size == 0 && workerTasks.size() == 0)
-                {
-                    return;
-                }
-                else
-                {
-                    workerTasks.erase(workerTasks.begin());
-                    size = workerTasks.size();
-                }
-                LightLock_Unlock(&workerTaskLock);
+            LightSemaphore_Acquire(&moreTasks, 1);
 
-                t.entrypoint(t.arg);
-            } while (size > 0);
-            LightEvent_Clear(&moreWorkers);
+            LightLock_Lock(&workerTaskLock);
+
+            if (workerTasks.size() == 0)
+            {
+                return;
+            }
+
+            Task t = workerTasks[0];
+            workerTasks.erase(workerTasks.begin());
+
+            LightLock_Unlock(&workerTaskLock);
+
+            t.entrypoint(t.arg);
         }
     }
 }
 
-bool Threads::init()
+bool Threads::init(u8 workers)
 {
     LightLock_Init(&currentThreadsLock);
     if (R_FAILED(svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT)))
@@ -122,9 +118,12 @@ bool Threads::init()
         return false;
 
     LightLock_Init(&workerTaskLock);
-    LightEvent_Init(&moreWorkers, RESET_STICKY);
-    if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
-        return false;
+    LightSemaphore_Init(&moreTasks, 0, workers);
+    for (int i = 0; i < workers; i++)
+    {
+        if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
+            return false;
+    }
     return true;
 }
 
@@ -155,12 +154,13 @@ void Threads::executeTask(void (*task)(void*), void* arg)
 {
     LightLock_Lock(&workerTaskLock);
     workerTasks.emplace_back(task, arg);
-    LightEvent_Signal(&moreWorkers);
+    LightSemaphore_Release(&moreTasks, 1);
     LightLock_Unlock(&workerTaskLock);
 }
 
 void Threads::exit(void)
 {
+    LightSemaphore_Release(&moreTasks, numWorkers);
     svcSignalEvent(reaperThreadHandles[0]);
     threadJoin(reaperThread, U64_MAX);
     threadFree(reaperThread);
