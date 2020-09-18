@@ -267,7 +267,7 @@ _BINARIES_DEPS :=
 all: _BINARIES_DEPS+=deps
 all: binaries
 #---------------------------------------------------------------------------------
-deps: directories
+deps: | directories
 ifeq ($(OS),Windows_NT)
 	@cd $(PACKER) && py -3 pack.py
 else
@@ -279,7 +279,7 @@ ifeq ($(OS),Windows_NT)
 else
 	@cd $(SCRIPTS) && python3 genScripts.py
 endif
-	@rm -fr ../assets/romfs/scripts
+	@rm -fr $(ROMFS)/scripts
 	@cd $(SCRIPTS) && mv -f scripts ../../assets/romfs
 #---------------------------------------------------------------------------------
 no-deps: binaries
@@ -289,6 +289,7 @@ clean:
 	@rm -fr $(OUT_DEBUG)
 	@rm -fr $(ROMFS)/mg/*
 	@rm -fr $(ROMFS)/i18n/
+	@rm -fr $(ROMFS)/scripts
 	@touch $(ROMFS)/mg/.gitkeep
 	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
 	@rm -fr $(GFXBUILD)
@@ -300,8 +301,9 @@ spotless: clean
 directories:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
 #---------------------------------------------------------------------------------
-binaries: directories $(ROMFS_FONTFILES) $(_BINARIES_DEPS)
+binaries: $(ROMFS_FONTFILES) | directories
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
+	@$(if $(_BINARIES_DEPS), $(MAKE) --no-print-directory $(_BINARIES_DEPS))
 	@echo Copying strings to romfs...
 	@cp -r ../assets/gui_strings/* $(ROMFS)/i18n
 	@cp -r ../core/strings/* $(ROMFS)/i18n
@@ -327,7 +329,7 @@ cppclean:
 	@echo build/cppclean.log created
 
 #---------------------------------------------------------------------------------
-$(GFXBUILD)/%.bcfnt :		%.ttf directories
+$(GFXBUILD)/%.bcfnt :		%.ttf | directories
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
