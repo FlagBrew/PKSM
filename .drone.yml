@@ -9,14 +9,14 @@ steps:
 - name: compile_pksm
   image_pull_secrets:
       - private_docker_auth
-  image: registry.external.fm1337.com:1337/pksm_docker
+  image: registry.external.fm1337.com:5000/pksm_docker
   commands:
   - make
   when:
     event:
     - push
 - name: push_update
-  image: registry.external.fm1337.com:1337/pksm_docker
+  image: registry.external.fm1337.com:5000/pksm_docker
   environment:
     TOKEN:
       from_secret: token
