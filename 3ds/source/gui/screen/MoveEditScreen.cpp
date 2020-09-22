@@ -46,14 +46,14 @@ MoveEditScreen::MoveEditScreen(pksm::PKX& pkm) : pkm(pkm)
     {
         buttons.push_back(std::make_unique<ClickButton>(
             0, 30 + 20 * i, 240, 20,
-            [this, i = i]() {
+            [this, i]() {
                 moveSelected = i;
                 return true;
             },
             ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<ClickButton>(
             0, 140 + 20 * i, 240, 20,
-            [this, i = i]() {
+            [this, i]() {
                 moveSelected = i + 4;
                 return true;
             },

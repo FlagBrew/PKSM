@@ -677,7 +677,7 @@ namespace
 #endif
         struct giftCurlData
         {
-            giftCurlData(FILE* file, std::string fileName)
+            giftCurlData(FILE* file, const std::string& fileName)
                 : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
             {
             }

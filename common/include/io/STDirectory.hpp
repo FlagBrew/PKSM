@@ -43,7 +43,7 @@ struct STDirectoryEntry
 class STDirectory
 {
 public:
-    STDirectory(const std::string& root);
+    explicit STDirectory(const std::string& root);
 
     Result error(void);
     std::string item(size_t index);

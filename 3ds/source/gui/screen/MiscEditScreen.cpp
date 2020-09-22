@@ -253,7 +253,7 @@ void MiscEditScreen::drawBottom() const
         TextPosY::TOP);
     if (pkm.generation() > pksm::Generation::FIVE)
     {
-        int print;
+        int print = 0;
         if (pkm.generation() == pksm::Generation::SIX)
         {
             print = reinterpret_cast<pksm::PK6&>(pkm).enjoyment();

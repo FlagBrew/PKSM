@@ -320,7 +320,7 @@ format:
 cppcheck:
 	@rm -f $(BUILD)/cppcheck.log
 	@mkdir -p $(BUILD)
-	@cppcheck . ../core ../common --enable=all $(INCLUDE) -UJSON_CATCH_USER -U_Check_return_ -U_MSC_VER -U_Ret_notnull_ -U__INTEL_COMPILER -U__PGI -U__SUNPRO_CC -UJSON_INTERNAL_CATCH_USER -UJSON_THROW_USER -UJSON_TRY_USER -U__IBMCPP__ -U__SUNPRO_CC -D__GNUC__=9 -D__GNUC_MINOR__=1 -DNULL=nullptr --force 2> $(BUILD)/cppcheck.log
+	@cppcheck . ../core ../common --enable=all --std=c++20 -j $(shell nproc) $(INCLUDE) -UJSON_CATCH_USER -U_Check_return_ -U_MSC_VER -U_Ret_notnull_ -U__INTEL_COMPILER -U__PGI -U__SUNPRO_CC -UJSON_INTERNAL_CATCH_USER -UJSON_THROW_USER -UJSON_TRY_USER -U__IBMCPP__ -U__SUNPRO_CC -D__GNUC__=10 -D__GNUC_MINOR__=1 -DNULL=nullptr -D_PKSMCORE_EXTRA_LANGUAGES="NL, PT, RU, RO" --force 2> $(BUILD)/cppcheck.log
 	@echo build/cppcheck.log file created...
 #---------------------------------------------------------------------------------
 cppclean:

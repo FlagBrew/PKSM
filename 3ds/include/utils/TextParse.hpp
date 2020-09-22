@@ -142,7 +142,7 @@ namespace TextParse
     public:
         // maxChars is more of a suggestion than a limit. If it's necessary, things can extend
         // farther
-        TextBuf(size_t maxGlyphs, const std::vector<FontType>& fonts = {nullptr});
+        explicit TextBuf(size_t maxGlyphs, const std::vector<FontType>& fonts = {nullptr});
         std::shared_ptr<Text> parse(const std::string& str, float maxWidth = 0.0f);
         void addFont(FontType font);
         // Clears if currentGlyphs is >= maxChars

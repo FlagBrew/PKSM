@@ -52,11 +52,11 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
     {
         int y = 54 + i * 20;
         buttons.push_back(std::make_unique<AccelButton>(
-            106, y, 13, 13, [this, i = i]() { return this->changeIV(statValues[i], false); },
+            106, y, 13, 13, [this, i]() { return this->changeIV(statValues[i], false); },
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             121, y, 23, 13,
-            [this, i = i]() {
+            [this, i]() {
                 setIV(statValues[i]);
                 return false;
             },
@@ -64,16 +64,15 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
         instructions.addCircle(false, 132, y + 6, 9, COLOR_GREY);
 
         buttons.push_back(std::make_unique<AccelButton>(
-            146, y, 13, 13, [this, i = i]() { return this->changeIV(statValues[i], true); },
+            146, y, 13, 13, [this, i]() { return this->changeIV(statValues[i], true); },
             ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
         buttons.push_back(std::make_unique<AccelButton>(
-            182, y, 13, 13,
-            [this, i = i]() { return this->changeSecondaryStat(statValues[i], false); },
+            182, y, 13, 13, [this, i]() { return this->changeSecondaryStat(statValues[i], false); },
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             197, y, 32, 13,
-            [this, i = i]() {
+            [this, i]() {
                 setSecondaryStat(statValues[i]);
                 return false;
             },
@@ -81,8 +80,7 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
         instructions.addCircle(false, 213, y + 6, 9, COLOR_GREY);
 
         buttons.push_back(std::make_unique<AccelButton>(
-            231, y, 13, 13,
-            [this, i = i]() { return this->changeSecondaryStat(statValues[i], true); },
+            231, y, 13, 13, [this, i]() { return this->changeSecondaryStat(statValues[i], true); },
             ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
     }
     instructions.addLine(false, 132, 34, 132, 168, 4, COLOR_GREY);
