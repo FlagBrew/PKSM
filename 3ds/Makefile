@@ -104,6 +104,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/utils \
 					../core/include/wcx \
 					../core/memecrypto \
+					../external \
 					../external/picoc/include \
 					../external/qrgen
 
