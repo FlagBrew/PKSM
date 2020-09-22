@@ -95,7 +95,6 @@ FORMATINCLUDES	:=	../common/include \
 INCLUDES		:=	$(FORMATINCLUDES) \
 					../common/include/picoc \
 					../common/include/quirc \
-					../common/fmt \
 					../core/include \
 					../core/include/enums \
 					../core/include/personal \
@@ -105,6 +104,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../core/include/wcx \
 					../core/memecrypto \
 					../external \
+					../external/fmt \
 					../external/picoc/include \
 					../external/qrgen
 
