@@ -52,7 +52,7 @@ namespace
 
     std::vector<C2D_Font> fonts;
 
-    std::stack<std::unique_ptr<Screen>> screens;
+    std::stack<std::unique_ptr<Screen>, std::vector<std::unique_ptr<Screen>>> screens;
 
     constexpr u32 magicNumber = 0xC7D84AB9;
     float noHomeAlpha         = 0.0f;
