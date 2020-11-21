@@ -25,6 +25,7 @@
  */
 
 #include "mysterygift.hpp"
+#include "BZ2File.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
@@ -40,14 +41,12 @@
 namespace
 {
     nlohmann::json mysteryGiftSheet;
-    u8* mysteryGiftData;
+    std::vector<u8> mysteryGiftData;
 }
 
 void MysteryGift::init(pksm::Generation g)
 {
-    // Just in case cleanup did not occur properly
-    delete[] mysteryGiftData;
-    mysteryGiftData = nullptr;
+    mysteryGiftData.clear();
 
     std::string sheetPath = "/3ds/PKSM/mysterygift/sheet" + (std::string)g + ".json.bz2";
     std::string dataPath  = "/3ds/PKSM/mysterygift/data" + (std::string)g + ".bin.bz2";
@@ -60,22 +59,13 @@ void MysteryGift::init(pksm::Generation g)
     FILE* f = fopen(sheetPath.c_str(), "rb");
     if (f != NULL)
     {
-        fseek(f, 0, SEEK_END);
-        size_t size          = ftell(f);
-        unsigned int destLen = 700 * 1024; // big enough
-        char* s              = new char[size];
-        char* d              = new char[destLen]();
-        rewind(f);
-        fread(s, 1, size, f);
+        std::vector<u8> data;
+        int error = BZ2File::read(f, data);
 
-        int r = BZ2_bzBuffToBuffDecompress(d, &destLen, s, size, 0, 0);
-        if (r == BZ_OK)
+        if (error == BZ_OK)
         {
-            mysteryGiftSheet = nlohmann::json::parse(d);
+            mysteryGiftSheet = nlohmann::json::parse(data.begin(), data.end(), nullptr, false);
         }
-
-        delete[] s;
-        delete[] d;
 
         fclose(f);
     }
@@ -90,21 +80,12 @@ void MysteryGift::init(pksm::Generation g)
     f = fopen(dataPath.c_str(), "rb");
     if (f != NULL)
     {
-        fseek(f, 0, SEEK_END);
-        u32 size             = ftell(f);
-        unsigned int destLen = 800 * 1024;
-        char* s              = new char[size];
-        mysteryGiftData      = new u8[destLen]();
-        rewind(f);
-        fread(s, 1, size, f);
+        int error = BZ2File::read(f, mysteryGiftData);
 
-        int r = BZ2_bzBuffToBuffDecompress((char*)mysteryGiftData, &destLen, s, size, 0, 0);
-        if (r != BZ_OK)
+        if (error != BZ_OK)
         {
             // TODO
         }
-
-        delete[] s;
 
         fclose(f);
     }
@@ -123,40 +104,40 @@ std::unique_ptr<pksm::WCX> MysteryGift::wondercard(size_t index)
         std::unique_ptr<pksm::WCX> wc = nullptr;
         if (entry["type"] == "wc4")
         {
-            wc = std::make_unique<pksm::WC4>(mysteryGiftData + offset);
+            wc = std::make_unique<pksm::WC4>(mysteryGiftData.data() + offset);
         }
         else if (entry["type"] == "pgt")
         {
-            wc = std::make_unique<pksm::PGT>(mysteryGiftData + offset);
+            wc = std::make_unique<pksm::PGT>(mysteryGiftData.data() + offset);
         }
         else
         {
-            wc = std::make_unique<pksm::PCD>(mysteryGiftData + offset);
+            wc = std::make_unique<pksm::PCD>(mysteryGiftData.data() + offset);
         }
         return wc;
     }
     else if (gen == "5")
     {
-        return std::make_unique<pksm::PGF>(mysteryGiftData + offset);
+        return std::make_unique<pksm::PGF>(mysteryGiftData.data() + offset);
     }
     else if (gen == "6")
     {
-        return std::make_unique<pksm::WC6>(mysteryGiftData + offset,
+        return std::make_unique<pksm::WC6>(mysteryGiftData.data() + offset,
             entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "7")
     {
-        return std::make_unique<pksm::WC7>(mysteryGiftData + offset,
+        return std::make_unique<pksm::WC7>(mysteryGiftData.data() + offset,
             entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "LGPE")
     {
-        return std::make_unique<pksm::WB7>(mysteryGiftData + offset,
+        return std::make_unique<pksm::WB7>(mysteryGiftData.data() + offset,
             entry["type"].get<std::string>().find("full") != std::string::npos);
     }
     else if (gen == "8")
     {
-        return std::make_unique<pksm::WC8>(mysteryGiftData + offset);
+        return std::make_unique<pksm::WC8>(mysteryGiftData.data() + offset);
     }
     else
     {
@@ -166,8 +147,7 @@ std::unique_ptr<pksm::WCX> MysteryGift::wondercard(size_t index)
 
 void MysteryGift::exit(void)
 {
-    delete[] mysteryGiftData;
-    mysteryGiftData = nullptr;
+    mysteryGiftData.clear();
     mysteryGiftSheet.clear();
 }
 

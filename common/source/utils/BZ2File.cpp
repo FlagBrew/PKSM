@@ -24,43 +24,62 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef MYSTERYGIFT_HPP
-#define MYSTERYGIFT_HPP
+#include "BZ2File.hpp"
+#include <algorithm>
 
-#include "enums/Gender.hpp"
-#include "enums/Species.hpp"
-#include "nlohmann/json_fwd.hpp"
-#include "sav/Sav.hpp"
-#include "wcx/WCX.hpp"
-#include <string>
-
-namespace MysteryGift
+int BZ2File::read(FILE* rawfile, std::vector<u8>& out)
 {
-    struct giftData
+    int bzerror;
+    BZFILE* file = BZ2_bzReadOpen(&bzerror, rawfile, 0, false, nullptr, 0);
+    if (bzerror != BZ_OK)
     {
-        giftData(const std::string& name = "", const std::string& game = "", int species = 0,
-            int form = 0, pksm::Gender gender = pksm::Gender::Male, bool released = false)
-            : name(name),
-              game(game),
-              species(species),
-              form(form),
-              gender(gender),
-              released(released)
-        {
-        }
-        std::string name;
-        std::string game;
-        int species;
-        int form;
-        pksm::Gender gender;
-        bool released;
-    };
+        return bzerror;
+    }
 
-    void init(pksm::Generation gen);
-    std::vector<nlohmann::json> wondercards();
-    giftData wondercardInfo(size_t index);
-    std::unique_ptr<pksm::WCX> wondercard(size_t index);
-    void exit();
+    out.clear();
+
+    u8 read_buffer[READ_SIZE];
+
+    while (bzerror == BZ_OK)
+    {
+        int actuallyRead = BZ2_bzRead(&bzerror, file, read_buffer, READ_SIZE);
+        if (bzerror == BZ_OK || bzerror == BZ_STREAM_END)
+        {
+            out.insert(out.end(), read_buffer, read_buffer + actuallyRead);
+        }
+    }
+
+    int garbageError;
+    BZ2_bzReadClose(&garbageError, file);
+
+    if (bzerror != BZ_STREAM_END)
+    {
+        out.clear();
+        return bzerror;
+    }
+
+    return BZ_OK;
 }
 
-#endif
+int BZ2File::write(FILE* rawfile, const u8* data, std::size_t size)
+{
+    int bzerror;
+    BZFILE* file = BZ2_bzWriteOpen(&bzerror, rawfile, 5, 0, 0);
+    if (bzerror != BZ_OK)
+    {
+        return bzerror;
+    }
+
+    BZ2_bzWrite(&bzerror, file, const_cast<u8*>(data), size);
+
+    if (bzerror != BZ_OK)
+    {
+        int garbageError;
+        BZ2_bzWriteClose(&garbageError, file, true, nullptr, nullptr);
+        return bzerror;
+    }
+
+    BZ2_bzWriteClose(&bzerror, file, false, nullptr, nullptr);
+
+    return bzerror;
+}

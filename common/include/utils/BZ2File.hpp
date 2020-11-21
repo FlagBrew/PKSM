@@ -24,43 +24,22 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef MYSTERYGIFT_HPP
-#define MYSTERYGIFT_HPP
+#ifndef BZ2FILE_HPP
+#define BZ2FILE_HPP
 
-#include "enums/Gender.hpp"
-#include "enums/Species.hpp"
-#include "nlohmann/json_fwd.hpp"
-#include "sav/Sav.hpp"
-#include "wcx/WCX.hpp"
+#include "types.h"
+#include <bzlib.h>
+#include <stdio.h>
 #include <string>
+#include <vector>
 
-namespace MysteryGift
+namespace BZ2File
 {
-    struct giftData
-    {
-        giftData(const std::string& name = "", const std::string& game = "", int species = 0,
-            int form = 0, pksm::Gender gender = pksm::Gender::Male, bool released = false)
-            : name(name),
-              game(game),
-              species(species),
-              form(form),
-              gender(gender),
-              released(released)
-        {
-        }
-        std::string name;
-        std::string game;
-        int species;
-        int form;
-        pksm::Gender gender;
-        bool released;
-    };
+    static constexpr std::size_t READ_SIZE = 0x1000;
 
-    void init(pksm::Generation gen);
-    std::vector<nlohmann::json> wondercards();
-    giftData wondercardInfo(size_t index);
-    std::unique_ptr<pksm::WCX> wondercard(size_t index);
-    void exit();
-}
+    // Note: fclose is not called on these FILE*s by these functions
+    int read(FILE* file, std::vector<u8>& out);
+    int write(FILE* file, const u8* data, std::size_t size);
+};
 
 #endif
