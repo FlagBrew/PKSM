@@ -303,7 +303,7 @@ spotless: clean
 	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
 directories:
-	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
+	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n $(DEPSDIR)
 #---------------------------------------------------------------------------------
 binaries: $(ROMFS_GFXFILES) | directories
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
@@ -339,13 +339,13 @@ $(GFXBUILD)/%.bcfnt :		%.ttf | directories
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
 
 #---------------------------------------------------------------------------------
-$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
+$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s | directories
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@tex3ds -i $< -H $(BUILD)/$*.h -d $(DEPSDIR)/$*.d -o $@
 
 #---------------------------------------------------------------------------------
-$(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/%
+$(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/% | directories
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@bzip2 -kf --best $< -c > $@
