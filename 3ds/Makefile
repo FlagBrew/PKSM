@@ -110,7 +110,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
-GFXBUILD		:=	$(ROMFS)/gfx
+GFXBUILD		:=	$(BUILD)/gfx
 PACKER			:=	../external/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
 CITRA_DEBUG		:=	0
@@ -212,11 +212,13 @@ endif
 export T3XFILES		:=	$(GFXFILES:.t3s=.t3x)
 export ROMFS_FONTFILES	:=	$(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
 
+export ROMFS_GFXFILES	:=	$(addprefix $(ROMFS)/gfx/,$(addsuffix .bz2, $(notdir $(T3XFILES) $(ROMFS_FONTFILES))))
+
 export OFILES_SOURCES 	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
 export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES)) \
 			$(PICAFILES:.v.pica=.shbin.o) $(SHLISTFILES:.shlist=.shbin.o) \
-			$(if $(filter $(BUILD),$(GFXBUILD)),$(addsuffix .o,$(T3XFILES)))
+			# $(if $(filter $(BUILD),$(GFXBUILD)),$(addsuffix .o,$(T3XFILES)))
 
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
@@ -302,13 +304,13 @@ spotless: clean
 directories:
 	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n
 #---------------------------------------------------------------------------------
-binaries: $(ROMFS_FONTFILES) | directories
+binaries: $(ROMFS_GFXFILES) | directories
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 	@$(if $(_BINARIES_DEPS), $(MAKE) --no-print-directory $(_BINARIES_DEPS))
 	@echo Copying strings to romfs...
 	@cp -r ../assets/gui_strings/* $(ROMFS)/i18n
 	@cp -r ../core/strings/* $(ROMFS)/i18n
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
+	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
 	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
@@ -335,6 +337,18 @@ $(GFXBUILD)/%.bcfnt :		%.ttf | directories
 	@echo $(notdir $<)
 	@mkbcfnt -o $(GFXBUILD)/$*.bcfnt $<
 
+#---------------------------------------------------------------------------------
+$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@tex3ds -i $< -H $(BUILD)/$*.h -d $(DEPSDIR)/$*.d -o $@
+
+#---------------------------------------------------------------------------------
+$(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/%
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@bzip2 -kf --best $< -c > $@
+
 else
 
 #---------------------------------------------------------------------------------
@@ -352,11 +366,6 @@ $(OUTPUT).elf	:	$(OFILES)
 %.bin.o	%_bin.h :	%.bin
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
-	@$(bin2o)
-
-#---------------------------------------------------------------------------------
-%.t3x.o	%_t3x.h :	%.t3x
-#---------------------------------------------------------------------------------
 	@$(bin2o)
 
 #---------------------------------------------------------------------------------
@@ -384,18 +393,6 @@ endef
 %.shbin.o %_shbin.h : %.shlist
 	@echo $(notdir $<)
 	@$(call shader-as,$(foreach file,$(shell cat $<),$(dir $<)$(file)))
-
-#---------------------------------------------------------------------------------
-%.t3x	%.h	:	%.t3s
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@tex3ds -i $< -H $*.h -d $(DEPSDIR)/$*.d -o $(TOPDIR)/$(GFXBUILD)/$*.t3x
-
-#---------------------------------------------------------------------------------
-%.bcfnt :		%.ttf
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@mkbcfnt -o $*.bcfnt $<
 
 overrides.o:CXXFLAGS+=-fno-lto
 

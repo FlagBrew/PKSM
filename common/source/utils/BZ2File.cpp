@@ -26,6 +26,7 @@
 
 #include "BZ2File.hpp"
 #include <algorithm>
+#include <memory>
 
 int BZ2File::read(FILE* rawfile, std::vector<u8>& out)
 {
@@ -38,14 +39,16 @@ int BZ2File::read(FILE* rawfile, std::vector<u8>& out)
 
     out.clear();
 
-    u8 read_buffer[READ_SIZE];
-
-    while (bzerror == BZ_OK)
     {
-        int actuallyRead = BZ2_bzRead(&bzerror, file, read_buffer, READ_SIZE);
-        if (bzerror == BZ_OK || bzerror == BZ_STREAM_END)
+        std::unique_ptr<u8[]> read_buffer = std::unique_ptr<u8[]>(new u8[READ_SIZE]);
+
+        while (bzerror == BZ_OK)
         {
-            out.insert(out.end(), read_buffer, read_buffer + actuallyRead);
+            int actuallyRead = BZ2_bzRead(&bzerror, file, read_buffer.get(), READ_SIZE);
+            if (bzerror == BZ_OK || bzerror == BZ_STREAM_END)
+            {
+                out.insert(out.end(), read_buffer.get(), read_buffer.get() + actuallyRead);
+            }
         }
     }
 
