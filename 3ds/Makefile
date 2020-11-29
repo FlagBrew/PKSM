@@ -303,7 +303,7 @@ spotless: clean
 	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
 directories:
-	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n $(DEPSDIR)
+	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n $(ROMFS)/gfx $(DEPSDIR)
 #---------------------------------------------------------------------------------
 binaries: $(ROMFS_GFXFILES) | directories
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
