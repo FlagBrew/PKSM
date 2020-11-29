@@ -610,9 +610,9 @@ namespace
         } fileInfo, checksumFileInfo;
         struct stat mystat;
 
-        std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
-        std::string checksumPath = path + ".sha";
-        std::string romfsPath    = "romfs:/mg/" + fileName;
+        const std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
+        const std::string checksumPath = path + ".sha";
+        const std::string romfsPath    = "romfs:/mg/" + fileName;
         decltype(pksm::crypto::sha256(nullptr, 0)) ret;
 
         fileInfo.exists = (stat(path.c_str(), &mystat) == 0);
@@ -650,11 +650,11 @@ namespace
             fseek(file, 0, SEEK_END);
             size_t size = ftell(file);
             rewind(file);
-            u8* data = new u8[size];
-            fread(data, 1, size, file);
+            std::unique_ptr<u8[]> data = std::unique_ptr<u8[]>(new u8[size]);
+            fread(data.get(), 1, size, file);
             fclose(file);
 
-            ret = pksm::crypto::sha256(data, size);
+            ret = pksm::crypto::sha256(data.get(), size);
 
             file = fopen(checksumPath.c_str(), "wb");
             if (file)
