@@ -22,8 +22,8 @@ jobs:
     container: 
       image: registry.external.fm1337.com:5000/pksm_docker
       credentials:
-        username: ${{ DOCKER_USERNAME }}
-        password: ${{ DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
