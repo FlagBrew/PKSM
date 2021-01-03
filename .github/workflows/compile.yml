@@ -27,4 +27,4 @@ jobs:
           zip -r PKSM.zip 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
       - name: "Push"
         working-directory: "./PKSM"
-        run: "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header 'secret: ${{ secrets.DEPLOY_SECRET }}' --header 'commit: ${{ GITHUB_SHA }}' {{ secrets.PUSH_URL}}"
+        run: "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header 'secret: ${{ secrets.DEPLOY_SECRET }}' --header 'commit: ${GITHUB_SHA}' {{ secrets.PUSH_URL}}"
