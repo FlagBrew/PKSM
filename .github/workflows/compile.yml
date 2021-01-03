@@ -29,5 +29,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: textbook/git-checkout-submodule-action@2.1.1
+      - run: git submodule update --init --force --remote --recursive
       - run: make
+      - run: zip -r PKSM.zip out/ 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
