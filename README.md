@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png" /></p>
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
-<p align="center"><img src="https://drone.fm1337.com/api/badges/FlagBrew/PKSM/status.svg" /></p>
+<p align="center"><img src="https://github.com/FlagBrew/PKSM/workflows/CI/badge.svg" /></p>
 
 Multipurpose and portable save manager for generations III to VIII, programmed in
 C++.
