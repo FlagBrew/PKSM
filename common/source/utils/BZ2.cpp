@@ -87,9 +87,9 @@ int BZ2::compress(FILE* rawfile, const u8* data, std::size_t size)
     return bzerror;
 }
 
-int BZ2::decompress(u8* data, std::size_t size, std::vector<u8>& out)
+int BZ2::decompress(const u8* data, std::size_t size, std::vector<u8>& out)
 {
-    FILE* f   = fmemopen(data, size, "rb");
+    FILE* f   = fmemopen(const_cast<u8*>(data), size, "rb");
     int error = decompress(f, out);
     fclose(f);
     return error;
