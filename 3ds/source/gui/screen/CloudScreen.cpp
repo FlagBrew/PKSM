@@ -775,7 +775,8 @@ bool CloudScreen::dumpPkm()
             {
                 path += " - " + std::to_string(int(dumpMon->species())) + " - " +
                         dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) + dumpMon->extension();
+                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
+                        dumpMon->extension().data();
                 FILE* out = fopen(path.c_str(), "wb");
                 if (out)
                 {

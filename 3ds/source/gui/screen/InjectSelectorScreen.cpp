@@ -435,7 +435,7 @@ void InjectSelectorScreen::dumpCard(void) const
         FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
     mkdir(path.c_str(), 777);
     path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(),
-        now.minute(), now.second(), wc->ID(), wc->title(), wc->extension());
+        now.minute(), now.second(), wc->ID(), wc->title(), wc->extension().data());
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

@@ -2455,6 +2455,10 @@ void HexEditScreen::drawMeaning() const
                     break;
                 case 0xE0:
                 {
+                    if (pkm.generation() == pksm::Generation::LGPE)
+                    {
+                        break;
+                    }
                     u8 country = 0;
                     switch (pkm.generation())
                     {
@@ -2463,9 +2467,6 @@ void HexEditScreen::drawMeaning() const
                             break;
                         case pksm::Generation::SEVEN:
                             country = reinterpret_cast<pksm::PK7&>(pkm).country();
-                            break;
-                        case pksm::Generation::LGPE:
-                            country = reinterpret_cast<pksm::PB7&>(pkm).country();
                             break;
                         default:
                             break;
@@ -2476,6 +2477,10 @@ void HexEditScreen::drawMeaning() const
                 break;
                 case 0xE1:
                 {
+                    if (pkm.generation() == pksm::Generation::LGPE)
+                    {
+                        break;
+                    }
                     u8 country = 0;
                     u8 region  = 0;
                     switch (pkm.generation())
@@ -2488,10 +2493,6 @@ void HexEditScreen::drawMeaning() const
                             country = reinterpret_cast<pksm::PK7&>(pkm).country();
                             region  = reinterpret_cast<pksm::PK7&>(pkm).region();
                             break;
-                        case pksm::Generation::LGPE:
-                            country = reinterpret_cast<pksm::PB7&>(pkm).country();
-                            region  = reinterpret_cast<pksm::PB7&>(pkm).region();
-                            break;
                         default:
                             break;
                     }
@@ -2502,6 +2503,10 @@ void HexEditScreen::drawMeaning() const
                 break;
                 case 0xE2:
                 {
+                    if (pkm.generation() == pksm::Generation::LGPE)
+                    {
+                        break;
+                    }
                     u8 consoleRegion = 0;
                     switch (pkm.generation())
                     {
@@ -2510,9 +2515,6 @@ void HexEditScreen::drawMeaning() const
                             break;
                         case pksm::Generation::SEVEN:
                             consoleRegion = reinterpret_cast<pksm::PK7&>(pkm).consoleRegion();
-                            break;
-                        case pksm::Generation::LGPE:
-                            consoleRegion = reinterpret_cast<pksm::PB7&>(pkm).consoleRegion();
                             break;
                         default:
                             break;

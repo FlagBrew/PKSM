@@ -165,7 +165,7 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
             142, 174, 13, 13, [this]() { return this->changeFullness(true); },
             ui_sheet_button_plus_small_idx, "", 0.0f, COLOR_BLACK));
 
-        if (pkm.generation() < pksm::Generation::EIGHT)
+        if (pkm.generation() <= pksm::Generation::SEVEN)
         {
             buttons.push_back(std::make_unique<AccelButton>(
                 94, 194, 13, 13, [this]() { return this->changeAffection(false); },
@@ -290,7 +290,7 @@ void MiscEditScreen::drawBottom() const
         }
         Gui::text(std::to_string(print), 107 + 35 / 2, 172, FONT_SIZE_12, COLOR_BLACK,
             TextPosX::CENTER, TextPosY::TOP);
-        if (pkm.generation() < pksm::Generation::EIGHT)
+        if (pkm.generation() <= pksm::Generation::SEVEN)
         {
             if (otAndMet)
             {
@@ -302,10 +302,6 @@ void MiscEditScreen::drawBottom() const
                 {
                     print = reinterpret_cast<pksm::PK7&>(pkm).otAffection();
                 }
-                else if (pkm.generation() == pksm::Generation::LGPE)
-                {
-                    print = reinterpret_cast<pksm::PB7&>(pkm).otAffection();
-                }
             }
             else
             {
@@ -316,10 +312,6 @@ void MiscEditScreen::drawBottom() const
                 else if (pkm.generation() == pksm::Generation::SEVEN)
                 {
                     print = reinterpret_cast<pksm::PK7&>(pkm).htAffection();
-                }
-                else if (pkm.generation() == pksm::Generation::LGPE)
-                {
-                    print = reinterpret_cast<pksm::PB7&>(pkm).htAffection();
                 }
             }
             Gui::text(std::to_string(print), 107 + 35 / 2, 192, FONT_SIZE_12, COLOR_BLACK,
@@ -379,11 +371,6 @@ bool MiscEditScreen::changeAffection(bool up)
                 reinterpret_cast<pksm::PK7&>(pkm).otAffection(
                     reinterpret_cast<pksm::PK7&>(pkm).otAffection() + 1);
             }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).otAffection(
-                    reinterpret_cast<pksm::PB7&>(pkm).otAffection() + 1);
-            }
         }
         else
         {
@@ -396,11 +383,6 @@ bool MiscEditScreen::changeAffection(bool up)
             {
                 reinterpret_cast<pksm::PK7&>(pkm).otAffection(
                     reinterpret_cast<pksm::PK7&>(pkm).otAffection() - 1);
-            }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).otAffection(
-                    reinterpret_cast<pksm::PB7&>(pkm).otAffection() - 1);
             }
         }
     }
@@ -418,11 +400,6 @@ bool MiscEditScreen::changeAffection(bool up)
                 reinterpret_cast<pksm::PK7&>(pkm).htAffection(
                     reinterpret_cast<pksm::PK7&>(pkm).htAffection() + 1);
             }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).htAffection(
-                    reinterpret_cast<pksm::PB7&>(pkm).htAffection() + 1);
-            }
         }
         else
         {
@@ -435,11 +412,6 @@ bool MiscEditScreen::changeAffection(bool up)
             {
                 reinterpret_cast<pksm::PK7&>(pkm).htAffection(
                     reinterpret_cast<pksm::PK7&>(pkm).htAffection() - 1);
-            }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).htAffection(
-                    reinterpret_cast<pksm::PB7&>(pkm).htAffection() - 1);
             }
         }
     }
@@ -468,10 +440,6 @@ void MiscEditScreen::setAffection()
             {
                 reinterpret_cast<pksm::PK7&>(pkm).otAffection(affection);
             }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).otAffection(affection);
-            }
         }
         else
         {
@@ -482,10 +450,6 @@ void MiscEditScreen::setAffection()
             else if (pkm.generation() == pksm::Generation::SEVEN)
             {
                 reinterpret_cast<pksm::PK7&>(pkm).htAffection(affection);
-            }
-            else if (pkm.generation() == pksm::Generation::LGPE)
-            {
-                reinterpret_cast<pksm::PB7&>(pkm).htAffection(affection);
             }
         }
     }
