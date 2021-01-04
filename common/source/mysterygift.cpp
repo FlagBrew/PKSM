@@ -25,7 +25,7 @@
  */
 
 #include "mysterygift.hpp"
-#include "BZ2File.hpp"
+#include "BZ2.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
 #include "utils.hpp"
@@ -60,7 +60,7 @@ void MysteryGift::init(pksm::Generation g)
     if (f != NULL)
     {
         std::vector<u8> data;
-        int error = BZ2File::read(f, data);
+        int error = BZ2::decompress(f, data);
 
         if (error == BZ_OK)
         {
@@ -80,7 +80,7 @@ void MysteryGift::init(pksm::Generation g)
     f = fopen(dataPath.c_str(), "rb");
     if (f != NULL)
     {
-        int error = BZ2File::read(f, mysteryGiftData);
+        int error = BZ2::decompress(f, mysteryGiftData);
 
         if (error != BZ_OK)
         {

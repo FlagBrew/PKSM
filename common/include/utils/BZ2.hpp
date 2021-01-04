@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef BZ2FILE_HPP
-#define BZ2FILE_HPP
+#ifndef BZ2_HPP
+#define BZ2_HPP
 
 #include "types.h"
 #include <bzlib.h>
@@ -33,13 +33,15 @@
 #include <string>
 #include <vector>
 
-namespace BZ2File
+namespace BZ2
 {
     static constexpr std::size_t READ_SIZE = 0x10000;
 
     // Note: fclose is not called on these FILE*s by these functions
-    int read(FILE* file, std::vector<u8>& out);
-    int write(FILE* file, const u8* data, std::size_t size);
+    int decompress(FILE* file, std::vector<u8>& out);
+    int compress(FILE* file, const u8* data, std::size_t size);
+    int decompress(const u8* buffer, std::size_t size, std::vector<u8>& out);
+    int compress(std::vector<u8>& out, const u8* data, std::size_t size);
 };
 
 #endif

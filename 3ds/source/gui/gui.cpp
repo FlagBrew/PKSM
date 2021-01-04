@@ -25,7 +25,7 @@
  */
 
 #include "gui.hpp"
-#include "BZ2File.hpp"
+#include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "DecisionScreen.hpp"
 #include "MessageScreen.hpp"
@@ -816,7 +816,7 @@ Result Gui::init(void)
 
     std::vector<u8> loadData;
     FILE* file = fopen("romfs:/gfx/ui_sheet.t3x.bz2", "rb");
-    int error  = BZ2File::read(file, loadData);
+    int error  = BZ2::decompress(file, loadData);
     fclose(file);
     if (error != BZ_OK)
     {
@@ -827,7 +827,7 @@ Result Gui::init(void)
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
     file  = fopen("romfs:/gfx/pksm.bcfnt.bz2", "rb");
-    error = BZ2File::read(file, loadData);
+    error = BZ2::decompress(file, loadData);
     fclose(file);
     if (error != BZ_OK)
     {

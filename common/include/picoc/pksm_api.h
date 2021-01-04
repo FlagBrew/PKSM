@@ -190,6 +190,8 @@ void pksm_utf8_to_ucs2(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_ucs2_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_decode(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_base64_encode(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_bz2_decompress(struct ParseState*, struct Value*, struct Value**, int);
+void pksm_bz2_compress(struct ParseState*, struct Value*, struct Value**, int);
 // wrappers for nlohmann
 void json_new(struct ParseState*, struct Value*, struct Value**, int);
 void json_parse(struct ParseState*, struct Value*, struct Value**, int);
@@ -207,5 +209,7 @@ void json_array_size(struct ParseState*, struct Value*, struct Value**, int);
 void json_array_element(struct ParseState*, struct Value*, struct Value**, int);
 void json_object_contains(struct ParseState*, struct Value*, struct Value**, int);
 void json_object_element(struct ParseState*, struct Value*, struct Value**, int);
+// data about stuff
+void pksm_get_max_pp(struct ParseState*, struct Value*, struct Value**, int);
 
 #endif

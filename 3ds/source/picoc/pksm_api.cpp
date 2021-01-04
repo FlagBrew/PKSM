@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include "BZ2.hpp"
 #include "BankChoice.hpp"
 #include "BoxChoice.hpp"
 #include "Configuration.hpp"
@@ -2636,6 +2637,72 @@ void sav_get_string(
             StringUtils::getString(TitleLoader::save->rawData().get(), off1 + off2, codepoints,
                 TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
         ReturnValue->Val->Pointer = strToRet(data);
+    }
+}
+// int max_pp(enum Generation gen, int move, int ppUps);
+void pksm_get_max_pp(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
+    int move             = Param[1]->Val->Integer;
+    int ups              = Param[2]->Val->Integer;
+    checkGen(Parser, gen);
+
+    if (move <= int(pksm::Move::SurgingStrikes))
+    {
+        ReturnValue->Val->Integer = pksm::VersionTables::movePP(gen, pksm::Move{move}, ups);
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 0;
+    }
+}
+// int bz2_decompress(unsigned char** out, int* outSize, unsigned char* data, int size);
+void pksm_bz2_decompress(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8** out = (u8**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+    u8* data = (u8*)Param[2]->Val->Pointer;
+    int size = Param[3]->Val->Integer;
+
+    std::vector<u8> outData;
+    if (BZ2::decompress(data, size, outData) != BZ_OK)
+    {
+        ReturnValue->Val->Integer = 0;
+        *out = nullptr;
+        *outSize = 0;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 1;
+        *out = (u8*) malloc(outData.size());
+        std::copy(outData.begin(), outData.end(), *out);
+        *outSize = outData.size();
+    }
+}
+// int bz2_compress(unsigned char** out, int* outSize, unsigned char* data, int size);
+void pksm_bz2_compress(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8** out = (u8**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+    u8* data = (u8*)Param[2]->Val->Pointer;
+    int size = Param[3]->Val->Integer;
+
+    std::vector<u8> outData;
+    if (BZ2::compress(outData, data, size) != BZ_OK)
+    {
+        ReturnValue->Val->Integer = 0;
+        *out = nullptr;
+        *outSize = 0;
+    }
+    else
+    {
+        ReturnValue->Val->Integer = 1;
+        *out = (u8*)malloc(outData.size());
+        std::copy(outData.begin(), outData.end(), *out);
+        *outSize = outData.size();
     }
 }
 }

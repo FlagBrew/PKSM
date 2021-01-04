@@ -24,11 +24,11 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "BZ2File.hpp"
+#include "BZ2.hpp"
 #include <algorithm>
 #include <memory>
 
-int BZ2File::read(FILE* rawfile, std::vector<u8>& out)
+int BZ2::decompress(FILE* rawfile, std::vector<u8>& out)
 {
     int bzerror;
     BZFILE* file = BZ2_bzReadOpen(&bzerror, rawfile, 0, false, nullptr, 0);
@@ -64,7 +64,7 @@ int BZ2File::read(FILE* rawfile, std::vector<u8>& out)
     return BZ_OK;
 }
 
-int BZ2File::write(FILE* rawfile, const u8* data, std::size_t size)
+int BZ2::compress(FILE* rawfile, const u8* data, std::size_t size)
 {
     int bzerror;
     BZFILE* file = BZ2_bzWriteOpen(&bzerror, rawfile, 5, 0, 0);
@@ -85,4 +85,57 @@ int BZ2File::write(FILE* rawfile, const u8* data, std::size_t size)
     BZ2_bzWriteClose(&bzerror, file, false, nullptr, nullptr);
 
     return bzerror;
+}
+
+int BZ2::decompress(u8* data, std::size_t size, std::vector<u8>& out)
+{
+    FILE* f   = fmemopen(data, size, "rb");
+    int error = decompress(f, out);
+    fclose(f);
+    return error;
+}
+
+int BZ2::compress(std::vector<u8>& out, const u8* data, std::size_t size)
+{
+    bz_stream strm = {.bzalloc = NULL, .bzfree = NULL, .opaque = NULL};
+
+    int bzerror = BZ2_bzCompressInit(&strm, 5, 0, 0);
+    if (bzerror != BZ_OK)
+    {
+        return bzerror;
+    }
+
+    std::size_t sizeCompressed = 0;
+
+    std::unique_ptr<char[]> workBuf = std::unique_ptr<char[]>(new char[READ_SIZE]);
+
+    out.clear();
+
+    strm.avail_out = READ_SIZE;
+    strm.avail_in  = size;
+    strm.next_in   = (char*)data;
+    strm.next_out  = workBuf.get();
+
+    bzerror = BZ2_bzCompress(&strm, BZ_RUN);
+
+    while (bzerror == BZ_FLUSH_OK || bzerror == BZ_RUN_OK || bzerror == BZ_FINISH_OK)
+    {
+        out.insert(out.end(), workBuf.get(), strm.next_out);
+
+        strm.next_out = workBuf.get();
+
+        bzerror = BZ2_bzCompress(&strm, BZ_FINISH);
+    }
+
+    if (bzerror != BZ_FINISH_OK)
+    {
+        out.clear();
+        return bzerror;
+    }
+    else
+    {
+        out.insert(out.end(), workBuf.get(), strm.next_out);
+    }
+
+    return BZ_OK;
 }

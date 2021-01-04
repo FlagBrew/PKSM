@@ -83,6 +83,9 @@ struct LibraryFunction UnixFunctions[] =
     // misc
     { pksm_base64_decode,   "void base64_decode(unsigned char** out, int* outSize, char* data, int size);" },
     { pksm_base64_encode,   "void base64_encode(char** out, int* outSize, unsigned char* data, int size);" },
+    { pksm_bz2_compress,    "int bz2_compress(unsigned char** out, int* outSize, unsigned char* data, int size);" },
+    { pksm_bz2_decompress,  "int bz2_decompress(unsigned char** out, int* outSize, unsigned char* data, int size);" },
+    { pksm_get_max_pp,      "int max_pp(enum Generation gen, int move, int ppUps);" },
     // json
     { json_new,             "struct JSON* json_new(void);" },
     { json_parse,           "void json_parse(struct JSON* out, char* data);" },
