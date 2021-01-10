@@ -236,7 +236,7 @@ bool HexEditScreen::checkValue()
                 return true;
         }
     }
-    else if (pkm.generation() == pksm::Generation::FOUR)
+    else if (pkm.generation() == pksm::Generation::FOUR || pkm.generation() == pksm::Generation::FIVE)
     {
         int i = hid.fullIndex();
         switch (i)
