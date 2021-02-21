@@ -40,7 +40,9 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
+#include "nlohmann/json.hpp"
 #include "loader.hpp"
+#include "revision.h"
 #include "website.h"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
@@ -812,14 +814,17 @@ bool CloudScreen::clickBottomIndex(int index)
 void CloudScreen::shareSend()
 {
     long status_code    = 0;
-    std::string version = "Generation: " + (std::string)infoMon->generation();
+    std::string version = "generation: " + (std::string)infoMon->generation();
+    const std::string pksm_version = "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"),
+        VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
     {
-        code = "PC: " + code;
+        code = "patreon: " + code;
     }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
+    headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, version.c_str());
     if (!code.empty())
     {
@@ -827,7 +832,7 @@ void CloudScreen::shareSend()
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(WEBSITE_URL "gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/upload/pokemon", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -852,8 +857,11 @@ void CloudScreen::shareSend()
             {
                 case 200:
                 case 201:
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + writeData);
+                {
+                    nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
                     break;
+                }
                 case 400:
                     Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
                     break;
@@ -903,7 +911,7 @@ void CloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url  = WEBSITE_URL "gpss/download/" + std::string(input);
+        const std::string url  = WEBSITE_URL "api/v1/gpss/download/pokemon/" + std::string(input);
         std::string retB64Data = "";
         if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
         {

@@ -724,7 +724,7 @@ namespace
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch =
-                        Fetch::init(WEBSITE_URL "static/other/gifts/" + fileName + ".sha",
+                        Fetch::init(WEBSITE_URL "api/v1/files/download/mystery-gift/" + fileName + ".sha",
                             true, nullptr, nullptr, ""))
                 {
                     fetch->setopt(
@@ -747,7 +747,7 @@ namespace
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
                             if (fetch = Fetch::init(
-                                    WEBSITE_URL "static/other/gifts/" + fileName, true,
+                                    WEBSITE_URL "api/v1/files/download/mystery-gift/" + fileName, true,
                                     nullptr, nullptr, ""))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;

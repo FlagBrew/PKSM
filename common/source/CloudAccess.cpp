@@ -29,9 +29,11 @@
 #include "app.hpp"
 #include "base64.hpp"
 #include "fetch.hpp"
+#include "format.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKX.hpp"
+#include "revision.h"
 #include "thread.hpp"
 #include "website.h"
 #include <unistd.h>
@@ -57,9 +59,16 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
     bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
-    auto fetch = Fetch::init(CloudAccess::makeURL(number, type, ascend, legal, low, high, LGPE),
-        true, retData, nullptr, "");
-    Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    
+    const auto [url, postData] = makeURL(number, type, ascend, legal, low, high, LGPE);
+
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers                    = curl_slist_append(headers, "pksm-mode: yes");
+
+
+    auto fetch = Fetch::init(url, true, retData, headers, postData);
+    Fetch::performAsync(fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
             long status_code;
@@ -77,9 +86,9 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
                 case 401:
                 {
                     nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
-                    if (retJson.contains("error_code") && retJson["error_code"].is_number_integer())
+                    if (retJson.contains("code") && retJson["code"].is_number_integer())
                     {
-                        page->siteJsonErrorCode = retJson["error_code"].get<int>();
+                        page->siteJsonErrorCode = retJson["code"].get<int>();
                     }
                 }
                 break;
@@ -89,6 +98,7 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
         }
         delete retData;
         page->available = true;
+        curl_slist_free_all(headers);
     });
 }
 
@@ -111,10 +121,10 @@ void CloudAccess::refreshPages()
         else
         {
             isGood = false;
-            if (current->data->contains("error_code") &&
-                (*current->data)["error_code"].is_number_integer())
+            if (current->data->contains("code") &&
+                (*current->data)["code"].is_number_integer())
             {
-                current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                current->siteJsonErrorCode = (*current->data)["code"].get<int>();
                 current->data              = nullptr;
             }
         }
@@ -133,10 +143,10 @@ void CloudAccess::refreshPages()
             else
             {
                 isGood = false;
-                if (current->data->contains("error_code") &&
-                    (*current->data)["error_code"].is_number_integer())
+                if (current->data->contains("code") &&
+                    (*current->data)["code"].is_number_integer())
                 {
-                    current->siteJsonErrorCode = (*current->data)["error_code"].get<int>();
+                    current->siteJsonErrorCode = (*current->data)["code"].get<int>();
                     current->data              = nullptr;
                 }
             }
@@ -170,9 +180,16 @@ void CloudAccess::refreshPages()
 nlohmann::json CloudAccess::grabPage(int num)
 {
     std::string retData;
-    auto fetch = Fetch::init(
-        makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE), true, &retData, nullptr, "");
+    const auto [url, postData] = makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE);
+
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers                    = curl_slist_append(headers, "pksm-mode: yes");
+
+    auto fetch = Fetch::init(url, true, &retData, headers, postData);
     auto res = Fetch::perform(fetch);
+    curl_slist_free_all(headers);
+
     if (res.index() == 0)
     {
         return {};
@@ -187,24 +204,55 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
 }
 
-std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal,
+std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal,
     pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    return WEBSITE_URL "api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
-           "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
-           "&legal_only=" + (legal ? std::string("True") : std::string("False")) +
-           "&page=" + std::to_string(num) + "&min_gen=" + (std::string)low +
-           "&max_gen=" + (std::string)high +
-           "&lgpe=" + (LGPE ? std::string("yes") : std::string("no"));
+    nlohmann::json post_data = nlohmann::json::object();
+    post_data.push_back({"mode", "and"});
+    post_data.push_back({"legal", legal});
+
+    const pksm::Generation gens_in_order[] = {
+        pksm::Generation::ONE,
+        pksm::Generation::TWO,
+        pksm::Generation::THREE,
+        pksm::Generation::FOUR,
+        pksm::Generation::FIVE,
+        pksm::Generation::SIX,
+        pksm::Generation::SEVEN,
+        pksm::Generation::EIGHT,
+    };
+    const auto start_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), low);
+    const auto end_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
+
+    nlohmann::json generations_data = nlohmann::json::array();
+    for(auto idx = start_idx; idx <= end_idx; ++idx)
+    {
+        generations_data.push_back(std::string(*idx));
+    }
+
+    if(LGPE)
+    {
+        generations_data.push_back("LGPE");
+    }
+
+    post_data.push_back({"generations", generations_data});
+
+    nlohmann::json operators_data = R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
+    post_data.push_back({"operators", operators_data});
+
+    post_data.push_back({"sort_field", sortTypeToString(type)});
+    post_data.push_back({"sort_direction", ascend});
+
+    return {WEBSITE_URL "api/v1/gpss/search/pokemon?page=" + std::to_string(num), post_data.dump()};
 }
 
 std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
 {
-    if (slot < (*current->data)["results"].size())
+    if (slot < (*current->data)["pokemon"].size())
     {
-        std::string b64Data  = (*current->data)["results"][slot]["base_64"].get<std::string>();
+        std::string b64Data  = (*current->data)["pokemon"][slot]["base_64"].get<std::string>();
         pksm::Generation gen = pksm::Generation::fromString(
-            (*current->data)["results"][slot]["generation"].get<std::string>());
+            (*current->data)["pokemon"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
         auto retData = base64_decode(b64Data.data(), b64Data.size());
 
@@ -219,22 +267,22 @@ std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
 
 bool CloudAccess::isLegal(size_t slot) const
 {
-    if (slot < (*current->data)["results"].size())
+    if (slot < (*current->data)["pokemon"].size())
     {
-        return (*current->data)["results"][slot]["legal"].get<bool>();
+        return (*current->data)["pokemon"][slot]["legal"].get<bool>();
     }
     return false;
 }
 
 std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 {
-    if (slot < (*current->data)["results"].size())
+    if (slot < (*current->data)["pokemon"].size())
     {
         auto ret = pkm(slot);
 
         if (auto fetch =
-                Fetch::init(WEBSITE_URL "gpss/download/" +
-                                (*current->data)["results"][slot]["code"].get<std::string>(),
+                Fetch::init(WEBSITE_URL "api/v1/gpss/download/pokemon/" +
+                                (*current->data)["pokemon"][slot]["code"].get<std::string>(),
                     true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
@@ -312,14 +360,17 @@ std::optional<int> CloudAccess::prevPage()
 long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 {
     long ret            = 0;
-    std::string version = "Generation: " + (std::string)mon->generation();
+    std::string version = "generation: " + (std::string)mon->generation();
+    const std::string pksm_version = "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"),
+        VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     std::string code    = Configuration::getInstance().patronCode();
     if (!code.empty())
     {
-        code = "PC: " + code;
+        code = "patreon: " + code;
     }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
+    headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, version.c_str());
     if (!code.empty())
     {
@@ -327,7 +378,7 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(WEBSITE_URL "gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/upload/pokemon", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -340,10 +391,7 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
         if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
-            if (ret == 201)
-            {
-                refreshPages();
-            }
+            refreshPages();
         }
     }
     curl_slist_free_all(headers);
@@ -381,8 +429,8 @@ bool CloudAccess::pageIsGood(const nlohmann::json& page)
 {
     // clang-format off
     if (!page.is_object() ||
-        !page.contains("total_pkm") || !page["total_pkm"].is_number_integer() ||
-        !page.contains("results") || !page["results"].is_array() ||
+        !page.contains("total") || !page["total"].is_number_integer() ||
+        !page.contains("pokemon") || !page["pokemon"].is_array() ||
         !page.contains("pages") || !page["pages"].is_number_integer())
     // clang-format on
     {
@@ -390,7 +438,7 @@ bool CloudAccess::pageIsGood(const nlohmann::json& page)
     }
     else
     {
-        for (auto& json : page["results"])
+        for (auto& json : page["pokemon"])
         {
             // clang-format off
             if (!json.is_object() ||

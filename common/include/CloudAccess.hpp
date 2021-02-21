@@ -82,7 +82,7 @@ public:
     void removeGenFilter();
     bool good() const { return isGood; }
     int currentPageError() const { return current->siteJsonErrorCode; }
-    static std::string makeURL(int page, SortType type, bool ascend, bool legal,
+    static std::pair<std::string, std::string> makeURL(int page, SortType type, bool ascend, bool legal,
         pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
 
