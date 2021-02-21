@@ -617,6 +617,7 @@ void CloudScreen::pickup()
                 case 401:
                     Gui::warn(i18n::localize("GPSS_BANNED"));
                     break;
+                case 429:
                 case 503:
                     Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' +
                               i18n::localize("PLEASE_WAIT"));
@@ -871,6 +872,7 @@ void CloudScreen::shareSend()
                 case 502:
                     Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
                     break;
+                case 429:
                 case 503:
                     Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' +
                               i18n::localize("PLEASE_WAIT"));

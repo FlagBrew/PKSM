@@ -47,9 +47,11 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
     pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
     const auto [url, postData] = GroupCloudAccess::makeURL(number, legal, low, high, LGPE);
-    auto fetch = Fetch::init(url, true, retData, nullptr, postData);
-    Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    auto fetch = Fetch::init(url, true, retData, headers, postData);
+    Fetch::performAsync(fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
             long status_code;
@@ -81,6 +83,7 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
         }
         delete retData;
         page->available = true;
+        curl_slist_free_all(headers);
     });
 }
 
@@ -162,9 +165,14 @@ void GroupCloudAccess::refreshPages()
 nlohmann::json GroupCloudAccess::grabPage(int num)
 {
     std::string retData;
+    
+    struct curl_slist* headers = NULL;
+    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
     const auto [url, postData] = GroupCloudAccess::makeURL(num, legal, low, high, LGPE);
-    auto fetch = Fetch::init(url, true, &retData, nullptr, postData);
+    auto fetch = Fetch::init(url, true, &retData, headers, postData);
     auto res   = Fetch::perform(fetch);
+    curl_slist_free_all(headers);
+
     if (res.index() == 0)
     {
         return {};
@@ -214,6 +222,9 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
 
     nlohmann::json operators_data = R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
     post_data.push_back({"operators", operators_data});
+
+    post_data.push_back({"sort_field", "latest"});
+    post_data.push_back({"sort_direction", false});
 
     return {WEBSITE_URL "api/v1/gpss/search/bundles?page=" + std::to_string(num), post_data.dump()};
 }
