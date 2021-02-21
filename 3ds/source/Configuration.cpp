@@ -28,6 +28,7 @@
 #include "Archive.hpp"
 #include "gui.hpp"
 #include "nlohmann/json.hpp"
+#include "website.h"
 
 Configuration::Configuration()
 {

@@ -43,6 +43,7 @@
 #include "revision.h"
 #include "thread.hpp"
 #include "utils/crypto.hpp"
+#include "website.h"
 #include <3ds.h>
 #include <atomic>
 #include <malloc.h>

@@ -31,6 +31,7 @@
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "website.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"

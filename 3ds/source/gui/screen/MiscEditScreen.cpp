@@ -38,6 +38,7 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "website.h"
 #include "pkx/PB7.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"

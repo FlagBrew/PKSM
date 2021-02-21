@@ -41,6 +41,7 @@
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
+#include "website.h"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Sav.hpp"

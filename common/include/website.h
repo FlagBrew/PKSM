@@ -24,14 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef WEBSITE_H
+#define WEBSITE_H
 
-#ifdef _3DS
-#include <3ds/types.h>
-#endif
-#ifdef __SWITCH__
-#include <switch/types.h>
-#endif
+#define WEBSITE_URL "https://flagbrew.org/"
 
 #endif
