@@ -200,7 +200,7 @@ namespace
         const std::string patronCode = Configuration::getInstance().patronCode();
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
-            if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true,
+            if (auto fetch = Fetch::init(WEBSITE_URL "patron/updateCheck", true,
                     &retString, nullptr, "code=" + patronCode))
             {
                 moveIcon.clear();
@@ -221,7 +221,7 @@ namespace
                             case 200:
                                 if (retString.substr(0, 8) != GIT_REV)
                                 {
-                                    url = "https://flagbrew.org/patron/downloadLatest/";
+                                    url = WEBSITE_URL "patron/downloadLatest/";
                                     if (execPath.empty())
                                     {
                                         url += "cia";
@@ -723,7 +723,7 @@ namespace
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch =
-                        Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha",
+                        Fetch::init(WEBSITE_URL "static/other/gifts/" + fileName + ".sha",
                             true, nullptr, nullptr, ""))
                 {
                     fetch->setopt(
@@ -746,7 +746,7 @@ namespace
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
                             if (fetch = Fetch::init(
-                                    "https://flagbrew.org/static/other/gifts/" + fileName, true,
+                                    WEBSITE_URL "static/other/gifts/" + fileName, true,
                                     nullptr, nullptr, ""))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;

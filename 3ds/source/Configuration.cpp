@@ -164,7 +164,7 @@ Configuration::Configuration()
                 }
                 (*mJson)["defaults"]["tid"] = (*mJson)["defaults"]["pid"];
                 (*mJson)["defaults"].erase("pid");
-                (*mJson)["legalEndpoint"] = "https://flagbrew.org/pksm/legality/check";
+                (*mJson)["legalEndpoint"] = WEBSITE_URL "pksm/legality/check";
             }
             if ((*mJson)["version"].get<int>() < 8)
             {

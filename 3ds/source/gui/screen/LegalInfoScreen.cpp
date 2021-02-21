@@ -105,7 +105,7 @@ void LegalInfoScreen::attemptLegalization()
 
     std::string url = Configuration::getInstance().useApiUrl()
                           ? Configuration::getInstance().apiUrl()
-                          : "https://flagbrew.org/";
+                          : WEBSITE_URL;
 
     std::string writeData;
     if (auto fetch = Fetch::init(url + "api/v1/bot/auto_legality", true, &writeData, headers, ""))

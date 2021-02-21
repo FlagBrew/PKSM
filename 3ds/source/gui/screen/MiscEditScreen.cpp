@@ -729,7 +729,7 @@ void MiscEditScreen::validate()
 
     std::string url = Configuration::getInstance().useApiUrl()
                           ? Configuration::getInstance().apiUrl()
-                          : "https://flagbrew.org/";
+                          : WEBSITE_URL;
 
     std::string writeData = "";
     if (auto fetch = Fetch::init(url + "pksm/legality/check", true, &writeData, headers, ""))

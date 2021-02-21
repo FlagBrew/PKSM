@@ -27,6 +27,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#define WEBSITE_URL "https://flagbrew.org/"
+
 #ifdef _3DS
 #include <3ds/types.h>
 #endif

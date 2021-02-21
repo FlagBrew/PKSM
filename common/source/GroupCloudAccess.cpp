@@ -178,7 +178,7 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
 std::string GroupCloudAccess::makeURL(
     int num, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) +
+    return WEBSITE_URL "api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) +
            "&min_gen=" + (std::string)low + "&max_gen=" + (std::string)high +
            "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) +
            "&page=" + std::to_string(num) + (legal ? "&legal_only=yes" : "");
@@ -299,7 +299,7 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
             auto ret   = pkm(groupIndex, pokeIndex);
 
             if (auto fetch = Fetch::init(
-                    "https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true,
+                    WEBSITE_URL "gpss/download/" + poke["code"].get<std::string>(), true,
                     nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
@@ -374,7 +374,7 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     }
 
     std::string writeData;
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(WEBSITE_URL "gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)

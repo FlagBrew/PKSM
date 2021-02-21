@@ -850,7 +850,7 @@ void GroupCloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = "https://flagbrew.org/gpss/download/bundle/" + std::string(input);
+        const std::string url = WEBSITE_URL "gpss/download/bundle/" + std::string(input);
         std::string jsonData  = "";
         if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
         {

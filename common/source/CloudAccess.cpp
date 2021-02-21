@@ -189,7 +189,7 @@ nlohmann::json CloudAccess::grabPage(int num)
 std::string CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal,
     pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
+    return WEBSITE_URL "api/v1/gpss/all?pksm=yes&count=30&sort=" + sortTypeToString(type) +
            "&dir=" + (ascend ? std::string("ascend") : std::string("descend")) +
            "&legal_only=" + (legal ? std::string("True") : std::string("False")) +
            "&page=" + std::to_string(num) + "&min_gen=" + (std::string)low +
@@ -232,7 +232,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
         auto ret = pkm(slot);
 
         if (auto fetch =
-                Fetch::init("https://flagbrew.org/gpss/download/" +
+                Fetch::init(WEBSITE_URL "gpss/download/" +
                                 (*current->data)["results"][slot]["code"].get<std::string>(),
                     true, nullptr, nullptr, ""))
         {
@@ -326,7 +326,7 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(WEBSITE_URL "gpss/share", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
