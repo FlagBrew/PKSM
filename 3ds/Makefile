@@ -309,7 +309,8 @@ binaries: $(ROMFS_GFXFILES) | directories
 	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 	@$(if $(_BINARIES_DEPS), $(MAKE) --no-print-directory $(_BINARIES_DEPS))
 	@echo Copying strings to romfs...
-	@cp -r ../assets/gui_strings/* $(ROMFS)/i18n
+	@find ../assets/gui_strings/ -name 'gui.json' -print | cpio -pavd $(ROMFS)/i18n/
+	# @cp -r ../assets/gui_strings/* $(ROMFS)/i18n
 	@cp -r ../core/strings/* $(ROMFS)/i18n
 	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr

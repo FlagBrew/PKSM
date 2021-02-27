@@ -47,7 +47,7 @@ namespace
             case CloudAccess::SortType::LATEST:
                 return "latest";
             case CloudAccess::SortType::POPULAR:
-                return "popular";
+                return "popularity";
         }
         return "";
     }
@@ -59,47 +59,47 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
     bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     std::string* retData = new std::string;
-    
+
     const auto [url, postData] = makeURL(number, type, ascend, legal, low, high, LGPE);
 
     struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
-    headers                    = curl_slist_append(headers, "pksm-mode: yes");
-
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
 
     auto fetch = Fetch::init(url, true, retData, headers, postData);
-    Fetch::performAsync(fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
-        if (code == CURLE_OK)
-        {
-            long status_code;
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
+    Fetch::performAsync(
+        fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
+            if (code == CURLE_OK)
             {
-                case 200:
-                    page->data = std::make_unique<nlohmann::json>(
-                        nlohmann::json::parse(*retData, nullptr, false));
-                    if (!page->data || !pageIsGood(*page->data))
-                    {
-                        page->data = nullptr;
-                    }
-                    break;
-                case 401:
+                long status_code;
+                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                switch (status_code)
                 {
-                    nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
-                    if (retJson.contains("code") && retJson["code"].is_number_integer())
+                    case 200:
+                        page->data = std::make_unique<nlohmann::json>(
+                            nlohmann::json::parse(*retData, nullptr, false));
+                        if (!page->data || !pageIsGood(*page->data))
+                        {
+                            page->data = nullptr;
+                        }
+                        break;
+                    case 401:
                     {
-                        page->siteJsonErrorCode = retJson["code"].get<int>();
+                        nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
+                        if (retJson.contains("code") && retJson["code"].is_number_integer())
+                        {
+                            page->siteJsonErrorCode = retJson["code"].get<int>();
+                        }
                     }
-                }
-                break;
-                default:
                     break;
+                    default:
+                        break;
+                }
             }
-        }
-        delete retData;
-        page->available = true;
-        curl_slist_free_all(headers);
-    });
+            delete retData;
+            page->available = true;
+            curl_slist_free_all(headers);
+        });
 }
 
 CloudAccess::CloudAccess() : pageNumber(1)
@@ -121,8 +121,7 @@ void CloudAccess::refreshPages()
         else
         {
             isGood = false;
-            if (current->data->contains("code") &&
-                (*current->data)["code"].is_number_integer())
+            if (current->data->contains("code") && (*current->data)["code"].is_number_integer())
             {
                 current->siteJsonErrorCode = (*current->data)["code"].get<int>();
                 current->data              = nullptr;
@@ -143,8 +142,7 @@ void CloudAccess::refreshPages()
             else
             {
                 isGood = false;
-                if (current->data->contains("code") &&
-                    (*current->data)["code"].is_number_integer())
+                if (current->data->contains("code") && (*current->data)["code"].is_number_integer())
                 {
                     current->siteJsonErrorCode = (*current->data)["code"].get<int>();
                     current->data              = nullptr;
@@ -183,11 +181,11 @@ nlohmann::json CloudAccess::grabPage(int num)
     const auto [url, postData] = makeURL(num, sort, ascend, legal, lowGen, highGen, showLGPE);
 
     struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
-    headers                    = curl_slist_append(headers, "pksm-mode: yes");
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
 
     auto fetch = Fetch::init(url, true, &retData, headers, postData);
-    auto res = Fetch::perform(fetch);
+    auto res   = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 
     if (res.index() == 0)
@@ -204,8 +202,8 @@ nlohmann::json CloudAccess::grabPage(int num)
     }
 }
 
-std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type, bool ascend, bool legal,
-    pksm::Generation low, pksm::Generation high, bool LGPE)
+std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type, bool ascend,
+    bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
     nlohmann::json post_data = nlohmann::json::object();
     post_data.push_back({"mode", "and"});
@@ -222,22 +220,23 @@ std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type,
         pksm::Generation::EIGHT,
     };
     const auto start_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), low);
-    const auto end_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
+    const auto end_idx   = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
 
     nlohmann::json generations_data = nlohmann::json::array();
-    for(auto idx = start_idx; idx <= end_idx; ++idx)
+    for (auto idx = start_idx; idx <= end_idx; ++idx)
     {
         generations_data.push_back(std::string(*idx));
     }
 
-    if(LGPE)
+    if (LGPE)
     {
         generations_data.push_back("LGPE");
     }
 
     post_data.push_back({"generations", generations_data});
 
-    nlohmann::json operators_data = R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
+    nlohmann::json operators_data =
+        R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
     post_data.push_back({"operators", operators_data});
 
     post_data.push_back({"sort_field", sortTypeToString(type)});
@@ -316,7 +315,7 @@ std::optional<int> CloudAccess::nextPage()
     downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
 
     // If there's a mon number desync, also download the previous page again
-    if ((*current->data)["total_pkm"] != (*prev->data)["total_pkm"])
+    if ((*current->data)["total"] != (*prev->data)["total"])
     {
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
         downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
@@ -348,7 +347,7 @@ std::optional<int> CloudAccess::prevPage()
     downloadCloudPage(prev, prevPage, sort, ascend, legal, lowGen, highGen, showLGPE);
 
     // If there's a mon number desync, also download the next page again
-    if ((*current->data)["total_pkm"] != (*next->data)["total_pkm"])
+    if ((*current->data)["total"] != (*next->data)["total"])
     {
         int nextPage = (pageNumber % pages()) + 1;
         downloadCloudPage(next, nextPage, sort, ascend, legal, lowGen, highGen, showLGPE);
@@ -361,9 +360,10 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 {
     long ret            = 0;
     std::string version = "generation: " + (std::string)mon->generation();
-    const std::string pksm_version = "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"),
-        VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    std::string code    = Configuration::getInstance().patronCode();
+    const std::string pksm_version =
+        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
+                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    std::string code = Configuration::getInstance().patronCode();
     if (!code.empty())
     {
         code = "patreon: " + code;
@@ -378,7 +378,8 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/upload/pokemon", true, &writeData, headers, ""))
+    if (auto fetch =
+            Fetch::init(WEBSITE_URL "api/v1/gpss/upload/pokemon", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

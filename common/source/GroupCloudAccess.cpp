@@ -30,8 +30,6 @@
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
-#include "revision.h"
-#include "website.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK4.hpp"
@@ -39,6 +37,8 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "revision.h"
+#include "website.h"
 #include <unistd.h>
 
 GroupCloudAccess::Page::~Page() {}
@@ -46,12 +46,15 @@ GroupCloudAccess::Page::~Page() {}
 void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
     pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    std::string* retData = new std::string;
+    std::string* retData       = new std::string;
     struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
+
     const auto [url, postData] = GroupCloudAccess::makeURL(number, legal, low, high, LGPE);
-    auto fetch = Fetch::init(url, true, retData, headers, postData);
-    Fetch::performAsync(fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    auto fetch                 = Fetch::init(url, true, retData, headers, postData);
+    Fetch::performAsync(fetch, [page, retData, headers](
+                                   CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
             long status_code;
@@ -165,12 +168,14 @@ void GroupCloudAccess::refreshPages()
 nlohmann::json GroupCloudAccess::grabPage(int num)
 {
     std::string retData;
-    
+
     struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
+
     const auto [url, postData] = GroupCloudAccess::makeURL(num, legal, low, high, LGPE);
-    auto fetch = Fetch::init(url, true, &retData, headers, postData);
-    auto res   = Fetch::perform(fetch);
+    auto fetch                 = Fetch::init(url, true, &retData, headers, postData);
+    auto res                   = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 
     if (res.index() == 0)
@@ -205,22 +210,23 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
         pksm::Generation::EIGHT,
     };
     const auto start_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), low);
-    const auto end_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
+    const auto end_idx   = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
 
     nlohmann::json generations_data = nlohmann::json::array();
-    for(auto idx = start_idx; idx <= end_idx; ++idx)
+    for (auto idx = start_idx; idx <= end_idx; ++idx)
     {
         generations_data.push_back(std::string(*idx));
     }
 
-    if(LGPE)
+    if (LGPE)
     {
         generations_data.push_back("LGPE");
     }
 
     post_data.push_back({"generations", generations_data});
 
-    nlohmann::json operators_data = R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
+    nlohmann::json operators_data =
+        R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
     post_data.push_back({"operators", operators_data});
 
     post_data.push_back({"sort_field", "latest"});
@@ -252,7 +258,7 @@ std::optional<int> GroupCloudAccess::nextPage()
     downloadGroupPage(next, nextPage, legal, low, high, LGPE);
 
     // If there's a mon number desync, also download the previous page again
-    if ((*current->data)["total_bundles"] != (*prev->data)["total_bundles"])
+    if ((*current->data)["total"] != (*prev->data)["total"])
     {
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
         downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
@@ -284,7 +290,7 @@ std::optional<int> GroupCloudAccess::prevPage()
     downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
 
     // If there's a mon number desync, also download the next page again
-    if ((*current->data)["total_bundles"] != (*next->data)["total_bundles"])
+    if ((*current->data)["total"] != (*next->data)["total"])
     {
         int nextPage = (pageNumber % pages()) + 1;
         downloadGroupPage(next, nextPage, legal, low, high, LGPE);
@@ -305,9 +311,10 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeI
         auto& group = (*current->data)["bundles"][groupIndex];
         if (pokeIndex < group["count"].get<size_t>())
         {
-            std::vector<u8> data = base64_decode(group["base_64s"][pokeIndex].get<std::string>());
-            pksm::Generation gen =
-                pksm::Generation::fromString(group["generations"][pokeIndex].get<std::string>());
+            std::vector<u8> data =
+                base64_decode(group["pokemons"][pokeIndex]["base_64"].get<std::string>());
+            pksm::Generation gen = pksm::Generation::fromString(
+                group["pokemons"][pokeIndex]["generation"].get<std::string>());
 
             auto ret = pksm::PKX::getPKM(gen, data.data(), data.size());
             if (ret)
@@ -326,7 +333,7 @@ bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
         auto& group = (*current->data)["bundles"][groupIndex];
         if (pokeIndex < group["count"].get<size_t>())
         {
-            return group["legalities"][pokeIndex].get<bool>();
+            return group["pokemons"][pokeIndex]["legality"].get<bool>();
         }
     }
     return false;
@@ -339,11 +346,11 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
         auto& group = (*current->data)["bundles"][groupIndex];
         if (pokeIndex < group["count"].get<size_t>())
         {
-            auto ret   = pkm(groupIndex, pokeIndex);
+            auto ret = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init(
-                    WEBSITE_URL "api/v1/gpss/download/pokemon/" + group["download_codes"][pokeIndex].get<std::string>(), true,
-                    nullptr, nullptr, ""))
+            if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/download/pokemon/" +
+                                             group["download_codes"][pokeIndex].get<std::string>(),
+                    true, nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
             }
@@ -380,9 +387,9 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
             // incremented
             ret.emplace_back(pkm(groupIndex, i));
         }
-        if (auto fetch = Fetch::init(
-                WEBSITE_URL "api/v1/gpss/download/bundles/" + group["download_code"].get<std::string>(), true,
-                nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/download/bundles/" +
+                                         group["download_code"].get<std::string>(),
+                true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }
@@ -393,10 +400,11 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
 
 long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
 {
-    long ret               = 0;
-    
-    const std::string pksm_version = "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"),
-        VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    long ret = 0;
+
+    const std::string pksm_version =
+        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
+                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
 
     std::string amount     = "count: " + std::to_string(sendMe.size());
     std::string code       = Configuration::getInstance().patronCode();
@@ -422,7 +430,8 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     }
 
     std::string writeData;
-    if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/upload/bundle", true, &writeData, headers, ""))
+    if (auto fetch =
+            Fetch::init(WEBSITE_URL "api/v1/gpss/upload/bundle", true, &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)
@@ -440,13 +449,15 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
             nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-            Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
+            Gui::warn(
+                i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
             refreshPages();
         }
         else
         {
             nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-            Gui::warn(retJson["type"].get<std::string>() + '\n' + retJson["error"].get<std::string>());
+            Gui::warn(
+                retJson["type"].get<std::string>() + '\n' + retJson["error"].get<std::string>());
         }
     }
     curl_slist_free_all(headers);
@@ -473,9 +484,7 @@ bool GroupCloudAccess::pageIsGood(const nlohmann::json& page)
                 !group.contains("download_code") || !group["download_code"].is_string() ||
                 !group.contains("count") || !group["count"].is_number_integer() ||
                 !group.contains("download_codes") || !group["download_codes"].is_array() ||
-                !group.contains("base_64s") || !group["base_64s"].is_array() ||
-                !group.contains("generations") || !group["generations"].is_array() ||
-                !group.contains("legalities") || !group["legalities"].is_array())
+                !group.contains("pokemons") || !group["pokemons"].is_array())
             // clang-format on
             {
                 return false;

@@ -27,6 +27,6 @@
 #ifndef WEBSITE_H
 #define WEBSITE_H
 
-#define WEBSITE_URL "https://flagbrew.org/"
+#define WEBSITE_URL "https://a2efd0b2eda8.ngrok.io/"
 
 #endif

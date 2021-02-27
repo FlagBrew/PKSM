@@ -22,3 +22,4 @@ external/tools/*
 !external/tools/*.cpp
 !external/tools/*.go
 build.log
+assets/gui_strings/*/gui.json
