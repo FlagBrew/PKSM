@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "저장소를 백업하고 있습니다...",
+    "BANK_BOX_NAME": "뱅크 박스 이름",
+    "BANK_CONFIRM_CLEAR": "해당 박스를 지우겠습니까?",
+    "BANK_CONFIRM_DUMP": "선택한 포켓몬을 덤프하겠습니까?",
+    "BANK_CONFIRM_RELEASE": "선택한 포켓몬을 놓아주겠습니까?",
+    "BANK_CONVERT": "저장소 변환 중...",
+    "BANK_CREATE": "저장소 생성 중...",
+    "BANK_DELETE": "Delete bank {:s}?",
+    "BANK_LOAD": "저장소를 불러오는 중...",
+    "BANK_NAME": "Bank Name",
+    "BANK_SAVE": "변경 사항 저장 중...",
+    "BANK_SAVE_CHANGES": "저장소에 변경 사항을 저장하겠습니까?",
+    "BANK_SWITCH": "Storage group",
+    "BOX": "박스",
+    "RENAMING_BANK": "Renaming bank...",
+    "STORAGE": "저장소 (뱅크)",
+    "STORAGE_RESIZE": "저장소 사이즈를 재설정 중입니다..."
+}

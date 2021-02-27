@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "备份银行中...",
+    "BANK_BOX_NAME": "银行盒子名称",
+    "BANK_CONFIRM_CLEAR": "清空选定的盒子?",
+    "BANK_CONFIRM_DUMP": "导出选中的宝可梦?",
+    "BANK_CONFIRM_RELEASE": "放生选中的宝可梦?",
+    "BANK_CONVERT": "转换银行中...",
+    "BANK_CREATE": "创建离线银行中...",
+    "BANK_DELETE": "删除银行 {:s}?",
+    "BANK_LOAD": "载入银行中...",
+    "BANK_NAME": "银行名称",
+    "BANK_SAVE": "保存离线银行中...",
+    "BANK_SAVE_CHANGES": "保存修改到离线银行?",
+    "BANK_SWITCH": "存储组",
+    "BOX": "盒子",
+    "RENAMING_BANK": "Renaming bank...",
+    "STORAGE": "离线银行",
+    "STORAGE_RESIZE": "调整离线银行中..."
+}

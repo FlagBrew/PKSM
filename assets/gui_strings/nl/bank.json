@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Back-up aan het maken van opslag",
+    "BANK_BOX_NAME": "Bankdoos Naam",
+    "BANK_CONFIRM_CLEAR": "Deze box verwijderen?",
+    "BANK_CONFIRM_DUMP": "Deze Pokémon verwijderen?",
+    "BANK_CONFIRM_RELEASE": "Deze Pokémon vrij laten?",
+    "BANK_CONVERT": "Opslag converteren...",
+    "BANK_CREATE": "Oplag maken...",
+    "BANK_DELETE": "Bank {:s} verwijderen?",
+    "BANK_LOAD": "Opslag laden...",
+    "BANK_NAME": "Naam van de bank",
+    "BANK_SAVE": "Bezig met opslaan...",
+    "BANK_SAVE_CHANGES": "Veranderingen opslaan?",
+    "BANK_SWITCH": "Opslaggroep",
+    "BOX": "Box",
+    "RENAMING_BANK": "Renaming bank...",
+    "STORAGE": "Opslag",
+    "STORAGE_RESIZE": "Opslag formaat wijzigen..."
+}

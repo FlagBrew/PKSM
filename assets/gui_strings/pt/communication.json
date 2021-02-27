@@ -1,0 +1,17 @@
+{
+    "BRIDGE_SHOULD_SEND_1": "Você gostaria de enviar o arquivo modificado",
+    "BRIDGE_SHOULD_SEND_2": "ao Client original?",
+    "CLOUD_BOX": "Cloud {:d}",
+    "DOWNLOADING_FILE": "Downloading {:s}...",
+    "GPSS_DOWNLOAD": "Download this GPSS Pokémon?",
+    "GPSS_DOWNLOAD_GROUP": "Download group from GPSS?",
+    "MYSTERY_GIFT_CHECK": "Checking for updated gift database...",
+    "MYSTERY_GIFT_DOWNLOAD": "Downloading gift database: {:d} of {:d}",
+    "PKM_LEGALIZED": "Your Pokémon is now legal!",
+    "SHARE_CODE_ENTER_PROMPT": "Do you want to enter a share code? (Please translate this)",
+    "SHARE_DOWNLOAD_CODE": "Your download code is (Please translate this)",
+    "SHARE_SEND_CONFIRM": "Share this Pokémon?",
+    "UPLOAD_GROUP": "Upload group to GPSS?",
+    "WIRELESS_IP": "Endereço IP: {:s}",
+    "WIRELESS_WARNING": "Isso vai trancar seu console até um Save for recebido."
+}

@@ -23,3 +23,4 @@ external/tools/*
 !external/tools/*.go
 build.log
 assets/gui_strings/*/gui.json
+common/generate_categories_for_other_languages.py

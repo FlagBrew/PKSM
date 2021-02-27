@@ -1,0 +1,9 @@
+{
+    "UPDATE_CHECKING": "Update suchen...",
+    "UPDATE_FOUND_BACKUP": "Update gefunden! Sichere die ExtData...",
+    "UPDATE_FOUND_DOWNLOAD": "Update gefunden! Lade runter...",
+    "UPDATE_INSTALLING": "Installiere Update...",
+    "UPDATE_MISSING": "Der Download Server hat fehlende Update Dateien!",
+    "UPDATE_SUCCESS_1": "Update erfolgreich runtergeladen!",
+    "UPDATE_SUCCESS_2": "Bitte starte das Programm neu!"
+}

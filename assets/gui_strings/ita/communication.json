@@ -1,0 +1,17 @@
+{
+    "BRIDGE_SHOULD_SEND_1": "Vuoi mandare il salvataggio",
+    "BRIDGE_SHOULD_SEND_2": "al client originale?",
+    "CLOUD_BOX": "Cloud {:d}",
+    "DOWNLOADING_FILE": "Scarico {:s}...",
+    "GPSS_DOWNLOAD": "Scaricare questo Pokémon dal GPSS?",
+    "GPSS_DOWNLOAD_GROUP": "Scaricare questo gruppo dal GPSS?",
+    "MYSTERY_GIFT_CHECK": "Verifico aggiornamenti ai Doni Segreti...",
+    "MYSTERY_GIFT_DOWNLOAD": "Scarico database Doni Segreti: {:d} of {:d}",
+    "PKM_LEGALIZED": "Adesso il tuo Pokémon è legale!",
+    "SHARE_CODE_ENTER_PROMPT": "Vuoi inserire un codice di condivisione?",
+    "SHARE_DOWNLOAD_CODE": "Il tuo codice di download è ",
+    "SHARE_SEND_CONFIRM": "Condividere questo Pokémon?",
+    "UPLOAD_GROUP": "Caricare gruppo sul GPSS?",
+    "WIRELESS_IP": "Indirizzo IP: {:s}",
+    "WIRELESS_WARNING": "La console si bloccherà fino alla ricezione di un save."
+}

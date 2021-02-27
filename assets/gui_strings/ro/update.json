@@ -1,0 +1,9 @@
+{
+    "UPDATE_CHECKING": "Se caută un update",
+    "UPDATE_FOUND_BACKUP": "Update găsit! Se face backup la ExtData...",
+    "UPDATE_FOUND_DOWNLOAD": "Update găsit! Se downloadează…",
+    "UPDATE_INSTALLING": "Se instalează un update…",
+    "UPDATE_MISSING": "Server-ul nu are fişierul de update!",
+    "UPDATE_SUCCESS_1": "Update downloadat cu succes!",
+    "UPDATE_SUCCESS_2": "Re-deschide aplicația!"
+}

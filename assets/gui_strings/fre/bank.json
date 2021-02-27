@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Archivage du stockage...",
+    "BANK_BOX_NAME": "Nom de la Boite de Banque",
+    "BANK_CONFIRM_CLEAR": "Effacer la boite sélectionnée?",
+    "BANK_CONFIRM_DUMP": "Dump le pokémon sélectionné ?",
+    "BANK_CONFIRM_RELEASE": "Relacher le Pokémon sélectionné?",
+    "BANK_CONVERT": "Conversion de la banque...",
+    "BANK_CREATE": "Création du stockage...",
+    "BANK_DELETE": "Supprimer cette banque {:s}?",
+    "BANK_LOAD": "Chargement du stockage...",
+    "BANK_NAME": "Nom de la banque",
+    "BANK_SAVE": "Sauvegarde du stockage...",
+    "BANK_SAVE_CHANGES": "Sauv. les changements du stockage ?",
+    "BANK_SWITCH": "Groupe de Stockage",
+    "BOX": "Boîte",
+    "RENAMING_BANK": "Banque renommée...",
+    "STORAGE": "Banque",
+    "STORAGE_RESIZE": "Redimensionnement du stockage..."
+}

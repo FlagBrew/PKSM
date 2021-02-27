@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Backup storage in corso...",
+    "BANK_BOX_NAME": "Nome Box Storage",
+    "BANK_CONFIRM_CLEAR": "Cancellare il seguente box?",
+    "BANK_CONFIRM_DUMP": "Scaricare il Pokémon selezionato?",
+    "BANK_CONFIRM_RELEASE": "Liberare il Pokémon selezionato?",
+    "BANK_CONVERT": "Converto lo storage...",
+    "BANK_CREATE": "Creazione storage...",
+    "BANK_DELETE": "Cancellare lo storage {:s}?",
+    "BANK_LOAD": "Caricamento storage...",
+    "BANK_NAME": "Nome storage",
+    "BANK_SAVE": "Salvataggio storage...",
+    "BANK_SAVE_CHANGES": "Salvare i cambiamenti allo storage?",
+    "BANK_SWITCH": "Gruppi storage",
+    "BOX": "Box",
+    "RENAMING_BANK": "Rinomino lo storage...",
+    "STORAGE": "Storage",
+    "STORAGE_RESIZE": "Ridimensionando lo storage..."
+}

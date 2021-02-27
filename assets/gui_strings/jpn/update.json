@@ -1,0 +1,9 @@
+{
+    "UPDATE_CHECKING": "更新を確認中",
+    "UPDATE_FOUND_BACKUP": "更新が見つかりました! ExtDataをバックアップしています…",
+    "UPDATE_FOUND_DOWNLOAD": "アップデートが見つかりました! ダウンロードしています...",
+    "UPDATE_INSTALLING": "アップデートをインストール中...",
+    "UPDATE_MISSING": "ダウンロードサーバーに更新ファイルがありません!",
+    "UPDATE_SUCCESS_1": "アップデートに成功しました",
+    "UPDATE_SUCCESS_2": "アプリを再起動してください"
+}

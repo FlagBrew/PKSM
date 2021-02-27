@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Haciendo copia de seguridad del depósito...",
+    "BANK_BOX_NAME": "Nombre de la Caja del depósito",
+    "BANK_CONFIRM_CLEAR": "¿Borrar la caja seleccionada?",
+    "BANK_CONFIRM_DUMP": "¿Extraer el Pokémon seleccionado?",
+    "BANK_CONFIRM_RELEASE": "¿Liberar al Pokémon seleccionado?",
+    "BANK_CONVERT": "Convirtiendo depósito...",
+    "BANK_CREATE": "Creando depósito...",
+    "BANK_DELETE": "¿Borrar depósito {:s}?",
+    "BANK_LOAD": "Cargando depósito...",
+    "BANK_NAME": "Nombre del depósito",
+    "BANK_SAVE": "Guardando depósito...",
+    "BANK_SAVE_CHANGES": "¿Guardar cambios al depósito?",
+    "BANK_SWITCH": "Grupo de almacenamiento",
+    "BOX": "Caja",
+    "RENAMING_BANK": "Renombrando banco...",
+    "STORAGE": "Depósito",
+    "STORAGE_RESIZE": "Cambiando el tamaño del almacenamiento..."
+}
