@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Backing up storage...",
+    "BANK_BOX_NAME": "Bank Box Name",
+    "BANK_CONFIRM_CLEAR": "Erase the selected box?",
+    "BANK_CONFIRM_DUMP": "Dump selected Pok\u00E9mon?",
+    "BANK_CONFIRM_RELEASE": "Release the selected Pok\u00E9mon?",
+    "BANK_CONVERT": "Converting storage...",
+    "BANK_CREATE": "Creating storage...",
+    "BANK_DELETE": "Delete bank {:s}?",
+    "BANK_LOAD": "Loading storage...",
+    "BANK_NAME": "Bank Name",
+    "BANK_SAVE": "Saving storage...",
+    "BANK_SAVE_CHANGES": "Save changes to storage?",
+    "BANK_SWITCH": "Storage group",
+    "BOX": "Box",
+    "RENAMING_BANK": "Renaming bank...",
+    "STORAGE": "Storage",
+    "STORAGE_RESIZE": "Resizing storage..."
+}
