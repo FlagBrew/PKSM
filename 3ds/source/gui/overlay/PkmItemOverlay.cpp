@@ -103,9 +103,9 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     validItems = items;
 
     hid.update(items.size());
-    u16 item = pkm.generation() == pksm::Generation::THREE
-                   ? reinterpret_cast<pksm::PK3&>(pkm).heldItem3()
-                   : pkm.heldItem();
+    u16 item      = pkm.generation() == pksm::Generation::THREE
+                        ? static_cast<pksm::PK3&>(pkm).heldItem3()
+                        : pkm.heldItem();
     int itemIndex = index(items, pkm.generation() == pksm::Generation::THREE
                                      ? i18n::item3(Configuration::getInstance().language(), item)
                                      : i18n::item(Configuration::getInstance().language(), item));
@@ -216,7 +216,7 @@ void PkmItemOverlay::update(touchPosition* touch)
     {
         if (pkm.generation() == pksm::Generation::THREE)
         {
-            reinterpret_cast<pksm::PK3&>(pkm).heldItem3((u16)items[hid.fullIndex()].first);
+            static_cast<pksm::PK3&>(pkm).heldItem3((u16)items[hid.fullIndex()].first);
         }
         else
         {

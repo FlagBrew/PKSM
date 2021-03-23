@@ -209,7 +209,7 @@ void SpeciesOverlay::update(touchPosition* touch)
             pksm::Species species = dispPkm[hid.fullIndex()];
             if (!object.isFilter())
             {
-                pksm::PKX& pkm = reinterpret_cast<pksm::PKX&>(object);
+                pksm::PKX& pkm = static_cast<pksm::PKX&>(object);
                 if (pkm.species() == pksm::Species::None || !pkm.nicknamed())
                 {
                     std::string nick = species.localize(pkm.language());

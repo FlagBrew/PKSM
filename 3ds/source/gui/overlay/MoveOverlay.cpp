@@ -214,8 +214,8 @@ void MoveOverlay::update(touchPosition* touch)
         }
         if (!object.isFilter())
         {
-            reinterpret_cast<pksm::PKX&>(object).fixMoves();
-            reinterpret_cast<pksm::PKX&>(object).healPP();
+            static_cast<pksm::PKX&>(object).fixMoves();
+            static_cast<pksm::PKX&>(object).healPP();
         }
         parent->removeOverlay();
         return;
@@ -224,7 +224,7 @@ void MoveOverlay::update(touchPosition* touch)
     {
         if (!object.isFilter())
         {
-            reinterpret_cast<pksm::PKX&>(object).fixMoves();
+            static_cast<pksm::PKX&>(object).fixMoves();
         }
         parent->removeOverlay();
         return;

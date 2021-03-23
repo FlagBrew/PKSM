@@ -283,9 +283,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
             TextPosY::TOP);
         if (pkm.generation() == pksm::Generation::LGPE)
         {
-            Gui::text(
-                std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).awakened(statValues[i])), 342,
-                16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
+                342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {

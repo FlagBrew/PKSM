@@ -2330,7 +2330,7 @@ void HexEditScreen::drawMeaning() const
                     break;
                 case 0x22 ... 0x23:
                     Gui::text(i18n::item3(Configuration::getInstance().language(),
-                                  reinterpret_cast<pksm::PK3&>(pkm).heldItem3()),
+                                  static_cast<pksm::PK3&>(pkm).heldItem3()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x28:
@@ -2464,10 +2464,10 @@ void HexEditScreen::drawMeaning() const
                     switch (pkm.generation())
                     {
                         case pksm::Generation::SIX:
-                            country = reinterpret_cast<pksm::PK6&>(pkm).country();
+                            country = static_cast<pksm::PK6&>(pkm).country();
                             break;
                         case pksm::Generation::SEVEN:
-                            country = reinterpret_cast<pksm::PK7&>(pkm).country();
+                            country = static_cast<pksm::PK7&>(pkm).country();
                             break;
                         default:
                             break;
@@ -2487,12 +2487,12 @@ void HexEditScreen::drawMeaning() const
                     switch (pkm.generation())
                     {
                         case pksm::Generation::SIX:
-                            country = reinterpret_cast<pksm::PK6&>(pkm).country();
-                            region  = reinterpret_cast<pksm::PK6&>(pkm).region();
+                            country = static_cast<pksm::PK6&>(pkm).country();
+                            region  = static_cast<pksm::PK6&>(pkm).region();
                             break;
                         case pksm::Generation::SEVEN:
-                            country = reinterpret_cast<pksm::PK7&>(pkm).country();
-                            region  = reinterpret_cast<pksm::PK7&>(pkm).region();
+                            country = static_cast<pksm::PK7&>(pkm).country();
+                            region  = static_cast<pksm::PK7&>(pkm).region();
                             break;
                         default:
                             break;
@@ -2512,10 +2512,10 @@ void HexEditScreen::drawMeaning() const
                     switch (pkm.generation())
                     {
                         case pksm::Generation::SIX:
-                            consoleRegion = reinterpret_cast<pksm::PK6&>(pkm).consoleRegion();
+                            consoleRegion = static_cast<pksm::PK6&>(pkm).consoleRegion();
                             break;
                         case pksm::Generation::SEVEN:
-                            consoleRegion = reinterpret_cast<pksm::PK7&>(pkm).consoleRegion();
+                            consoleRegion = static_cast<pksm::PK7&>(pkm).consoleRegion();
                             break;
                         default:
                             break;
