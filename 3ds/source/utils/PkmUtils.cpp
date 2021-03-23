@@ -208,6 +208,8 @@ namespace
             pksm::PKX::getRandomPID(ret->species(), ret->gender(), ret->version(), ret->nature(),
                 ret->alternativeForm(), ret->abilityNumber(), ret->PID(), ret->generation()));
 
+        ret->refreshChecksum();
+
         return ret;
     }
 }
