@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@ void IHid<ListDirection, PageDirection, Delay>::update(size_t count)
 {
     u64 currentTime = tick();
 
-    mMaxPages = (count % mMaxVisibleEntries == 0) ? count / mMaxVisibleEntries : count / mMaxVisibleEntries + 1;
+    mMaxPages = (count % mMaxVisibleEntries == 0) ? count / mMaxVisibleEntries
+                                                  : count / mMaxVisibleEntries + 1;
 
     if (leftTriggerDown())
     {

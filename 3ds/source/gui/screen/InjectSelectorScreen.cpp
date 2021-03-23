@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -344,8 +344,8 @@ void InjectSelectorScreen::drawTop() const
                     Gui::pkm(pksm::Species{u16(data.species)}, data.form,
                         TitleLoader::save->generation(), data.gender, x, y);
                 }
-                PKSM_Color color = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
-                                                        : PKSM_Color(26, 35, 126, 255);
+                PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
+                                                              : PKSM_Color(26, 35, 126, 255);
                 TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL
                                                               : TextWidthAction::SQUISH_OR_SLICE;
                 Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER,
