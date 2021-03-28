@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -209,7 +209,7 @@ void SpeciesOverlay::update(touchPosition* touch)
             pksm::Species species = dispPkm[hid.fullIndex()];
             if (!object.isFilter())
             {
-                pksm::PKX& pkm = reinterpret_cast<pksm::PKX&>(object);
+                pksm::PKX& pkm = static_cast<pksm::PKX&>(object);
                 if (pkm.species() == pksm::Species::None || !pkm.nicknamed())
                 {
                     std::string nick = species.localize(pkm.language());

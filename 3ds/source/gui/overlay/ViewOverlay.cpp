@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -283,9 +283,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
             TextPosY::TOP);
         if (pkm.generation() == pksm::Generation::LGPE)
         {
-            Gui::text(
-                std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).awakened(statValues[i])), 342,
-                16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
+                342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         else
         {

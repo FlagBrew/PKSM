@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -73,9 +73,9 @@ private:
             {
                 if (!isClicked && clicked(touch))
                 {
-                    key = key == ui_sheet_emulated_toggle_green_idx
-                              ? ui_sheet_emulated_toggle_gray_idx
-                              : ui_sheet_emulated_toggle_green_idx;
+                    key       = key == ui_sheet_emulated_toggle_green_idx
+                                    ? ui_sheet_emulated_toggle_gray_idx
+                                    : ui_sheet_emulated_toggle_green_idx;
                     isClicked = clicked(touch);
                     return noArg();
                 }

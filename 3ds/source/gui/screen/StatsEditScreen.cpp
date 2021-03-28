@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2020 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ void StatsEditScreen::setSecondaryStat(pksm::Stat which)
         }
         else
         {
-            reinterpret_cast<pksm::PB7&>(pkm).awakened(which, std::min((int)val, 200));
+            static_cast<pksm::PB7&>(pkm).awakened(which, std::min((int)val, 200));
         }
     }
 }
@@ -195,7 +195,7 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
         }
         else
         {
-            pksm::PB7& pb7 = reinterpret_cast<pksm::PB7&>(pkm);
+            pksm::PB7& pb7 = static_cast<pksm::PB7&>(pkm);
             if (pb7.awakened(which) < 200)
             {
                 pb7.awakened(which, pb7.awakened(which) + 1);
@@ -230,7 +230,7 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
         }
         else
         {
-            pksm::PB7& pb7 = reinterpret_cast<pksm::PB7&>(pkm);
+            pksm::PB7& pb7 = static_cast<pksm::PB7&>(pkm);
             if (pb7.awakened(which) > 0)
             {
                 pb7.awakened(which, pb7.awakened(which) - 1);
@@ -279,9 +279,9 @@ void StatsEditScreen::drawBottom() const
 
     if (pkm.generation() == pksm::Generation::LGPE)
     {
-        Gui::text(i18n::localize("EDITOR_CP") +
-                      std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).CP()),
-            4, 5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(
+            i18n::localize("EDITOR_CP") + std::to_string((int)static_cast<pksm::PB7&>(pkm).CP()), 4,
+            5, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     Gui::text(i18n::localize("EDITOR_STATS"), 4, 32, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
@@ -317,9 +317,8 @@ void StatsEditScreen::drawBottom() const
         }
         else
         {
-            Gui::text(
-                std::to_string((int)reinterpret_cast<pksm::PB7&>(pkm).awakened(statValues[i])), 213,
-                52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
+                213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         }
         Gui::text(std::to_string((int)pkm.stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
