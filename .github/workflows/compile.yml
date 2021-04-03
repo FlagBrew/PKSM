@@ -10,10 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: 
-      image: registry.external.fm1337.com:5000/pksm_docker
+      image: fmcore/flagbrew_compiler
       credentials:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DHU }}
+        password: ${{ secrets.DHA }}
 
     steps:
       - name: "Clone"
