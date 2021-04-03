@@ -5,7 +5,11 @@ APP_AUTHOR		:=	FlagBrew
 VERSION_MAJOR	:=	9
 VERSION_MINOR	:=	2
 VERSION_MICRO	:=	0
-GIT_REV="$(shell git rev-parse --short HEAD)"
+GIT_REV			:=	$(shell git rev-parse --short HEAD)
+REV_UPDATE		:=	$(if $(shell grep $(GIT_REV) common/include/revision.h),,1) \
+					$(if $(shell grep "VERSION_MAJOR $(VERSION_MAJOR)" common/include/revision.h),,1) \
+					$(if $(shell grep "VERSION_MINOR $(VERSION_MINOR)" common/include/revision.h),,1) \
+					$(if $(shell grep "VERSION_MICRO $(VERSION_MICRO)" common/include/revision.h),,1)
 
 OUTDIR			:= 	out
 RELEASEDIR		:=	release
@@ -16,10 +20,12 @@ debug: 3ds-debug
 release: 3ds-release docs
 
 revision:
+ifneq ($(strip $(REV_UPDATE)),)
 	@echo \#define GIT_REV \"$(GIT_REV)\" > common/include/revision.h
 	@echo \#define VERSION_MAJOR $(VERSION_MAJOR) >> common/include/revision.h
 	@echo \#define VERSION_MINOR $(VERSION_MINOR) >> common/include/revision.h
 	@echo \#define VERSION_MICRO $(VERSION_MICRO) >> common/include/revision.h
+endif
 
 3ds-debug: revision
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO)
