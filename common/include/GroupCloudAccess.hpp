@@ -32,6 +32,7 @@
 #include "pkx/PKX.hpp"
 #include <atomic>
 #include <memory>
+#include <optional>
 
 class GroupCloudAccess
 {
