@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: "Clone"
-        run: git clone --recurse-submodules -j8 https://github.com/FlagBrew/PKSM.git
+        run: git clone --recurse-submodules -j8 https://github.com/FlagBrew/PKSM.git /PKSM
       - name: "Build"
-        working-directory: "./PKSM"
+        working-directory: "/PKSM"
         run: |
           make
           zip -r PKSM.zip 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
       - name: "Push"
-        working-directory: "./PKSM"
+        working-directory: "/PKSM"
         run: "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header 'Upload-Secret: ${{ secrets.GHU }}' --header 'extensions: cia,zip,3dsx' --header 'app: PKSM' --header 'hash: ${{ github.sha }}' ${{ secrets.PURL }}"
