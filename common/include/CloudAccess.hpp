@@ -32,6 +32,7 @@
 #include "pkx/PKX.hpp"
 #include <atomic>
 #include <memory>
+#include <optional>
 
 class CloudAccess
 {
@@ -82,8 +83,8 @@ public:
     void removeGenFilter();
     bool good() const { return isGood; }
     int currentPageError() const { return current->siteJsonErrorCode; }
-    static std::pair<std::string, std::string> makeURL(int page, SortType type, bool ascend, bool legal,
-        pksm::Generation low, pksm::Generation high, bool LGPE);
+    static std::pair<std::string, std::string> makeURL(int page, SortType type, bool ascend,
+        bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
 
 private:
