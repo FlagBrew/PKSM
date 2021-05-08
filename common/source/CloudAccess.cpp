@@ -240,7 +240,7 @@ std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type,
     post_data.push_back({"operators", operators_data});
 
     post_data.push_back({"sort_field", sortTypeToString(type)});
-    post_data.push_back({"sort_direction", ascend});
+    post_data.push_back({"sort_direction", !ascend});
 
     return {WEBSITE_URL "api/v2/gpss/search/pokemon?page=" + std::to_string(num), post_data.dump()};
 }
