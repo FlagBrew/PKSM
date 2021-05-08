@@ -21,6 +21,7 @@ jobs:
       - name: "Build"
         working-directory: "./PKSM"
         run: |
+          cd PKSM
           make
           zip -r PKSM.zip 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
       - name: "Push"
