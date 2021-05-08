@@ -40,11 +40,11 @@
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
-#include "website.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 #include <algorithm>
 #include <sys/stat.h>
 
@@ -852,7 +852,7 @@ void GroupCloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = WEBSITE_URL "api/v1/gpss/download/bundle/" + std::string(input);
+        const std::string url = WEBSITE_URL "api/v2/gpss/download/bundle/" + std::string(input);
         std::string jsonData  = "";
         if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
         {

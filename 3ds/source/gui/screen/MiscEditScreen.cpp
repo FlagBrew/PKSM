@@ -38,13 +38,13 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
-#include "website.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 
 MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
@@ -718,7 +718,7 @@ void MiscEditScreen::validate()
                           : WEBSITE_URL;
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(url + "api/v1/pksm/legality", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "api/v2/pksm/legality", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -749,19 +749,21 @@ void MiscEditScreen::validate()
                     {
                         nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
                         std::string legal_text;
-                        if (retJson.is_object() &&
-                            retJson.contains("report") && retJson["report"].is_array())
+                        if (retJson.is_object() && retJson.contains("report") &&
+                            retJson["report"].is_array())
                         {
                             size_t full_size = 0;
-                            for(const auto& line : retJson["report"])
+                            for (const auto& line : retJson["report"])
                             {
-                                if(full_size) full_size += 1;
+                                if (full_size)
+                                    full_size += 1;
                                 full_size += line.size();
                             }
                             legal_text.reserve(full_size);
-                            for(const auto& line : retJson["report"])
+                            for (const auto& line : retJson["report"])
                             {
-                                if(!legal_text.empty()) legal_text += '\n';
+                                if (!legal_text.empty())
+                                    legal_text += '\n';
                                 legal_text += line;
                             }
                         }

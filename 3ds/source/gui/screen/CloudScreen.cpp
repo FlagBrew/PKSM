@@ -40,13 +40,13 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
-#include "nlohmann/json.hpp"
 #include "loader.hpp"
-#include "revision.h"
-#include "website.h"
+#include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
+#include "revision.h"
 #include "sav/Sav.hpp"
+#include "website.h"
 #include <sys/stat.h>
 
 namespace
@@ -816,9 +816,10 @@ void CloudScreen::shareSend()
 {
     long status_code    = 0;
     std::string version = "generation: " + (std::string)infoMon->generation();
-    const std::string pksm_version = "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"),
-        VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    std::string code    = Configuration::getInstance().patronCode();
+    const std::string pksm_version =
+        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
+                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    std::string code = Configuration::getInstance().patronCode();
     if (!code.empty())
     {
         code = "patreon: " + code;
@@ -833,7 +834,8 @@ void CloudScreen::shareSend()
     }
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(WEBSITE_URL "api/v1/gpss/upload/pokemon", true, &writeData, headers, ""))
+    if (auto fetch =
+            Fetch::init(WEBSITE_URL "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -860,7 +862,8 @@ void CloudScreen::shareSend()
                 case 201:
                 {
                     nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' +
+                              retJson["code"].get<std::string>());
                     break;
                 }
                 case 400:
@@ -913,7 +916,7 @@ void CloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url  = WEBSITE_URL "api/v1/gpss/download/pokemon/" + std::string(input);
+        const std::string url  = WEBSITE_URL "api/v2/gpss/download/pokemon/" + std::string(input);
         std::string retB64Data = "";
         if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
         {

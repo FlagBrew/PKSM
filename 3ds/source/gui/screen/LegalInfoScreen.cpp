@@ -31,10 +31,10 @@
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
-#include "website.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 
 LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
     : ScrollingTextScreen(string, pk)
@@ -109,7 +109,7 @@ void LegalInfoScreen::attemptLegalization()
                           : WEBSITE_URL;
 
     std::string writeData;
-    if (auto fetch = Fetch::init(url + "api/v1/pksm/legalize", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
