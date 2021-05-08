@@ -1,0 +1,9 @@
+{
+    "UPDATE_CHECKING": "Verificando si hay actualizaciones",
+    "UPDATE_FOUND_BACKUP": "¡Actualización encontrada! Creando copia de seguridad del ExtData...",
+    "UPDATE_FOUND_DOWNLOAD": "¡Actualización encontrada! Descargando...",
+    "UPDATE_INSTALLING": "Instalando actualización...",
+    "UPDATE_MISSING": "¡El servidor de descarga no tiene todos los archivos!",
+    "UPDATE_SUCCESS_1": "¡Actualización descargada exitosamente!",
+    "UPDATE_SUCCESS_2": "¡Vuelva a abrir la aplicación!"
+}

@@ -63,7 +63,7 @@ public:
     bool good() const { return isGood; }
     int currentPageError() const { return current->siteJsonErrorCode; }
     nlohmann::json grabPage(int page);
-    static std::string makeURL(
+    static std::pair<std::string, std::string> makeURL(
         int page, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
 
 private:

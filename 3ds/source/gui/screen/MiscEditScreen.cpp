@@ -38,11 +38,13 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 
 MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
@@ -706,17 +708,17 @@ void MiscEditScreen::year()
 
 void MiscEditScreen::validate()
 {
-    std::string generation     = "Generation: " + (std::string)pkm.generation();
+    std::string generation     = "generation: " + (std::string)pkm.generation();
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, generation.c_str());
 
     std::string url = Configuration::getInstance().useApiUrl()
                           ? Configuration::getInstance().apiUrl()
-                          : "https://flagbrew.org/";
+                          : WEBSITE_URL;
 
     std::string writeData = "";
-    if (auto fetch = Fetch::init(url + "pksm/legality/check", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "api/v2/pksm/legality", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -745,7 +747,31 @@ void MiscEditScreen::validate()
                     // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm.rawData());
                     if (writeData.size() > 0)
                     {
-                        Gui::setScreen(std::make_unique<LegalInfoScreen>(writeData, pkm));
+                        nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
+                        std::string legal_text;
+                        if (retJson.is_object() && retJson.contains("report") &&
+                            retJson["report"].is_array())
+                        {
+                            size_t full_size = 0;
+                            for (const auto& line : retJson["report"])
+                            {
+                                if (full_size)
+                                    full_size += 1;
+                                full_size += line.size();
+                            }
+                            legal_text.reserve(full_size);
+                            for (const auto& line : retJson["report"])
+                            {
+                                if (!legal_text.empty())
+                                    legal_text += '\n';
+                                legal_text += line;
+                            }
+                        }
+                        else
+                        {
+                            legal_text = "Receive error.";
+                        }
+                        Gui::setScreen(std::make_unique<LegalInfoScreen>(legal_text, pkm));
                     }
                     break;
                 case 502:

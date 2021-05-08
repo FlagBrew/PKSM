@@ -1,0 +1,19 @@
+{
+    "BANK_BACKUP": "Se face backup la stocare…",
+    "BANK_BOX_NAME": "Nume Cutie Bancă",
+    "BANK_CONFIRM_CLEAR": "Ştergi cutia selectată?",
+    "BANK_CONFIRM_DUMP": "Duci Pokémon-ul selectat?",
+    "BANK_CONFIRM_RELEASE": "Dai drumul Pokémon-ului selectat?",
+    "BANK_CONVERT": "Se convertează stocare…",
+    "BANK_CREATE": "Se creează stocare…",
+    "BANK_DELETE": "Deletezi banca {:s}?",
+    "BANK_LOAD": "Se încarcă stocarea…",
+    "BANK_NAME": "Nume Bancă",
+    "BANK_SAVE": "Se salvează stocarea…",
+    "BANK_SAVE_CHANGES": "Salvezi schimbările la stocare?",
+    "BANK_SWITCH": "Grup Stocare",
+    "BOX": "Cutie",
+    "RENAMING_BANK": "Redenumesc stocarea...",
+    "STORAGE": "Stocare",
+    "STORAGE_RESIZE": "Stocare se redimensionează…"
+}

@@ -29,6 +29,7 @@
 #include "base64.hpp"
 #include "fetch.hpp"
 #include "format.h"
+#include "gui.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK4.hpp"
@@ -36,6 +37,8 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "revision.h"
+#include "website.h"
 #include <unistd.h>
 
 GroupCloudAccess::Page::~Page() {}
@@ -43,10 +46,15 @@ GroupCloudAccess::Page::~Page() {}
 void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
     pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    std::string* retData = new std::string;
-    auto fetch           = Fetch::init(
-        GroupCloudAccess::makeURL(number, legal, low, high, LGPE), true, retData, nullptr, "");
-    Fetch::performAsync(fetch, [page, retData](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    std::string* retData       = new std::string;
+    struct curl_slist* headers = NULL;
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
+
+    const auto [url, postData] = GroupCloudAccess::makeURL(number, legal, low, high, LGPE);
+    auto fetch                 = Fetch::init(url, true, retData, headers, postData);
+    Fetch::performAsync(fetch, [page, retData, headers](
+                                   CURLcode code, std::shared_ptr<Fetch> fetch) {
         if (code == CURLE_OK)
         {
             long status_code;
@@ -78,6 +86,7 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
         }
         delete retData;
         page->available = true;
+        curl_slist_free_all(headers);
     });
 }
 
@@ -159,8 +168,16 @@ void GroupCloudAccess::refreshPages()
 nlohmann::json GroupCloudAccess::grabPage(int num)
 {
     std::string retData;
-    auto fetch = Fetch::init(makeURL(num, legal, low, high, LGPE), true, &retData, nullptr, "");
-    auto res   = Fetch::perform(fetch);
+
+    struct curl_slist* headers = NULL;
+    headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
+    headers = curl_slist_append(headers, "pksm-mode: yes");
+
+    const auto [url, postData] = GroupCloudAccess::makeURL(num, legal, low, high, LGPE);
+    auto fetch                 = Fetch::init(url, true, &retData, headers, postData);
+    auto res                   = Fetch::perform(fetch);
+    curl_slist_free_all(headers);
+
     if (res.index() == 0)
     {
         return {};
@@ -175,13 +192,47 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
     }
 }
 
-std::string GroupCloudAccess::makeURL(
+std::pair<std::string, std::string> GroupCloudAccess::makeURL(
     int num, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
-    return "https://flagbrew.org/api/v1/gpss/bundles/all?count=" + std::to_string(NUM_GROUPS) +
-           "&min_gen=" + (std::string)low + "&max_gen=" + (std::string)high +
-           "&lgpe=" + (LGPE ? std::string("yes") : std::string("no")) +
-           "&page=" + std::to_string(num) + (legal ? "&legal_only=yes" : "");
+    nlohmann::json post_data = nlohmann::json::object();
+    post_data.push_back({"mode", "and"});
+    post_data.push_back({"legal", legal});
+
+    const pksm::Generation gens_in_order[] = {
+        pksm::Generation::ONE,
+        pksm::Generation::TWO,
+        pksm::Generation::THREE,
+        pksm::Generation::FOUR,
+        pksm::Generation::FIVE,
+        pksm::Generation::SIX,
+        pksm::Generation::SEVEN,
+        pksm::Generation::EIGHT,
+    };
+    const auto start_idx = std::find(std::begin(gens_in_order), std::end(gens_in_order), low);
+    const auto end_idx   = std::find(std::begin(gens_in_order), std::end(gens_in_order), high);
+
+    nlohmann::json generations_data = nlohmann::json::array();
+    for (auto idx = start_idx; idx <= end_idx; ++idx)
+    {
+        generations_data.push_back(std::string(*idx));
+    }
+
+    if (LGPE)
+    {
+        generations_data.push_back("LGPE");
+    }
+
+    post_data.push_back({"generations", generations_data});
+
+    nlohmann::json operators_data =
+        R"([{"operator":"=","field":"legal"},{"operator":"IN","field":"generations"}])"_json;
+    post_data.push_back({"operators", operators_data});
+
+    post_data.push_back({"sort_field", "latest"});
+    post_data.push_back({"sort_direction", false});
+
+    return {WEBSITE_URL "api/v2/gpss/search/bundles?page=" + std::to_string(num), post_data.dump()};
 }
 
 std::optional<int> GroupCloudAccess::nextPage()
@@ -207,7 +258,7 @@ std::optional<int> GroupCloudAccess::nextPage()
     downloadGroupPage(next, nextPage, legal, low, high, LGPE);
 
     // If there's a mon number desync, also download the previous page again
-    if ((*current->data)["total_bundles"] != (*prev->data)["total_bundles"])
+    if ((*current->data)["total"] != (*prev->data)["total"])
     {
         int prevPage = pageNumber - 1 == 0 ? pages() : pageNumber - 1;
         downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
@@ -239,7 +290,7 @@ std::optional<int> GroupCloudAccess::prevPage()
     downloadGroupPage(prev, prevPage, legal, low, high, LGPE);
 
     // If there's a mon number desync, also download the next page again
-    if ((*current->data)["total_bundles"] != (*next->data)["total_bundles"])
+    if ((*current->data)["total"] != (*next->data)["total"])
     {
         int nextPage = (pageNumber % pages()) + 1;
         downloadGroupPage(next, nextPage, legal, low, high, LGPE);
@@ -255,15 +306,15 @@ int GroupCloudAccess::pages() const
 
 std::unique_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeIndex) const
 {
-    if (groupIndex < (*current->data)["results"].size())
+    if (groupIndex < (*current->data)["bundles"].size())
     {
-        auto& group = (*current->data)["results"][groupIndex];
-        if (pokeIndex < group["pokemon"].size())
+        auto& group = (*current->data)["bundles"][groupIndex];
+        if (pokeIndex < group["count"].get<size_t>())
         {
-            auto& poke           = group["pokemon"][pokeIndex];
-            std::vector<u8> data = base64_decode(poke["base64"].get<std::string>());
-            pksm::Generation gen =
-                pksm::Generation::fromString(poke["generation"].get<std::string>());
+            std::vector<u8> data =
+                base64_decode(group["pokemons"][pokeIndex]["base_64"].get<std::string>());
+            pksm::Generation gen = pksm::Generation::fromString(
+                group["pokemons"][pokeIndex]["generation"].get<std::string>());
 
             auto ret = pksm::PKX::getPKM(gen, data.data(), data.size());
             if (ret)
@@ -277,12 +328,12 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeI
 
 bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
 {
-    if (groupIndex < (*current->data)["results"].size())
+    if (groupIndex < (*current->data)["bundles"].size())
     {
-        auto& group = (*current->data)["results"][groupIndex];
-        if (pokeIndex < group["pokemon"].size())
+        auto& group = (*current->data)["bundles"][groupIndex];
+        if (pokeIndex < group["count"].get<size_t>())
         {
-            return group["pokemon"][pokeIndex]["legal"];
+            return group["pokemons"][pokeIndex]["legality"].get<bool>();
         }
     }
     return false;
@@ -290,17 +341,16 @@ bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
 
 std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
 {
-    if (groupIndex < (*current->data)["results"].size())
+    if (groupIndex < (*current->data)["bundles"].size())
     {
-        auto& group = (*current->data)["results"][groupIndex];
-        if (pokeIndex < group["pokemon"].size())
+        auto& group = (*current->data)["bundles"][groupIndex];
+        if (pokeIndex < group["count"].get<size_t>())
         {
-            auto& poke = group["pokemon"][pokeIndex];
-            auto ret   = pkm(groupIndex, pokeIndex);
+            auto ret = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init(
-                    "https://flagbrew.org/gpss/download/" + poke["code"].get<std::string>(), true,
-                    nullptr, nullptr, ""))
+            if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/gpss/download/pokemon/" +
+                                             group["download_codes"][pokeIndex].get<std::string>(),
+                    true, nullptr, nullptr, ""))
             {
                 Fetch::performAsync(fetch);
             }
@@ -314,10 +364,10 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
 std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const
 {
     std::vector<std::unique_ptr<pksm::PKX>> ret;
-    if (groupIndex < (*current->data)["results"].size())
+    if (groupIndex < (*current->data)["bundles"].size())
     {
-        auto& group = (*current->data)["results"][groupIndex];
-        for (size_t i = 0; i < group["pokemon"].size(); i++)
+        auto& group = (*current->data)["bundles"][groupIndex];
+        for (int i = 0; i < group["count"].get<int>(); i++)
         {
             ret.emplace_back(pkm(groupIndex, i));
         }
@@ -328,18 +378,18 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupInde
 std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t groupIndex) const
 {
     std::vector<std::unique_ptr<pksm::PKX>> ret;
-    if (groupIndex < (*current->data)["results"].size())
+    if (groupIndex < (*current->data)["bundles"].size())
     {
-        auto& group = (*current->data)["results"][groupIndex];
-        for (size_t i = 0; i < group["pokemon"].size(); i++)
+        auto& group = (*current->data)["bundles"][groupIndex];
+        for (int i = 0; i < group["count"].get<int>(); i++)
         {
             // When the full group is downloaded, all the individual download counters will be
             // incremented
             ret.emplace_back(pkm(groupIndex, i));
         }
-        if (auto fetch = Fetch::init(
-                "https://github.com/gpss/download/bundle/" + group["code"].get<std::string>(), true,
-                nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/gpss/download/bundles/" +
+                                         group["download_code"].get<std::string>(),
+                true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }
@@ -350,10 +400,15 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
 
 long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
 {
-    long ret               = 0;
-    std::string amount     = "amount: " + std::to_string(sendMe.size());
+    long ret = 0;
+
+    const std::string pksm_version =
+        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
+                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+
+    std::string amount     = "count: " + std::to_string(sendMe.size());
     std::string code       = Configuration::getInstance().patronCode();
-    std::string generation = "Generations: ";
+    std::string generation = "generations: ";
     for (const auto& mon : sendMe)
     {
         generation += (std::string)mon->generation() + ',';
@@ -362,11 +417,12 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     generation.pop_back();
     if (!code.empty())
     {
-        code = "PC: " + code;
+        code = "patreon: " + code;
     }
+
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, amount.c_str());
-    headers                    = curl_slist_append(headers, "bundle: yes");
+    headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, generation.c_str());
     if (!code.empty())
     {
@@ -374,7 +430,8 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     }
 
     std::string writeData;
-    if (auto fetch = Fetch::init("https://flagbrew.org/gpss/share", true, &writeData, headers, ""))
+    if (auto fetch =
+            Fetch::init(WEBSITE_URL "api/v2/gpss/upload/bundle", true, &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)
@@ -391,10 +448,16 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
         if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
-            if (ret == 201)
-            {
-                refreshPages();
-            }
+            nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
+            Gui::warn(
+                i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
+            refreshPages();
+        }
+        else
+        {
+            nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
+            Gui::warn(
+                retJson["type"].get<std::string>() + '\n' + retJson["error"].get<std::string>());
         }
     }
     curl_slist_free_all(headers);
@@ -405,40 +468,26 @@ bool GroupCloudAccess::pageIsGood(const nlohmann::json& page)
 {
     // clang-format off
     if (!page.is_object() ||
-        !page.contains("total_bundles") || !page["total_bundles"].is_number_integer() ||
+        !page.contains("total") || !page["total"].is_number_integer() ||
         !page.contains("pages") || !page["pages"].is_number_integer() ||
-        !page.contains("results") || !page["results"].is_array())
+        !page.contains("bundles") || !page["bundles"].is_array())
     // clang-format on
     {
         return false;
     }
     else
     {
-        for (const auto& group : page["results"])
+        for (const auto& group : page["bundles"])
         {
             // clang-format off
             if (!group.is_object() ||
-                !group.contains("pokemon") || !group["pokemon"].is_array() ||
-                !group.contains("code") || !group["code"].is_string())
+                !group.contains("download_code") || !group["download_code"].is_string() ||
+                !group.contains("count") || !group["count"].is_number_integer() ||
+                !group.contains("download_codes") || !group["download_codes"].is_array() ||
+                !group.contains("pokemons") || !group["pokemons"].is_array())
             // clang-format on
             {
                 return false;
-            }
-            else
-            {
-                for (const auto& pkm : group["pokemon"])
-                {
-                    // clang-format off
-                    if (!pkm.is_object() ||
-                        !pkm.contains("base64") || !pkm["base64"].is_string() ||
-                        !pkm.contains("generation") || !pkm["generation"].is_string() ||
-                        !pkm.contains("legal") || !pkm["legal"].is_boolean() ||
-                        !pkm.contains("code") || !pkm["code"].is_string())
-                    // clang-format on
-                    {
-                        return false;
-                    }
-                }
             }
         }
     }

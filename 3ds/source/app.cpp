@@ -43,6 +43,7 @@
 #include "revision.h"
 #include "thread.hpp"
 #include "utils/crypto.hpp"
+#include "website.h"
 #include <3ds.h>
 #include <atomic>
 #include <malloc.h>
@@ -200,8 +201,8 @@ namespace
         const std::string patronCode = Configuration::getInstance().patronCode();
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
-            if (auto fetch = Fetch::init("https://flagbrew.org/patron/updateCheck", true,
-                    &retString, nullptr, "code=" + patronCode))
+            if (auto fetch = Fetch::init(WEBSITE_URL "patron/updateCheck", true, &retString,
+                    nullptr, "code=" + patronCode))
             {
                 moveIcon.clear();
                 Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -221,7 +222,7 @@ namespace
                             case 200:
                                 if (retString.substr(0, 8) != GIT_REV)
                                 {
-                                    url = "https://flagbrew.org/patron/downloadLatest/";
+                                    url = WEBSITE_URL "patron/downloadLatest/";
                                     if (execPath.empty())
                                     {
                                         url += "cia";
@@ -722,9 +723,9 @@ namespace
                 decltype(pksm::crypto::sha256(nullptr, 0)) checksum = readGiftChecksum(fileName);
 
                 std::vector<u8> recvChecksum;
-                if (auto fetch =
-                        Fetch::init("https://flagbrew.org/static/other/gifts/" + fileName + ".sha",
-                            true, nullptr, nullptr, ""))
+                if (auto fetch = Fetch::init(
+                        WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName + ".sha", true,
+                        nullptr, nullptr, ""))
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
@@ -746,8 +747,8 @@ namespace
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
                             if (fetch = Fetch::init(
-                                    "https://flagbrew.org/static/other/gifts/" + fileName, true,
-                                    nullptr, nullptr, ""))
+                                    WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName,
+                                    true, nullptr, nullptr, ""))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
                                 FILE* outFile       = fopen(outPath.c_str(), "wb");

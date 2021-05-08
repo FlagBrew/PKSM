@@ -1,0 +1,9 @@
+{
+    "UPDATE_CHECKING": "Checking for update",
+    "UPDATE_FOUND_BACKUP": "Update found! Backing up ExtData...",
+    "UPDATE_FOUND_DOWNLOAD": "Update found! Downloading...",
+    "UPDATE_INSTALLING": "Installing update...",
+    "UPDATE_MISSING": "Download server missing update files!",
+    "UPDATE_SUCCESS_1": "Update successfully downloaded!",
+    "UPDATE_SUCCESS_2": "Please re-open the application!"
+}

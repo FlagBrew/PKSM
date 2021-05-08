@@ -10,10 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: 
-      image: registry.external.fm1337.com:5000/pksm_docker
+      image: fmcore/flagbrew_compiler
       credentials:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DHU }}
+        password: ${{ secrets.DHA }}
 
     steps:
       - name: "Clone"
@@ -25,4 +25,4 @@ jobs:
           zip -r PKSM.zip 3ds/out/PKSM.cia 3ds/out/PKSM.3dsx 3ds/out/PKSM.elf
       - name: "Push"
         working-directory: "./PKSM"
-        run: "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header 'secret: ${{ secrets.DEPLOY_SECRET }}' --header 'commit: ${{ github.sha }}' ${{ secrets.PUSH_URL }}"
+        run: "curl -F 'cia=@3ds/out/PKSM.cia' -F 'zip=@PKSM.zip' -F '3dsx=@3ds/out/PKSM.3dsx' --header 'secret: ${{ secrets.GHU }}' --header 'extensions: cia,zip,3dsx' --header 'app: PKSM' --header 'hash: ${{ github.sha }}' ${{ secrets.PURL }}"

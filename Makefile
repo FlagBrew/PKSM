@@ -27,13 +27,16 @@ ifneq ($(strip $(REV_UPDATE)),)
 	@echo \#define VERSION_MICRO $(VERSION_MICRO) >> common/include/revision.h
 endif
 
-3ds-debug: revision
+language:
+	@python3 common/combine_strings_json.py
+
+3ds-debug: revision language
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO)
 
-no-deps: revision
+no-deps: revision language
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO) no-deps
 
-3ds-release: revision
+3ds-release: revision language
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO) RELEASE="1"
 
 docs:

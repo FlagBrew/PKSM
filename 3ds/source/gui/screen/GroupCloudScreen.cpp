@@ -44,6 +44,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 #include <algorithm>
 #include <sys/stat.h>
 
@@ -814,6 +815,7 @@ void GroupCloudScreen::shareSend()
         case 502:
             Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
             break;
+        case 429:
         case 503:
             Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
             break;
@@ -850,7 +852,7 @@ void GroupCloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = "https://flagbrew.org/gpss/download/bundle/" + std::string(input);
+        const std::string url = WEBSITE_URL "api/v2/gpss/download/bundle/" + std::string(input);
         std::string jsonData  = "";
         if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
         {

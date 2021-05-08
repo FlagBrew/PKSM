@@ -71,9 +71,9 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
             access.sortDir(!access.sortAscending());
             return access.sortAscending();
         },
-        ui_sheet_button_editor_idx, i18n::localize("ASCENDING"), FONT_SIZE_12, COLOR_BLACK,
         ui_sheet_button_editor_idx, i18n::localize("DESCENDING"), FONT_SIZE_12, COLOR_BLACK,
-        nullptr, true);
+        ui_sheet_button_editor_idx, i18n::localize("ASCENDING"), FONT_SIZE_12, COLOR_BLACK, nullptr,
+        true);
     tbutton->setState(access.sortAscending());
     buttons.push_back(std::move(tbutton));
     tbutton = std::make_unique<ToggleButton>(

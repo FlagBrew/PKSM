@@ -34,6 +34,7 @@
 #include "nlohmann/json.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "website.h"
 
 LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
     : ScrollingTextScreen(string, pk)
@@ -98,17 +99,17 @@ void LegalInfoScreen::attemptLegalization()
         version = "version: " +
                   std::to_string((int)pksm::GameVersion::oldestVersion(pkm->get().generation()));
     }
-    std::string generation = "Generation: " + (std::string)pkm->get().generation();
+    std::string generation = "generation: " + (std::string)pkm->get().generation();
 
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());
 
     std::string url = Configuration::getInstance().useApiUrl()
                           ? Configuration::getInstance().apiUrl()
-                          : "https://flagbrew.org/";
+                          : WEBSITE_URL;
 
     std::string writeData;
-    if (auto fetch = Fetch::init(url + "api/v1/bot/auto_legality", true, &writeData, headers, ""))
+    if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
@@ -137,27 +138,27 @@ void LegalInfoScreen::attemptLegalization()
                     nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
                     // clang-format off
                     if (retJson.is_object() &&
-                        retJson.contains("Pokemon") && (retJson["Pokemon"].is_string() || retJson["Pokemon"].is_null()) &&
-                        retJson.contains("Ran") && retJson["Ran"].is_boolean() &&
-                        retJson.contains("Success") && retJson["Success"].is_boolean())
+                        retJson.contains("pokemon") && (retJson["pokemon"].is_string() || retJson["pokemon"].is_null()) &&
+                        retJson.contains("ran") && retJson["ran"].is_boolean() &&
+                        retJson.contains("success") && retJson["success"].is_boolean())
                     // clang-format on
                     {
-                        if (!retJson["Success"].get<bool>())
+                        if (!retJson["success"].get<bool>())
                         {
                             Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["Ran"].get<bool>())
+                        else if (!retJson["ran"].get<bool>())
                         {
                             Gui::warn(i18n::localize("ALREADY_LEGAL"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["Pokemon"].is_null())
+                        else if (!retJson["pokemon"].is_null())
                         {
                             std::vector<u8> pkmData =
-                                base64_decode(retJson["Pokemon"].get<std::string>());
+                                base64_decode(retJson["pokemon"].get<std::string>());
                             auto fixed = pksm::PKX::getPKM(
                                 pkm->get().generation(), pkmData.data(), pkmData.size(), true);
                             if (fixed)
