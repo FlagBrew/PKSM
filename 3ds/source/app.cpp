@@ -201,8 +201,10 @@ namespace
         const std::string patronCode = Configuration::getInstance().patronCode();
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
-            if (auto fetch = Fetch::init(WEBSITE_URL "patron/updateCheck", true, &retString,
-                    nullptr, "code=" + patronCode))
+            struct curl_slist* headers = NULL;
+            headers                    = curl_slist_append(headers, ("patron: " + patronCode).c_str());
+            if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/patreon/update-check/PKSM", true, &retString,
+                    headers, ""))
             {
                 moveIcon.clear();
                 Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -220,9 +222,15 @@ namespace
                         switch (status_code)
                         {
                             case 200:
-                                if (retString.substr(0, 8) != GIT_REV)
+                            {
+                                nlohmann::json retJson =
+                                    nlohmann::json::parse(retString, nullptr, false);
+                                if (const std::string hash = (retJson.is_object() && retJson.contains("hash"))
+                                    ? retJson["hash"].get<std::string>()
+                                    : GIT_REV; hash.substr(0, 8) != GIT_REV)
                                 {
-                                    url = WEBSITE_URL "patron/downloadLatest/";
+                                    url = WEBSITE_URL "api/v2/patreon/update/" + patronCode + "/" +
+                                         hash + "/";
                                     if (execPath.empty())
                                     {
                                         url += "cia";
@@ -235,6 +243,7 @@ namespace
                                     }
                                 }
                                 break;
+                            }
                             case 204:
                                 Gui::warn(i18n::localize("UPDATE_MISSING"));
                                 break;
@@ -252,6 +261,7 @@ namespace
                     }
                 }
             }
+            curl_slist_free_all(headers);
         }
         else if (auto fetch =
                      Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true,
