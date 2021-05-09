@@ -202,9 +202,9 @@ namespace
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
             struct curl_slist* headers = NULL;
-            headers                    = curl_slist_append(headers, ("patron: " + patronCode).c_str());
-            if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/patreon/update-check/PKSM", true, &retString,
-                    headers, ""))
+            headers = curl_slist_append(headers, ("patreon: " + patronCode).c_str());
+            if (auto fetch = Fetch::init(
+                    WEBSITE_URL "api/v2/patreon/update-check/PKSM", true, &retString, headers, ""))
             {
                 moveIcon.clear();
                 Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -225,12 +225,14 @@ namespace
                             {
                                 nlohmann::json retJson =
                                     nlohmann::json::parse(retString, nullptr, false);
-                                if (const std::string hash = (retJson.is_object() && retJson.contains("hash"))
-                                    ? retJson["hash"].get<std::string>()
-                                    : GIT_REV; hash.substr(0, 8) != GIT_REV)
+                                if (const std::string hash =
+                                        (retJson.is_object() && retJson.contains("hash"))
+                                            ? retJson["hash"].get<std::string>()
+                                            : GIT_REV;
+                                    hash.substr(0, 8) != GIT_REV)
                                 {
-                                    url = WEBSITE_URL "api/v2/patreon/update/" + patronCode + "/" +
-                                         hash + "/";
+                                    url = WEBSITE_URL "api/v2/patreon/update/" + patronCode +
+                                          "/PKSM/" + hash + "/";
                                     if (execPath.empty())
                                     {
                                         url += "cia";
@@ -340,7 +342,7 @@ namespace
             Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"));
             std::string fileName = path.substr(path.find_last_of('/') + 1);
             Result res           = Fetch::download(
-                url, path, Configuration::getInstance().alphaChannel() ? "code=" + patronCode : "",
+                url, path, "",
                 [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal,
                     curl_off_t ulnow) {
                     Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
