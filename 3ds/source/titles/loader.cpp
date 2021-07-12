@@ -277,33 +277,44 @@ namespace
 
     // file must be at header address. On return, will be at the end of the save described by the
     // header.
-    std::array<u8, 0x10> calcGbaCMAC(File& file, const GbaHeader& header)
+    std::array<u8, 32> calcGbaSaveSHA256(File& file, const GbaHeader& header)
     {
-        std::array<u8, 0x10> ret;
         constexpr size_t READBLOCK_SIZE = 0x1000;
-        std::array<u8, 32> hashData;
 
-        // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this
-        // was a good idea CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" +
-        // SHA256(0x30..0x200 + the entire save itself)))) FSPXI_CalcSavegameMAC does the AES-CMAC,
-        // CTR-SIGN, and the CTR-SAV0 step
         pksm::crypto::SHA256 context;
         file.seek(0x30, SEEK_CUR);
-        size_t sha_end_idx = header.saveSize + 0x200 - 0x30;
-        u8* readblock      = new u8[READBLOCK_SIZE];
-        size_t read        = 0;
+        size_t sha_end_idx              = header.saveSize + 0x200 - 0x30;
+        std::unique_ptr<u8[]> readblock = std::unique_ptr<u8[]>(new u8[READBLOCK_SIZE]);
+        size_t read                     = 0;
         for (size_t i = 0; i < sha_end_idx; i += read)
         {
             size_t readSize = std::min(sha_end_idx - i, READBLOCK_SIZE);
-            read            = file.read(readblock, readSize);
-            context.update(readblock, readSize);
+            read            = file.read(readblock.get(), readSize);
+            context.update(readblock.get(), readSize);
         }
-        delete[] readblock;
 
-        hashData = context.finish();
+        return context.finish();
+    }
 
-        FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()), hashData.data(),
-            hashData.size(), ret.data(), ret.size());
+    // Who the hell came up with this shit? Nintendo, please fire whatever employee thought this
+    // was a good idea CMAC = AES-CMAC(SHA256("CTR-SIGN" + titleID + SHA256("CTR-SAV0" +
+    // SHA256(0x30..0x200 + the entire save itself)))) FSPXI_CalcSavegameMAC does the AES-CMAC,
+    // CTR-SIGN, and the CTR-SAV0 step
+    std::array<u8, 0x10> calcGbaCMAC(
+        const File& file, const GbaHeader& header, const std::array<u8, 32> hashData)
+    {
+        std::array<u8, 0x10> prev;
+        std::array<u8, 0x10> ret;
+
+        int tries = 10;
+        Result res;
+        do
+        {
+            --tries;
+            prev = ret;
+            res  = FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()),
+                hashData.data(), hashData.size(), ret.data(), ret.size());
+        } while (R_SUCCEEDED(res) && prev != ret && tries > 0);
 
         return ret;
     }
@@ -584,7 +595,8 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
                     {
                         // Seek back to the beginning of this header
                         in->seek(-0x200, SEEK_CUR);
-                        auto cmac    = calcGbaCMAC(*in, *header1);
+                        std::array<u8, 32> hash = calcGbaSaveSHA256(*in, *header1);
+                        std::array<u8, 16> cmac = calcGbaCMAC(*in, *header1, hash);
                         bool invalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
 
                         if (invalid)
@@ -620,12 +632,14 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
 
                     // Check the first CMAC
                     in->seek(0, SEEK_SET);
-                    auto cmac         = calcGbaCMAC(*in, *header1);
-                    bool firstInvalid = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
+                    std::array<u8, 32> hash = calcGbaSaveSHA256(*in, *header1);
+                    std::array<u8, 16> cmac = calcGbaCMAC(*in, *header1, hash);
+                    bool firstInvalid       = (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
 
                     // Check the second CMAC
                     in->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
-                    cmac               = calcGbaCMAC(*in, *header2);
+                    hash               = calcGbaSaveSHA256(*in, *header2);
+                    cmac               = calcGbaCMAC(*in, *header2, hash);
                     bool secondInvalid = (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
 
                     if (firstInvalid)
@@ -948,7 +962,10 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->write(save->rawData().get(), save->getLength());
 
                                             out->seek(0, SEEK_SET);
-                                            auto cmac = calcGbaCMAC(*out, *header1);
+                                            std::array<u8, 32> hash =
+                                                calcGbaSaveSHA256(*out, *header1);
+                                            std::array<u8, 16> cmac =
+                                                calcGbaCMAC(*out, *header1, hash);
                                             out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                             out->write(cmac.data(), cmac.size());
                                             out->close();
@@ -966,13 +983,15 @@ void TitleLoader::saveToTitle(bool ask)
 
                                         // Check the first CMAC
                                         out->seek(0, SEEK_SET);
-                                        auto cmac = calcGbaCMAC(*out, *header1);
+                                        std::array<u8, 32> hash = calcGbaSaveSHA256(*out, *header1);
+                                        std::array<u8, 16> cmac = calcGbaCMAC(*out, *header1, hash);
                                         bool firstInvalid =
                                             (bool)memcmp(cmac.data(), header1->cmac, cmac.size());
 
                                         // Check the second CMAC
                                         out->seek(sizeof(GbaHeader) + header1->saveSize, SEEK_SET);
-                                        cmac = calcGbaCMAC(*out, *header2);
+                                        hash = calcGbaSaveSHA256(*out, *header2);
+                                        cmac = calcGbaCMAC(*out, *header2, hash);
                                         bool secondInvalid =
                                             (bool)memcmp(cmac.data(), header2->cmac, cmac.size());
 
@@ -987,7 +1006,8 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->write(save->rawData().get(), save->getLength());
                                             out->seek(0, SEEK_SET);
 
-                                            cmac = calcGbaCMAC(*out, *header1);
+                                            hash = calcGbaSaveSHA256(*out, *header1);
+                                            cmac = calcGbaCMAC(*out, *header1, hash);
                                             out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                             out->write(cmac.data(), cmac.size());
                                             out->close();
@@ -1006,7 +1026,8 @@ void TitleLoader::saveToTitle(bool ask)
                                                     save->rawData().get(), save->getLength());
                                                 out->seek(0, SEEK_SET);
 
-                                                cmac = calcGbaCMAC(*out, *header1);
+                                                hash = calcGbaSaveSHA256(*out, *header1);
+                                                cmac = calcGbaCMAC(*out, *header1, hash);
                                                 out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                                 out->write(cmac.data(), cmac.size());
                                                 out->close();
@@ -1023,7 +1044,8 @@ void TitleLoader::saveToTitle(bool ask)
                                                 out->seek(sizeof(GbaHeader) + header1->saveSize,
                                                     SEEK_SET);
 
-                                                cmac = calcGbaCMAC(*out, *header1);
+                                                hash = calcGbaSaveSHA256(*out, *header1);
+                                                cmac = calcGbaCMAC(*out, *header1, hash);
                                                 out->seek(sizeof(GbaHeader) + header1->saveSize +
                                                               offsetof(GbaHeader, cmac),
                                                     SEEK_SET);

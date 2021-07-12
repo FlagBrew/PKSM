@@ -49,12 +49,12 @@ Result File::close(void)
     return -1; // Cannot happen
 }
 
-Result File::result(void)
+Result File::result(void) const
 {
     return mResult;
 }
 
-u64 File::size(void)
+u64 File::size(void) const
 {
     return mSize;
 }
@@ -100,12 +100,12 @@ u32 File::write(const void* buf, u32 sz)
     return wt;
 }
 
-bool File::eof(void)
+bool File::eof(void) const
 {
     return mOffset >= mSize;
 }
 
-u64 File::offset(void)
+u64 File::offset(void) const
 {
     return mOffset;
 }
@@ -128,7 +128,7 @@ void File::seek(s64 offset, int from)
     }
 }
 
-std::variant<Handle, FSPXI_File> File::getRawHandle(void)
+std::variant<Handle, FSPXI_File> File::getRawHandle(void) const
 {
     return mHandle;
 }
