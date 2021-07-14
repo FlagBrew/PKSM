@@ -167,7 +167,8 @@ void ConfigScreen::initButtons()
 
     tabs.push_back(std::make_unique<ToggleButton>(
         1, 2, 104, 17,
-        [&]() {
+        [&]()
+        {
             currentTab = 0;
             return false;
         },
@@ -176,7 +177,8 @@ void ConfigScreen::initButtons()
         COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(
         108, 2, 104, 17,
-        [&]() {
+        [&]()
+        {
             currentTab = 1;
             return false;
         },
@@ -185,7 +187,8 @@ void ConfigScreen::initButtons()
         COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(
         215, 2, 104, 17,
-        [&]() {
+        [&]()
+        {
             currentTab = 2;
             return false;
         },
@@ -197,7 +200,8 @@ void ConfigScreen::initButtons()
     // First column of language buttons
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 52, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::JPN);
             initButtons();
@@ -208,7 +212,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 74, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::ENG);
             initButtons();
@@ -219,7 +224,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 96, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::FRE);
             initButtons();
@@ -230,7 +236,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 118, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::GER);
             initButtons();
@@ -241,7 +248,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 140, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::ITA);
             initButtons();
@@ -252,7 +260,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         37, 162, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::SPA);
             initButtons();
@@ -265,7 +274,8 @@ void ConfigScreen::initButtons()
     // Second column of language buttons
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         177, 52, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::CHS);
             initButtons();
@@ -276,7 +286,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         177, 74, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::KOR);
             initButtons();
@@ -287,7 +298,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         177, 96, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::NL);
             initButtons();
@@ -298,7 +310,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         177, 118, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::PT);
             initButtons();
@@ -309,7 +322,8 @@ void ConfigScreen::initButtons()
         reinterpret_cast<std::vector<std::unique_ptr<ToggleButton>>*>(&tabButtons[0]), false));
     tabButtons[0].push_back(std::make_unique<ToggleButton>(
         177, 140, 8, 8,
-        [this]() {
+        [this]()
+        {
             Gui::clearText();
             Configuration::getInstance().language(pksm::Language::RO);
             initButtons();
@@ -363,7 +377,8 @@ void ConfigScreen::initButtons()
     // Defaults buttons
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 32, 15, 12,
-        []() {
+        []()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -372,7 +387,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 52, 15, 12,
-        []() {
+        []()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FOUR),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -381,7 +397,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 72, 15, 12,
-        []() {
+        []()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FIVE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -390,7 +407,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 92, 15, 12,
-        []() {
+        []()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SIX),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -399,7 +417,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
         140, 112, 15, 12,
-        []() {
+        []()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SEVEN),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -408,7 +427,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
         140, 132, 15, 12,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::LGPE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -417,7 +437,8 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
         140, 152, 15, 12,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::EIGHT),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
@@ -426,21 +447,24 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 172, 15, 12,
-        []() {
+        []()
+        {
             inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 192, 15, 12,
-        []() {
+        []()
+        {
             inputNumber([](u16 a) { Configuration::getInstance().month(a); }, 2, 12);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
         140, 212, 15, 12,
-        []() {
+        []()
+        {
             inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999);
             return false;
         },
@@ -449,21 +473,24 @@ void ConfigScreen::initButtons()
     // Miscellaneous buttons
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 32, 15, 12,
-        []() {
+        []()
+        {
             Configuration::getInstance().autoBackup(!Configuration::getInstance().autoBackup());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 52, 15, 12,
-        []() {
+        []()
+        {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 72, 15, 12,
-        []() {
+        []()
+        {
             Configuration::getInstance().writeFileSave(
                 !Configuration::getInstance().writeFileSave());
             return true;
@@ -471,14 +498,16 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 92, 15, 12,
-        []() {
+        []()
+        {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 112, 15, 12,
-        [this]() {
+        [this]()
+        {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
             useExtDataChanged = !useExtDataChanged;
             return true;
@@ -486,14 +515,16 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 132, 15, 12,
-        []() {
+        []()
+        {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 152, 15, 12,
-        [this]() {
+        [this]()
+        {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
             showBackupsChanged = !showBackupsChanged;
             return true;
@@ -501,21 +532,24 @@ void ConfigScreen::initButtons()
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 172, 15, 12,
-        [this]() {
+        [this]()
+        {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 192, 15, 12,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<ExtraSavesScreen>());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
         247, 212, 15, 12,
-        [this]() {
+        [this]()
+        {
             addOverlay<TitleIdOverlay>();
             titleIdsChanged = true;
             return true;
@@ -524,28 +558,32 @@ void ConfigScreen::initButtons()
 
     tabButtons[3].push_back(std::make_unique<ClickButton>(
         247, 87, 15, 12,
-        [this]() {
+        [this]()
+        {
             inputPatronCode();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[3].push_back(std::make_unique<ClickButton>(
         247, 111, 15, 12,
-        [this]() {
+        [this]()
+        {
             Configuration::getInstance().alphaChannel(!Configuration::getInstance().alphaChannel());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[4].push_back(std::make_unique<ClickButton>(
         247, 87, 15, 12,
-        [this]() {
+        [this]()
+        {
             inputApiUrl();
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[4].push_back(std::make_unique<ClickButton>(
         247, 111, 15, 12,
-        [this]() {
+        [this]()
+        {
             Configuration::getInstance().useApiUrl(!Configuration::getInstance().useApiUrl());
             return true;
         },

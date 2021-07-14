@@ -68,7 +68,8 @@ BagScreen::BagScreen()
     {
         amountButtons.push_back(std::make_unique<AccelButton>(
             249, 23 + i * 30, 13, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 editCount(false, i);
                 selectingPouch = false;
                 selectedItem   = i;
@@ -77,7 +78,8 @@ BagScreen::BagScreen()
             ui_sheet_emulated_button_minus_small_black_idx, "", 0.0f, COLOR_BLACK));
         amountButtons.push_back(std::make_unique<ClickButton>(
             262, 23 + i * 30, 37, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 setCount(i);
                 selectingPouch = false;
                 selectedItem   = i;
@@ -86,7 +88,8 @@ BagScreen::BagScreen()
             ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
         amountButtons.push_back(std::make_unique<AccelButton>(
             299, 23 + i * 30, 13, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 editCount(true, i);
                 selectingPouch = false;
                 selectedItem   = i;
@@ -141,8 +144,8 @@ void BagScreen::drawBottom() const
             id = item->id();
         }
         const std::string& text = item->generation() == pksm::Generation::THREE
-                                      ? i18n::item3(Configuration::getInstance().language(), id)
-                                      : i18n::item(Configuration::getInstance().language(), id);
+                                    ? i18n::item3(Configuration::getInstance().language(), id)
+                                    : i18n::item(Configuration::getInstance().language(), id);
         Gui::text(text, 117 + 131 / 2, 30 + 30 * i, FONT_SIZE_12,
             canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER,
             TextPosY::CENTER);
@@ -416,9 +419,8 @@ void BagScreen::editItem()
         }
     }
     std::sort(items.begin() + 1, items.end(),
-        [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2) {
-            return (*p1.first) < (*p2.first);
-        });
+        [](std::pair<const std::string*, int> p1, std::pair<const std::string*, int> p2)
+        { return (*p1.first) < (*p2.first); });
 
     size_t currItemIndex = 0;
 

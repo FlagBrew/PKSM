@@ -378,8 +378,8 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
                 }
 
                 FPos++;
-
-            } while (ShowType == NULL && OneFormatCount < MAX_FORMAT);
+            }
+            while (ShowType == NULL && OneFormatCount < MAX_FORMAT);
 
             if (ShowType != &pc->VoidType)
             {

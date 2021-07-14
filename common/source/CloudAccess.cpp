@@ -67,8 +67,9 @@ void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, Sort
     headers = curl_slist_append(headers, "pksm-mode: yes");
 
     auto fetch = Fetch::init(url, true, retData, headers, postData);
-    Fetch::performAsync(
-        fetch, [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch) {
+    Fetch::performAsync(fetch,
+        [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch)
+        {
             if (code == CURLE_OK)
             {
                 long status_code;

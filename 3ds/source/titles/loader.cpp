@@ -314,7 +314,8 @@ namespace
             prev = ret;
             res  = FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()),
                 hashData.data(), hashData.size(), ret.data(), ret.size());
-        } while (R_SUCCEEDED(res) && prev != ret && tries > 0);
+        }
+        while (R_SUCCEEDED(res) && prev != ret && tries > 0);
 
         return ret;
     }
@@ -423,7 +424,8 @@ void TitleLoader::scanTitles(void)
 void TitleLoader::scanSaves(void)
 {
     Gui::waitFrame(i18n::localize("SCAN_SAVES"));
-    auto scan = [](auto& tids) {
+    auto scan = [](auto& tids)
+    {
         for (const auto& tid : tids)
         {
             std::string id                 = fmt::format(FMT_STRING("0x{:05X}"), ((u32)tid) >> 8);
@@ -881,7 +883,8 @@ void TitleLoader::saveToTitle(bool ask)
         else
         {
             // Just a linear search because it's a maximum of thirteen titles
-            auto doSave = [&](const auto& titles) {
+            auto doSave = [&](const auto& titles)
+            {
                 for (const auto& title : titles)
                 {
                     if (title == loadedTitle &&

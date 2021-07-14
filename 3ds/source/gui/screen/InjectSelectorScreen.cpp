@@ -85,7 +85,8 @@ InjectSelectorScreen::InjectSelectorScreen()
     {
         langFilters.push_back(std::make_unique<ToggleButton>(
             268, 3 + i * 24, 38, 23,
-            [this, i]() {
+            [this, i]()
+            {
                 hid.select(0);
                 return this->toggleFilter(std::string(langs[i]));
             },

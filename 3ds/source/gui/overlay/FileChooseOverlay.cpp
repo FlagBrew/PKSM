@@ -108,7 +108,8 @@ void FileChooseOverlay::updateEntries()
     }
     std::sort(currFiles.begin(), currFiles.end(),
         [this](
-            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second) {
+            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second)
+        {
             if ((first.second && second.second) || (!first.second && !second.second))
             {
                 return first.first < second.first;

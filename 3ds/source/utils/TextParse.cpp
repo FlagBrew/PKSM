@@ -83,18 +83,20 @@ namespace TextParse
 
     void Text::optimize()
     {
-        std::sort(glyphs.begin(), glyphs.end(), [](const Glyph& g1, const Glyph& g2) {
-            if (g1.font != g2.font)
+        std::sort(glyphs.begin(), glyphs.end(),
+            [](const Glyph& g1, const Glyph& g2)
             {
-                // These are arbitrarily ordered
-                return g1.font < g2.font;
-            }
-            else
-            {
-                // Also arbitrary, but keeps those of the same type together
-                return g1.tex < g2.tex;
-            }
-        });
+                if (g1.font != g2.font)
+                {
+                    // These are arbitrarily ordered
+                    return g1.font < g2.font;
+                }
+                else
+                {
+                    // Also arbitrary, but keeps those of the same type together
+                    return g1.tex < g2.tex;
+                }
+            });
     }
 
     void Text::draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos,
@@ -415,7 +417,8 @@ namespace TextParse
                         tmp->lineWidths.push_back(0.0f);
                     }
                 }
-            } while (strIt != str.end());
+            }
+            while (strIt != str.end());
 
             tmp->maxLineWidth = *std::max_element(tmp->lineWidths.begin(), tmp->lineWidths.end());
 
@@ -454,8 +457,9 @@ namespace TextParse
 
     void ScreenText::optimize()
     {
-        std::sort(
-            glyphs.begin(), glyphs.end(), [](const DrawableGlyph& g1, const DrawableGlyph& g2) {
+        std::sort(glyphs.begin(), glyphs.end(),
+            [](const DrawableGlyph& g1, const DrawableGlyph& g2)
+            {
                 if (g1.glyph.font != g2.glyph.font)
                 {
                     // These are arbitrarily ordered

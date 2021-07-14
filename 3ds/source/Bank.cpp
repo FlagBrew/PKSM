@@ -41,8 +41,8 @@
 #include "pkx/PK8.hpp"
 #include "utils/VersionTables.hpp"
 
-#define BANK(paths) paths.first
-#define JSON(paths) paths.second
+#define BANK(paths) (paths).first
+#define JSON(paths) (paths).second
 #define ARCHIVE (Configuration::getInstance().useExtData() ? Archive::data() : Archive::sd())
 #define OTHERARCHIVE (Configuration::getInstance().useExtData() ? Archive::sd() : Archive::data())
 

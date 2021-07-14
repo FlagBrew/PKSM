@@ -110,7 +110,8 @@ void TitleLoadScreen::refreshLanguage()
     tabs.clear();
     tabs.push_back(std::make_unique<ToggleButton>(
         1, 2, 158, 17,
-        [&]() {
+        [&]()
+        {
             titles = &TitleLoader::ctrTitles;
             resetTitles();
             return true;
@@ -120,7 +121,8 @@ void TitleLoadScreen::refreshLanguage()
         COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(
         161, 2, 158, 17,
-        [&]() {
+        [&]()
+        {
             titles = &TitleLoader::vcTitles;
             resetTitles();
             return true;
@@ -432,8 +434,8 @@ void TitleLoadScreen::update(touchPosition* touch)
                     if (selectedTitle < 4)
                     {
                         selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
-                                            ? titles->size() - 1
-                                            : selectedTitle + 4;
+                                          ? titles->size() - 1
+                                          : selectedTitle + 4;
                     }
                     else
                     {
@@ -481,8 +483,8 @@ void TitleLoadScreen::update(touchPosition* touch)
                     else
                     {
                         selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
-                                            ? titles->size() - 1
-                                            : selectedTitle + 4;
+                                          ? titles->size() - 1
+                                          : selectedTitle + 4;
                     }
                 }
                 else if (titles->size() < 5 && selectedTitle > -2)

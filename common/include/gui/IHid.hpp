@@ -58,8 +58,8 @@ public:
     size_t maxEntries(size_t count) const
     {
         return (count - mPage * mMaxVisibleEntries) > mMaxVisibleEntries
-                   ? mMaxVisibleEntries - 1
-                   : count - mPage * mMaxVisibleEntries - 1;
+                 ? mMaxVisibleEntries - 1
+                 : count - mPage * mMaxVisibleEntries - 1;
     }
     void pageBack()
     {

@@ -41,7 +41,8 @@ SortScreen::SortScreen(bool storage) : storage(storage)
     {
         buttons.push_back(std::make_unique<ClickButton>(
             106, 15 + i * 35, 108, 28,
-            [this, i]() {
+            [this, i]()
+            {
                 pickSort(i);
                 return false;
             },
@@ -49,7 +50,8 @@ SortScreen::SortScreen(bool storage) : storage(storage)
     }
     buttons.push_back(std::make_unique<ClickButton>(
         212, 210, 108, 28,
-        [this]() {
+        [this]()
+        {
             justSwitched = true;
             this->sort();
             Gui::screenBack();
@@ -58,7 +60,8 @@ SortScreen::SortScreen(bool storage) : storage(storage)
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         1, 211, 34, 28,
-        []() {
+        []()
+        {
             Gui::screenBack();
             return true;
         },
@@ -169,7 +172,8 @@ void SortScreen::sort()
             }
         }
         std::stable_sort(sortMe.begin(), sortMe.end(),
-            [this](const std::shared_ptr<pksm::PKX>& pkm1, const std::shared_ptr<pksm::PKX>& pkm2) {
+            [this](const std::shared_ptr<pksm::PKX>& pkm1, const std::shared_ptr<pksm::PKX>& pkm2)
+            {
                 for (const auto& type : sortTypes)
                 {
                     switch (type)

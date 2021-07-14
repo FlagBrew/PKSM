@@ -44,7 +44,8 @@ LocationOverlay::LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     searchButton = std::make_unique<ClickButton>(
         75, 30, 170, 23,
-        [this]() {
+        [this]()
+        {
             searchBar();
             return false;
         },
@@ -52,9 +53,8 @@ LocationOverlay::LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool
     hid.update(locations.size());
     hid.select(std::distance(locations.begin(),
         std::find_if(locations.begin(), locations.end(),
-            [&pkm, met](const std::pair<u16, std::string>& pair) {
-                return pair.first == (met ? pkm.metLocation() : pkm.eggLocation());
-            })));
+            [&pkm, met](const std::pair<u16, std::string>& pair)
+            { return pair.first == (met ? pkm.metLocation() : pkm.eggLocation()); })));
 }
 
 void LocationOverlay::drawBottom() const

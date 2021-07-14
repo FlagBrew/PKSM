@@ -89,7 +89,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
         items.emplace_back(*i, rawItems[*i]);
     }
     std::sort(items.begin(), items.end(),
-        [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2) {
+        [](const std::pair<int, std::string>& pair1, const std::pair<int, std::string>& pair2)
+        {
             if (pair1.first == 0)
             {
                 return pair2.first != 0;
@@ -104,8 +105,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
 
     hid.update(items.size());
     u16 item      = pkm.generation() == pksm::Generation::THREE
-                        ? static_cast<pksm::PK3&>(pkm).heldItem3()
-                        : pkm.heldItem();
+                      ? static_cast<pksm::PK3&>(pkm).heldItem3()
+                      : pkm.heldItem();
     int itemIndex = index(items, pkm.generation() == pksm::Generation::THREE
                                      ? i18n::item3(Configuration::getInstance().language(), item)
                                      : i18n::item(Configuration::getInstance().language(), item));
@@ -124,7 +125,8 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     hid.select(itemIndex);
     searchButton = std::make_unique<ClickButton>(
         75, 30, 170, 23,
-        [this]() {
+        [this]()
+        {
             searchBar();
             return false;
         },

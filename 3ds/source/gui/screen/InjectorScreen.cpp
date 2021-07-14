@@ -161,7 +161,8 @@ void InjectorScreen::makeButtons()
 
     overwriteButtons.push_back(std::make_unique<ToggleButton>(
         235, 102, 38, 23,
-        [this]() {
+        [this]()
+        {
             overwriteCard = true;
             return false;
         },
@@ -170,7 +171,8 @@ void InjectorScreen::makeButtons()
         COLOR_BLACK, &overwriteButtons, false));
     overwriteButtons.push_back(std::make_unique<ToggleButton>(
         273, 102, 38, 23,
-        [this]() {
+        [this]()
+        {
             overwriteCard = false;
             return false;
         },
@@ -182,7 +184,8 @@ void InjectorScreen::makeButtons()
 
     adaptButtons.push_back(std::make_unique<ToggleButton>(
         235, 135, 38, 23,
-        [this]() {
+        [this]()
+        {
             adaptLanguage = true;
             return false;
         },
@@ -191,7 +194,8 @@ void InjectorScreen::makeButtons()
         COLOR_BLACK, &adaptButtons, false));
     adaptButtons.push_back(std::make_unique<ToggleButton>(
         273, 135, 38, 23,
-        [this]() {
+        [this]()
+        {
             adaptLanguage = false;
             return false;
         },
@@ -203,7 +207,8 @@ void InjectorScreen::makeButtons()
 
     miscButtons.push_back(std::make_unique<Button>(
         255, 168, 38, 23,
-        [this]() {
+        [this]()
+        {
             if (TitleLoader::save->generation() >= pksm::Generation::LGPE)
             {
                 Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
@@ -222,7 +227,8 @@ void InjectorScreen::makeButtons()
         "", 0.0f, COLOR_BLACK));
     miscButtons.push_back(std::make_unique<Button>(
         282, 212, 34, 28,
-        []() {
+        []()
+        {
             Gui::screenBack();
             return true;
         },

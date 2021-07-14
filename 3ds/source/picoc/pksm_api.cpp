@@ -268,7 +268,8 @@ void gui_numpad(
         {
             Gui::warn(hint);
         }
-    } while (button != SWKBD_BUTTON_CONFIRM);
+    }
+    while (button != SWKBD_BUTTON_CONFIRM);
     number[numChars] = '\0';
     *out             = std::atoi(number);
 }
@@ -1008,9 +1009,8 @@ void sav_get_max(
                 auto pouches           = TitleLoader::save->pouches();
                 pksm::Sav::Pouch pouch = pksm::Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
                 auto found             = std::find_if(pouches.begin(), pouches.end(),
-                    [pouch](const std::pair<pksm::Sav::Pouch, int>& item) {
-                        return item.first == pouch;
-                    });
+                    [pouch](const std::pair<pksm::Sav::Pouch, int>& item)
+                    { return item.first == pouch; });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;

@@ -161,7 +161,8 @@ StorageScreen::StorageScreen()
         false, 15, 175, 120, 18, COLOR_GREY, i18n::localize("GPSS_BROWSE"), COLOR_WHITE);
     mainButtons[9] = std::make_unique<ClickButton>(
         3, 211, 28, 28,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;
@@ -1076,18 +1077,17 @@ bool StorageScreen::checkPutDownBounds()
         if (storageChosen)
         {
             return cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
-                       30                                                  // Checks Y bounds
-                   && (cursorIndex - 1) % 6 + selectDimensions.first <= 6; // Checks X bounds
+                       30                                               // Checks Y bounds
+                && (cursorIndex - 1) % 6 + selectDimensions.first <= 6; // Checks X bounds
         }
         else
         {
             return boxBox * 30 + cursorIndex + (selectDimensions.first - 1) +
                            (selectDimensions.second - 1) * 6 <=
                        TitleLoader::save->maxSlot() // Checks full bounds
-                   &&
-                   cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
-                       30                                                  // Checks Y bounds
-                   && (cursorIndex - 1) % 6 + selectDimensions.first <= 6; // Checks X bounds
+                && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
+                       30                                               // Checks Y bounds
+                && (cursorIndex - 1) % 6 + selectDimensions.first <= 6; // Checks X bounds
         }
     }
 }
@@ -1350,7 +1350,8 @@ void StorageScreen::doDump(const pksm::PKX& dumpMon)
                     dumpMon.nickname(), dumpMon.PID(), newFileNumber, dumpMon.extension());
         }
         newFileNumber++;
-    } while (io::exists(outPath));
+    }
+    while (io::exists(outPath));
 
     FILE* out = fopen(outPath.c_str(), "wb");
     if (out)

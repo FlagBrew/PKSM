@@ -50,14 +50,16 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(
         283, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             Gui::screenBack();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         204, 171, 108, 30,
-        [this]() {
+        [this]()
+        {
             otAndMet = !otAndMet;
             return true;
         },
@@ -69,7 +71,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
         false, 76 + 24, 64, 200, 18, COLOR_GREY, i18n::localize("APP_LEGALIZE"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(
         278, 0, 42, 42,
-        [this]() {
+        [this]()
+        {
             addOverlay<AppLegalityOverlay>(this->pkm);
             return true;
         },
@@ -81,7 +84,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
         false, 20, 175, 170, 18, COLOR_GREY, i18n::localize("Y_LEGALIZE"), COLOR_WHITE);
     buttons.push_back(std::make_unique<ClickButton>(
         3, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             validate();
             return true;
         },
@@ -92,7 +96,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
         ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         109, 34, 31, 13,
-        [this]() {
+        [this]()
+        {
             setMetLevel();
             return false;
         },
@@ -103,35 +108,40 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
 
     buttons.push_back(std::make_unique<Button>(
         95, 54, 15, 12,
-        [this]() {
+        [this]()
+        {
             day();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         95, 74, 15, 12,
-        [this]() {
+        [this]()
+        {
             month();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         95, 94, 15, 12,
-        [this]() {
+        [this]()
+        {
             year();
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         95, 114, 15, 12,
-        [this]() {
+        [this]()
+        {
             addOverlay<LocationOverlay>(this->pkm, this->otAndMet);
             return true;
         },
         ui_sheet_button_info_detail_editor_dark_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         95, 134, 15, 12,
-        [this]() {
+        [this]()
+        {
             addOverlay<VersionOverlay>(this->pkm);
             return true;
         },
@@ -144,7 +154,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             109, 154, 31, 13,
-            [this]() {
+            [this]()
+            {
                 setEnjoyment();
                 return false;
             },
@@ -158,7 +169,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             109, 174, 31, 13,
-            [this]() {
+            [this]()
+            {
                 setFullness();
                 return false;
             },
@@ -174,7 +186,8 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
                 ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
             buttons.push_back(std::make_unique<Button>(
                 109, 194, 31, 13,
-                [this]() {
+                [this]()
+                {
                     setAffection();
                     return false;
                 },
@@ -714,8 +727,8 @@ void MiscEditScreen::validate()
     headers                    = curl_slist_append(headers, generation.c_str());
 
     std::string url = Configuration::getInstance().useApiUrl()
-                          ? Configuration::getInstance().apiUrl()
-                          : WEBSITE_URL;
+                        ? Configuration::getInstance().apiUrl()
+                        : WEBSITE_URL;
 
     std::string writeData = "";
     if (auto fetch = Fetch::init(url + "api/v2/pksm/legality", true, &writeData, headers, ""))

@@ -76,8 +76,8 @@ void FormOverlay::drawTop() const
                 break;
             }
             pksm::GameVersion v = TitleLoader::save
-                                      ? TitleLoader::save->version()
-                                      : pksm::GameVersion::oldestVersion(object.generation());
+                                    ? TitleLoader::save->version()
+                                    : pksm::GameVersion::oldestVersion(object.generation());
             Gui::pkm(object.species(), x + y * 6, object.generation(), object.gender(), x * 66 + 19,
                 y * 48 + 1);
             const std::string& text =

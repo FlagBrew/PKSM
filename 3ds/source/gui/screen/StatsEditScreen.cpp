@@ -43,7 +43,8 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {
     buttons.push_back(std::make_unique<ClickButton>(
         283, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             Gui::screenBack();
             return true;
         },
@@ -56,7 +57,8 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             121, y, 23, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 setIV(statValues[i]);
                 return false;
             },
@@ -72,7 +74,8 @@ StatsEditScreen::StatsEditScreen(pksm::PKX& pkm) : pkm(pkm)
             ui_sheet_button_minus_small_idx, "", 0.0f, COLOR_BLACK));
         buttons.push_back(std::make_unique<Button>(
             197, y, 32, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 setSecondaryStat(statValues[i]);
                 return false;
             },

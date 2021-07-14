@@ -78,7 +78,8 @@ Result SPIWaitWriteEnd(CardType type)
         res = SPIWriteRead(type, &cmd, 1, &statusReg, 1, 0, 0);
         if (res)
             return res;
-    } while (statusReg & SPI_FLG_WIP && panic < 1000);
+    }
+    while (statusReg & SPI_FLG_WIP && panic < 1000);
 
     return panic >= 1000 ? -1 : 0;
 }
@@ -98,7 +99,8 @@ Result SPIEnableWriting(CardType type)
         res = SPIWriteRead(type, &cmd, 1, &statusReg, 1, 0, 0);
         if (res)
             return res;
-    } while (statusReg & ~SPI_FLG_WEL);
+    }
+    while (statusReg & ~SPI_FLG_WEL);
 
     return 0;
 }

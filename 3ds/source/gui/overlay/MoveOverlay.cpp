@@ -88,7 +88,8 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
     }
     std::sort(moves.begin(), moves.end(),
         [](const std::pair<pksm::Move, std::string>& pair1,
-            const std::pair<pksm::Move, std::string>& pair2) {
+            const std::pair<pksm::Move, std::string>& pair2)
+        {
             if (pair1.first == pksm::Move::None)
             {
                 return pair2.first != pksm::Move::None;
@@ -114,7 +115,8 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
     }
     searchButton = std::make_unique<ClickButton>(
         75, 30, 170, 23,
-        [this]() {
+        [this]()
+        {
             searchBar();
             return false;
         },

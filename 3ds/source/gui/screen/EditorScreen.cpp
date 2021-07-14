@@ -175,7 +175,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(
         109, 34, 31, 13,
-        [this]() {
+        [this]()
+        {
             setLevel();
             return false;
         },
@@ -194,7 +195,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_CLICK(
         75, 114, 15, 12,
-        [this]() {
+        [this]()
+        {
             pkm->shiny(!pkm->shiny());
             return false;
         },
@@ -204,14 +206,16 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(
         75, 154, 15, 12,
-        [this]() {
+        [this]()
+        {
             setOT();
             return false;
         },
         ui_sheet_button_info_detail_editor_dark_idx));
     buttons.push_back(NO_TEXT_BUTTON(
         75, 174, 15, 12,
-        [this]() {
+        [this]()
+        {
             setNick();
             return false;
         },
@@ -221,7 +225,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_minus_small_idx));
     buttons.push_back(NO_TEXT_BUTTON(
         109, 194, 31, 13,
-        [this]() {
+        [this]()
+        {
             setFriendship();
             return false;
         },
@@ -231,7 +236,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_plus_small_idx));
     buttons.push_back(std::make_unique<Button>(
         204, 109, 108, 30,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<StatsEditScreen>(*pkm));
             justSwitched = true;
             return true;
@@ -239,7 +245,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_STATS"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         204, 140, 108, 30,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<MoveEditScreen>(*pkm));
             justSwitched = true;
             return true;
@@ -247,7 +254,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MOVES"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<Button>(
         204, 171, 108, 30,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
             justSwitched = true;
             return true;
@@ -255,7 +263,8 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         ui_sheet_button_editor_idx, i18n::localize("EDITOR_MISC"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         204, 202, 108, 30,
-        [this]() {
+        [this]()
+        {
             this->save();
             this->goBack();
             return true;
@@ -492,7 +501,8 @@ bool EditorScreen::advanceMon(bool forward)
                 }
                 pkm = TitleLoader::save->pkm(box, index);
             }
-        } while (pkm->species() == pksm::Species::None);
+        }
+        while (pkm->species() == pksm::Species::None);
         origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
     }
     return false;

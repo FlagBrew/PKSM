@@ -43,7 +43,8 @@ Directory::Directory(Handle handle)
         {
             list.insert(list.end(), tmp.begin(), tmp.begin() + result);
         }
-    } while (result);
+    }
+    while (result);
 
     if (R_FAILED(err))
     {
@@ -71,7 +72,8 @@ Directory::Directory(FSPXI_Directory handle)
         {
             list.insert(list.end(), tmp.begin(), tmp.begin() + result);
         }
-    } while (result);
+    }
+    while (result);
 
     if (R_FAILED(err))
     {

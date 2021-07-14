@@ -183,10 +183,9 @@ void Fetch::multiMainThread(void*)
         {
             // Find the done handle
             __lock_acquire(fetchesMutex);
-            auto it = std::find_if(
-                fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record) {
-                    return record.fetch->curl.get() == msg->easy_handle;
-                });
+            auto it = std::find_if(fetches.begin(), fetches.end(),
+                [&msg](const MultiFetchRecord& record)
+                { return record.fetch->curl.get() == msg->easy_handle; });
             // And delete it
             if (it != fetches.end())
             {
@@ -279,10 +278,12 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
         CURLcode cres;
         std::atomic_flag wait;
         wait.test_and_set();
-        CURLMcode mRes = performAsync(fetch, [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>) {
-            cres = code;
-            wait.clear();
-        });
+        CURLMcode mRes = performAsync(fetch,
+            [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>)
+            {
+                cres = code;
+                wait.clear();
+            });
         if (mRes != CURLM_OK)
         {
             return mRes;

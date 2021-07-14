@@ -134,7 +134,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
 
     buttons.push_back(std::make_unique<ClickButton>(
         204, 171, 108, 30,
-        [this]() {
+        [this]()
+        {
             char serverAddress[16] = {0};
             SwkbdState swkbd;
             swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, 15);
@@ -254,7 +255,8 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         204, 140, 108, 30,
-        [this]() {
+        [this]()
+        {
             auto pkx = QRScanner<pksm::PKX>::scan();
             if (pkx)
             {

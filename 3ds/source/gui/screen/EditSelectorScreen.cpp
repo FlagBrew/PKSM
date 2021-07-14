@@ -136,7 +136,8 @@ EditSelectorScreen::EditSelectorScreen()
 
     buttons.push_back(std::make_unique<ClickButton>(
         283, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             justSwitched = true;
             return goBack();
         },
@@ -191,7 +192,8 @@ EditSelectorScreen::EditSelectorScreen()
         "\uE000: " + i18n::localize("EDIT"), FONT_SIZE_12, COLOR_BLACK));
     viewerButtons.push_back(std::make_unique<ClickButton>(
         212, 78, 108, 28,
-        [this]() {
+        [this]()
+        {
             menu = false;
             return this->releasePokemon();
         },
@@ -199,7 +201,8 @@ EditSelectorScreen::EditSelectorScreen()
         COLOR_BLACK));
     viewerButtons.push_back(std::make_unique<ClickButton>(
         212, 109, 108, 28,
-        [this]() {
+        [this]()
+        {
             menu = false;
             return this->clonePkm();
         },

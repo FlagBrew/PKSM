@@ -74,8 +74,8 @@ private:
                 if (!isClicked && clicked(touch))
                 {
                     key       = key == ui_sheet_emulated_toggle_green_idx
-                                    ? ui_sheet_emulated_toggle_gray_idx
-                                    : ui_sheet_emulated_toggle_green_idx;
+                                  ? ui_sheet_emulated_toggle_gray_idx
+                                  : ui_sheet_emulated_toggle_green_idx;
                     isClicked = clicked(touch);
                     return noArg();
                 }

@@ -43,14 +43,16 @@ namespace
         '4', '5', '6', '7', '8', '9', '+', '/'
     };
     // clang-format on
-    constexpr std::array<char, 256> decoding_table = std::invoke([]() {
-        std::array<char, 256> ret = {0};
-        for (size_t i = 0; i < encoding_table.size(); i++)
+    constexpr std::array<char, 256> decoding_table = std::invoke(
+        []()
         {
-            ret[encoding_table[i]] = i;
-        }
-        return ret;
-    });
+            std::array<char, 256> ret = {0};
+            for (size_t i = 0; i < encoding_table.size(); i++)
+            {
+                ret[encoding_table[i]] = i;
+            }
+            return ret;
+        });
 }
 
 std::vector<unsigned char> base64_decode(const char* data, size_t input_length)

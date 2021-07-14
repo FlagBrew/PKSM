@@ -52,7 +52,8 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
 {
     buttons.push_back(std::make_unique<ClickButton>(
         106, 82, 108, 28,
-        [this]() {
+        [this]()
+        {
             if (access.sortType() == CloudAccess::SortType::LATEST)
             {
                 access.sortType(CloudAccess::SortType::POPULAR);
@@ -67,7 +68,8 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
 
     auto tbutton = std::make_unique<ToggleButton>(
         106, 113, 108, 28,
-        [this]() {
+        [this]()
+        {
             access.sortDir(!access.sortAscending());
             return access.sortAscending();
         },
@@ -78,7 +80,8 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
     buttons.push_back(std::move(tbutton));
     tbutton = std::make_unique<ToggleButton>(
         106, 144, 108, 28,
-        [this]() {
+        [this]()
+        {
             access.filterLegal(!access.filterLegal());
             return access.filterLegal();
         },
@@ -89,7 +92,8 @@ CloudOverlay::CloudOverlay(ReplaceableScreen& screen, CloudAccess& acc)
     buttons.push_back(std::move(tbutton));
     buttons.push_back(std::make_unique<ClickButton>(
         283, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             parent->removeOverlay();
             return true;
         },

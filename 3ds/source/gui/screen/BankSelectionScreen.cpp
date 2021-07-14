@@ -36,10 +36,9 @@ BankSelectionScreen::BankSelectionScreen(int& storageBox)
     : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
 {
     int newBankNum = 0;
-    while (std::find_if(
-               strings.begin(), strings.end(), [&newBankNum](const std::pair<std::string, int>& v) {
-                   return v.first == "New Bank " + std::to_string(newBankNum);
-               }) != strings.end())
+    while (std::find_if(strings.begin(), strings.end(),
+               [&newBankNum](const std::pair<std::string, int>& v)
+               { return v.first == "New Bank " + std::to_string(newBankNum); }) != strings.end())
     {
         newBankNum++;
     }
@@ -154,8 +153,8 @@ void BankSelectionScreen::renameBank()
     {
         std::string string(input);
         if (std::find_if(strings.begin(), strings.end(),
-                [&string](const std::pair<std::string, int>& v) { return v.first == string; }) !=
-            strings.end())
+                [&string](const std::pair<std::string, int>& v)
+                { return v.first == string; }) != strings.end())
         {
             Gui::warn(i18n::localize("NO_DUPES"));
         }

@@ -35,8 +35,8 @@ namespace i18n
     void load(pksm::Language lang, const std::string& name, nlohmann::json& json)
     {
         std::string path = io::exists(_PKSMCORE_LANG_FOLDER + folder(lang) + name)
-                               ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
-                               : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
+                             ? _PKSMCORE_LANG_FOLDER + folder(lang) + name
+                             : _PKSMCORE_LANG_FOLDER + folder(pksm::Language::ENG) + name;
 
         FILE* values = fopen(path.c_str(), "rt");
         if (values)

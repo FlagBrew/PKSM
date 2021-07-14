@@ -53,41 +53,43 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
 
     const auto [url, postData] = GroupCloudAccess::makeURL(number, legal, low, high, LGPE);
     auto fetch                 = Fetch::init(url, true, retData, headers, postData);
-    Fetch::performAsync(fetch, [page, retData, headers](
-                                   CURLcode code, std::shared_ptr<Fetch> fetch) {
-        if (code == CURLE_OK)
+    Fetch::performAsync(fetch,
+        [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch)
         {
-            long status_code;
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
+            if (code == CURLE_OK)
             {
-                case 200:
-                    page->data = std::make_unique<nlohmann::json>(
-                        nlohmann::json::parse(*retData, nullptr, false));
-                    // clang-format off
-                    if (!page->data || !pageIsGood(*page->data))
-                    // clang-format on
-                    {
-                        page->data = nullptr;
-                    }
-                    break;
-                case 401:
+                long status_code;
+                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
+                switch (status_code)
                 {
-                    nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
-                    if (retJson.contains("error_code") && retJson["error_code"].is_number_integer())
+                    case 200:
+                        page->data = std::make_unique<nlohmann::json>(
+                            nlohmann::json::parse(*retData, nullptr, false));
+                        // clang-format off
+                    if (!page->data || !pageIsGood(*page->data))
+                        // clang-format on
+                        {
+                            page->data = nullptr;
+                        }
+                        break;
+                    case 401:
                     {
-                        page->siteJsonErrorCode = retJson["error_code"].get<int>();
+                        nlohmann::json retJson = nlohmann::json::parse(*retData, nullptr, false);
+                        if (retJson.contains("error_code") &&
+                            retJson["error_code"].is_number_integer())
+                        {
+                            page->siteJsonErrorCode = retJson["error_code"].get<int>();
+                        }
                     }
-                }
-                break;
-                default:
                     break;
+                    default:
+                        break;
+                }
             }
-        }
-        delete retData;
-        page->available = true;
-        curl_slist_free_all(headers);
-    });
+            delete retData;
+            page->available = true;
+            curl_slist_free_all(headers);
+        });
 }
 
 GroupCloudAccess::GroupCloudAccess() : pageNumber(1)

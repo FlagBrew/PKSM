@@ -46,7 +46,8 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
 {
     buttons.push_back(std::make_unique<ClickButton>(
         106, 63, 108, 28,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<SortScreen>(storage));
             parent->removeOverlay();
             return true;
@@ -54,7 +55,8 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         106, 94, 108, 28,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
             parent->removeOverlay();
             return true;
@@ -65,7 +67,8 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         i18n::localize("BOX_JUMP"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         106, 156, 108, 28,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
             parent->removeOverlay();
             return true;
@@ -73,7 +76,8 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         ui_sheet_button_editor_idx, i18n::localize("BANK_SWITCH"), FONT_SIZE_12, COLOR_BLACK));
     buttons.push_back(std::make_unique<ClickButton>(
         283, 211, 34, 28,
-        [this]() {
+        [this]()
+        {
             parent->removeOverlay();
             return true;
         },

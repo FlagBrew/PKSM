@@ -344,7 +344,8 @@ namespace
             Result res           = Fetch::download(
                 url, path, "",
                 [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal,
-                    curl_off_t ulnow) {
+                    curl_off_t ulnow)
+                {
                     Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
                     return 0;
                 },
@@ -438,7 +439,8 @@ namespace
                         }
 
                         offset += bytesRead;
-                    } while (offset < ciaFile->size() && ciaInstallGood);
+                    }
+                    while (offset < ciaFile->size() && ciaInstallGood);
 
                     if (buf != backupBuf)
                     {
@@ -702,7 +704,8 @@ namespace
             bool addedToTotal;
         };
 
-        curl_write_callback giftWriteFunc = [](char* data, size_t size, size_t nitems, void* out) {
+        curl_write_callback giftWriteFunc = [](char* data, size_t size, size_t nitems, void* out)
+        {
             giftCurlData* writeMe = (giftCurlData*)out;
 
             if (data)
@@ -741,7 +744,8 @@ namespace
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
-                                                   size_t items, void* userThing) {
+                                                   size_t items, void* userThing)
+                        {
                             std::vector<u8>* recv = (std::vector<u8>*)userThing;
                             recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
                             return size * items;
@@ -773,7 +777,8 @@ namespace
 
                                     if (Fetch::performAsync(fetch,
                                             [progress = curlVars.end() - 1, &filesDone](
-                                                CURLcode code, std::shared_ptr<Fetch> fetch) {
+                                                CURLcode code, std::shared_ptr<Fetch> fetch)
+                                            {
                                                 filesDone++;
                                                 fclose(progress->file);
                                                 fetch->getinfo(

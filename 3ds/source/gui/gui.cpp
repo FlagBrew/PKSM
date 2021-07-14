@@ -795,8 +795,8 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
             {
                 // Won't be terribly less performant because of string caching
                 TextWidthAction nextAction = action == TextWidthAction::SQUISH_OR_SCROLL
-                                                 ? TextWidthAction::SCROLL
-                                                 : TextWidthAction::SLICE;
+                                               ? TextWidthAction::SCROLL
+                                               : TextWidthAction::SLICE;
                 Gui::text(str, x, y, size, color, positionX, positionY, nextAction, maxWidth);
             }
         }

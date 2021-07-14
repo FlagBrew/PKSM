@@ -58,7 +58,8 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
 {
     mainButtons[0] = std::make_unique<ClickButton>(
         212, 78, 108, 28,
-        [this]() {
+        [this]()
+        {
             Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
             return true;
         },

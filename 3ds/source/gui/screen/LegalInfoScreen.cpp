@@ -43,7 +43,8 @@ LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
     {
         legalButton = std::make_unique<ClickButton>(
             3, 211, 28, 28,
-            [this]() {
+            [this]()
+            {
                 this->attemptLegalization();
                 return false;
             },
@@ -105,8 +106,8 @@ void LegalInfoScreen::attemptLegalization()
     headers             = curl_slist_append(headers, generation.c_str());
 
     std::string url = Configuration::getInstance().useApiUrl()
-                          ? Configuration::getInstance().apiUrl()
-                          : WEBSITE_URL;
+                        ? Configuration::getInstance().apiUrl()
+                        : WEBSITE_URL;
 
     std::string writeData;
     if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))

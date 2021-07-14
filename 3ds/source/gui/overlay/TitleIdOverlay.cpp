@@ -126,7 +126,8 @@ std::string TitleIdOverlay::getNewTitleId() const
     swkbdSetValidation(&state, SWKBD_ANYTHING, SWKBD_FILTER_CALLBACK, 0);
     swkbdSetFilterCallback(
         &state,
-        [](void*, const char** ppMessage, const char* text, size_t textlen) {
+        [](void*, const char** ppMessage, const char* text, size_t textlen)
+        {
             // Explicitly allow setting a TID to nothing
             if (textlen == 0)
             {

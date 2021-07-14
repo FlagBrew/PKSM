@@ -124,7 +124,8 @@ void MainMenu::makeButtons()
         i18n::localize("SETTINGS"), FONT_SIZE_15, COLOR_WHITE, 160);
     buttons[6] = std::make_unique<ClickButton>(
         289, 211, 28, 28,
-        [this]() {
+        [this]()
+        {
             if (needsSave())
             {
                 save();

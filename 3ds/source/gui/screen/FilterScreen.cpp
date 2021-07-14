@@ -50,7 +50,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
     {
         buttons[0].push_back(std::make_unique<ToggleButton>(
             26, 126 + 24 * i, 24, 24,
-            [this, i]() {
+            [this, i]()
+            {
                 this->filter->moveEnabled(i, !this->filter->moveEnabled(i));
                 return false;
             },
@@ -60,7 +61,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
         buttons[0].push_back(std::make_unique<ToggleButton>(
             53, 130 + 24 * i, 13, 13,
-            [this, i]() {
+            [this, i]()
+            {
                 this->filter->moveInversed(i, !this->filter->moveInversed(i));
                 return false;
             },
@@ -70,7 +72,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
         buttons[0].push_back(std::make_unique<ClickButton>(
             70, 131 + 24 * i, 15, 12,
-            [this, i]() {
+            [this, i]()
+            {
                 this->addOverlay<MoveOverlay>(*this->filter, i);
                 return false;
             },
@@ -79,7 +82,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ClickButton>(
         51, 53, 50, 44,
-        [this]() {
+        [this]()
+        {
             this->addOverlay<SpeciesOverlay>(*this->filter);
             return false;
         },
@@ -87,7 +91,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ToggleButton>(
         121, 63, 24, 24,
-        [this]() {
+        [this]()
+        {
             this->filter->speciesEnabled(!this->filter->speciesEnabled());
             if (!this->filter->speciesEnabled())
             {
@@ -101,7 +106,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ToggleButton>(
         105, 68, 13, 13,
-        [this]() {
+        [this]()
+        {
             this->filter->speciesInversed(!this->filter->speciesInversed());
             return false;
         },
@@ -111,7 +117,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ClickButton>(
         172, 53, 50, 44,
-        [this]() {
+        [this]()
+        {
             if (TitleLoader::save->formCount(this->filter->species()) > 1)
             {
                 this->addOverlay<FormOverlay>(
@@ -123,7 +130,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<EnablableToggleButton>(
         242, 63, 24, 24,
-        [this]() {
+        [this]()
+        {
             this->filter->alternativeFormEnabled(!this->filter->alternativeFormEnabled());
             return false;
         },
@@ -134,7 +142,8 @@ FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filt
 
     buttons[0].push_back(std::make_unique<ToggleButton>(
         226, 68, 13, 13,
-        [this]() {
+        [this]()
+        {
             this->filter->alternativeFormInversed(!this->filter->alternativeFormInversed());
             return false;
         },

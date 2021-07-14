@@ -45,9 +45,8 @@ VersionOverlay::VersionOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     hid.update(games.size());
     hid.select(std::distance(
         games.begin(), std::find_if(games.begin(), games.end(),
-                           [&pkm](const std::pair<pksm::GameVersion, const std::string&>& pair) {
-                               return pair.first == pkm.version();
-                           })));
+                           [&pkm](const std::pair<pksm::GameVersion, const std::string&>& pair)
+                           { return pair.first == pkm.version(); })));
 }
 
 void VersionOverlay::drawBottom() const
