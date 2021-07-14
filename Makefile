@@ -6,10 +6,10 @@ VERSION_MAJOR	:=	9
 VERSION_MINOR	:=	2
 VERSION_MICRO	:=	0
 GIT_REV			:=	$(shell git rev-parse --short HEAD)
-REV_UPDATE		:=	$(if $(shell grep $(GIT_REV) common/include/revision.h),,1) \
-					$(if $(shell grep "VERSION_MAJOR $(VERSION_MAJOR)" common/include/revision.h),,1) \
-					$(if $(shell grep "VERSION_MINOR $(VERSION_MINOR)" common/include/revision.h),,1) \
-					$(if $(shell grep "VERSION_MICRO $(VERSION_MICRO)" common/include/revision.h),,1)
+REV_UPDATE		:=	$(if $(shell grep -s $(GIT_REV) common/include/revision.h),,1) \
+					$(if $(shell grep -s "VERSION_MAJOR $(VERSION_MAJOR)" common/include/revision.h),,1) \
+					$(if $(shell grep -s "VERSION_MINOR $(VERSION_MINOR)" common/include/revision.h),,1) \
+					$(if $(shell grep -s "VERSION_MICRO $(VERSION_MICRO)" common/include/revision.h),,1)
 
 OUTDIR			:= 	out
 RELEASEDIR		:=	release
