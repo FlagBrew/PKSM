@@ -288,7 +288,6 @@ bool Bank::save() const
 
 void Bank::resize(int boxes)
 {
-    auto paths = this->paths();
     if (this->boxes() != boxes)
     {
         Gui::showResizeStorage();
@@ -376,7 +375,7 @@ std::string Bank::boxName(int box) const
     return (*boxNames)[box].get<std::string>();
 }
 
-void Bank::boxName(std::string name, int box)
+void Bank::boxName(const std::string& name, int box)
 {
     (*boxNames)[box] = name;
     needsCheck       = true;

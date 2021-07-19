@@ -669,10 +669,10 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
     }
     else
     {
-        smdh     = new smdh_s;
         FILE* in = fopen(execPath.c_str(), "rb");
         if (in)
         {
+            smdh = new smdh_s;
             fseek(in, 0x20, SEEK_SET);
             u32 pos;
             fread(&pos, sizeof(pos), 1, in);
@@ -682,7 +682,6 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
         }
         else
         {
-            delete smdh;
             return -errno;
         }
     }

@@ -46,7 +46,7 @@ public:
     bool backup() const;
     std::string boxName(int box) const;
     std::pair<std::string, std::string> paths() const;
-    void boxName(std::string name, int box);
+    void boxName(const std::string& name, int box);
     bool hasChanged() const;
     int boxes() const;
     const std::string& name() const;

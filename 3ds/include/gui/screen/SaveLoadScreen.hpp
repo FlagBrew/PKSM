@@ -58,22 +58,6 @@ public:
 
 private:
     bool setSelectedSave(int i);
-    bool increaseFirstSave()
-    {
-        if (firstSave < (int)saves[saveGroup].size() - 1)
-        {
-            firstSave++;
-        }
-        return false;
-    }
-    bool decreaseFirstSave()
-    {
-        if (firstSave > 0)
-        {
-            firstSave--;
-        }
-        return false;
-    }
     bool loadSave(void);
     void updateTitles(void);
 

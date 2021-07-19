@@ -47,22 +47,6 @@ public:
 
 private:
     bool setSelectedSave(int i);
-    bool increaseFirstSave()
-    {
-        if (firstSave < (int)availableCheckpointSaves.size() - 1)
-        {
-            firstSave++;
-        }
-        return false;
-    }
-    bool decreaseFirstSave()
-    {
-        if (firstSave > -1)
-        {
-            firstSave--;
-        }
-        return false;
-    }
     std::shared_ptr<Title> titleFromIndex(int i) const;
     bool loadSave(void) const;
     void resetTitles(void);

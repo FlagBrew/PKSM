@@ -104,12 +104,11 @@ namespace
     std::vector<u8> scriptRead(const std::string& path)
     {
         std::vector<u8> ret;
-        size_t size = 0;
-        FILE* in    = fopen(path.c_str(), "rb");
+        FILE* in = fopen(path.c_str(), "rb");
         fseek(in, 0, SEEK_END);
         if (!ferror(in))
         {
-            size = ftell(in);
+            size_t size = ftell(in);
             fseek(in, 0, SEEK_SET);
             ret = std::vector<u8>(size);
             fread(ret.data(), 1, size, in);

@@ -29,11 +29,8 @@
 
 #define DIRECTORY_READ_SIZE 10
 
-Directory::Directory(Handle handle)
+Directory::Directory(Handle handle) : err(0), load(false)
 {
-    load = false;
-    err  = 0;
-
     u32 result = 0;
     std::array<FS_DirectoryEntry, DIRECTORY_READ_SIZE> tmp;
     do
