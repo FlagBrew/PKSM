@@ -1420,9 +1420,9 @@ void pkx_set_value(
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_DAY", NumArgs);
             }
             {
-                Date date = pkm->eggDate();
+                Date date = pkm->metDate();
                 date.day((u8)nextArg->Val->Integer);
-                pkm->eggDate(date);
+                pkm->metDate(date);
             }
             break;
         case MET_MONTH:
@@ -1432,9 +1432,9 @@ void pkx_set_value(
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_MONTH", NumArgs);
             }
             {
-                Date date = pkm->eggDate();
+                Date date = pkm->metDate();
                 date.month((u8)nextArg->Val->Integer);
-                pkm->eggDate(date);
+                pkm->metDate(date);
             }
             break;
         case MET_YEAR:
@@ -1444,9 +1444,9 @@ void pkx_set_value(
                 scriptFail(Parser, "Incorrect number of args (%i) for MET_YEAR", NumArgs);
             }
             {
-                Date date = pkm->eggDate();
+                Date date = pkm->metDate();
                 date.year((u32)nextArg->Val->Integer);
-                pkm->eggDate(date);
+                pkm->metDate(date);
             }
             break;
         case FORM:
