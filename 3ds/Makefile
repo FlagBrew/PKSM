@@ -272,17 +272,9 @@ all: _BINARIES_DEPS+=deps
 all: binaries
 #---------------------------------------------------------------------------------
 deps: | directories
-ifeq ($(OS),Windows_NT)
-	@cd $(PACKER) && py -3 pack.py
-else
-	@cd $(PACKER) && python3 pack.py
-endif
+	@cd $(PACKER) && $(PYTHON) pack.py
 	@cd $(PACKER) && cp out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
-ifeq ($(OS),Windows_NT)
-	@cd $(SCRIPTS) && py -3 genScripts.py
-else
-	@cd $(SCRIPTS) && python3 genScripts.py
-endif
+	@cd $(SCRIPTS) && $(PYTHON) genScripts.py
 	@rm -fr $(ROMFS)/scripts
 	@cd $(SCRIPTS) && mv -f scripts ../../assets/romfs
 #---------------------------------------------------------------------------------

@@ -15,6 +15,16 @@ OUTDIR			:= 	out
 RELEASEDIR		:=	release
 ICON			:=	assets/icon.png
 
+ifeq ($(OS),Windows_NT)
+ ifeq ($(shell where py),)
+  export PYTHON := python
+ else
+  export PYTHON := py -3
+ endif
+else
+ export PYTHON := python3
+endif
+
 debug: 3ds-debug
 
 release: 3ds-release docs
@@ -28,7 +38,7 @@ ifneq ($(strip $(REV_UPDATE)),)
 endif
 
 language:
-	@python3 common/combine_strings_json.py
+	@$(PYTHON) common/combine_strings_json.py
 
 3ds-debug: revision language
 	$(MAKE) -C 3ds VERSION_MAJOR=$(VERSION_MAJOR) VERSION_MINOR=$(VERSION_MINOR) VERSION_MICRO=$(VERSION_MICRO)

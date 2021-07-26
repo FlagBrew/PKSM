@@ -12,7 +12,7 @@ for lang in languages:
         for file in files:
             if "gui.json" in file:
                 continue
-            with open(os.path.join(root, file), 'r') as f:
+            with codecs.open(os.path.join(root, file), 'r', encoding='utf8') as f:
                 master_json = {**master_json, **json.load(f)}
         with codecs.open('assets/gui_strings/' + lang + '/gui.json', 'w', encoding='utf8') as f:
             json.dump(master_json, f, ensure_ascii=True,
