@@ -37,12 +37,14 @@ namespace
     struct MultiFetchRecord
     {
         MultiFetchRecord(std::shared_ptr<Fetch> fetch                      = nullptr,
-            std::function<void(CURLcode, std::shared_ptr<Fetch>)> function = nullptr)
-            : fetch(fetch), function(function)
+            std::function<void(CURLcode, std::shared_ptr<Fetch>)> onFinish = nullptr,
+            std::function<void(std::shared_ptr<Fetch>)> onCancel           = nullptr)
+            : fetch(fetch), onFinish(onFinish), onCancel(onCancel)
         {
         }
         std::shared_ptr<Fetch> fetch;
-        std::function<void(CURLcode, std::shared_ptr<Fetch>)> function;
+        std::function<void(CURLcode, std::shared_ptr<Fetch>)> onFinish;
+        std::function<void(std::shared_ptr<Fetch>)> onCancel;
     };
 
     constexpr int MAX_FILE_BUFFER_SIZE = 0x10000;
@@ -189,9 +191,9 @@ void Fetch::multiMainThread(void*)
             // And delete it
             if (it != fetches.end())
             {
-                if (it->function)
+                if (it->onFinish)
                 {
-                    it->function(msg->data.result, it->fetch);
+                    it->onFinish(msg->data.result, it->fetch);
                 }
                 curl_multi_remove_handle(multiHandle, it->fetch->curl.get());
                 fetches.erase(it);
@@ -249,8 +251,9 @@ void Fetch::exitMulti()
     }
 }
 
-CURLMcode Fetch::performAsync(
-    std::shared_ptr<Fetch> fetch, std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete)
+CURLMcode Fetch::performAsync(std::shared_ptr<Fetch> fetch,
+    std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete,
+    std::function<void(std::shared_ptr<Fetch>)> onCancel)
 {
     if (multiInitialized)
     {
@@ -260,7 +263,7 @@ CURLMcode Fetch::performAsync(
         if (res == CURLM_OK)
         {
             __lock_acquire(fetchesMutex);
-            fetches.emplace_back(fetch, onComplete);
+            fetches.emplace_back(fetch, std::move(onComplete), std::move(onCancel));
             __lock_release(fetchesMutex);
         }
         return res;
@@ -268,6 +271,30 @@ CURLMcode Fetch::performAsync(
     else
     {
         return CURLM_LAST;
+    }
+}
+
+void Fetch::cancelAsync(std::shared_ptr<Fetch> fetch)
+{
+    if (multiInitialized)
+    {
+        __lock_acquire(multiHandleMutex);
+        CURLMcode res = curl_multi_remove_handle(multiHandle, fetch->curl.get());
+        __lock_release(multiHandleMutex);
+        __lock_acquire(fetchesMutex);
+        for (auto i = fetches.begin(); i != fetches.end(); ++i)
+        {
+            if (i->fetch == fetch)
+            {
+                if (i->onCancel)
+                {
+                    i->onCancel(i->fetch);
+                }
+                fetches.erase(i);
+                break;
+            }
+        }
+        __lock_release(fetchesMutex);
     }
 }
 

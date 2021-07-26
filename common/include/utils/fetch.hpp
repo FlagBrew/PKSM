@@ -51,8 +51,10 @@ public:
         void* progressInfo = nullptr);
 
     static CURLMcode performAsync(std::shared_ptr<Fetch> fetch,
-        std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete = nullptr);
+        std::function<void(CURLcode, std::shared_ptr<Fetch>)> onComplete = nullptr,
+        std::function<void(std::shared_ptr<Fetch>)> onCancel             = nullptr);
     static std::variant<CURLMcode, CURLcode> perform(std::shared_ptr<Fetch> fetch);
+    static void cancelAsync(std::shared_ptr<Fetch> fetch);
 
     static Result initMulti();
     static void exitMulti();

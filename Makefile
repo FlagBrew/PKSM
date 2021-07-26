@@ -45,6 +45,7 @@ docs:
 
 clean:
 	@rm -f common/include/revision.h
+	@rm -f assets/gui_strings/*/gui.json
 	$(MAKE) -C 3ds clean
 
 spotless: clean

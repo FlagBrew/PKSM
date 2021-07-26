@@ -137,7 +137,7 @@ else
 OPTIMIZE		:=	-Og
 endif
 
-CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -mword-relocations \
+CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-unused-parameter \
 			$(ARCH) \
@@ -155,8 +155,8 @@ CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
-ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
+ASFLAGS	:=	-g -gdwarf-4 $(ARCH)
+LDFLAGS	=	-specs=3dsx.specs -g -gdwarf-4 $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
 
 LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
