@@ -99,11 +99,11 @@ namespace
     {
         for (auto& item : assets)
         {
-            if (io::exists(item.path) && !matchSha256HashFromFile(item.path, item.hash))
+            if (!io::exists(item.path))
             {
                 return false;
             }
-            else if (!io::exists(item.path))
+            if (!matchSha256HashFromFile(item.path, item.hash))
             {
                 return false;
             }
