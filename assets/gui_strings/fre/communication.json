@@ -1,4 +1,8 @@
 {
+    "BRIDGE_ERROR_FILE_DATA_CORRUPTED": "Transfer failed. File data corrupted.",
+    "BRIDGE_ERROR_UNEXPECTED_MESSAGE" : "Unsupported PKSM Bridge protocol version.",
+    "BRIDGE_ERROR_UNHANDLED" : "Unhandled PKSM Bridge error occurred: {:d}.",
+    "BRIDGE_ERROR_UNSUPPORTED_PROTOCOL_VERISON" : "Unexpected message received over PKSM Bridge.",
     "BRIDGE_SHOULD_SEND_1": "Voulez-vous envoyer le nouveau fichier",
     "BRIDGE_SHOULD_SEND_2": "vers votre Switch?",
     "CLOUD_BOX": "Nuage {:d}",
