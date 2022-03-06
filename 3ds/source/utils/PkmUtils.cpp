@@ -100,7 +100,7 @@ namespace
                     u8* data = new u8[pksm::GenToPkx<gen>::PKX::BOX_LENGTH];
                     fread(data, 1, pksm::GenToPkx<gen>::PKX::BOX_LENGTH, file);
                     fclose(file);
-                    auto ret = pksm::PKX::getPKM<gen>(data);
+                    auto ret = pksm::PKX::getPKM<gen>(data, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
                     delete[] data;
                     updatePkm<gen>(*ret);
                     return ret;
@@ -132,7 +132,7 @@ namespace
                 lgpeSave = true;
                 break;
         }
-        auto ret = pksm::PKX::getPKM<gen>(nullptr);
+        auto ret = pksm::PKX::getPKM<gen>(nullptr, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
 
         ret->otName("PKSM");
         ret->TID(12345);

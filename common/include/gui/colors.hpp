@@ -58,7 +58,7 @@ constexpr PKSM_Color COLOR_DARKGREY     = PKSM_Color(96, 96, 96, 255);
 constexpr PKSM_Color COLOR_DARKYELLOW   = PKSM_Color(244, 170, 6, 120);
 constexpr PKSM_Color COLOR_LINEBLUE     = PKSM_Color(31, 41, 139, 255);
 
-#if defined(_3DS)
+#if defined(__3DS__)
 #include <citro2d.h>
 typedef u32 ColorFormat;
 inline constexpr ColorFormat colorToFormat(const PKSM_Color& color)

@@ -53,7 +53,7 @@ namespace Gui
     template <typename T>
     T runScreen(RunnableScreen<T>& s);
 
-#if defined(_3DS)
+#if defined(__3DS__)
     void target(gfxScreen_t t);
     void clearScreen(gfxScreen_t t);
     void flushText();
@@ -73,7 +73,7 @@ namespace Gui
         int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
 
     int pointerBob();
-#if defined(_3DS)
+#if defined(__3DS__)
     void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr,
         float scaleX = 1.0f, float scaleY = 1.0f);
 #elif defined(__SWITCH__)

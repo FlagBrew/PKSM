@@ -29,14 +29,14 @@
 
 void ReplaceableScreen::dim() const
 {
-#if defined(_3DS)
+#if defined(__3DS__)
     Gui::drawSolidRect(0, 0, 400, 240, COLOR_MASKBLACK);
 #elif defined(__SWITCH__)
     Gui::drawSolidRect(0, 0, 1080, 720, COLOR_MASKBLACK);
 #endif
 }
 
-#if defined(_3DS)
+#if defined(__3DS__)
 void ReplaceableScreen::doTopDraw() const
 {
     if (overlay)

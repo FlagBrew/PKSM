@@ -732,7 +732,7 @@ bool GroupCloudScreen::releasePkm()
                 toSend.erase(it);
             }
             Banks::bank->pkm(
-                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH), storageBox, cursorIndex - 1);
             return false;
         }
     }
@@ -907,7 +907,7 @@ void GroupCloudScreen::shareReceive()
 
                             if (gen != pksm::Generation::UNUSED)
                             {
-                                temPkm.emplace_back(pksm::PKX::getPKM(gen, data.data()));
+                                temPkm.emplace_back(pksm::PKX::getPKM(gen, data.data(), data.size()));
                             }
                             else
                             {

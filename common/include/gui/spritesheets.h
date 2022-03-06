@@ -32,7 +32,7 @@
 #include "types_spritesheet.h"
 #include "ui_sheet.h"
 
-#if defined(_3DS)
+#if defined(__3DS__)
 // emulated sprites
 #define ui_sheet_res_null_idx 500
 #define ui_sheet_emulated_pointer_horizontal_flipped_idx 501

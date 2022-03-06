@@ -39,7 +39,7 @@
 #include <variant>
 #include <vector>
 
-#if defined(_3DS)
+#if defined(__3DS__)
 #include <citro2d.h>
 typedef float FontSize;
 typedef C2D_Font FontType;
@@ -70,7 +70,7 @@ namespace TextParse
     class TextBuf;
     class ScreenText;
 
-#if defined(_3DS)
+#if defined(__3DS__)
     struct Glyph
     {
         Glyph(const Tex3DS_SubTexture& subtex, C3D_Tex* tex = nullptr, C2D_Font font = nullptr,
@@ -153,7 +153,7 @@ namespace TextParse
     private:
         bool fontHasChar(const FontType& font, u32 codepoint);
         FontType fontForCodepoint(u32 codepoint);
-#if defined(_3DS)
+#if defined(__3DS__)
         std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
         void makeGlyphSheets(C2D_Font font);
 #endif

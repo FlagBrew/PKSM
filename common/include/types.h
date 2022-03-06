@@ -27,7 +27,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#ifdef _3DS
+#ifdef __3DS__
 #include <3ds/types.h>
 #endif
 #ifdef __SWITCH__

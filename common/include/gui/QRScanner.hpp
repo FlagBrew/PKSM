@@ -311,7 +311,7 @@ public:
 
         if constexpr (std::is_same_v<Mode, pksm::PK7>)
         {
-            return pksm::PKX::getPKM<pksm::Generation::SEVEN>(data.data() + 0x30);
+            return pksm::PKX::getPKM<pksm::Generation::SEVEN>(data.data() + 0x30, pksm::PK7::BOX_LENGTH);
         }
 
         if constexpr (std::is_same_v<Mode, std::string>)

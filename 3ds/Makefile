@@ -151,7 +151,7 @@ CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
 			`curl-config --cflags` \
 			$(OPTIMIZE) $(RELEASE_FLAGS)
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
+CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 

@@ -751,7 +751,7 @@ bool CloudScreen::releasePkm()
             Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
         {
             Banks::bank->pkm(
-                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH), storageBox, cursorIndex - 1);
             return false;
         }
     }

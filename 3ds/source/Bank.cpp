@@ -322,7 +322,7 @@ std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
     }
     else if (entries[index].gen == pksm::Generation::UNUSED)
     {
-        return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
+        return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
     }
 
     throw BankException(u32(entries[index].gen));
@@ -456,7 +456,7 @@ void Bank::convertFromBankBin()
                 inStream->read(pkmData.data(), pkmData.size());
                 outStream->write(pkmData.data(), pkmData.size());
                 std::unique_ptr<pksm::PKX> pkm =
-                    pksm::PKX::getPKM<pksm::Generation::SIX>(pkmData.data());
+                    pksm::PKX::getPKM<pksm::Generation::SIX>(pkmData.data(), pksm::PK6::BOX_LENGTH);
                 if (pkm->species() == pksm::Species::None)
                 {
                     this->pkm(*pkm, box, slot);
@@ -480,7 +480,7 @@ void Bank::convertFromBankBin()
                     pkm->species() >= pksm::Species::Rowlet ||
                     pkm->ability() > pksm::Ability::DeltaStream || pkm->heldItem() > 775 || badMove)
                 {
-                    pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
+                    pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data(), pksm::PK7::BOX_LENGTH);
                 }
                 else if (((pksm::PK6*)pkm.get())->encounterType() != 0)
                 {
@@ -490,7 +490,7 @@ void Bank::convertFromBankBin()
                             ((pksm::PK6*)pkm.get())->encounterType() >
                                 24) // Either isn't from Gen 4 or has invalid encounter type
                         {
-                            pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data());
+                            pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(pkmData.data(), pksm::PK7::BOX_LENGTH);
                         }
                     }
                 }

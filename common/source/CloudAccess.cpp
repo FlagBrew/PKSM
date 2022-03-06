@@ -262,7 +262,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
             return ret;
         }
     }
-    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
 }
 
 bool CloudAccess::isLegal(size_t slot) const
@@ -290,7 +290,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 
         return ret;
     }
-    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
 }
 
 std::optional<int> CloudAccess::nextPage()
