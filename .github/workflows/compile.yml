@@ -27,7 +27,7 @@ jobs:
       - name: Install tools
         run: |
           sudo apt update
-          sudo apt install p7zip-full python3 python3-pip -y
+          sudo apt install p7zip-full python3 python3-pip rsync -y
           sudo python3 -m pip install gitpython
 
           curl -L https://github.com/Steveice10/bannertool/releases/download/1.2.0/bannertool.zip -o bannertool.zip
