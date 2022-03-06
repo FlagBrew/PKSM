@@ -20,50 +20,50 @@ jobs:
       commit_subject: ${{ steps.build.outputs.commit_subject }}
       commit_message: ${{ steps.build.outputs.commit_message }}
     steps:
-      name: Checkout repo
-      uses: actions/checkout@v1
-      with:
-        submodules: recursive
-      - name: Install tools
-        run: |
-          sudo apt update
-          sudo apt install p7zip-full python3 python3-pip -y
-          sudo pip install gitpython
-
-          curl -L https://github.com/Steveice10/bannertool/releases/download/1.2.0/bannertool.zip -o bannertool.zip
-          sudo 7z e bannertool.zip linux-x86_64/bannertool
-          sudo chmod +x bannertool
-          sudo mv bannertool /usr/local/bin
-          rm bannertool.zip
-          curl -L https://github.com/3DSGuy/Project_CTR/releases/download/makerom-v0.17/makerom-v0.17-ubuntu_x86_64.zip -o makerom-v0.17-ubuntu_x86_64.zip
-          sudo 7z e makerom-v0.17-ubuntu_x86_64.zip
-          sudo chmod +x makerom
-          sudo mv makerom /usr/local/bin
-          rm makerom-v0.17-ubuntu_x86_64.zip
-          curl -L https://github.com/dnasdw/3dstool/releases/download/v1.2.6/3dstool_linux_x86_64.tar.gz -o 3dstool_linux_x86_64.tar.gz
-          sudo tar -xf 3dstool_linux_x86_64.tar.gz
-          sudo chmod +x 3dstool
-          sudo mv 3dstool /usr/local/bin
-          rm 3dstool_linux_x86_64.tar.gz
-          sudo mv ext_key.txt /usr/local/bin
-          sudo mv ignore_3dstool.txt /usr/local/bin
-      - name: Build
-        id: build
-        run: |
-          make
-          mkdir -p ~/artifacts
-          cp 3ds/out/PKSM.3dsx ~/artifacts
-          cp 3ds/out/PKSM.cia ~/artifacts
-          echo ::set-output name=commit_tag::$(git describe --abbrev=0 --tags)
-          echo ::set-output name=commit_hash::$(git log --format=%h -1)
-
-          # Webhook info
-          echo "::set-output name=author_name::$(git log -1 $GITHUB_SHA --pretty=%aN)"
-          echo "::set-output name=committer_name::$(git log -1 $GITHUB_SHA --pretty=%cN)"
-          echo "::set-output name=commit_subject::$(git log -1 $GITHUB_SHA --pretty=%s)"
-          echo "::set-output name=commit_message::$(git log -1 $GITHUB_SHA --pretty=%b)"
-      - name: Publish build to GH Actions
-        uses: actions/upload-artifact@v2
+      - name: Checkout repo
+        uses: actions/checkout@v1
         with:
-          path: ~/artifacts/*
-          name: build
+          submodules: recursive
+        - name: Install tools
+          run: |
+            sudo apt update
+            sudo apt install p7zip-full python3 python3-pip -y
+            sudo pip install gitpython
+
+            curl -L https://github.com/Steveice10/bannertool/releases/download/1.2.0/bannertool.zip -o bannertool.zip
+            sudo 7z e bannertool.zip linux-x86_64/bannertool
+            sudo chmod +x bannertool
+            sudo mv bannertool /usr/local/bin
+            rm bannertool.zip
+            curl -L https://github.com/3DSGuy/Project_CTR/releases/download/makerom-v0.17/makerom-v0.17-ubuntu_x86_64.zip -o makerom-v0.17-ubuntu_x86_64.zip
+            sudo 7z e makerom-v0.17-ubuntu_x86_64.zip
+            sudo chmod +x makerom
+            sudo mv makerom /usr/local/bin
+            rm makerom-v0.17-ubuntu_x86_64.zip
+            curl -L https://github.com/dnasdw/3dstool/releases/download/v1.2.6/3dstool_linux_x86_64.tar.gz -o 3dstool_linux_x86_64.tar.gz
+            sudo tar -xf 3dstool_linux_x86_64.tar.gz
+            sudo chmod +x 3dstool
+            sudo mv 3dstool /usr/local/bin
+            rm 3dstool_linux_x86_64.tar.gz
+            sudo mv ext_key.txt /usr/local/bin
+            sudo mv ignore_3dstool.txt /usr/local/bin
+        - name: Build
+          id: build
+          run: |
+            make
+            mkdir -p ~/artifacts
+            cp 3ds/out/PKSM.3dsx ~/artifacts
+            cp 3ds/out/PKSM.cia ~/artifacts
+            echo ::set-output name=commit_tag::$(git describe --abbrev=0 --tags)
+            echo ::set-output name=commit_hash::$(git log --format=%h -1)
+
+            # Webhook info
+            echo "::set-output name=author_name::$(git log -1 $GITHUB_SHA --pretty=%aN)"
+            echo "::set-output name=committer_name::$(git log -1 $GITHUB_SHA --pretty=%cN)"
+            echo "::set-output name=commit_subject::$(git log -1 $GITHUB_SHA --pretty=%s)"
+            echo "::set-output name=commit_message::$(git log -1 $GITHUB_SHA --pretty=%b)"
+        - name: Publish build to GH Actions
+          uses: actions/upload-artifact@v2
+          with:
+            path: ~/artifacts/*
+            name: build
