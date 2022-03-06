@@ -41,6 +41,8 @@
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -112,6 +114,8 @@ namespace
     {
         switch (gen)
         {
+            case pksm::Generation::ONE:
+            case pksm::Generation::TWO:
             case pksm::Generation::THREE:
             case pksm::Generation::FOUR:
             case pksm::Generation::FIVE:
@@ -784,6 +788,12 @@ void pkx_box_size(
 
     switch (gen)
     {
+        case pksm::Generation::ONE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::ONE>::PKX::BOX_LENGTH;
+            break;
+        case pksm::Generation::TWO:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::TWO>::PKX::BOX_LENGTH;
+            break;
         case pksm::Generation::THREE:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH;
             break;
@@ -818,6 +828,12 @@ void pkx_party_size(
 
     switch (gen)
     {
+        case pksm::Generation::ONE:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::ONE>::PKX::PARTY_LENGTH;
+            break;
+        case pksm::Generation::TWO:
+            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::TWO>::PKX::PARTY_LENGTH;
+            break;
         case pksm::Generation::THREE:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::PARTY_LENGTH;
             break;
@@ -855,6 +871,14 @@ void pkx_generate(
     auto orig = PkmUtils::getDefault(TitleLoader::save->generation());
     switch (TitleLoader::save->generation())
     {
+        case pksm::Generation::ONE:
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::ONE>::PKX::BOX_LENGTH, data);
+            break;
+        case pksm::Generation::TWO:
+            std::copy(orig->rawData(),
+                orig->rawData() + pksm::GenToPkx<pksm::Generation::TWO>::PKX::BOX_LENGTH, data);
+            break;
         case pksm::Generation::THREE:
             std::copy(orig->rawData(),
                 orig->rawData() + pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH, data);
@@ -897,6 +921,9 @@ void pkx_generate(
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
         {
+            case pksm::GameVersion::C:
+                pkm->metLocation(0x02);   // Route 29, probably GSC
+                break;
             case pksm::GameVersion::R:
             case pksm::GameVersion::S:
             case pksm::GameVersion::E:

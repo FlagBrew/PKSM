@@ -132,6 +132,8 @@ void ViewOverlay::drawTop() const
             case pksm::Nature::Serious:
                 statColorIndex[u8(pksm::Stat::SPD)]--;
                 break;
+            case pksm::Nature::INVALID:
+                break;
         }
         // Add to the ones that are affected positively
         switch (getPKM().nature())
@@ -170,6 +172,8 @@ void ViewOverlay::drawTop() const
             case pksm::Nature::Naive:
             case pksm::Nature::Serious:
                 statColorIndex[u8(pksm::Stat::SPD)]++;
+                break;
+            case pksm::Nature::INVALID:
                 break;
         }
     }
@@ -212,6 +216,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
             break;
         case pksm::Gender::Genderless:
             Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
+            break;
+        case pksm::Gender::INVALID:
             break;
     }
     Gui::text(fmt::format(i18n::localize("LVL"), pkm.level()), 143, 10, FONT_SIZE_9, COLOR_WHITE,

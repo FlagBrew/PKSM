@@ -57,6 +57,18 @@ struct QRModeTraits<pksm::PKX>
 };
 
 template <>
+struct QRModeTraits<pksm::PK1>
+{
+    using ReturnType = std::unique_ptr<pksm::PKX>;
+};
+
+template <>
+struct QRModeTraits<pksm::PK2>
+{
+    using ReturnType = std::unique_ptr<pksm::PKX>;
+};
+
+template <>
 struct QRModeTraits<pksm::PK3>
 {
     using ReturnType = std::unique_ptr<pksm::PKX>;
@@ -193,7 +205,8 @@ public:
             return pksm::PKX::getPKM(g, pkmData.data(), pkmData.size(), false);
         }
 
-        if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+        if constexpr (std::is_same_v<Mode, pksm::PK1> || std::is_same_v<Mode, pksm::PK2> ||
+                      std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
                       std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK8> ||
                       std::is_same_v<Mode, pksm::WC4> || std::is_same_v<Mode, pksm::PGT> ||
                       std::is_same_v<Mode, pksm::PGF> || std::is_same_v<Mode, pksm::WC7> ||
@@ -236,7 +249,8 @@ public:
         }
 
         // Uses base64
-        if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+        if constexpr (std::is_same_v<Mode, pksm::PK1> || std::is_same_v<Mode, pksm::PK2> ||
+                      std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
                       std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
                       std::is_same_v<Mode, pksm::PK8> || std::is_same_v<Mode, pksm::WC4> ||
                       std::is_same_v<Mode, pksm::PGT> || std::is_same_v<Mode, pksm::PGF> ||

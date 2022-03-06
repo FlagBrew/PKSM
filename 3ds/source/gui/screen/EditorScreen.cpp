@@ -901,6 +901,8 @@ bool EditorScreen::genderSwitch()
         case pksm::Gender::Genderless:
             pkm->gender(pksm::Gender::Male);
             break;
+        case pksm::Gender::INVALID:
+            break;
     }
     return false;
 }

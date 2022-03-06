@@ -97,15 +97,13 @@ int BZ2::decompress(const u8* data, std::size_t size, std::vector<u8>& out)
 
 int BZ2::compress(std::vector<u8>& out, const u8* data, std::size_t size)
 {
-    bz_stream strm = {.bzalloc = NULL, .bzfree = NULL, .opaque = NULL};
+    bz_stream strm = {.next_in = NULL, .avail_in = 0, .total_in_lo32 = 0, .total_in_hi32 = 0, .next_out = NULL, .avail_out = 0, .total_out_lo32 = 0, .total_out_hi32 = 0, .state = NULL, .bzalloc = NULL, .bzfree = NULL, .opaque = NULL, };
 
     int bzerror = BZ2_bzCompressInit(&strm, 5, 0, 0);
     if (bzerror != BZ_OK)
     {
         return bzerror;
     }
-
-    std::size_t sizeCompressed = 0;
 
     std::unique_ptr<char[]> workBuf = std::unique_ptr<char[]>(new char[READ_SIZE]);
 

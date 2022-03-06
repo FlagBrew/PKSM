@@ -72,6 +72,47 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
+            case pksm::Generation::TWO:
+            {
+                SwkbdState state;
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[18]  = {0};
+                size_t length;
+                if (!(TitleLoader::save->language() == pksm::Language::JPN || TitleLoader::save->language() == pksm::Language::KOR))
+                {
+                    length = 18;
+                }
+                else
+                {
+                    length = 10;
+                }
+                SwkbdButton ret = swkbdInputText(&state, input, length);
+                input[16]       = '\0';
+                input[17]       = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
+            case pksm::Generation::THREE:
+            {
+                SwkbdState state;
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[18]  = {0}; // gotta make room for jpn characters going from two width to one
+                SwkbdButton ret = swkbdInputText(&state, input, TitleLoader::save->language() == pksm::Language::JPN ? 18 : 10);
+                input[16]       = '\0';
+                input[17]       = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
             case pksm::Generation::FOUR:
             case pksm::Generation::FIVE:
             {
@@ -107,6 +148,7 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
+            case pksm::Generation::ONE:
             case pksm::Generation::LGPE:
             case pksm::Generation::UNUSED:
                 // Do nothing
@@ -488,6 +530,8 @@ void StorageScreen::drawTop() const
                 break;
             case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
+                break;
+            case pksm::Gender::INVALID:
                 break;
         }
         if (infoMon->shiny())

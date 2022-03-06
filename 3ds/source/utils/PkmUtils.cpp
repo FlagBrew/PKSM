@@ -29,6 +29,8 @@
 #include "enums/Generation.hpp"
 #include "gui.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -44,6 +46,10 @@
 
 namespace
 {
+    std::unique_ptr<pksm::PK1> g1Default   = nullptr;
+    bool g1Save                            = false;
+    std::unique_ptr<pksm::PK2> g2Default   = nullptr;
+    bool g2Save                            = false;
     std::unique_ptr<pksm::PK3> g3Default   = nullptr;
     bool g3Save                            = false;
     std::unique_ptr<pksm::PK4> g4Default   = nullptr;
@@ -110,6 +116,12 @@ namespace
 
         switch (gen)
         {
+            case pksm::Generation::ONE:
+                g1Save = true;
+                break;
+            case pksm::Generation::TWO:
+                g2Save = true;
+                break;
             case pksm::Generation::THREE:
                 g3Save = true;
                 break;
@@ -131,6 +143,8 @@ namespace
             case pksm::Generation::LGPE:
                 lgpeSave = true;
                 break;
+            case pksm::Generation::UNUSED:
+                break;
         }
         auto ret = pksm::PKX::getPKM<gen>(nullptr, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
 
@@ -141,6 +155,11 @@ namespace
         ret->encryptionConstant(pksm::randomNumber(0, 0xFFFFFFFF));
         switch (ret->generation())
         {
+            case pksm::Generation::ONE:
+                break;
+            case pksm::Generation::TWO:
+                ret->metLocation(0x02);   // Route 29, GSC, automatically indicates C
+                break;
             case pksm::Generation::THREE:
                 ret->version(pksm::GameVersion::E);
                 ret->metLocation(0x0010); // Route 101
@@ -216,6 +235,8 @@ namespace
 
 void PkmUtils::initDefaults()
 {
+    g1Default   = loadPkm<pksm::Generation::ONE>("default.pk1");
+    g2Default   = loadPkm<pksm::Generation::TWO>("default.pk2");
     g3Default   = loadPkm<pksm::Generation::THREE>("default.pk3");
     g4Default   = loadPkm<pksm::Generation::FOUR>("default.pk4");
     g5Default   = loadPkm<pksm::Generation::FIVE>("default.pk5");
@@ -228,6 +249,26 @@ void PkmUtils::initDefaults()
 
 void PkmUtils::saveDefaults()
 {
+    if (g1Save)
+    {
+        FILE* out = fopen("/3ds/PKSM/defaults/default.pk1", "wb");
+        if (out)
+        {
+            fwrite(g1Default->rawData(), 1, g1Default->getLength(), out);
+            fclose(out);
+            g1Save = false;
+        }
+    }
+    if (g2Save)
+    {
+        FILE* out = fopen("/3ds/PKSM/defaults/default.pk2", "wb");
+        if (out)
+        {
+            fwrite(g2Default->rawData(), 1, g2Default->getLength(), out);
+            fclose(out);
+            g2Save = false;
+        }
+    }
     if (g3Save)
     {
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk3", "wb");
@@ -304,6 +345,10 @@ std::unique_ptr<pksm::PKX> PkmUtils::getDefault(pksm::Generation gen)
 {
     switch (gen)
     {
+        case pksm::Generation::ONE:
+            return g1Default->clone();
+        case pksm::Generation::TWO:
+            return g2Default->clone();
         case pksm::Generation::THREE:
             return g3Default->clone();
         case pksm::Generation::FOUR:
@@ -318,6 +363,8 @@ std::unique_ptr<pksm::PKX> PkmUtils::getDefault(pksm::Generation gen)
             return g8Default->clone();
         case pksm::Generation::LGPE:
             return lgpeDefault->clone();
+        case pksm::Generation::UNUSED:
+            break;
     }
     return nullptr;
 }
@@ -326,6 +373,14 @@ void PkmUtils::setDefault(std::unique_ptr<pksm::PKX> pkm)
 {
     switch (pkm->generation())
     {
+        case pksm::Generation::ONE:
+            g1Default = std::unique_ptr<pksm::PK1>((pksm::PK1*)pkm.release());
+            g1Save    = true;
+            break;
+        case pksm::Generation::TWO:
+            g2Default = std::unique_ptr<pksm::PK2>((pksm::PK2*)pkm.release());
+            g2Save    = true;
+            break;
         case pksm::Generation::THREE:
             g3Default = std::unique_ptr<pksm::PK3>((pksm::PK3*)pkm.release());
             g3Save    = true;
@@ -353,6 +408,8 @@ void PkmUtils::setDefault(std::unique_ptr<pksm::PKX> pkm)
         case pksm::Generation::LGPE:
             lgpeDefault = std::unique_ptr<pksm::PB7>((pksm::PB7*)pkm.release());
             lgpeSave    = true;
+            break;
+        case pksm::Generation::UNUSED:
             break;
     }
 }

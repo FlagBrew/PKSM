@@ -311,6 +311,8 @@ void GroupCloudScreen::drawTop() const
             case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
+            case pksm::Gender::INVALID:
+                break;
         }
         if (infoMon->shiny())
         {
