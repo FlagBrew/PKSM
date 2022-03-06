@@ -1,12 +1,12 @@
 [submodule "build/PKSM-Scripts"]
 	path = external/PKSM-Scripts
-	url = https://github.com/FlagBrew/PKSM-Scripts
+	url = https://github.com/SNBeast/PKSM-Scripts
 [submodule "docs/wiki"]
 	path = docs/wiki
-	url = https://github.com/FlagBrew/PKSM.wiki.git
+	url = https://github.com/SNBeast/PKSM.wiki.git
 [submodule "core"]
 	path = core
-	url = https://github.com/FlagBrew/PKSM-Core
+	url = https://github.com/SNBeast/PKSM-Core
 [submodule "external/picoc"]
 	path = external/picoc
 	url = https://github.com/FlagBrew/picoc
