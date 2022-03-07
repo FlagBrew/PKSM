@@ -190,6 +190,8 @@ namespace
 
     bool update(std::string execPath)
     {
+        // commenting to be undone when FlagBrew takes control back, for now Universal Updater will do nicely
+        /*
         u32 status;
         ACU_GetWifiStatus(&status);
         if (status == 0)
@@ -472,6 +474,7 @@ namespace
                 }
             }
         }
+        */
         return false;
     }
 
