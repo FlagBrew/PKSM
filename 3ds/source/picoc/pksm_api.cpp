@@ -789,10 +789,10 @@ void pkx_box_size(
     switch (gen)
     {
         case pksm::Generation::ONE:
-            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::ONE>::PKX::BOX_LENGTH;
+            ReturnValue->Val->Integer = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK1::JP_LENGTH_WITH_NAMES : pksm::PK1::INT_LENGTH_WITH_NAMES;
             break;
         case pksm::Generation::TWO:
-            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::TWO>::PKX::BOX_LENGTH;
+            ReturnValue->Val->Integer = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK2::JP_LENGTH_WITH_NAMES : pksm::PK2::INT_LENGTH_WITH_NAMES;
             break;
         case pksm::Generation::THREE:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH;
@@ -829,10 +829,10 @@ void pkx_party_size(
     switch (gen)
     {
         case pksm::Generation::ONE:
-            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::ONE>::PKX::PARTY_LENGTH;
+            ReturnValue->Val->Integer = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK1::JP_LENGTH_WITH_NAMES : pksm::PK1::INT_LENGTH_WITH_NAMES;
             break;
         case pksm::Generation::TWO:
-            ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::TWO>::PKX::PARTY_LENGTH;
+            ReturnValue->Val->Integer = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK2::JP_LENGTH_WITH_NAMES : pksm::PK2::INT_LENGTH_WITH_NAMES;
             break;
         case pksm::Generation::THREE:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::THREE>::PKX::PARTY_LENGTH;
@@ -869,15 +869,16 @@ void pkx_generate(
     // is fine to not use getPokemon
     auto pkm  = pksm::PKX::getPKM(TitleLoader::save->generation(), data, false, true);
     auto orig = PkmUtils::getDefault(TitleLoader::save->generation());
+    size_t pkxLength = 0;
     switch (TitleLoader::save->generation())
     {
         case pksm::Generation::ONE:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::ONE>::PKX::BOX_LENGTH, data);
+            pkxLength = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK1::JP_LENGTH_WITH_NAMES : pksm::PK1::INT_LENGTH_WITH_NAMES;
+            std::copy(orig->rawData(), orig->rawData() + pkxLength, data);
             break;
         case pksm::Generation::TWO:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::TWO>::PKX::BOX_LENGTH, data);
+            pkxLength = TitleLoader::save->language() == pksm::Language::JPN ? pksm::PK2::JP_LENGTH_WITH_NAMES : pksm::PK2::INT_LENGTH_WITH_NAMES;
+            std::copy(orig->rawData(), orig->rawData() + pkxLength, data);
             break;
         case pksm::Generation::THREE:
             std::copy(orig->rawData(),

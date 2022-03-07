@@ -97,19 +97,53 @@ namespace
         if (stat(pkmFile.c_str(), &statStruct) == 0)
         {
             // Check that the size matches a valid size
-            if (pksm::GenToPkx<gen>::PKX::BOX_LENGTH == statStruct.st_size ||
-                pksm::GenToPkx<gen>::PKX::PARTY_LENGTH == statStruct.st_size)
+            if constexpr (gen == pksm::Generation::EnumType::ONE || gen == pksm::Generation::EnumType::TWO)
             {
-                FILE* file = fopen(pkmFile.c_str(), "rb");
-                if (file)
+                if (pksm::GenToPkx<gen>::PKX::JP_LENGTH_WITH_NAMES == statStruct.st_size)
                 {
-                    u8* data = new u8[pksm::GenToPkx<gen>::PKX::BOX_LENGTH];
-                    fread(data, 1, pksm::GenToPkx<gen>::PKX::BOX_LENGTH, file);
-                    fclose(file);
-                    auto ret = pksm::PKX::getPKM<gen>(data, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
-                    delete[] data;
-                    updatePkm<gen>(*ret);
-                    return ret;
+                    FILE* file = fopen(pkmFile.c_str(), "rb");
+                    if (file)
+                    {
+                        u8* data = new u8[pksm::GenToPkx<gen>::PKX::JP_LENGTH_WITH_NAMES];
+                        fread(data, 1, pksm::GenToPkx<gen>::PKX::JP_LENGTH_WITH_NAMES, file);
+                        fclose(file);
+                        auto ret = pksm::PKX::getPKM<gen>(data, pksm::GenToPkx<gen>::PKX::JP_LENGTH_WITH_NAMES);
+                        delete[] data;
+                        updatePkm<gen>(*ret);
+                        return ret;
+                    }
+                }
+                else if (pksm::GenToPkx<gen>::PKX::INT_LENGTH_WITH_NAMES == statStruct.st_size)
+                {
+                    FILE* file = fopen(pkmFile.c_str(), "rb");
+                    if (file)
+                    {
+                        u8* data = new u8[pksm::GenToPkx<gen>::PKX::INT_LENGTH_WITH_NAMES];
+                        fread(data, 1, pksm::GenToPkx<gen>::PKX::INT_LENGTH_WITH_NAMES, file);
+                        fclose(file);
+                        auto ret = pksm::PKX::getPKM<gen>(data, pksm::GenToPkx<gen>::PKX::INT_LENGTH_WITH_NAMES);
+                        delete[] data;
+                        updatePkm<gen>(*ret);
+                        return ret;
+                    }
+                }
+            }
+            else
+            {
+                if (pksm::GenToPkx<gen>::PKX::BOX_LENGTH == statStruct.st_size ||
+                    pksm::GenToPkx<gen>::PKX::PARTY_LENGTH == statStruct.st_size)
+                {
+                    FILE* file = fopen(pkmFile.c_str(), "rb");
+                    if (file)
+                    {
+                        u8* data = new u8[pksm::GenToPkx<gen>::PKX::BOX_LENGTH];
+                        fread(data, 1, pksm::GenToPkx<gen>::PKX::BOX_LENGTH, file);
+                        fclose(file);
+                        auto ret = pksm::PKX::getPKM<gen>(data, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
+                        delete[] data;
+                        updatePkm<gen>(*ret);
+                        return ret;
+                    }
                 }
             }
         }
