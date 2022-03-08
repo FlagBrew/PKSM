@@ -146,7 +146,6 @@ namespace i18n
         static const std::string PT  = "Português";
         static const std::string RO  = "Română";
         static const std::string RU  = "русский";
-        static const std::string ERR = "ERROR";
         switch (lang)
         {
             case pksm::Language::JPN:
@@ -177,7 +176,7 @@ namespace i18n
             case pksm::Language::None:
             case pksm::Language::UNUSED:
             case pksm::Language::INVALID:
-                return ERR;
+                break;
         }
         return emptyString;
     }

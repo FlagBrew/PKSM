@@ -33,6 +33,8 @@
 #include "io.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -315,7 +317,59 @@ void Bank::resize(int boxes)
 std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
 {
     int index = box * 30 + slot;
-    auto ret  = pksm::PKX::getPKM(entries[index].gen, entries[index].data, false);
+    
+    std::unique_ptr<pksm::PKX> ret = nullptr;
+    switch (entries[index].gen)
+    {
+        case pksm::Generation::ONE:
+        {
+            if (entries[index].data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+            {
+                ret = pksm::PKX::getPKM<pksm::Generation::ONE>(entries[index].data, pksm::PK1::JP_LENGTH_WITH_NAMES);
+            }
+            else
+            {
+                ret = pksm::PKX::getPKM<pksm::Generation::ONE>(entries[index].data, pksm::PK1::INT_LENGTH_WITH_NAMES);
+            }
+        }
+        break;
+        case pksm::Generation::TWO:
+        {
+            if (entries[index].data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+            {
+                ret = pksm::PKX::getPKM<pksm::Generation::TWO>(entries[index].data, pksm::PK2::JP_LENGTH_WITH_NAMES);
+            }
+            else
+            {
+                ret = pksm::PKX::getPKM<pksm::Generation::TWO>(entries[index].data, pksm::PK2::INT_LENGTH_WITH_NAMES);
+            }
+        }
+        break;
+        case pksm::Generation::THREE:
+            ret = pksm::PKX::getPKM<pksm::Generation::THREE>(entries[index].data, pksm::PK3::BOX_LENGTH);
+            break;
+        case pksm::Generation::FOUR:
+            ret = pksm::PKX::getPKM<pksm::Generation::FOUR>(entries[index].data, pksm::PK4::BOX_LENGTH);
+            break;
+        case pksm::Generation::FIVE:
+            ret = pksm::PKX::getPKM<pksm::Generation::FIVE>(entries[index].data, pksm::PK5::BOX_LENGTH);
+            break;
+        case pksm::Generation::SIX:
+            ret = pksm::PKX::getPKM<pksm::Generation::SIX>(entries[index].data, pksm::PK6::BOX_LENGTH);
+            break;
+        case pksm::Generation::SEVEN:
+            ret = pksm::PKX::getPKM<pksm::Generation::SEVEN>(entries[index].data, pksm::PK7::BOX_LENGTH);
+            break;
+        case pksm::Generation::LGPE:
+            ret = pksm::PKX::getPKM<pksm::Generation::LGPE>(entries[index].data, pksm::PB7::BOX_LENGTH);
+            break;
+        case pksm::Generation::EIGHT:
+            ret = pksm::PKX::getPKM<pksm::Generation::EIGHT>(entries[index].data, pksm::PK8::BOX_LENGTH);
+            break;
+        default:
+            break;
+    }
+    
     if (ret)
     {
         return ret;

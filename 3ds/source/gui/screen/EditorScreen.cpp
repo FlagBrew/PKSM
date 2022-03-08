@@ -467,15 +467,16 @@ bool EditorScreen::advanceMon(bool forward)
             }
             else
             {
+                u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
                 if (forward)
                 {
                     index++;
-                    if (index >= 30)
+                    if (index >= maxPkmInBox)
                     {
                         box++;
                         index = 0;
                     }
-                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    if (box * maxPkmInBox + index >= TitleLoader::save->maxSlot())
                     {
                         index = 0;
                         box   = 0;
@@ -493,10 +494,10 @@ bool EditorScreen::advanceMon(bool forward)
                     {
                         box = TitleLoader::save->maxBoxes() - 1;
                     }
-                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    if (box * maxPkmInBox + index >= TitleLoader::save->maxSlot())
                     {
                         box   = TitleLoader::save->maxBoxes() - 1;
-                        index = TitleLoader::save->maxSlot() - box * 30 - 1;
+                        index = TitleLoader::save->maxSlot() - box * maxPkmInBox - 1;
                     }
                 }
                 pkm = TitleLoader::save->pkm(box, index);

@@ -162,9 +162,10 @@ void SortScreen::sort()
         }
         else
         {
+            u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
             for (int i = 0; i < TitleLoader::save->maxSlot(); i++)
             {
-                std::shared_ptr<pksm::PKX> pkm = TitleLoader::save->pkm(i / 30, i % 30);
+                std::shared_ptr<pksm::PKX> pkm = TitleLoader::save->pkm(i / maxPkmInBox, i % maxPkmInBox);
                 if (pkm->species() != pksm::Species::None)
                 {
                     sortMe.push_back(pkm);
@@ -350,13 +351,14 @@ void SortScreen::sort()
         }
         else
         {
+            u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
             for (size_t i = 0; i < sortMe.size(); i++)
             {
-                TitleLoader::save->pkm(*sortMe[i], i / 30, i % 30, false);
+                TitleLoader::save->pkm(*sortMe[i], i / maxPkmInBox, i % maxPkmInBox, false);
             }
             for (int i = sortMe.size(); i < TitleLoader::save->maxSlot(); i++)
             {
-                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), i / 30, i % 30, false);
+                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), i / maxPkmInBox, i % maxPkmInBox, false);
             }
         }
     }

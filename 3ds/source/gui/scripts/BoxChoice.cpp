@@ -56,12 +56,18 @@ BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)),
         189, 15, 17, 24, [this]() { return this->nextBox(true); }, ui_sheet_res_null_idx, "", 0.0f,
         COLOR_BLACK, 10, 5);
 
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
+
     // Pokemon buttons
     u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
         u16 x = 4;
-        for (u8 column = 0; column < 6; column++)
+        if (maxPkmInBox == 20)
+        {
+            x += 34;
+        }
+        for (u8 column = 0; column < (maxPkmInBox / 5); column++)
         {
             clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30,
@@ -88,15 +94,17 @@ BoxChoice::~BoxChoice()
 
 void BoxChoice::drawBottom() const
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
+
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
-    Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
+    Gui::sprite(ui_sheet_storage_box_corner_idx, maxPkmInBox == 20 ? 36 : 2, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, maxPkmInBox == 20 ? 168 : 202, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, maxPkmInBox == 20 ? 36 : 2, 193);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, maxPkmInBox == 20 ? 168 : 202, 193);
     for (const auto& b : mainButtons)
     {
         b->draw();
@@ -106,7 +114,11 @@ void BoxChoice::drawBottom() const
     for (u8 row = 0; row < 5; row++)
     {
         u16 x = 4;
-        for (u8 column = 0; column < 6; column++)
+        if (maxPkmInBox == 20)
+        {
+            x += 34;
+        }
+        for (u8 column = 0; column < (maxPkmInBox / 5); column++)
         {
             if (TitleLoader::save->generation() == pksm::Generation::LGPE &&
                 row * 6 + column + boxBox * 30 >= TitleLoader::save->maxSlot())
@@ -116,7 +128,7 @@ void BoxChoice::drawBottom() const
             else
             {
                 std::shared_ptr<pksm::PKX> pokemon =
-                    TitleLoader::save->pkm(boxBox, row * 6 + column);
+                    TitleLoader::save->pkm(boxBox, row * (maxPkmInBox / 5) + column);
                 if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
@@ -144,8 +156,8 @@ void BoxChoice::drawBottom() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
-            Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+            int yMod      = (tempIndex / (maxPkmInBox / 5)) * maxPkmInBox + Gui::pointerBob();
+            Gui::sprite(ui_sheet_pointer_arrow_idx, (maxPkmInBox == 20 ? 55 : 21) + (tempIndex % (maxPkmInBox / 5)) * 34, 30 + yMod);
         }
     }
 
@@ -289,6 +301,8 @@ void BoxChoice::drawTop() const
 
 void BoxChoice::update(touchPosition* touch)
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
+
     if (cursorIndex != 0)
     {
         infoMon = storageChosen ? Banks::bank->pkm(storageBox, cursorIndex - 1)
@@ -325,8 +339,11 @@ void BoxChoice::update(touchPosition* touch)
         backHeld = false;
         for (auto& button : clickButtons)
         {
-            if (button->update(touch))
-                return;
+            if (button)
+            {
+                if (button->update(touch))
+                    return;
+            }
         }
 
         if (kDown & KEY_A)
@@ -362,7 +379,7 @@ void BoxChoice::update(touchPosition* touch)
             else if (cursorIndex == 1)
             {
                 prevBox();
-                cursorIndex = 30;
+                cursorIndex = storageChosen ? 30 : maxPkmInBox;
             }
         }
         else if (kRepeat & KEY_RIGHT)
@@ -371,11 +388,11 @@ void BoxChoice::update(touchPosition* touch)
             {
                 nextBox();
             }
-            else if (cursorIndex < 30)
+            else if (cursorIndex < (storageChosen ? 30 : maxPkmInBox))
             {
                 cursorIndex++;
             }
-            else if (cursorIndex == 30)
+            else if (cursorIndex == (storageChosen ? 30 : maxPkmInBox))
             {
                 nextBox();
                 cursorIndex = 1;
@@ -388,13 +405,13 @@ void BoxChoice::update(touchPosition* touch)
                 storageChosen = true;
                 cursorIndex   = 27;
             }
-            else if (cursorIndex > 0 && cursorIndex <= 6)
+            else if (cursorIndex > 0 && cursorIndex <= (storageChosen ? 6 : (maxPkmInBox / 5)))
             {
                 cursorIndex = 0;
             }
-            else if (cursorIndex > 6)
+            else if (cursorIndex > (storageChosen ? 6 : (maxPkmInBox / 5)))
             {
-                cursorIndex -= 6;
+                cursorIndex -= (storageChosen ? 6 : (maxPkmInBox / 5));
             }
         }
         else if (kRepeat & KEY_DOWN)
@@ -406,11 +423,11 @@ void BoxChoice::update(touchPosition* touch)
             }
             else if (cursorIndex == 0)
             {
-                cursorIndex = 3;
+                cursorIndex = ((storageChosen || (maxPkmInBox == 30)) ? 3 : 2);
             }
-            else if (cursorIndex < 25)
+            else if (cursorIndex < (storageChosen ? 25 : (((maxPkmInBox / 5) * 4) + 1)))
             {
-                cursorIndex += 6;
+                cursorIndex += (storageChosen ? 6 : (maxPkmInBox / 5));
             }
         }
         else if (kRepeat & KEY_R)
@@ -493,8 +510,10 @@ bool BoxChoice::backButton()
 
 bool BoxChoice::showViewer()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO && TitleLoader::save->language() != pksm::Language::JPN) ? 20 : 30;
+
     if (cursorIndex == 0 ||
-        (!storageChosen && boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
+        (!storageChosen && boxBox * maxPkmInBox + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
     {
         return false;
     }

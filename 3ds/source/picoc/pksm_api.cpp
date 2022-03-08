@@ -138,15 +138,39 @@ namespace
 
     std::unique_ptr<pksm::PKX> getPokemon(u8* data, pksm::Generation gen, bool isParty)
     {
-        if (gen == pksm::Generation::THREE)
+        std::unique_ptr<pksm::PKX> ret = nullptr;
+        switch (gen)
         {
-            auto ret = pksm::PKX::getPKM<pksm::Generation::THREE>(nullptr, isParty);
-            std::copy(data, data + ret->getLength(), ret->rawData());
-            return ret;
-        }
-        else
-        {
-            return pksm::PKX::getPKM(gen, data, isParty, true);
+            case pksm::Generation::ONE:
+                if (data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+                {
+                    return pksm::PKX::getPKM<pksm::Generation::ONE>(data, pksm::PK1::JP_LENGTH_WITH_NAMES, true);
+                }
+                return pksm::PKX::getPKM<pksm::Generation::ONE>(data, pksm::PK1::INT_LENGTH_WITH_NAMES, true);
+            case pksm::Generation::TWO:
+                if (data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+                {
+                    return pksm::PKX::getPKM<pksm::Generation::TWO>(data, pksm::PK2::JP_LENGTH_WITH_NAMES, true);
+                }
+                return pksm::PKX::getPKM<pksm::Generation::TWO>(data, pksm::PK2::INT_LENGTH_WITH_NAMES, true);
+            case pksm::Generation::THREE:
+                ret = pksm::PKX::getPKM<pksm::Generation::THREE>(nullptr, isParty ? pksm::PK3::PARTY_LENGTH : pksm::PK3::BOX_LENGTH);
+                std::copy(data, data + ret->getLength(), ret->rawData());
+                return ret;
+            case pksm::Generation::FOUR:
+                return pksm::PKX::getPKM<pksm::Generation::FOUR>(data, isParty ? pksm::PK4::PARTY_LENGTH : pksm::PK4::BOX_LENGTH, true);
+            case pksm::Generation::FIVE:
+                return pksm::PKX::getPKM<pksm::Generation::FIVE>(data, isParty ? pksm::PK5::PARTY_LENGTH : pksm::PK5::BOX_LENGTH, true);
+            case pksm::Generation::SIX:
+                return pksm::PKX::getPKM<pksm::Generation::SIX>(data, isParty ? pksm::PK6::PARTY_LENGTH : pksm::PK6::BOX_LENGTH, true);
+            case pksm::Generation::SEVEN:
+                return pksm::PKX::getPKM<pksm::Generation::SEVEN>(data, isParty ? pksm::PK7::PARTY_LENGTH : pksm::PK7::BOX_LENGTH, true);
+            case pksm::Generation::LGPE:
+                return pksm::PKX::getPKM<pksm::Generation::LGPE>(data, isParty ? pksm::PB7::PARTY_LENGTH : pksm::PB7::BOX_LENGTH, true);
+            case pksm::Generation::EIGHT:
+                return pksm::PKX::getPKM<pksm::Generation::EIGHT>(data, isParty ? pksm::PK8::PARTY_LENGTH : pksm::PK8::BOX_LENGTH, true);
+            default:
+                return nullptr;
         }
     }
 }
@@ -711,8 +735,38 @@ void pkx_decrypt(
 
     checkGen(Parser, gen);
 
+    [[maybe_unused]] std::unique_ptr<pksm::PKX> pkm = nullptr;
+
     // Will automatically decrypt data; explicitly meant to not use getPokemon
-    [[maybe_unused]] std::unique_ptr<pksm::PKX> pkm = pksm::PKX::getPKM(gen, data, isParty, true);
+    switch (gen)
+    {
+        case pksm::Generation::ONE:
+        case pksm::Generation::TWO:
+            break; // no encryption
+        case pksm::Generation::THREE:
+            pkm = pksm::PKX::getPKM<pksm::Generation::THREE>(data, isParty ? pksm::PK3::PARTY_LENGTH : pksm::PK3::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::FOUR:
+            pkm = pksm::PKX::getPKM<pksm::Generation::FOUR>(data, isParty ? pksm::PK4::PARTY_LENGTH : pksm::PK4::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::FIVE:
+            pkm = pksm::PKX::getPKM<pksm::Generation::FIVE>(data, isParty ? pksm::PK5::PARTY_LENGTH : pksm::PK5::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::SIX:
+            pkm = pksm::PKX::getPKM<pksm::Generation::SIX>(data, isParty ? pksm::PK6::PARTY_LENGTH : pksm::PK6::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::SEVEN:
+            pkm = pksm::PKX::getPKM<pksm::Generation::SEVEN>(data, isParty ? pksm::PK7::PARTY_LENGTH : pksm::PK7::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::LGPE:
+            pkm = pksm::PKX::getPKM<pksm::Generation::LGPE>(data, isParty ? pksm::PB7::PARTY_LENGTH : pksm::PB7::BOX_LENGTH, true);
+            break;
+        case pksm::Generation::EIGHT:
+            pkm = pksm::PKX::getPKM<pksm::Generation::EIGHT>(data, isParty ? pksm::PK8::PARTY_LENGTH : pksm::PK8::BOX_LENGTH, true);
+            break;
+        default:
+            break;
+    }
 }
 
 void pkx_encrypt(
@@ -866,8 +920,7 @@ void pkx_generate(
     u8* data    = (u8*)Param[0]->Val->Pointer;
     int species = Param[1]->Val->Integer;
 
-    // is fine to not use getPokemon
-    auto pkm  = pksm::PKX::getPKM(TitleLoader::save->generation(), data, false, true);
+    auto pkm  = getPokemon(data, TitleLoader::save->generation(), false);
     auto orig = PkmUtils::getDefault(TitleLoader::save->generation());
     size_t pkxLength = 0;
     switch (TitleLoader::save->generation())
@@ -989,6 +1042,9 @@ void pkx_generate(
     pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(),
         pkm->alternativeForm(), pkm->abilityNumber(), pkm->PID(), pkm->generation()));
     pkm->level(orig->level());
+
+    // not having directAccess from getPokemon means we do this
+    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
 }
 
 void sav_get_max(
