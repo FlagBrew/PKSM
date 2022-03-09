@@ -348,7 +348,7 @@ void EditorScreen::drawBottom() const
     }
     Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK,
         TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->generation() >= pksm::Generation::THREE ? pkm->nature().localize(lang) : "-", 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+    Gui::text(pkm->generation() >= pksm::Generation::THREE ? pkm->nature().localize(lang) : "—", 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
     Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12,
         pkm->abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);

@@ -279,7 +279,7 @@ void BoxChoice::drawTop() const
                    std::to_string(infoMon->TID());
             Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-            Gui::text(infoMon->generation() >= pksm::Generation::THREE ? infoMon.nature().localize(Configuration::getInstance().language()) : "-", 276, 181,
+            Gui::text(infoMon->generation() >= pksm::Generation::THREE ? infoMon->nature().localize(Configuration::getInstance().language()) : "—", 276, 181,
                 FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             info  = i18n::localize("IV") + ": ";
             text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);

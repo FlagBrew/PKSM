@@ -264,7 +264,7 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
 
     Gui::text(pkm.nickname(), 87, 56, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm.otName(), 87, 76, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm->generation() >= pksm::Generation::THREE ? pkm.nature().localize(Configuration::getInstance().language()) : "-", 87, 96, FONT_SIZE_12,
+    Gui::text(pkm.generation() >= pksm::Generation::THREE ? pkm.nature().localize(Configuration::getInstance().language()) : "—", 87, 96, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm.ability().localize(Configuration::getInstance().language()), 87, 116,
         FONT_SIZE_12, pkm.abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT,
