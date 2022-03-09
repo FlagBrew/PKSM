@@ -2664,10 +2664,10 @@ void HexEditScreen::drawMeaning() const
                         100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x8:
-                    Gui::type(Configuration::getInstance().language(), pkm.type1(), 135, 90);
+                    Gui::type(Configuration::getInstance().language(), pkm.type1(), 134, 90);
                     break;
                 case 0x9:
-                    Gui::type(Configuration::getInstance().language(), pkm.type2(), 135, 90);
+                    Gui::type(Configuration::getInstance().language(), pkm.type2(), 134, 90);
                     break;
                 case 0xB ... 0xE:
                     Gui::text(i18n::move(Configuration::getInstance().language(),

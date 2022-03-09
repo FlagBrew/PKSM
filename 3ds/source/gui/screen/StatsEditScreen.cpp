@@ -109,7 +109,7 @@ void StatsEditScreen::setIV(pksm::Stat which)
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 iv = (u8)std::stoi(input);
-        pkm.iv(which, std::min((u8)31, iv));
+        pkm.iv(which, std::min(pkm.generation() >= pksm::Generation::THREE ? (u8)31 : (u8)15, iv));
     }
 }
 
@@ -117,13 +117,27 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm.iv(which) < 31)
+        if (pkm.generation() >= pksm::Generation::THREE)
         {
-            pkm.iv(which, pkm.iv(which) + 1);
+            if (pkm.iv(which) < 31)
+            {
+                pkm.iv(which, pkm.iv(which) + 1);
+            }
+            else
+            {
+                pkm.iv(which, 0);
+            }
         }
         else
         {
-            pkm.iv(which, 0);
+            if (pkm.iv(which) < 15)
+            {
+                pkm.iv(which, pkm.iv(which) + 1);
+            }
+            else
+            {
+                pkm.iv(which, 0);
+            }
         }
     }
     else
@@ -134,7 +148,7 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
         }
         else
         {
-            pkm.iv(which, 31);
+            pkm.iv(which, pkm.generation() >= pksm::Generation::THREE ? 31 : 15);
         }
     }
     return false;
@@ -143,26 +157,29 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
 void StatsEditScreen::setSecondaryStat(pksm::Stat which)
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, 3);
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, pkm.generation() >= pksm::Generation::THREE ? 3 : 5);
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[4]   = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[3]        = '\0';
+    char input[6]   = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, pkm.generation() >= pksm::Generation::THREE ? 4 : 6);
+    input[pkm.generation() >= pksm::Generation::THREE ? 3 : 5] = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 val = (u8)std::min(std::stoi(input), 252);
+        u16 val = (u16)std::min(std::stoi(input), pkm.generation() >= pksm::Generation::THREE ? 252 : 65535);
         if (pkm.generation() != pksm::Generation::LGPE)
         {
             pkm.ev(which, val);
-            u16 total = 0;
-            for (int i = 0; i < 6; i++)
+            if (pkm.generation() >= pksm::Generation::THREE)
             {
-                total += statValues[i] != which ? pkm.ev(statValues[i]) : 0;
-            }
-            if (total + val > 510)
-            {
-                pkm.ev(which, 510 - total);
+                u16 total = 0;
+                for (int i = 0; i < 6; i++)
+                {
+                    total += statValues[i] != which ? pkm.ev(statValues[i]) : 0;
+                }
+                if (total + val > 510)
+                {
+                    pkm.ev(which, 510 - total);
+                }
             }
         }
         else
@@ -178,21 +195,31 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
     {
         if (pkm.generation() != pksm::Generation::LGPE)
         {
-            u16 total = 0;
-            for (int i = 0; i < 6; i++)
+            if (pkm.generation() >= pksm::Generation::THREE)
             {
-                total += pkm.ev(statValues[i]);
+                u16 total = 0;
+                for (int i = 0; i < 6; i++)
+                {
+                    total += pkm.ev(statValues[i]);
+                }
+                // TODO: remove hardcoded value and set it in classes
+                if (total < 510 || pkm.ev(which) == 0xFC)
+                {
+                    if (pkm.ev(which) < 0xFC)
+                    {
+                        pkm.ev(which, pkm.ev(which) + 1);
+                    }
+                    else
+                    {
+                        pkm.ev(which, 0);
+                    }
+                }
             }
-            // TODO: remove hardcoded value and set it in classes
-            if (total < 510 || pkm.ev(which) == 0xFC)
+            else
             {
-                if (pkm.ev(which) < 0xFC)
+                if (pkm.ev(which) != 65535)
                 {
                     pkm.ev(which, pkm.ev(which) + 1);
-                }
-                else
-                {
-                    pkm.ev(which, 0);
                 }
             }
         }
@@ -217,7 +244,7 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
             {
                 pkm.ev(which, pkm.ev(which) - 1);
             }
-            else
+            else if (pkm.generation() >= pksm::Generation::THREE)
             {
                 u16 total = 0xFC;
                 for (int i = 0; i < 6; i++)
@@ -229,6 +256,10 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
                 {
                     pkm.ev(which, 0xFC);
                 }
+            }
+            else
+            {
+                pkm.ev(which, 65535);
             }
         }
         else

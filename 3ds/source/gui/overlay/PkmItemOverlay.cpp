@@ -30,6 +30,8 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
@@ -75,7 +77,11 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     const std::vector<std::string>& rawItems =
         pkm.generation() == pksm::Generation::THREE
             ? i18n::rawItems3(Configuration::getInstance().language())
-            : i18n::rawItems(Configuration::getInstance().language());
+            : (pkm.generation() == pksm::Generation::TWO
+                ? i18n::rawItems2(Configuration::getInstance().language())
+                : (pkm.generation() == pksm::Generation::ONE
+                    ? i18n::rawItems1(Configuration::getInstance().language())
+                    : i18n::rawItems(Configuration::getInstance().language())));
     const std::set<int>& availableItems =
         TitleLoader::save ? TitleLoader::save->availableItems()
                           : pksm::VersionTables::availableItems(
@@ -106,10 +112,14 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     hid.update(items.size());
     u16 item      = pkm.generation() == pksm::Generation::THREE
                       ? static_cast<pksm::PK3&>(pkm).heldItem3()
-                      : pkm.heldItem();
+                      : (pkm.generation() == pksm::Generation::TWO
+                          ? static_cast<pksm::PK2&>(pkm).heldItem2()
+                          : pkm.heldItem());
     int itemIndex = index(items, pkm.generation() == pksm::Generation::THREE
                                      ? i18n::item3(Configuration::getInstance().language(), item)
-                                     : i18n::item(Configuration::getInstance().language(), item));
+                                     : (pkm.generation() == pksm::Generation::TWO
+                                        ? i18n::item2(Configuration::getInstance().language(), item)
+                                        : i18n::item(Configuration::getInstance().language(), item)));
     // Checks to make sure that it's the correct item and not one with a duplicate name
     if (items[itemIndex].first != item)
     {
@@ -216,7 +226,11 @@ void PkmItemOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        if (pkm.generation() == pksm::Generation::THREE)
+        if (pkm.generation() == pksm::Generation::TWO)
+        {
+            static_cast<pksm::PK2&>(pkm).heldItem2((u16)items[hid.fullIndex()].first);
+        }
+        else if (pkm.generation() == pksm::Generation::THREE)
         {
             static_cast<pksm::PK3&>(pkm).heldItem3((u16)items[hid.fullIndex()].first);
         }
