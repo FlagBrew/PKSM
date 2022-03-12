@@ -100,6 +100,9 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
             pkm->version(TitleLoader::save->version());
             switch (pkm->version())
             {
+                case pksm::GameVersion::C:
+                    pkm->metLocation(0x02); // Route 29, probably C
+                    break;
                 case pksm::GameVersion::R:
                 case pksm::GameVersion::S:
                 case pksm::GameVersion::E:

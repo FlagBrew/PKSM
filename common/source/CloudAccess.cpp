@@ -422,7 +422,7 @@ void CloudAccess::filterToGen(pksm::Generation g)
 
 void CloudAccess::removeGenFilter()
 {
-    lowGen   = pksm::Generation::THREE;
+    lowGen   = pksm::Generation::ONE;
     highGen  = pksm::Generation::EIGHT;
     showLGPE = true;
 }

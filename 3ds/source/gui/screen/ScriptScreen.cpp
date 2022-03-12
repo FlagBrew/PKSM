@@ -49,6 +49,17 @@ namespace
     {
         switch (version)
         {
+            case pksm::GameVersion::RD:
+            case pksm::GameVersion::GN:
+            case pksm::GameVersion::BU:
+            case pksm::GameVersion::YW:
+                return "/scripts/rgby";
+            // i am sorry in advance to anyone who makes Gen II scripts for having to write any directly save-interacting code one, three, or five times
+            case pksm::GameVersion::GD:
+            case pksm::GameVersion::SV:
+                return "/scripts/gs";
+            case pksm::GameVersion::C:
+                return "/scripts/c";
             case pksm::GameVersion::R:
             case pksm::GameVersion::S:
                 return "/scripts/rs";

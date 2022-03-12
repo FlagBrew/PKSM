@@ -89,9 +89,11 @@ namespace
     std::atomic<bool> cartWasUpdated = false;
     std::atomic_flag continueScan;
 
-    std::array<u64, 5> vcTitleIds                              = {0, 0, 0, 0, 0};
+    std::array<u64, 12> vcTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::array<u64, 8> ctrTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0};
-    constexpr std::array<pksm::GameVersion, 13> searchVersions = {pksm::GameVersion::S,
+    constexpr std::array<pksm::GameVersion, 20> searchVersions = {
+        pksm::GameVersion::RD, pksm::GameVersion::GN, pksm::GameVersion::BU, pksm::GameVersion::YW,
+        pksm::GameVersion::GD, pksm::GameVersion::SV, pksm::GameVersion::C, pksm::GameVersion::S,
         pksm::GameVersion::R, pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG,
         pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
         pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
@@ -544,7 +546,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         else
         {
             archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-            in      = archive.file(u"/main", FS_OPEN_READ);
+            in      = archive.file(title->gb() ? u"/sav.dat" : u"/main", FS_OPEN_READ);
         }
         if (in)
         {
@@ -844,7 +846,7 @@ void TitleLoader::saveToTitle(bool ask)
             {
                 Archive archive =
                     Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
-                std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_WRITE);
+                std::unique_ptr<File> out = archive.file(title->gb() ? u"/sav.dat" : u"/main", FS_OPEN_WRITE);
 
                 if (out)
                 {
@@ -882,7 +884,7 @@ void TitleLoader::saveToTitle(bool ask)
         }
         else
         {
-            // Just a linear search because it's a maximum of thirteen titles
+            // Just a linear search because it's a maximum of twenty titles
             auto doSave = [&](const auto& titles)
             {
                 for (const auto& title : titles)
@@ -910,7 +912,7 @@ void TitleLoader::saveToTitle(bool ask)
                         {
                             archive = Archive::save(
                                 title->mediaType(), title->lowId(), title->highId(), false);
-                            out = archive.file(u"/main", FS_OPEN_WRITE);
+                            out = archive.file(title->gb() ? u"/sav.dat" : u"/main", FS_OPEN_WRITE);
                         }
 
                         if (out)

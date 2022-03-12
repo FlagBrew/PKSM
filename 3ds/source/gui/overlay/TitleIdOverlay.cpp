@@ -35,23 +35,32 @@
 
 namespace
 {
-    constexpr size_t NUM_TITLES                           = 13;
-    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES] = {
+    // i know GN is supposed to be Green JPN and Blue elsewhere, but it doesn't matter, core doesn't get the memo for what title it is
+    constexpr size_t NUM_TITLES                           = 20;
+    constexpr const char* TITLE_ABBREVIATIONS[NUM_TITLES] = {"R", "G", "B", "Y", "G", "S", "C",
         "R", "S", "E", "FR", "LG", "X", "Y", "OR", "AS", "S", "M", "US", "UM"};
-    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES] = {"0x100", "0x200", "0x300", "0x400",
+    // the GB titles here use the TIDs for the English versions (except Green of course)
+    constexpr const char* TITLE_ID_DEFAULTS[NUM_TITLES] = {"0x0004000000171000",
+        "0x0004000000170D00", "0x0004000000171100", "0x0004000000171200", "0x0004000000172600",
+        "0x0004000000172700", "0x0004000000172800", "0x100", "0x200", "0x300", "0x400",
         "0x500", "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400",
         "0x000400000011C500", "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000",
         "0x00040000001B5100"};
-    constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]   = {pksm::Species::Groudon,
-        pksm::Species::Kyogre, pksm::Species::Rayquaza, pksm::Species::Charizard,
-        pksm::Species::Venusaur, pksm::Species::Xerneas, pksm::Species::Yveltal,
-        pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Solgaleo,
-        pksm::Species::Lunala, pksm::Species::Necrozma, pksm::Species::Necrozma};
-    constexpr int TITLE_FORMS[NUM_TITLES]               = {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
-    constexpr pksm::GameVersion TITLE_VERSIONS[NUM_TITLES] = {pksm::GameVersion::R,
-        pksm::GameVersion::S, pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG,
-        pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
-        pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
+    constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]   = {pksm::Species::Charmander,
+        pksm::Species::Bulbasaur, pksm::Species::Squirtle, pksm::Species::Pikachu,
+        pksm::Species::HoOh, pksm::Species::Lugia, pksm::Species::Suicune,
+        pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Rayquaza,
+        pksm::Species::Charizard, pksm::Species::Venusaur, pksm::Species::Xerneas,
+        pksm::Species::Yveltal, pksm::Species::Groudon, pksm::Species::Kyogre,
+        pksm::Species::Solgaleo, pksm::Species::Lunala, pksm::Species::Necrozma,
+        pksm::Species::Necrozma};
+    constexpr int TITLE_FORMS[NUM_TITLES]               = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
+    constexpr pksm::GameVersion TITLE_VERSIONS[NUM_TITLES] = {pksm::GameVersion::RD,
+        pksm::GameVersion::GN, pksm::GameVersion::BU, pksm::GameVersion::YW, pksm::GameVersion::GD,
+        pksm::GameVersion::SV, pksm::GameVersion::C, pksm::GameVersion::R, pksm::GameVersion::S,
+        pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::X,
+        pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS, pksm::GameVersion::SN,
+        pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
 }
 
 TitleIdOverlay::TitleIdOverlay(ReplaceableScreen& screen) : ReplaceableScreen(&screen), hid(40, 8)

@@ -28,6 +28,7 @@
 #define SAVELOADSCREEN_HPP
 
 #include "Screen.hpp"
+#include "ToggleButton.hpp"
 #include "enums/Language.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
@@ -51,6 +52,14 @@ class SaveLoadScreen : public Screen
 {
 public:
     SaveLoadScreen();
+
+    enum SystemGroup : u8
+    {
+        GB_GBC_GBA,
+        DS_3DS,
+        SWITCH
+    };
+
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -62,12 +71,15 @@ private:
     void updateTitles(void);
 
     // Has to be mutable because no const operator[]
-    static constexpr size_t NUM_GROUPS = 12;
+    static constexpr size_t NUM_GROUPS = 18;
     std::array<std::vector<std::pair<std::string, std::string>>, NUM_GROUPS> saves;
     std::vector<std::unique_ptr<Button>> buttons;
+    std::vector<std::unique_ptr<ToggleButton>> tabs;
     int firstSave    = 0;
     int selectedSave = -1;
     int saveGroup    = 0;
+    int systemGroup = 0;
+
     pksm::Language oldLang;
     bool selectedGroup = false;
 

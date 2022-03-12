@@ -87,9 +87,10 @@ You can get real-time support by joining FlagBrew's discord server.
 
 PKSM has the following dependencies:
 
-- The latest version of libctru, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, 3ds-bzip2, 3ds-mpg123, 3dstools, rsync, and tex3ds with
+- The latest version of libctru, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, 3ds-bzip2, 3ds-mpg123, 3dstools, and tex3ds with
   their dependancies. All of these should be installed from [devKitPro
   pacman](https://devkitpro.org/wiki/devkitPro_pacman).
+- rsync
 - Your system's pkg-config
 - [3dstool](https://github.com/dnasdw/3dstool/releases),
   [bannertool](https://github.com/Steveice10/bannertool/releases) and

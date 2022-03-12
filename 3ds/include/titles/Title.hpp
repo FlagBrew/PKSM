@@ -50,6 +50,7 @@ public:
     FS_MediaType mediaType(void) const;
     FS_CardType cardType(void) const;
     bool gba(void) const;
+    bool gb(void) const;
 
     std::string checkpointPrefix(void) const;
 
@@ -78,6 +79,7 @@ private:
     std::string mName;
     std::string mPrefix;
     bool mGba;
+    bool mGb;
 };
 
 #endif

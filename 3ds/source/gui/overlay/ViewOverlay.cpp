@@ -94,87 +94,90 @@ void ViewOverlay::drawTop() const
     int statColorIndex[6] = {1, 1, 1, 1, 1, 1};
     if (pokemon.index() != 0 || std::get<0>(pokemon).get())
     {
-        // Subtract from the ones that are affected negatively
-        switch (getPKM().nature())
+        if (getPKM().generation() >= pksm::Generation::THREE)
         {
-            case pksm::Nature::Hardy:
-            case pksm::Nature::Bold:
-            case pksm::Nature::Modest:
-            case pksm::Nature::Calm:
-            case pksm::Nature::Timid:
-                statColorIndex[u8(pksm::Stat::ATK)]--;
-                break;
-            case pksm::Nature::Lonely:
-            case pksm::Nature::Docile:
-            case pksm::Nature::Mild:
-            case pksm::Nature::Gentle:
-            case pksm::Nature::Hasty:
-                statColorIndex[u8(pksm::Stat::DEF)]--;
-                break;
-            case pksm::Nature::Adamant:
-            case pksm::Nature::Impish:
-            case pksm::Nature::Bashful:
-            case pksm::Nature::Careful:
-            case pksm::Nature::Jolly:
-                statColorIndex[u8(pksm::Stat::SPATK)]--;
-                break;
-            case pksm::Nature::Naughty:
-            case pksm::Nature::Lax:
-            case pksm::Nature::Rash:
-            case pksm::Nature::Quirky:
-            case pksm::Nature::Naive:
-                statColorIndex[u8(pksm::Stat::SPDEF)]--;
-                break;
-            case pksm::Nature::Brave:
-            case pksm::Nature::Relaxed:
-            case pksm::Nature::Quiet:
-            case pksm::Nature::Sassy:
-            case pksm::Nature::Serious:
-                statColorIndex[u8(pksm::Stat::SPD)]--;
-                break;
-            case pksm::Nature::INVALID:
-                break;
-        }
-        // Add to the ones that are affected positively
-        switch (getPKM().nature())
-        {
-            case pksm::Nature::Hardy:
-            case pksm::Nature::Lonely:
-            case pksm::Nature::Adamant:
-            case pksm::Nature::Naughty:
-            case pksm::Nature::Brave:
-                statColorIndex[u8(pksm::Stat::ATK)]++;
-                break;
-            case pksm::Nature::Bold:
-            case pksm::Nature::Docile:
-            case pksm::Nature::Impish:
-            case pksm::Nature::Lax:
-            case pksm::Nature::Relaxed:
-                statColorIndex[u8(pksm::Stat::DEF)]++;
-                break;
-            case pksm::Nature::Modest:
-            case pksm::Nature::Mild:
-            case pksm::Nature::Bashful:
-            case pksm::Nature::Rash:
-            case pksm::Nature::Quiet:
-                statColorIndex[u8(pksm::Stat::SPATK)]++;
-                break;
-            case pksm::Nature::Calm:
-            case pksm::Nature::Gentle:
-            case pksm::Nature::Careful:
-            case pksm::Nature::Quirky:
-            case pksm::Nature::Sassy:
-                statColorIndex[u8(pksm::Stat::SPDEF)]++;
-                break;
-            case pksm::Nature::Timid:
-            case pksm::Nature::Hasty:
-            case pksm::Nature::Jolly:
-            case pksm::Nature::Naive:
-            case pksm::Nature::Serious:
-                statColorIndex[u8(pksm::Stat::SPD)]++;
-                break;
-            case pksm::Nature::INVALID:
-                break;
+            // Subtract from the ones that are affected negatively
+            switch (getPKM().nature())
+            {
+                case pksm::Nature::Hardy:
+                case pksm::Nature::Bold:
+                case pksm::Nature::Modest:
+                case pksm::Nature::Calm:
+                case pksm::Nature::Timid:
+                    statColorIndex[u8(pksm::Stat::ATK)]--;
+                    break;
+                case pksm::Nature::Lonely:
+                case pksm::Nature::Docile:
+                case pksm::Nature::Mild:
+                case pksm::Nature::Gentle:
+                case pksm::Nature::Hasty:
+                    statColorIndex[u8(pksm::Stat::DEF)]--;
+                    break;
+                case pksm::Nature::Adamant:
+                case pksm::Nature::Impish:
+                case pksm::Nature::Bashful:
+                case pksm::Nature::Careful:
+                case pksm::Nature::Jolly:
+                    statColorIndex[u8(pksm::Stat::SPATK)]--;
+                    break;
+                case pksm::Nature::Naughty:
+                case pksm::Nature::Lax:
+                case pksm::Nature::Rash:
+                case pksm::Nature::Quirky:
+                case pksm::Nature::Naive:
+                    statColorIndex[u8(pksm::Stat::SPDEF)]--;
+                    break;
+                case pksm::Nature::Brave:
+                case pksm::Nature::Relaxed:
+                case pksm::Nature::Quiet:
+                case pksm::Nature::Sassy:
+                case pksm::Nature::Serious:
+                    statColorIndex[u8(pksm::Stat::SPD)]--;
+                    break;
+                case pksm::Nature::INVALID:
+                    break;
+            }
+            // Add to the ones that are affected positively
+            switch (getPKM().nature())
+            {
+                case pksm::Nature::Hardy:
+                case pksm::Nature::Lonely:
+                case pksm::Nature::Adamant:
+                case pksm::Nature::Naughty:
+                case pksm::Nature::Brave:
+                    statColorIndex[u8(pksm::Stat::ATK)]++;
+                    break;
+                case pksm::Nature::Bold:
+                case pksm::Nature::Docile:
+                case pksm::Nature::Impish:
+                case pksm::Nature::Lax:
+                case pksm::Nature::Relaxed:
+                    statColorIndex[u8(pksm::Stat::DEF)]++;
+                    break;
+                case pksm::Nature::Modest:
+                case pksm::Nature::Mild:
+                case pksm::Nature::Bashful:
+                case pksm::Nature::Rash:
+                case pksm::Nature::Quiet:
+                    statColorIndex[u8(pksm::Stat::SPATK)]++;
+                    break;
+                case pksm::Nature::Calm:
+                case pksm::Nature::Gentle:
+                case pksm::Nature::Careful:
+                case pksm::Nature::Quirky:
+                case pksm::Nature::Sassy:
+                    statColorIndex[u8(pksm::Stat::SPDEF)]++;
+                    break;
+                case pksm::Nature::Timid:
+                case pksm::Nature::Hasty:
+                case pksm::Nature::Jolly:
+                case pksm::Nature::Naive:
+                case pksm::Nature::Serious:
+                    statColorIndex[u8(pksm::Stat::SPD)]++;
+                    break;
+                case pksm::Nature::INVALID:
+                    break;
+            }
         }
     }
 

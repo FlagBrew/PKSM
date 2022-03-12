@@ -190,7 +190,7 @@ namespace
 
     bool update(std::string execPath)
     {
-        // commenting to be undone when FlagBrew takes control back, for now Universal Updater will do nicely
+        // commenting to be undone when FlagBrew takes control back, for now Universal Updater will do nicely (and would continue to tbqh)
         /*
         u32 status;
         ACU_GetWifiStatus(&status);

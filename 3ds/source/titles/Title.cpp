@@ -138,6 +138,20 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         {
             loadTitle = true;
             mIcon     = loadTextureIcon(smdh);
+            std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_READ);
+            if (!out)
+            {
+                out = archive.file(u"/sav.dat", FS_OPEN_READ);
+                if (out)
+                {
+                    mGb = true;
+                    out->close();
+                }
+            }
+            else
+            {
+                out->close();
+            }
         }
         // Is it a GBA save? GBA saves are not in the normal archive format
         else
@@ -243,6 +257,11 @@ FS_CardType Title::cardType(void) const
 bool Title::gba(void) const
 {
     return mGba;
+}
+
+bool Title::gb(void) const
+{
+    return mGb;
 }
 
 std::string Title::checkpointPrefix(void) const

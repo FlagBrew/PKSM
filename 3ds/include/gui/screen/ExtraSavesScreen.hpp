@@ -28,6 +28,7 @@
 #define EXTRASAVESSCREEN_HPP
 
 #include "Screen.hpp"
+#include "ToggleButton.hpp"
 #include <memory>
 #include <vector>
 
@@ -38,12 +39,22 @@ class ExtraSavesScreen : public Screen
 public:
     ExtraSavesScreen();
 
+    enum SystemGroup : u8
+    {
+        GB_GBC_GBA,
+        DS_3DS,
+        SWITCH
+    };
+
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
     void drawBottom(void) const override;
 
 private:
     int saveGroup = 0;
+    int systemGroup = 0;
+
+    std::vector<std::unique_ptr<ToggleButton>> tabs;
 };
 
 #endif

@@ -323,7 +323,8 @@ std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
     {
         case pksm::Generation::ONE:
         {
-            if (entries[index].data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+            u8 jpEnd = entries[index].data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1];
+            if (jpEnd == 0x50 || jpEnd == 0)
             {
                 ret = pksm::PKX::getPKM<pksm::Generation::ONE>(entries[index].data, pksm::PK1::JP_LENGTH_WITH_NAMES);
             }
@@ -335,7 +336,8 @@ std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
         break;
         case pksm::Generation::TWO:
         {
-            if (entries[index].data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1] == 0x50)
+            u8 jpEnd = entries[index].data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1];
+            if (jpEnd == 0x50 || jpEnd == 0)
             {
                 ret = pksm::PKX::getPKM<pksm::Generation::TWO>(entries[index].data, pksm::PK2::JP_LENGTH_WITH_NAMES);
             }

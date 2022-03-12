@@ -1634,25 +1634,17 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
             {
                 if (pkm.language() == pksm::Language::JPN)
                 {
-                    if (i == 0x34 || i == 0x3A)
+                    if (i <= 0x34)
                     {
-                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                        return std::make_pair(&i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
                     }
-                    if (i < 0x34)
-                    {
-                        return std::make_pair(&i18n::localize("OT_NAME"), NORMAL);
-                    }
-                    return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+                    return std::make_pair(&i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
                 }
-                if (i == 0x39 || i == 0x44)
+                if (i <= 0x39)
                 {
-                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                    return std::make_pair(&i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
                 }
-                if (i < 0x39)
-                {
-                    return std::make_pair(&i18n::localize("OT_NAME"), NORMAL);
-                }
-                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+                return std::make_pair(&i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
             }
         }
     }

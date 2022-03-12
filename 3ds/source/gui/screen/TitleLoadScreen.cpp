@@ -159,13 +159,13 @@ void TitleLoadScreen::drawTop() const
 
     for (size_t i = 0; i < titles->size(); i++)
     {
-        int y = titles->size() > 4 ? (i / 4) * 60 + 68 : 98;
+        int y = titles->size() > 4 ? (i / 4) * 60 + (titles->size() > 8 ? 38 : 68) : 98;
         int x = 150 + (4 - (titles->size() % 4 == 0 ? 4 : titles->size() % 4)) * 30 +
-                (i > 3 ? i - 4 : i) * 60;
+                (i % 4) * 60;
 
-        if (titles->size() > 4 && i < 4)
+        if ((titles->size() > 4 && i < 4) || (titles->size() > 8 && i < 8))
         {
-            x = 150 + (i > 3 ? i - 4 : i) * 60;
+            x = 150 + (i % 4) * 60;
         }
 
         Gui::drawImageAt((*titles)[i]->icon(), x, y, NULL, 1.0f, 1.0f);
@@ -177,9 +177,9 @@ void TitleLoadScreen::drawTop() const
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_TOP_ABSENT"), 200, 8, FONT_SIZE_11, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::TOP, TextWidthAction::SQUISH, 398);
-    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 197, FONT_SIZE_14,
+    Gui::text(i18n::localize("LOADER_GAME_CARD"), 4 + 120 / 2, 217, FONT_SIZE_14,
         PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 197, FONT_SIZE_14,
+    Gui::text(i18n::localize("LOADER_INSTALLED_GAMES"), 128 + 268 / 2, 217, FONT_SIZE_14,
         PKSM_Color(15, 22, 89, 255), TextPosX::CENTER, TextPosY::TOP);
 }
 
@@ -429,7 +429,24 @@ void TitleLoadScreen::update(touchPosition* touch)
             }
             else
             {
-                if (titles->size() > 4)
+                if (titles->size() > 8)
+                {
+                    if (selectedTitle < 4)
+                    {
+                        selectedTitle += 4;
+                    }
+                    else if (selectedTitle < 8)
+                    {
+                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
+                                          ? titles->size() - 1
+                                          : selectedTitle + 4;
+                    }
+                    else
+                    {
+                        selectedTitle %= 4;
+                    }
+                }
+                else if (titles->size() > 4)
                 {
                     if (selectedTitle < 4)
                     {

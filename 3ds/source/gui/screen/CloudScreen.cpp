@@ -57,7 +57,19 @@ namespace
         if (tmp.find("Generation:") == 0)
         {
             tmp = tmp.substr(12);
-            if (tmp.find("4") == 0)
+            if (tmp.find("1") == 0)
+            {
+                *(pksm::Generation*)(userdata) = pksm::Generation::ONE;
+            }
+            else if (tmp.find("2") == 0)
+            {
+                *(pksm::Generation*)(userdata) = pksm::Generation::TWO;
+            }
+            else if (tmp.find("3") == 0)
+            {
+                *(pksm::Generation*)(userdata) = pksm::Generation::THREE;
+            }
+            else if (tmp.find("4") == 0)
             {
                 *(pksm::Generation*)(userdata) = pksm::Generation::FOUR;
             }

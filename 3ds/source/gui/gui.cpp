@@ -1478,11 +1478,10 @@ void Gui::format(const pksm::PKX& pkm, int x, int y)
 {
     switch (pkm.generation())
     {
-        // If this ever happens
-        // case Generation::ONE:
-        // case Generation::TWO: // if this ever happens
-        //     Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
-        //     break;
+        case pksm::Generation::ONE:
+        case pksm::Generation::TWO:
+            Gui::sprite(ui_sheet_icon_generation_gb_idx, x, y);
+            break;
         case pksm::Generation::THREE:
             Gui::sprite(ui_sheet_icon_generation_3_idx, x, y);
             break;
@@ -1648,6 +1647,7 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         }
     }
     // For possible hex editor mishaps
+    //else if (species > pksm::Species::Calyrex) // TODO: Gen 8 sheet
     else if (species > pksm::Species::Melmetal)
     {
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
@@ -1675,6 +1675,13 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
     }
     else if (form == 0)
     {
+        // TODO: gen 8 sheet
+        /*
+        if (species > pksm::Species::Calyrex)
+        {
+            species = pksm::Species::Calyrex;
+        }
+        */
         // This max will change over time!
         if (species > pksm::Species::Melmetal)
         {
@@ -1777,6 +1784,13 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         decltype(pksm::PersonalSWSH::formCount)* formCountGetter;
         switch (generation)
         {
+            case pksm::Generation::ONE:
+            case pksm::Generation::TWO:
+                formCountGetter = pksm::PersonalGSC::formCount;
+                break;
+            case pksm::Generation::THREE:
+                formCountGetter = pksm::PersonalRSFRLGE::formCount;
+                break;
             case pksm::Generation::FOUR:
                 formCountGetter = pksm::PersonalDPPtHGSS::formCount;
                 break;

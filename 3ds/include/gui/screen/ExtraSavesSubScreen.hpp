@@ -36,18 +36,24 @@ class ExtraSavesSubScreen : public Screen
 public:
     enum Group : u8
     {
+        RGB,
+        Y,
+        GS,
+        C,
         RS,
         E,
         FRLG,
-        XY,
-        ORAS,
-        SM,
-        USUM,
         DP,
         HGSS,
         Pt,
         BW,
-        B2W2
+        B2W2,
+        XY,
+        ORAS,
+        SM,
+        USUM,
+        LGPE,
+        SwSh
     };
     ExtraSavesSubScreen(Group group);
 
@@ -65,7 +71,7 @@ private:
     int firstSave         = 0;
     int numSaves          = 0;
     Group group;
-    bool secondSelected = false;
+    int selectedGame    = 0; // i'm pulling a sneaky where i can keep the existing code by using promotion and handle RGB
     bool updateConfig   = false;
 };
 
