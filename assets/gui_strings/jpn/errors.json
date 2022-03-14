@@ -1,6 +1,6 @@
 {
     "ALREADY_LEGAL": "ポケモンはすでに整合性です!",
-    "AUTO_LEGALIZE_ERROR": "このポケモンは整合性チェックを使用出来ません!",
+    "AUTO_LEGALIZE_ERROR": "このポケモンは整合性チェックを使用できません!",
     "BACKUP_FAIL_SAVE_1": "バンクのバックアップに失敗しました。",
     "BACKUP_FAIL_SAVE_2": "バックアップ無しで保存しますか?",
     "BAD_CIA_FILE": "CIAの読み取りに失敗しました!",
@@ -15,7 +15,7 @@
     "BP": "BP",
     "BURNED": "やけど",
     "CANDIES": "アメ",
-    "CAPSULE_INDEX_(SEALS)": "カプセルインデックス (シール)",
+    "CAPSULE_INDEX_(SEALS)": "カプセルインデックス(シール)",
     "CATCHING_ITEMS": "捕獲アイテム",
     "CHANGE_FORM": "フォルムを変更する",
     "CHANGE_SPECIES": "ポケモンを変更する",
@@ -66,7 +66,7 @@
     "NO_DUPES": "重複はできません",
     "NO_PARTY_EMPTY": "パーティーをクリアできません!",
     "NO_TRANSFER_PATH": "世代間で転送できません",
-    "NO_TRANSFER_PATH_SINGLE": "世代間で転送できません:\n{:s}->{:s}",
+    "NO_TRANSFER_PATH_SINGLE": "世代間で転送できません:\n{:s}→{:s}",
     "NO_WONDERCARDS": "不思議なカードは存在しない",
     "NS_POKEMON?": "Nのポケモン?",
     "NULL_TERMINATOR": "ヌルターミネータ",
@@ -103,6 +103,6 @@
     "UPDATE_CHECK_ERROR_BAD_JSON_2": "不正なJSON",
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "アップデートが見つかりましたが、ダウンロードに失敗しました。",
     "USE_INJECTOR_C": "普遍スクリプト「injector.c」を使用してください",
-    "WC_LGPE": "LGPE は不思議なカードを保存できません!",
+    "WC_LGPE": "LGPEは不思議なカードを保存できません!",
     "WRONG_SIZE": "サイズがゲームに合いません!"
 }
