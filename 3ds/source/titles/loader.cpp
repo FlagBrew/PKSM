@@ -139,8 +139,18 @@ namespace
                 return "POKEMON W2.sav";
             }
         }
-        for (const auto& tid : vcTitleIds)
+        for (size_t i = 0; i < 7; i++)
         {
+            const auto& tid = vcTitleIds[i];
+            std::string chkPrefix = Title::tidToCheckpointPrefix<std::string>(tid);
+            if (chkPrefix == id)
+            {
+                return "sav.dat";
+            }
+        }
+        for (size_t i = 7; i < vcTitleIds.size(); i++)
+        {
+            const auto& tid = vcTitleIds[i];
             std::string chkPrefix = Title::tidToCheckpointPrefix<std::string>(tid);
             if (chkPrefix == id)
             {
@@ -191,8 +201,18 @@ namespace
                 return "POKEMON W2.sav";
             }
         }
-        for (const auto& tid : vcTitleIds)
+        for (size_t i = 0; i < 7; i++)
         {
+            const auto& tid = vcTitleIds[i];
+            std::u16string chkPrefix = Title::tidToCheckpointPrefix<std::u16string>(tid);
+            if (chkPrefix == id)
+            {
+                return "sav.dat";
+            }
+        }
+        for (size_t i = 7; i < vcTitleIds.size(); i++)
+        {
+            const auto& tid = vcTitleIds[i];
             std::u16string chkPrefix = Title::tidToCheckpointPrefix<std::u16string>(tid);
             if (chkPrefix == id)
             {

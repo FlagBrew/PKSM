@@ -451,6 +451,7 @@ void ExtraSavesSubScreen::updateSaves()
         case ExtraSavesSubScreen::Group::RGB:
             currentSaves = Configuration::getInstance().extraSaves(
                 std::string(selectedGame ? ((selectedGame == 1) ? ctrIds[14] : ctrIds[15] ) : ctrIds[13]));
+            numSaves = currentSaves.size();
             break;
         default:
             currentSaves = Configuration::getInstance().extraSaves(

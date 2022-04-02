@@ -516,7 +516,7 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == (int)titles->size() - 1 || selectedTitle == 3)
+            if (selectedTitle == (int)titles->size() - 1 || selectedTitle == 3 || selectedTitle == 7)
             {
                 if (TitleLoader::cardTitle)
                 {
@@ -526,7 +526,11 @@ void TitleLoadScreen::update(touchPosition* touch)
                 {
                     if (titles->size() > 4 && selectedTitle > 3)
                     {
-                        if (selectedTitle > 3)
+                        if (selectedTitle > 7)
+                        {
+                            selectedTitle = 8;
+                        }
+                        else if (selectedTitle > 3)
                         {
                             selectedTitle = 4;
                         }
@@ -552,7 +556,7 @@ void TitleLoadScreen::update(touchPosition* touch)
             {
                 selectedTitle = titles->size() < 4 ? titles->size() - 1 : 3;
             }
-            else if (selectedTitle == 4)
+            else if (selectedTitle == 8)
             {
                 if (TitleLoader::cardTitle)
                 {
@@ -561,6 +565,17 @@ void TitleLoadScreen::update(touchPosition* touch)
                 else
                 {
                     selectedTitle = (int)titles->size() - 1;
+                }
+            }
+            else if (selectedTitle == 4)
+            {
+                if (TitleLoader::cardTitle)
+                {
+                    selectedTitle = -1;
+                }
+                else
+                {
+                    selectedTitle = titles->size() > 8 ? 8 : ((int)titles->size() - 1);
                 }
             }
             else if (selectedTitle == 0)

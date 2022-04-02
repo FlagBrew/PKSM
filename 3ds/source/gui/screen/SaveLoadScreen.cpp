@@ -798,9 +798,20 @@ bool SaveLoadScreen::loadSave()
     if (TitleLoader::load(nullptr, saves[saveGroup][selectedSave + firstSave].second))
     {
         Gui::setScreen(std::make_unique<MainMenu>());
+        switch (systemGroup)
+        {
+            case SystemGroup::DS_3DS:
+                saveGroup -= 7;
+                break;
+            case SystemGroup::SWITCH:
+                saveGroup -= 16;
+                break;
+            case SystemGroup::GB_GBC_GBA:
+            default:
+                break;
+        }
         return true;
     }
-    return false;
     switch (systemGroup)
     {
         case SystemGroup::DS_3DS:
@@ -813,6 +824,7 @@ bool SaveLoadScreen::loadSave()
         default:
             break;
     }
+    return false;
 }
 
 bool SaveLoadScreen::setSelectedSave(int i)
@@ -850,7 +862,6 @@ bool SaveLoadScreen::setSelectedSave(int i)
     {
         selectedSave = i;
     }
-    return false;
     switch (systemGroup)
     {
         case SystemGroup::DS_3DS:
@@ -863,6 +874,7 @@ bool SaveLoadScreen::setSelectedSave(int i)
         default:
             break;
     }
+    return false;
 }
 
 void SaveLoadScreen::updateTitles()
