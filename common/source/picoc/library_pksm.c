@@ -28,6 +28,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_get_value,        "int sav_get_value(enum SAV_Field field, ...);" },
     { sav_get_max,          "int sav_get_max(enum SAV_MaxField field, ...);" },
     { sav_check_value,      "int sav_check_value(enum SAV_CheckValue field, int value);" },
+    { sav_register_pkx_dex, "void sav_register_pkx_dex(char* data, enum Generation gen);"},
     { party_get_pkx,        "void party_get_pkx(char* data, int slot);" },
     { party_inject_pkx,     "void party_inject_pkx(char* data, enum Generation type, int slot);" },
     { bank_inject_pkx,      "void bank_inject_pkx(char* data, enum Generation type, int box, int slot);" },

@@ -2790,4 +2790,16 @@ void pksm_bz2_compress(
         *outSize = outData.size();
     }
 }
+
+// void sav_register_pkx_dex(char* data, enum Generation gen);
+void sav_register_pkx_dex(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data         = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+
+    auto pkm = getPokemon(data, gen, false);
+
+    if (pkm) TitleLoader::save->dex(*pkm);
+}
 }
