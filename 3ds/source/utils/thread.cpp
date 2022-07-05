@@ -27,6 +27,7 @@
 #include "thread.hpp"
 #include <3ds.h>
 #include <algorithm>
+#include <vector>
 
 namespace
 {

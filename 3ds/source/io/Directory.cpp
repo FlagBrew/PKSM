@@ -26,6 +26,7 @@
 
 #include "Directory.hpp"
 #include "internal_fspxi.hpp"
+#include <array>
 
 #define DIRECTORY_READ_SIZE 10
 

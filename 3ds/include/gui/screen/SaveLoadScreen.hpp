@@ -30,6 +30,7 @@
 #include "Screen.hpp"
 #include "enums/Language.hpp"
 #include <arpa/inet.h>
+#include <array>
 #include <errno.h>
 #include <fcntl.h>
 #include <list>

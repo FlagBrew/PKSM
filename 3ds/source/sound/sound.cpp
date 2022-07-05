@@ -32,6 +32,7 @@
 #include "random.hpp"
 #include "thread.hpp"
 #include <3ds.h>
+#include <array>
 #include <atomic>
 #include <unordered_map>
 
