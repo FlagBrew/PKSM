@@ -147,11 +147,13 @@ CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
 			-DFMT_HEADER_ONLY \
+			-DJSON_HAS_FILESYSTEM=0 \
+			-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0 \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
 			`curl-config --cflags` \
 			$(OPTIMIZE) $(RELEASE_FLAGS)
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -D_GNU_SOURCE=1
+CFLAGS	+=	$(INCLUDE) -DARM11 -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
