@@ -405,9 +405,9 @@ void ExtraSavesScreen::update(touchPosition* touch)
                 break;
             case SystemGroup::SWITCH:
                 /*
-                if (saveGroup == 0)
+                if (saveGroup == 1)
                 {
-                    saveGroup = 1;
+                    saveGroup = 0;
                 }
                 else
                 {
@@ -454,9 +454,9 @@ void ExtraSavesScreen::update(touchPosition* touch)
                 break;
             case SystemGroup::SWITCH:
                 /*
-                if (saveGroup == 1)
+                if (saveGroup == 0)
                 {
-                    saveGroup = 0;
+                    saveGroup = 1;
                 }
                 else
                 {

@@ -645,9 +645,9 @@ void SaveLoadScreen::update(touchPosition* touch)
                     break;
                 case SystemGroup::SWITCH:
                     /*
-                    if (saveGroup == 0)
+                    if (saveGroup == 1)
                     {
-                        saveGroup = 1;
+                        saveGroup = 0;
                     }
                     else
                     {
@@ -693,9 +693,9 @@ void SaveLoadScreen::update(touchPosition* touch)
                     break;
                 case SystemGroup::SWITCH:
                     /*
-                    if (saveGroup == 1)
+                    if (saveGroup == 0)
                     {
-                        saveGroup = 0;
+                        saveGroup = 1;
                     }
                     else
                     {
@@ -885,6 +885,8 @@ void SaveLoadScreen::updateTitles()
         u64 tid            = strtoull(tidStr.c_str(), nullptr, 16);
         ctrIds[i]          = Title::tidToCheckpointPrefix(tid);
     }
+
+    Gui::warn(ctrIds[20]);
 
     for (auto& i : saves)
     {
