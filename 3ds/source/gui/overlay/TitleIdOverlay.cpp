@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "TitleIdOverlay.hpp"
 #include "Archive.hpp"
 #include "Configuration.hpp"

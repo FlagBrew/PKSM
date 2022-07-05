@@ -109,7 +109,7 @@ bool receiveSaveFromBridge(void)
 
     size_t total = 0;
     size_t chunk = 1024;
-    int n;
+    int n = 0;
     while (total < size)
     {
         size_t torecv = size - total > chunk ? chunk : size - total;

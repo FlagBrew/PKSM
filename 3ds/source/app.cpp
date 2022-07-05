@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "app.hpp"
 #include "Archive.hpp"
 #include "Button.hpp"

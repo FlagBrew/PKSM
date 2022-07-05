@@ -24,9 +24,9 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "Directory.hpp"
 #include "internal_fspxi.hpp"
-#include <array>
 
 #define DIRECTORY_READ_SIZE 10
 

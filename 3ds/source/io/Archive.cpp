@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "Archive.hpp"
 #include "Directory.hpp"
 #include "File.hpp"

@@ -24,6 +24,7 @@
  *         reasonable ways as different from the original version.
  */
 
+#include <array>
 #include "File.hpp"
 #include "internal_fspxi.hpp"
 
