@@ -52,7 +52,7 @@ public:
     }
     bool willHandleUpdate() const;
     void doUpdate(touchPosition* touch);
-#if defined(_3DS)
+#if defined(__3DS__)
     bool willReplaceBottom() const;
     bool willReplaceTop() const;
     void doTopDraw() const;

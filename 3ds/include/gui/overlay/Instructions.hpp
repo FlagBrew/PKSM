@@ -36,7 +36,7 @@ class Instructions
 {
 public:
     Instructions(const std::string& simpleInstructions = "");
-#if defined(_3DS)
+#if defined(__3DS__)
     void drawTop() const;
     void drawBottom() const;
 #elif defined(__SWITCH__)
