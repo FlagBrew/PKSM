@@ -147,6 +147,8 @@ CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
 			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
 			-DFMT_HEADER_ONLY \
+			-DJSON_HAS_FILESYSTEM=0 \
+			-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0 \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
 			`curl-config --cflags` \
 			$(OPTIMIZE) $(RELEASE_FLAGS)
