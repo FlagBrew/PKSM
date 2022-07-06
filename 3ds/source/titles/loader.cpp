@@ -91,12 +91,14 @@ namespace
 
     std::array<u64, 12> vcTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     std::array<u64, 8> ctrTitleIds                             = {0, 0, 0, 0, 0, 0, 0, 0};
-    constexpr std::array<pksm::GameVersion, 20> searchVersions = {
+    std::array<u64, 9> nxTitleIds                              = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    constexpr std::array<pksm::GameVersion, 24> searchVersions = {
         pksm::GameVersion::RD, pksm::GameVersion::GN, pksm::GameVersion::BU, pksm::GameVersion::YW,
         pksm::GameVersion::GD, pksm::GameVersion::SV, pksm::GameVersion::C, pksm::GameVersion::S,
         pksm::GameVersion::R, pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG,
         pksm::GameVersion::X, pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS,
-        pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM};
+        pksm::GameVersion::SN, pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM,
+        pksm::GameVersion::GP, pksm::GameVersion::GE, pksm::GameVersion::SW, pksm::GameVersion::SH};
 
     std::string idToSaveName(const std::string& id)
     {
@@ -354,6 +356,7 @@ void TitleLoader::reloadTitleIds(void)
 {
     size_t vcIndex  = 0;
     size_t ctrIndex = 0;
+    size_t nxIndex  = 0;
     for (size_t i = 0; i < searchVersions.size(); i++)
     {
         std::string id = Configuration::getInstance().titleId(searchVersions[i]);
@@ -361,9 +364,13 @@ void TitleLoader::reloadTitleIds(void)
         {
             vcTitleIds[vcIndex++] = strtoull(id.c_str(), nullptr, 16);
         }
-        else
+        else if ((pksm::Generation)searchVersions[i] <= pksm::Generation::SEVEN)
         {
             ctrTitleIds[ctrIndex++] = strtoull(id.c_str(), nullptr, 16);
+        }
+        else
+        {
+            nxTitleIds[nxIndex++] = strtoull(id.c_str(), nullptr, 16);
         }
     }
 }
@@ -476,6 +483,7 @@ void TitleLoader::scanSaves(void)
 
     scan(vcTitleIds);
     scan(ctrTitleIds);
+    scan(nxTitleIds);
 
     for (size_t game = 0; game < 9; game++)
     {

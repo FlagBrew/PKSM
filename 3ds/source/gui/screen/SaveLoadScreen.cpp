@@ -886,8 +886,6 @@ void SaveLoadScreen::updateTitles()
         ctrIds[i]          = Title::tidToCheckpointPrefix(tid);
     }
 
-    Gui::warn(ctrIds[20]);
-
     for (auto& i : saves)
     {
         i.clear();
