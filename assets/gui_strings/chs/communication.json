@@ -1,4 +1,8 @@
 {
+    "BRIDGE_ERROR_FILE_DATA_CORRUPTED": "Transfer failed. File data corrupted.",
+    "BRIDGE_ERROR_UNEXPECTED_MESSAGE" : "Unsupported PKSM Bridge protocol version.",
+    "BRIDGE_ERROR_UNHANDLED" : "Unhandled PKSM Bridge error occurred: {:d}.",
+    "BRIDGE_ERROR_UNSUPPORTED_PROTOCOL_VERISON" : "Unexpected message received over PKSM Bridge.",
     "BRIDGE_SHOULD_SEND_1": "您想要发送更改的文件",
     "BRIDGE_SHOULD_SEND_2": "到原始客户端吗?",
     "CLOUD_BOX": "Cloud {:d}",

@@ -33,8 +33,10 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "pksmbridge_api.h"
+#include "pksmbridge_tcp.h"
+#include "utils/crypto.hpp"
 #include <arpa/inet.h>
-#include <unistd.h>
 
 namespace
 {
@@ -46,6 +48,18 @@ namespace
         static sockaddr_in addr;
         addr.sin_addr.s_addr = gethostid();
         return inet_ntoa(addr.sin_addr);
+    }
+
+    bool verifyPKSMBridgeFileSHA256Checksum(struct pksmBridgeFile file)
+    {
+        uint32_t expectedSHA256ChecksumSize = 32;
+        if (file.checksumSize != expectedSHA256ChecksumSize)
+        {
+            return false;
+        }
+        std::array<u8, 32> checksum = pksm::crypto::sha256(file.contents, file.size);
+        int result                  = memcmp(checksum.data(), file.checksum, file.checksumSize);
+        return (result == 0) ? true : false;
     }
 }
 
@@ -64,133 +78,86 @@ bool receiveSaveFromBridge(void)
                                 fmt::format(i18n::localize("WIRELESS_IP"), getHostId())))
     {
         return false;
-    }
+    };
+    uint8_t* file = nullptr;
+    uint32_t fileSize;
+    enum pksmBridgeError error = receiveFileOverPKSMBridgeViaTCP(
+        PKSM_PORT, &lastIPAddr, &file, &fileSize, &verifyPKSMBridgeFileSHA256Checksum);
 
-    int fd;
-    struct sockaddr_in servaddr;
-    if ((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)) < 0)
+    switch (error)
     {
-        Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
-        return false;
-    }
-
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family      = AF_INET;
-    servaddr.sin_port        = htons(PKSM_PORT);
-    servaddr.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
-    {
-        Gui::error(i18n::localize("SOCKET_BIND_FAIL"), errno);
-        close(fd);
-        return false;
-    }
-
-    if (listen(fd, 5) < 0)
-    {
-        Gui::error(i18n::localize("SOCKET_LISTEN_FAIL"), errno);
-        close(fd);
-        return false;
-    }
-
-    int fdconn;
-    int addrlen = sizeof(servaddr);
-    if ((fdconn = accept(fd, (struct sockaddr*)&servaddr, (socklen_t*)&addrlen)) < 0)
-    {
-        Gui::error(i18n::localize("SOCKET_ACCEPT_FAIL"), errno);
-        close(fd);
-        return false;
-    }
-
-    lastIPAddr = servaddr.sin_addr;
-
-    size_t size                = 0x180B19;
-    std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[size]);
-
-    size_t total = 0;
-    size_t chunk = 1024;
-    int n;
-    while (total < size)
-    {
-        size_t torecv = size - total > chunk ? chunk : size - total;
-        n             = recv(fdconn, &data[total], torecv, 0);
-        total += n;
-        if (n <= 0)
-        {
+        case PKSM_BRIDGE_ERROR_NONE:
             break;
-        }
-        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
+        case PKSM_BRIDGE_ERROR_UNSUPPORTED_PROTCOL_VERSION:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNSUPPORTED_PROTOCOL_VERISON"), errno);
+            return false;
+        case PKSM_BRIDGE_ERROR_CONNECTION_ERROR:
+            Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_READ_FAILURE:
+            Gui::error(i18n::localize("DATA_RECEIVE_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_WRITE_FAILURE:
+            Gui::error(i18n::localize("DATA_SEND_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_FILE_CORRUPTED:
+            Gui::error(i18n::localize("BRIDGE_ERROR_FILE_DATA_CORRUPTED"), errno);
+            return false;
+        case PKSM_BRIDGE_ERROR_UNEXPECTED_MESSAGE:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNEXPECTED_MESSAGE"), errno);
+            return false;
+        default:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNHANDLED"), errno);
+            return false;
     }
 
-    close(fdconn);
-    close(fd);
-
-    if (n == 0 || total == size)
+    std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(file, free);
+    if (!TitleLoader::load(data, fileSize))
     {
-        if (TitleLoader::load(data, total))
-        {
-            saveFromBridge = true;
-            Gui::setScreen(std::make_unique<MainMenu>());
-        }
-    }
-    else
-    {
-        Gui::error(i18n::localize("DATA_RECEIVE_FAIL"), errno);
+        Gui::error(i18n::localize("BRIDGE_ERROR_FILE_DATA_CORRUPTED"), 2);
+        return false;
     }
 
+    saveFromBridge = true;
+    Gui::setScreen(std::make_unique<MainMenu>());
     return true;
 }
 
 bool sendSaveToBridge(void)
 {
-    bool result = false;
-    // send via TCP
-    int fd;
-    struct sockaddr_in servaddr;
-    if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    struct pksmBridgeFile file;
+    file.size                   = TitleLoader::save->getLength();
+    file.contents               = TitleLoader::save->rawData().get();
+    std::array<u8, 32> checksum = pksm::crypto::sha256(file.contents, file.size);
+    file.checksum               = checksum.data();
+    file.checksumSize           = checksum.size();
+    enum pksmBridgeError error  = sendFileOverPKSMBridgeViaTCP(PKSM_PORT, lastIPAddr, file);
+    switch (error)
     {
-        Gui::error(i18n::localize("SOCKET_CREATE_FAIL"), errno);
-        return result;
+        case PKSM_BRIDGE_ERROR_NONE:
+            return true;
+        case PKSM_BRIDGE_ERROR_UNSUPPORTED_PROTCOL_VERSION:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNSUPPORTED_PROTOCOL_VERISON"), errno);
+            return false;
+        case PKSM_BRIDGE_ERROR_CONNECTION_ERROR:
+            Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_READ_FAILURE:
+            Gui::error(i18n::localize("DATA_RECEIVE_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_WRITE_FAILURE:
+            Gui::error(i18n::localize("DATA_SEND_FAIL"), errno);
+            return false;
+        case PKSM_BRIDGE_DATA_FILE_CORRUPTED:
+            Gui::error(i18n::localize("BRIDGE_ERROR_FILE_DATA_CORRUPTED"), errno);
+            return false;
+        case PKSM_BRIDGE_ERROR_UNEXPECTED_MESSAGE:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNEXPECTED_MESSAGE"), errno);
+            return false;
+        default:
+            Gui::error(i18n::localize("BRIDGE_ERROR_UNHANDLED"), errno);
+            return false;
     }
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port   = htons(PKSM_PORT);
-    servaddr.sin_addr   = lastIPAddr;
-
-    if (connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
-    {
-        Gui::error(i18n::localize("SOCKET_CONNECTION_FAIL"), errno);
-        close(fd);
-        return result;
-    }
-
-    size_t size  = TitleLoader::save->getLength();
-    size_t total = 0;
-    size_t chunk = 1024;
-    int n;
-    while (total < size)
-    {
-        size_t tosend = size - total > chunk ? chunk : size - total;
-        n             = send(fd, TitleLoader::save->rawData().get() + total, tosend, 0);
-        if (n == -1)
-        {
-            break;
-        }
-        total += n;
-        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
-    }
-    if (total == size)
-    {
-        // Gui::createInfo("Success!", "Data sent back correctly.");
-        result = true;
-    }
-    else
-    {
-        Gui::error(i18n::localize("DATA_SEND_FAIL"), errno);
-    }
-
-    close(fd);
-    return result;
 }
 
 void backupBridgeChanges()
