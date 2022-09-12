@@ -118,6 +118,8 @@ Title::~Title(void)
 bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 {
     bool loadTitle = false;
+    mGba           = false;
+    mGb            = false;
     mId            = id;
     mMedia         = media;
     mCard          = card;
@@ -159,7 +161,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
             archive = Archive::saveAndContents(mMedia, lowId(), highId(), true);
             if (R_SUCCEEDED(archive.result()))
             {
-                constexpr u32 pathData[5] = {
+                static constexpr u32 pathData[5] = {
                     1,   // Save data
                     1,   // TMD content index
                     3,   // Type: save data?
