@@ -2663,7 +2663,9 @@ void HexEditScreen::drawMeaning() const
                     break;
                 case 0xA:
                     Gui::text(i18n::item2(Configuration::getInstance().language(),
-                                  static_cast<pksm::PK1&>(pkm).heldItem2()),
+                                  static_cast<pksm::PK2&>(pkm).heldItem2()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
                 case 0xB ... 0xE:
                     Gui::text(i18n::move(Configuration::getInstance().language(),
                                   pkm.move(i - 0xB)),

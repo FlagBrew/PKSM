@@ -3,7 +3,7 @@
 	url = https://github.com/SNBeast/PKSM-Scripts
 [submodule "docs/wiki"]
 	path = docs/wiki
-	url = https://github.com/SNBeast/PKSM.wiki.git
+	url = https://github.com/FlagBrew/PKSM.wiki.git
 [submodule "core"]
 	path = core
 	url = https://github.com/SNBeast/PKSM-Core
