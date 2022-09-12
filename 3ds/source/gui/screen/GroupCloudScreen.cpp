@@ -311,6 +311,8 @@ void GroupCloudScreen::drawTop() const
             case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
+            case pksm::Gender::INVALID:
+                break;
         }
         if (infoMon->shiny())
         {
@@ -335,8 +337,10 @@ void GroupCloudScreen::drawTop() const
                std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181,
-            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->generation() >= pksm::Generation::THREE
+                      ? infoMon->nature().localize(Configuration::getInstance().language())
+                      : "—",
+            276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
@@ -732,7 +736,8 @@ bool GroupCloudScreen::releasePkm()
                 toSend.erase(it);
             }
             Banks::bank->pkm(
-                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr), storageBox, cursorIndex - 1);
+                *pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH),
+                storageBox, cursorIndex - 1);
             return false;
         }
     }
@@ -907,7 +912,8 @@ void GroupCloudScreen::shareReceive()
 
                             if (gen != pksm::Generation::UNUSED)
                             {
-                                temPkm.emplace_back(pksm::PKX::getPKM(gen, data.data()));
+                                temPkm.emplace_back(
+                                    pksm::PKX::getPKM(gen, data.data(), data.size()));
                             }
                             else
                             {

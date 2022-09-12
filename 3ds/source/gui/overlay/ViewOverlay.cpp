@@ -30,6 +30,9 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
+#include "pkx/PK3.hpp"
 
 namespace
 {
@@ -94,83 +97,90 @@ void ViewOverlay::drawTop() const
     int statColorIndex[6] = {1, 1, 1, 1, 1, 1};
     if (pokemon.index() != 0 || std::get<0>(pokemon).get())
     {
-        // Subtract from the ones that are affected negatively
-        switch (getPKM().nature())
+        if (getPKM().generation() >= pksm::Generation::THREE)
         {
-            case pksm::Nature::Hardy:
-            case pksm::Nature::Bold:
-            case pksm::Nature::Modest:
-            case pksm::Nature::Calm:
-            case pksm::Nature::Timid:
-                statColorIndex[u8(pksm::Stat::ATK)]--;
-                break;
-            case pksm::Nature::Lonely:
-            case pksm::Nature::Docile:
-            case pksm::Nature::Mild:
-            case pksm::Nature::Gentle:
-            case pksm::Nature::Hasty:
-                statColorIndex[u8(pksm::Stat::DEF)]--;
-                break;
-            case pksm::Nature::Adamant:
-            case pksm::Nature::Impish:
-            case pksm::Nature::Bashful:
-            case pksm::Nature::Careful:
-            case pksm::Nature::Jolly:
-                statColorIndex[u8(pksm::Stat::SPATK)]--;
-                break;
-            case pksm::Nature::Naughty:
-            case pksm::Nature::Lax:
-            case pksm::Nature::Rash:
-            case pksm::Nature::Quirky:
-            case pksm::Nature::Naive:
-                statColorIndex[u8(pksm::Stat::SPDEF)]--;
-                break;
-            case pksm::Nature::Brave:
-            case pksm::Nature::Relaxed:
-            case pksm::Nature::Quiet:
-            case pksm::Nature::Sassy:
-            case pksm::Nature::Serious:
-                statColorIndex[u8(pksm::Stat::SPD)]--;
-                break;
-        }
-        // Add to the ones that are affected positively
-        switch (getPKM().nature())
-        {
-            case pksm::Nature::Hardy:
-            case pksm::Nature::Lonely:
-            case pksm::Nature::Adamant:
-            case pksm::Nature::Naughty:
-            case pksm::Nature::Brave:
-                statColorIndex[u8(pksm::Stat::ATK)]++;
-                break;
-            case pksm::Nature::Bold:
-            case pksm::Nature::Docile:
-            case pksm::Nature::Impish:
-            case pksm::Nature::Lax:
-            case pksm::Nature::Relaxed:
-                statColorIndex[u8(pksm::Stat::DEF)]++;
-                break;
-            case pksm::Nature::Modest:
-            case pksm::Nature::Mild:
-            case pksm::Nature::Bashful:
-            case pksm::Nature::Rash:
-            case pksm::Nature::Quiet:
-                statColorIndex[u8(pksm::Stat::SPATK)]++;
-                break;
-            case pksm::Nature::Calm:
-            case pksm::Nature::Gentle:
-            case pksm::Nature::Careful:
-            case pksm::Nature::Quirky:
-            case pksm::Nature::Sassy:
-                statColorIndex[u8(pksm::Stat::SPDEF)]++;
-                break;
-            case pksm::Nature::Timid:
-            case pksm::Nature::Hasty:
-            case pksm::Nature::Jolly:
-            case pksm::Nature::Naive:
-            case pksm::Nature::Serious:
-                statColorIndex[u8(pksm::Stat::SPD)]++;
-                break;
+            // Subtract from the ones that are affected negatively
+            switch (getPKM().nature())
+            {
+                case pksm::Nature::Hardy:
+                case pksm::Nature::Bold:
+                case pksm::Nature::Modest:
+                case pksm::Nature::Calm:
+                case pksm::Nature::Timid:
+                    statColorIndex[u8(pksm::Stat::ATK)]--;
+                    break;
+                case pksm::Nature::Lonely:
+                case pksm::Nature::Docile:
+                case pksm::Nature::Mild:
+                case pksm::Nature::Gentle:
+                case pksm::Nature::Hasty:
+                    statColorIndex[u8(pksm::Stat::DEF)]--;
+                    break;
+                case pksm::Nature::Adamant:
+                case pksm::Nature::Impish:
+                case pksm::Nature::Bashful:
+                case pksm::Nature::Careful:
+                case pksm::Nature::Jolly:
+                    statColorIndex[u8(pksm::Stat::SPATK)]--;
+                    break;
+                case pksm::Nature::Naughty:
+                case pksm::Nature::Lax:
+                case pksm::Nature::Rash:
+                case pksm::Nature::Quirky:
+                case pksm::Nature::Naive:
+                    statColorIndex[u8(pksm::Stat::SPDEF)]--;
+                    break;
+                case pksm::Nature::Brave:
+                case pksm::Nature::Relaxed:
+                case pksm::Nature::Quiet:
+                case pksm::Nature::Sassy:
+                case pksm::Nature::Serious:
+                    statColorIndex[u8(pksm::Stat::SPD)]--;
+                    break;
+                case pksm::Nature::INVALID:
+                    break;
+            }
+            // Add to the ones that are affected positively
+            switch (getPKM().nature())
+            {
+                case pksm::Nature::Hardy:
+                case pksm::Nature::Lonely:
+                case pksm::Nature::Adamant:
+                case pksm::Nature::Naughty:
+                case pksm::Nature::Brave:
+                    statColorIndex[u8(pksm::Stat::ATK)]++;
+                    break;
+                case pksm::Nature::Bold:
+                case pksm::Nature::Docile:
+                case pksm::Nature::Impish:
+                case pksm::Nature::Lax:
+                case pksm::Nature::Relaxed:
+                    statColorIndex[u8(pksm::Stat::DEF)]++;
+                    break;
+                case pksm::Nature::Modest:
+                case pksm::Nature::Mild:
+                case pksm::Nature::Bashful:
+                case pksm::Nature::Rash:
+                case pksm::Nature::Quiet:
+                    statColorIndex[u8(pksm::Stat::SPATK)]++;
+                    break;
+                case pksm::Nature::Calm:
+                case pksm::Nature::Gentle:
+                case pksm::Nature::Careful:
+                case pksm::Nature::Quirky:
+                case pksm::Nature::Sassy:
+                    statColorIndex[u8(pksm::Stat::SPDEF)]++;
+                    break;
+                case pksm::Nature::Timid:
+                case pksm::Nature::Hasty:
+                case pksm::Nature::Jolly:
+                case pksm::Nature::Naive:
+                case pksm::Nature::Serious:
+                    statColorIndex[u8(pksm::Stat::SPD)]++;
+                    break;
+                case pksm::Nature::INVALID:
+                    break;
+            }
         }
     }
 
@@ -212,6 +222,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
             break;
         case pksm::Gender::Genderless:
             Gui::sprite(ui_sheet_icon_genderless_idx, 129, 10);
+            break;
+        case pksm::Gender::INVALID:
             break;
     }
     Gui::text(fmt::format(i18n::localize("LVL"), pkm.level()), 143, 10, FONT_SIZE_9, COLOR_WHITE,
@@ -258,13 +270,38 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
 
     Gui::text(pkm.nickname(), 87, 56, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm.otName(), 87, 76, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(pkm.nature().localize(Configuration::getInstance().language()), 87, 96, FONT_SIZE_12,
-        COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pkm.generation() >= pksm::Generation::THREE
+                  ? pkm.nature().localize(Configuration::getInstance().language())
+                  : "—",
+        87, 96, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm.ability().localize(Configuration::getInstance().language()), 87, 116,
         FONT_SIZE_12, pkm.abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
-    Gui::text(i18n::item(Configuration::getInstance().language(), pkm.heldItem()), 87, 136,
-        FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+
+    if (pkm.generation() == pksm::Generation::ONE)
+    {
+        Gui::text(i18n::item2(Configuration::getInstance().language(),
+                      static_cast<pksm::PK1&>(pkm).heldItem2()),
+            87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm.generation() == pksm::Generation::TWO)
+    {
+        Gui::text(i18n::item2(Configuration::getInstance().language(),
+                      static_cast<pksm::PK2&>(pkm).heldItem2()),
+            87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm.generation() == pksm::Generation::THREE)
+    {
+        Gui::text(i18n::item3(Configuration::getInstance().language(),
+                      static_cast<pksm::PK3&>(pkm).heldItem3()),
+            87, 136, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else
+    {
+        Gui::text(i18n::item(Configuration::getInstance().language(), pkm.heldItem()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+
     Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.PSV(), pkm.TSV()), 87, 156, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.versionTID(), pkm.versionSID()), 87, 176,

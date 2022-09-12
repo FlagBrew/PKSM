@@ -123,7 +123,15 @@ void BagItemOverlay::update(touchPosition* touch)
         else
         {
             auto item = TitleLoader::save->item(pouch.first, slot);
-            if (item->generation() == pksm::Generation::THREE)
+            if (item->generation() == pksm::Generation::ONE)
+            {
+                ((pksm::Item1*)item.get())->id1(items[hid.fullIndex()].second);
+            }
+            else if (item->generation() == pksm::Generation::TWO)
+            {
+                ((pksm::Item2*)item.get())->id2(items[hid.fullIndex()].second);
+            }
+            else if (item->generation() == pksm::Generation::THREE)
             {
                 ((pksm::Item3*)item.get())->id3(items[hid.fullIndex()].second);
             }

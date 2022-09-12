@@ -380,13 +380,33 @@ void ConfigScreen::initButtons()
         []()
         {
             Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::ONE),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[1].push_back(std::make_unique<Button>(
+        140, 48, 15, 12,
+        []()
+        {
+            Gui::setScreen(
+                std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::TWO),
+                    EditorScreen::PARTY_MAGIC_NUM, 0, true));
+            return false;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[1].push_back(std::make_unique<Button>(
+        140, 64, 15, 12,
+        []()
+        {
+            Gui::setScreen(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
-        140, 52, 15, 12,
+        140, 80, 15, 12,
         []()
         {
             Gui::setScreen(
@@ -396,7 +416,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
-        140, 72, 15, 12,
+        140, 96, 15, 12,
         []()
         {
             Gui::setScreen(
@@ -406,7 +426,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
-        140, 92, 15, 12,
+        140, 112, 15, 12,
         []()
         {
             Gui::setScreen(
@@ -416,7 +436,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
-        140, 112, 15, 12,
+        140, 128, 15, 12,
         []()
         {
             Gui::setScreen(
@@ -426,7 +446,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
-        140, 132, 15, 12,
+        140, 144, 15, 12,
         [this]()
         {
             Gui::setScreen(
@@ -436,7 +456,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<ClickButton>(
-        140, 152, 15, 12,
+        140, 160, 15, 12,
         [this]()
         {
             Gui::setScreen(
@@ -446,7 +466,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
-        140, 172, 15, 12,
+        140, 176, 15, 12,
         []()
         {
             inputNumber([](u16 a) { Configuration::getInstance().day(a); }, 2, 31);
@@ -462,7 +482,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[1].push_back(std::make_unique<Button>(
-        140, 212, 15, 12,
+        140, 208, 15, 12,
         []()
         {
             inputNumber([](u16 a) { Configuration::getInstance().year(a); }, 4, 9999);
@@ -633,25 +653,29 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::ONE), 19,
+            30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::TWO), 19,
+            46, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::THREE),
-            19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            19, 62, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FOUR),
-            19, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FIVE),
-            19, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            19, 94, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SIX), 19,
-            90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SEVEN),
-            19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            19, 126, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::LGPE),
-            19, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            19, 142, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::EIGHT),
-            19, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(i18n::localize("DAY"), 19, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            19, 158, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("DAY"), 19, 174, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
         Gui::text(i18n::localize("MONTH"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
-        Gui::text(i18n::localize("YEAR"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("YEAR"), 19, 206, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
 
         // Gui::text(std::to_string(Configuration::getInstance().defaultTID()), 150, 36,
@@ -695,11 +719,11 @@ void ConfigScreen::drawBottom() const
         // Configuration::getInstance().defaultCountry(),
         //               Configuration::getInstance().defaultRegion()),
         //     150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().day()), 168, 170, FONT_SIZE_12,
+        Gui::text(std::to_string(Configuration::getInstance().day()), 168, 174, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(std::to_string(Configuration::getInstance().month()), 168, 190, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().year()), 168, 210, FONT_SIZE_12,
+        Gui::text(std::to_string(Configuration::getInstance().year()), 168, 206, FONT_SIZE_12,
             COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])

@@ -1,19 +1,19 @@
 {
-    "BANK_BACKUP": "バンクをバックアップしています...",
+    "BANK_BACKUP": "バンクをバックアップ中…",
     "BANK_BOX_NAME": "バンクボックス名",
     "BANK_CONFIRM_CLEAR": "選択したボックスを削除しますか?",
     "BANK_CONFIRM_DUMP": "選択したポケモンをダンプしますか?",
     "BANK_CONFIRM_RELEASE": "選択したポケモンを逃がしますか?",
-    "BANK_CONVERT": "バンクを変換中...",
-    "BANK_CREATE": "バンクデータを作成中...",
+    "BANK_CONVERT": "バンクを変換中…",
+    "BANK_CREATE": "バンクデータを作成中…",
     "BANK_DELETE": "バンク{:s}を削除?",
-    "BANK_LOAD": "バンクを読み込んでいます...",
+    "BANK_LOAD": "バンクを読み込み中…",
     "BANK_NAME": "バンク名",
-    "BANK_SAVE": "バンクを保存中...",
+    "BANK_SAVE": "バンクを保存中…",
     "BANK_SAVE_CHANGES": "バンクを保存しますか?",
     "BANK_SWITCH": "ストレージグループ",
     "BOX": "ボックス",
-    "RENAMING_BANK": "バンク名を変更しています…",
+    "RENAMING_BANK": "バンク名を変更中…",
     "STORAGE": "バンク",
-    "STORAGE_RESIZE": "バンクサイズを変更しています..."
+    "STORAGE_RESIZE": "バンクサイズを変更中…"
 }

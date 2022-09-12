@@ -281,20 +281,24 @@ void Fetch::cancelAsync(std::shared_ptr<Fetch> fetch)
         __lock_acquire(multiHandleMutex);
         CURLMcode res = curl_multi_remove_handle(multiHandle, fetch->curl.get());
         __lock_release(multiHandleMutex);
-        __lock_acquire(fetchesMutex);
-        for (auto i = fetches.begin(); i != fetches.end(); ++i)
+        if (res == CURLM_OK)
         {
-            if (i->fetch == fetch)
+            __lock_acquire(fetchesMutex);
+            for (auto i = fetches.begin(); i != fetches.end(); ++i)
             {
-                if (i->onCancel)
+                if (i->fetch == fetch)
                 {
-                    i->onCancel(i->fetch);
+                    if (i->onCancel)
+                    {
+                        i->onCancel(i->fetch);
+                    }
+                    fetches.erase(i);
+                    break;
                 }
-                fetches.erase(i);
-                break;
             }
+            __lock_release(fetchesMutex);
         }
-        __lock_release(fetchesMutex);
+        // better not fail
     }
 }
 

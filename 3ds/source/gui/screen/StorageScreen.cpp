@@ -72,6 +72,50 @@ void StorageScreen::setBoxName(bool storage)
     {
         switch (TitleLoader::save->generation())
         {
+            case pksm::Generation::TWO:
+            {
+                SwkbdState state;
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[18] = {0};
+                size_t length;
+                if (!(TitleLoader::save->language() == pksm::Language::JPN ||
+                        TitleLoader::save->language() == pksm::Language::KOR))
+                {
+                    length = 18;
+                }
+                else
+                {
+                    length = 10;
+                }
+                SwkbdButton ret = swkbdInputText(&state, input, length);
+                input[16]       = '\0';
+                input[17]       = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
+            case pksm::Generation::THREE:
+            {
+                SwkbdState state;
+                swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+                swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+                swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+                char input[18] = {
+                    0}; // gotta make room for jpn characters going from two width to one
+                SwkbdButton ret = swkbdInputText(
+                    &state, input, TitleLoader::save->language() == pksm::Language::JPN ? 18 : 10);
+                input[16] = '\0';
+                input[17] = '\0';
+                if (ret == SWKBD_BUTTON_CONFIRM)
+                {
+                    TitleLoader::save->boxName(boxBox, input);
+                }
+            }
+            break;
             case pksm::Generation::FOUR:
             case pksm::Generation::FIVE:
             {
@@ -107,6 +151,7 @@ void StorageScreen::setBoxName(bool storage)
                 }
             }
             break;
+            case pksm::Generation::ONE:
             case pksm::Generation::LGPE:
             case pksm::Generation::UNUSED:
                 // Do nothing
@@ -169,16 +214,26 @@ StorageScreen::StorageScreen()
         },
         ui_sheet_button_wireless_no_y_idx, "", 0.0f, COLOR_BLACK);
 
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     // Pokemon buttons
     u16 y = 45;
     for (u8 row = 0; row < 5; row++)
     {
         u16 x = 4;
-        for (u8 column = 0; column < 6; column++)
+        if (maxPkmInBox == 20)
         {
-            clickButtons[row * 6 + column] = std::make_unique<ClickButton>(
+            x += 34;
+        }
+        for (u8 column = 0; column < (maxPkmInBox / 5); column++)
+        {
+            clickButtons[row * (maxPkmInBox / 5) + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30,
-                [this, row, column]() { return this->clickBottomIndex(row * 6 + column + 1); },
+                [this, row, column, maxPkmInBox]()
+                { return this->clickBottomIndex(row * (maxPkmInBox / 5) + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
         }
@@ -186,7 +241,7 @@ StorageScreen::StorageScreen()
     }
     instructions.addBox(
         false, 25, 15, 164, 24, COLOR_GREY, i18n::localize("A_BOX_NAME"), COLOR_WHITE);
-    clickButtons[30] = std::make_unique<ClickButton>(
+    clickButtons[maxPkmInBox] = std::make_unique<ClickButton>(
         25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK);
     TitleLoader::save->cryptBoxData(true);
@@ -196,15 +251,23 @@ StorageScreen::StorageScreen()
 
 void StorageScreen::drawBottom() const
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     Gui::sprite(ui_sheet_emulated_bg_bottom_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_arc_bottom_green_idx, 0, 206);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
-    Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
+    Gui::sprite(ui_sheet_storage_box_corner_idx, maxPkmInBox == 20 ? 36 : 2, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx,
+        maxPkmInBox == 20 ? 168 : 202, 44);
+    Gui::sprite(
+        ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, maxPkmInBox == 20 ? 36 : 2, 193);
+    Gui::sprite(
+        ui_sheet_emulated_storage_box_corner_flipped_both_idx, maxPkmInBox == 20 ? 168 : 202, 193);
     for (const auto& b : mainButtons)
     {
         b->draw();
@@ -223,14 +286,18 @@ void StorageScreen::drawBottom() const
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 45 + row * 30;
-        for (u8 column = 0; column < 6; column++)
+        for (u8 column = 0; column < (maxPkmInBox / 5); column++)
         {
             u16 x = 4 + column * 34;
+            if (maxPkmInBox == 20)
+            {
+                x += 34;
+            }
             if (currentlySelecting && !storageChosen &&
-                column <= std::max((cursorIndex - 1) % 6, selectDimensions.first) &&
-                column >= std::min((cursorIndex - 1) % 6, selectDimensions.first) &&
-                row <= std::max((cursorIndex - 1) / 6, selectDimensions.second) &&
-                row >= std::min((cursorIndex - 1) / 6, selectDimensions.second))
+                column <= std::max((cursorIndex - 1) % (maxPkmInBox / 5), selectDimensions.first) &&
+                column >= std::min((cursorIndex - 1) % (maxPkmInBox / 5), selectDimensions.first) &&
+                row <= std::max((cursorIndex - 1) / (maxPkmInBox / 5), selectDimensions.second) &&
+                row >= std::min((cursorIndex - 1) / (maxPkmInBox / 5), selectDimensions.second))
             {
                 Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
@@ -242,7 +309,7 @@ void StorageScreen::drawBottom() const
             else
             {
                 std::unique_ptr<pksm::PKX> pokemon =
-                    TitleLoader::save->pkm(boxBox, row * 6 + column);
+                    TitleLoader::save->pkm(boxBox, row * (maxPkmInBox / 5) + column);
                 if (pokemon->species() != pksm::Species::None)
                 {
                     float blend = *pokemon == *filter ? 0.0f : 0.5f;
@@ -307,10 +374,11 @@ void StorageScreen::drawBottom() const
         else
         {
             int tempIndex = cursorIndex - 1;
-            int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
+            int yMod      = (tempIndex / (maxPkmInBox / 5)) * 30 + Gui::pointerBob();
             for (size_t i = 0; i < moveMon.size(); i++)
             {
-                int x = 12 + (tempIndex % 6) * 34 + (i % selectDimensions.first) * 34;
+                int x = (maxPkmInBox == 20 ? 46 : 12) + (tempIndex % (maxPkmInBox / 5)) * 34 +
+                        (i % selectDimensions.first) * 34;
                 int y = 44 + yMod + (i / selectDimensions.first) * 30;
                 if (pickupMode == MULTI &&
                     (selectDimensions.first > 1 || selectDimensions.second > 1))
@@ -328,13 +396,19 @@ void StorageScreen::drawBottom() const
             {
                 case SINGLE:
                 default:
-                    Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    Gui::sprite(ui_sheet_pointer_arrow_idx,
+                        (maxPkmInBox == 20 ? 55 : 21) + (tempIndex % (maxPkmInBox / 5)) * 34,
+                        30 + yMod);
                     break;
                 case SWAP:
-                    Gui::sprite(ui_sheet_pointer_arrow3_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    Gui::sprite(ui_sheet_pointer_arrow3_idx,
+                        (maxPkmInBox == 20 ? 55 : 21) + (tempIndex % (maxPkmInBox / 5)) * 34,
+                        30 + yMod);
                     break;
                 case MULTI:
-                    Gui::sprite(ui_sheet_pointer_arrow2_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+                    Gui::sprite(ui_sheet_pointer_arrow2_idx,
+                        (maxPkmInBox == 20 ? 55 : 21) + (tempIndex % (maxPkmInBox / 5)) * 34,
+                        30 + yMod);
                     break;
             }
         }
@@ -489,6 +563,8 @@ void StorageScreen::drawTop() const
             case pksm::Gender::Genderless:
                 Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
                 break;
+            case pksm::Gender::INVALID:
+                break;
         }
         if (infoMon->shiny())
         {
@@ -513,8 +589,10 @@ void StorageScreen::drawTop() const
                std::to_string(infoMon->versionTID());
         Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
-        Gui::text(infoMon->nature().localize(Configuration::getInstance().language()), 276, 181,
-            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(infoMon->generation() >= pksm::Generation::THREE
+                      ? infoMon->nature().localize(Configuration::getInstance().language())
+                      : "—",
+            276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
         info  = i18n::localize("IV") + ": ";
         text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
         width = text->maxWidth(FONT_SIZE_12);
@@ -534,6 +612,10 @@ void StorageScreen::drawTop() const
 
 void StorageScreen::update(touchPosition* touch)
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
     if (justSwitched)
     {
         if ((keysHeld() | keysDown()) & KEY_TOUCH)
@@ -562,8 +644,11 @@ void StorageScreen::update(touchPosition* touch)
     backHeld = false;
     for (auto& button : clickButtons)
     {
-        if (button->update(touch))
-            return;
+        if (button)
+        {
+            if (button->update(touch))
+                return;
+        }
     }
 
     if (kDown & KEY_A)
@@ -618,7 +703,7 @@ void StorageScreen::update(touchPosition* touch)
         else if (cursorIndex == 1)
         {
             prevBox();
-            cursorIndex        = 30;
+            cursorIndex        = (storageChosen ? 30 : maxPkmInBox);
             currentlySelecting = false;
         }
     }
@@ -628,11 +713,11 @@ void StorageScreen::update(touchPosition* touch)
         {
             nextBox();
         }
-        else if (cursorIndex < 30)
+        else if (cursorIndex < (storageChosen ? 30 : maxPkmInBox))
         {
             cursorIndex++;
         }
-        else if (cursorIndex == 30)
+        else if (cursorIndex == (storageChosen ? 30 : maxPkmInBox))
         {
             nextBox();
             cursorIndex        = 1;
@@ -646,14 +731,29 @@ void StorageScreen::update(touchPosition* touch)
             storageChosen = true;
             cursorIndex   = 27;
         }
-        else if (cursorIndex > 0 && cursorIndex <= 6)
+        else if (storageChosen || maxPkmInBox == 30)
         {
-            cursorIndex        = 0;
-            currentlySelecting = false;
+            if (cursorIndex > 0 && cursorIndex <= 6)
+            {
+                cursorIndex        = 0;
+                currentlySelecting = false;
+            }
+            else if (cursorIndex > 6)
+            {
+                cursorIndex -= 6;
+            }
         }
-        else if (cursorIndex > 6)
+        else
         {
-            cursorIndex -= 6;
+            if (cursorIndex > 0 && cursorIndex <= 4)
+            {
+                cursorIndex        = 0;
+                currentlySelecting = false;
+            }
+            else if (cursorIndex > 4)
+            {
+                cursorIndex -= 4;
+            }
         }
     }
     else if (kRepeat & KEY_DOWN)
@@ -664,13 +764,27 @@ void StorageScreen::update(touchPosition* touch)
             cursorIndex        = 0;
             currentlySelecting = false;
         }
-        else if (cursorIndex == 0)
+        else if (storageChosen || maxPkmInBox == 30)
         {
-            cursorIndex = 3;
+            if (cursorIndex == 0)
+            {
+                cursorIndex = 3;
+            }
+            else if (cursorIndex < 25)
+            {
+                cursorIndex += 6;
+            }
         }
-        else if (cursorIndex < 25)
+        else
         {
-            cursorIndex += 6;
+            if (cursorIndex == 0)
+            {
+                cursorIndex = 2;
+            }
+            else if (cursorIndex < 17)
+            {
+                cursorIndex += 4;
+            }
         }
     }
     else if (kRepeat & KEY_R)
@@ -855,8 +969,13 @@ bool StorageScreen::backButton()
 
 bool StorageScreen::showViewer()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (cursorIndex == 0 ||
-        (!storageChosen && boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
+        (!storageChosen && boxBox * maxPkmInBox + cursorIndex - 1 >= TitleLoader::save->maxSlot()))
     {
         return false;
     }
@@ -874,16 +993,21 @@ bool StorageScreen::showViewer()
 
 bool StorageScreen::clearBox()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     backHeld = true;
     if (Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_CLEAR")))
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < (storageChosen ? 30 : maxPkmInBox); i++)
         {
             if (storageChosen)
             {
                 Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, i);
             }
-            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+            else if (boxBox * maxPkmInBox + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
                 TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), boxBox, i, false);
             }
@@ -894,6 +1018,11 @@ bool StorageScreen::clearBox()
 
 bool StorageScreen::releasePkm()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     backHeld = true;
     if (!moveMon.empty())
     {
@@ -910,7 +1039,7 @@ bool StorageScreen::releasePkm()
             {
                 Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
             }
-            else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+            else if (boxBox * maxPkmInBox + cursorIndex - 1 < TitleLoader::save->maxSlot())
             {
                 TitleLoader::save->pkm(
                     *TitleLoader::save->emptyPkm(), boxBox, cursorIndex - 1, false);
@@ -955,13 +1084,18 @@ bool StorageScreen::isValidTransfer(const pksm::PKX& moveMon, bool bulkTransfer)
 
 void StorageScreen::pickupSwap()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (storageChosen)
     {
         moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
         partyNum.push_back(-1);
         Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
     }
-    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    else if (boxBox * maxPkmInBox + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
         partyNum.push_back(-1);
         if (TitleLoader::save->generation() == pksm::Generation::LGPE)
@@ -995,13 +1129,18 @@ void StorageScreen::pickupSwap()
 
 void StorageScreen::pickupSingle()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (storageChosen)
     {
         moveMon.emplace_back(Banks::bank->pkm(storageBox, cursorIndex - 1));
         partyNum.push_back(-1);
         Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, cursorIndex - 1);
     }
-    else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+    else if (boxBox * maxPkmInBox + cursorIndex - 1 < TitleLoader::save->maxSlot())
     {
         partyNum.push_back(-1);
         if (TitleLoader::save->generation() == pksm::Generation::LGPE)
@@ -1035,15 +1174,29 @@ void StorageScreen::pickupSingle()
 
 void StorageScreen::pickupMulti()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (currentlySelecting)
     {
         grabSelection(true);
     }
     else
     {
-        selectDimensions.first  = (cursorIndex - 1) % 6;
-        selectDimensions.second = (cursorIndex - 1) / 6;
-        currentlySelecting      = true;
+        if (storageChosen || maxPkmInBox == 30)
+        {
+            selectDimensions.first  = (cursorIndex - 1) % 6;
+            selectDimensions.second = (cursorIndex - 1) / 6;
+            currentlySelecting      = true;
+        }
+        else
+        {
+            selectDimensions.first  = (cursorIndex - 1) % 4;
+            selectDimensions.second = (cursorIndex - 1) / 4;
+            currentlySelecting      = true;
+        }
     }
 }
 
@@ -1068,9 +1221,14 @@ void StorageScreen::postPickup()
 
 bool StorageScreen::checkPutDownBounds()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (pickupMode == SWAP)
     {
-        return storageChosen || boxBox * 30 + cursorIndex <= TitleLoader::save->maxSlot();
+        return storageChosen || boxBox * maxPkmInBox + cursorIndex <= TitleLoader::save->maxSlot();
     }
     else
     {
@@ -1082,18 +1240,25 @@ bool StorageScreen::checkPutDownBounds()
         }
         else
         {
-            return boxBox * 30 + cursorIndex + (selectDimensions.first - 1) +
-                           (selectDimensions.second - 1) * 6 <=
+            return boxBox * maxPkmInBox + cursorIndex + (selectDimensions.first - 1) +
+                           (selectDimensions.second - 1) * (maxPkmInBox / 5) <=
                        TitleLoader::save->maxSlot() // Checks full bounds
-                && cursorIndex + (selectDimensions.first - 1) + (selectDimensions.second - 1) * 6 <=
-                       30                                               // Checks Y bounds
-                && (cursorIndex - 1) % 6 + selectDimensions.first <= 6; // Checks X bounds
+                && cursorIndex + (selectDimensions.first - 1) +
+                           (selectDimensions.second - 1) * (maxPkmInBox / 5) <=
+                       maxPkmInBox // Checks Y bounds
+                && (cursorIndex - 1) % (maxPkmInBox / 5) + selectDimensions.first <=
+                       (maxPkmInBox / 5); // Checks X bounds
         }
     }
 }
 
 void StorageScreen::putDownSwap()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (storageChosen && fromStorage)
     {
         Banks::bank->pkm(*Banks::bank->pkm(storageBox, cursorIndex - 1), selectDimensions.first,
@@ -1169,12 +1334,13 @@ void StorageScreen::putDownSwap()
             else
             {
                 pksm::SavLGPE* save = (pksm::SavLGPE*)TitleLoader::save.get();
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < (maxPkmInBox / 5); i++)
                 {
-                    if (save->partyBoxSlot(i) == boxBox * 30 + cursorIndex - 1 && i != partyNum[0])
+                    if (save->partyBoxSlot(i) == boxBox * maxPkmInBox + cursorIndex - 1 &&
+                        i != partyNum[0])
                     {
                         save->partyBoxSlot(
-                            i, selectDimensions.first * 30 + selectDimensions.second);
+                            i, selectDimensions.first * maxPkmInBox + selectDimensions.second);
                         break;
                     }
                 }
@@ -1192,6 +1358,11 @@ void StorageScreen::putDownSwap()
 
 void StorageScreen::putDownNonSwap()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     bool acceptGenChange = Configuration::getInstance().transferEdit();
     bool checkedWithUser = Configuration::getInstance().transferEdit();
     if (storageChosen)
@@ -1259,19 +1430,19 @@ void StorageScreen::putDownNonSwap()
                         i18n::localize("GEN_CHANGE_1") + '\n' + i18n::localize("GEN_CHANGE_2"));
                 }
                 std::unique_ptr<pksm::PKX> temPkm =
-                    TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * 6);
+                    TitleLoader::save->pkm(boxBox, cursorIndex - 1 + x + y * (maxPkmInBox / 5));
                 if (moveMon[index]->generation() == TitleLoader::save->generation() ||
                     acceptGenChange)
                 {
                     TitleLoader::save->pkm(*TitleLoader::save->transfer(*moveMon[index]), boxBox,
-                        cursorIndex - 1 + x + y * 6,
+                        cursorIndex - 1 + x + y * (maxPkmInBox / 5),
                         Configuration::getInstance().transferEdit() && fromStorage);
                     TitleLoader::save->dex(*moveMon[index]);
                     if (partyNum[index] != -1)
                     {
                         ((pksm::SavLGPE*)TitleLoader::save.get())
-                            ->partyBoxSlot(
-                                partyNum[index], boxBox * 30 + cursorIndex - 1 + x + y * 6);
+                            ->partyBoxSlot(partyNum[index],
+                                boxBox * maxPkmInBox + cursorIndex - 1 + x + y * (maxPkmInBox / 5));
                     }
                     if (temPkm->species() == pksm::Species::None)
                     {
@@ -1367,6 +1538,11 @@ void StorageScreen::doDump(const pksm::PKX& dumpMon)
 
 bool StorageScreen::dumpPkm()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     std::unique_ptr<pksm::PKX> dumpMon;
     if (cursorIndex == 0 && moveMon.empty())
     {
@@ -1379,7 +1555,7 @@ bool StorageScreen::dumpPkm()
         {
             dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
         }
-        else if (boxBox * 30 + cursorIndex - 1 < TitleLoader::save->maxSlot())
+        else if (boxBox * maxPkmInBox + cursorIndex - 1 < TitleLoader::save->maxSlot())
         {
             dumpMon = TitleLoader::save->pkm(boxBox, cursorIndex - 1);
         }
@@ -1417,6 +1593,11 @@ bool StorageScreen::dumpPkm()
 
 bool StorageScreen::duplicate()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (moveMon.empty() && cursorIndex > 0)
     {
         if (pickupMode == MULTI)
@@ -1432,7 +1613,7 @@ bool StorageScreen::duplicate()
             }
             else
             {
-                if (boxBox * 30 + cursorIndex - 1 >= TitleLoader::save->maxSlot())
+                if (boxBox * maxPkmInBox + cursorIndex - 1 >= TitleLoader::save->maxSlot())
                 {
                     return false;
                 }
@@ -1454,12 +1635,17 @@ bool StorageScreen::duplicate()
 
 bool StorageScreen::swapBoxWithStorage()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     std::vector<int> unswappedPkm;
     bool acceptGenChange = Configuration::getInstance().transferEdit();
     bool checkedWithUser = Configuration::getInstance().transferEdit();
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < maxPkmInBox; i++)
     {
-        if (boxBox * 30 + i >= TitleLoader::save->maxSlot())
+        if (boxBox * maxPkmInBox + i >= TitleLoader::save->maxSlot())
         {
             break;
         }
@@ -1632,10 +1818,29 @@ void StorageScreen::scrunchSelection()
 
 void StorageScreen::grabSelection(bool remove)
 {
-    int cursorX = (cursorIndex - 1) % 6;
-    int cursorY = (cursorIndex - 1) / 6;
-    int baseIndex =
-        std::min(selectDimensions.first, cursorX) + std::min(selectDimensions.second, cursorY) * 6;
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
+    int cursorX;
+    int cursorY;
+    int baseIndex;
+
+    if (storageChosen || maxPkmInBox == 30)
+    {
+        cursorX   = (cursorIndex - 1) % 6;
+        cursorY   = (cursorIndex - 1) / 6;
+        baseIndex = std::min(selectDimensions.first, cursorX) +
+                    std::min(selectDimensions.second, cursorY) * 6;
+    }
+    else
+    {
+        cursorX   = (cursorIndex - 1) % 4;
+        cursorY   = (cursorIndex - 1) / 4;
+        baseIndex = std::min(selectDimensions.first, cursorX) +
+                    std::min(selectDimensions.second, cursorY) * 4;
+    }
     // Convert to actual dimensions
     selectDimensions.first  = std::abs(selectDimensions.first - cursorX) + 1;
     selectDimensions.second = std::abs(selectDimensions.second - cursorY) + 1;
@@ -1644,7 +1849,7 @@ void StorageScreen::grabSelection(bool remove)
     {
         for (int x = 0; x < selectDimensions.first; x++)
         {
-            int pickupIndex = baseIndex + x + y * 6;
+            int pickupIndex = baseIndex + x + y * (storageChosen ? 6 : (maxPkmInBox / 5));
             if (storageChosen)
             {
                 fromStorage = true;
@@ -1659,7 +1864,7 @@ void StorageScreen::grabSelection(bool remove)
                     Banks::bank->pkm(*TitleLoader::save->emptyPkm(), storageBox, pickupIndex);
                 }
             }
-            else if (boxBox * 30 + pickupIndex - 1 < TitleLoader::save->maxSlot())
+            else if (boxBox * maxPkmInBox + pickupIndex - 1 < TitleLoader::save->maxSlot())
             {
                 fromStorage = false;
                 partyNum.push_back(-1);

@@ -44,6 +44,9 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
+#include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -100,6 +103,9 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
             pkm->version(TitleLoader::save->version());
             switch (pkm->version())
             {
+                case pksm::GameVersion::C:
+                    pkm->metLocation(0x02); // Route 29, probably C
+                    break;
                 case pksm::GameVersion::R:
                 case pksm::GameVersion::S:
                 case pksm::GameVersion::E:
@@ -348,12 +354,27 @@ void EditorScreen::drawBottom() const
     }
     Gui::text(std::to_string((int)pkm->level()), 107 + 35 / 2, 32, FONT_SIZE_12, COLOR_BLACK,
         TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pkm->nature().localize(lang), 95, 52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-        TextPosY::TOP);
+    Gui::text(pkm->generation() >= pksm::Generation::THREE ? pkm->nature().localize(lang) : "—", 95,
+        52, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12,
         pkm->abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-        TextPosY::TOP);
+
+    if (pkm->generation() == pksm::Generation::ONE)
+    {
+        Gui::text(i18n::item2(lang, static_cast<pksm::PK1*>(pkm.get())->heldItem2()), 95, 92,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm->generation() == pksm::Generation::TWO)
+    {
+        Gui::text(i18n::item2(lang, static_cast<pksm::PK2*>(pkm.get())->heldItem2()), 95, 92,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm->generation() == pksm::Generation::THREE)
+    {
+        Gui::text(i18n::item3(lang, static_cast<pksm::PK3*>(pkm.get())->heldItem3()), 95, 92,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+
     Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132,
@@ -467,15 +488,19 @@ bool EditorScreen::advanceMon(bool forward)
             }
             else
             {
+                u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                                     TitleLoader::save->language() != pksm::Language::JPN)
+                                   ? 20
+                                   : 30;
                 if (forward)
                 {
                     index++;
-                    if (index >= 30)
+                    if (index >= maxPkmInBox)
                     {
                         box++;
                         index = 0;
                     }
-                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    if (box * maxPkmInBox + index >= TitleLoader::save->maxSlot())
                     {
                         index = 0;
                         box   = 0;
@@ -493,10 +518,10 @@ bool EditorScreen::advanceMon(bool forward)
                     {
                         box = TitleLoader::save->maxBoxes() - 1;
                     }
-                    if (box * 30 + index >= TitleLoader::save->maxSlot())
+                    if (box * maxPkmInBox + index >= TitleLoader::save->maxSlot())
                     {
                         box   = TitleLoader::save->maxBoxes() - 1;
-                        index = TitleLoader::save->maxSlot() - box * 30 - 1;
+                        index = TitleLoader::save->maxSlot() - box * maxPkmInBox - 1;
                     }
                 }
                 pkm = TitleLoader::save->pkm(box, index);
@@ -718,7 +743,10 @@ bool EditorScreen::save()
 
 bool EditorScreen::selectNature()
 {
-    addOverlay<NatureOverlay>(*pkm);
+    if (pkm->generation() >= pksm::Generation::THREE)
+    {
+        addOverlay<NatureOverlay>(*pkm);
+    }
     return false;
 }
 
@@ -900,6 +928,8 @@ bool EditorScreen::genderSwitch()
             break;
         case pksm::Gender::Genderless:
             pkm->gender(pksm::Gender::Male);
+            break;
+        case pksm::Gender::INVALID:
             break;
     }
     return false;

@@ -173,6 +173,10 @@ namespace i18n
                 return RO;
             case pksm::Language::RU:
                 return RU;
+            case pksm::Language::None:
+            case pksm::Language::UNUSED:
+            case pksm::Language::INVALID:
+                break;
         }
         return emptyString;
     }

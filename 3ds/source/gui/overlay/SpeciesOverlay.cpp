@@ -224,8 +224,8 @@ void SpeciesOverlay::update(touchPosition* touch)
                 pkm.alternativeForm(0);
                 pkm.setAbility(0);
                 pkm.PID(pksm::PKX::getRandomPID(pkm.species(), pkm.gender(), pkm.version(),
-                    pkm.nature(), pkm.alternativeForm(), pkm.abilityNumber(), pkm.PID(),
-                    pkm.generation()));
+                    pkm.nature(), pkm.alternativeForm(), pkm.abilityNumber(), pkm.shiny(),
+                    pkm.TSV(), pkm.PID(), pkm.generation()));
                 if (origLevel != 0)
                 {
                     pkm.level(origLevel);

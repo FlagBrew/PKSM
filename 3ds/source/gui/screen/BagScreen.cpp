@@ -33,6 +33,8 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "sav/Item.hpp"
+#include "sav/Sav1.hpp"
+#include "sav/Sav2.hpp"
 #include "sav/Sav3.hpp"
 
 BagScreen::BagScreen()
@@ -41,7 +43,11 @@ BagScreen::BagScreen()
       limits(TitleLoader::save->pouches()),
       allowedItems(TitleLoader::save->generation() == pksm::Generation::THREE
                        ? ((pksm::Sav3*)TitleLoader::save.get())->validItems3()
-                       : TitleLoader::save->validItems())
+                       : (TitleLoader::save->generation() == pksm::Generation::TWO
+                                 ? ((pksm::Sav2*)TitleLoader::save.get())->validItems2()
+                                 : (TitleLoader::save->generation() == pksm::Generation::ONE
+                                           ? ((pksm::Sav1*)TitleLoader::save.get())->validItems1()
+                                           : TitleLoader::save->validItems())))
 {
     currentPouch = (int)limits[0].first;
     for (size_t i = 0; i < limits.size(); i++)
@@ -135,7 +141,15 @@ void BagScreen::drawBottom() const
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
         u16 id;
-        if (item->generation() == pksm::Generation::THREE)
+        if (item->generation() == pksm::Generation::ONE)
+        {
+            id = ((pksm::Item1*)item.get())->id1();
+        }
+        else if (item->generation() == pksm::Generation::TWO)
+        {
+            id = ((pksm::Item2*)item.get())->id2();
+        }
+        else if (item->generation() == pksm::Generation::THREE)
         {
             id = ((pksm::Item3*)item.get())->id3();
         }
@@ -143,9 +157,14 @@ void BagScreen::drawBottom() const
         {
             id = item->id();
         }
-        const std::string& text = item->generation() == pksm::Generation::THREE
-                                    ? i18n::item3(Configuration::getInstance().language(), id)
-                                    : i18n::item(Configuration::getInstance().language(), id);
+        const std::string& text =
+            item->generation() == pksm::Generation::THREE
+                ? i18n::item3(Configuration::getInstance().language(), id)
+                : (item->generation() == pksm::Generation::TWO
+                          ? i18n::item2(Configuration::getInstance().language(), id)
+                          : (item->generation() == pksm::Generation::ONE
+                                    ? i18n::item1(Configuration::getInstance().language(), id)
+                                    : i18n::item(Configuration::getInstance().language(), id)));
         Gui::text(text, 117 + 131 / 2, 30 + 30 * i, FONT_SIZE_12,
             canEdit(limits[currentPouch].first, *item) ? COLOR_BLACK : COLOR_GREY, TextPosX::CENTER,
             TextPosY::CENTER);
@@ -159,7 +178,13 @@ void BagScreen::drawBottom() const
 
     u8 mod    = 0;
     auto item = TitleLoader::save->item(limits[currentPouch].first, firstEmpty);
-    u16 id    = pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    u16 id    = item->generation() == pksm::Generation::THREE
+                  ? ((pksm::Item3*)item.get())->id3()
+                  : (item->generation() == pksm::Generation::TWO
+                            ? ((pksm::Item2*)item.get())->id2()
+                            : (item->generation() == pksm::Generation::ONE
+                                      ? ((pksm::Item1*)item.get())->id1()
+                                      : item->id()));
     if (id > 0)
     {
         mod = 1;
@@ -309,7 +334,13 @@ void BagScreen::update(touchPosition* touch)
 
     u8 mod    = 0;
     auto item = TitleLoader::save->item(limits[currentPouch].first, firstEmpty);
-    u16 id    = pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3() : item->id();
+    u16 id    = item->generation() == pksm::Generation::THREE
+                  ? ((pksm::Item3*)item.get())->id3()
+                  : (item->generation() == pksm::Generation::TWO
+                            ? ((pksm::Item2*)item.get())->id2()
+                            : (item->generation() == pksm::Generation::ONE
+                                      ? ((pksm::Item1*)item.get())->id1()
+                                      : item->id()));
     if (id > 0)
     {
         mod = 1;
@@ -386,7 +417,19 @@ void BagScreen::editItem()
         TitleLoader::save->item(limits[currentPouch].first, firstItem + selectedItem);
 
     std::pair<const std::string*, int> currentItemPair;
-    if (currentItem->generation() == pksm::Generation::THREE)
+    if (currentItem->generation() == pksm::Generation::ONE)
+    {
+        currentItemPair = std::make_pair(&i18n::item1(Configuration::getInstance().language(),
+                                             ((pksm::Item1*)currentItem.get())->id1()),
+            ((pksm::Item1*)currentItem.get())->id1());
+    }
+    else if (currentItem->generation() == pksm::Generation::TWO)
+    {
+        currentItemPair = std::make_pair(&i18n::item2(Configuration::getInstance().language(),
+                                             ((pksm::Item2*)currentItem.get())->id2()),
+            ((pksm::Item2*)currentItem.get())->id2());
+    }
+    else if (currentItem->generation() == pksm::Generation::THREE)
     {
         currentItemPair = std::make_pair(&i18n::item3(Configuration::getInstance().language(),
                                              ((pksm::Item3*)currentItem.get())->id3()),
@@ -407,7 +450,17 @@ void BagScreen::editItem()
     for (int i = 1; i < limit; i++)
     {
         int itemId = allowedItems[limits[currentPouch].first][i - 1];
-        if (TitleLoader::save->generation() == pksm::Generation::THREE)
+        if (TitleLoader::save->generation() == pksm::Generation::ONE)
+        {
+            items[i] = std::make_pair(
+                &i18n::item1(Configuration::getInstance().language(), itemId), itemId);
+        }
+        else if (TitleLoader::save->generation() == pksm::Generation::TWO)
+        {
+            items[i] = std::make_pair(
+                &i18n::item2(Configuration::getInstance().language(), itemId), itemId);
+        }
+        else if (TitleLoader::save->generation() == pksm::Generation::THREE)
         {
             items[i] = std::make_pair(
                 &i18n::item3(Configuration::getInstance().language(), itemId), itemId);
@@ -446,8 +499,13 @@ void BagScreen::editCount(bool up, int selected)
         return;
     }
 
-    u16 id = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3()
-                                                           : item->id();
+    u16 id = item->generation() == pksm::Generation::THREE
+               ? ((pksm::Item3*)item.get())->id3()
+               : (item->generation() == pksm::Generation::TWO
+                         ? ((pksm::Item2*)item.get())->id2()
+                         : (item->generation() == pksm::Generation::ONE
+                                   ? ((pksm::Item1*)item.get())->id1()
+                                   : item->id()));
     if (id > 0)
     {
         if (up)
@@ -505,8 +563,13 @@ void BagScreen::setCount(int selected)
         return;
     }
 
-    u16 id = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3()
-                                                           : item->id();
+    u16 id = item->generation() == pksm::Generation::THREE
+               ? ((pksm::Item3*)item.get())->id3()
+               : (item->generation() == pksm::Generation::TWO
+                         ? ((pksm::Item2*)item.get())->id2()
+                         : (item->generation() == pksm::Generation::ONE
+                                   ? ((pksm::Item1*)item.get())->id1()
+                                   : item->id()));
     if (id > 0)
     {
         SwkbdState state;
@@ -531,8 +594,13 @@ void BagScreen::updateFirstEmpty()
     for (int i = 0; i < limits[currentPouch].second; i++)
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, i);
-        u16 id = item->generation() == pksm::Generation::THREE ? ((pksm::Item3*)item.get())->id3()
-                                                               : item->id();
+        u16 id    = item->generation() == pksm::Generation::THREE
+                      ? ((pksm::Item3*)item.get())->id3()
+                      : (item->generation() == pksm::Generation::TWO
+                                ? ((pksm::Item2*)item.get())->id2()
+                                : (item->generation() == pksm::Generation::ONE
+                                          ? ((pksm::Item1*)item.get())->id1()
+                                          : item->id()));
         if (id == 0)
         {
             firstEmpty = i;

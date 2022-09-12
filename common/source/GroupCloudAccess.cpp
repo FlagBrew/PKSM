@@ -325,7 +325,7 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::pkm(size_t groupIndex, size_t pokeI
             }
         }
     }
-    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
 }
 
 bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
@@ -360,7 +360,7 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
             return ret;
         }
     }
-    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr);
+    return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
 }
 
 std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const

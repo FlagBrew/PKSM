@@ -45,6 +45,7 @@
 #include "utils/crypto.hpp"
 #include "website.h"
 #include <3ds.h>
+#include <array>
 #include <atomic>
 #include <malloc.h>
 #include <stdio.h>
