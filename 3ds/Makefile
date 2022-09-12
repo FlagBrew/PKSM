@@ -10,6 +10,13 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
+check_defined = \
+    $(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $2, ($2))))
+
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
@@ -32,9 +39,12 @@ include $(DEVKITARM)/3ds_rules
 #     - icon.png
 #     - <libctru folder>/default_icon.png
 #---------------------------------------------------------------------------------
-APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen I to Gen VIII save manager
-APP_AUTHOR		:=	FlagBrew
+
+$(call check_defined, PKSM_AUTHOR PKSM_DESCRIPTION PKSM_TITLE, Run make from the project directory)
+
+APP_TITLE		:= 	$(PKSM_TITLE)
+APP_DESCRIPTION	:=	$(PKSM_DESCRIPTION)
+APP_AUTHOR		:=	$(PKSM_AUTHOR)
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUT_DEBUG		:=	out
@@ -259,13 +269,6 @@ ifneq ($(ROMFS),)
 endif
 
 .PHONY: all binaries deps directories clean spotless no-deps format cppcheck cppclean
-
-check_defined = \
-    $(strip $(foreach 1,$1, \
-        $(call __check_defined,$1,$(strip $(value 2)))))
-__check_defined = \
-    $(if $(value $1),, \
-      $(error Undefined $1$(if $2, ($2))))
 
 _BINARIES_DEPS :=
 

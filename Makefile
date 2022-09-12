@@ -1,6 +1,6 @@
-APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen I to Gen VIII save manager
-APP_AUTHOR		:=	FlagBrew
+export PKSM_TITLE		:= 	PKSM
+export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager
+export PKSM_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR	:=	9
 VERSION_MINOR	:=	2
