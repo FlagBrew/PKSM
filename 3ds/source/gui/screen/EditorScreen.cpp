@@ -75,7 +75,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
             pkm = pkm->partyClone();
         }
 
-        constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
+        static constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
             pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
         for (int i = 0; i < 6; i++)
         {
@@ -674,7 +674,7 @@ void EditorScreen::setFriendship()
 void EditorScreen::partyUpdate()
 {
     // Update party values IF the user hasn't edited them themselves
-    constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
+    static constexpr pksm::Stat stats[] = {pksm::Stat::HP, pksm::Stat::ATK, pksm::Stat::DEF,
         pksm::Stat::SPD, pksm::Stat::SPATK, pksm::Stat::SPDEF};
     for (int i = 0; i < 6; i++)
     {

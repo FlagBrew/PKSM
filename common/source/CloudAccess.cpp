@@ -210,7 +210,7 @@ std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type,
     post_data.push_back({"mode", "and"});
     post_data.push_back({"legal", legal});
 
-    const pksm::Generation gens_in_order[] = {
+    static constexpr pksm::Generation gens_in_order[] = {
         pksm::Generation::ONE,
         pksm::Generation::TWO,
         pksm::Generation::THREE,
@@ -297,7 +297,7 @@ std::optional<int> CloudAccess::nextPage()
 {
     while (!next->available)
     {
-        constexpr timespec sleepTime = {0, 100000};
+        static constexpr timespec sleepTime = {0, 100000};
         nanosleep(&sleepTime, nullptr);
     }
     if (!next->data || next->data->is_discarded())
@@ -329,7 +329,7 @@ std::optional<int> CloudAccess::prevPage()
 {
     while (!prev->available)
     {
-        constexpr timespec sleepTime = {0, 100000};
+        static constexpr timespec sleepTime = {0, 100000};
         nanosleep(&sleepTime, nullptr);
     }
     if (!prev->data || prev->data->is_discarded())

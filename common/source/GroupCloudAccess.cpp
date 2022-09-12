@@ -241,7 +241,7 @@ std::optional<int> GroupCloudAccess::nextPage()
 {
     while (!next->available)
     {
-        constexpr timespec sleepTime = {0, 100000};
+        static constexpr timespec sleepTime = {0, 100000};
         nanosleep(&sleepTime, nullptr);
     }
     if (!next->data || next->data->is_discarded())
@@ -273,7 +273,7 @@ std::optional<int> GroupCloudAccess::prevPage()
 {
     while (!prev->available)
     {
-        constexpr timespec sleepTime = {0, 100000};
+        static constexpr timespec sleepTime = {0, 100000};
         nanosleep(&sleepTime, nullptr);
     }
     if (!prev->data || prev->data->is_discarded())

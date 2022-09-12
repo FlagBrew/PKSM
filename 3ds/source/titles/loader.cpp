@@ -303,7 +303,7 @@ namespace
     // header.
     std::array<u8, 32> calcGbaSaveSHA256(File& file, const GbaHeader& header)
     {
-        constexpr size_t READBLOCK_SIZE = 0x1000;
+        static constexpr size_t READBLOCK_SIZE = 0x1000;
 
         pksm::crypto::SHA256 context;
         file.seek(0x30, SEEK_CUR);
@@ -563,7 +563,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
         {
             archive =
                 Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
-            constexpr u32 pathData[5] = {
+            static constexpr u32 pathData[5] = {
                 1,   // Save data
                 1,   // TMD content index
                 3,   // Type: save data?
@@ -928,7 +928,7 @@ void TitleLoader::saveToTitle(bool ask)
                         {
                             archive = Archive::saveAndContents(
                                 title->mediaType(), title->lowId(), title->highId(), true);
-                            constexpr u32 pathData[5] = {
+                            static constexpr u32 pathData[5] = {
                                 1,   // Save data
                                 1,   // TMD content index
                                 3,   // Type: save data?

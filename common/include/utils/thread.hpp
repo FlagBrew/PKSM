@@ -32,7 +32,7 @@
 
 namespace Threads
 {
-    static constexpr int MAX_THREADS = 32;
+    inline constexpr int MAX_THREADS = 32;
 
     bool init(u8 workers);
     // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN

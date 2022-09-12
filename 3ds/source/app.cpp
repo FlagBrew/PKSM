@@ -575,7 +575,7 @@ namespace
 
     void i18nThread(void*)
     {
-        constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
+        static constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
             pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
             pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
             pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
@@ -721,7 +721,7 @@ namespace
             }
         };
 
-        constexpr std::array<pksm::Generation, 4> mgGens = {pksm::Generation::FOUR,
+        static constexpr std::array<pksm::Generation, 4> mgGens = {pksm::Generation::FOUR,
             pksm::Generation::FIVE, pksm::Generation::SIX, pksm::Generation::SEVEN};
 
         std::atomic<size_t> filesDone = 0;

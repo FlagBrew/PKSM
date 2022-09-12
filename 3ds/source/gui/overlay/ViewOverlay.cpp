@@ -92,7 +92,7 @@ void ViewOverlay::drawTop() const
             COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH, displayWidths[i]);
     }
 
-    constexpr PKSM_Color statDisplayColors[3] = {
+    static constexpr PKSM_Color statDisplayColors[3] = {
         COLOR_UNSELECTBLUE, COLOR_BLACK, COLOR_UNSELECTRED};
     int statColorIndex[6] = {1, 1, 1, 1, 1, 1};
     if (pokemon.index() != 0 || std::get<0>(pokemon).get())

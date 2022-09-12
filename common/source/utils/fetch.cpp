@@ -174,7 +174,7 @@ void Fetch::multiMainThread(void*)
             __lock_release(multiHandleMutex);
             if (numFDs == 0)
             {
-                constexpr timespec sleepTime = {0, 1000000};
+                static constexpr timespec sleepTime = {0, 1000000};
                 nanosleep(&sleepTime, nullptr);
             }
         }
@@ -232,7 +232,7 @@ void Fetch::exitMulti()
     {
         while (!multiThreadInfo) // Wait for it to be done
         {
-            constexpr timespec sleepTime = {0, 100000};
+            static constexpr timespec sleepTime = {0, 100000};
             nanosleep(&sleepTime, nullptr);
         }
         // And finally clean up
@@ -322,7 +322,7 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
 
         while (wait.test_and_set())
         {
-            constexpr timespec sleepTime = {0, 100000};
+            static constexpr timespec sleepTime = {0, 100000};
             nanosleep(&sleepTime, nullptr);
         }
 
