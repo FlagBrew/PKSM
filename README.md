@@ -2,7 +2,7 @@
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
 <p align="center"><img src="https://github.com/FlagBrew/PKSM/workflows/CI/badge.svg" /></p>
 
-Multipurpose and portable save manager for generations III to VIII, programmed in
+Multipurpose and portable Pokemon save manager and editor for generations III to VIII, programmed in
 C++.
 
 * Supports original cartridges and digital copies of games from FrLgRSE to SwSh
@@ -10,11 +10,10 @@ C++.
 * Allows internal and resizable offline storage to store your Pokémon
 * Capable of running custom scripts to allow injection of arbitrary data into
   your saves
-* Interfaces with multiple ad-hoc programs running on your computer, web browser
-  or smartphone
 * Capable of scanning QR codes to inject both .pkx files or event wondercards
 * Contains an offline wondercard database to get events from old distributions
-* Capable of automatic verification and legalization of all your data
+* Capable of automatic verification and legalization of all your data (internet connection required)
+  * Optional interfacing with an Android app to handle verification and legalization without a network connection
 
 **We do not support or condone cheating at the expense of others. Do not use
 significantly edited Pokémon in battle or in trades with those who are unaware
@@ -45,8 +44,7 @@ connection is required when first launching PKSM.
 
 Initial launch will require your system to be connected to the internet. This is
 needed to download the additional assets required for the application to launch.
-If your system is not connected to the internet, PKSM will return back to your
-menu.
+If your system is not connected to the internet, PKSM will close.
 
 ## Applications compatible with PKSM
 
@@ -54,9 +52,10 @@ menu.
   QR codes scannable from PKSM. Runs on PC.
 * **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR
   codes scannable from PKSM. Runs on Twitter.
-* **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: a toolkit to
+* **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: A toolkit to
   develop and compile .pksm and .c scripts.
-* **[The GPSS](https://flagbrew.org/gpss)**: an online Pokémon sharing platform
+* **[The GPSS](https://flagbrew.org/gpss)**: An online Pokémon sharing platform.
+* **[GPSS Mobile](https://play.google.com/store/apps/details?id=com.flagbrew.gpss_mobile)**: Mobile interface for the GPSS and related features. Android only.
 
 ## Working path
 
@@ -69,17 +68,15 @@ menu.
 
 ## Troubleshooting
 
-Before submitting an issue, have a look through the issues page, because your
-question may have already been answered in the past.
+Before submitting an issue, have a look through the [issue tracker](https://github.com/FlagBrew/PKSM/issues), as your
+question or bug request may have already been answered in the past.
 
 Please only submit consistent issues (submitting your environment and which
-version of PKSM you're running, for example). Duplicate issues will be closed
-without any reply.
+version of PKSM you're running, for example). Duplicate issues will be closed.
 
-We'll not reply to issues related to versions of PKSM different from the latest
-stable release currently available.
+Issues that are opened concerning releases other than the latest stable release will also be closed. Please do not report bugs with old software.
 
-You can get real-time support by joining FlagBrew's discord server.
+You can get real-time support by joining FlagBrew's discord server:
 
 [![Discord](https://discordapp.com/api/guilds/278222834633801728/widget.png?style=banner3&time-)](https://discord.gg/bGKEyfY)
 
