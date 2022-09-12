@@ -2616,12 +2616,10 @@ void HexEditScreen::update(touchPosition* touch)
             {
                 button->setToggled((this->pkm.rawData()[hid.fullIndex()] >> button->bit()) & 0x1);
             }
-            // Only used for G6/7/LGPE marks so far, so just hardcode the offset
+            // G6 buttons are toggles, so no need to contemplate them here.
             else if (button->isMark())
             {
-                button->setColor(
-                    (LittleEndian::convertTo<u16>(this->pkm.rawData() + 0x16) >> button->bit()) &
-                    0x3);
+                button->setColor((pkm.markValue() >> (button->bit() << 1)) & 0x3);
             }
         }
     }
