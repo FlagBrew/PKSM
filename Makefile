@@ -1,5 +1,5 @@
 APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen III to Gen VIII save manager
+APP_DESCRIPTION	:=	Gen I to Gen VIII save manager
 APP_AUTHOR		:=	FlagBrew
 
 VERSION_MAJOR	:=	9

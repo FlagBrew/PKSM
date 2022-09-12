@@ -155,6 +155,7 @@ void sav_get_max(struct ParseState*, struct Value*, struct Value**, int);
 void sav_check_value(struct ParseState*, struct Value*, struct Value**, int);
 void sav_gbo(struct ParseState*, struct Value*, struct Value**, int);
 void sav_sbo(struct ParseState*, struct Value*, struct Value**, int);
+void sav_register_pkx_dex(struct ParseState*, struct Value*, struct Value**, int);
 // General data handling functions
 void sav_get_data(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_data(struct ParseState*, struct Value*, struct Value**, int);

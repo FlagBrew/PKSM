@@ -31,6 +31,8 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
@@ -406,6 +408,54 @@ bool HexEditScreen::checkValue()
                 return true;
         }
     }
+    else if (pkm.generation() == pksm::Generation::ONE)
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x3:
+                if (TitleLoader::save->availableSpecies().count(pkm.species()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0xB ... 0xD:
+                if (TitleLoader::save->availableMoves().count(pkm.move(i - 0xB)) == 0)
+                {
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+    else if (pkm.generation() == pksm::Generation::TWO)
+    {
+        int i = hid.fullIndex();
+        switch (i)
+        {
+            case 0x3:
+                if (TitleLoader::save->availableSpecies().count(pkm.species()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x4:
+                if (TitleLoader::save->availableItems().count(pkm.heldItem()) == 0)
+                {
+                    return false;
+                }
+                return true;
+            case 0x5 ... 0x8:
+                if (TitleLoader::save->availableMoves().count(pkm.move(i - 0x8)) == 0)
+                {
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
     return true;
 }
 
@@ -440,6 +490,49 @@ bool HexEditScreen::editNumber(bool high, bool up)
     if (!checkValue())
     {
         *chosen = oldValue;
+        return true;
+    }
+    if (level != UNRESTRICTED)
+    {
+        if (pkm.generation() == pksm::Generation::ONE)
+        {
+            if (hid.fullIndex() == 0x3)
+            {
+                pkm.species(pkm.species()); // sets header species byte and changes types
+            }
+            else if (hid.fullIndex() == 0x24)
+            {
+                pkm.rawData()[0x6] = *chosen;
+            }
+            else if (pkm.isParty() && hid.fullIndex() == 0x6)
+            {
+                pkm.rawData()[0x24] = *chosen;
+            }
+            else if (hid.fullIndex() == 0x3A)
+            {
+                if (*chosen == 0x50)
+                {
+                    *chosen = oldValue; // Prevent accidental INT -> JP when inserting into a bank
+                }
+            }
+        }
+        else if (pkm.generation() == pksm::Generation::TWO)
+        {
+            if (hid.fullIndex() == 0x3)
+            {
+                if (!pkm.egg())
+                {
+                    pkm.rawData()[0x1] = *chosen;
+                }
+            }
+            else if (hid.fullIndex() == 0x3E)
+            {
+                if (*chosen == 0x50)
+                {
+                    *chosen = oldValue; // Prevent accidental INT -> JP when inserting into a bank
+                }
+            }
+        }
     }
     return true;
 }
@@ -1469,6 +1562,196 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                 return std::make_pair(&i18n::localize("DYNAMAX_TYPE"), OPEN);
         }
     }
+    else if (pkm.generation() == pksm::Generation::ONE)
+    {
+        switch (i)
+        {
+            case 0x0:
+                return std::make_pair(&i18n::localize("GB_HEADER_COUNT"), UNRESTRICTED);
+            case 0x1:
+                return std::make_pair(&i18n::localize("GB_HEADER_SPECIES"), UNRESTRICTED);
+            case 0x2:
+                return std::make_pair(&i18n::localize("GB_HEADER_TERMINATOR"), UNRESTRICTED);
+            case 0x3:
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
+            case 0x4 ... 0x5:
+                return std::make_pair(&i18n::localize("CURRENT_HP"), NORMAL);
+            case 0x6:
+                return std::make_pair(&i18n::localize("PC_LEVEL"), NORMAL);
+            case 0x7:
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
+            case 0x8:
+                return std::make_pair(&i18n::localize("TYPE1"), UNRESTRICTED);
+            case 0x9:
+                return std::make_pair(&i18n::localize("TYPE2"), UNRESTRICTED);
+            case 0xA:
+                return std::make_pair(&i18n::localize("CATCH_RATE"), NORMAL);
+            case 0xB:
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
+            case 0xC:
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
+            case 0xD:
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
+            case 0xE:
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
+            case 0xF ... 0x10:
+                return std::make_pair(&i18n::localize("TID"), NORMAL);
+            case 0x11 ... 0x13:
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
+            case 0x14 ... 0x15:
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
+            case 0x16 ... 0x17:
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
+            case 0x18 ... 0x19:
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
+            case 0x1A ... 0x1B:
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
+            case 0x1C ... 0x1D:
+                return std::make_pair(&i18n::localize("SPECIAL_EV"), NORMAL);
+            case 0x1E ... 0x1F:
+                return std::make_pair(&i18n::localize("IVS"), NORMAL);
+            case 0x20:
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), NORMAL);
+            case 0x21:
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), NORMAL);
+            case 0x22:
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), NORMAL);
+            case 0x23:
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), NORMAL);
+            case 0x24:
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
+            case 0x25 ... 0x26:
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
+            case 0x27 ... 0x28:
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
+            case 0x29 ... 0x2A:
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
+            case 0x2B ... 0x2C:
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
+            case 0x2D ... 0x2E:
+                return std::make_pair(&i18n::localize("SPECIAL"), OPEN);
+            case 0x2F ... 0x44:
+            {
+                if (pkm.language() == pksm::Language::JPN)
+                {
+                    if (i <= 0x34)
+                    {
+                        return std::make_pair(
+                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    }
+                    return std::make_pair(
+                        &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+                }
+                if (i <= 0x39)
+                {
+                    return std::make_pair(
+                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                }
+                return std::make_pair(
+                    &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+            }
+        }
+    }
+    else if (pkm.generation() == pksm::Generation::TWO)
+    {
+        switch (i)
+        {
+            case 0x0:
+                return std::make_pair(&i18n::localize("GB_HEADER_COUNT"), UNRESTRICTED);
+            case 0x1:
+                return std::make_pair(&i18n::localize("GB_HEADER_SPECIES"), UNRESTRICTED);
+            case 0x2:
+                return std::make_pair(&i18n::localize("GB_HEADER_TERMINATOR"), UNRESTRICTED);
+            case 0x3:
+                return std::make_pair(&i18n::localize("SPECIES"), NORMAL);
+            case 0x4:
+                return std::make_pair(&i18n::localize("ITEM"), NORMAL);
+            case 0x5:
+                return std::make_pair(&i18n::localize("MOVE_1"), NORMAL);
+            case 0x6:
+                return std::make_pair(&i18n::localize("MOVE_2"), NORMAL);
+            case 0x7:
+                return std::make_pair(&i18n::localize("MOVE_3"), NORMAL);
+            case 0x8:
+                return std::make_pair(&i18n::localize("MOVE_4"), NORMAL);
+            case 0x9 ... 0xA:
+                return std::make_pair(&i18n::localize("TID"), NORMAL);
+            case 0xB ... 0xD:
+                return std::make_pair(&i18n::localize("EXPERIENCE"), NORMAL);
+            case 0xE ... 0xF:
+                return std::make_pair(&i18n::localize("HP_EV"), NORMAL);
+            case 0x10 ... 0x11:
+                return std::make_pair(&i18n::localize("ATTACK_EV"), NORMAL);
+            case 0x12 ... 0x13:
+                return std::make_pair(&i18n::localize("DEFENSE_EV"), NORMAL);
+            case 0x14 ... 0x15:
+                return std::make_pair(&i18n::localize("SPEED_EV"), NORMAL);
+            case 0x16 ... 0x17:
+                return std::make_pair(&i18n::localize("SPECIAL_EV"), NORMAL);
+            case 0x18 ... 0x19:
+                return std::make_pair(&i18n::localize("IVS"), NORMAL);
+            case 0x1A:
+                return std::make_pair(&i18n::localize("MOVE_1_CURRENT_PP"), NORMAL);
+            case 0x1B:
+                return std::make_pair(&i18n::localize("MOVE_2_CURRENT_PP"), NORMAL);
+            case 0x1C:
+                return std::make_pair(&i18n::localize("MOVE_3_CURRENT_PP"), NORMAL);
+            case 0x1D:
+                return std::make_pair(&i18n::localize("MOVE_4_CURRENT_PP"), NORMAL);
+            case 0x1E:
+                return std::make_pair(&i18n::localize("FRIENDSHIP"), NORMAL);
+            case 0x1F:
+                return std::make_pair(&i18n::localize("POKERUS"), NORMAL);
+            case 0x20 ... 0x21:
+                return std::make_pair(&i18n::localize("CAUGHT_DATA"), NORMAL);
+            case 0x22:
+                return std::make_pair(&i18n::localize("LEVEL"), NORMAL);
+            case 0x23:
+                return std::make_pair(&i18n::localize("STATUS_CONDITIONS"), NORMAL);
+            case 0x24:
+                return UNUSED;
+            case 0x25 ... 0x26:
+                return std::make_pair(&i18n::localize("CURRENT_HP"), NORMAL);
+            case 0x27 ... 0x28:
+                return std::make_pair(&i18n::localize("MAX_HP"), OPEN);
+            case 0x29 ... 0x2A:
+                return std::make_pair(&i18n::localize("ATTACK"), OPEN);
+            case 0x2B ... 0x2C:
+                return std::make_pair(&i18n::localize("DEFENSE"), OPEN);
+            case 0x2D ... 0x2E:
+                return std::make_pair(&i18n::localize("SPEED"), OPEN);
+            case 0x2F ... 0x30:
+                return std::make_pair(&i18n::localize("SPATK"), OPEN);
+            case 0x31 ... 0x32:
+                return std::make_pair(&i18n::localize("SPDEF"), OPEN);
+            case 0x33 ... 0x48:
+            {
+                if (pkm.language() == pksm::Language::JPN)
+                {
+                    if (i <= 0x38)
+                    {
+                        return std::make_pair(
+                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    }
+                    if (i == 0x3E)
+                    {
+                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                    }
+                    return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+                }
+                if (i <= 0x3D)
+                {
+                    return std::make_pair(
+                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                }
+                if (i == 0x48)
+                {
+                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                }
+                return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
+            }
+        }
+    }
     return std::make_pair(&i18n::localize("REPORT_THIS_TO_FLAGBREW"), UNRESTRICTED);
 }
 
@@ -2110,6 +2393,68 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     break;
             }
         }
+        else if (pkm.generation() == pksm::Generation::ONE)
+        {
+            switch (i)
+            {
+                case 0x7:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("ASLEEP"), true, 3));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 3) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 4));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 4) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 122, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 5));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 5) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 138, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 6));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 7));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 7) & 0x1);
+                    break;
+            }
+        }
+        else if (pkm.generation() == pksm::Generation::TWO)
+        {
+            switch (i)
+            {
+                case 0x21:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 120, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FEMALE_OT"), true, 7));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 7) & 0x1);
+                    break;
+                case 0x23:
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 90, 13, 13, [this, i]() { return this->toggleBit(i, 3); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("ASLEEP"), true, 3));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 3) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 106, 13, 13, [this, i]() { return this->toggleBit(i, 4); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("POISONED"), true, 4));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 4) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 122, 13, 13, [this, i]() { return this->toggleBit(i, 5); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("BURNED"), true, 5));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 5) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 138, 13, 13, [this, i]() { return this->toggleBit(i, 6); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("FROZEN"), true, 6));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 6) & 0x1);
+                    buttons[i].push_back(std::make_unique<HexEditButton>(
+                        30, 154, 13, 13, [this, i]() { return this->toggleBit(i, 7); },
+                        ui_sheet_emulated_toggle_green_idx, i18n::localize("PARALYZED"), true, 7));
+                    buttons[i].back()->setToggled((pkm.rawData()[i] >> 7) & 0x1);
+                    break;
+            }
+        }
     }
     hid.update(pkm.getLength());
     selectedDescription = describe(0);
@@ -2277,12 +2622,10 @@ void HexEditScreen::update(touchPosition* touch)
             {
                 button->setToggled((this->pkm.rawData()[hid.fullIndex()] >> button->bit()) & 0x1);
             }
-            // Only used for G6/7/LGPE marks so far, so just hardcode the offset
+            // G6 buttons are toggles, so no need to contemplate them here.
             else if (button->isMark())
             {
-                button->setColor(
-                    (LittleEndian::convertTo<u16>(this->pkm.rawData() + 0x16) >> button->bit()) &
-                    0x3);
+                button->setColor((pkm.markValue() >> (button->bit() << 1)) & 0x3);
             }
         }
     }
@@ -2308,6 +2651,66 @@ void HexEditScreen::drawMeaning() const
     size_t i = hid.fullIndex();
     switch (pkm.generation())
     {
+        case pksm::Generation::ONE:
+            switch (i)
+            {
+                case 0x1:
+                case 0x3:
+                    Gui::text(pkm.species().localize(Configuration::getInstance().language()), 160,
+                        100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x8:
+                    Gui::type(Configuration::getInstance().language(), pkm.type1(), 134, 90);
+                    break;
+                case 0x9:
+                    Gui::type(Configuration::getInstance().language(), pkm.type2(), 134, 90);
+                    break;
+                case 0xA:
+                    Gui::text(i18n::item2(Configuration::getInstance().language(),
+                                  static_cast<pksm::PK2&>(pkm).heldItem2()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xB ... 0xE:
+                    Gui::text(
+                        i18n::move(Configuration::getInstance().language(), pkm.move(i - 0xB)), 160,
+                        100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0xF ... 0x10:
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+            }
+            break;
+        case pksm::Generation::TWO:
+            switch (i)
+            {
+                case 0x1:
+                case 0x3:
+                    Gui::text(pkm.species().localize(Configuration::getInstance().language()), 160,
+                        100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x4:
+                    Gui::text(i18n::item2(Configuration::getInstance().language(),
+                                  static_cast<pksm::PK2&>(pkm).heldItem2()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x5 ... 0x8:
+                    Gui::text(
+                        i18n::move(Configuration::getInstance().language(), pkm.move(i - 0x5)), 160,
+                        100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x9:
+                    Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+                    break;
+                case 0x21:
+                    Gui::text(i18n::location(Configuration::getInstance().language(),
+                                  (pksm::Generation)pkm.version(), pkm.metLocation()),
+                        160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+            }
+            break;
         case pksm::Generation::THREE:
             switch (i)
             {

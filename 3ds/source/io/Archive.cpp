@@ -31,6 +31,7 @@
 #include "csvc.h"
 #include "internal_fspxi.hpp"
 #include "smdh.hpp"
+#include <array>
 #include <sys/stat.h>
 
 namespace

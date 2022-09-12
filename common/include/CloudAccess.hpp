@@ -105,7 +105,7 @@ private:
     bool isGood              = false;
     bool ascend              = true;
     bool legal               = false;
-    pksm::Generation lowGen  = pksm::Generation::THREE;
+    pksm::Generation lowGen  = pksm::Generation::ONE;
     pksm::Generation highGen = pksm::Generation::EIGHT;
     bool showLGPE            = true;
 };

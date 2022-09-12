@@ -33,7 +33,7 @@ include $(DEVKITARM)/3ds_rules
 #     - <libctru folder>/default_icon.png
 #---------------------------------------------------------------------------------
 APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen IV to Gen VII save manager
+APP_DESCRIPTION	:=	Gen I to Gen VIII save manager
 APP_AUTHOR		:=	FlagBrew
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
@@ -153,7 +153,7 @@ CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
 			`curl-config --cflags` \
 			$(OPTIMIZE) $(RELEASE_FLAGS)
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D__3DS__ -D_GNU_SOURCE=1
+CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 

@@ -85,7 +85,7 @@ private:
     bool legal  = false;
     // Currently not changeable
     pksm::Generation high = pksm::Generation::EIGHT;
-    pksm::Generation low  = pksm::Generation::THREE;
+    pksm::Generation low  = pksm::Generation::ONE;
     bool LGPE             = true;
 };
 

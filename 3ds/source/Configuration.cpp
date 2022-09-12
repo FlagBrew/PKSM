@@ -29,6 +29,7 @@
 #include "gui.hpp"
 #include "nlohmann/json.hpp"
 #include "website.h"
+#include <array>
 
 Configuration::Configuration()
 {
@@ -235,6 +236,27 @@ Configuration::Configuration()
                     "0x00040000001B5000";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::UM)] =
                     "0x00040000001B5100";
+            }
+            if ((*mJson)["version"].get<int>() < 12)
+            {
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::RD)] =
+                    "0x0004000000171000";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GN)] =
+                    "0x0004000000170D00";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::BU)] =
+                    "0x0004000000171100";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::YW)] =
+                    "0x0004000000171200";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GD)] =
+                    "0x0004000000172600";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SV)] =
+                    "0x0004000000172700";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::C)] =
+                    "0x0004000000172800";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GP)] = "0x600";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GE)] = "0x700";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SW)] = "0x800";
+                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SH)] = "0x900";
             }
 
             (*mJson)["version"] = CURRENT_VERSION;

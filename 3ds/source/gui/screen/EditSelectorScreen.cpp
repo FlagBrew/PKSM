@@ -48,6 +48,49 @@ void EditSelectorScreen::changeBoxName()
 {
     switch (TitleLoader::save->generation())
     {
+        case pksm::Generation::TWO:
+        {
+            SwkbdState state;
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[18] = {0};
+            size_t length;
+            if (!(TitleLoader::save->language() == pksm::Language::JPN ||
+                    TitleLoader::save->language() == pksm::Language::KOR))
+            {
+                length = 18;
+            }
+            else
+            {
+                length = 10;
+            }
+            SwkbdButton ret = swkbdInputText(&state, input, length);
+            input[16]       = '\0';
+            input[17]       = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
+        }
+        break;
+        case pksm::Generation::THREE:
+        {
+            SwkbdState state;
+            swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 8);
+            swkbdSetHintText(&state, i18n::localize("BOX_NAME").c_str());
+            swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
+            char input[18]  = {0}; // gotta make room for jpn characters going from two width to one
+            SwkbdButton ret = swkbdInputText(
+                &state, input, TitleLoader::save->language() == pksm::Language::JPN ? 18 : 10);
+            input[16] = '\0';
+            input[17] = '\0';
+            if (ret == SWKBD_BUTTON_CONFIRM)
+            {
+                TitleLoader::save->boxName(box, input);
+            }
+        }
+        break;
         case pksm::Generation::FOUR:
         case pksm::Generation::FIVE:
         {
@@ -83,6 +126,7 @@ void EditSelectorScreen::changeBoxName()
             }
         }
         break;
+        case pksm::Generation::ONE:
         case pksm::Generation::LGPE:
         case pksm::Generation::UNUSED:
             // Nothing happens
@@ -95,6 +139,12 @@ bool EditSelectorScreen::doQR()
     std::unique_ptr<pksm::PKX> pkm;
     switch (TitleLoader::save->generation())
     {
+        case pksm::Generation::ONE:
+            pkm = QRScanner<pksm::PK1>::scan();
+            break;
+        case pksm::Generation::TWO:
+            pkm = QRScanner<pksm::PK2>::scan();
+            break;
         case pksm::Generation::THREE:
             pkm = QRScanner<pksm::PK3>::scan();
             break;
@@ -165,26 +215,37 @@ EditSelectorScreen::EditSelectorScreen()
         cameraButtonText->maxWidth(FONT_SIZE_14) + 2, 16, [this]() { return this->doQR(); },
         ui_sheet_res_null_idx, "\uE004+\uE005 \uE01E", FONT_SIZE_14, COLOR_BLACK));
 
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     // Pokemon buttons
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 45 + row * 30;
-        for (u8 column = 0; column < 6; column++)
+        for (u8 column = 0; column < (maxPkmInBox / 5); column++)
         {
-            u16 x                        = 4 + column * 34;
-            pkmButtons[row * 6 + column] = std::make_unique<ClickButton>(
+            u16 x = 4 + column * 34;
+            if (maxPkmInBox == 20)
+            {
+                x += 34;
+            }
+            pkmButtons[row * (maxPkmInBox / 5) + column] = std::make_unique<ClickButton>(
                 x, y, 34, 30,
-                [this, row, column]() { return this->clickIndex(row * 6 + column + 1); },
+                [this, row, column, maxPkmInBox]()
+                { return this->clickIndex(row * (maxPkmInBox / 5) + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
         }
     }
     for (int i = 0; i < 6; i++)
     {
-        int x              = (i % 2 == 0 ? 221 : 271);
-        int y              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        pkmButtons[30 + i] = std::make_unique<ClickButton>(
-            x, y, 34, 30, [this, i]() { return this->clickIndex(31 + i); }, ui_sheet_res_null_idx,
-            "", 0.0f, COLOR_BLACK);
+        int x                       = (i % 2 == 0 ? 221 : 271);
+        int y                       = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        pkmButtons[maxPkmInBox + i] = std::make_unique<ClickButton>(
+            x, y, 34, 30,
+            [this, i, maxPkmInBox]() { return this->clickIndex((maxPkmInBox + 1) + i); },
+            ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
     }
 
     viewerButtons.push_back(std::make_unique<ClickButton>(
@@ -214,16 +275,24 @@ EditSelectorScreen::EditSelectorScreen()
 
 void EditSelectorScreen::drawBottom() const
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     Gui::sprite(ui_sheet_emulated_bg_bottom_blue, 0, 0);
     Gui::sprite(ui_sheet_bg_style_bottom_idx, 0, 0);
     Gui::sprite(ui_sheet_bar_bottom_blue_idx, 0, 216);
     Gui::sprite(ui_sheet_stripe_camera_idx, 218, 14);
 
     Gui::sprite(ui_sheet_bar_boxname_with_arrows_idx, 7, 15);
-    Gui::sprite(ui_sheet_storage_box_corner_idx, 2, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx, 202, 44);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, 2, 193);
-    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_both_idx, 202, 193);
+    Gui::sprite(ui_sheet_storage_box_corner_idx, maxPkmInBox == 20 ? 36 : 2, 44);
+    Gui::sprite(ui_sheet_emulated_storage_box_corner_flipped_horizontal_idx,
+        maxPkmInBox == 20 ? 168 : 202, 44);
+    Gui::sprite(
+        ui_sheet_emulated_storage_box_corner_flipped_vertical_idx, maxPkmInBox == 20 ? 36 : 2, 193);
+    Gui::sprite(
+        ui_sheet_emulated_storage_box_corner_flipped_both_idx, maxPkmInBox == 20 ? 168 : 202, 193);
     for (const auto& b : buttons)
     {
         b->draw();
@@ -253,9 +322,13 @@ void EditSelectorScreen::drawBottom() const
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 45 + row * 30;
-        for (u8 column = 0; column < 6; column++)
+        for (u8 column = 0; column < maxPkmInBox / 5; column++)
         {
             u16 x = 4 + column * 34;
+            if (maxPkmInBox == 20)
+            {
+                x += 34;
+            }
             if (TitleLoader::save->generation() == pksm::Generation::LGPE &&
                 row * 6 + column + box * 30 >= TitleLoader::save->maxSlot())
             {
@@ -263,7 +336,8 @@ void EditSelectorScreen::drawBottom() const
             }
             else
             {
-                std::unique_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(box, row * 6 + column);
+                std::unique_ptr<pksm::PKX> pokemon =
+                    TitleLoader::save->pkm(box, row * (maxPkmInBox / 5) + column);
                 if (pokemon->species() != pksm::Species::None)
                 {
                     Gui::pkm(*pokemon, x, y);
@@ -309,20 +383,23 @@ void EditSelectorScreen::drawBottom() const
         }
         Gui::sprite(ui_sheet_pointer_arrow_idx, 106, -4 + dy);
     }
-    else if (cursorPos < 31)
+
+    else if (cursorPos < (maxPkmInBox + 1))
     {
         int tempIndex = cursorPos - 1;
-        int yMod      = (tempIndex / 6) * 30 + Gui::pointerBob();
+        int yMod      = (tempIndex / (maxPkmInBox / 5)) * 30 + Gui::pointerBob();
         if (moveMon)
         {
-            Gui::pkm(*moveMon, 9 + (tempIndex % 6) * 34, 39 + yMod);
+            Gui::pkm(*moveMon, (maxPkmInBox == 20 ? 43 : 9) + (tempIndex % (maxPkmInBox / 5)) * 34,
+                39 + yMod);
         }
-        Gui::sprite(ui_sheet_pointer_arrow_idx, 21 + (tempIndex % 6) * 34, 30 + yMod);
+        Gui::sprite(ui_sheet_pointer_arrow_idx,
+            (maxPkmInBox == 20 ? 55 : 21) + (tempIndex % (maxPkmInBox / 5)) * 34, 30 + yMod);
     }
     else
     {
         int x = 238 + ((cursorPos - 1) % 2) * 50;
-        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - 30) / 2) * 45 +
+        int y = ((cursorPos - 1) % 2 == 0 ? 35 : 51) + (((cursorPos - 1) - maxPkmInBox) / 2) * 45 +
                 Gui::pointerBob();
         if (moveMon)
         {
@@ -363,22 +440,27 @@ void EditSelectorScreen::update(touchPosition* touch)
         }
     }
 
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+
     if (moveMon)
     {
         infoMon = moveMon->clone();
     }
     else if (cursorPos != 0)
     {
-        if (cursorPos < 31)
+        if (cursorPos < maxPkmInBox + 1)
         {
-            if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+            if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
             {
                 infoMon = TitleLoader::save->pkm(box, cursorPos - 1);
             }
         }
         else
         {
-            infoMon = TitleLoader::save->pkm(cursorPos - 31);
+            infoMon = TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1));
         }
     }
     else
@@ -432,7 +514,10 @@ void EditSelectorScreen::update(touchPosition* touch)
 
         for (auto& button : pkmButtons)
         {
-            button->update(touch);
+            if (button)
+            {
+                button->update(touch);
+            }
         }
 
         if (downKeys & KEY_A)
@@ -441,10 +526,10 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 changeBoxName();
             }
-            else if (moveMon && cursorPos < 31)
+            else if (moveMon && cursorPos < (maxPkmInBox + 1))
             {
                 std::unique_ptr<pksm::PKX> tmpMon = nullptr;
-                if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+                if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
                 {
                     tmpMon = TitleLoader::save->pkm(box, cursorPos - 1);
                     if (tmpMon && tmpMon->species() == pksm::Species::None)
@@ -458,15 +543,15 @@ void EditSelectorScreen::update(touchPosition* touch)
             else if (moveMon)
             {
                 std::unique_ptr<pksm::PKX> tmpMon = nullptr;
-                if (cursorPos - 31 < TitleLoader::save->partyCount())
+                if (cursorPos - (maxPkmInBox + 1) < TitleLoader::save->partyCount())
                 {
-                    tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                    tmpMon = TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1));
                 }
                 if (tmpMon && tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
-                TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+                TitleLoader::save->pkm(*moveMon, cursorPos - (maxPkmInBox + 1));
                 moveMon = std::move(tmpMon);
                 TitleLoader::save->fixParty();
             }
@@ -499,19 +584,19 @@ void EditSelectorScreen::update(touchPosition* touch)
         }
         else if (repeatKeys & KEY_LEFT)
         {
-            if (cursorPos >= 31)
+            if (cursorPos >= (maxPkmInBox + 1))
             {
-                if (cursorPos == 31)
+                if (cursorPos == (maxPkmInBox + 1))
                 {
-                    cursorPos = 6;
+                    cursorPos = (maxPkmInBox / 5);
                 }
-                else if (cursorPos == 33)
+                else if (cursorPos == (maxPkmInBox + 3))
                 {
-                    cursorPos = 18;
+                    cursorPos = (maxPkmInBox / 5) * 2;
                 }
-                else if (cursorPos == 35)
+                else if (cursorPos == (maxPkmInBox + 5))
                 {
-                    cursorPos = 24;
+                    cursorPos = (maxPkmInBox / 5) * 3;
                 }
                 else
                 {
@@ -525,7 +610,7 @@ void EditSelectorScreen::update(touchPosition* touch)
             else if (cursorPos == 1)
             {
                 prevBox();
-                cursorPos = 30;
+                cursorPos = maxPkmInBox;
             }
             else if (cursorPos == 0)
             {
@@ -538,41 +623,42 @@ void EditSelectorScreen::update(touchPosition* touch)
             {
                 nextBox();
             }
-            else if (cursorPos < 30 || (cursorPos >= 31 && cursorPos % 2 == 1))
+            else if (cursorPos < maxPkmInBox ||
+                     (cursorPos >= (maxPkmInBox + 1) && cursorPos % 2 == 1))
             {
                 cursorPos++;
             }
-            else if (cursorPos == 30)
+            else if (cursorPos == maxPkmInBox)
             {
                 nextBox();
                 cursorPos = 1;
             }
-            else if (cursorPos == 32)
+            else if (cursorPos == (maxPkmInBox + 2))
             {
                 cursorPos = 1;
             }
-            else if (cursorPos == 34)
+            else if (cursorPos == (maxPkmInBox + 4))
             {
-                cursorPos = 13;
+                cursorPos = ((maxPkmInBox / 5) * 2) + 1;
             }
-            else if (cursorPos == 36)
+            else if (cursorPos == (maxPkmInBox + 6))
             {
-                cursorPos = 25;
+                cursorPos = ((maxPkmInBox / 5) * 4) + 1;
             }
         }
         else if (repeatKeys & KEY_UP)
         {
             if (cursorPos == 0)
             {
-                cursorPos = 27;
+                cursorPos = maxPkmInBox == 20 ? 18 : 27;
             }
-            else if (cursorPos <= 6)
+            else if (cursorPos <= (maxPkmInBox / 5))
             {
                 cursorPos = 0;
             }
-            else if (cursorPos >= 31)
+            else if (cursorPos >= (maxPkmInBox + 1))
             {
-                if (cursorPos > 32)
+                if (cursorPos > (maxPkmInBox + 2))
                 {
                     cursorPos -= 2;
                 }
@@ -583,14 +669,14 @@ void EditSelectorScreen::update(touchPosition* touch)
             }
             else
             {
-                cursorPos -= 6;
+                cursorPos -= maxPkmInBox / 5;
             }
         }
         else if (repeatKeys & KEY_DOWN)
         {
-            if (cursorPos >= 31)
+            if (cursorPos >= (maxPkmInBox + 1))
             {
-                if (cursorPos < 35)
+                if (cursorPos < (maxPkmInBox + 5))
                 {
                     cursorPos += 2;
                 }
@@ -599,17 +685,17 @@ void EditSelectorScreen::update(touchPosition* touch)
                     cursorPos -= 4;
                 }
             }
-            else if (cursorPos >= 25)
+            else if (cursorPos >= (maxPkmInBox == 20 ? 17 : 25))
             {
                 cursorPos = 0;
             }
             else if (cursorPos == 0)
             {
-                cursorPos = 3;
+                cursorPos = 2;
             }
             else
             {
-                cursorPos += 6;
+                cursorPos += maxPkmInBox / 5;
             }
         }
         else if (repeatKeys & KEY_R)
@@ -648,9 +734,13 @@ bool EditSelectorScreen::nextBox()
 
 bool EditSelectorScreen::editPokemon()
 {
-    if (cursorPos < 31 && cursorPos != 0)
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
+    if (cursorPos < (maxPkmInBox + 1) && cursorPos != 0)
     {
-        if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             justSwitched = true;
             Gui::setScreen(std::make_unique<EditorScreen>(
@@ -658,11 +748,12 @@ bool EditSelectorScreen::editPokemon()
             return true;
         }
     }
-    else if (cursorPos > 30)
+    else if (cursorPos > maxPkmInBox)
     {
         justSwitched = true;
-        Gui::setScreen(std::make_unique<EditorScreen>(
-            TitleLoader::save->pkm(cursorPos - 31), EditorScreen::PARTY_MAGIC_NUM, cursorPos - 31));
+        Gui::setScreen(
+            std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1)),
+                EditorScreen::PARTY_MAGIC_NUM, cursorPos - (maxPkmInBox + 1)));
         return true;
     }
 
@@ -693,13 +784,17 @@ bool EditSelectorScreen::clickIndex(int i)
 
 bool EditSelectorScreen::clonePkm()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
     if (cursorPos > 0)
     {
-        if (cursorPos > 30)
+        if (cursorPos > maxPkmInBox)
         {
             if (!moveMon)
             {
-                moveMon = TitleLoader::save->pkm(cursorPos - 31);
+                moveMon = TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1));
                 if (moveMon && moveMon->species() == pksm::Species::None)
                 {
                     moveMon = nullptr;
@@ -707,17 +802,18 @@ bool EditSelectorScreen::clonePkm()
             }
             else
             {
-                std::unique_ptr<pksm::PKX> tmpMon = TitleLoader::save->pkm(cursorPos - 31);
+                std::unique_ptr<pksm::PKX> tmpMon =
+                    TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1));
                 if (tmpMon && tmpMon->species() == pksm::Species::None)
                 {
                     tmpMon = nullptr;
                 }
-                TitleLoader::save->pkm(*moveMon, cursorPos - 31);
+                TitleLoader::save->pkm(*moveMon, cursorPos - (maxPkmInBox + 1));
                 moveMon = std::move(tmpMon);
                 TitleLoader::save->fixParty();
             }
         }
-        else if (box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        else if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             if (!moveMon)
             {
@@ -776,9 +872,14 @@ bool EditSelectorScreen::goBack()
 
 bool EditSelectorScreen::releasePokemon()
 {
+    u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
+                         TitleLoader::save->language() != pksm::Language::JPN)
+                       ? 20
+                       : 30;
     if (cursorPos != 0 && Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_RELEASE")))
     {
-        if (cursorPos < 31 && box * 30 + cursorPos - 1 < TitleLoader::save->maxSlot())
+        if (cursorPos < (maxPkmInBox + 1) &&
+            box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), box, cursorPos - 1, false);
             if (TitleLoader::save->generation() == pksm::Generation::LGPE)
@@ -794,11 +895,13 @@ bool EditSelectorScreen::releasePokemon()
                 }
             }
         }
-        else if (cursorPos > 30 && cursorPos - 31 < TitleLoader::save->partyCount())
+        else if (cursorPos > maxPkmInBox &&
+                 cursorPos - (maxPkmInBox + 1) < TitleLoader::save->partyCount())
         {
             if (TitleLoader::save->partyCount() > 1)
             {
-                TitleLoader::save->pkm(*TitleLoader::save->emptyPkm(), cursorPos - 31);
+                TitleLoader::save->pkm(
+                    *TitleLoader::save->emptyPkm(), cursorPos - (maxPkmInBox + 1));
                 TitleLoader::save->fixParty();
             }
             else

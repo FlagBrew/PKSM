@@ -26,6 +26,7 @@
 
 #include "File.hpp"
 #include "internal_fspxi.hpp"
+#include <array>
 
 File::File(Handle handle) : mHandle(handle), mOffset(0)
 {

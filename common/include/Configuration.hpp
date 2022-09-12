@@ -37,7 +37,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 11;
+    static constexpr int CURRENT_VERSION = 12;
 
     static Configuration& getInstance(void)
     {
@@ -80,7 +80,7 @@ public:
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;
 
-    // Allows setting title IDs of versions. Can be used to edit romhacks or GBA VC. Support not
+    // Allows setting title IDs of versions. Can be used to edit romhacks or GB[A] VC. Support not
     // guaranteed for the former!
     std::string titleId(pksm::GameVersion version) const;
 
@@ -115,6 +115,8 @@ public:
     void month(int month);
 
     void year(int year);
+
+    // the below aged well
 
     // This assumes that we'll have a way to set them in the config screen, something that I'm not
     // sure about as that would require basically implementing a file browser. Maybe have it be
