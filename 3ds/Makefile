@@ -33,7 +33,7 @@ include $(DEVKITARM)/3ds_rules
 #     - <libctru folder>/default_icon.png
 #---------------------------------------------------------------------------------
 APP_TITLE		:= 	PKSM
-APP_DESCRIPTION	:=	Gen I to Gen VII save manager
+APP_DESCRIPTION	:=	Gen I to Gen VIII save manager
 APP_AUTHOR		:=	FlagBrew
 
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))

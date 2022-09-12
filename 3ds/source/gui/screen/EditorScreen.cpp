@@ -44,6 +44,9 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
+#include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -355,8 +358,20 @@ void EditorScreen::drawBottom() const
         TextPosY::TOP);
     Gui::text(pkm->ability().localize(lang), 95, 72, FONT_SIZE_12,
         pkm->abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(i18n::item(lang, pkm->heldItem()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-        TextPosY::TOP);
+
+    if (pkm->generation() == pksm::Generation::ONE) {
+        Gui::text(i18n::item(lang, static_cast<pksm::PK1*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
+    }
+    else if (pkm->generation() == pksm::Generation::TWO) {
+        Gui::text(i18n::item(lang, static_cast<pksm::PK2*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
+    }
+    else if (pkm->generation() == pksm::Generation::THREE) {
+        Gui::text(i18n::item(lang, static_cast<pksm::PK3*>(pkm.get())->heldItem3()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+            TextPosY::TOP);
+    }
+
     Gui::text(pkm->shiny() ? i18n::localize("YES") : i18n::localize("NO"), 95, 112, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(pkm->pkrsDays() > 0 ? i18n::localize("YES") : i18n::localize("NO"), 95, 132,
@@ -845,10 +860,7 @@ bool EditorScreen::selectAbility()
 
 bool EditorScreen::selectItem()
 {
-    if (pkm->generation() != pksm::Generation::ONE)
-    {
-        addOverlay<PkmItemOverlay>(*pkm);
-    }
+    addOverlay<PkmItemOverlay>(*pkm);
     return false;
 }
 

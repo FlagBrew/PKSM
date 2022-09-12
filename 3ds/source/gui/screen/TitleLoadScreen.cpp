@@ -98,6 +98,7 @@ TitleLoadScreen::TitleLoadScreen()
         COLOR_BLACK));
 
     titles = &TitleLoader::ctrTitles;
+    tabs[0]->setState(true); // prevent uninitialized state
 }
 
 void TitleLoadScreen::refreshLanguage()

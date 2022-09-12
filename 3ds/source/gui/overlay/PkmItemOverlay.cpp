@@ -114,7 +114,9 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
                       ? static_cast<pksm::PK3&>(pkm).heldItem3()
                       : (pkm.generation() == pksm::Generation::TWO
                           ? static_cast<pksm::PK2&>(pkm).heldItem2()
-                          : pkm.heldItem());
+                          : (pkm.generation() == pksm::Generation::ONE)
+                              ? static_cast<pksm::PK1&>(pkm).heldItem2()
+                              : pkm.heldItem());
     int itemIndex = index(items, pkm.generation() == pksm::Generation::THREE
                                      ? i18n::item3(Configuration::getInstance().language(), item)
                                      : (pkm.generation() == pksm::Generation::TWO
@@ -226,7 +228,11 @@ void PkmItemOverlay::update(touchPosition* touch)
     u32 downKeys = hidKeysDown();
     if (downKeys & KEY_A)
     {
-        if (pkm.generation() == pksm::Generation::TWO)
+        if (pkm.generation() == pksm::Generation::ONE)
+        {
+            static_cast<pksm::PK1&>(pkm).heldItem2((u16)items[hid.fullIndex()].first);
+        }
+        else if (pkm.generation() == pksm::Generation::TWO)
         {
             static_cast<pksm::PK2&>(pkm).heldItem2((u16)items[hid.fullIndex()].first);
         }

@@ -259,7 +259,8 @@ namespace
         ret->setAbility(0);
         ret->PID(
             pksm::PKX::getRandomPID(ret->species(), ret->gender(), ret->version(), ret->nature(),
-                ret->alternativeForm(), ret->abilityNumber(), ret->PID(), ret->generation()));
+                ret->alternativeForm(), ret->abilityNumber(), ret->shiny(), ret->tsv(), ret->PID(),
+                ret->generation()));
 
         ret->refreshChecksum();
 

@@ -30,6 +30,9 @@
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "pkx/PB7.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
+#include "pkx/PK3.hpp"
 
 namespace
 {
@@ -272,8 +275,24 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
     Gui::text(pkm.ability().localize(Configuration::getInstance().language()), 87, 116,
         FONT_SIZE_12, pkm.abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT,
         TextPosY::TOP);
-    Gui::text(i18n::item(Configuration::getInstance().language(), pkm.heldItem()), 87, 136,
-        FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    
+    if (pkm.generation() == pksm::Generation::ONE) {
+        Gui::text(i18n::item2(Configuration::getInstance().language(), static_cast<pksm::PK1&>(pkm).heldItem2()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm.generation() == pksm::Generation::TWO) {
+        Gui::text(i18n::item2(Configuration::getInstance().language(), static_cast<pksm::PK2&>(pkm).heldItem2()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else if (pkm.generation() == pksm::Generation::THREE) {
+        Gui::text(i18n::item3(Configuration::getInstance().language(), static_cast<pksm::PK3&>(pkm).heldItem3()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    else {
+        Gui::text(i18n::item(Configuration::getInstance().language(), pkm.heldItem()), 87, 136,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+    }
+    
     Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.PSV(), pkm.TSV()), 87, 156, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.versionTID(), pkm.versionSID()), 87, 176,
