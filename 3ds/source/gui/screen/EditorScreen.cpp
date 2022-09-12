@@ -360,15 +360,15 @@ void EditorScreen::drawBottom() const
         pkm->abilityNumber() == 4 ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
     if (pkm->generation() == pksm::Generation::ONE) {
-        Gui::text(i18n::item(lang, static_cast<pksm::PK1*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        Gui::text(i18n::item2(lang, static_cast<pksm::PK1*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
             TextPosY::TOP);
     }
     else if (pkm->generation() == pksm::Generation::TWO) {
-        Gui::text(i18n::item(lang, static_cast<pksm::PK2*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        Gui::text(i18n::item2(lang, static_cast<pksm::PK2*>(pkm.get())->heldItem2()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
             TextPosY::TOP);
     }
     else if (pkm->generation() == pksm::Generation::THREE) {
-        Gui::text(i18n::item(lang, static_cast<pksm::PK3*>(pkm.get())->heldItem3()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
+        Gui::text(i18n::item3(lang, static_cast<pksm::PK3*>(pkm.get())->heldItem3()), 95, 92, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
             TextPosY::TOP);
     }
 
