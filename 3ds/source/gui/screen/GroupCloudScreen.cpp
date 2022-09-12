@@ -893,22 +893,22 @@ void GroupCloudScreen::shareReceive()
                 }
                 nlohmann::json groupJson = nlohmann::json::parse(jsonData, nullptr, false);
 
-                if (groupJson.is_object() && groupJson.contains("pokemon") &&
-                    groupJson["pokemon"].is_array())
+                if (groupJson.is_object() && groupJson.contains("pokemons") &&
+                    groupJson["pokemons"].is_array())
                 {
                     groupPkm.clear();
                     std::string badVersions;
                     std::vector<std::unique_ptr<pksm::PKX>> temPkm;
-                    for (const auto& pkm : groupJson["pokemon"])
+                    for (const auto& pkm : groupJson["pokemons"])
                     {
                         // clang-format off
                         if (pkm.is_object() && pkm.contains("generation") && pkm["generation"].is_string() &&
-                            pkm.contains("base64") && pkm["base64"].is_string())
+                            pkm.contains("pokemon") && pkm["pokemon"].is_string())
                         {
                             // clang-format on
                             pksm::Generation gen =
                                 pksm::Generation::fromString(pkm["generation"].get<std::string>());
-                            std::vector<u8> data = base64_decode(pkm["base64"].get<std::string>());
+                            std::vector<u8> data = base64_decode(pkm["pokemon"].get<std::string>());
 
                             if (gen != pksm::Generation::UNUSED)
                             {

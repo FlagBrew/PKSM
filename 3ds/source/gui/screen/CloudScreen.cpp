@@ -49,51 +49,6 @@
 #include "website.h"
 #include <sys/stat.h>
 
-namespace
-{
-    size_t generation_from_header_callback(char* buffer, size_t size, size_t nitems, void* userdata)
-    {
-        std::string tmp(buffer, size * nitems);
-        if (tmp.find("Generation:") == 0)
-        {
-            tmp = tmp.substr(12);
-            if (tmp.find("1") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::ONE;
-            }
-            else if (tmp.find("2") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::TWO;
-            }
-            else if (tmp.find("3") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::THREE;
-            }
-            else if (tmp.find("4") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::FOUR;
-            }
-            else if (tmp.find("5") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::FIVE;
-            }
-            else if (tmp.find("6") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::SIX;
-            }
-            else if (tmp.find("7") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::SEVEN;
-            }
-            else if (tmp.find("LGPE") == 0)
-            {
-                *(pksm::Generation*)(userdata) = pksm::Generation::LGPE;
-            }
-        }
-        return nitems * size;
-    }
-}
-
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
              i18n::localize("Y_GROUP_SINGLE") + '\n' + i18n::localize("START_SORT_FILTER") + '\n' +
@@ -934,14 +889,11 @@ void CloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url  = WEBSITE_URL "api/v2/gpss/download/pokemon/" + std::string(input);
-        std::string retB64Data = "";
-        if (auto fetch = Fetch::init(url, true, &retB64Data, nullptr, ""))
+        const std::string url = WEBSITE_URL "api/v2/gpss/download/pokemon/" + std::string(input);
+        std::string retData   = "";
+        if (auto fetch = Fetch::init(url, true, &retData, nullptr, ""))
         {
-            long status_code     = 0;
-            pksm::Generation gen = pksm::Generation::UNUSED;
-            fetch->setopt(CURLOPT_HEADERDATA, &gen);
-            fetch->setopt(CURLOPT_HEADERFUNCTION, generation_from_header_callback);
+            long status_code = 0;
 
             auto res = Fetch::perform(fetch);
             if (res.index() == 0)
@@ -970,24 +922,37 @@ void CloudScreen::shareReceive()
                         Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
                         return;
                 }
-                auto retData = base64_decode(retB64Data.data(), retB64Data.size());
 
-                std::unique_ptr<pksm::PKX> pkm =
-                    pksm::PKX::getPKM(gen, retData.data(), retData.size());
+                nlohmann::json retJson = nlohmann::json::parse(retData, nullptr, false);
 
-                if (!pkm)
+                if (retJson.is_object() && retJson.contains("generation") &&
+                    retJson["generation"].is_string() && retJson.contains("pokemon") &&
+                    retJson["pokemon"].is_array())
                 {
-                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
-                    return;
-                }
+                    pksm::Generation gen =
+                        pksm::Generation::fromString(retJson["generation"].get<std::string>());
 
-                if (!cloudChosen && cursorIndex != 0)
-                {
-                    Banks::bank->pkm(*pkm, storageBox, cursorIndex - 1);
-                }
-                else
-                {
-                    moveMon = std::move(pkm);
+                    auto retB64Data = retJson["pokemon"].get<std::string>();
+
+                    auto retData = base64_decode(retB64Data.data(), retB64Data.size());
+
+                    std::unique_ptr<pksm::PKX> pkm =
+                        pksm::PKX::getPKM(gen, retData.data(), retData.size());
+
+                    if (!pkm)
+                    {
+                        Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
+                        return;
+                    }
+
+                    if (!cloudChosen && cursorIndex != 0)
+                    {
+                        Banks::bank->pkm(*pkm, storageBox, cursorIndex - 1);
+                    }
+                    else
+                    {
+                        moveMon = std::move(pkm);
+                    }
                 }
             }
         }
