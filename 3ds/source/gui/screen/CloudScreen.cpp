@@ -927,7 +927,7 @@ void CloudScreen::shareReceive()
 
                 if (retJson.is_object() && retJson.contains("generation") &&
                     retJson["generation"].is_string() && retJson.contains("pokemon") &&
-                    retJson["pokemon"].is_array())
+                    retJson["pokemon"].is_string())
                 {
                     pksm::Generation gen =
                         pksm::Generation::fromString(retJson["generation"].get<std::string>());
