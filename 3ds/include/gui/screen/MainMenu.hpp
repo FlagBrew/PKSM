@@ -49,7 +49,7 @@ private:
     std::array<std::unique_ptr<Button>, 7> buttons;
     pksm::Language oldLang;
     bool justSwitched = true;
-    decltype(pksm::crypto::sha256(nullptr, 0)) oldHash;
+    decltype(pksm::crypto::sha256({})) oldHash;
 };
 
 #endif

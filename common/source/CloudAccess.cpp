@@ -254,7 +254,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
         pksm::Generation gen = pksm::Generation::fromString(
             (*current->data)["pokemon"][slot]["generation"].get<std::string>());
         // Legal info: needs thought
-        auto retData = base64_decode(b64Data.data(), b64Data.size());
+        auto retData = base64_decode(b64Data);
 
         auto ret = pksm::PKX::getPKM(gen, retData.data(), retData.size());
         if (ret)
@@ -385,7 +385,7 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)mon->rawData(), mon->getLength());
+        curl_mime_data(field, (char*)mon->rawData().data(), mon->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 

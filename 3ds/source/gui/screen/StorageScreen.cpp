@@ -38,7 +38,6 @@
 #include "TitleLoadScreen.hpp"
 #include "app.hpp"
 #include "banks.hpp"
-#include "base64.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
@@ -1527,7 +1526,7 @@ void StorageScreen::doDump(const pksm::PKX& dumpMon)
     FILE* out = fopen(outPath.c_str(), "wb");
     if (out)
     {
-        fwrite(dumpMon.rawData(), 1, dumpMon.getLength(), out);
+        fwrite(dumpMon.rawData().data(), 1, dumpMon.getLength(), out);
         fclose(out);
     }
     else

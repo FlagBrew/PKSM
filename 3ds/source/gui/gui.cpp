@@ -60,6 +60,8 @@ namespace
 #define NOHOMEALPHA_ACCEL 0.001f
     float dNoHomeAlpha = NOHOMEALPHA_ACCEL;
 
+    float magicFun = 0;
+
     bool textMode = false;
     bool inFrame  = false;
 
@@ -404,11 +406,11 @@ namespace
     }
 }
 
-void Gui::drawImageAt(
-    const C2D_Image& img, float x, float y, const C2D_ImageTint* tint, float scaleX, float scaleY)
+void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
+    float scaleX, float scaleY, float rotation)
 {
     flushText();
-    C2D_DrawImageAt(img, x, y, 0.5f, tint, scaleX, scaleY);
+    C2D_DrawImageAtRotated(img, x, y, 0.5f, rotation, tint, scaleX, scaleY);
 }
 
 void Gui::drawSolidCircle(float x, float y, float rad, PKSM_Color color)
@@ -876,6 +878,8 @@ void Gui::mainLoop(void)
         Gui::clearScreen(GFX_BOTTOM);
 
         u32 kHeld = hidKeysHeld();
+
+        magicFun += M_TAU / 360;
 
         if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
         {
@@ -1620,28 +1624,40 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, colorToFormat(color), blend);
     Date date = Date::today();
-    if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
-        date.month() == ((u16)(~magicNumber) ^ 0xB542))
+
+    auto drawImageAt = [&](const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
+                           float scaleX, float scaleY)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^ 184),
-            x, y, &tint, scale, scale);
-        return;
-    }
+        return Gui::drawImageAt(img, x, y, tint, scaleX, scaleY,
+            date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
+                    date.month() == ((u16)(~magicNumber) ^ 0xB542)
+                ? magicFun
+                : 0);
+    };
+
+    // if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
+    //     date.month() == ((u16)(~magicNumber) ^ 0xB542))
+    // {
+    //     Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^
+    //     184),
+    //         x, y, &tint, scale, scale);
+    //     return;
+    // }
     if (species == pksm::Species::Manaphy && form == -1)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x,
-            y, &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y,
+            &tint, scale, scale);
     }
     else if (species == pksm::Species::Unown)
     {
         if (form == 0 || form > 27)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
                 scale, scale);
         }
         else
         {
-            Gui::drawImageAt(
+            drawImageAt(
                 C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x,
                 y, &tint, scale, scale);
         }
@@ -1650,28 +1666,28 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
     // else if (species > pksm::Species::Calyrex) // TODO: Gen 8 sheet
     else if (species > pksm::Species::Melmetal)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
-            &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint,
+            scale, scale);
     }
     else if (species == pksm::Species::Unfezant && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x,
-            y, &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y,
+            &tint, scale, scale);
     }
     else if (species == pksm::Species::Frillish && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x,
-            y, &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y,
+            &tint, scale, scale);
     }
     else if (species == pksm::Species::Jellicent && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x,
-            y, &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y,
+            &tint, scale, scale);
     }
     else if (species == pksm::Species::Pyroar && gender == pksm::Gender::Female)
     {
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x,
-            y, &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y,
+            &tint, scale, scale);
     }
     else if (form == 0)
     {
@@ -1691,33 +1707,32 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         {
             species = pksm::Species::None;
         }
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Mimikyu)
     {
         if (form == 1 || form > pksm::PersonalSMUSUM::formCount(778))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x,
-                y, &tint, scale, scale);
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y,
+                &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x, y,
-                &tint, scale, scale);
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x,
+                y, &tint, scale, scale);
         }
     }
     else if (species == pksm::Species::Minior)
     {
         if (form < 7 || form > pksm::PersonalSMUSUM::formCount(774))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x,
-                y, &tint, scale, scale);
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y,
+                &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(
+            drawImageAt(
                 C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7),
                 x, y, &tint, scale, scale);
         }
@@ -1725,7 +1740,7 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
     else if (species == pksm::Species::Pumpkaboo || species == pksm::Species::Gourgeist ||
              species == pksm::Species::Genesect)
     {
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     // Pikachu
@@ -1734,49 +1749,49 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         if (generation == pksm::Generation::SIX &&
             form < pksm::PersonalXYORAS::formCount(size_t(species)))
         {
-            Gui::drawImageAt(
+            drawImageAt(
                 C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y,
                 &tint, scale, scale);
         }
         else if (form < pksm::PersonalSMUSUM::formCount(size_t(species)))
         {
-            Gui::drawImageAt(
+            drawImageAt(
                 C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y,
                 &tint, scale, scale);
         }
         else if (form == pksm::PersonalLGPE::formCount(size_t(species)) - 1)
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
                 scale, scale);
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
-                x + 25 + 34 * (scale - 1), y + 5);
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
+                x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
                 scale, scale);
         }
     }
     else if (species == pksm::Species::Eevee)
     {
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-        Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
-            x + 25 + 34 * (scale - 1), y + 5);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
+            x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
     }
     else if (species == pksm::Species::Arceus)
     {
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Scatterbug || species == pksm::Species::Spewpa)
     {
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else if (species == pksm::Species::Silvally)
     {
-        Gui::drawImageAt(
+        drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
     else
@@ -1813,7 +1828,7 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         }
         if (form > formCountGetter(size_t(species)))
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
                 scale, scale);
             return;
         }
@@ -2170,12 +2185,12 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
         if (drawIndex < types_spritesheet_201_1_idx)
         {
-            Gui::drawImageAt(
+            drawImageAt(
                 C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, &tint, scale, scale);
         }
         else
         {
-            Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
                 &tint, scale, scale);
         }
     }

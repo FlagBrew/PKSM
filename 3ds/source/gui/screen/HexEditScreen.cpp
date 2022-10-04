@@ -461,7 +461,7 @@ bool HexEditScreen::checkValue()
 
 bool HexEditScreen::editNumber(bool high, bool up)
 {
-    u8* chosen  = pkm.rawData() + hid.fullIndex();
+    u8* chosen  = pkm.rawData().data() + hid.fullIndex();
     u8 oldValue = *chosen;
     if (high)
     {
@@ -3033,7 +3033,7 @@ bool HexEditScreen::rotateMark(u8 mark)
         return false;
     }
 
-    u16 markData = LittleEndian::convertTo<u16>(pkm.rawData() + offset);
+    u16 markData = LittleEndian::convertTo<u16>(pkm.rawData().data() + offset);
     switch ((markData >> (mark * 2)) & 0x3)
     {
         case 0:
@@ -3049,6 +3049,6 @@ bool HexEditScreen::rotateMark(u8 mark)
             markData &= (0xFFFF ^ (0x3 << (mark * 2)));
             break;
     }
-    LittleEndian::convertFrom<u16>(pkm.rawData() + offset, markData);
+    LittleEndian::convertFrom<u16>(pkm.rawData().data() + offset, markData);
     return false;
 }

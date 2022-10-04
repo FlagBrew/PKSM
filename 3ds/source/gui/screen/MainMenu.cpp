@@ -97,7 +97,7 @@ MainMenu::MainMenu() : Screen(i18n::localize("X_SAVE"))
         ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
     }
     oldHash =
-        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        pksm::crypto::sha256({TitleLoader::save->rawData().get(), TitleLoader::save->getLength()});
     makeButtons();
     makeInstructions();
 }
@@ -270,7 +270,7 @@ void MainMenu::update(touchPosition* touch)
 bool MainMenu::needsSave()
 {
     auto newHash =
-        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        pksm::crypto::sha256({TitleLoader::save->rawData().get(), TitleLoader::save->getLength()});
     if (newHash != oldHash)
     {
         return true;
@@ -317,5 +317,5 @@ void MainMenu::save()
         }
     }
     oldHash =
-        pksm::crypto::sha256(TitleLoader::save->rawData().get(), TitleLoader::save->getLength());
+        pksm::crypto::sha256({TitleLoader::save->rawData().get(), TitleLoader::save->getLength()});
 }

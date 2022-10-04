@@ -27,30 +27,17 @@
 #ifndef BASE64_HPP
 #define BASE64_HPP
 
+#include "utils/coretypes.h"
+#include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
-std::vector<unsigned char> base64_decode(const char* data, size_t input_length);
-inline std::vector<unsigned char> base64_decode(const std::string_view& data)
+std::vector<u8> base64_decode(std::span<const u8> data);
+inline std::vector<u8> base64_decode(const std::string_view& data)
 {
-    return base64_decode(data.data(), data.size());
+    return base64_decode(std::span<const u8>{(const u8*)data.data(), data.size()});
 }
-inline std::vector<unsigned char> base64_decode(const uint8_t* data, size_t input_length)
-{
-    return base64_decode((char*)data, input_length);
-}
-std::string base64_encode(const char* data, size_t input_length);
-inline std::string base64_encode(const unsigned char* data, size_t input_length)
-{
-    return base64_encode((char*)data, input_length);
-}
-inline std::string base64_encode(const std::vector<char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
-inline std::string base64_encode(const std::vector<unsigned char>& data)
-{
-    return base64_encode(data.data(), data.size());
-}
+std::string base64_encode(std::span<const u8> data);
 
 #endif

@@ -771,7 +771,7 @@ bool GroupCloudScreen::dumpPkm()
                 FILE* out = fopen(path.c_str(), "wb");
                 if (out)
                 {
-                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+                    fwrite(dumpMon->rawData().data(), 1, dumpMon->getLength(), out);
                     fclose(out);
                 }
                 else

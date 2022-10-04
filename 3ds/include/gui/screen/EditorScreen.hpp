@@ -71,7 +71,7 @@ private:
     bool saved();
     std::vector<std::unique_ptr<Button>> buttons;
     std::unique_ptr<pksm::PKX> pkm;
-    decltype(pksm::crypto::sha256(nullptr, 0)) origHash;
+    decltype(pksm::crypto::sha256({})) origHash;
     int box               = 0;
     int index             = 0;
     int origPartyStats[6] = {0};

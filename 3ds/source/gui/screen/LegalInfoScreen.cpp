@@ -115,7 +115,7 @@ void LegalInfoScreen::attemptLegalization()
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)pkm->get().rawData(), pkm->get().getLength());
+        curl_mime_data(field, (char*)pkm->get().rawData().data(), pkm->get().getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
@@ -164,10 +164,10 @@ void LegalInfoScreen::attemptLegalization()
                                 pkm->get().generation(), pkmData.data(), pkmData.size(), true);
                             if (fixed)
                             {
-                                std::copy(fixed->rawData(),
-                                    fixed->rawData() +
-                                        std::min(pkm->get().getLength(), fixed->getLength()),
-                                    pkm->get().rawData());
+                                std::ranges::copy(
+                                    fixed->rawData().subspan(
+                                        0, std::min(pkm->get().getLength(), fixed->getLength())),
+                                    pkm->get().rawData().begin());
                                 Gui::warn(i18n::localize("PKM_LEGALIZED"));
                                 Gui::screenBack();
                                 return;

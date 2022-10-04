@@ -757,7 +757,7 @@ bool CloudScreen::dumpPkm()
                 FILE* out = fopen(path.c_str(), "wb");
                 if (out)
                 {
-                    fwrite(dumpMon->rawData(), 1, dumpMon->getLength(), out);
+                    fwrite(dumpMon->rawData().data(), 1, dumpMon->getLength(), out);
                     fclose(out);
                 }
                 else
@@ -813,7 +813,7 @@ void CloudScreen::shareSend()
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
         curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)infoMon->rawData(), infoMon->getLength());
+        curl_mime_data(field, (char*)infoMon->rawData().data(), infoMon->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
 
@@ -934,7 +934,7 @@ void CloudScreen::shareReceive()
 
                     auto retB64Data = retJson["pokemon"].get<std::string>();
 
-                    auto retData = base64_decode(retB64Data.data(), retB64Data.size());
+                    auto retData = base64_decode(retB64Data);
 
                     std::unique_ptr<pksm::PKX> pkm =
                         pksm::PKX::getPKM(gen, retData.data(), retData.size());

@@ -63,7 +63,7 @@ namespace
     {
         std::string url;
         std::string path;
-        decltype(pksm::crypto::sha256(nullptr, 0)) hash;
+        decltype(pksm::crypto::sha256({})) hash;
     };
 
     asset assets[2] = {
@@ -79,7 +79,7 @@ namespace
                 0x66, 0x34, 0xa4, 0x91}}};
 
     bool matchSha256HashFromFile(
-        const std::string& path, const decltype(pksm::crypto::sha256(nullptr, 0))& sha)
+        const std::string& path, const decltype(pksm::crypto::sha256({}))& sha)
     {
         bool match = false;
         auto in    = Archive::sd().file(path, FS_OPEN_READ);
@@ -88,7 +88,7 @@ namespace
             size_t size = in->size();
             char* data  = new char[size];
             in->read(data, size);
-            auto hash = pksm::crypto::sha256((u8*)data, size);
+            auto hash = pksm::crypto::sha256({(u8*)data, size});
             delete[] data;
             match = sha == hash;
             in->close();
@@ -617,7 +617,7 @@ namespace
 
     // Also checks modified time. If the checksum file is newer than the file, recalculate and write
     // checksum If checksum file doesn't exist, calculate and write checksum
-    decltype(pksm::crypto::sha256(nullptr, 0)) readGiftChecksum(const std::string& fileName)
+    decltype(pksm::crypto::sha256({})) readGiftChecksum(const std::string& fileName)
     {
         struct
         {
@@ -629,7 +629,7 @@ namespace
         const std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
         const std::string checksumPath = path + ".sha";
         const std::string romfsPath    = "romfs:/mg/" + fileName;
-        decltype(pksm::crypto::sha256(nullptr, 0)) ret;
+        decltype(pksm::crypto::sha256({})) ret;
 
         fileInfo.exists = (stat(path.c_str(), &mystat) == 0);
         archive_getmtime(path.c_str(), &fileInfo.mtime);
@@ -670,7 +670,7 @@ namespace
             fread(data.get(), 1, size, file);
             fclose(file);
 
-            ret = pksm::crypto::sha256(data.get(), size);
+            ret = pksm::crypto::sha256({data.get(), size});
 
             file = fopen(checksumPath.c_str(), "wb");
             if (file)
@@ -711,7 +711,7 @@ namespace
 
             if (data)
             {
-                writeMe->shaContext.update((u8*)data, size * nitems);
+                writeMe->shaContext.update({(u8*)data, size * nitems});
 
                 return fwrite(data, size, nitems, writeMe->file);
             }
@@ -736,7 +736,7 @@ namespace
             for (const std::string& fileName :
                 {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
             {
-                decltype(pksm::crypto::sha256(nullptr, 0)) checksum = readGiftChecksum(fileName);
+                decltype(pksm::crypto::sha256({})) checksum = readGiftChecksum(fileName);
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch = Fetch::init(
@@ -818,7 +818,7 @@ namespace
             }
             else
             {
-                decltype(pksm::crypto::sha256(nullptr, 0)) checksum = info.shaContext.finish();
+                decltype(pksm::crypto::sha256({})) checksum = info.shaContext.finish();
 
                 FILE* f = fopen(shaFile.c_str(), "wb");
                 if (f)

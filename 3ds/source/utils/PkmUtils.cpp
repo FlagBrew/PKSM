@@ -292,7 +292,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk1", "wb");
         if (out)
         {
-            fwrite(g1Default->rawData(), 1, g1Default->getLength(), out);
+            fwrite(g1Default->rawData().data(), 1, g1Default->getLength(), out);
             fclose(out);
             g1Save = false;
         }
@@ -302,7 +302,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk2", "wb");
         if (out)
         {
-            fwrite(g2Default->rawData(), 1, g2Default->getLength(), out);
+            fwrite(g2Default->rawData().data(), 1, g2Default->getLength(), out);
             fclose(out);
             g2Save = false;
         }
@@ -312,7 +312,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk3", "wb");
         if (out)
         {
-            fwrite(g3Default->rawData(), 1, g3Default->getLength(), out);
+            fwrite(g3Default->rawData().data(), 1, g3Default->getLength(), out);
             fclose(out);
             g3Save = false;
         }
@@ -322,7 +322,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk4", "wb");
         if (out)
         {
-            fwrite(g4Default->rawData(), 1, g4Default->getLength(), out);
+            fwrite(g4Default->rawData().data(), 1, g4Default->getLength(), out);
             fclose(out);
             g4Save = false;
         }
@@ -332,7 +332,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk5", "wb");
         if (out)
         {
-            fwrite(g5Default->rawData(), 1, g5Default->getLength(), out);
+            fwrite(g5Default->rawData().data(), 1, g5Default->getLength(), out);
             fclose(out);
             g5Save = false;
         }
@@ -342,7 +342,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk6", "wb");
         if (out)
         {
-            fwrite(g6Default->rawData(), 1, g6Default->getLength(), out);
+            fwrite(g6Default->rawData().data(), 1, g6Default->getLength(), out);
             fclose(out);
             g6Save = false;
         }
@@ -352,7 +352,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk7", "wb");
         if (out)
         {
-            fwrite(g7Default->rawData(), 1, g7Default->getLength(), out);
+            fwrite(g7Default->rawData().data(), 1, g7Default->getLength(), out);
             fclose(out);
             g7Save = false;
         }
@@ -362,7 +362,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pk8", "wb");
         if (out)
         {
-            fwrite(g8Default->rawData(), 1, g8Default->getLength(), out);
+            fwrite(g8Default->rawData().data(), 1, g8Default->getLength(), out);
             fclose(out);
             g8Save = false;
         }
@@ -372,7 +372,7 @@ void PkmUtils::saveDefaults()
         FILE* out = fopen("/3ds/PKSM/defaults/default.pb7", "wb");
         if (out)
         {
-            fwrite(lgpeDefault->rawData(), 1, lgpeDefault->getLength(), out);
+            fwrite(lgpeDefault->rawData().data(), 1, lgpeDefault->getLength(), out);
             fclose(out);
             lgpeSave = false;
         }

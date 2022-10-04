@@ -160,7 +160,7 @@ namespace
             case pksm::Generation::THREE:
                 ret = pksm::PKX::getPKM<pksm::Generation::THREE>(
                     nullptr, isParty ? pksm::PK3::PARTY_LENGTH : pksm::PK3::BOX_LENGTH);
-                std::copy(data, data + ret->getLength(), ret->rawData());
+                std::copy(data, data + ret->getLength(), ret->rawData().begin());
                 return ret;
             case pksm::Generation::FOUR:
                 return pksm::PKX::getPKM<pksm::Generation::FOUR>(
@@ -662,7 +662,7 @@ void bank_get_pkx(
         *outGen  = pkm->generation();
 
         u8* out = (u8*)malloc(pkm->getLength());
-        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), out);
+        std::ranges::copy(pkm->rawData(), out);
         ReturnValue->Val->Pointer = (void*)out;
     }
 }
@@ -707,7 +707,7 @@ void sav_get_pkx(
     int slot = Param[2]->Val->Integer;
 
     auto pkm = TitleLoader::save->pkm(box, slot);
-    memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
+    std::ranges::copy(pkm->rawData(), data);
 }
 
 void party_get_pkx(
@@ -717,7 +717,7 @@ void party_get_pkx(
     int slot = Param[1]->Val->Integer;
 
     auto pkm = TitleLoader::save->pkm(slot);
-    memcpy(data, pkm.get()->rawData(), pkm.get()->getLength());
+    std::ranges::copy(pkm->rawData(), data);
 }
 
 void i18n_species(
@@ -800,7 +800,7 @@ void pkx_encrypt(
     pkm->encrypt();
     if (gen == pksm::Generation::THREE)
     {
-        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+        std::ranges::copy(pkm->rawData(), data);
     }
 }
 
@@ -955,41 +955,48 @@ void pkx_generate(
             pkxLength = TitleLoader::save->language() == pksm::Language::JPN
                           ? pksm::PK1::JP_LENGTH_WITH_NAMES
                           : pksm::PK1::INT_LENGTH_WITH_NAMES;
-            std::copy(orig->rawData(), orig->rawData() + pkxLength, data);
+            std::ranges::copy(orig->rawData().subspan(pkxLength), data);
             break;
         case pksm::Generation::TWO:
             pkxLength = TitleLoader::save->language() == pksm::Language::JPN
                           ? pksm::PK2::JP_LENGTH_WITH_NAMES
                           : pksm::PK2::INT_LENGTH_WITH_NAMES;
-            std::copy(orig->rawData(), orig->rawData() + pkxLength, data);
+            std::ranges::copy(orig->rawData().subspan(pkxLength), data);
             break;
         case pksm::Generation::THREE:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::FOUR:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::FIVE:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::SIX:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::SEVEN:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::LGPE:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH),
+                data);
             break;
         case pksm::Generation::EIGHT:
-            std::copy(orig->rawData(),
-                orig->rawData() + pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH, data);
+            std::ranges::copy(
+                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH),
+                data);
             break;
         // Should never happen
         case pksm::Generation::UNUSED:
@@ -1075,7 +1082,7 @@ void pkx_generate(
     pkm->level(orig->level());
 
     // not having directAccess from getPokemon means we do this
-    std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+    std::ranges::copy(pkm->rawData(), data);
 }
 
 void sav_get_max(
@@ -1722,7 +1729,7 @@ void pkx_set_value(
     }
     if (gen == pksm::Generation::THREE)
     {
-        std::copy(pkm->rawData(), pkm->rawData() + pkm->getLength(), data);
+        std::ranges::copy(pkm->rawData(), data);
     }
     delete pkm;
 }
@@ -2177,7 +2184,7 @@ void pksm_base64_decode(
     char* in     = (char*)Param[2]->Val->Pointer;
     int inSize   = Param[3]->Val->Integer;
 
-    auto data = base64_decode(in, inSize);
+    auto data = base64_decode({in, inSize});
 
     *outSize = data.size();
     *out     = (u8*)malloc(data.size());
@@ -2195,7 +2202,7 @@ void pksm_base64_encode(
     u8* in       = (u8*)Param[2]->Val->Pointer;
     int inSize   = Param[3]->Val->Integer;
 
-    auto data = base64_encode(in, inSize);
+    auto data = base64_encode({in, inSize});
 
     *outSize = data.size();
     *out     = (char*)strToRet(data);

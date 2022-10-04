@@ -75,7 +75,7 @@ namespace Gui
     int pointerBob();
 #if defined(__3DS__)
     void drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint = nullptr,
-        float scaleX = 1.0f, float scaleY = 1.0f);
+        float scaleX = 1.0f, float scaleY = 1.0f, float rotation = 0.0f);
 #elif defined(__SWITCH__)
     // Not sure what the image format is
     void drawImageAt(const Image& img, float x, float y, const Tint* tint = nullptr,

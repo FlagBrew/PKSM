@@ -294,7 +294,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
         ui_sheet_button_trainer_info_idx));
 
-    origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
+    origHash = pksm::crypto::sha256(pkm->rawData());
 }
 
 void EditorScreen::drawBottom() const
@@ -528,7 +528,7 @@ bool EditorScreen::advanceMon(bool forward)
             }
         }
         while (pkm->species() == pksm::Species::None);
-        origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
+        origHash = pksm::crypto::sha256(pkm->rawData());
     }
     return false;
 }
@@ -737,7 +737,7 @@ bool EditorScreen::save()
         }
         TitleLoader::save->dex(*pkm);
     }
-    origHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
+    origHash = pksm::crypto::sha256(pkm->rawData());
     return false;
 }
 
@@ -951,6 +951,6 @@ bool EditorScreen::setSaveInfo()
 
 bool EditorScreen::saved()
 {
-    auto newHash = pksm::crypto::sha256(pkm->rawData(), pkm->getLength());
+    auto newHash = pksm::crypto::sha256(pkm->rawData());
     return newHash == origHash;
 }

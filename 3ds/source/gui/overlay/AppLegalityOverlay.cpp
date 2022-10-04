@@ -99,7 +99,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
     {
         data += std::to_string((int)pksm::GameVersion::oldestVersion(pkm.generation())) + ":";
     }
-    data += base64_encode(pkm.rawData(), pkm.getLength());
+    data += base64_encode(pkm.rawData());
     qrcodegen::QrCode code =
         qrcodegen::QrCode::encodeText(data.c_str(), qrcodegen::QrCode::Ecc::MEDIUM);
 
@@ -195,7 +195,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
                 return true;
             }
 
-            const u8* pkmData   = this->pkm.rawData();
+            const u8* pkmData   = this->pkm.rawData().data();
             u32 pkmSize         = this->pkm.getLength();
             u32 sendablePkmSize = htonl(pkmSize);
             dataTransmitted     = send(sockfd, &sendablePkmSize, sizeof(u32), 0);
@@ -241,8 +241,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
                 }
                 if (pkx)
                 {
-                    std::copy(
-                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm.rawData());
+                    std::ranges::copy(pkx->rawData(), this->pkm.rawData().begin());
                 }
             }
 
@@ -278,8 +277,7 @@ AppLegalityOverlay::AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm
                 }
                 if (pkx)
                 {
-                    std::copy(
-                        pkx->rawData(), pkx->rawData() + pkx->getLength(), this->pkm.rawData());
+                    std::ranges::copy(pkx->rawData(), this->pkm.rawData().begin());
                 }
             }
             // remove image view

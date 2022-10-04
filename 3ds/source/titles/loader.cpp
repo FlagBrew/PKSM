@@ -314,7 +314,7 @@ namespace
         {
             size_t readSize = std::min(sha_end_idx - i, READBLOCK_SIZE);
             read            = file.read(readblock.get(), readSize);
-            context.update(readblock.get(), readSize);
+            context.update({readblock.get(), readSize});
         }
 
         return context.finish();
@@ -544,13 +544,13 @@ void TitleLoader::backupSave(const std::string& id)
     }
 }
 
-bool TitleLoader::load(std::shared_ptr<u8[]> data, size_t size)
+bool TitleLoader::load(const std::shared_ptr<u8[]>& data, size_t size)
 {
     save = pksm::Sav::getSave(data, size);
     return save != nullptr;
 }
 
-bool TitleLoader::load(std::shared_ptr<Title> title)
+bool TitleLoader::load(const std::shared_ptr<Title>& title)
 {
     saveIsFile  = false;
     loadedTitle = title;
@@ -794,7 +794,7 @@ bool TitleLoader::load(std::shared_ptr<Title> title)
     return false;
 }
 
-bool TitleLoader::load(std::shared_ptr<Title> title, const std::string& savePath)
+bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& savePath)
 {
     saveIsFile   = true;
     saveFileName = savePath;

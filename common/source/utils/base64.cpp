@@ -55,20 +55,20 @@ namespace
         });
 }
 
-std::vector<unsigned char> base64_decode(const char* data, size_t input_length)
+std::vector<u8> base64_decode(std::span<const u8> data)
 {
-    if (input_length % 4 != 0)
+    if (data.size() % 4 != 0)
         return {};
 
-    size_t output_length = input_length / 4 * 3;
-    if (data[input_length - 1] == '=')
+    size_t output_length = data.size() / 4 * 3;
+    if (data[data.size() - 1] == '=')
         output_length--;
-    if (data[input_length - 2] == '=')
+    if (data[data.size() - 2] == '=')
         output_length--;
 
     std::vector<unsigned char> ret(output_length);
 
-    for (size_t i = 0, j = 0; i < input_length;)
+    for (size_t i = 0, j = 0; i < data.size();)
     {
         uint32_t sextet_a = data[i] == '=' ? 0 & i++ : decoding_table[(size_t)data[i++]];
         uint32_t sextet_b = data[i] == '=' ? 0 & i++ : decoding_table[(size_t)data[i++]];
@@ -89,16 +89,16 @@ std::vector<unsigned char> base64_decode(const char* data, size_t input_length)
     return ret;
 }
 
-std::string base64_encode(const char* data, size_t input_length)
+std::string base64_encode(std::span<const u8> data)
 {
-    std::string ret(4 * ((input_length + 2) / 3), '=');
+    std::string ret(4 * ((data.size() + 2) / 3), '=');
     size_t out_index = 0;
 
-    for (size_t i = 0, j = 0; i < input_length; j += 4)
+    for (size_t i = 0, j = 0; i < data.size(); j += 4)
     {
-        uint32_t octet_a = i < input_length ? (unsigned char)data[i++] : 0;
-        uint32_t octet_b = i < input_length ? (unsigned char)data[i++] : 0;
-        uint32_t octet_c = i < input_length ? (unsigned char)data[i++] : 0;
+        uint32_t octet_a = i < data.size() ? (unsigned char)data[i++] : 0;
+        uint32_t octet_b = i < data.size() ? (unsigned char)data[i++] : 0;
+        uint32_t octet_c = i < data.size() ? (unsigned char)data[i++] : 0;
 
         uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
 

@@ -441,7 +441,7 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
             curl_mimepart* field  = curl_mime_addpart(mimeThing.get());
             std::string fieldName = fmt::format("pkmn{:d}", i + 1);
             curl_mime_name(field, fieldName.c_str());
-            curl_mime_data(field, (char*)sendMe[i]->rawData(), sendMe[i]->getLength());
+            curl_mime_data(field, (char*)sendMe[i]->rawData().data(), sendMe[i]->getLength());
             curl_mime_filename(field, fieldName.c_str());
         }
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());

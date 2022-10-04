@@ -257,8 +257,8 @@ public:
                       std::is_same_v<Mode, pksm::WC6> || std::is_same_v<Mode, pksm::WC7> ||
                       std::is_same_v<Mode, pksm::WC8>)
         {
-            std::vector<u8> decoded =
-                base64_decode((const char*)data.data() + b64Begin, data.size() - b64Begin);
+            std::vector<u8> decoded = base64_decode(
+                std::string_view((const char*)data.data() + b64Begin, data.size() - b64Begin));
 
             if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
                           std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
