@@ -410,7 +410,8 @@ void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTin
     float scaleX, float scaleY, float rotation)
 {
     flushText();
-    C2D_DrawImageAtRotated(img, x, y, 0.5f, rotation, tint, scaleX, scaleY);
+    C2D_DrawImageAtRotated(img, x + scaleX * img.subtex->width / 2,
+        y + scaleY * img.subtex->height / 2, 0.5f, rotation, tint, scaleX, scaleY);
 }
 
 void Gui::drawSolidCircle(float x, float y, float rad, PKSM_Color color)
