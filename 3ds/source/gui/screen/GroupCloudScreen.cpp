@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -905,9 +905,11 @@ void GroupCloudScreen::shareReceive()
                     std::vector<std::unique_ptr<pksm::PKX>> temPkm;
                     for (const auto& pkm : groupJson["pokemons"])
                     {
-                        if (pkm.is_object() && pkm.contains("generation") &&
-                            pkm["generation"].is_string() && pkm.contains("pokemon") &&
-                            pkm["pokemon"].is_string())
+                        // clang-format off
+                        if (pkm.is_object() &&
+                            pkm.contains("generation") && pkm["generation"].is_string() &&
+                            pkm.contains("pokemon") && pkm["pokemon"].is_string())
+                        // clang-format on
                         {
                             pksm::Generation gen =
                                 pksm::Generation::fromString(pkm["generation"].get<std::string>());

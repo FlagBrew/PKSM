@@ -1,6 +1,6 @@
 /*
- *   This file is part of PKSM-Core
- *   Copyright (C) 2016-2021 Bernardo Giordano, Admiral Fish, piepie62
+ *   This file is part of PKSM
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
