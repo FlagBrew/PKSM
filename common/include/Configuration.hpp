@@ -82,7 +82,7 @@ public:
 
     // Allows setting title IDs of versions. Can be used to edit romhacks or GB[A] VC. Support not
     // guaranteed for the former!
-    std::string titleId(pksm::GameVersion version) const;
+    const std::string& titleId(pksm::GameVersion version) const;
 
     bool writeFileSave(void) const;
 
@@ -92,11 +92,11 @@ public:
 
     bool showBackups(void) const;
 
-    std::string apiUrl(void) const;
+    const std::string& apiUrl(void) const;
 
     bool useApiUrl(void) const;
 
-    std::string patronCode(void) const;
+    const std::string& patronCode(void) const;
 
     bool alphaChannel(void) const;
 

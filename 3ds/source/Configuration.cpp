@@ -469,9 +469,9 @@ bool Configuration::showBackups(void) const
     return (*mJson)["showBackups"];
 }
 
-std::string Configuration::apiUrl(void) const
+const std::string& Configuration::apiUrl(void) const
 {
-    return (*mJson)["apiUrl"];
+    return (*mJson)["apiUrl"].get_ref<std::string&>();
 }
 
 bool Configuration::useApiUrl(void) const
@@ -479,9 +479,9 @@ bool Configuration::useApiUrl(void) const
     return (*mJson)["useApiUrl"];
 }
 
-std::string Configuration::patronCode(void) const
+const std::string& Configuration::patronCode(void) const
 {
-    return (*mJson)["patronCode"];
+    return (*mJson)["patronCode"].get_ref<std::string&>();
 }
 
 bool Configuration::alphaChannel(void) const
@@ -503,14 +503,15 @@ std::vector<std::string> Configuration::extraSaves(const std::string& id) const
     return {};
 }
 
-std::string Configuration::titleId(pksm::GameVersion version) const
+const std::string& Configuration::titleId(pksm::GameVersion version) const
 {
+    static std::string emptyString;
     std::string v = std::to_string((u32)version);
     if ((*mJson)["titles"].count(v) > 0)
     {
-        return (*mJson)["titles"][v].get<std::string>();
+        return (*mJson)["titles"][v].get_ref<std::string&>();
     }
-    return "";
+    return emptyString;
 }
 
 void Configuration::language(pksm::Language lang)

@@ -930,11 +930,9 @@ void CloudScreen::shareReceive()
                     retJson["pokemon"].is_string())
                 {
                     pksm::Generation gen =
-                        pksm::Generation::fromString(retJson["generation"].get<std::string>());
+                        pksm::Generation::fromString(retJson["generation"].get_ref<std::string&>());
 
-                    auto retB64Data = retJson["pokemon"].get<std::string>();
-
-                    auto retData = base64_decode(retB64Data);
+                    auto retData = base64_decode(retJson["pokemon"].get_ref<std::string&>());
 
                     std::unique_ptr<pksm::PKX> pkm =
                         pksm::PKX::getPKM(gen, retData.data(), retData.size());

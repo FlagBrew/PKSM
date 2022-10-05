@@ -407,8 +407,8 @@ void Bank::pkm(const pksm::PKX& pkm, int box, int slot)
         return;
     }
     newEntry.gen = pkm.generation();
-    std::copy(pkm.rawData().begin(),
-        pkm.rawData().end() + std::min((u32)sizeof(BankEntry::data), pkm.getLength()),
+    std::ranges::copy(
+        pkm.rawData().subspan(0, std::min((u32)sizeof(BankEntry::data), pkm.getLength())),
         newEntry.data);
     if (pkm.getLength() < sizeof(BankEntry::data))
     {
