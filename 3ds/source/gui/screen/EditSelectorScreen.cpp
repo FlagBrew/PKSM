@@ -29,8 +29,6 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
-#include "QRScanner.hpp"
-#include "ViewOverlay.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
@@ -41,7 +39,9 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "QRScanner.hpp"
 #include "sav/SavLGPE.hpp"
+#include "ViewOverlay.hpp"
 #include <memory>
 
 void EditSelectorScreen::changeBoxName()

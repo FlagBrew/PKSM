@@ -98,17 +98,23 @@ typedef int clock_t;\
 ";
 
 /* all string.h functions */
-struct LibraryFunction StdTimeFunctions[] = {{StdAsctime, "char *asctime(struct tm *);"},
-    {StdClock, "time_t clock();"}, {StdCtime, "char *ctime(int *);"},
-    {StdDifftime, "double difftime(int, int);"}, {StdGmtime, "struct tm *gmtime(int *);"},
-    {StdLocaltime, "struct tm *localtime(int *);"}, {StdMktime, "int mktime(struct tm *ptm);"},
-    {StdTime, "int time(int *);"}, {StdStrftime, "int strftime(char *, int, char *, struct tm *);"},
+struct LibraryFunction StdTimeFunctions[] = {
+    {StdAsctime,   "char *asctime(struct tm *);"                    },
+    {StdClock,     "time_t clock();"                                },
+    {StdCtime,     "char *ctime(int *);"                            },
+    {StdDifftime,  "double difftime(int, int);"                     },
+    {StdGmtime,    "struct tm *gmtime(int *);"                      },
+    {StdLocaltime, "struct tm *localtime(int *);"                   },
+    {StdMktime,    "int mktime(struct tm *ptm);"                    },
+    {StdTime,      "int time(int *);"                               },
+    {StdStrftime,  "int strftime(char *, int, char *, struct tm *);"},
 #ifndef WIN32
-    {StdStrptime, "char *strptime(char *, char *, struct tm *);"},
-    {StdGmtime_r, "struct tm *gmtime_r(int *, struct tm *);"},
-// {StdTimegm, "int timegm(struct tm *);"},
+    {StdStrptime,  "char *strptime(char *, char *, struct tm *);"   },
+    {StdGmtime_r,  "struct tm *gmtime_r(int *, struct tm *);"       },
+ // {StdTimegm, "int timegm(struct tm *);"},
 #endif
-    {NULL, NULL}};
+    {NULL,         NULL                                             }
+};
 
 /* creates various system-dependent definitions */
 void StdTimeSetupFunc(Picoc* pc)

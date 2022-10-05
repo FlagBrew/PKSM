@@ -47,11 +47,14 @@ public:
     bool isLegal(size_t groupIndex, size_t pkm) const;
 
     int pages() const;
+
     int page() const { return pageNumber; }
+
     std::optional<int> nextPage();
     std::optional<int> prevPage();
 
     bool filterLegal() const { return legal; }
+
     void filterLegal(bool v)
     {
         if (v != legal)
@@ -62,7 +65,9 @@ public:
     }
 
     bool good() const { return isGood; }
+
     int currentPageError() const { return current->siteJsonErrorCode; }
+
     nlohmann::json grabPage(int page);
     static std::pair<std::string, std::string> makeURL(
         int page, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
@@ -75,6 +80,7 @@ private:
         std::atomic<bool> available        = false;
         std::atomic<int> siteJsonErrorCode = 0;
     };
+
     void refreshPages();
     static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
         pksm::Generation low, pksm::Generation high, bool LGPE);

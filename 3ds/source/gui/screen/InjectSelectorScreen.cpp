@@ -27,15 +27,15 @@
 #include "InjectSelectorScreen.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "InjectorScreen.hpp"
-#include "QRScanner.hpp"
-#include "ToggleButton.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "InjectorScreen.hpp"
 #include "loader.hpp"
 #include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
+#include "QRScanner.hpp"
+#include "ToggleButton.hpp"
 #include "wcx/PGF.hpp"
 #include "wcx/PGT.hpp"
 #include "wcx/WC6.hpp"
@@ -435,8 +435,8 @@ void InjectSelectorScreen::dumpCard(void) const
     std::string path = fmt::format(
         FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
     mkdir(path.c_str(), 777);
-    path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(),
-        now.minute(), now.second(), wc->ID(), wc->title(), wc->extension().data());
+    path      += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(),
+             now.minute(), now.second(), wc->ID(), wc->title(), wc->extension().data());
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

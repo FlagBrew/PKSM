@@ -158,18 +158,32 @@ void MathFloor(
 }
 
 /* all math.h functions */
-struct LibraryFunction MathFunctions[] = {{MathAcos, "float acos(float);"},
-    {MathAsin, "float asin(float);"}, {MathAtan, "float atan(float);"},
-    {MathAtan2, "float atan2(float, float);"}, {MathCeil, "float ceil(float);"},
-    {MathCos, "float cos(float);"}, {MathCosh, "float cosh(float);"},
-    {MathExp, "float exp(float);"}, {MathFabs, "float fabs(float);"},
-    {MathFloor, "float floor(float);"}, {MathFmod, "float fmod(float, float);"},
-    {MathFrexp, "float frexp(float, int *);"}, {MathLdexp, "float ldexp(float, int);"},
-    {MathLog, "float log(float);"}, {MathLog10, "float log10(float);"},
-    {MathModf, "float modf(float, float *);"}, {MathPow, "float pow(float,float);"},
-    {MathRound, "float round(float);"}, {MathSin, "float sin(float);"},
-    {MathSinh, "float sinh(float);"}, {MathSqrt, "float sqrt(float);"},
-    {MathTan, "float tan(float);"}, {MathTanh, "float tanh(float);"}, {NULL, NULL}};
+struct LibraryFunction MathFunctions[] = {
+    {MathAcos,  "float acos(float);"         },
+    {MathAsin,  "float asin(float);"         },
+    {MathAtan,  "float atan(float);"         },
+    {MathAtan2, "float atan2(float, float);" },
+    {MathCeil,  "float ceil(float);"         },
+    {MathCos,   "float cos(float);"          },
+    {MathCosh,  "float cosh(float);"         },
+    {MathExp,   "float exp(float);"          },
+    {MathFabs,  "float fabs(float);"         },
+    {MathFloor, "float floor(float);"        },
+    {MathFmod,  "float fmod(float, float);"  },
+    {MathFrexp, "float frexp(float, int *);" },
+    {MathLdexp, "float ldexp(float, int);"   },
+    {MathLog,   "float log(float);"          },
+    {MathLog10, "float log10(float);"        },
+    {MathModf,  "float modf(float, float *);"},
+    {MathPow,   "float pow(float,float);"    },
+    {MathRound, "float round(float);"        },
+    {MathSin,   "float sin(float);"          },
+    {MathSinh,  "float sinh(float);"         },
+    {MathSqrt,  "float sqrt(float);"         },
+    {MathTan,   "float tan(float);"          },
+    {MathTanh,  "float tanh(float);"         },
+    {NULL,      NULL                         }
+};
 
 /* creates various system-dependent definitions */
 void MathSetupFunc(Picoc* pc)

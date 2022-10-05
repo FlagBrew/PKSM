@@ -67,7 +67,9 @@ void StdioOutPutc(int OutCh, StdOutStream* Stream)
         Stream->StrOutPtr++;
 
         if (Stream->StrOutLen > 1)
+        {
             Stream->StrOutLen--;
+        }
 
         Stream->CharCount++;
     }
@@ -94,7 +96,9 @@ void StdioOutPuts(const char* Str, StdOutStream* Stream)
                 Stream->StrOutPtr++;
 
                 if (Stream->StrOutLen > 1)
+                {
                     Stream->StrOutLen--;
+                }
 
                 Stream->CharCount++;
             }
@@ -106,7 +110,9 @@ void StdioOutPuts(const char* Str, StdOutStream* Stream)
 void StdioFprintfWord(StdOutStream* Stream, const char* Format, unsigned int Value)
 {
     if (Stream->FilePtr != NULL)
+    {
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
+    }
     else if (Stream->StrOutLen >= 0)
     {
 #ifndef WIN32
@@ -120,7 +126,7 @@ void StdioFprintfWord(StdOutStream* Stream, const char* Format, unsigned int Val
     }
     else
     {
-        int CCount = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -172,7 +178,9 @@ void StdioFprintfLong(StdOutStream* Stream, const char* Format, uint64_t Value)
     }
 
     if (Stream->FilePtr != NULL)
+    {
         Stream->CharCount += fprintf(Stream->FilePtr, PlatformFormat, Value);
+    }
     else if (Stream->StrOutLen >= 0)
     {
 #ifndef WIN32
@@ -186,7 +194,7 @@ void StdioFprintfLong(StdOutStream* Stream, const char* Format, uint64_t Value)
     }
     else
     {
-        int CCount = sprintf(Stream->StrOutPtr, PlatformFormat, Value);
+        int CCount        = sprintf(Stream->StrOutPtr, PlatformFormat, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -196,7 +204,9 @@ void StdioFprintfLong(StdOutStream* Stream, const char* Format, uint64_t Value)
 void StdioFprintfFP(StdOutStream* Stream, const char* Format, double Value)
 {
     if (Stream->FilePtr != NULL)
+    {
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
+    }
     else if (Stream->StrOutLen >= 0)
     {
 #ifndef WIN32
@@ -210,7 +220,7 @@ void StdioFprintfFP(StdOutStream* Stream, const char* Format, double Value)
     }
     else
     {
-        int CCount = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -220,7 +230,9 @@ void StdioFprintfFP(StdOutStream* Stream, const char* Format, double Value)
 void StdioFprintfPointer(StdOutStream* Stream, const char* Format, void* Value)
 {
     if (Stream->FilePtr != NULL)
+    {
         Stream->CharCount += fprintf(Stream->FilePtr, Format, Value);
+    }
     else if (Stream->StrOutLen >= 0)
     {
 #ifndef WIN32
@@ -234,7 +246,7 @@ void StdioFprintfPointer(StdOutStream* Stream, const char* Format, void* Value)
     }
     else
     {
-        int CCount = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -256,7 +268,9 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
     Picoc* pc = Parser->pc;
 
     if (Format == NULL)
+    {
         Format = "[null format]\n";
+    }
 
     FPos               = Format;
     SOStream.FilePtr   = Stream;
@@ -372,7 +386,9 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
                                                                 TypeStackSizeValue(ThisArg)));
                             if (ThisArg->Typ->Base == TypeArray &&
                                 ThisArg->Typ->FromType->Base == TypeInt)
+                            {
                                 *(int*)ThisArg->Val->Pointer = SOStream.CharCount;
+                            }
                             break;
                     }
                 }
@@ -384,7 +400,9 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
             if (ShowType != &pc->VoidType)
             {
                 if (ArgCount >= Args->NumArgs)
+                {
                     StdioOutPuts("XXX", &SOStream);
+                }
                 else
                 {
                     /* null-terminate the buffer */
@@ -399,74 +417,110 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
                     {
                         /* show a signed long */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfLong(&SOStream, OneFormatBuf, ThisArg->Val->LongInteger);
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == &pc->UnsignedLongType)
                     {
                         /* show a unsigned long */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfLong(
                                 &SOStream, OneFormatBuf, ThisArg->Val->UnsignedLongInteger);
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == &pc->IntType)
                     {
                         /* show a signed integer */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfWord(&SOStream, OneFormatBuf,
                                 (unsigned int)ExpressionCoerceInteger(ThisArg));
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == &pc->UnsignedIntType)
                     {
                         /* show a signed integer */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfWord(
                                 &SOStream, OneFormatBuf, (int)ExpressionCoerceInteger(ThisArg));
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == &pc->FloatType)
                     {
                         /* show a floating point number */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfFP(&SOStream, OneFormatBuf, ExpressionCoerceFloat(ThisArg));
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == &pc->DoubleType)
                     {
                         /* show a floating point number */
                         if (IS_NUMERIC_COERCIBLE(ThisArg))
+                        {
                             StdioFprintfFP(
                                 &SOStream, OneFormatBuf, ExpressionCoerceDouble(ThisArg));
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == pc->CharPtrType)
                     {
                         if (ThisArg->Typ->Base == TypePointer)
+                        {
                             StdioFprintfPointer(&SOStream, OneFormatBuf, ThisArg->Val->Pointer);
+                        }
                         else if (ThisArg->Typ->Base == TypeArray &&
                                  ThisArg->Typ->FromType->Base == TypeChar)
+                        {
                             StdioFprintfPointer(
                                 &SOStream, OneFormatBuf, &ThisArg->Val->ArrayMem[0]);
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
                     else if (ShowType == pc->VoidPtrType)
                     {
                         if (ThisArg->Typ->Base == TypePointer)
+                        {
                             StdioFprintfPointer(&SOStream, OneFormatBuf, ThisArg->Val->Pointer);
+                        }
                         else if (ThisArg->Typ->Base == TypeArray)
+                        {
                             StdioFprintfPointer(
                                 &SOStream, OneFormatBuf, &ThisArg->Val->ArrayMem[0]);
+                        }
                         else
+                        {
                             StdioOutPuts("XXX", &SOStream);
+                        }
                     }
 
                     ArgCount++;
@@ -483,7 +537,9 @@ int StdioBasePrintf(struct ParseState* Parser, FILE* Stream, char* StrOut, int S
 
     /* null-terminate */
     if (SOStream.StrOutPtr != NULL && SOStream.StrOutLen > 0)
+    {
         *SOStream.StrOutPtr = '\0';
+    }
 
     return SOStream.CharCount;
 }
@@ -498,7 +554,9 @@ int StdioBaseScanf(
     void* ScanfArg[MAX_SCANF_ARGS];
 
     if (Args->NumArgs > MAX_SCANF_ARGS)
+    {
         ProgramFail(Parser, "too many arguments to scanf() - %d max", MAX_SCANF_ARGS);
+    }
 
     for (ArgCount = 0; ArgCount < Args->NumArgs; ArgCount++)
     {
@@ -506,20 +564,30 @@ int StdioBaseScanf(
                                   MEM_ALIGN(sizeof(struct Value) + TypeStackSizeValue(ThisArg)));
 
         if (ThisArg->Typ->Base == TypePointer)
+        {
             ScanfArg[ArgCount] = ThisArg->Val->Pointer;
+        }
         else if (ThisArg->Typ->Base == TypeArray)
+        {
             ScanfArg[ArgCount] = &ThisArg->Val->ArrayMem[0];
+        }
         else
+        {
             ProgramFail(
                 Parser, "non-pointer argument to scanf() - argument %d after format", ArgCount + 1);
+        }
     }
 
     if (Stream != NULL)
+    {
         return fscanf(Stream, Format, ScanfArg[0], ScanfArg[1], ScanfArg[2], ScanfArg[3],
             ScanfArg[4], ScanfArg[5], ScanfArg[6], ScanfArg[7], ScanfArg[8], ScanfArg[9]);
+    }
     else
+    {
         return sscanf(StrIn, Format, ScanfArg[0], ScanfArg[1], ScanfArg[2], ScanfArg[3],
             ScanfArg[4], ScanfArg[5], ScanfArg[6], ScanfArg[7], ScanfArg[8], ScanfArg[9]);
+    }
 }
 
 /* stdio calls */
@@ -715,7 +783,9 @@ void StdioGets(
     {
         char* EOLPos = strchr(Param[0]->Val->Pointer, '\n');
         if (EOLPos != NULL)
+        {
             *EOLPos = '\0';
+        }
     }
 }
 
@@ -858,36 +928,56 @@ typedef struct __FILEStruct FILE;\
 ";
 
 /* all stdio functions */
-struct LibraryFunction StdioFunctions[] = {{StdioFopen, "FILE *fopen(char *, char *);"},
-    {StdioFreopen, "FILE *freopen(char *, char *, FILE *);"}, {StdioFclose, "int fclose(FILE *);"},
-    {StdioFread, "int fread(void *, int, int, FILE *);"},
-    {StdioFwrite, "int fwrite(void *, int, int, FILE *);"}, {StdioFgetc, "int fgetc(FILE *);"},
-    {StdioFgetc, "int getc(FILE *);"}, {StdioFgets, "char *fgets(char *, int, FILE *);"},
-    {StdioFputc, "int fputc(int, FILE *);"}, {StdioFputs, "int fputs(char *, FILE *);"},
-    {StdioRemove, "int remove(char *);"}, {StdioRename, "int rename(char *, char *);"},
-    {StdioRewind, "void rewind(FILE *);"}, {StdioTmpfile, "FILE *tmpfile();"},
-    {StdioClearerr, "void clearerr(FILE *);"}, {StdioFeof, "int feof(FILE *);"},
-    {StdioFerror, "int ferror(FILE *);"}, {StdioFileno, "int fileno(FILE *);"},
-    {StdioFflush, "int fflush(FILE *);"}, {StdioFgetpos, "int fgetpos(FILE *, int *);"},
-    {StdioFsetpos, "int fsetpos(FILE *, int *);"}, {StdioFtell, "int ftell(FILE *);"},
-    {StdioFseek, "int fseek(FILE *, int, int);"}, {StdioPerror, "void perror(char *);"},
-    {StdioPutc, "int putc(char *, FILE *);"}, {StdioPutchar, "int putchar(int);"},
-    {StdioPutchar, "int fputchar(int);"}, {StdioSetbuf, "void setbuf(FILE *, char *);"},
-    {StdioSetvbuf, "void setvbuf(FILE *, char *, int, int);"},
-    {StdioUngetc, "int ungetc(int, FILE *);"}, {StdioPuts, "int puts(char *);"},
-    {StdioGets, "char *gets(char *);"}, {StdioGetchar, "int getchar();"},
-    {StdioPrintf, "int printf(char *, ...);"}, {StdioFprintf, "int fprintf(FILE *, char *, ...);"},
-    {StdioSprintf, "int sprintf(char *, char *, ...);"},
-    {StdioSnprintf, "int snprintf(char *, int, char *, ...);"},
-    {StdioScanf, "int scanf(char *, ...);"}, {StdioFscanf, "int fscanf(FILE *, char *, ...);"},
-    {StdioSscanf, "int sscanf(char *, char *, ...);"},
-    {StdioVprintf, "int vprintf(char *, va_list);"},
-    {StdioVfprintf, "int vfprintf(FILE *, char *, va_list);"},
-    {StdioVsprintf, "int vsprintf(char *, char *, va_list);"},
+struct LibraryFunction StdioFunctions[] = {
+    {StdioFopen,     "FILE *fopen(char *, char *);"                },
+    {StdioFreopen,   "FILE *freopen(char *, char *, FILE *);"      },
+    {StdioFclose,    "int fclose(FILE *);"                         },
+    {StdioFread,     "int fread(void *, int, int, FILE *);"        },
+    {StdioFwrite,    "int fwrite(void *, int, int, FILE *);"       },
+    {StdioFgetc,     "int fgetc(FILE *);"                          },
+    {StdioFgetc,     "int getc(FILE *);"                           },
+    {StdioFgets,     "char *fgets(char *, int, FILE *);"           },
+    {StdioFputc,     "int fputc(int, FILE *);"                     },
+    {StdioFputs,     "int fputs(char *, FILE *);"                  },
+    {StdioRemove,    "int remove(char *);"                         },
+    {StdioRename,    "int rename(char *, char *);"                 },
+    {StdioRewind,    "void rewind(FILE *);"                        },
+    {StdioTmpfile,   "FILE *tmpfile();"                            },
+    {StdioClearerr,  "void clearerr(FILE *);"                      },
+    {StdioFeof,      "int feof(FILE *);"                           },
+    {StdioFerror,    "int ferror(FILE *);"                         },
+    {StdioFileno,    "int fileno(FILE *);"                         },
+    {StdioFflush,    "int fflush(FILE *);"                         },
+    {StdioFgetpos,   "int fgetpos(FILE *, int *);"                 },
+    {StdioFsetpos,   "int fsetpos(FILE *, int *);"                 },
+    {StdioFtell,     "int ftell(FILE *);"                          },
+    {StdioFseek,     "int fseek(FILE *, int, int);"                },
+    {StdioPerror,    "void perror(char *);"                        },
+    {StdioPutc,      "int putc(char *, FILE *);"                   },
+    {StdioPutchar,   "int putchar(int);"                           },
+    {StdioPutchar,   "int fputchar(int);"                          },
+    {StdioSetbuf,    "void setbuf(FILE *, char *);"                },
+    {StdioSetvbuf,   "void setvbuf(FILE *, char *, int, int);"     },
+    {StdioUngetc,    "int ungetc(int, FILE *);"                    },
+    {StdioPuts,      "int puts(char *);"                           },
+    {StdioGets,      "char *gets(char *);"                         },
+    {StdioGetchar,   "int getchar();"                              },
+    {StdioPrintf,    "int printf(char *, ...);"                    },
+    {StdioFprintf,   "int fprintf(FILE *, char *, ...);"           },
+    {StdioSprintf,   "int sprintf(char *, char *, ...);"           },
+    {StdioSnprintf,  "int snprintf(char *, int, char *, ...);"     },
+    {StdioScanf,     "int scanf(char *, ...);"                     },
+    {StdioFscanf,    "int fscanf(FILE *, char *, ...);"            },
+    {StdioSscanf,    "int sscanf(char *, char *, ...);"            },
+    {StdioVprintf,   "int vprintf(char *, va_list);"               },
+    {StdioVfprintf,  "int vfprintf(FILE *, char *, va_list);"      },
+    {StdioVsprintf,  "int vsprintf(char *, char *, va_list);"      },
     {StdioVsnprintf, "int vsnprintf(char *, int, char *, va_list);"},
-    {StdioVscanf, "int vscanf(char *, va_list);"},
-    {StdioVfscanf, "int vfscanf(FILE *, char *, va_list);"},
-    {StdioVsscanf, "int vsscanf(char *, char *, va_list);"}, {NULL, NULL}};
+    {StdioVscanf,    "int vscanf(char *, va_list);"                },
+    {StdioVfscanf,   "int vfscanf(FILE *, char *, va_list);"       },
+    {StdioVsscanf,   "int vsscanf(char *, char *, va_list);"       },
+    {NULL,           NULL                                          }
+};
 
 /* creates various system-dependent definitions */
 void StdioSetupFunc(Picoc* pc)
@@ -939,8 +1029,10 @@ void StdioSetupFunc(Picoc* pc)
 
     /* define NULL, true and false */
     if (!VariableDefined(pc, TableStrRegister(pc, "NULL")))
+    {
         VariableDefinePlatformVar(
             pc, NULL, "NULL", &pc->IntType, (union AnyValue*)&Stdio_ZeroValue, false);
+    }
 }
 
 /* portability-related I/O calls */

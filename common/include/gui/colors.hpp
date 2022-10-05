@@ -32,6 +32,7 @@
 struct PKSM_Color
 {
     constexpr PKSM_Color(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) {}
+
     u8 r, g, b, a;
 };
 
@@ -61,12 +62,14 @@ inline constexpr PKSM_Color COLOR_LINEBLUE     = PKSM_Color(31, 41, 139, 255);
 #if defined(__3DS__)
 #include <citro2d.h>
 typedef u32 ColorFormat;
+
 inline constexpr ColorFormat colorToFormat(const PKSM_Color& color)
 {
     return C2D_Color32(color.r, color.g, color.b, color.a);
 }
 #elif defined(__SWITCH__)
 typedef something ColorFormat;
+
 inline constexpr ColorFormat colorToFormat(const C2D_Color& color)
 {
     return format(color.r, color.g, color.b, color.a);

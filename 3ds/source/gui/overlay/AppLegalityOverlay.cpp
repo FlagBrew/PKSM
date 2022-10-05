@@ -25,15 +25,15 @@
  */
 
 #include "AppLegalityOverlay.hpp"
-#include "ClickButton.hpp"
-#include "ImageViewOverlay.hpp"
-#include "QRGen.hpp"
-#include "QRScanner.hpp"
 #include "base64.hpp"
+#include "ClickButton.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "ImageViewOverlay.hpp"
 #include "loader.hpp"
 #include "pkx/PKX.hpp"
+#include "QRGen.hpp"
+#include "QRScanner.hpp"
 #include "sav/Sav.hpp"
 #include <arpa/inet.h>
 #include <errno.h>
@@ -63,6 +63,7 @@ namespace
     }
 
     static in_addr serverAddr;
+
     SwkbdCallbackResult parseIpCallback(
         void* user, const char** ppMessage, const char* text, size_t textlen)
     {

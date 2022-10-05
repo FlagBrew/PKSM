@@ -26,15 +26,14 @@
 
 #include "GroupCloudScreen.hpp"
 #include "AccelButton.hpp"
+#include "banks.hpp"
+#include "base64.hpp"
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
 #include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
-#include "FilterScreen.hpp"
-#include "QRScanner.hpp"
-#include "banks.hpp"
-#include "base64.hpp"
 #include "fetch.hpp"
+#include "FilterScreen.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -43,6 +42,7 @@
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
+#include "QRScanner.hpp"
 #include "sav/Sav.hpp"
 #include "website.h"
 #include <algorithm>
@@ -397,12 +397,16 @@ void GroupCloudScreen::update(touchPosition* touch)
     for (auto& button : mainButtons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
     for (auto& button : clickButtons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
 
     if (kDown & KEY_A)
@@ -901,11 +905,10 @@ void GroupCloudScreen::shareReceive()
                     std::vector<std::unique_ptr<pksm::PKX>> temPkm;
                     for (const auto& pkm : groupJson["pokemons"])
                     {
-                        // clang-format off
-                        if (pkm.is_object() && pkm.contains("generation") && pkm["generation"].is_string() &&
-                            pkm.contains("pokemon") && pkm["pokemon"].is_string())
+                        if (pkm.is_object() && pkm.contains("generation") &&
+                            pkm["generation"].is_string() && pkm.contains("pokemon") &&
+                            pkm["pokemon"].is_string())
                         {
-                            // clang-format on
                             pksm::Generation gen =
                                 pksm::Generation::fromString(pkm["generation"].get<std::string>());
                             std::vector<u8> data = base64_decode(pkm["pokemon"].get<std::string>());

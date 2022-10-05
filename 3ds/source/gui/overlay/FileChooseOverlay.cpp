@@ -151,7 +151,7 @@ void FileChooseOverlay::update(touchPosition* touch)
             if (currFiles[hid.fullIndex()].second)
             {
                 currDirString += currFiles[hid.fullIndex()].first + '/';
-                currDir = STDirectory(currDirString);
+                currDir       = STDirectory(currDirString);
                 updateEntries();
             }
             else

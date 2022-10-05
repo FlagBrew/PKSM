@@ -29,8 +29,8 @@
 #ifndef TextBUF_HPP
 #define TextBUF_HPP
 
-#include "TextPos.hpp"
 #include "colors.hpp"
+#include "TextPos.hpp"
 #include "types.h"
 #include <memory>
 #include <optional>
@@ -78,6 +78,7 @@ namespace TextParse
             : subtex(subtex), tex(tex), font(font), line(line), xPos(xPos), width(width)
         {
         }
+
         Tex3DS_SubTexture subtex;
         C3D_Tex* tex;
         C2D_Font font;
@@ -92,7 +93,9 @@ namespace TextParse
             : ftGlyph(ftGlyph), line(line), xPos(xPos)
         {
         }
+
         Glyph(const Glyph& other) = delete;
+
         Glyph(const Glyph&& other)
         {
             ftGlyph = other.ftGlyph;
@@ -100,6 +103,7 @@ namespace TextParse
             line    = other.line;
             xPos    = other.xPos;
         }
+
         ~Glyph();
         FT_Glyph ftGlyph;
         FTC_Node node;
@@ -119,6 +123,7 @@ namespace TextParse
             : glyphs(glyphs), lineWidths(lineWidths), maxLineWidth(maxLineWidth)
         {
         }
+
         std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which
@@ -126,7 +131,9 @@ namespace TextParse
         void optimize();
         void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos,
             PKSM_Color color = COLOR_BLACK) const;
+
         float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
+
         size_t lines() const { return lineWidths.size(); }
 
     private:
@@ -170,6 +177,7 @@ namespace TextParse
     {
     public:
         ScreenText() { glyphs.reserve(1024); }
+
         // y is always from baseline
         void addText(const std::shared_ptr<Text>& text, float x, float y, float z, FontSize sizeX,
             FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
@@ -185,12 +193,14 @@ namespace TextParse
                 : x(x), y(y), z(z), sizeX(sizeX), sizeY(sizeY), color(color), glyph(glyph)
             {
             }
+
             float x, y, z;
             FontSize sizeX;
             FontSize sizeY;
             PKSM_Color color;
             Glyph glyph;
         };
+
         std::vector<DrawableGlyph> glyphs;
     };
 }

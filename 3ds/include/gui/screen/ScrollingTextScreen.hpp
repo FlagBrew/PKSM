@@ -27,8 +27,8 @@
 #ifndef SCROLLINGTEXTSCREEN_HPP
 #define SCROLLINGTEXTSCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <functional>
 #include <optional>
 

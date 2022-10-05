@@ -28,9 +28,9 @@
 #include "ClickButton.hpp"
 #include "CloudAccess.hpp"
 #include "Configuration.hpp"
-#include "ToggleButton.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "ToggleButton.hpp"
 
 namespace
 {

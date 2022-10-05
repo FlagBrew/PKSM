@@ -26,18 +26,18 @@
 
 #include "BoxChoice.hpp"
 #include "AccelButton.hpp"
+#include "banks.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "TitleLoadScreen.hpp"
-#include "ViewOverlay.hpp"
-#include "banks.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "TitleLoadScreen.hpp"
 #include "utils/random.hpp"
+#include "ViewOverlay.hpp"
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
@@ -349,7 +349,9 @@ void BoxChoice::update(touchPosition* touch)
         for (size_t i = 0; i < mainButtons.size(); i++)
         {
             if (mainButtons[i]->update(touch))
+            {
                 return;
+            }
         }
         backHeld = false;
         for (auto& button : clickButtons)
@@ -357,7 +359,9 @@ void BoxChoice::update(touchPosition* touch)
             if (button)
             {
                 if (button->update(touch))
+                {
                     return;
+                }
             }
         }
 

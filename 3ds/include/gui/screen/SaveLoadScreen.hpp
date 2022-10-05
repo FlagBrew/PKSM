@@ -27,9 +27,9 @@
 #ifndef SAVELOADSCREEN_HPP
 #define SAVELOADSCREEN_HPP
 
+#include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
-#include "enums/Language.hpp"
 #include <arpa/inet.h>
 #include <array>
 #include <errno.h>

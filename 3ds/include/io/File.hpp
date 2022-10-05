@@ -39,10 +39,11 @@ class File
     File(FSPXI_File handle);
 
 public:
-    File(const File& other) = delete;
-    File(File&& other)      = delete;
+    File(const File& other)            = delete;
+    File(File&& other)                 = delete;
     File& operator=(const File& other) = delete;
-    File& operator=(File&& other) = delete;
+    File& operator=(File&& other)      = delete;
+
     ~File() { close(); }
 
     Result close();

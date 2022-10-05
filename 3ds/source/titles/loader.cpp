@@ -30,11 +30,11 @@
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "Title.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "sav/Sav.hpp"
+#include "Title.hpp"
 #include "utils/crypto.hpp"
 #include <3ds.h>
 #include <atomic>
@@ -337,7 +337,7 @@ namespace
             --tries;
             prev = ret;
             res  = FSPXI_CalcSavegameMAC(fspxiHandle, std::get<1>(file.getRawHandle()),
-                hashData.data(), hashData.size(), ret.data(), ret.size());
+                 hashData.data(), hashData.size(), ret.data(), ret.size());
         }
         while (R_SUCCEEDED(res) && prev != ret && tries > 0);
 
@@ -525,7 +525,7 @@ void TitleLoader::backupSave(const std::string& id)
     path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(),
         now.month(), now.day(), now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
-    path += idToSaveName(id);
+    path      += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

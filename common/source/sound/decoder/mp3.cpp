@@ -35,7 +35,9 @@ Mp3Decoder::Mp3Decoder(const std::string& filename)
     int encoding = 0;
 
     if ((err = mpg123_init()) != MPG123_OK)
+    {
         return;
+    }
 
     if ((mh = mpg123_new(NULL, &err)) == NULL)
     {

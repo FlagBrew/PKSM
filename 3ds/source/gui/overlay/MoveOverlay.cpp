@@ -83,7 +83,9 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
     for (auto i = availableMoves.begin(); i != availableMoves.end(); i++)
     {
         if (*i >= pksm::Move::BreakneckBlitzA && *i <= pksm::Move::TwinkleTackleB)
+        {
             continue;
+        }
         moves.emplace_back(*i, rawMoves[u16(*i)]);
     }
     std::sort(moves.begin(), moves.end(),

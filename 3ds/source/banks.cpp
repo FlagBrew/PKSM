@@ -92,10 +92,14 @@ Result Banks::init()
 {
     Result res;
     if (R_FAILED(res = read()))
+    {
         return res;
+    }
 
     if (g_banks.is_discarded())
+    {
         return -1;
+    }
 
     auto i = g_banks.find("pksm_1");
     if (i == g_banks.end())
@@ -222,19 +226,27 @@ Result Banks::swapSD(bool toSD)
     {
         if (R_FAILED(res = Archive::moveDir(
                          Archive::data(), "/banks", Archive::sd(), "/3ds/PKSM/banks")))
+        {
             return res;
+        }
         if (R_FAILED(res = Archive::moveFile(
                          Archive::data(), "/banks.json", Archive::sd(), "/3ds/PKSM/banks.json")))
+        {
             return res;
+        }
     }
     else
     {
         if (R_FAILED(res = Archive::moveDir(
                          Archive::sd(), "/3ds/PKSM/banks", Archive::data(), "/banks")))
+        {
             return res;
+        }
         if (R_FAILED(res = Archive::moveFile(
                          Archive::sd(), "/3ds/PKSM/banks.json", Archive::data(), "/banks.json")))
+        {
             return res;
+        }
     }
     return res;
 }

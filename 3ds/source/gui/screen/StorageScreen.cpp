@@ -26,27 +26,27 @@
 
 #include "StorageScreen.hpp"
 #include "AccelButton.hpp"
+#include "app.hpp"
+#include "banks.hpp"
 #include "BankSelectionScreen.hpp"
 #include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
-#include "MainMenu.hpp"
-#include "SortOverlay.hpp"
-#include "StorageOverlay.hpp"
-#include "StorageViewOverlay.hpp"
-#include "TitleLoadScreen.hpp"
-#include "app.hpp"
-#include "banks.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
+#include "MainMenu.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK4.hpp"
 #include "sav/SavLGPE.hpp"
+#include "SortOverlay.hpp"
+#include "StorageOverlay.hpp"
+#include "StorageViewOverlay.hpp"
+#include "TitleLoadScreen.hpp"
 #include <stack>
 #include <sys/stat.h>
 #include <variant>
@@ -638,7 +638,9 @@ void StorageScreen::update(touchPosition* touch)
     for (auto& button : mainButtons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
     backHeld = false;
     for (auto& button : clickButtons)
@@ -646,7 +648,9 @@ void StorageScreen::update(touchPosition* touch)
         if (button)
         {
             if (button->update(touch))
+            {
                 return;
+            }
         }
     }
 
@@ -1811,7 +1815,7 @@ void StorageScreen::scrunchSelection()
             moveMon.erase(moveMon.begin() + (i - 1));
         }
     }
-    selectDimensions.first -= removableColumns.size();
+    selectDimensions.first  -= removableColumns.size();
     selectDimensions.second -= removableRows.size();
 }
 

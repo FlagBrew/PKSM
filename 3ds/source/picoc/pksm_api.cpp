@@ -24,22 +24,20 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "BZ2.hpp"
 #include "BankChoice.hpp"
-#include "BoxChoice.hpp"
-#include "Configuration.hpp"
-#include "FortyChoice.hpp"
-#include "PkmUtils.hpp"
-#include "STDirectory.hpp"
-#include "ThirtyChoice.hpp"
 #include "banks.hpp"
 #include "base64.hpp"
+#include "BoxChoice.hpp"
+#include "BZ2.hpp"
+#include "Configuration.hpp"
 #include "fetch.hpp"
 #include "format.h"
+#include "FortyChoice.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "PkmUtils.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
@@ -52,6 +50,8 @@
 #include "sav/Sav3.hpp"
 #include "sav/Sav4.hpp"
 #include "sav/Sav8.hpp"
+#include "STDirectory.hpp"
+#include "ThirtyChoice.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/genToPkx.hpp"
 #include "utils/random.hpp"
@@ -326,11 +326,13 @@ void read_directory(
 {
     std::string dir = (char*)Param[0]->Val->Pointer;
     STDirectory directory(dir);
+
     struct dirData
     {
         int amount;
         char** data;
     };
+
     dirData* ret = (dirData*)malloc(sizeof(dirData));
     if (directory.good())
     {
@@ -364,6 +366,7 @@ void delete_directory(
         int amount;
         char** data;
     };
+
     dirData* dir = (dirData*)Param[0]->Val->Pointer;
     if (dir)
     {
@@ -525,7 +528,9 @@ void net_udp_receiver(
         int n = recvfrom(fd, buffer + *bytesReceived, size, 0, (struct sockaddr*)&addr, &addrlen);
         *bytesReceived += n;
         if (n <= 0)
+        {
             break;
+        }
     }
 
     close(fd);
@@ -573,10 +578,12 @@ void net_tcp_receiver(
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n = recv(fdconn, buffer + *bytesReceived, size, 0);
+        int n          = recv(fdconn, buffer + *bytesReceived, size, 0);
         *bytesReceived += n;
         if (n <= 0)
+        {
             break;
+        }
     }
 
     close(fdconn);
@@ -1131,8 +1138,8 @@ void sav_get_max(
                 auto pouches           = TitleLoader::save->pouches();
                 pksm::Sav::Pouch pouch = pksm::Sav::Pouch(getNextVarArg(Param[0])->Val->Integer);
                 auto found             = std::find_if(pouches.begin(), pouches.end(),
-                    [pouch](const std::pair<pksm::Sav::Pouch, int>& item)
-                    { return item.first == pouch; });
+                                [pouch](const std::pair<pksm::Sav::Pouch, int>& item)
+                                { return item.first == pouch; });
                 if (found != pouches.end())
                 {
                     ReturnValue->Val->Integer = found->second;
@@ -2405,6 +2412,7 @@ void sav_get_data(
             TitleLoader::save->rawData().get() + off1 + off2 + size, data);
     }
 }
+
 // void sav_set_data(char* data, unsigned int size, int off1, int off2);
 void sav_set_data(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2468,6 +2476,7 @@ void sav_get_bit(
             pksm::FlagUtil::getFlag(TitleLoader::save->rawData().get(), off1 + off2, bit);
     }
 }
+
 // void sav_set_bit(int bitVal, int off1, int off2, int bit);
 void sav_set_bit(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2527,6 +2536,7 @@ void sav_get_byte(
         ReturnValue->Val->UnsignedCharacter = TitleLoader::save->rawData()[off1 + off2];
     }
 }
+
 // void sav_set_byte(char data, int off1, int off2);
 void sav_set_byte(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2588,6 +2598,7 @@ void sav_get_short(
             LittleEndian::convertTo<u16>(TitleLoader::save->rawData().get() + off1 + off2);
     }
 }
+
 // void sav_set_short(short data, int off1, int off2);
 void sav_set_short(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2649,6 +2660,7 @@ void sav_get_int(
             LittleEndian::convertTo<u32>(TitleLoader::save->rawData().get() + off1 + off2);
     }
 }
+
 // void sav_set_int(int data, int off1, int off2);
 void sav_set_int(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2717,6 +2729,7 @@ void sav_set_string(
             TitleLoader::save->generation() == pksm::Generation::FIVE ? u'\uFFFF' : u'\0');
     }
 }
+
 // char* sav_get_string(int off1, int off2, unsigned int codepoints);
 void sav_get_string(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2761,6 +2774,7 @@ void sav_get_string(
         ReturnValue->Val->Pointer = strToRet(data);
     }
 }
+
 // int max_pp(enum Generation gen, int move, int ppUps);
 void pksm_get_max_pp(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2780,6 +2794,7 @@ void pksm_get_max_pp(
         ReturnValue->Val->Integer = 0;
     }
 }
+
 // int bz2_decompress(unsigned char** out, int* outSize, unsigned char* data, int size);
 void pksm_bz2_decompress(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2804,6 +2819,7 @@ void pksm_bz2_decompress(
         *outSize = outData.size();
     }
 }
+
 // int bz2_compress(unsigned char** out, int* outSize, unsigned char* data, int size);
 void pksm_bz2_compress(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
@@ -2839,6 +2855,8 @@ void sav_register_pkx_dex(
     auto pkm = getPokemon(data, gen, false);
 
     if (pkm)
+    {
         TitleLoader::save->dex(*pkm);
+    }
 }
 }

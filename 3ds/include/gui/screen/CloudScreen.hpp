@@ -28,9 +28,9 @@
 #define CLOUDSCREEN_HPP
 
 #include "CloudAccess.hpp"
-#include "Screen.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <array>
 
 class Button;

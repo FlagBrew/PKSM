@@ -37,7 +37,9 @@ public:
         : parent(parent), instructions(instructions)
     {
     }
+
     virtual ~ReplaceableScreen() = default;
+
     template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
     {
@@ -50,6 +52,7 @@ public:
             overlay = std::make_shared<Class>(*this, std::forward<Params>(args)...);
         }
     }
+
     bool willHandleUpdate() const;
     void doUpdate(touchPosition* touch);
 #if defined(__3DS__)
@@ -59,16 +62,21 @@ public:
     void doBottomDraw() const;
     virtual void drawTop() const    = 0;
     virtual void drawBottom() const = 0;
+
     virtual bool replacesTop() const { return false; }
+
     virtual bool replacesBottom() const { return false; }
 #elif defined(__SWITCH__)
     bool willReplaceScreen() const;
     void doDraw() const;
     virtual void draw() const = 0;
+
     virtual bool replacesScreen() const { return false; }
 #endif
     virtual void update(touchPosition* touch) = 0;
+
     virtual bool handlesUpdate() const { return true; }
+
     void removeOverlay()
     {
         if (overlay->overlay)
@@ -80,7 +88,9 @@ public:
             overlay = nullptr;
         }
     }
+
     void dim(void) const;
+
     const Instructions& getInstructions() const
     {
         return (overlay && !overlay->getInstructions().empty()) ? overlay->getInstructions()

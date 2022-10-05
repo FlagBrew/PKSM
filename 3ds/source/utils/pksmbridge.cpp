@@ -26,13 +26,13 @@
 
 #include "Configuration.hpp"
 #include "DateTime.hpp"
-#include "MainMenu.hpp"
-#include "Sav.hpp"
-#include "TitleLoadScreen.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "MainMenu.hpp"
+#include "Sav.hpp"
+#include "TitleLoadScreen.hpp"
 #include <arpa/inet.h>
 #include <unistd.h>
 
@@ -53,6 +53,7 @@ bool isLoadedSaveFromBridge(void)
 {
     return saveFromBridge;
 }
+
 void setLoadedSaveFromBridge(bool v)
 {
     saveFromBridge = false;
@@ -114,7 +115,7 @@ bool receiveSaveFromBridge(void)
     {
         size_t torecv = size - total > chunk ? chunk : size - total;
         n             = recv(fdconn, &data[total], torecv, 0);
-        total += n;
+        total         += n;
         if (n <= 0)
         {
             break;

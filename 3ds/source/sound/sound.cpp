@@ -27,9 +27,9 @@
 #include "sound.hpp"
 #include "Configuration.hpp"
 #include "Decoder.hpp"
-#include "STDirectory.hpp"
 #include "io.hpp"
 #include "random.hpp"
+#include "STDirectory.hpp"
 #include "thread.hpp"
 #include <3ds.h>
 #include <array>

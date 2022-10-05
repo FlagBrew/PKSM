@@ -119,6 +119,7 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() < 5)
             {
                 if (!(mJson->contains("extraSaves") && (*mJson)["extraSaves"].is_object()))
+                {
                     for (auto& game : (*mJson)["extraSaves"])
                     {
                         if (!game.is_object())
@@ -144,6 +145,7 @@ Configuration::Configuration()
                             game = nlohmann::json::array();
                         }
                     }
+                }
             }
             if ((*mJson)["version"].get<int>() < 6)
             {

@@ -27,10 +27,10 @@
 #ifndef SPECIESOVERLAY_HPP
 #define SPECIESOVERLAY_HPP
 
-#include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
 #include "enums/Species.hpp"
+#include "Hid.hpp"
 #include "pkx/IPKFilterable.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
 
@@ -41,7 +41,9 @@ class SpeciesOverlay : public ReplaceableScreen
 public:
     SpeciesOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u8 origLevel = 0);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

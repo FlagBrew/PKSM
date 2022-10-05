@@ -28,10 +28,10 @@
 #define HEXEDITSCREEN_HPP
 
 #include "Button.hpp"
-#include "Hid.hpp"
-#include "Screen.hpp"
 #include "gui.hpp"
+#include "Hid.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <bitset>
 #include <vector>
 
@@ -62,11 +62,13 @@ private:
               bitVal(bit)
         {
         }
+
         void draw() const override
         {
             Gui::sprite(key, xPos, yPos);
             Gui::text(text, xPos + 27, yPos, size, textColor, TextPosX::LEFT, TextPosY::TOP);
         }
+
         bool update(touchPosition* touch)
         {
             if (toggle)
@@ -123,12 +125,16 @@ private:
             }
             return false;
         }
+
         void setToggled(bool flag)
         {
             key = flag ? ui_sheet_emulated_toggle_green_idx : ui_sheet_emulated_toggle_gray_idx;
         }
+
         bool isToggle() { return toggle; }
+
         bool isMark() { return mark; }
+
         void rotateColor()
         {
             switch (key)
@@ -145,6 +151,7 @@ private:
                     break;
             }
         }
+
         void setColor(u8 val)
         {
             switch (val)
@@ -160,6 +167,7 @@ private:
                     key = ui_sheet_emulated_toggle_red_idx;
             }
         }
+
         u8 bit() { return bitVal; }
 
     private:
@@ -171,6 +179,7 @@ private:
         bool isClicked = false;
         bool doTime    = false;
     };
+
     std::pair<const std::string*, SecurityLevel> describe(int i) const;
     bool toggleBit(int selected, int offset);
     bool editNumber(bool high, bool up);

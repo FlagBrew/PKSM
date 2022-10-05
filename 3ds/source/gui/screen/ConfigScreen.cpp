@@ -26,21 +26,21 @@
 
 #include "ConfigScreen.hpp"
 #include "AccelButton.hpp"
+#include "banks.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
 #include "ExtraSavesScreen.hpp"
-#include "PkmUtils.hpp"
-#include "QRScanner.hpp"
-#include "TitleIdOverlay.hpp"
-#include "ToggleButton.hpp"
-#include "banks.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "PkmUtils.hpp"
 #include "pkx/PKX.hpp"
+#include "QRScanner.hpp"
 #include "thread.hpp"
+#include "TitleIdOverlay.hpp"
+#include "ToggleButton.hpp"
 
 namespace
 {

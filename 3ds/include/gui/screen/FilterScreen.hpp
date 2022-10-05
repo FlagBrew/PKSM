@@ -27,8 +27,8 @@
 #ifndef FILTERSCREEN_HPP
 #define FILTERSCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKFilter.hpp"
+#include "Screen.hpp"
 #include <memory>
 #include <vector>
 

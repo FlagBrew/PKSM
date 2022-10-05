@@ -191,37 +191,47 @@ void StringStrtok_r(
 /* all string.h functions */
 struct LibraryFunction StringFunctions[] = {
 #ifndef WIN32
-    {StringIndex, "char *index(char *,int);"}, {StringRindex, "char *rindex(char *,int);"},
+    {StringIndex,       "char *index(char *,int);"              },
+     {StringRindex,      "char *rindex(char *,int);"             },
 #endif
-    {StringMemcpy, "void *memcpy(void *,void *,int);"},
-    {StringMemmove, "void *memmove(void *,void *,int);"},
-    {StringMemchr, "void *memchr(char *,int,int);"},
-    {StringMemcmp, "int memcmp(void *,void *,int);"},
-    {StringMemset, "void *memset(void *,int,int);"}, {StringStrcat, "char *strcat(char *,char *);"},
-    {StringStrncat, "char *strncat(char *,char *,int);"},
-    {StringStrchr, "char *strchr(char *,int);"}, {StringStrrchr, "char *strrchr(char *,int);"},
-    {StringStrcmp, "int strcmp(char *,char *);"},
-    {StringStrncmp, "int strncmp(char *,char *,int);"},
-    {StringStrcasecmp, "int strcasecmp(char *,char *);"},
-    {StringStrncasecmp, "int strncasecmp(char *,char *,int);"},
-    {StringStrcoll, "int strcoll(char *,char *);"}, {StringStrcpy, "char *strcpy(char *,char *);"},
-    {StringStrncpy, "char *strncpy(char *,char *,int);"}, {StringStrerror, "char *strerror(int);"},
-    {StringStrlen, "int strlen(char *);"}, {StringStrspn, "int strspn(char *,char *);"},
-    {StringStrcspn, "int strcspn(char *,char *);"},
-    {StringStrpbrk, "char *strpbrk(char *,char *);"},
-    {StringStrstr, "char *strstr(char *,char *);"}, {StringStrtok, "char *strtok(char *,char *);"},
-    {StringStrxfrm, "int strxfrm(char *,char *,int);"},
+    {StringMemcpy,      "void *memcpy(void *,void *,int);"      },
+    {StringMemmove,     "void *memmove(void *,void *,int);"     },
+    {StringMemchr,      "void *memchr(char *,int,int);"         },
+    {StringMemcmp,      "int memcmp(void *,void *,int);"        },
+    {StringMemset,      "void *memset(void *,int,int);"         },
+     {StringStrcat,      "char *strcat(char *,char *);"          },
+    {StringStrncat,     "char *strncat(char *,char *,int);"     },
+    {StringStrchr,      "char *strchr(char *,int);"             },
+     {StringStrrchr,     "char *strrchr(char *,int);"            },
+    {StringStrcmp,      "int strcmp(char *,char *);"            },
+    {StringStrncmp,     "int strncmp(char *,char *,int);"       },
+    {StringStrcasecmp,  "int strcasecmp(char *,char *);"        },
+    {StringStrncasecmp, "int strncasecmp(char *,char *,int);"   },
+    {StringStrcoll,     "int strcoll(char *,char *);"           },
+     {StringStrcpy,      "char *strcpy(char *,char *);"          },
+    {StringStrncpy,     "char *strncpy(char *,char *,int);"     },
+     {StringStrerror,    "char *strerror(int);"                  },
+    {StringStrlen,      "int strlen(char *);"                   },
+     {StringStrspn,      "int strspn(char *,char *);"            },
+    {StringStrcspn,     "int strcspn(char *,char *);"           },
+    {StringStrpbrk,     "char *strpbrk(char *,char *);"         },
+    {StringStrstr,      "char *strstr(char *,char *);"          },
+     {StringStrtok,      "char *strtok(char *,char *);"          },
+    {StringStrxfrm,     "int strxfrm(char *,char *,int);"       },
 #ifndef WIN32
-    {StringStrdup, "char *strdup(char *);"},
-    {StringStrtok_r, "char *strtok_r(char *,char *,char **);"},
+    {StringStrdup,      "char *strdup(char *);"                 },
+    {StringStrtok_r,    "char *strtok_r(char *,char *,char **);"},
 #endif
-    {NULL, NULL}};
+    {NULL,              NULL                                    }
+};
 
 /* creates various system-dependent definitions */
 void StringSetupFunc(Picoc* pc)
 {
     /* define NULL */
     if (!VariableDefined(pc, TableStrRegister(pc, "NULL")))
+    {
         VariableDefinePlatformVar(
             pc, NULL, "NULL", &pc->IntType, (union AnyValue*)&String_ZeroValue, false);
+    }
 }

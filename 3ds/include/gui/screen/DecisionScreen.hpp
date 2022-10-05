@@ -38,6 +38,7 @@ public:
         : RunnableScreen(false), question(question), clickInfo(clickInfo)
     {
     }
+
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

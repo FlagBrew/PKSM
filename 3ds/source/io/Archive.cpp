@@ -25,12 +25,12 @@
  */
 
 #include "Archive.hpp"
+#include "csvc.h"
 #include "Directory.hpp"
 #include "File.hpp"
-#include "STDirectory.hpp"
-#include "csvc.h"
 #include "internal_fspxi.hpp"
 #include "smdh.hpp"
+#include "STDirectory.hpp"
 #include <array>
 #include <sys/stat.h>
 
@@ -209,7 +209,9 @@ Result Archive::moveDir(
     {
         if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
             res != (long)0xC82044B9)
+        {
             return res;
+        }
         auto d                = src.directory(dir);
         std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
         std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
@@ -245,7 +247,9 @@ Result Archive::moveDir(
         res = src.deleteDir(dir);
 
         if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+        {
             return 0;
+        }
 
         return res;
     }
@@ -258,7 +262,9 @@ Result Archive::copyDir(
     dst.deleteDir(dest);
     if (R_FAILED(res = dst.createDir(dest, 0)) && res != (long)0xC82044BE &&
         res != (long)0xC82044B9)
+    {
         return res;
+    }
     auto d                = src.directory(dir);
     std::u16string srcDir = dir.back() == u'/' ? dir : dir + u'/';
     std::u16string dstDir = dest.back() == u'/' ? dest : dest + u'/';
@@ -291,7 +297,9 @@ Result Archive::copyDir(
     }
 
     if (res == (long)0xC82044BE || res == (long)0xC82044B9)
+    {
         return 0;
+    }
 
     return res;
 }
@@ -503,12 +511,16 @@ Result Archive::deleteDir(const std::u16string& dir)
                 if (d->folder(i))
                 {
                     if (R_FAILED(res = deleteDir(srcDir + d->item(i))))
+                    {
                         return res;
+                    }
                 }
                 else
                 {
                     if (R_FAILED(res = deleteFile(srcDir + d->item(i))))
+                    {
                         return res;
+                    }
                 }
             }
             res = FSPXI_DeleteDirectory(fspxiHandle, mHandle, fsMakePath(PATH_UTF16, dir.c_str()));
@@ -529,22 +541,30 @@ Result Archive::init(const std::string& execPath)
 {
     Result res = 0;
     if (R_FAILED(res = svcControlService(SERVICEOP_STEAL_CLIENT_SESSION, &fspxiHandle, "PxiFS0")))
+    {
         return res;
+    }
 
     sdArchive = Archive{ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""), false};
     if (R_FAILED(sd().result()))
+    {
         return res;
+    }
     dataArchive = extdata(UNIQUE_ID, false);
     if (R_FAILED(data().result()))
     {
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+        {
             return res;
+        }
 
         dataArchive = extdata(UNIQUE_ID, false);
 
         if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
             res != (long)0xC82044B9)
+        {
             return res;
+        }
     }
     else
     {
@@ -552,23 +572,35 @@ Result Archive::init(const std::string& execPath)
         if (!checkFile)
         {
             if (R_FAILED(res = copyDir(data(), u"/", sd(), u"/3ds/PKSM/extdata")))
+            {
                 return res;
+            }
 
             if (R_FAILED(res = data().close()))
+            {
                 return res;
+            }
             if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+            {
                 return res;
+            }
             if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+            {
                 return res;
+            }
 
             data() = extdata(UNIQUE_ID, false);
 
             if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
+            {
                 return res;
+            }
 
             if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
                 res != (long)0xC82044B9)
+            {
                 return res;
+            }
         }
         else
         {
@@ -615,20 +647,29 @@ Archive& Archive::data()
 Archive Archive::save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi)
 {
     const u32 path[3] = {mediatype, lowid, highid};
-    return Archive{ARCHIVE_USER_SAVEDATA, {PATH_BINARY, sizeof(path), path}, pxi};
+    return Archive{
+        ARCHIVE_USER_SAVEDATA, {PATH_BINARY, sizeof(path), path},
+         pxi
+    };
 }
 
 Archive Archive::saveAndContents(
     FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4)
 {
     const u32 path[4] = {lowid, highid, mediatype, pathWord4};
-    return Archive{ARCHIVE_SAVEDATA_AND_CONTENT, {PATH_BINARY, sizeof(path), path}, pxi};
+    return Archive{
+        ARCHIVE_SAVEDATA_AND_CONTENT, {PATH_BINARY, sizeof(path), path},
+         pxi
+    };
 }
 
 Archive Archive::extdata(u32 extdata, bool pxi)
 {
     const u32 path[3] = {MEDIATYPE_SD, extdata, 0};
-    return Archive{ARCHIVE_EXTDATA, {PATH_BINARY, sizeof(path), path}, pxi};
+    return Archive{
+        ARCHIVE_EXTDATA, {PATH_BINARY, sizeof(path), path},
+         pxi
+    };
 }
 
 Result Archive::close()

@@ -27,15 +27,15 @@
 #ifndef QRSCANNER_HPP
 #define QRSCANNER_HPP
 
-#include "Configuration.hpp"
-#include "Sav.hpp"
 #include "base64.hpp"
+#include "Configuration.hpp"
 #include "gui.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "Sav.hpp"
 #include "types.h"
 #include "wcx/PGF.hpp"
 #include "wcx/PGT.hpp"
@@ -110,6 +110,7 @@ struct QRModeTraits<pksm::WC4>
 {
     using ReturnType = std::unique_ptr<pksm::WCX>;
 };
+
 // May actually return a WC4 instead of a PGT, but that doesn't matter for usage
 template <>
 struct QRModeTraits<pksm::PGT>
@@ -158,6 +159,7 @@ class QRScanner
 {
 private:
     using Traits = QRModeTraits<Mode>;
+
     class QRException : public std::exception
     {
     public:

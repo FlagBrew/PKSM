@@ -27,9 +27,9 @@
 #ifndef TITLELOADSCREEN_HPP
 #define TITLELOADSCREEN_HPP
 
+#include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
-#include "enums/Language.hpp"
 #include <cmath>
 #include <memory>
 

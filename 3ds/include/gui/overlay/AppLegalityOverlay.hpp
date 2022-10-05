@@ -28,20 +28,25 @@
 #define APPLEGALITYOVERLAY_HPP
 
 #include "Button.hpp"
+#include "colors.hpp"
 #include "Configuration.hpp"
 #include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
-#include "colors.hpp"
 #include "pkx/PKX.hpp"
+#include "ReplaceableScreen.hpp"
 
 class AppLegalityOverlay : public ReplaceableScreen
 {
 public:
     AppLegalityOverlay(ReplaceableScreen& screen, pksm::PKX& pkm);
+
     void drawTop() const override {} // Handled by ImageViewOverlay
+
     bool replacesTop() const override { return false; }
+
     void drawBottom() const override;
+
     bool handlesUpdate() const override { return true; }
+
     void update(touchPosition* touch) override;
 
 private:

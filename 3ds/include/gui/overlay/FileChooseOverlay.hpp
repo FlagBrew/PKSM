@@ -40,7 +40,9 @@ public:
 
     void update(touchPosition* touch) override;
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override { dim(); }
 
 private:

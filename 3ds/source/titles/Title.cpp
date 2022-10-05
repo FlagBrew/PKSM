@@ -34,6 +34,7 @@ namespace
 {
     constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
     C2D_Image dsIcon                         = {nullptr, &dsIconSubt3x};
+
     struct bannerData
     {
         u16 version;
@@ -85,6 +86,7 @@ namespace
             }
         }
     }
+
     C2D_Image loadTextureIcon(smdh_s* smdh)
     {
         C3D_Tex* tex                              = new C3D_Tex;
@@ -98,7 +100,7 @@ namespace
         for (int j = 0; j < 48; j += 8)
         {
             std::copy(src, src + 48 * 8, dest);
-            src += 48 * 8;
+            src  += 48 * 8;
             dest += 64 * 8;
         }
 

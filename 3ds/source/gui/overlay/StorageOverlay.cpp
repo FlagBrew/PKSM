@@ -25,16 +25,16 @@
  */
 
 #include "StorageOverlay.hpp"
+#include "banks.hpp"
 #include "BankSelectionScreen.hpp"
 #include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "FilterScreen.hpp"
-#include "SortScreen.hpp"
-#include "banks.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "sav/Sav.hpp"
+#include "SortScreen.hpp"
 
 StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox,
     std::shared_ptr<pksm::PKFilter> filter)

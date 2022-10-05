@@ -25,8 +25,8 @@
  */
 
 #include "GroupCloudAccess.hpp"
-#include "Configuration.hpp"
 #include "base64.hpp"
+#include "Configuration.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
@@ -65,9 +65,7 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
                     case 200:
                         page->data = std::make_unique<nlohmann::json>(
                             nlohmann::json::parse(*retData, nullptr, false));
-                        // clang-format off
-                    if (!page->data || !pageIsGood(*page->data))
-                        // clang-format on
+                        if (!page->data || !pageIsGood(*page->data))
                         {
                             page->data = nullptr;
                         }

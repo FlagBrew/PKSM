@@ -27,10 +27,10 @@
 #ifndef IMAGEVIEWOVERLAY_HPP
 #define IMAGEVIEWOVERLAY_HPP
 
+#include "colors.hpp"
 #include "Configuration.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "colors.hpp"
 
 class PKX;
 
@@ -43,9 +43,13 @@ public:
         ReplaceableScreen& screen, C2D_Image&& image, PKSM_Color background = COLOR_WHITE);
     ~ImageViewOverlay();
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override {}
+
     bool handlesUpdate() const override { return false; }
+
     void update(touchPosition*) {}
 
 private:

@@ -26,15 +26,15 @@
 
 #include "ScriptScreen.hpp"
 #include "Archive.hpp"
+#include "banks.hpp"
 #include "Configuration.hpp"
 #include "Directory.hpp"
-#include "ScrollingTextScreen.hpp"
-#include "banks.hpp"
 #include "endian.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "sav/Sav.hpp"
 #include "sav/Sav4.hpp"
+#include "ScrollingTextScreen.hpp"
 #include <array>
 
 #include "picoc.h"
@@ -236,7 +236,7 @@ void ScriptScreen::update(touchPosition* touch)
             if (currFiles[hid.fullIndex()].second)
             {
                 currDirString += '/' + currFiles[hid.fullIndex()].first;
-                currDir = STDirectory(currDirString);
+                currDir       = STDirectory(currDirString);
                 updateEntries();
             }
             else

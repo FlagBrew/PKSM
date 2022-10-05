@@ -28,8 +28,8 @@
 #define SCRIPTSCREEN_HPP
 
 #include "Hid.hpp"
-#include "STDirectory.hpp"
 #include "Screen.hpp"
+#include "STDirectory.hpp"
 
 #define PICOC_STACKSIZE (32 * 1024)
 

@@ -27,8 +27,8 @@
 #ifndef INSTRUCTIONS_HPP
 #define INSTRUCTIONS_HPP
 
-#include "TextPos.hpp"
 #include "colors.hpp"
+#include "TextPos.hpp"
 #include <string>
 #include <vector>
 
@@ -48,6 +48,7 @@ public:
         PKSM_Color color, const std::string& text);
     void addCircle(bool top, int x, int y, int radius, PKSM_Color color);
     void addLine(bool top, int x1, int y1, int x2, int y2, int width, PKSM_Color color);
+
     bool empty() const
     {
         return boxes.empty() && texts.empty() && circles.empty() && lines.empty();
@@ -55,12 +56,14 @@ public:
 
 private:
     void dim() const;
+
     struct Box
     {
         Box(bool top, int x, int y, int w, int h, PKSM_Color color)
             : top(top), x(x), y(y), w(w), h(h), color(color)
         {
         }
+
         bool top;
         int x;
         int y;
@@ -68,12 +71,14 @@ private:
         int h;
         PKSM_Color color;
     };
+
     struct Line
     {
         Line(bool top, int x1, int y1, int x2, int y2, int w, PKSM_Color color)
             : top(top), x1(x1), y1(y1), x2(x2), y2(y2), w(w), color(color)
         {
         }
+
         bool top;
         int x1;
         int y1;
@@ -82,6 +87,7 @@ private:
         int w;
         PKSM_Color color;
     };
+
     struct Text
     {
         Text(bool top, int x, int y, int maxWidth, TextPosX xPos, TextPosY yPos, PKSM_Color color,
@@ -96,6 +102,7 @@ private:
               string(string)
         {
         }
+
         bool top;
         int x;
         int y;
@@ -105,18 +112,21 @@ private:
         PKSM_Color color;
         std::string string;
     };
+
     struct Circle
     {
         Circle(bool top, int x, int y, int radius, PKSM_Color color)
             : top(top), x(x), y(y), radius(radius), color(color)
         {
         }
+
         bool top;
         int x;
         int y;
         int radius;
         PKSM_Color color;
     };
+
     std::vector<Box> boxes;
     std::vector<Line> lines;
     std::vector<Text> texts;

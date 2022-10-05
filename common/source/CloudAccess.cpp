@@ -25,9 +25,9 @@
  */
 
 #include "CloudAccess.hpp"
-#include "Configuration.hpp"
 #include "app.hpp"
 #include "base64.hpp"
+#include "Configuration.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "nlohmann/json.hpp"

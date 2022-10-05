@@ -261,7 +261,10 @@ namespace TextParse
         }
     }
 
-    void TextBuf::clearUnconditional() { parsedText.clear(); }
+    void TextBuf::clearUnconditional()
+    {
+        parsedText.clear();
+    }
 
     bool TextBuf::fontHasChar(const C2D_Font& font, u32 codepoint)
     {
@@ -433,7 +436,9 @@ namespace TextParse
         static_assert(std::is_same<FontSize, float>::value);
         static const u8 lineFeed = fontGetInfo(nullptr)->lineFeed;
         if (!text || text->glyphs.empty())
+        {
             return;
+        }
 
         for (const auto& glyph : text->glyphs)
         {
@@ -487,5 +492,8 @@ namespace TextParse
         }
     }
 
-    void ScreenText::clear() { glyphs.clear(); }
+    void ScreenText::clear()
+    {
+        glyphs.clear();
+    }
 }

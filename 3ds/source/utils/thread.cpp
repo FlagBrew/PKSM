@@ -76,6 +76,7 @@ namespace
         void (*entrypoint)(void*);
         void* arg;
     };
+
     std::vector<Task> workerTasks;
     LightLock workerTaskLock;
     LightSemaphore moreTasks;
@@ -108,22 +109,32 @@ bool Threads::init(u8 workers)
 {
     LightLock_Init(&currentThreadsLock);
     if (R_FAILED(svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT)))
+    {
         return false;
+    }
     if (R_FAILED(svcCreateEvent(&reaperThreadHandles[1], RESET_ONESHOT)))
+    {
         return false;
+    }
     s32 prio = 0;
     if (R_FAILED(svcGetThreadPriority(&prio, CUR_THREAD_HANDLE)))
+    {
         return false;
+    }
     reaperThread = threadCreate(reapThread, nullptr, 0x400, prio - 3, -2, false);
     if (!reaperThread)
+    {
         return false;
+    }
 
     LightLock_Init(&workerTaskLock);
     LightSemaphore_Init(&moreTasks, 0, workers);
     for (int i = 0; i < workers; i++)
     {
         if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
+        {
             return false;
+        }
     }
     return true;
 }

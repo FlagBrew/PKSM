@@ -27,18 +27,18 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-#include "PKX.hpp"
-#include "RunnableScreen.hpp"
-#include "Screen.hpp"
-#include "TextParse.hpp"
-#include "TextPos.hpp"
-#include "Type.hpp"
 #include "colors.hpp"
 #include "enums/Ball.hpp"
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
 #include "enums/Language.hpp"
+#include "PKX.hpp"
+#include "RunnableScreen.hpp"
+#include "Screen.hpp"
 #include "spritesheets.h"
+#include "TextParse.hpp"
+#include "TextPos.hpp"
+#include "Type.hpp"
 #include "types.h"
 #include <citro2d.h>
 

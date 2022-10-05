@@ -44,7 +44,9 @@ public:
     CardType SPICardType(void) const;
     u32 highId(void) const;
     u32 lowId(void) const;
+
     u64 ID(void) const { return (u64)highId() << 32 | lowId(); }
+
     std::string name(void) const;
     C2D_Image icon(void) const;
     FS_MediaType mediaType(void) const;
@@ -54,11 +56,9 @@ public:
 
     std::string checkpointPrefix(void) const;
 
-    // clang-format off
     template <typename StrType = std::string>
-    requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
+        requires std::is_same_v<StrType, std::string> || std::is_same_v<StrType, std::u16string>
     static StrType tidToCheckpointPrefix(u64 tid)
-    // clang-format on
     {
         if constexpr (std::is_same_v<std::string, StrType>)
         {

@@ -149,7 +149,7 @@ private:
     Configuration(void);
     ~Configuration();
 
-    Configuration(const Configuration&) = delete;
+    Configuration(const Configuration&)  = delete;
     void operator=(const Configuration&) = delete;
 
     void loadFromRomfs(void);
@@ -162,6 +162,7 @@ private:
 namespace i18n
 {
     const std::string& localize(pksm::Language lang, const std::string& index);
+
     inline const std::string& localize(const std::string& index)
     {
         return i18n::localize(Configuration::getInstance().language(), index);

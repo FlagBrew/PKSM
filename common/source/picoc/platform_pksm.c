@@ -43,14 +43,18 @@ char* PlatformGetLine(char* Buf, int MaxLen, const char* Prompt)
         /* use GNU readline to read the line */
         char* InLine = readline(Prompt);
         if (InLine == NULL)
+        {
             return NULL;
+        }
 
         Buf[MaxLen - 1] = '\0';
         strncpy(Buf, InLine, MaxLen - 2);
         strncat(Buf, "\n", MaxLen - 2);
 
         if (InLine[0] != '\0')
+        {
             add_history(InLine);
+        }
 
         free(InLine);
         return Buf;
@@ -58,7 +62,9 @@ char* PlatformGetLine(char* Buf, int MaxLen, const char* Prompt)
 #endif
 
     if (Prompt != NULL)
+    {
         printf("%s", Prompt);
+    }
 
     fflush(stdout);
     return fgets(Buf, MaxLen, stdin);
@@ -87,19 +93,27 @@ char* PlatformReadFile(Picoc* pc, const char* FileName)
     char* p;
 
     if (stat(FileName, &FileInfo))
+    {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     ReadText = malloc(FileInfo.st_size + 1);
     if (ReadText == NULL)
+    {
         ProgramFailNoParser(pc, "out of memory\n");
+    }
 
     InFile = fopen(FileName, "r");
     if (InFile == NULL)
+    {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     BytesRead = fread(ReadText, 1, FileInfo.st_size, InFile);
     if (BytesRead == 0)
+    {
         ProgramFailNoParser(pc, "can't read file %s\n", FileName);
+    }
 
     ReadText[BytesRead] = '\0';
     fclose(InFile);

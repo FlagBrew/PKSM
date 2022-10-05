@@ -27,9 +27,9 @@
 #ifndef STATSEDITSCREEN_HPP
 #define STATSEDITSCREEN_HPP
 
-#include "Screen.hpp"
 #include "enums/Stat.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <memory>
 #include <vector>
 
@@ -39,8 +39,10 @@ class StatsEditScreen : public Screen
 {
 public:
     StatsEditScreen(pksm::PKX& pkm);
+
     // Done in Overlay
     void drawTop() const override {}
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

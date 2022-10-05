@@ -73,6 +73,7 @@ extern "C" {
 #define SPI_FLG_WEL 2
 
 extern u8* fill_buf;
+
 typedef enum
 {
     NO_CHIP = -1,

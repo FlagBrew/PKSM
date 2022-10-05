@@ -25,15 +25,15 @@
  */
 
 #include "SortScreen.hpp"
+#include "banks.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "SortOverlay.hpp"
-#include "banks.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "SortOverlay.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)
 {
@@ -185,155 +185,255 @@ void SortScreen::sort()
                     {
                         case SortType::DEX:
                             if (pkm1->species() < pkm2->species())
+                            {
                                 return true;
+                            }
                             if (pkm2->species() < pkm1->species())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::FORM:
                             if (pkm1->alternativeForm() < pkm2->alternativeForm())
+                            {
                                 return true;
+                            }
                             if (pkm2->alternativeForm() < pkm1->alternativeForm())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::TYPE1:
                             if (pkm1->type1() < pkm2->type1())
+                            {
                                 return true;
+                            }
                             if (pkm2->type1() < pkm1->type1())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::TYPE2:
                             if (pkm1->type2() < pkm2->type2())
+                            {
                                 return true;
+                            }
                             if (pkm2->type2() < pkm1->type2())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::HP:
                             if (pkm1->stat(pksm::Stat::HP) < pkm2->stat(pksm::Stat::HP))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::HP) < pkm1->stat(pksm::Stat::HP))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::ATK:
                             if (pkm1->stat(pksm::Stat::ATK) < pkm2->stat(pksm::Stat::ATK))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::ATK) < pkm1->stat(pksm::Stat::ATK))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::DEF:
                             if (pkm1->stat(pksm::Stat::DEF) < pkm2->stat(pksm::Stat::DEF))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::DEF) < pkm1->stat(pksm::Stat::DEF))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SATK:
                             if (pkm1->stat(pksm::Stat::SPATK) < pkm2->stat(pksm::Stat::SPATK))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::SPATK) < pkm1->stat(pksm::Stat::SPATK))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SDEF:
                             if (pkm1->stat(pksm::Stat::SPDEF) < pkm2->stat(pksm::Stat::SPDEF))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::SPDEF) < pkm1->stat(pksm::Stat::SPDEF))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SPE:
                             if (pkm1->stat(pksm::Stat::SPDEF) < pkm2->stat(pksm::Stat::SPD))
+                            {
                                 return true;
+                            }
                             if (pkm2->stat(pksm::Stat::SPDEF) < pkm1->stat(pksm::Stat::SPD))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::NATURE:
                             if (pkm1->nature() < pkm2->nature())
+                            {
                                 return true;
+                            }
                             if (pkm2->nature() < pkm1->nature())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::LEVEL:
                             if (pkm1->level() < pkm2->level())
+                            {
                                 return true;
+                            }
                             if (pkm2->level() < pkm1->level())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::TID:
                             if (pkm1->TID() < pkm2->TID())
+                            {
                                 return true;
+                            }
                             if (pkm2->TID() < pkm1->TID())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::HPIV:
                             if (pkm1->iv(pksm::Stat::HP) < pkm2->iv(pksm::Stat::HP))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::HP) < pkm1->iv(pksm::Stat::HP))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::ATKIV:
                             if (pkm1->iv(pksm::Stat::ATK) < pkm2->iv(pksm::Stat::ATK))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::ATK) < pkm1->iv(pksm::Stat::ATK))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::DEFIV:
                             if (pkm1->iv(pksm::Stat::DEF) < pkm2->iv(pksm::Stat::DEF))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::DEF) < pkm1->iv(pksm::Stat::DEF))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SATKIV:
                             if (pkm1->iv(pksm::Stat::SPATK) < pkm2->iv(pksm::Stat::SPATK))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::SPATK) < pkm1->iv(pksm::Stat::SPATK))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SDEFIV:
                             if (pkm1->iv(pksm::Stat::SPDEF) < pkm2->iv(pksm::Stat::SPDEF))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::SPDEF) < pkm1->iv(pksm::Stat::SPDEF))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SPEIV:
                             if (pkm1->iv(pksm::Stat::SPD) < pkm2->iv(pksm::Stat::SPD))
+                            {
                                 return true;
+                            }
                             if (pkm2->iv(pksm::Stat::SPD) < pkm1->iv(pksm::Stat::SPD))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::HIDDENPOWER:
                             if (pkm1->hpType() < pkm2->hpType())
+                            {
                                 return true;
+                            }
                             if (pkm2->hpType() < pkm1->hpType())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::FRIENDSHIP:
                             if (pkm1->currentFriendship() < pkm2->currentFriendship())
+                            {
                                 return true;
+                            }
                             if (pkm2->currentFriendship() < pkm1->currentFriendship())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::NICKNAME:
                             if (pkm1->nickname() < pkm2->nickname())
+                            {
                                 return true;
+                            }
                             if (pkm2->nickname() < pkm1->nickname())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SPECIESNAME:
                             if (pkm1->species().localize(Configuration::getInstance().language()) <
                                 pkm2->species().localize(Configuration::getInstance().language()))
+                            {
                                 return true;
+                            }
                             if (pkm2->species().localize(Configuration::getInstance().language()) <
                                 pkm1->species().localize(Configuration::getInstance().language()))
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::OTNAME:
                             if (pkm1->otName() < pkm2->otName())
+                            {
                                 return true;
+                            }
                             if (pkm2->otName() < pkm1->otName())
+                            {
                                 return false;
+                            }
                             break;
                         case SortType::SHINY:
                             if (pkm1->shiny() && !pkm2->shiny())
+                            {
                                 return true;
+                            }
                             if (pkm2->shiny() && !pkm1->shiny())
+                            {
                                 return false;
+                            }
                             break;
                         default:
                             break;

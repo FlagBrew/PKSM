@@ -39,9 +39,12 @@ private:
 
 public:
     Archive(FS_ArchiveID id, FS_Path path, bool pxi);
+
     Archive() : mHandle(0), mResult(-1), mPXI(false) {}
+
     ~Archive() { close(); }
-    Archive(const Archive&) = delete;
+
+    Archive(const Archive&)            = delete;
     Archive& operator=(const Archive&) = delete;
     Archive(Archive&&);
     Archive& operator=(Archive&&);
@@ -83,6 +86,7 @@ public:
         return moveFile(
             src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
     }
+
     static Result moveFile(
         Archive& src, const std::string& file, Archive& dst, const std::string& dest)
     {
@@ -101,6 +105,7 @@ public:
         return copyFile(
             src, fsMakePath(PATH_UTF16, file.c_str()), dst, fsMakePath(PATH_UTF16, dest.c_str()));
     }
+
     static Result copyFile(
         Archive& src, const std::string& file, Archive& dst, const std::string& dest)
     {
@@ -111,6 +116,7 @@ public:
     {
         return createDir(fsMakePath(PATH_UTF16, path.c_str()), attributes);
     }
+
     Result createDir(const std::string& path, u32 attributes)
     {
         return createDir(StringUtils::UTF8toUTF16(path), attributes);
@@ -120,6 +126,7 @@ public:
     {
         return directory(fsMakePath(PATH_UTF16, path.c_str()));
     }
+
     std::unique_ptr<Directory> directory(const std::string& path)
     {
         return directory(StringUtils::UTF8toUTF16(path));
@@ -131,6 +138,7 @@ public:
     {
         return createFile(fsMakePath(PATH_UTF16, path.c_str()), attributes, size);
     }
+
     Result createFile(const std::string& path, u32 attributes, u64 size)
     {
         return createFile(StringUtils::UTF8toUTF16(path), attributes, size);
@@ -140,6 +148,7 @@ public:
     {
         return file(fsMakePath(PATH_UTF16, path.c_str()), flags, attributes);
     }
+
     std::unique_ptr<File> file(const std::string& path, u32 flags, u32 attributes = 0)
     {
         return file(StringUtils::UTF8toUTF16(path), flags, attributes);
@@ -149,6 +158,7 @@ public:
     {
         return deleteFile(fsMakePath(PATH_UTF16, path.c_str()));
     }
+
     Result deleteFile(const std::string& path)
     {
         return deleteFile(StringUtils::UTF8toUTF16(path));

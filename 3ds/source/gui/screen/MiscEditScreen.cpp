@@ -27,23 +27,23 @@
 #include "MiscEditScreen.hpp"
 #include "AccelButton.hpp"
 #include "AppLegalityOverlay.hpp"
+#include "base64.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "LegalInfoScreen.hpp"
-#include "LocationOverlay.hpp"
-#include "VersionOverlay.hpp"
-#include "ViewOverlay.hpp"
-#include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "LegalInfoScreen.hpp"
 #include "loader.hpp"
+#include "LocationOverlay.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "VersionOverlay.hpp"
+#include "ViewOverlay.hpp"
 #include "website.h"
 
 MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
@@ -769,14 +769,18 @@ void MiscEditScreen::validate()
                             for (const auto& line : retJson["report"])
                             {
                                 if (full_size)
+                                {
                                     full_size += 1;
+                                }
                                 full_size += line.size();
                             }
                             legal_text.reserve(full_size);
                             for (const auto& line : retJson["report"])
                             {
                                 if (!legal_text.empty())
+                                {
                                     legal_text += '\n';
+                                }
                                 legal_text += line;
                             }
                         }

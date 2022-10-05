@@ -28,12 +28,12 @@
 #include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "DecisionScreen.hpp"
-#include "MessageScreen.hpp"
-#include "TextParse.hpp"
 #include "format.h"
+#include "MessageScreen.hpp"
 #include "personal.hpp"
 #include "pkx/PKX.hpp"
 #include "sound.hpp"
+#include "TextParse.hpp"
 #include "thread.hpp"
 #include <stack>
 
@@ -71,6 +71,7 @@ namespace
         int pauseTime;
         bool thisFrame;
     };
+
     std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
 
     Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
@@ -457,6 +458,7 @@ void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Col
         }
     }
 }
+
 void Gui::drawLinedPolygon(
     std::vector<std::pair<float, float>> points, float width, PKSM_Color color)
 {
@@ -548,7 +550,7 @@ void Gui::drawNoHome()
         C2D_AlphaImageTint(&tint, noHomeAlpha);
         Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_home_blocked_idx), 130.0f,
             90.0f, &tint);
-        noHomeAlpha -= dNoHomeAlpha;
+        noHomeAlpha  -= dNoHomeAlpha;
         dNoHomeAlpha += NOHOMEALPHA_ACCEL;
     }
 }
@@ -676,7 +678,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     static_assert(std::is_same<FontSize, float>::value);
     textMode            = true;
     const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y -= sizeY * 6;
+    y                   -= sizeY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -954,7 +956,9 @@ void Gui::exit(void)
     for (const auto& font : fonts)
     {
         if (font)
+        {
             C2D_FontFree(font);
+        }
     }
     C2D_Fini();
     C3D_Fini();
@@ -1213,7 +1217,7 @@ void Gui::sprite(int key, int x, int y)
         /* RIGHT */
         x += 119;
         Gui::drawSolidRect(x, y, 263, rep + 10, PKSM_Color(26, 35, 126, 255));
-        x += 263;
+        x      += 263;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
@@ -1461,7 +1465,7 @@ void Gui::sprite(int key, int x, int y)
         x += 5;
         Gui::drawSolidRect(x, y, 382, rep + 10, PKSM_Color(26, 35, 126, 255));
         /* RIGHT */
-        x += 382;
+        x      += 382;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
@@ -2253,13 +2257,17 @@ u8 Gui::transparencyWaver()
     {
         currentAmount++;
         if (currentAmount == 255)
+        {
             dir = true;
+        }
     }
     else
     {
         currentAmount--;
         if (currentAmount < 155)
+        {
             dir = false;
+        }
     }
     return currentAmount;
 }
@@ -2471,7 +2479,7 @@ void Gui::drawSelector(float x, float y)
     u8 g                       = COLOR_SELECTOR.g;
     u8 b                       = COLOR_SELECTOR.b;
     PKSM_Color color           = PKSM_Color(r + (255 - r) * highlight_multiplier,
-        g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+                  g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
 
     Gui::drawSolidRect(x, y, 50, 50, PKSM_Color(255, 255, 255, 100));
     Gui::drawSolidRect(x, y, 50, w, color);                      // top

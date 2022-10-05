@@ -25,8 +25,8 @@
  */
 
 #include "ThirtyChoice.hpp"
-#include "Species.hpp"
 #include "gui.hpp"
+#include "Species.hpp"
 
 void ThirtyChoice::drawTop() const
 {

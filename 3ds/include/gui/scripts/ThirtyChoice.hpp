@@ -27,9 +27,9 @@
 #ifndef THIRTYCHOICE_HPP
 #define THIRTYCHOICE_HPP
 
+#include "enums/Generation.hpp"
 #include "Hid.hpp"
 #include "RunnableScreen.hpp"
-#include "enums/Generation.hpp"
 #include <string>
 #include <vector>
 
@@ -52,6 +52,7 @@ public:
             pkms.emplace_back(pokemon[i]);
         }
     }
+
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;

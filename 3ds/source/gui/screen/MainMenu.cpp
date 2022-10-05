@@ -30,15 +30,15 @@
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "EditSelectorScreen.hpp"
-#include "InjectSelectorScreen.hpp"
-#include "MainMenuButton.hpp"
-#include "ScriptScreen.hpp"
-#include "StorageScreen.hpp"
 #include "format.h"
 #include "gui.hpp"
+#include "InjectSelectorScreen.hpp"
 #include "loader.hpp"
+#include "MainMenuButton.hpp"
 #include "revision.h"
 #include "sav/Sav5.hpp"
+#include "ScriptScreen.hpp"
+#include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
 
 namespace
@@ -247,7 +247,9 @@ void MainMenu::update(touchPosition* touch)
     for (auto& button : buttons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
     if (keysDown() & KEY_B)
     {

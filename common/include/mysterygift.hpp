@@ -48,6 +48,7 @@ namespace MysteryGift
               released(released)
         {
         }
+
         std::string name;
         std::string game;
         int species;

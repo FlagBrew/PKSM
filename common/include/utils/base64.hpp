@@ -34,10 +34,12 @@
 #include <vector>
 
 std::vector<u8> base64_decode(std::span<const u8> data);
+
 inline std::vector<u8> base64_decode(const std::string_view& data)
 {
     return base64_decode(std::span<const u8>{(const u8*)data.data(), data.size()});
 }
+
 std::string base64_encode(std::span<const u8> data);
 
 #endif

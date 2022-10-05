@@ -27,11 +27,11 @@
 #include "StatsEditScreen.hpp"
 #include "AccelButton.hpp"
 #include "ClickButton.hpp"
-#include "HiddenPowerOverlay.hpp"
-#include "ViewOverlay.hpp"
 #include "gui.hpp"
+#include "HiddenPowerOverlay.hpp"
 #include "i18n_ext.hpp"
 #include "pkx/PB7.hpp"
+#include "ViewOverlay.hpp"
 
 namespace
 {

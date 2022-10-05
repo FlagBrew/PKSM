@@ -27,9 +27,9 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <array>
 #include <memory>
 #include <vector>
@@ -90,12 +90,14 @@ private:
     int cursorIndex                        = 0;
     int storageBox                         = 0;
     int boxBox                             = 0;
+
     enum PickupMode : u8
     {
         SINGLE,
         SWAP,
         MULTI
-    } pickupMode            = SINGLE;
+    } pickupMode = SINGLE;
+
     bool currentlySelecting = false;
     bool justSwitched       = true;
     bool storageChosen      = false;

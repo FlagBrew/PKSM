@@ -27,11 +27,11 @@
 #include "MoveEditScreen.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "MoveOverlay.hpp"
-#include "ViewOverlay.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "MoveOverlay.hpp"
 #include "pkx/PB7.hpp"
+#include "ViewOverlay.hpp"
 
 MoveEditScreen::MoveEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {

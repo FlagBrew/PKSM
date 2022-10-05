@@ -66,9 +66,12 @@ public:
         hid.update(items.size());
         hid.select(selected);
     }
+
     void drawTop() const override;
     void drawBottom() const override;
+
     bool replacesTop() const override { return true; }
+
     void update(touchPosition* touch) override;
 
 private:

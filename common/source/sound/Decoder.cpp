@@ -30,6 +30,7 @@
 #include "Decoder.hpp"
 
 #include "mp3.hpp"
+
 // #include "vorbis.hpp"
 // #include "wav.hpp"
 
@@ -76,7 +77,9 @@ std::unique_ptr<Decoder> Decoder::get(const std::string& fileName)
         // fprintf(stderr, "Decoder: Using mpeg3");
         auto mp3dec = std::make_unique<Mp3Decoder>(fileName);
         if (mp3dec->good())
+        {
             return mp3dec;
+        }
     }
 
     // fprintf(stderr, "Err: Failed to initalize decoder.");

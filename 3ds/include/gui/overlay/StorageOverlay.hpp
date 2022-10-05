@@ -27,8 +27,8 @@
 #ifndef STORAGEOVERLAY_HPP
 #define STORAGEOVERLAY_HPP
 
-#include "ReplaceableScreen.hpp"
 #include "pkx/PKFilter.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 #include <vector>
 

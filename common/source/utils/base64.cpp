@@ -58,13 +58,19 @@ namespace
 std::vector<u8> base64_decode(std::span<const u8> data)
 {
     if (data.size() % 4 != 0)
+    {
         return {};
+    }
 
     size_t output_length = data.size() / 4 * 3;
     if (data[data.size() - 1] == '=')
+    {
         output_length--;
+    }
     if (data[data.size() - 2] == '=')
+    {
         output_length--;
+    }
 
     std::vector<unsigned char> ret(output_length);
 
@@ -79,11 +85,17 @@ std::vector<u8> base64_decode(std::span<const u8> data)
             (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
 
         if (j < output_length)
+        {
             ret[j++] = (triple >> 2 * 8) & 0xFF;
+        }
         if (j < output_length)
+        {
             ret[j++] = (triple >> 1 * 8) & 0xFF;
+        }
         if (j < output_length)
+        {
             ret[j++] = (triple >> 0 * 8) & 0xFF;
+        }
     }
 
     return ret;

@@ -27,9 +27,9 @@
 #include "ExtraSavesScreen.hpp"
 #include "Configuration.hpp"
 #include "ExtraSavesSubScreen.hpp"
-#include "Species.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "Species.hpp"
 #include "thread.hpp"
 
 ExtraSavesScreen::ExtraSavesScreen()

@@ -35,7 +35,9 @@ class TitleIdOverlay : public ReplaceableScreen
 public:
     TitleIdOverlay(ReplaceableScreen& screen);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

@@ -28,8 +28,8 @@
 #define LOCATIONOVERLAY_HPP
 
 #include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
 #include "pkx/PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <map>
 #include <memory>
 
@@ -40,7 +40,9 @@ class LocationOverlay : public ReplaceableScreen
 public:
     LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

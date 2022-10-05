@@ -53,7 +53,10 @@ namespace i18n
         gui.insert_or_assign(lang, std::move(j));
     }
 
-    void exitGui(pksm::Language lang) { gui.erase(lang); }
+    void exitGui(pksm::Language lang)
+    {
+        gui.erase(lang);
+    }
 
     const std::string& localize(pksm::Language lang, const std::string& v)
     {

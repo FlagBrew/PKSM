@@ -42,6 +42,7 @@ public:
         LATEST,
         POPULAR
     };
+
     CloudAccess();
     std::unique_ptr<pksm::PKX> pkm(size_t slot) const;
     bool isLegal(size_t slot) const;
@@ -49,9 +50,12 @@ public:
     std::unique_ptr<pksm::PKX> fetchPkm(size_t slot) const;
     long pkm(std::unique_ptr<pksm::PKX> pk);
     int pages() const;
+
     int page() const { return pageNumber; }
+
     std::optional<int> nextPage();
     std::optional<int> prevPage();
+
     void sortType(SortType type)
     {
         if (sort != type)
@@ -60,7 +64,9 @@ public:
             refreshPages();
         }
     }
+
     SortType sortType() const { return sort; }
+
     void sortDir(bool ascend)
     {
         if (this->ascend != ascend)
@@ -69,7 +75,9 @@ public:
             refreshPages();
         }
     }
+
     bool sortAscending() const { return ascend; }
+
     void filterLegal(bool v)
     {
         if (v != legal)
@@ -78,11 +86,16 @@ public:
             refreshPages();
         }
     }
+
     bool filterLegal() const { return legal; }
+
     void filterToGen(pksm::Generation g);
     void removeGenFilter();
+
     bool good() const { return isGood; }
+
     int currentPageError() const { return current->siteJsonErrorCode; }
+
     static std::pair<std::string, std::string> makeURL(int page, SortType type, bool ascend,
         bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
     nlohmann::json grabPage(int page);
@@ -95,6 +108,7 @@ private:
         std::atomic<bool> available        = false;
         std::atomic<int> siteJsonErrorCode = 0;
     };
+
     void refreshPages();
     static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
         bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);

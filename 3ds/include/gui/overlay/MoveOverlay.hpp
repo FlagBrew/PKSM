@@ -28,8 +28,8 @@
 #define MOVEOVERLAY_HPP
 
 #include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
 #include "pkx/IPKFilterable.hpp"
+#include "ReplaceableScreen.hpp"
 #include <variant>
 
 class Button;
@@ -39,7 +39,9 @@ class MoveOverlay : public ReplaceableScreen
 public:
     MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm, int moveIndex);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

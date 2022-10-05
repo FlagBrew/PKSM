@@ -30,13 +30,13 @@
 #include "ClickButton.hpp"
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
-#include "MainMenu.hpp"
-#include "SaveLoadScreen.hpp"
-#include "Title.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "MainMenu.hpp"
 #include "sav/Sav.hpp"
+#include "SaveLoadScreen.hpp"
+#include "Title.hpp"
 
 bool TitleLoadScreen::loadSave() const
 {

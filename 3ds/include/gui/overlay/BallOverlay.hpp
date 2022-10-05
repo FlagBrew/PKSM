@@ -27,10 +27,10 @@
 #ifndef BALLOVERLAY_HPP
 #define BALLOVERLAY_HPP
 
-#include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
 #include "enums/Ball.hpp"
+#include "Hid.hpp"
 #include "pkx/IPKFilterable.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 
 class BallOverlay : public ReplaceableScreen
@@ -38,7 +38,9 @@ class BallOverlay : public ReplaceableScreen
 public:
     BallOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

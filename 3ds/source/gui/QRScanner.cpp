@@ -46,6 +46,7 @@ namespace
             svcCreateEvent(&exitEvent, RESET_STICKY);
             quirc_resize(data, 400, 240);
         }
+
         ~QRData()
         {
             C3D_TexDelete(image.tex);
@@ -53,10 +54,13 @@ namespace
             quirc_destroy(data);
             svcCloseHandle(exitEvent);
         }
+
         void drawThread();
         void captureThread();
         void handler(std::vector<u8>& out);
+
         bool done() { return finished; }
+
         bool cancelled() { return cancel; }
 
     private:
@@ -109,7 +113,9 @@ void QRData::finish()
 {
     svcSignalEvent(exitEvent);
     while (!done())
+    {
         svcSleepThread(1000000);
+    }
     LightLock_Lock(&bufferLock);
     LightLock_Unlock(&bufferLock);
     LightLock_Lock(&imageLock);
@@ -265,9 +271,10 @@ void QRData::handler(std::vector<u8>& out)
     {
         for (ssize_t y = 0; y < h; y++)
         {
-            u16 px           = cameraBuffer[y * 400 + x];
-            image[y * w + x] = (u8)(
-                ((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) / 3);
+            u16 px = cameraBuffer[y * 400 + x];
+            image[y * w + x] =
+                (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) /
+                     3);
         }
     }
     LightLock_Unlock(&bufferLock);

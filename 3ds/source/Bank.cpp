@@ -26,8 +26,8 @@
 
 #include "Bank.hpp"
 #include "Archive.hpp"
-#include "Configuration.hpp"
 #include "banks.hpp"
+#include "Configuration.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
@@ -114,6 +114,7 @@ void Bank::load(int maxBoxes)
                     pksm::Generation gen;
                     u8 data[260];
                 };
+
                 static_assert(sizeof(G7Entry) == 264);
                 if (header.version == 1)
                 {

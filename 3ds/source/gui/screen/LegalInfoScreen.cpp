@@ -25,9 +25,9 @@
  */
 
 #include "LegalInfoScreen.hpp"
+#include "base64.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "base64.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
 #include "loader.hpp"

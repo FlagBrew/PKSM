@@ -35,7 +35,9 @@ class Decoder
 {
 public:
     virtual ~Decoder() = default;
+
     bool good() { return initialized; }
+
     virtual u32 pos()                                   = 0;
     virtual u32 length()                                = 0;
     virtual u32 decode(void* buffer, size_t bufferSize) = 0;

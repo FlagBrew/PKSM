@@ -39,8 +39,10 @@ class EditorScreen : public Screen
 {
 public:
     EditorScreen(std::unique_ptr<pksm::PKX> pkm, int box, int index, bool emergency = false);
+
     // Done with Overlay
     void drawTop() const override {}
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

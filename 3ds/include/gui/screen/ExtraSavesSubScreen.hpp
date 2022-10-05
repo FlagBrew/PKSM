@@ -55,6 +55,7 @@ public:
         LGPE,
         SwSh
     };
+
     ExtraSavesSubScreen(Group group);
 
     void update(touchPosition* touch) override;

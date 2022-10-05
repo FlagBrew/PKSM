@@ -28,9 +28,9 @@
 #define GROUPCLOUDSCREEN_HPP
 
 #include "GroupCloudAccess.hpp"
-#include "Screen.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 
 class Button;
 

@@ -58,19 +58,23 @@ private:
     void createJSON();
     void createBank(int maxBoxes);
     void convertFromBankBin();
+
     struct BankHeader
     {
         char MAGIC[8];
         u32 version;
         u32 boxes;
     };
+
     static_assert(sizeof(BankHeader) == 16);
+
     struct BankEntry
     {
         pksm::Generation gen;
         u8 data[0x148];
         u8 padding[4]; // Pad to 8 bytes
     };
+
     static_assert(sizeof(BankEntry) == 0x150);
     std::unique_ptr<nlohmann::json> boxNames;
     mutable std::array<u8, 32> prevHash;

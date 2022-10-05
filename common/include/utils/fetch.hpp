@@ -64,19 +64,22 @@ public:
     {
         return curl_easy_setopt(curl.get(), opt, data);
     }
+
     template <typename T>
     CURLcode getinfo(CURLINFO info, T outvar)
     {
         return curl_easy_getinfo(curl.get(), info, outvar);
     }
+
     std::unique_ptr<curl_mime, decltype(curl_mime_free)*> mimeInit();
 
 private:
     Fetch() : curl(nullptr, &curl_easy_cleanup) {}
-    Fetch(const Fetch&) = delete;
-    Fetch(Fetch&&)      = default;
+
+    Fetch(const Fetch&)            = delete;
+    Fetch(Fetch&&)                 = default;
     Fetch& operator=(const Fetch&) = delete;
-    Fetch& operator=(Fetch&&) = default;
+    Fetch& operator=(Fetch&&)      = default;
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
 
     static void multiMainThread(void*);

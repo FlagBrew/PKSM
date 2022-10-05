@@ -27,12 +27,12 @@
 #include "InjectorScreen.hpp"
 #include "Configuration.hpp"
 #include "EnablableToggleButton.hpp"
-#include "ToggleButton.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "ToggleButton.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
 

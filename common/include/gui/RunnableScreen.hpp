@@ -34,7 +34,9 @@ class RunnableScreen : public Screen
 {
 public:
     RunnableScreen(T defaultVal) : finalValue(defaultVal) {}
+
     bool finished() { return done; }
+
     T getFinalValue() { return finalValue; }
 
 protected:

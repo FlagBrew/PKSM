@@ -27,8 +27,8 @@
 #ifndef MISCEDITSCREEN_HPP
 #define MISCEDITSCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <memory>
 #include <vector>
 
@@ -38,8 +38,10 @@ class MiscEditScreen : public Screen
 {
 public:
     MiscEditScreen(pksm::PKX& pkm);
+
     // Done with Overlay
     void drawTop() const override {}
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

@@ -25,8 +25,8 @@
  */
 
 #include "BankChoice.hpp"
-#include "Configuration.hpp"
 #include "banks.hpp"
+#include "Configuration.hpp"
 #include "format.h"
 #include "gui.hpp"
 #include <algorithm>

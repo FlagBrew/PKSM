@@ -28,10 +28,10 @@
 #include "Configuration.hpp"
 #include "FileChooseOverlay.hpp"
 #include "GameVersion.hpp"
-#include "Species.hpp"
-#include "Title.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "Species.hpp"
+#include "Title.hpp"
 
 namespace
 {

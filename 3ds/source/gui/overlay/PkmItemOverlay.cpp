@@ -91,7 +91,9 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
         if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
                 rawItems[*i].find("???") != std::string::npos) ||
             (*i >= 807 && *i <= 835) || (*i >= 927 && *i <= 932))
+        {
             continue; // Invalid items and bag Z-Crystals
+        }
         items.emplace_back(*i, rawItems[*i]);
     }
     std::sort(items.begin(), items.end(),

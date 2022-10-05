@@ -28,9 +28,9 @@
 #include "Archive.hpp"
 #include "Configuration.hpp"
 #include "GameVersion.hpp"
-#include "Species.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "Species.hpp"
 #include "thread.hpp"
 #include <array>
 
@@ -48,12 +48,12 @@ namespace
         "0x0004000000055D00", "0x0004000000055E00", "0x000400000011C400", "0x000400000011C500",
         "0x0004000000164800", "0x0004000000175E00", "0x00040000001B5000", "0x00040000001B5100"};
     constexpr pksm::Species TITLE_SPECIES[NUM_TITLES]   = {pksm::Species::Charmander,
-        pksm::Species::Bulbasaur, pksm::Species::Squirtle, pksm::Species::Pikachu,
-        pksm::Species::HoOh, pksm::Species::Lugia, pksm::Species::Suicune, pksm::Species::Groudon,
-        pksm::Species::Kyogre, pksm::Species::Rayquaza, pksm::Species::Charizard,
-        pksm::Species::Venusaur, pksm::Species::Xerneas, pksm::Species::Yveltal,
-        pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Solgaleo,
-        pksm::Species::Lunala, pksm::Species::Necrozma, pksm::Species::Necrozma};
+          pksm::Species::Bulbasaur, pksm::Species::Squirtle, pksm::Species::Pikachu,
+          pksm::Species::HoOh, pksm::Species::Lugia, pksm::Species::Suicune, pksm::Species::Groudon,
+          pksm::Species::Kyogre, pksm::Species::Rayquaza, pksm::Species::Charizard,
+          pksm::Species::Venusaur, pksm::Species::Xerneas, pksm::Species::Yveltal,
+          pksm::Species::Groudon, pksm::Species::Kyogre, pksm::Species::Solgaleo,
+          pksm::Species::Lunala, pksm::Species::Necrozma, pksm::Species::Necrozma};
     constexpr int TITLE_FORMS[NUM_TITLES]               = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 2};
     constexpr pksm::GameVersion TITLE_VERSIONS[NUM_TITLES] = {pksm::GameVersion::RD,

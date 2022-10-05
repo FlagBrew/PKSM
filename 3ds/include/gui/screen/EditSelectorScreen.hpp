@@ -27,8 +27,8 @@
 #ifndef EDITSELECTORSCREEN_HPP
 #define EDITSELECTORSCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <array>
 #include <vector>
 
@@ -38,8 +38,10 @@ class EditSelectorScreen : public Screen
 {
 public:
     EditSelectorScreen();
+
     // Done with Overlay
     void drawTop() const override {}
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

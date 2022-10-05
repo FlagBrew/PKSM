@@ -29,8 +29,8 @@
 
 #include "Configuration.hpp"
 #include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
 #include "pkx/IPKFilterable.hpp"
+#include "ReplaceableScreen.hpp"
 #include <memory>
 #include <variant>
 
@@ -39,7 +39,9 @@ class FormOverlay : public ReplaceableScreen
 public:
     FormOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u16 formCount);
     void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

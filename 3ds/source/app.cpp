@@ -25,13 +25,11 @@
  */
 
 #include "app.hpp"
+#include "appIcon.hpp"
 #include "Archive.hpp"
+#include "banks.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "PkmUtils.hpp"
-#include "TitleLoadScreen.hpp"
-#include "appIcon.hpp"
-#include "banks.hpp"
 #include "fetch.hpp"
 #include "format.h"
 #include "gui.hpp"
@@ -39,9 +37,11 @@
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "PkmUtils.hpp"
 #include "random.hpp"
 #include "revision.h"
 #include "thread.hpp"
+#include "TitleLoadScreen.hpp"
 #include "utils/crypto.hpp"
 #include "website.h"
 #include <3ds.h>
@@ -68,15 +68,14 @@ namespace
 
     asset assets[2] = {
         {"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x",
-            "/3ds/PKSM/assets/pkm_spritesheet.t3x",
-            {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b,
+         "/3ds/PKSM/assets/pkm_spritesheet.t3x",   {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b,
                 0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4,
-                0xe7, 0x6d, 0xcc, 0x48}},
+                0xe7, 0x6d, 0xcc, 0x48}  },
         {"https://raw.githubusercontent.com/piepie62/PKResources/master/types_spritesheet.t3x",
-            "/3ds/PKSM/assets/types_spritesheet.t3x",
-            {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60,
+         "/3ds/PKSM/assets/types_spritesheet.t3x", {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60,
                 0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1,
-                0x66, 0x34, 0xa4, 0x91}}};
+                0x66, 0x34, 0xa4, 0x91}}
+    };
 
     bool matchSha256HashFromFile(
         const std::string& path, const decltype(pksm::crypto::sha256({}))& sha)
@@ -136,11 +135,15 @@ namespace
                 u32 status;
                 ACU_GetWifiStatus(&status);
                 if (status == 0)
+                {
                     return -1;
+                }
 #endif
                 Result res1 = Fetch::download(item.url, item.path);
                 if (R_FAILED(res1))
+                {
                     return res1;
+                }
             }
         }
         return res;
@@ -176,7 +179,9 @@ namespace
 
         Result rc = svcSendSyncRequest(hbldrHandle);
         if (R_SUCCEEDED(rc))
+        {
             rc = cmdbuf[1];
+        }
         return rc;
     }
 
@@ -184,6 +189,7 @@ namespace
     {
         Archive::copyDir(Archive::data(), u"/", Archive::sd(), u"/3ds/PKSM/extDataBackup");
     }
+
     void backupBanks()
     {
         Archive::copyDir(Archive::sd(), u"/3ds/PKSM/banks", Archive::sd(), u"/3ds/PKSM/banksBkp");
@@ -236,12 +242,12 @@ namespace
                                           "/PKSM/" + hash + "/";
                                     if (execPath.empty())
                                     {
-                                        url += "cia";
+                                        url  += "cia";
                                         path = "/3ds/PKSM/PKSM.cia";
                                     }
                                     else
                                     {
-                                        url += "3dsx";
+                                        url  += "3dsx";
                                         path = execPath + ".new";
                                     }
                                 }
@@ -313,12 +319,12 @@ namespace
                                           newVersion + "/PKSM";
                                     if (execPath != "")
                                     {
-                                        url += ".3dsx";
+                                        url  += ".3dsx";
                                         path = execPath + ".new";
                                     }
                                     else
                                     {
-                                        url += ".cia";
+                                        url  += ".cia";
                                         path = "/3ds/PKSM/PKSM.cia";
                                     }
                                 }
@@ -689,7 +695,9 @@ namespace
         u32 status;
         ACU_GetWifiStatus(&status);
         if (status == 0)
+        {
             return;
+        }
 #endif
         struct giftCurlData
         {
@@ -697,6 +705,7 @@ namespace
                 : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
             {
             }
+
             std::string fileName;
             FILE* file;
             pksm::crypto::SHA256 shaContext;
@@ -745,8 +754,7 @@ namespace
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
-                                                   size_t items, void* userThing)
-                        {
+                                                   size_t items, void* userThing) {
                             std::vector<u8>* recv = (std::vector<u8>*)userThing;
                             recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
                             return size * items;
@@ -844,25 +852,39 @@ Result App::init(const std::string& execPath)
 
 #if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
+    {
         return consoleDisplayError(
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
+    }
 #endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
 
     if (R_FAILED(res = cfguInit()))
+    {
         return consoleDisplayError("cfguInit failed.", res);
+    }
     if (R_FAILED(res = romfsInit()))
+    {
         return consoleDisplayError("romfsInit failed.", res);
+    }
     if (R_FAILED(res = Archive::init(execPath)))
+    {
         return consoleDisplayError("Archive::init failed.", res);
+    }
     if (R_FAILED(res = pxiDevInit()))
+    {
         return consoleDisplayError("pxiDevInit failed.", res);
+    }
     if (R_FAILED(res = amInit()))
+    {
         return consoleDisplayError("amInit failed.", res);
+    }
     if (R_FAILED(res = acInit()))
+    {
         return consoleDisplayError("acInit failed.", res);
+    }
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
@@ -885,11 +907,15 @@ Result App::init(const std::string& execPath)
     }
 
     if (R_FAILED(res = downloadAdditionalAssets()))
+    {
         return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're "
                                    "connected to the internet and on the lastest version.",
             res);
+    }
     if (R_FAILED(res = Gui::init()))
+    {
         return consoleDisplayError("Gui::init failed.", res);
+    }
 
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     moveIcon.clear();
@@ -922,7 +948,9 @@ Result App::init(const std::string& execPath)
     }
 
     if (R_FAILED(res = Banks::init()))
+    {
         return consoleDisplayError("Banks::init failed.", res);
+    }
 
     TitleLoader::init();
 

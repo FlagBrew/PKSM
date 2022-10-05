@@ -28,14 +28,14 @@
 #include "ClickButton.hpp"
 #include "EnablableToggleButton.hpp"
 #include "FormOverlay.hpp"
-#include "MoveOverlay.hpp"
-#include "SpeciesOverlay.hpp"
-#include "ToggleButton.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
+#include "MoveOverlay.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Sav.hpp"
+#include "SpeciesOverlay.hpp"
+#include "ToggleButton.hpp"
 
 FilterScreen::FilterScreen(std::shared_ptr<pksm::PKFilter> filter) : filter(filter)
 {

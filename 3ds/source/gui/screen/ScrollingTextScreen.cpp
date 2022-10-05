@@ -26,8 +26,8 @@
 
 #include "ScrollingTextScreen.hpp"
 #include "Configuration.hpp"
-#include "ViewOverlay.hpp"
 #include "gui.hpp"
+#include "ViewOverlay.hpp"
 
 ScrollingTextScreen::ScrollingTextScreen(
     const std::string& text, std::optional<std::reference_wrapper<pksm::PKX>> pk)

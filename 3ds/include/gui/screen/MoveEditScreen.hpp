@@ -27,8 +27,8 @@
 #ifndef MOVEEDITSCREEN_HPP
 #define MOVEEDITSCREEN_HPP
 
-#include "Screen.hpp"
 #include "pkx/PKX.hpp"
+#include "Screen.hpp"
 #include <memory>
 #include <vector>
 
@@ -38,8 +38,10 @@ class MoveEditScreen : public Screen
 {
 public:
     MoveEditScreen(pksm::PKX& pkm);
+
     // Done with Overlay
     void drawTop() const override {}
+
     void drawBottom() const override;
     void update(touchPosition* touch) override;
 

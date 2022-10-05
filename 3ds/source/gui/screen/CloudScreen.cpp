@@ -26,17 +26,16 @@
 
 #include "CloudScreen.hpp"
 #include "AccelButton.hpp"
+#include "banks.hpp"
+#include "base64.hpp"
 #include "ClickButton.hpp"
 #include "CloudOverlay.hpp"
 #include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
-#include "FilterScreen.hpp"
-#include "GroupCloudScreen.hpp"
-#include "QRScanner.hpp"
-#include "banks.hpp"
-#include "base64.hpp"
 #include "fetch.hpp"
+#include "FilterScreen.hpp"
 #include "format.h"
+#include "GroupCloudScreen.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
@@ -44,6 +43,7 @@
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
+#include "QRScanner.hpp"
 #include "revision.h"
 #include "sav/Sav.hpp"
 #include "website.h"
@@ -401,12 +401,16 @@ void CloudScreen::update(touchPosition* touch)
     for (auto& button : mainButtons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
     for (auto& button : clickButtons)
     {
         if (button->update(touch))
+        {
             return;
+        }
     }
 
     if (kDown & KEY_A)

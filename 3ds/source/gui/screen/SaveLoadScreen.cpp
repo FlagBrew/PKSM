@@ -29,12 +29,12 @@
 #include "ClickButton.hpp"
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
-#include "MainMenu.hpp"
-#include "Title.hpp"
-#include "TitleLoadScreen.hpp"
 #include "enums/Species.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "MainMenu.hpp"
+#include "Title.hpp"
+#include "TitleLoadScreen.hpp"
 
 namespace
 {

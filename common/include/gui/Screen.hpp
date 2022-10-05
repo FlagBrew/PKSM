@@ -33,10 +33,15 @@ class Screen : public ReplaceableScreen
 {
 public:
     Screen(const std::string& instructions = "") : ReplaceableScreen(nullptr, instructions) {}
+
     virtual ~Screen() = default;
+
     virtual bool replacesTop() const final { return true; }
+
     virtual bool replacesBottom() const final { return true; }
+
     virtual bool handlesUpdate() const final { return true; }
+
     void removeOverlays() { overlay = nullptr; }
 };
 

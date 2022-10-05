@@ -42,6 +42,7 @@ namespace
             : fetch(fetch), onFinish(onFinish), onCancel(onCancel)
         {
         }
+
         std::shared_ptr<Fetch> fetch;
         std::function<void(CURLcode, std::shared_ptr<Fetch>)> onFinish;
         std::function<void(std::shared_ptr<Fetch>)> onCancel;

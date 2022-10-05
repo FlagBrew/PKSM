@@ -49,18 +49,24 @@ public:
         mMaxPages          = 0;
         mLastTime          = 0;
     }
+
     virtual ~IHid() {}
 
     size_t index(void) const { return mIndex; }
+
     size_t maxVisibleEntries(void) const { return mMaxVisibleEntries; }
+
     int page(void) const { return mPage; }
+
     size_t fullIndex(void) const { return mIndex + mPage * mMaxVisibleEntries; }
+
     size_t maxEntries(size_t count) const
     {
         return (count - mPage * mMaxVisibleEntries) > mMaxVisibleEntries
                  ? mMaxVisibleEntries - 1
                  : count - mPage * mMaxVisibleEntries - 1;
     }
+
     void pageBack()
     {
         if (mPage > 0)
@@ -72,6 +78,7 @@ public:
             mPage = mMaxPages - 1;
         }
     }
+
     void pageForward()
     {
         if (mPage < (int)mMaxPages - 1)
@@ -83,6 +90,7 @@ public:
             mPage = 0;
         }
     }
+
     void select(size_t index, size_t count = 0)
     {
         mIndex = index % mMaxVisibleEntries;
@@ -92,11 +100,13 @@ public:
             correctIndex(count);
         }
     }
+
     void reset(void)
     {
         mIndex = 0;
         mPage  = 0;
     }
+
     void correctIndex(size_t count)
     {
         if (mIndex > maxEntries(count))

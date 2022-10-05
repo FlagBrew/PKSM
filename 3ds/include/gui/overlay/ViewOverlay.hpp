@@ -27,8 +27,8 @@
 #ifndef VIEWOVERLAY_HPP
 #define VIEWOVERLAY_HPP
 
-#include "ReplaceableScreen.hpp"
 #include "pkx/PKX.hpp"
+#include "ReplaceableScreen.hpp"
 #include <functional>
 #include <variant>
 
@@ -41,15 +41,21 @@ public:
         : ReplaceableScreen(&screen, instr), pokemon(pkm), green(green)
     {
     }
+
     ViewOverlay(
         ReplaceableScreen& screen, pksm::PKX& pkm, bool green, const std::string& instr = "")
         : ReplaceableScreen(&screen, instr), pokemon(pkm), green(green)
     {
     }
+
     virtual void drawTop() const override;
+
     bool replacesTop() const override { return true; }
+
     virtual void drawBottom() const override {}
+
     bool handlesUpdate() const override { return false; }
+
     void update(touchPosition* touch) override {}
 
 protected:

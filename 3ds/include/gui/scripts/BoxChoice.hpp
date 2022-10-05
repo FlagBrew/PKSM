@@ -27,8 +27,8 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
-#include "RunnableScreen.hpp"
 #include "pkx/PKX.hpp"
+#include "RunnableScreen.hpp"
 #include <array>
 #include <tuple>
 

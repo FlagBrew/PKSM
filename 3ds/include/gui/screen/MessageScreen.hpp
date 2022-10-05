@@ -27,8 +27,8 @@
 #ifndef MESSAGESCREEN_HPP
 #define MESSAGESCREEN_HPP
 
-#include "RunnableScreen.hpp"
 #include "enums/Language.hpp"
+#include "RunnableScreen.hpp"
 
 class MessageScreen : public RunnableScreen<std::nullptr_t>
 {
@@ -37,6 +37,7 @@ public:
         : RunnableScreen(nullptr), message(message), lang(lang)
     {
     }
+
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
