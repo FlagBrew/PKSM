@@ -955,47 +955,47 @@ void pkx_generate(
             pkxLength = TitleLoader::save->language() == pksm::Language::JPN
                           ? pksm::PK1::JP_LENGTH_WITH_NAMES
                           : pksm::PK1::INT_LENGTH_WITH_NAMES;
-            std::ranges::copy(orig->rawData().subspan(pkxLength), data);
+            std::ranges::copy(orig->rawData().subspan(0, pkxLength), data);
             break;
         case pksm::Generation::TWO:
             pkxLength = TitleLoader::save->language() == pksm::Language::JPN
                           ? pksm::PK2::JP_LENGTH_WITH_NAMES
                           : pksm::PK2::INT_LENGTH_WITH_NAMES;
-            std::ranges::copy(orig->rawData().subspan(pkxLength), data);
+            std::ranges::copy(orig->rawData().subspan(0, pkxLength), data);
             break;
         case pksm::Generation::THREE:
-            std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH),
+            std::ranges::copy(orig->rawData().subspan(
+                                  0, pksm::GenToPkx<pksm::Generation::THREE>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::FOUR:
             std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH),
+                orig->rawData().subspan(0, pksm::GenToPkx<pksm::Generation::FOUR>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::FIVE:
             std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH),
+                orig->rawData().subspan(0, pksm::GenToPkx<pksm::Generation::FIVE>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::SIX:
             std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH),
+                orig->rawData().subspan(0, pksm::GenToPkx<pksm::Generation::SIX>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::SEVEN:
-            std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH),
+            std::ranges::copy(orig->rawData().subspan(
+                                  0, pksm::GenToPkx<pksm::Generation::SEVEN>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::LGPE:
             std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH),
+                orig->rawData().subspan(0, pksm::GenToPkx<pksm::Generation::LGPE>::PKX::BOX_LENGTH),
                 data);
             break;
         case pksm::Generation::EIGHT:
-            std::ranges::copy(
-                orig->rawData().subspan(pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH),
+            std::ranges::copy(orig->rawData().subspan(
+                                  0, pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH),
                 data);
             break;
         // Should never happen
