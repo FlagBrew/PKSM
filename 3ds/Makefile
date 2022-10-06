@@ -292,6 +292,7 @@ deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n | directories
 $(ROMFS)/mg: $(PACKER)/EventsGallery
 	@echo Packing events...
 	@cd $(PACKER) && $(PYTHON) pack.py
+	@mkdir -p $(ROMFS)/mg
 	@cp $(PACKER)/out/*.bin.bz2 $(PACKER)/out/*.json.bz2 $(ROMFS)/mg
 	@touch $(ROMFS)/mg
 
@@ -311,7 +312,8 @@ $(PACKER)/EventsGallery: checkgallery
 
 checkgallery:
 ifneq ($(CURGALLERY),$(NEWGALLERY))
-	@cd $(PACKER) && if [ -e EventsGallery ]; then cd EventsGallery && git pull > /dev/null && cd .. && touch EventsGallery; else git clone https://github.com/projectpokemon/EventsGallery.git > /dev/null; fi
+	@echo Updating EventsGallery
+	@cd $(PACKER) && if [ -e EventsGallery ]; then echo Pulling EventsGallery...; cd EventsGallery; git pull -q; cd ..; touch EventsGallery; else echo Cloning EventsGallery...; git clone -q https://github.com/projectpokemon/EventsGallery.git; fi
 endif
 #---------------------------------------------------------------------------------
 clean:
@@ -320,7 +322,6 @@ clean:
 	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
 	@rm -fr $(ROMFS)/scripts
-	@touch $(ROMFS)/mg/.gitkeep
 	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
 	@rm -fr $(GFXBUILD)
 #---------------------------------------------------------------------------------
@@ -334,23 +335,23 @@ directories:
 $(OUTPUT).3dsx: $(OUTPUT).elf $(ROMFS_GFXFILES) $(_ROMFS_DEPS) ../appinfo.hash | directories
 	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
 
-$(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/banner.bnr $(BUILD)/icon.icn $(BUILD)/romfs.bin ../appinfo.hash
+$(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/banner.bnr $(BUILD)/icon.icn $(BUILD)/romfs.bin ../appinfo.hash | directories
 	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
 	@echo built ... $(notdir $@)
 
-$(BUILD)/banner.bnr: $(BANNER_IMAGE) $(BANNER_AUDIO)
+$(BUILD)/banner.bnr: $(BANNER_IMAGE) $(BANNER_AUDIO) | directories
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr > /dev/null
 
-$(BUILD)/icon.icn: $(APP_ICON) ../appinfo.hash
+$(BUILD)/icon.icn: $(APP_ICON) ../appinfo.hash | directories
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn > /dev/null
 
 $(BUILD)/romfs.bin: $(ROMFS_GFXFILES) $(_ROMFS_DEPS) | directories
 	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
 
-$(OUTPUT).elf: buildelf
+$(OUTPUT).elf: $(ROMFS_GFXFILES) buildelf | directories
 	@true
 
-buildelf:
+buildelf: $(ROMFS_GFXFILES) | directories
 	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).elf
 
 ../appinfo.hash:
