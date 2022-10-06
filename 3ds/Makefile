@@ -301,11 +301,12 @@ $(ROMFS)/scripts: $(SCRIPTSDEPS)
 	@rm -fr $(ROMFS)/scripts
 	@cd $(SCRIPTS) && mv -f scripts ../../assets/romfs
 
-$(ROMFS)/i18n: $(filter-out %/gui.json, $(wildcard $(ASSETWILDCARD)))
+$(ROMFS)/i18n: $(filter-out %/gui.json, $(wildcard $(ASSETWILDCARD))) $(shell find ../core/strings -type f -printf "\"%p\"\n" | sed -e 's/ /\\ /g' -e 's/"//g')
 	@echo Combining GUI strings...
 	@cd .. && $(PYTHON) common/combine_strings_json.py
 	@mkdir -p $(ROMFS)/i18n
 	@rsync --recursive --include="gui.json" --filter="-! */" ../assets/gui_strings/* $(ROMFS)/i18n
+	@cp -r ../core/strings/* $(ROMFS)/i18n
 	@touch $(ROMFS)/i18n
 
 $(PACKER)/EventsGallery: checkgallery
