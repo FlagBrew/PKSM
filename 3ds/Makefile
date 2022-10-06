@@ -4,7 +4,7 @@
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
-$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+$(error Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
 endif
 
 TOPDIR ?= $(CURDIR)
@@ -40,7 +40,7 @@ __check_defined = \
 #     - <libctru folder>/default_icon.png
 #---------------------------------------------------------------------------------
 
-$(call check_defined, PKSM_AUTHOR PKSM_DESCRIPTION PKSM_TITLE, Run make from the project directory)
+$(call check_defined, PKSM_AUTHOR PKSM_DESCRIPTION PKSM_TITLE VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
 
 APP_TITLE		:= 	$(PKSM_TITLE)
 APP_DESCRIPTION	:=	$(PKSM_DESCRIPTION)
@@ -247,6 +247,13 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 export _3DSXDEPS	:=	$(if $(NO_SMDH),,$(OUTPUT).smdh)
 
+ifeq ($(ASSETWILDCARD),)
+	export ASSETWILDCARD	:=	$(patsubst %, %/*, $(wildcard ../assets/gui_strings/*))
+	export SCRIPTSDEPS		:=	$(shell find $(SCRIPTS)/src -type f -printf "\"%p\"\n" | sed -e 's/ /\\ /g' -e 's/"//g')
+	export NEWGALLERY		:=	$(shell if [ -e $(PACKER)/EventsGallery ]; then cd $(PACKER)/EventsGallery && git rev-parse --short origin/master; else echo NOTHING; fi)
+	export CURGALLERY		:=	$(shell if [ -e $(PACKER)/EventsGallery ]; then cd $(PACKER)/EventsGallery && git rev-parse --short HEAD; fi)
+endif
+
 ifeq ($(strip $(ICON)),)
 	icons := $(wildcard *.png)
 	ifneq (,$(findstring $(TARGET).png,$(icons)))
@@ -268,27 +275,49 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all binaries deps directories clean spotless no-deps format cppcheck cppclean
-
-_BINARIES_DEPS :=
+.PHONY: all binaries buildelf deps checkgallery directories clean spotless no-deps no-gifts no-scripts format cppcheck cppclean
 
 #---------------------------------------------------------------------------------
-all: _BINARIES_DEPS+=deps
-all: binaries
+all:
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n"
+no-scripts:
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/i18n"
+no-gifts:
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/scripts $(ROMFS)/i18n"
+no-deps:
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/i18n"
 #---------------------------------------------------------------------------------
-deps: | directories
+deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n | directories
+
+$(ROMFS)/mg: $(PACKER)/EventsGallery
+	@echo Packing events...
 	@cd $(PACKER) && $(PYTHON) pack.py
-	@cd $(PACKER) && cp out/*.bin.bz2 out/*.json.bz2 ../../assets/romfs/mg
+	@cp $(PACKER)/out/*.bin.bz2 $(PACKER)/out/*.json.bz2 $(ROMFS)/mg
+	@touch $(ROMFS)/mg
+
+$(ROMFS)/scripts: $(SCRIPTSDEPS)
 	@cd $(SCRIPTS) && $(PYTHON) genScripts.py
 	@rm -fr $(ROMFS)/scripts
 	@cd $(SCRIPTS) && mv -f scripts ../../assets/romfs
-#---------------------------------------------------------------------------------
-no-deps: binaries
+
+$(ROMFS)/i18n: $(filter-out %/gui.json, $(wildcard $(ASSETWILDCARD)))
+	@echo Combining GUI strings...
+	@cd .. && $(PYTHON) common/combine_strings_json.py
+	@mkdir -p $(ROMFS)/i18n
+	@rsync --recursive --include="gui.json" --filter="-! */" ../assets/gui_strings/* $(ROMFS)/i18n
+	@touch $(ROMFS)/i18n
+
+$(PACKER)/EventsGallery: checkgallery
+
+checkgallery:
+ifneq ($(CURGALLERY),$(NEWGALLERY))
+	@cd $(PACKER) && if [ -e EventsGallery ]; then cd EventsGallery && git pull > /dev/null && cd .. && touch EventsGallery; else git clone https://github.com/projectpokemon/EventsGallery.git > /dev/null; fi
+endif
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(OUT_DEBUG)
-	@rm -fr $(ROMFS)/mg/*
+	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
 	@rm -fr $(ROMFS)/scripts
 	@touch $(ROMFS)/mg/.gitkeep
@@ -300,19 +329,34 @@ spotless: clean
 	@rm -fr $(BUILD_RELEASE)
 #---------------------------------------------------------------------------------
 directories:
-	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/i18n $(ROMFS)/gfx $(DEPSDIR)
+	@mkdir -p $(BUILD) $(GFXBUILD) $(OUTDIR) $(ROMFS)/gfx $(DEPSDIR)
 #---------------------------------------------------------------------------------
-binaries: $(ROMFS_GFXFILES) | directories
-	@$(call check_defined, VERSION_MAJOR VERSION_MINOR VERSION_MICRO, Run make from the project directory)
-	@$(if $(_BINARIES_DEPS), $(MAKE) --no-print-directory $(_BINARIES_DEPS))
-	@echo Copying strings to romfs...
-	@rsync --recursive --include="gui.json" --filter="-! */" ../assets/gui_strings/* $(ROMFS)/i18n
-	@cp -r ../core/strings/* $(ROMFS)/i18n
+$(OUTPUT).3dsx: $(OUTPUT).elf $(ROMFS_GFXFILES) $(_ROMFS_DEPS) ../appinfo.hash | directories
 	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).3dsx
-	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
-	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
-	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
+
+$(OUTPUT).cia: $(OUTPUT).elf $(BUILD)/banner.bnr $(BUILD)/icon.icn $(BUILD)/romfs.bin ../appinfo.hash
 	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -romfs "$(BUILD)/romfs.bin"
+
+$(BUILD)/banner.bnr: $(BANNER_IMAGE) $(BANNER_AUDIO)
+	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
+
+$(BUILD)/icon.icn: $(APP_ICON) ../appinfo.hash
+	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
+
+$(BUILD)/romfs.bin: $(ROMFS_GFXFILES) $(_ROMFS_DEPS) | directories
+	@3dstool -ctf romfs "$(BUILD)/romfs.bin" --romfs-dir "$(ROMFS)"
+
+$(OUTPUT).elf: buildelf
+	@true
+
+buildelf:
+	@$(MAKE) -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).elf
+
+../appinfo.hash:
+	@$(error appinfo.hash not found. Please run make from the project directory)
+
+binaries: $(OUTPUT).3dsx $(OUTPUT).cia
+
 #---------------------------------------------------------------------------------
 format:
 	clang-format -i -style=file $(foreach dir,$(FORMATSOURCES),$(wildcard $(dir)/*.c) $(wildcard $(dir)/*.cpp)) $(foreach dir,$(FORMATINCLUDES),$(wildcard $(dir)/*.h) $(wildcard $(dir)/*.hpp))
@@ -352,7 +396,7 @@ else
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).3dsx	:	$(OUTPUT).elf $(_3DSXDEPS)
+$(OUTPUT).3dsx	:	$(OUTPUT).elf $(_3DSXDEPS) $(ROMFS_GFXFILES:%=../%) $(_ROMFS_DEPS:%=../%) ../../appinfo.hash
 
 $(OFILES_SOURCES) : $(HFILES)
 
