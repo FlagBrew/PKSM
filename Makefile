@@ -6,9 +6,8 @@ export VERSION_MAJOR	:=	9
 export VERSION_MINOR	:=	2
 export VERSION_MICRO	:=	0
 GIT_REV					:=	$(shell git rev-parse --short HEAD)
-OLD_INFO_HASH			:=	$(shell if [ -e appinfo.hash ]; then cat appinfo.hash; fi)
+OLD_INFO				:=	$(shell if [ -e appinfo.hash ]; then cat appinfo.hash; fi)
 NOW_INFO				:=	$(PKSM_TITLE) $(PKSM_DESCRIPTION) $(PKSM_AUTHOR) $(VERSION_MAJOR) $(VERSION_MINOR) $(VERSION_MICRO) $(GIT_REV)
-NOW_INFO_HASH			:= 	$(shell sha256sum <<< "$(NOW_INFO)")
 REVISION_EXISTS			:=	$(shell if [ ! -e common/include/revision.h ]; then echo 1; fi)
 
 OUTDIR			:= 	out
@@ -34,12 +33,12 @@ no-scripts: 3ds-no-scripts
 no-gifts: 3ds-no-gifts
 
 revision:
-ifneq ($(NOW_INFO_HASH),$(OLD_INFO_HASH))
+ifneq ($(NOW_INFO),$(OLD_INFO))
 	@echo \#define GIT_REV \"$(GIT_REV)\" > common/include/revision.h
 	@echo \#define VERSION_MAJOR $(VERSION_MAJOR) >> common/include/revision.h
 	@echo \#define VERSION_MINOR $(VERSION_MINOR) >> common/include/revision.h
 	@echo \#define VERSION_MICRO $(VERSION_MICRO) >> common/include/revision.h
-	@echo "$(NOW_INFO_HASH)" > appinfo.hash
+	@echo "$(NOW_INFO)" > appinfo.hash
 else
  ifneq ($(REVISION_EXISTS),)
 	@echo \#define GIT_REV \"$(GIT_REV)\" > common/include/revision.h
