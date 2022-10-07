@@ -2191,7 +2191,7 @@ void pksm_base64_decode(
     char* in     = (char*)Param[2]->Val->Pointer;
     int inSize   = Param[3]->Val->Integer;
 
-    auto data = base64_decode({in, inSize});
+    auto data = base64_decode({in, (size_t)inSize});
 
     *outSize = data.size();
     *out     = (u8*)malloc(data.size());
@@ -2209,7 +2209,7 @@ void pksm_base64_encode(
     u8* in       = (u8*)Param[2]->Val->Pointer;
     int inSize   = Param[3]->Val->Integer;
 
-    auto data = base64_encode({in, inSize});
+    auto data = base64_encode({in, (size_t)inSize});
 
     *outSize = data.size();
     *out     = (char*)strToRet(data);
