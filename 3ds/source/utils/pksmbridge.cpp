@@ -61,8 +61,9 @@ void setLoadedSaveFromBridge(bool v)
 
 bool receiveSaveFromBridge(void)
 {
-    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' +
-                                fmt::format(i18n::localize("WIRELESS_IP"), getHostId())))
+    if (!Gui::showChoiceMessage(
+            i18n::localize("WIRELESS_WARNING") + '\n' +
+            fmt::format(fmt::runtime(i18n::localize("WIRELESS_IP")), getHostId())))
     {
         return false;
     }

@@ -811,8 +811,8 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(fmt::format(
-                i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
+            Gui::waitFrame(fmt::format(fmt::runtime(i18n::localize("MYSTERY_GIFT_DOWNLOAD")),
+                (size_t)filesDone, filesToDownload));
             svcSleepThread(50'000'000);
         }
 

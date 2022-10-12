@@ -1312,8 +1312,8 @@ void StorageScreen::putDownSwap()
         bankMon = TitleLoader::save->transfer(*bankMon);
         if (!bankMon)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)origGen,
-                (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
+                (std::string)origGen, (std::string)TitleLoader::save->generation()));
             return;
         }
         if (bankMon->species() == pksm::Species::None ||
@@ -1419,9 +1419,10 @@ void StorageScreen::putDownNonSwap()
                 {
                     if (moveMon.size() == 1)
                     {
-                        Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                            (std::string)moveMon[index]->generation(),
-                            (std::string)TitleLoader::save->generation()));
+                        Gui::warn(
+                            fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
+                                (std::string)moveMon[index]->generation(),
+                                (std::string)TitleLoader::save->generation()));
                     }
                     continue;
                 }

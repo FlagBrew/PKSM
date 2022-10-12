@@ -410,8 +410,8 @@ void sav_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
-                (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
+                (std::string)gen, (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -839,8 +839,8 @@ void party_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
-                (std::string)TitleLoader::save->generation()));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
+                (std::string)gen, (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);

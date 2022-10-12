@@ -221,8 +221,8 @@ void GroupCloudScreen::drawTop() const
         "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(fmt::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24,
-        FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(fmt::format(fmt::runtime(i18n::localize("CLOUD_BOX")), access.page()), 69 + 156 / 2,
+        24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -364,8 +364,8 @@ void GroupCloudScreen::update(touchPosition* touch)
     {
         if (access.currentPageError() != 0)
         {
-            Gui::warn(
-                fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), access.currentPageError()));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")),
+                access.currentPageError()));
         }
         else
         {
@@ -647,7 +647,7 @@ bool GroupCloudScreen::prevBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")), *err));
         }
         else
         {
@@ -682,7 +682,7 @@ bool GroupCloudScreen::nextBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(fmt::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")), *err));
         }
         else
         {

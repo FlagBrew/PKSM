@@ -653,23 +653,32 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::ONE), 19,
-            30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::TWO), 19,
-            46, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::THREE),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::ONE),
+            19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::TWO),
+            19, 46, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::THREE),
             19, 62, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FOUR),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::FOUR),
             19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::FIVE),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::FIVE),
             19, 94, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SIX), 19,
-            110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::SEVEN),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::SIX),
+            19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::SEVEN),
             19, 126, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::LGPE),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::LGPE),
             19, 142, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(i18n::localize("GENERATION"), (std::string)pksm::Generation::EIGHT),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
+                      (std::string)pksm::Generation::EIGHT),
             19, 158, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("DAY"), 19, 174, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);

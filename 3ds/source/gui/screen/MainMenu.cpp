@@ -168,12 +168,13 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(fmt::format(i18n::localize("GENERATION"),
+                Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
                               (std::string)TitleLoader::save->generation()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(fmt::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName()),
+                Gui::text(fmt::format(fmt::runtime(i18n::localize("TRAINER_NAME")),
+                              TitleLoader::save->otName()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
@@ -183,23 +184,26 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(fmt::format(TitleLoader::save->generation() == pksm::Generation::SEVEN
-                                          ? i18n::localize("STAMPS")
-                                          : i18n::localize("BADGES"),
+                Gui::text(fmt::format(fmt::runtime(
+                                          TitleLoader::save->generation() == pksm::Generation::SEVEN
+                                              ? i18n::localize("STAMPS")
+                                              : i18n::localize("BADGES")),
                               TitleLoader::save->badges()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(
-                    fmt::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGiftAmount()),
+                Gui::text(fmt::format(fmt::runtime(i18n::localize("WC_NUM")),
+                              TitleLoader::save->currentGiftAmount()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(fmt::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()), 10,
-                    y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_SEEN")),
+                              TitleLoader::save->dexSeen()),
+                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(fmt::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()),
+                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_CAUGHT")),
+                              TitleLoader::save->dexCaught()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:

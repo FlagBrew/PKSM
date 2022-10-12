@@ -129,8 +129,8 @@ void BankSelectionScreen::update(touchPosition* touch)
         }
         if (strings.size() > 2)
         {
-            if (Gui::showChoiceMessage(
-                    fmt::format(i18n::localize("BANK_DELETE"), strings[hid.fullIndex()].first)))
+            if (Gui::showChoiceMessage(fmt::format(
+                    fmt::runtime(i18n::localize("BANK_DELETE")), strings[hid.fullIndex()].first)))
             {
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);

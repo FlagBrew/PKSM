@@ -77,15 +77,16 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     const std::vector<std::string>& rawItems =
         pkm.generation() == pksm::Generation::THREE
             ? i18n::rawItems3(Configuration::getInstance().language())
-            : (pkm.generation() == pksm::Generation::TWO || pkm.generation() == pksm::Generation::ONE
+            : (pkm.generation() == pksm::Generation::TWO ||
+                          pkm.generation() == pksm::Generation::ONE
                       ? i18n::rawItems2(Configuration::getInstance().language())
                       : i18n::rawItems(Configuration::getInstance().language()));
     const std::set<int>& availableItems =
         pkm.generation() == pksm::Generation::ONE
             ? pksm::VersionTables::availableItems(pksm::GameVersion::GD)
-            : TitleLoader::save
-                ? TitleLoader::save->availableItems()
-                : pksm::VersionTables::availableItems(pksm::GameVersion::oldestVersion(pkm.generation()));
+        : TitleLoader::save ? TitleLoader::save->availableItems()
+                            : pksm::VersionTables::availableItems(
+                                  pksm::GameVersion::oldestVersion(pkm.generation()));
     for (auto i = availableItems.begin(); i != availableItems.end(); i++)
     {
         if ((rawItems[*i].find("\uFF1F\uFF1F\uFF1F") != std::string::npos ||
@@ -115,15 +116,15 @@ PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     u16 item =
         pkm.generation() == pksm::Generation::THREE
             ? static_cast<pksm::PK3&>(pkm).heldItem3()
-            : (pkm.generation() == pksm::Generation::TWO
-                  ? static_cast<pksm::PK2&>(pkm).heldItem2()
+            : (pkm.generation() == pksm::Generation::TWO ? static_cast<pksm::PK2&>(pkm).heldItem2()
                   : (pkm.generation() == pksm::Generation::ONE)
                       ? static_cast<pksm::PK1&>(pkm).heldItem2()
                       : pkm.heldItem());
     int itemIndex =
         index(items, pkm.generation() == pksm::Generation::THREE
                          ? i18n::item3(Configuration::getInstance().language(), item)
-                         : (pkm.generation() == pksm::Generation::TWO || pkm.generation() == pksm::Generation::ONE
+                         : (pkm.generation() == pksm::Generation::TWO ||
+                                       pkm.generation() == pksm::Generation::ONE
                                    ? i18n::item2(Configuration::getInstance().language(), item)
                                    : i18n::item(Configuration::getInstance().language(), item)));
     // Checks to make sure that it's the correct item and not one with a duplicate name

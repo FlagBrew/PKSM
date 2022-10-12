@@ -226,8 +226,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
         case pksm::Gender::INVALID:
             break;
     }
-    Gui::text(fmt::format(i18n::localize("LVL"), pkm.level()), 143, 10, FONT_SIZE_9, COLOR_WHITE,
-        TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(fmt::format(fmt::runtime(i18n::localize("LVL")), pkm.level()), 143, 10, FONT_SIZE_9,
+        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     if (pkm.shiny())
     {
         Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);

@@ -410,7 +410,7 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(fmt::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(),
+        Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")), infoMon->formatTID(),
                       infoMon->formatSID(), infoMon->TSV()),
             160, 224, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }

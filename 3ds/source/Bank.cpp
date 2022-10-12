@@ -52,7 +52,7 @@ class BankException : public std::exception
 {
 public:
     BankException(u32 badVal)
-        : string(fmt::format("BankException: Bad generation value: 0x{:X}", badVal))
+        : string(fmt::format(FMT_STRING("BankException: Bad generation value: 0x{:X}"), badVal))
     {
     }
 
