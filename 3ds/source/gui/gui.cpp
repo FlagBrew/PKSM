@@ -122,249 +122,394 @@ namespace
         }
     }
 
-    consteval int getSpeciesOffset(pksm::Species species)
+    std::optional<size_t> multiGenderSprite(pksm::Species s)
     {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-        int imageOffsetFromBack = 0;
+        switch (s)
+        {
+            case pksm::Species::Unfezant:
+                return types_spritesheet_521_f_idx;
+            case pksm::Species::Frillish:
+                return types_spritesheet_592_f_idx;
+            case pksm::Species::Jellicent:
+                return types_spritesheet_593_f_idx;
+            case pksm::Species::Pyroar:
+                return types_spritesheet_668_f_idx;
+            case pksm::Species::Indeedee:
+                return types_spritesheet_876_f_idx;
+            default:
+                return std::nullopt;
+        }
+    }
+
+// Creates a form array with proper storage duration
+#define FA(...)                                                                                    \
+    []<std::array Values = {__VA_ARGS__}>() consteval                                              \
+        ->std::span<const typename decltype(Values)::value_type>                                   \
+    {                                                                                              \
+        return Values;                                                                             \
+    }                                                                                              \
+    ()
+
+    std::span<const int> formIndices(pksm::Generation version, pksm::Species species)
+    {
         switch (species)
         {
-            // case NEXT_SPECIES_WITH_FORMS:
-            // imageOffsetFromBack += 1;
-            case pksm::Species::Magearna:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Necrozma:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Kommoo:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Mimikyu:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Togedemaru:
-                imageOffsetFromBack += 7;
-            case pksm::Species::Minior:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Salazzle:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Lurantis:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Araquanid:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Wishiwashi:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Lycanroc:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Rockruff:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Ribombee:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Oricorio:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Vikavolt:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gumshoos:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Hoopa:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Diancie:
-                imageOffsetFromBack += 4;
-            case pksm::Species::Zygarde:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Aegislash:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Meowstic:
-                imageOffsetFromBack += 9;
-            case pksm::Species::Furfrou:
-                imageOffsetFromBack += 4;
-            case pksm::Species::Florges:
-                imageOffsetFromBack += 5;
-            case pksm::Species::Floette:
-                imageOffsetFromBack += 4;
-            case pksm::Species::Flabebe:
-                imageOffsetFromBack += 19;
-            case pksm::Species::Vivillon:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Greninja:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Meloetta:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Keldeo:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Kyurem:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Landorus:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Thundurus:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Tornadus:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Sawsbuck:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Deerling:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Darmanitan:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Basculin:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Audino:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Shaymin:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Giratina:
-                imageOffsetFromBack += 5;
-            case pksm::Species::Rotom:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gallade:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Abomasnow:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Lucario:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Garchomp:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Lopunny:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gastrodon:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Shellos:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Cherrim:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Wormadam:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Burmy:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Deoxys:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Rayquaza:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Groudon:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Kyogre:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Latios:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Latias:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Metagross:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Salamence:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Glalie:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Absol:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Banette:
-                imageOffsetFromBack += 3;
-            case pksm::Species::Castform:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Altaria:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Camerupt:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Sharpedo:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Manectric:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Medicham:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Aggron:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Mawile:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Sableye:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gardevoir:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Swampert:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Blaziken:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Sceptile:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Tyranitar:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Houndoom:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Heracross:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Scizor:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Steelix:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Ampharos:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Pichu:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Mewtwo:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Aerodactyl:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gyarados:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Pinsir:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Kangaskhan:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Marowak:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Exeggutor:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Gengar:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Muk:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Grimer:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Slowbro:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Golem:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Graveler:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Geodude:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Alakazam:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Persian:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Meowth:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Dugtrio:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Diglett:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Ninetales:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Vulpix:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Sandslash:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Sandshrew:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Raichu:
-                imageOffsetFromBack += 13;
-            case pksm::Species::Pikachu:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Raticate:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Rattata:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Pidgeot:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Beedrill:
-                imageOffsetFromBack += 1;
-            case pksm::Species::Blastoise:
-                imageOffsetFromBack += 2;
-            case pksm::Species::Charizard:
-                imageOffsetFromBack += 1;
             case pksm::Species::Venusaur:
-                imageOffsetFromBack += 0;
+                return FA(0, types_spritesheet_3_m_idx);
+            case pksm::Species::Charizard:
+                return FA(0, types_spritesheet_6_m1_idx, types_spritesheet_6_m2_idx);
+            case pksm::Species::Blastoise:
+                return FA(0, types_spritesheet_9_m_idx);
+            case pksm::Species::Beedrill:
+                return FA(0, types_spritesheet_15_m_idx);
+            case pksm::Species::Pidgeot:
+                return FA(0, types_spritesheet_18_m_idx);
+            case pksm::Species::Rattata:
+                return FA(0, types_spritesheet_19_1_idx);
+            case pksm::Species::Raticate:
+                return FA(0, types_spritesheet_20_1_idx, types_spritesheet_20_t_idx);
+            case pksm::Species::Pikachu:
+                switch (version)
+                {
+                    case pksm::Generation::SIX:
+                        return FA(0, types_spritesheet_25_cosplay1_idx,
+                            types_spritesheet_25_cosplay2_idx, types_spritesheet_25_cosplay3_idx,
+                            types_spritesheet_25_cosplay4_idx, types_spritesheet_25_cosplay5_idx,
+                            types_spritesheet_25_cosplay6_idx);
+                    case pksm::Generation::SEVEN:
+                    case pksm::Generation::LGPE:
+                    case pksm::Generation::EIGHT:
+                        return FA(0, types_spritesheet_25_cap1_idx, types_spritesheet_25_cap2_idx,
+                            types_spritesheet_25_cap3_idx, types_spritesheet_25_cap4_idx,
+                            types_spritesheet_25_cap5_idx, types_spritesheet_25_cap6_idx,
+                            types_spritesheet_25_cap7_idx, 0, types_spritesheet_25_cap9_idx);
+                    default:
+                        return FA(0);
+                }
+            case pksm::Species::Raichu:
+                return FA(0, types_spritesheet_26_1_idx);
+            case pksm::Species::Sandshrew:
+                return FA(0, types_spritesheet_27_1_idx);
+            case pksm::Species::Sandslash:
+                return FA(0, types_spritesheet_28_1_idx);
+            case pksm::Species::Vulpix:
+                return FA(0, types_spritesheet_37_1_idx);
+            case pksm::Species::Ninetales:
+                return FA(0, types_spritesheet_38_1_idx);
+            case pksm::Species::Diglett:
+                return FA(0, types_spritesheet_50_1_idx);
+            case pksm::Species::Dugtrio:
+                return FA(0, types_spritesheet_51_1_idx);
+            case pksm::Species::Meowth:
+                return FA(0, types_spritesheet_52_1_idx, types_spritesheet_52_2_idx);
+            case pksm::Species::Persian:
+                return FA(0, types_spritesheet_53_1_idx);
+            case pksm::Species::Alakazam:
+                return FA(0, types_spritesheet_65_m_idx);
+            case pksm::Species::Geodude:
+                return FA(0, types_spritesheet_74_1_idx);
+            case pksm::Species::Graveler:
+                return FA(0, types_spritesheet_75_1_idx);
+            case pksm::Species::Golem:
+                return FA(0, types_spritesheet_76_1_idx);
+            case pksm::Species::Ponyta:
+                return FA(0, types_spritesheet_77_1_idx);
+            case pksm::Species::Rapidash:
+                return FA(0, types_spritesheet_78_1_idx);
+            case pksm::Species::Slowpoke:
+                return FA(0, types_spritesheet_79_1_idx);
+            case pksm::Species::Slowbro:
+                switch (version)
+                {
+                    case pksm::Generation::SIX:
+                    case pksm::Generation::SEVEN:
+                        return FA(0, types_spritesheet_80_m_idx);
+                    case pksm::Generation::EIGHT:
+                        return FA(0, types_spritesheet_80_1_idx);
+                    default:
+                        return FA(0);
+                }
+            case pksm::Species::Slowking:
+                return FA(0, types_spritesheet_199_1_idx);
+            case pksm::Species::Farfetchd:
+                return FA(0, types_spritesheet_83_1_idx);
+            case pksm::Species::Grimer:
+                return FA(0, types_spritesheet_88_1_idx);
+            case pksm::Species::Muk:
+                return FA(0, types_spritesheet_89_1_idx);
+            case pksm::Species::Gengar:
+                return FA(0, types_spritesheet_94_m_idx);
+            case pksm::Species::Exeggutor:
+                return FA(0, types_spritesheet_103_1_idx);
+            case pksm::Species::Marowak:
+                return FA(0, types_spritesheet_105_1_idx, types_spritesheet_105_t_idx);
+            case pksm::Species::Weezing:
+                return FA(0, types_spritesheet_110_1_idx);
+            case pksm::Species::Kangaskhan:
+                return FA(0, types_spritesheet_115_m_idx);
+            case pksm::Species::MrMime:
+                return FA(0, types_spritesheet_122_1_idx);
+            case pksm::Species::Pinsir:
+                return FA(0, types_spritesheet_127_m_idx);
+            case pksm::Species::Gyarados:
+                return FA(0, types_spritesheet_130_m_idx);
+            case pksm::Species::Eevee:
+                return FA(0, 0);
+            case pksm::Species::Aerodactyl:
+                return FA(0, types_spritesheet_142_m_idx);
+            case pksm::Species::Articuno:
+                return FA(0, types_spritesheet_144_1_idx);
+            case pksm::Species::Zapdos:
+                return FA(0, types_spritesheet_145_1_idx);
+            case pksm::Species::Moltres:
+                return FA(0, types_spritesheet_146_1_idx);
+            case pksm::Species::Mewtwo:
+                return FA(0, types_spritesheet_150_m1_idx, types_spritesheet_150_m2_idx);
+            case pksm::Species::Pichu:
+                return FA(0, types_spritesheet_172_1_idx);
+            case pksm::Species::Ampharos:
+                return FA(0, types_spritesheet_181_m_idx);
+            case pksm::Species::Unown:
+                return FA(0, types_spritesheet_201_1_idx, types_spritesheet_201_2_idx,
+                    types_spritesheet_201_3_idx, types_spritesheet_201_4_idx,
+                    types_spritesheet_201_5_idx, types_spritesheet_201_6_idx,
+                    types_spritesheet_201_7_idx, types_spritesheet_201_8_idx,
+                    types_spritesheet_201_9_idx, types_spritesheet_201_10_idx,
+                    types_spritesheet_201_11_idx, types_spritesheet_201_12_idx,
+                    types_spritesheet_201_13_idx, types_spritesheet_201_14_idx,
+                    types_spritesheet_201_15_idx, types_spritesheet_201_16_idx,
+                    types_spritesheet_201_17_idx, types_spritesheet_201_18_idx,
+                    types_spritesheet_201_19_idx, types_spritesheet_201_20_idx,
+                    types_spritesheet_201_21_idx, types_spritesheet_201_22_idx,
+                    types_spritesheet_201_23_idx, types_spritesheet_201_24_idx,
+                    types_spritesheet_201_25_idx, types_spritesheet_201_26_idx,
+                    types_spritesheet_201_27_idx);
+            case pksm::Species::Steelix:
+                return FA(0, types_spritesheet_208_m_idx);
+            case pksm::Species::Scizor:
+                return FA(0, types_spritesheet_212_m_idx);
+            case pksm::Species::Heracross:
+                return FA(0, types_spritesheet_214_m_idx);
+            case pksm::Species::Corsola:
+                return FA(0, types_spritesheet_222_1_idx);
+            case pksm::Species::Houndoom:
+                return FA(0, types_spritesheet_229_m_idx);
+            case pksm::Species::Tyranitar:
+                return FA(0, types_spritesheet_248_m_idx);
+            case pksm::Species::Sceptile:
+                return FA(0, types_spritesheet_254_m_idx);
+            case pksm::Species::Blaziken:
+                return FA(0, types_spritesheet_257_m_idx);
+            case pksm::Species::Swampert:
+                return FA(0, types_spritesheet_260_m_idx);
+            case pksm::Species::Zigzagoon:
+                return FA(0, types_spritesheet_263_1_idx);
+            case pksm::Species::Linoone:
+                return FA(0, types_spritesheet_264_1_idx);
+            case pksm::Species::Gardevoir:
+                return FA(0, types_spritesheet_282_m_idx);
+            case pksm::Species::Sableye:
+                return FA(0, types_spritesheet_302_m_idx);
+            case pksm::Species::Mawile:
+                return FA(0, types_spritesheet_303_m_idx);
+            case pksm::Species::Aggron:
+                return FA(0, types_spritesheet_306_m_idx);
+            case pksm::Species::Medicham:
+                return FA(0, types_spritesheet_308_m_idx);
+            case pksm::Species::Manectric:
+                return FA(0, types_spritesheet_310_m_idx);
+            case pksm::Species::Sharpedo:
+                return FA(0, types_spritesheet_319_m_idx);
+            case pksm::Species::Camerupt:
+                return FA(0, types_spritesheet_323_m_idx);
+            case pksm::Species::Altaria:
+                return FA(0, types_spritesheet_334_m_idx);
+            case pksm::Species::Castform:
+                return FA(0, types_spritesheet_351_1_idx, types_spritesheet_351_2_idx,
+                    types_spritesheet_351_3_idx);
+            case pksm::Species::Banette:
+                return FA(0, types_spritesheet_354_m_idx);
+            case pksm::Species::Absol:
+                return FA(0, types_spritesheet_359_m_idx);
+            case pksm::Species::Glalie:
+                return FA(0, types_spritesheet_362_m_idx);
+            case pksm::Species::Salamence:
+                return FA(0, types_spritesheet_373_m_idx);
+            case pksm::Species::Metagross:
+                return FA(0, types_spritesheet_376_m_idx);
+            case pksm::Species::Latias:
+                return FA(0, types_spritesheet_380_m_idx);
+            case pksm::Species::Latios:
+                return FA(0, types_spritesheet_381_m_idx);
+            case pksm::Species::Kyogre:
+                return FA(0, types_spritesheet_382_m_idx);
+            case pksm::Species::Groudon:
+                return FA(0, types_spritesheet_383_m_idx);
+            case pksm::Species::Rayquaza:
+                return FA(0, types_spritesheet_384_m_idx);
+            case pksm::Species::Deoxys:
+                return FA(0, types_spritesheet_386_1_idx, types_spritesheet_386_2_idx,
+                    types_spritesheet_386_3_idx);
+            case pksm::Species::Burmy:
+                return FA(0, types_spritesheet_412_1_idx, types_spritesheet_412_2_idx);
+            case pksm::Species::Wormadam:
+                return FA(0, types_spritesheet_413_1_idx, types_spritesheet_413_2_idx);
+            case pksm::Species::Cherrim:
+                return FA(0, types_spritesheet_421_1_idx);
+            case pksm::Species::Shellos:
+                return FA(0, types_spritesheet_422_1_idx);
+            case pksm::Species::Gastrodon:
+                return FA(0, types_spritesheet_423_1_idx);
+            case pksm::Species::Lopunny:
+                return FA(0, types_spritesheet_428_m_idx);
+            case pksm::Species::Garchomp:
+                return FA(0, types_spritesheet_445_m_idx);
+            case pksm::Species::Lucario:
+                return FA(0, types_spritesheet_448_m_idx);
+            case pksm::Species::Abomasnow:
+                return FA(0, types_spritesheet_460_m_idx);
+            case pksm::Species::Gallade:
+                return FA(0, types_spritesheet_475_m_idx);
+            case pksm::Species::Rotom:
+                return FA(0, types_spritesheet_479_1_idx, types_spritesheet_479_2_idx,
+                    types_spritesheet_479_3_idx, types_spritesheet_479_4_idx,
+                    types_spritesheet_479_5_idx);
+            case pksm::Species::Giratina:
+                return FA(0, types_spritesheet_487_1_idx);
+            case pksm::Species::Shaymin:
+                return FA(0, types_spritesheet_492_1_idx);
+            case pksm::Species::Audino:
+                return FA(0, types_spritesheet_531_m_idx);
+            case pksm::Species::Basculin:
+                return FA(0, types_spritesheet_550_1_idx);
+            case pksm::Species::Darumaka:
+                return FA(0, types_spritesheet_554_1_idx);
+            case pksm::Species::Darmanitan:
+                return FA(0, types_spritesheet_555_1_idx, types_spritesheet_555_2_idx,
+                    types_spritesheet_555_3_idx);
+            case pksm::Species::Yamask:
+                return FA(0, types_spritesheet_562_1_idx);
+            case pksm::Species::Deerling:
+                return FA(0, types_spritesheet_585_1_idx, types_spritesheet_585_2_idx,
+                    types_spritesheet_585_3_idx);
+            case pksm::Species::Sawsbuck:
+                return FA(0, types_spritesheet_586_1_idx, types_spritesheet_586_2_idx,
+                    types_spritesheet_586_3_idx);
+            case pksm::Species::Stunfisk:
+                return FA(0, types_spritesheet_618_1_idx);
+            case pksm::Species::Tornadus:
+                return FA(0, types_spritesheet_641_1_idx);
+            case pksm::Species::Thundurus:
+                return FA(0, types_spritesheet_642_1_idx);
+            case pksm::Species::Landorus:
+                return FA(0, types_spritesheet_645_1_idx);
+            case pksm::Species::Kyurem:
+                return FA(0, types_spritesheet_646_1_idx, types_spritesheet_646_2_idx);
+            case pksm::Species::Keldeo:
+                return FA(0, types_spritesheet_647_1_idx);
+            case pksm::Species::Meloetta:
+                return FA(0, types_spritesheet_648_1_idx);
+            case pksm::Species::Greninja:
+                return FA(0, types_spritesheet_658_1_idx, types_spritesheet_658_2_idx);
+            case pksm::Species::Vivillon:
+                return FA(0, types_spritesheet_666_1_idx, types_spritesheet_666_2_idx,
+                    types_spritesheet_666_3_idx, types_spritesheet_666_4_idx,
+                    types_spritesheet_666_5_idx, types_spritesheet_666_6_idx,
+                    types_spritesheet_666_7_idx, types_spritesheet_666_8_idx,
+                    types_spritesheet_666_9_idx, types_spritesheet_666_10_idx,
+                    types_spritesheet_666_11_idx, types_spritesheet_666_12_idx,
+                    types_spritesheet_666_13_idx, types_spritesheet_666_14_idx,
+                    types_spritesheet_666_15_idx, types_spritesheet_666_16_idx,
+                    types_spritesheet_666_17_idx, types_spritesheet_666_18_idx,
+                    types_spritesheet_666_19_idx);
+            case pksm::Species::Flabebe:
+                return FA(0, types_spritesheet_669_1_idx, types_spritesheet_669_2_idx,
+                    types_spritesheet_669_3_idx, types_spritesheet_669_4_idx);
+            case pksm::Species::Floette:
+                return FA(0, types_spritesheet_670_1_idx, types_spritesheet_670_2_idx,
+                    types_spritesheet_670_3_idx, types_spritesheet_670_4_idx,
+                    types_spritesheet_670_5_idx);
+            case pksm::Species::Florges:
+                return FA(0, types_spritesheet_671_1_idx, types_spritesheet_671_2_idx,
+                    types_spritesheet_671_3_idx, types_spritesheet_671_4_idx);
+            case pksm::Species::Furfrou:
+                return FA(0, types_spritesheet_676_1_idx, types_spritesheet_676_2_idx,
+                    types_spritesheet_676_3_idx, types_spritesheet_676_4_idx,
+                    types_spritesheet_676_5_idx, types_spritesheet_676_6_idx,
+                    types_spritesheet_676_7_idx, types_spritesheet_676_8_idx,
+                    types_spritesheet_676_9_idx);
+            case pksm::Species::Aegislash:
+                return FA(0, types_spritesheet_681_1_idx);
+            case pksm::Species::Zygarde:
+                return FA(0, types_spritesheet_718_1_idx, types_spritesheet_718_2_idx,
+                    types_spritesheet_718_3_idx, types_spritesheet_718_4_idx);
+            case pksm::Species::Diancie:
+                return FA(0, types_spritesheet_719_m_idx);
+            case pksm::Species::Hoopa:
+                return FA(0, types_spritesheet_720_1_idx);
+            case pksm::Species::Gumshoos:
+                return FA(0, types_spritesheet_735_t_idx);
+            case pksm::Species::Vikavolt:
+                return FA(0, types_spritesheet_738_t_idx);
+            case pksm::Species::Oricorio:
+                return FA(0, types_spritesheet_741_1_idx, types_spritesheet_741_2_idx,
+                    types_spritesheet_741_3_idx);
+            case pksm::Species::Ribombee:
+                return FA(0, types_spritesheet_743_t_idx);
+            case pksm::Species::Lycanroc:
+                return FA(0, types_spritesheet_745_1_idx, types_spritesheet_745_2_idx);
+            case pksm::Species::Wishiwashi:
+                return FA(0, types_spritesheet_746_1_idx);
+            case pksm::Species::Araquanid:
+                return FA(0, types_spritesheet_752_t_idx);
+            case pksm::Species::Lurantis:
+                return FA(0, types_spritesheet_754_t_idx);
+            case pksm::Species::Salazzle:
+                return FA(0, types_spritesheet_758_t_idx);
+            case pksm::Species::Minior:
+                return FA(0, 0, 0, 0, 0, 0, 0, types_spritesheet_774_7_idx,
+                    types_spritesheet_774_8_idx, types_spritesheet_774_9_idx,
+                    types_spritesheet_774_10_idx, types_spritesheet_774_11_idx,
+                    types_spritesheet_774_12_idx, types_spritesheet_774_13_idx);
+            case pksm::Species::Togedemaru:
+                return FA(0, types_spritesheet_777_t_idx);
+            case pksm::Species::Mimikyu:
+                return FA(0, 0, types_spritesheet_778_t_idx, types_spritesheet_778_t_idx);
+            case pksm::Species::Kommoo:
+                return FA(0, types_spritesheet_784_t_idx);
+            case pksm::Species::Necrozma:
+                return FA(0, types_spritesheet_800_1_idx, types_spritesheet_800_2_idx,
+                    types_spritesheet_800_3_idx);
+            case pksm::Species::Magearna:
+                return FA(0, types_spritesheet_801_1_idx);
+            case pksm::Species::Cramorant:
+                return FA(0, types_spritesheet_845_1_idx, types_spritesheet_845_2_idx);
+            case pksm::Species::Toxtricity:
+                return FA(0, types_spritesheet_849_1_idx);
+            case pksm::Species::Alcremie:
+                return FA(0, types_spritesheet_869_1_idx, types_spritesheet_869_2_idx,
+                    types_spritesheet_869_3_idx, types_spritesheet_869_4_idx,
+                    types_spritesheet_869_5_idx, types_spritesheet_869_6_idx,
+                    types_spritesheet_869_7_idx, types_spritesheet_869_8_idx);
+            case pksm::Species::Eiscue:
+                return FA(0, types_spritesheet_875_1_idx);
+            case pksm::Species::Morpeko:
+                return FA(0, types_spritesheet_877_1_idx);
+            case pksm::Species::Zacian:
+                return FA(0, types_spritesheet_888_1_idx);
+            case pksm::Species::Zamazenta:
+                return FA(0, types_spritesheet_889_1_idx);
+            case pksm::Species::Eternatus:
+                return FA(0, types_spritesheet_890_g_idx);
+            case pksm::Species::Urshifu:
+                return FA(0, types_spritesheet_892_1_idx);
+            case pksm::Species::Zarude:
+                return FA(0, types_spritesheet_893_1_idx);
+            case pksm::Species::Calyrex:
+                return FA(0, types_spritesheet_898_1_idx, types_spritesheet_898_2_idx);
             default:
-                break;
+                return FA(0);
         }
-#pragma GCC diagnostic pop
-
-        return imageOffsetFromBack;
     }
 
     C2D_Image typeImage(pksm::Language lang, pksm::Type type)
@@ -1510,6 +1655,7 @@ void Gui::format(const pksm::PKX& pkm, int x, int y)
             Gui::sprite(ui_sheet_icon_generation_go_idx, x, y);
             break;
         case pksm::Generation::UNUSED:
+        case pksm::Generation::EIGHT:
             break;
     }
 }
@@ -1653,149 +1799,20 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
         drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y,
             &tint, scale, scale);
     }
-    else if (species == pksm::Species::Unown)
-    {
-        if (form == 0 || form > 27)
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
-                scale, scale);
-        }
-        else
-        {
-            drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_801_1_idx + form), x,
-                y, &tint, scale, scale);
-        }
-    }
     // For possible hex editor mishaps
-    // else if (species > pksm::Species::Calyrex) // TODO: Gen 8 sheet
-    else if (species > pksm::Species::Melmetal)
+    else if (species > pksm::Species::Calyrex)
     {
         drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint,
             scale, scale);
     }
-    else if (species == pksm::Species::Unfezant && gender == pksm::Gender::Female)
+    else if (auto sprite = multiGenderSprite(species); sprite && gender == pksm::Gender::Female)
     {
-        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_521_1_idx), x, y,
-            &tint, scale, scale);
+        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, *sprite), x, y, &tint, scale, scale);
     }
-    else if (species == pksm::Species::Frillish && gender == pksm::Gender::Female)
+    // This max will change over time!
+    else if (form == 0 || species < pksm::Species::None || species > pksm::Species::Calyrex)
     {
-        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_592_1_idx), x, y,
-            &tint, scale, scale);
-    }
-    else if (species == pksm::Species::Jellicent && gender == pksm::Gender::Female)
-    {
-        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_593_1_idx), x, y,
-            &tint, scale, scale);
-    }
-    else if (species == pksm::Species::Pyroar && gender == pksm::Gender::Female)
-    {
-        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_668_1_idx), x, y,
-            &tint, scale, scale);
-    }
-    else if (form == 0)
-    {
-        // TODO: gen 8 sheet
-        /*
-        if (species > pksm::Species::Calyrex)
-        {
-            species = pksm::Species::Calyrex;
-        }
-        */
-        // This max will change over time!
-        if (species > pksm::Species::Melmetal)
-        {
-            species = pksm::Species::Melmetal;
-        }
-        if (species < pksm::Species::None)
-        {
-            species = pksm::Species::None;
-        }
-        drawImageAt(
-            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-    }
-    else if (species == pksm::Species::Mimikyu)
-    {
-        if (form == 1 || form > pksm::PersonalSMUSUM::formCount(778))
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_778_idx), x, y,
-                &tint, scale, scale);
-        }
-        else
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_778_2_idx), x,
-                y, &tint, scale, scale);
-        }
-    }
-    else if (species == pksm::Species::Minior)
-    {
-        if (form < 7 || form > pksm::PersonalSMUSUM::formCount(774))
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_774_idx), x, y,
-                &tint, scale, scale);
-        }
-        else
-        {
-            drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_774_7_idx + form - 7),
-                x, y, &tint, scale, scale);
-        }
-    }
-    else if (species == pksm::Species::Pumpkaboo || species == pksm::Species::Gourgeist ||
-             species == pksm::Species::Genesect)
-    {
-        drawImageAt(
-            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-    }
-    // Pikachu
-    else if (species == pksm::Species::Pikachu)
-    {
-        if (generation == pksm::Generation::SIX &&
-            form < pksm::PersonalXYORAS::formCount(size_t(species)))
-        {
-            drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_20_2_idx + form), x, y,
-                &tint, scale, scale);
-        }
-        else if (form < pksm::PersonalSMUSUM::formCount(size_t(species)))
-        {
-            drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_25_6_idx + form), x, y,
-                &tint, scale, scale);
-        }
-        else if (form == pksm::PersonalLGPE::formCount(size_t(species)) - 1)
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
-                scale, scale);
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
-                x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
-        }
-        else
-        {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
-                scale, scale);
-        }
-    }
-    else if (species == pksm::Species::Eevee)
-    {
-        drawImageAt(
-            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-        drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
-            x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
-    }
-    else if (species == pksm::Species::Arceus)
-    {
-        drawImageAt(
-            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-    }
-    else if (species == pksm::Species::Scatterbug || species == pksm::Species::Spewpa)
-    {
-        drawImageAt(
-            C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
-    }
-    else if (species == pksm::Species::Silvally)
-    {
+        species = std::clamp<pksm::Species>(species, pksm::Species::None, pksm::Species::Calyrex);
         drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint, scale, scale);
     }
@@ -1831,372 +1848,36 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
                 formCountGetter = pksm::PersonalSMUSUM::formCount;
                 break;
         }
-        if (form > formCountGetter(size_t(species)))
+
+        auto forms = formIndices(generation, species);
+
+        if (form > formCountGetter(size_t(species)) || form >= std::ssize(forms))
         {
             drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
                 scale, scale);
             return;
         }
-        int imageOffsetFromBack = 0;
 
-        // In switch for constexpr evaluation
-        switch (species)
+        // Special case for starter Pikachu/Eevee
+        if (species == pksm::Species::Eevee || species == pksm::Species::Pikachu)
         {
-            case pksm::Species::Magearna:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Magearna);
-                break;
-            case pksm::Species::Necrozma:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Necrozma);
-                break;
-            case pksm::Species::Kommoo:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Kommoo);
-                break;
-            case pksm::Species::Mimikyu:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Mimikyu);
-                break;
-            case pksm::Species::Togedemaru:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Togedemaru);
-                break;
-            case pksm::Species::Minior:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Minior);
-                break;
-            case pksm::Species::Salazzle:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Salazzle);
-                break;
-            case pksm::Species::Lurantis:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Lurantis);
-                break;
-            case pksm::Species::Araquanid:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Araquanid);
-                break;
-            case pksm::Species::Wishiwashi:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Wishiwashi);
-                break;
-            case pksm::Species::Lycanroc:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Lycanroc);
-                break;
-            case pksm::Species::Rockruff:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Rockruff);
-                break;
-            case pksm::Species::Ribombee:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Ribombee);
-                break;
-            case pksm::Species::Oricorio:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Oricorio);
-                break;
-            case pksm::Species::Vikavolt:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Vikavolt);
-                break;
-            case pksm::Species::Gumshoos:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gumshoos);
-                break;
-            case pksm::Species::Hoopa:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Hoopa);
-                break;
-            case pksm::Species::Diancie:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Diancie);
-                break;
-            case pksm::Species::Zygarde:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Zygarde);
-                break;
-            case pksm::Species::Aegislash:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Aegislash);
-                break;
-            case pksm::Species::Meowstic:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Meowstic);
-                break;
-            case pksm::Species::Furfrou:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Furfrou);
-                break;
-            case pksm::Species::Florges:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Florges);
-                break;
-            case pksm::Species::Floette:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Floette);
-                break;
-            case pksm::Species::Flabebe:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Flabebe);
-                break;
-            case pksm::Species::Vivillon:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Vivillon);
-                break;
-            case pksm::Species::Greninja:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Greninja);
-                break;
-            case pksm::Species::Meloetta:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Meloetta);
-                break;
-            case pksm::Species::Keldeo:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Keldeo);
-                break;
-            case pksm::Species::Kyurem:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Kyurem);
-                break;
-            case pksm::Species::Landorus:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Landorus);
-                break;
-            case pksm::Species::Thundurus:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Thundurus);
-                break;
-            case pksm::Species::Tornadus:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Tornadus);
-                break;
-            case pksm::Species::Sawsbuck:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sawsbuck);
-                break;
-            case pksm::Species::Deerling:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Deerling);
-                break;
-            case pksm::Species::Darmanitan:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Darmanitan);
-                break;
-            case pksm::Species::Basculin:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Basculin);
-                break;
-            case pksm::Species::Audino:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Audino);
-                break;
-            case pksm::Species::Shaymin:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Shaymin);
-                break;
-            case pksm::Species::Giratina:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Giratina);
-                break;
-            case pksm::Species::Rotom:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Rotom);
-                break;
-            case pksm::Species::Gallade:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gallade);
-                break;
-            case pksm::Species::Abomasnow:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Abomasnow);
-                break;
-            case pksm::Species::Lucario:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Lucario);
-                break;
-            case pksm::Species::Garchomp:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Garchomp);
-                break;
-            case pksm::Species::Lopunny:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Lopunny);
-                break;
-            case pksm::Species::Gastrodon:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gastrodon);
-                break;
-            case pksm::Species::Shellos:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Shellos);
-                break;
-            case pksm::Species::Cherrim:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Cherrim);
-                break;
-            case pksm::Species::Wormadam:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Wormadam);
-                break;
-            case pksm::Species::Burmy:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Burmy);
-                break;
-            case pksm::Species::Deoxys:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Deoxys);
-                break;
-            case pksm::Species::Rayquaza:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Rayquaza);
-                break;
-            case pksm::Species::Groudon:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Groudon);
-                break;
-            case pksm::Species::Kyogre:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Kyogre);
-                break;
-            case pksm::Species::Latios:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Latios);
-                break;
-            case pksm::Species::Latias:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Latias);
-                break;
-            case pksm::Species::Metagross:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Metagross);
-                break;
-            case pksm::Species::Salamence:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Salamence);
-                break;
-            case pksm::Species::Glalie:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Glalie);
-                break;
-            case pksm::Species::Absol:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Absol);
-                break;
-            case pksm::Species::Banette:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Banette);
-                break;
-            case pksm::Species::Castform:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Castform);
-                break;
-            case pksm::Species::Altaria:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Altaria);
-                break;
-            case pksm::Species::Camerupt:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Camerupt);
-                break;
-            case pksm::Species::Sharpedo:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sharpedo);
-                break;
-            case pksm::Species::Manectric:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Manectric);
-                break;
-            case pksm::Species::Medicham:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Medicham);
-                break;
-            case pksm::Species::Aggron:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Aggron);
-                break;
-            case pksm::Species::Mawile:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Mawile);
-                break;
-            case pksm::Species::Sableye:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sableye);
-                break;
-            case pksm::Species::Gardevoir:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gardevoir);
-                break;
-            case pksm::Species::Swampert:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Swampert);
-                break;
-            case pksm::Species::Blaziken:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Blaziken);
-                break;
-            case pksm::Species::Sceptile:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sceptile);
-                break;
-            case pksm::Species::Tyranitar:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Tyranitar);
-                break;
-            case pksm::Species::Houndoom:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Houndoom);
-                break;
-            case pksm::Species::Heracross:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Heracross);
-                break;
-            case pksm::Species::Scizor:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Scizor);
-                break;
-            case pksm::Species::Steelix:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Steelix);
-                break;
-            case pksm::Species::Ampharos:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Ampharos);
-                break;
-            case pksm::Species::Pichu:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Pichu);
-                break;
-            case pksm::Species::Mewtwo:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Mewtwo);
-                break;
-            case pksm::Species::Aerodactyl:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Aerodactyl);
-                break;
-            case pksm::Species::Gyarados:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gyarados);
-                break;
-            case pksm::Species::Pinsir:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Pinsir);
-                break;
-            case pksm::Species::Kangaskhan:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Kangaskhan);
-                break;
-            case pksm::Species::Marowak:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Marowak);
-                break;
-            case pksm::Species::Exeggutor:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Exeggutor);
-                break;
-            case pksm::Species::Gengar:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Gengar);
-                break;
-            case pksm::Species::Muk:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Muk);
-                break;
-            case pksm::Species::Grimer:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Grimer);
-                break;
-            case pksm::Species::Slowbro:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Slowbro);
-                break;
-            case pksm::Species::Golem:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Golem);
-                break;
-            case pksm::Species::Graveler:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Graveler);
-                break;
-            case pksm::Species::Geodude:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Geodude);
-                break;
-            case pksm::Species::Alakazam:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Alakazam);
-                break;
-            case pksm::Species::Persian:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Persian);
-                break;
-            case pksm::Species::Meowth:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Meowth);
-                break;
-            case pksm::Species::Dugtrio:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Dugtrio);
-                break;
-            case pksm::Species::Diglett:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Diglett);
-                break;
-            case pksm::Species::Ninetales:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Ninetales);
-                break;
-            case pksm::Species::Vulpix:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Vulpix);
-                break;
-            case pksm::Species::Sandslash:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sandslash);
-                break;
-            case pksm::Species::Sandshrew:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Sandshrew);
-                break;
-            case pksm::Species::Raichu:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Raichu);
-                break;
-            case pksm::Species::Pikachu:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Pikachu);
-                break;
-            case pksm::Species::Raticate:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Raticate);
-                break;
-            case pksm::Species::Rattata:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Rattata);
-                break;
-            case pksm::Species::Pidgeot:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Pidgeot);
-                break;
-            case pksm::Species::Beedrill:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Beedrill);
-                break;
-            case pksm::Species::Blastoise:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Blastoise);
-                break;
-            case pksm::Species::Charizard:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Charizard);
-                break;
-            case pksm::Species::Venusaur:
-                imageOffsetFromBack = getSpeciesOffset(pksm::Species::Venusaur);
-                break;
-            default:
-                break;
+            if (forms[form] == 0)
+            {
+                drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                    scale, scale);
+                drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
+                    x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
+            }
         }
-        int drawIndex = types_spritesheet_beast_idx + imageOffsetFromBack + form;
-        if (drawIndex < types_spritesheet_201_1_idx)
+        else if (forms[form] == 0)
         {
-            drawImageAt(
-                C2D_SpriteSheetGetImage(spritesheet_types, drawIndex), x, y, &tint, scale, scale);
+            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, size_t(species)), x, y, &tint,
+                scale, scale);
         }
         else
         {
-            drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y,
-                &tint, scale, scale);
+            drawImageAt(
+                C2D_SpriteSheetGetImage(spritesheet_types, forms[form]), x, y, &tint, scale, scale);
         }
     }
 }

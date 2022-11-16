@@ -124,7 +124,6 @@ ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(BUILD)/gfx
 PACKER			:=	../external/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
-CITRA_DEBUG		:=	0
 
 ICON			:=	../assets/icon.png
 BANNER_AUDIO	:=	../assets/audio.wav
@@ -147,14 +146,13 @@ else
 OPTIMIZE		:=	-Og
 endif
 
-CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
+CFLAGS	:=	-g -Wall -Wextra -Werror -Wno-psabi -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
-			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
 			-DFMT_HEADER_ONLY \
 			-DJSON_HAS_FILESYSTEM=0 \
@@ -167,8 +165,8 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
-ASFLAGS	:=	-g -gdwarf-4 $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g -gdwarf-4 $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
+ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
 
 LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
@@ -275,7 +273,7 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all binaries buildelf deps checkgallery directories clean spotless no-deps no-gifts no-scripts format cppcheck cppclean
+.PHONY: all binaries buildelf deps checkgallery directories clean clean-deps spotless no-deps no-gifts no-scripts format cppcheck cppclean
 
 #---------------------------------------------------------------------------------
 all:
@@ -320,11 +318,15 @@ endif
 clean:
 	@echo clean ...
 	@rm -fr $(OUT_DEBUG)
+	@rm -fr $(BUILD_DEBUG)
+	@rm -fr $(GFXBUILD)
+#---------------------------------------------------------------------------------
+clean-deps: clean
+	@echo clean-deps ...
 	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
 	@rm -fr $(ROMFS)/scripts
-	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
-	@rm -fr $(GFXBUILD)
+	@rm -fr $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 spotless: clean
 	@rm -fr $(OUT_RELEASE)

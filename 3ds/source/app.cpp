@@ -68,13 +68,13 @@ namespace
 
     asset assets[2] = {
         {"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x",
-         "/3ds/PKSM/assets/pkm_spritesheet.t3x",   {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b,
-                0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4,
-                0xe7, 0x6d, 0xcc, 0x48}  },
+         "/3ds/PKSM/assets/pkm_spritesheet.t3x",   {0xc5, 0x4b, 0x46, 0x4d, 0xe9, 0xe5, 0x6f, 0x5b, 0x04, 0xc7, 0xd6, 0x79, 0xbd, 0xf0,
+                0xb9, 0xb6, 0xc8, 0x4d, 0xbe, 0xa5, 0x55, 0x5b, 0xb7, 0xae, 0x62, 0x86, 0x2b, 0x18,
+                0x62, 0x08, 0x10, 0x32}  },
         {"https://raw.githubusercontent.com/piepie62/PKResources/master/types_spritesheet.t3x",
-         "/3ds/PKSM/assets/types_spritesheet.t3x", {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60,
-                0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1,
-                0x66, 0x34, 0xa4, 0x91}}
+         "/3ds/PKSM/assets/types_spritesheet.t3x", {0x9f, 0xba, 0xa1, 0x0f, 0xe2, 0x05, 0xce, 0x57, 0xcf, 0x87, 0x32, 0xc3, 0x7f, 0x72,
+                0x42, 0x02, 0x04, 0xf9, 0x06, 0xd7, 0x5c, 0x65, 0xff, 0xae, 0xe8, 0xbf, 0x61, 0x5a,
+                0x08, 0xe4, 0x86, 0x85}}
     };
 
     bool matchSha256HashFromFile(
@@ -97,7 +97,7 @@ namespace
 
     bool assetsMatch(void)
     {
-        for (auto& item : assets)
+        for (const auto& item : assets)
         {
             if (!io::exists(item.path))
             {
@@ -115,7 +115,7 @@ namespace
     {
         Result res = 0;
 
-        for (auto item : assets)
+        for (const auto& item : assets)
         {
             bool downloadAsset = true;
             if (io::exists(item.path))
@@ -131,14 +131,12 @@ namespace
             }
             if (downloadAsset)
             {
-#if !CITRA_DEBUG
                 u32 status;
                 ACU_GetWifiStatus(&status);
                 if (status == 0)
                 {
                     return -1;
                 }
-#endif
                 Result res1 = Fetch::download(item.url, item.path);
                 if (R_FAILED(res1))
                 {
@@ -484,7 +482,6 @@ namespace
 
     void cartScan(void*)
     {
-#if !CITRA_DEBUG
         bool oldCardIn;
         FSUSER_CardSlotIsInserted(&oldCardIn);
 
@@ -524,7 +521,6 @@ namespace
                 }
             }
         }
-#endif
     }
 
     void iconThread(void*)
@@ -608,10 +604,8 @@ namespace
         }
         else
         {
-#if !CITRA_DEBUG
             std::string path = execPath.substr(execPath.find('/'));
             res              = HBLDR_SetTarget(path.c_str());
-#endif
         }
         if (R_FAILED(res))
         {
@@ -691,14 +685,13 @@ namespace
 
     void updateGifts(void)
     {
-#if !CITRA_DEBUG
         u32 status;
         ACU_GetWifiStatus(&status);
         if (status == 0)
         {
             return;
         }
-#endif
+
         struct giftCurlData
         {
             giftCurlData(FILE* file, const std::string& fileName)
@@ -850,14 +843,12 @@ Result App::init(const std::string& execPath)
     moveIcon.test_and_set();
     Threads::create(iconThread);
 
-#if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
     {
         return consoleDisplayError(
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
     }
-#endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
 

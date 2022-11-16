@@ -70,8 +70,11 @@ docs:
 clean:
 	@rm -f appinfo.hash
 	@rm -f common/include/revision.h
-	@rm -f assets/gui_strings/*/gui.json
 	$(MAKE) -C 3ds clean
+
+clean-deps:
+	@rm -f assets/gui_strings/*/gui.json
+	$(MAKE) -C 3ds clean-deps
 
 spotless: clean
 	$(MAKE) -C 3ds spotless
