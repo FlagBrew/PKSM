@@ -1,4 +1,8 @@
 .vscode
+switch/build/
+switch/out
+switch/build_release/
+switch/out_release/
 3ds/build/
 3ds/build_release/
 3ds/out/

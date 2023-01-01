@@ -63,6 +63,9 @@ endif
 3ds-release: revision
 	$(MAKE) -C 3ds RELEASE="1"
 
+switch-debug: revision
+	$(MAKE) -C switch
+
 docs:
 	@mkdir -p $(OUTDIR)
 	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
