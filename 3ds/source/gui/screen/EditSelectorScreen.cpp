@@ -475,6 +475,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     u32 downKeys   = hidKeysDown();
     u32 heldKeys   = hidKeysHeld();
     u32 repeatKeys = hidKeysDownRepeat();
+    u32 upKeys     = hidKeysUp();
 
     if (menu)
     {
@@ -698,11 +699,11 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos += maxPkmInBox / 5;
             }
         }
-        else if (repeatKeys & KEY_R)
+        else if (repeatKeys & (~downKeys) & KEY_R || (upKeys & KEY_R))
         {
             nextBox();
         }
-        else if (repeatKeys & KEY_L)
+        else if (repeatKeys & (~downKeys) & KEY_L || (upKeys & KEY_L))
         {
             prevBox();
         }
