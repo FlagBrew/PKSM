@@ -67,12 +67,12 @@ namespace
     };
 
     asset assets[2] = {
-        {"https://cdn.sigkill.tech/assets/pkm_spritesheet.t3x",
-         "/3ds/PKSM/assets/pkm_spritesheet.t3x",   {0xc5, 0x4b, 0x46, 0x4d, 0xe9, 0xe5, 0x6f, 0x5b, 0x04, 0xc7, 0xd6, 0x79, 0xbd, 0xf0,
+        {CDN_URL "assets/pkm_spritesheet.t3x",   "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+         {0xc5, 0x4b, 0x46, 0x4d, 0xe9, 0xe5, 0x6f, 0x5b, 0x04, 0xc7, 0xd6, 0x79, 0xbd, 0xf0,
                 0xb9, 0xb6, 0xc8, 0x4d, 0xbe, 0xa5, 0x55, 0x5b, 0xb7, 0xae, 0x62, 0x86, 0x2b, 0x18,
-                0x62, 0x08, 0x10, 0x32}  },
-        {"https://cdn.sigkill.tech/assets/types_spritesheet.t3x",
-         "/3ds/PKSM/assets/types_spritesheet.t3x", {0x9f, 0xba, 0xa1, 0x0f, 0xe2, 0x05, 0xce, 0x57, 0xcf, 0x87, 0x32, 0xc3, 0x7f, 0x72,
+                0x62, 0x08, 0x10, 0x32}},
+        {CDN_URL "assets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
+         {0x9f, 0xba, 0xa1, 0x0f, 0xe2, 0x05, 0xce, 0x57, 0xcf, 0x87, 0x32, 0xc3, 0x7f, 0x72,
                 0x42, 0x02, 0x04, 0xf9, 0x06, 0xd7, 0x5c, 0x65, 0xff, 0xae, 0xe8, 0xbf, 0x61, 0x5a,
                 0x08, 0xe4, 0x86, 0x85}}
     };
@@ -742,8 +742,7 @@ namespace
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch = Fetch::init(
-                        WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName + ".sha", true,
-                        nullptr, nullptr, ""))
+                        CDN_URL "assets/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
@@ -765,8 +764,7 @@ namespace
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
                             if (fetch = Fetch::init(
-                                    WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName,
-                                    true, nullptr, nullptr, ""))
+                                    CDN_URL "assets/gifts/" + fileName, true, nullptr, nullptr, ""))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
                                 FILE* outFile       = fopen(outPath.c_str(), "wb");
