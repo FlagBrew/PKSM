@@ -740,18 +740,25 @@ namespace
             {
                 decltype(pksm::crypto::sha256({})) checksum = readGiftChecksum(fileName);
 
-                std::vector<u8> recvChecksum;
+                struct RecvStuff
+                {
+                    std::vector<u8> recvData;
+                    pksm::crypto::SHA256 shaState;
+                } recvStuff;
+
                 if (auto fetch = Fetch::init(
                         CDN_URL "assets/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
                                                    size_t items, void* userThing) {
-                            std::vector<u8>* recv = (std::vector<u8>*)userThing;
-                            recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
+                            RecvStuff* recvStuff = (RecvStuff*)userThing;
+                            recvStuff->recvData.insert(
+                                recvStuff->recvData.end(), (u8*)buffer, (u8*)buffer + size * items);
+                            recvStuff->shaState.update({(u8*)buffer, size * items});
                             return size * items;
                         });
-                    fetch->setopt(CURLOPT_WRITEDATA, &recvChecksum);
+                    fetch->setopt(CURLOPT_WRITEDATA, &recvStuff);
 
                     Fetch::perform(fetch);
 
@@ -760,6 +767,7 @@ namespace
                     fetch->getinfo(CURLINFO_RESPONSE_CODE, &response);
                     if (response == 200)
                     {
+                        auto recvChecksum = recvStuff.shaState.finish();
                         if (memcmp(recvChecksum.data(), checksum.data(),
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
