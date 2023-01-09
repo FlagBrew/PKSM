@@ -1073,6 +1073,8 @@ void pkx_generate(
         }
     }
 
+    pkm->species(pksm::Species{u16(species)});
+
     // From SpeciesOverlay
     std::string nick = pkm->species().localize(pkm->language());
     if (pkm->generation() <= pksm::Generation::FOUR)
@@ -1080,7 +1082,6 @@ void pkx_generate(
         nick = StringUtils::toUpper(nick);
     }
     pkm->nickname(nick);
-    pkm->species(pksm::Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
     pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(),
