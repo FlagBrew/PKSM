@@ -852,6 +852,10 @@ void party_inject_pkx(
         else
         {
             pkm->refreshChecksum();
+            if (pkm->isParty())
+            {
+                pkm->updatePartyData();
+            }
             TitleLoader::save->pkm(*pkm, slot);
             TitleLoader::save->fixParty();
             TitleLoader::save->dex(*pkm);
