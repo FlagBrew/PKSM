@@ -54,5 +54,6 @@
     "Y_GROUP_SINGLE": ": シングル/バンドルを切り替える",
     "Y_LEGALIZE": ": 整合性をチェックする",
     "Y_PRESENT": ": 現在のゲーム",
-    "Y_RESIZE": ": サイズを編集"
+    "Y_RESIZE": ": サイズを編集",
+    "Y_SAVE_AND_LAUNCH": "\uE003: Save & Launch"
 }

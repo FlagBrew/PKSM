@@ -54,5 +54,6 @@
     "Y_GROUP_SINGLE": ": Switch between single/bundle",
     "Y_LEGALIZE": ": Check legality",
     "Y_PRESENT": ": Present games",
-    "Y_RESIZE": ": Resize"
+    "Y_RESIZE": ": Resize",
+    "Y_SAVE_AND_LAUNCH": "\uE003: Save & Launch"
 }

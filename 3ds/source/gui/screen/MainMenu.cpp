@@ -155,7 +155,8 @@ void MainMenu::makeButtons()
 
 void MainMenu::makeInstructions()
 {
-    instructions = Instructions(i18n::localize("B_BACK"));
+    instructions = Instructions(i18n::localize("B_BACK") + "\n" + i18n::localize("X_SAVE") + "\n" +
+                                i18n::localize("Y_SAVE_AND_LAUNCH"));
     instructions.addBox(
         false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
@@ -297,6 +298,19 @@ void MainMenu::update(touchPosition* touch)
         if (needsSave())
         {
             save();
+        }
+    }
+
+    else if (keysDown() & KEY_Y)
+    {
+        if (TitleLoader::titleIsRebootable())
+        {
+            if (needsSave())
+            {
+                save();
+            }
+            TitleLoader::setRebootToTitle();
+            Gui::exitMainLoop();
         }
     }
 }
