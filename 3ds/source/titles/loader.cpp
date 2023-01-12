@@ -1131,6 +1131,19 @@ void TitleLoader::saveToTitle(bool ask)
     }
 }
 
+void TitleLoader::setRebootToTitle()
+{
+    if (loadedTitle)
+    {
+        aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
+    }
+}
+
+bool TitleLoader::titleIsRebootable()
+{
+    return (bool)loadedTitle;
+}
+
 void TitleLoader::saveChanges()
 {
     save->finishEditing();

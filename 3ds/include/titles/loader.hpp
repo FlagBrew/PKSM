@@ -55,6 +55,8 @@ namespace TitleLoader
     void backupSave(const std::string& id);
     void saveChanges(void);
     void saveToTitle(bool ask);
+    void setRebootToTitle(void);
+    bool titleIsRebootable(void);
     void init(void);
     void exit(void);
     std::string savePath(void);

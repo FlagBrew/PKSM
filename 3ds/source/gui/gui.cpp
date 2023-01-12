@@ -74,6 +74,8 @@ namespace
 
     std::unordered_map<std::string, ScrollingTextOffset> scrollOffsets;
 
+    bool shouldExit = false;
+
     Tex3DS_SubTexture _select_box(const C2D_Image& image, int x, int y, int endX, int endY)
     {
         Tex3DS_SubTexture tex = *image.subtex;
@@ -1015,9 +1017,8 @@ void Gui::frameClean()
 
 void Gui::mainLoop(void)
 {
-    bool exit = false;
     Sound::start();
-    while (aptMainLoop() && !exit)
+    while (aptMainLoop() && !shouldExit)
     {
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -1073,11 +1074,15 @@ void Gui::mainLoop(void)
             touchPosition touch;
             hidTouchRead(&touch);
             screens.top()->doUpdate(&touch);
-            exit = screens.size() == 1 && (kHeld & KEY_START);
         }
 
         textBuffer->clear();
     }
+}
+
+void Gui::exitMainLoop(void)
+{
+    shouldExit = true;
 }
 
 void Gui::exit(void)

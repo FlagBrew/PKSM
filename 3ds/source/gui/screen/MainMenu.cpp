@@ -133,6 +133,24 @@ void MainMenu::makeButtons()
             return false;
         },
         ui_sheet_button_save_idx, "", 0, COLOR_BLACK);
+
+    if (TitleLoader::titleIsRebootable())
+    {
+        buttons[7] = std::make_unique<ClickButton>(
+            3, 211, 28, 28,
+            [this]()
+            {
+                if (needsSave())
+                {
+                    save();
+                }
+                TitleLoader::setRebootToTitle();
+                Gui::exitMainLoop();
+                return true;
+            },
+            ui_sheet_button_save_idx, "", 0,
+            COLOR_BLACK); // TODO: change this button to be not the same button lol}
+    }
 }
 
 void MainMenu::makeInstructions()
@@ -142,6 +160,10 @@ void MainMenu::makeInstructions()
         false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
     instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
+    instructions.addBox(
+        false, 50, 218, 125, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE_LAUNCH"), COLOR_WHITE);
+    instructions.addLine(false, 17, 225, 50, 225, 4, COLOR_GREY);
+    instructions.addCircle(false, 17, 225, 4, COLOR_GREY);
 }
 
 void MainMenu::drawTop() const
@@ -225,7 +247,10 @@ void MainMenu::drawBottom() const
     Gui::backgroundAnimatedBottom();
     for (const auto& button : buttons)
     {
-        button->draw();
+        if (button)
+        {
+            button->draw();
+        }
     }
 }
 
@@ -250,9 +275,12 @@ void MainMenu::update(touchPosition* touch)
     }
     for (auto& button : buttons)
     {
-        if (button->update(touch))
+        if (button)
         {
-            return;
+            if (button->update(touch))
+            {
+                return;
+            }
         }
     }
     if (keysDown() & KEY_B)

@@ -48,6 +48,7 @@ namespace Gui
 {
     Result init(void);
     void mainLoop(void);
+    void exitMainLoop(void);
     void exit(void);
     void frameClean(void);
     template <typename T>

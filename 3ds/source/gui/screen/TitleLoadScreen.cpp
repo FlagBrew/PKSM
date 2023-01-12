@@ -308,6 +308,11 @@ void TitleLoadScreen::update(touchPosition* touch)
     {
         resetTitles();
     }
+    if (buttonsDown & KEY_START)
+    {
+        Gui::exitMainLoop();
+        return;
+    }
     if (selectedTitle == -2)
     {
         if (TitleLoader::cardTitle == nullptr && !titles->empty())
