@@ -144,7 +144,10 @@ void MainMenu::makeButtons()
                 {
                     save();
                 }
-                TitleLoader::setRebootToTitle();
+                if (!TitleLoader::setRebootToTitle())
+                {
+                    NS_LaunchApplicationFIRM(0x00048005484E4441, 0);
+                }
                 Gui::exitMainLoop();
                 return true;
             },

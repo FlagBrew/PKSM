@@ -55,7 +55,8 @@ namespace TitleLoader
     void backupSave(const std::string& id);
     void saveChanges(void);
     void saveToTitle(bool ask);
-    void setRebootToTitle(void);
+    // Returns false when the reboot can't be set because it's a DS title (so use NS instead)
+    bool setRebootToTitle(void);
     bool titleIsRebootable(void);
     void init(void);
     void exit(void);

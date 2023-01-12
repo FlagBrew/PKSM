@@ -1131,12 +1131,17 @@ void TitleLoader::saveToTitle(bool ask)
     }
 }
 
-void TitleLoader::setRebootToTitle()
+bool TitleLoader::setRebootToTitle()
 {
     if (loadedTitle)
     {
+        if (loadedTitle->cardType() == FS_CardType::CARD_TWL)
+        {
+            return false;
+        }
         aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
     }
+    return true;
 }
 
 bool TitleLoader::titleIsRebootable()
