@@ -144,7 +144,10 @@ void MainMenu::makeButtons()
                 {
                     save();
                 }
-                TitleLoader::setRebootToTitle();
+                if (u64 tid = TitleLoader::setRebootToTitle())
+                {
+                    NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+                }
                 Gui::exitMainLoop();
                 return true;
             },

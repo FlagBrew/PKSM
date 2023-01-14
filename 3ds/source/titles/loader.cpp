@@ -1131,17 +1131,30 @@ void TitleLoader::saveToTitle(bool ask)
     }
 }
 
-void TitleLoader::setRebootToTitle()
+u64 TitleLoader::setRebootToTitle()
 {
     if (titleIsRebootable())
     {
-        aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
+        if (loadedTitle->cardType() == FS_CardType::CARD_TWL)
+        {
+            u64 tid = 0x0004800000000000;
+            for (int i = 0; i < 4; i++)
+            {
+                tid |= loadedTitle->checkpointPrefix()[i] << ((3 - i) * 8);
+            }
+            return tid;
+        }
+        else
+        {
+            aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
+        }
     }
+    return 0;
 }
 
 bool TitleLoader::titleIsRebootable()
 {
-    return loadedTitle && loadedTitle->cardType() != FS_CardType::CARD_TWL;
+    return (bool)loadedTitle;
 }
 
 void TitleLoader::saveChanges()
