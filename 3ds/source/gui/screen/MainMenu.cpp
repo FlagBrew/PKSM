@@ -144,30 +144,38 @@ void MainMenu::makeButtons()
                 {
                     save();
                 }
-                if (!TitleLoader::setRebootToTitle())
-                {
-                    NS_LaunchApplicationFIRM(0x00048005484E4441, 0);
-                }
+                TitleLoader::setRebootToTitle();
                 Gui::exitMainLoop();
                 return true;
             },
-            ui_sheet_button_save_idx, "", 0,
-            COLOR_BLACK); // TODO: change this button to be not the same button lol}
+            ui_sheet_emulated_upload_save_button_idx, "", 0, COLOR_BLACK);
     }
 }
 
 void MainMenu::makeInstructions()
 {
-    instructions = Instructions(i18n::localize("B_BACK") + "\n" + i18n::localize("X_SAVE") + "\n" +
-                                i18n::localize("Y_SAVE_AND_LAUNCH"));
+    if (TitleLoader::titleIsRebootable())
+    {
+        instructions =
+            Instructions(i18n::localize("X_SAVE") + '\n' + i18n::localize("Y_SAVE_AND_LAUNCH") +
+                         '\n' + i18n::localize("B_BACK"));
+    }
+    else
+    {
+        instructions = Instructions(i18n::localize("X_SAVE") + '\n' + i18n::localize("B_BACK"));
+    }
+
     instructions.addBox(
         false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
     instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
-    instructions.addBox(
-        false, 50, 218, 125, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE_LAUNCH"), COLOR_WHITE);
-    instructions.addLine(false, 17, 225, 50, 225, 4, COLOR_GREY);
-    instructions.addCircle(false, 17, 225, 4, COLOR_GREY);
+    if (TitleLoader::titleIsRebootable())
+    {
+        instructions.addBox(
+            false, 50, 218, 125, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE_LAUNCH"), COLOR_WHITE);
+        instructions.addLine(false, 17, 225, 50, 225, 4, COLOR_GREY);
+        instructions.addCircle(false, 17, 225, 4, COLOR_GREY);
+    }
 }
 
 void MainMenu::drawTop() const
@@ -301,19 +309,6 @@ void MainMenu::update(touchPosition* touch)
         if (needsSave())
         {
             save();
-        }
-    }
-
-    else if (keysDown() & KEY_Y)
-    {
-        if (TitleLoader::titleIsRebootable())
-        {
-            if (needsSave())
-            {
-                save();
-            }
-            TitleLoader::setRebootToTitle();
-            Gui::exitMainLoop();
         }
     }
 }

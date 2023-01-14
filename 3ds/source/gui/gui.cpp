@@ -1626,6 +1626,11 @@ void Gui::sprite(int key, int x, int y)
         tex = _select_box(sprite, 0, off, 0, sprite.subtex->height);
         Gui::drawImageAt({sprite.tex, &tex}, x, y + off, nullptr, 1.0f, rep);
     }
+    else if (key == ui_sheet_emulated_upload_save_button_idx)
+    {
+        C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_save_idx);
+        Gui::drawImageAt(sprite, x, y, nullptr, 1.0f, -1.0f);
+    }
     // standard case
     else
     {

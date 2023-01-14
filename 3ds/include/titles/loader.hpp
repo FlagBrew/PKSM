@@ -56,7 +56,7 @@ namespace TitleLoader
     void saveChanges(void);
     void saveToTitle(bool ask);
     // Returns false when the reboot can't be set because it's a DS title (so use NS instead)
-    bool setRebootToTitle(void);
+    void setRebootToTitle(void);
     bool titleIsRebootable(void);
     void init(void);
     void exit(void);

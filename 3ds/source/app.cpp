@@ -864,10 +864,6 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("acInit failed.", res);
     }
-    if (R_FAILED(res = nsInit()))
-    {
-        return consoleDisplayError("nsInit failed.", res);
-    }
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
@@ -963,7 +959,6 @@ Result App::exit(void)
     Fetch::exitMulti();
     curl_global_cleanup();
     socExit();
-    nsExit();
     acExit();
     doCartScan.clear();
     Threads::exit();
