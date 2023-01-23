@@ -419,7 +419,7 @@ bool HexEditScreen::checkValue()
                     return false;
                 }
                 return true;
-            case 0xB ... 0xD:
+            case 0xB ... 0xE:
                 if (TitleLoader::save->availableMoves().count(pkm.move(i - 0xB)) == 0)
                 {
                     return false;
