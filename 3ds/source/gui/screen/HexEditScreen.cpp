@@ -1637,18 +1637,15 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     if (i <= 0x34)
                     {
                         return std::make_pair(
-                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                            &i18n::localize("OT_NAME"), OPEN); // floating terminator
                     }
-                    return std::make_pair(
-                        &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("NICKNAME"), OPEN); // floating terminator
                 }
                 if (i <= 0x39)
                 {
-                    return std::make_pair(
-                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("OT_NAME"), OPEN); // floating terminator
                 }
-                return std::make_pair(
-                    &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+                return std::make_pair(&i18n::localize("NICKNAME"), OPEN); // floating terminator
             }
         }
     }
@@ -1731,22 +1728,21 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     if (i <= 0x38)
                     {
                         return std::make_pair(
-                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                            &i18n::localize("OT_NAME"), OPEN); // floating terminator
                     }
                     if (i == 0x3E)
                     {
-                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), OPEN);
                     }
                     return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
                 }
                 if (i <= 0x3D)
                 {
-                    return std::make_pair(
-                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("OT_NAME"), OPEN); // floating terminator
                 }
                 if (i == 0x48)
                 {
-                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), OPEN);
                 }
                 return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
             }
