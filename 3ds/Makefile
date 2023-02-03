@@ -1,6 +1,5 @@
 #---------------------------------------------------------------------------------
 .SUFFIXES:
-.PRECIOUS: build/gfx/ui_sheet.t3x
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
@@ -140,8 +139,8 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 ifneq ($(strip $(RELEASE)),)
-OPTIMIZE		:=	-O3 -flto
-RELEASE_FLAGS	:=	-DNDEBUG
+OPTIMIZE		:=	-O3 -flto=auto
+RELEASE_FLAGS	:=	-DNDEBUG -Wno-unused-variable
 else
 OPTIMIZE		:=	-Og
 endif
@@ -165,8 +164,8 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
-ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
+ASFLAGS	:=	-g $(ARCH) $(OPTIMIZE)
+LDFLAGS	:=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
 
 LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
@@ -320,8 +319,9 @@ clean:
 	@rm -fr $(OUT_DEBUG)
 	@rm -fr $(BUILD_DEBUG)
 	@rm -fr $(GFXBUILD)
+	@rm -fr $(ROMFS)/gfx/*.bz2
 #---------------------------------------------------------------------------------
-clean-deps: clean
+clean-deps:
 	@echo clean-deps ...
 	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
@@ -360,7 +360,7 @@ buildelf: $(ROMFS_GFXFILES) | directories
 ../appinfo.hash:
 	@$(error appinfo.hash not found. Please run make from the project directory)
 
-binaries: $(OUTPUT).3dsx $(OUTPUT).cia
+binaries: $(OUTPUT).3dsx $(OUTPUT).cia | directories
 
 #---------------------------------------------------------------------------------
 format:
@@ -397,6 +397,12 @@ $(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/% | directories
 	@bzip2 -kf --best $< -c > $@
 
 else
+
+#---------------------------------------------------------------------------------
+../$(GFXBUILD)/%.t3x	%.h	:	../$(GRAPHICS)/%.t3s
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@tex3ds -i $< -H $*.h -d $(DEPSDIR)/$*.d -o $@
 
 #---------------------------------------------------------------------------------
 # main targets
