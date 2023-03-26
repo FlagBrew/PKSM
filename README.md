@@ -2,7 +2,7 @@
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
 <p align="center"><img src="https://github.com/FlagBrew/PKSM/workflows/CI/badge.svg" /></p>
 
-Multipurpose and portable Pokemon save manager and editor for generations III to VIII, programmed in
+Multipurpose and portable Pokemon save manager and editor for generations I to VIII, programmed in
 C++.
 
 - Supports original cartridges and digital copies of games from FrLgRSE to SwSh
