@@ -540,11 +540,7 @@ bool BagScreen::canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const
     {
         return false;
     }
-    if (TitleLoader::save->generation() != pksm::Generation::LGPE)
-    {
-        return true;
-    }
-    else
+    if (TitleLoader::save->generation() == pksm::Generation::LGPE)
     {
         if (std::find(lgpeKeyItems.begin(), lgpeKeyItems.end(), item.id()) != lgpeKeyItems.end())
         {
@@ -552,6 +548,16 @@ bool BagScreen::canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const
         }
         return true;
     }
+    else if (TitleLoader::save->generation() == pksm::Generation::ONE)
+    {
+        if (std::find(rgbyKeyItems.begin(), rgbyKeyItems.end(),
+                static_cast<const pksm::Item1&>(item).id1()) != rgbyKeyItems.end())
+        {
+            return false;
+        }
+        return true;
+    }
+    return true;
 }
 
 void BagScreen::setCount(int selected)

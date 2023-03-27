@@ -50,6 +50,9 @@ private:
         124, 125, 126, 127, 128, 442, 632, 651, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887,
         888, 889, 890, 891, 892, 893, 894, 895, 896};
 
+    static constexpr std::array<u16, 19> rgbyKeyItems = {
+        6, 45, 48, 69, 41, 42, 64, 77, 71, 74, 70, 31, 76, 73, 43, 72, 63, 78, 5};
+
     bool clickIndex(int i);
     bool switchPouch(int i);
     void editItem();
