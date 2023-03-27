@@ -464,6 +464,11 @@ void SaveLoadScreen::update(touchPosition* touch)
         makeInstructions();
     }
     u32 downKeys = hidKeysDown();
+    if (downKeys & KEY_START)
+    {
+        Gui::exitMainLoop();
+        return;
+    }
     if (selectedGroup)
     {
         if (downKeys & KEY_B)
