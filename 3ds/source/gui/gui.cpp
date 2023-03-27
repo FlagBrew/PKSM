@@ -1878,6 +1878,11 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
                 drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx),
                     x + 25 + 34 * (scale - 1), y + 5, nullptr, scale, scale);
             }
+            else
+            {
+                drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, forms[form]), x, y, &tint,
+                    scale, scale);
+            }
         }
         else if (forms[form] == 0)
         {
