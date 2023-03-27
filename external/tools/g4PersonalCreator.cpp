@@ -29,11 +29,13 @@ struct PKHeXPersonalEntry
     u8 ability1;
     u8 ability2;
     u8 escapeRate;
+
     struct
     {
-        u8 color : 7;
+        u8 color  : 7;
         u8 noFlip : 1;
     };
+
     u8 padding[2];
     u8 TMHM[0xD];
     u8 formCount;
@@ -41,6 +43,7 @@ struct PKHeXPersonalEntry
 };
 
 #pragma pack(push, 1)
+
 struct PKSMPersonalEntry
 {
     u8 hp;
@@ -59,6 +62,7 @@ struct PKSMPersonalEntry
     u16 formStatIndex;
     u8 formCount;
 };
+
 #pragma pack(pop)
 
 int main()
@@ -94,16 +98,23 @@ int main()
         outEntries[i].formCount      = inEntries[i].formCount;
     }
 
-    printf("constexpr unsigned char personal_dppthgss[] = { ");
-    for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // printf("constexpr unsigned char personal_dppthgss[] = { ");
+    // for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // {
+    //     printf("0x%x, ", *(((u8*)outEntries) + i));
+    // }
+    // printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
+
+    printf("constexpr int personal4_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal4_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+
+    FILE* outPersonal = fopen("personal4", "wb");
+    for (size_t i = 0; i < entries; i++)
     {
-        printf("0x%x, ", *(((u8*)outEntries) + i));
+        fwrite(outEntries + i, sizeof(outEntries[i]), 1, outPersonal);
     }
-    printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
-
-    printf("constexpr int personal_dppthgss_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
-
-    printf("constexpr int personal_dppthgss_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+    fclose(outPersonal);
 
     return 0;
 }

@@ -32,9 +32,9 @@ struct SWSHPersonalEntry
     u16 abilityH;
     u16 formStatIndex;
     u8 formCount;
-    u8 color : 6;
+    u8 color           : 6;
     bool presentInGame : 1;
-    bool spriteForm : 1;
+    bool spriteForm    : 1;
     u16 baseExp;
     u16 height;
     u16 weight;       // 0x26-0x27
@@ -120,16 +120,23 @@ int main()
         }
     }
 
-    printf("constexpr unsigned char personal_swsh[] = { ");
-    for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // printf("constexpr unsigned char personal_swsh[] = { ");
+    // for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // {
+    //     printf("0x%x, ", *(((u8*)outEntries) + i));
+    // }
+    // printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
+
+    printf("constexpr int personal8_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal8_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+
+    FILE* outPersonal = fopen("personal8", "wb");
+    for (size_t i = 0; i < entries; i++)
     {
-        printf("0x%x, ", *(((u8*)outEntries) + i));
+        fwrite(outEntries + i, sizeof(outEntries[i]), 1, outPersonal);
     }
-    printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
-
-    printf("constexpr int personal_swsh_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
-
-    printf("constexpr int personal_swsh_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+    fclose(outPersonal);
 
     return 0;
 }

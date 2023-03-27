@@ -11,6 +11,7 @@ assets/romfs/mg/*.json.bz2
 assets/romfs/mg/*.bin.bz2
 assets/romfs/gfx/*
 assets/romfs/i18n/
+assets/romfs/personal/
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x
 assets/romfs/scripts/

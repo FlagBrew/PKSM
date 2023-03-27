@@ -50,6 +50,7 @@ struct PKHeXPersonalEntry
 };
 
 #pragma pack(push, 1)
+
 struct PKSMPersonalEntry
 {
     u8 hp;
@@ -69,6 +70,7 @@ struct PKSMPersonalEntry
     u16 formStatIndex;
     u8 formCount;
 };
+
 #pragma pack(pop)
 
 int main()
@@ -106,16 +108,23 @@ int main()
         outEntries[i].formStatIndex  = inEntries[i].formStatIndex;
     }
 
-    printf("constexpr unsigned char personal_lgpe[] = { ");
-    for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // printf("constexpr unsigned char personal_lgpe[] = { ");
+    // for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // {
+    //     printf("0x%x, ", *(((u8*)outEntries) + i));
+    // }
+    // printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
+
+    printf("constexpr int personal7b_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal7b_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+
+    FILE* outPersonal = fopen("personal7b", "wb");
+    for (size_t i = 0; i < entries; i++)
     {
-        printf("0x%x, ", *(((u8*)outEntries) + i));
+        fwrite(outEntries + i, sizeof(outEntries[i]), 1, outPersonal);
     }
-    printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
-
-    printf("constexpr int personal_lgpe_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
-
-    printf("constexpr int personal_lgpe_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+    fclose(outPersonal);
 
     return 0;
 }

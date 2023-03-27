@@ -276,15 +276,15 @@ endif
 
 #---------------------------------------------------------------------------------
 all:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal"
 no-scripts:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/i18n $(ROMFS)/personal"
 no-gifts:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/scripts $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal"
 no-deps:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/i18n $(ROMFS)/personal"
 #---------------------------------------------------------------------------------
-deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n | directories
+deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal | directories
 
 $(ROMFS)/mg: $(PACKER)/EventsGallery
 	@echo Packing events...
@@ -306,6 +306,12 @@ $(ROMFS)/i18n: $(filter-out %/gui.json, $(wildcard $(ASSETWILDCARD))) $(shell fi
 	@cp -r ../core/strings/* $(ROMFS)/i18n
 	@touch $(ROMFS)/i18n
 
+$(ROMFS)/personal: $(shell find ../core/personals -type f -printf "\"%p\"\n" | sed -e 's/ /\\ /g' -e 's/"//g')
+	@echo Copying personal data...
+	@mkdir -p $(ROMFS)/personal
+	@cp ../core/personals/* $(ROMFS)/personal
+	@touch $(ROMFS)/personal
+
 $(PACKER)/EventsGallery: checkgallery
 
 checkgallery:
@@ -326,6 +332,7 @@ clean-deps:
 	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
 	@rm -fr $(ROMFS)/scripts
+	@rm -fr $(ROMFS)/personal
 	@rm -fr $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 spotless: clean
