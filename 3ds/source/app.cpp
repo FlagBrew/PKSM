@@ -480,7 +480,7 @@ namespace
         return false;
     }
 
-    void cartScan(void*)
+    void cartScan()
     {
         bool oldCardIn;
         FSUSER_CardSlotIsInserted(&oldCardIn);
@@ -523,7 +523,7 @@ namespace
         }
     }
 
-    void iconThread(void*)
+    void iconThread()
     {
         int x = 176, y = 96;
         u16 w, h;
@@ -575,7 +575,7 @@ namespace
         }
     }
 
-    void i18nThread(void*)
+    void i18nThread()
     {
         static constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
             pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
@@ -937,14 +937,14 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    Threads::executeTask([](void*) { TitleLoader::scanTitles(); }, nullptr);
+    Threads::executeTask(TitleLoader::scanTitles);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create(cartScan, nullptr);
+    Threads::create(cartScan);
 
     continueI18N.test_and_set();
-    Threads::executeTask(i18nThread, nullptr);
+    Threads::executeTask(i18nThread);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB

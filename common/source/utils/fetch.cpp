@@ -157,7 +157,7 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
     return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
 }
 
-void Fetch::multiMainThread(void*)
+void Fetch::multiMainThread()
 {
     int trash;
     while (multiThreadInfo)
@@ -217,7 +217,7 @@ Result Fetch::initMulti()
     __lock_init(multiHandleMutex);
     multiHandle     = curl_multi_init();
     multiThreadInfo = true;
-    if (!Threads::create(Fetch::multiMainThread, nullptr, 8 * 1024))
+    if (!Threads::create(8 * 1024, Fetch::multiMainThread))
     {
         multiInitialized = false;
         return -1;

@@ -82,7 +82,7 @@ namespace
     LightSemaphore moreTasks;
     u8 numWorkers;
 
-    void taskWorkerThread(void* arg)
+    void taskWorkerThread()
     {
         while (true)
         {
@@ -131,7 +131,7 @@ bool Threads::init(u8 workers)
     LightSemaphore_Init(&moreTasks, 0, workers);
     for (int i = 0; i < workers; i++)
     {
-        if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
+        if (!Threads::create(0x8000, taskWorkerThread))
         {
             return false;
         }

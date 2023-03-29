@@ -78,12 +78,6 @@ namespace
         bool cancel                               = false;
     };
 
-    void drawHelp(void* arg)
-    {
-        QRData* data = (QRData*)arg;
-        data->drawThread();
-    }
-
     void captureHelp(void* arg)
     {
         QRData* data = (QRData*)arg;
@@ -298,7 +292,7 @@ std::vector<u8> QR_Internal::scan()
     std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
     aptSetHomeAllowed(false);
-    Threads::create(&drawHelp, data.get(), 0x10000);
+    Threads::create<&QRData::drawThread>(0x10000, data.get());
     while (!data->done())
     {
         data->handler(out);

@@ -143,7 +143,7 @@ namespace
         return ret;
     }
 
-    void soundThread(void*)
+    void soundThread()
     {
         finished = false;
         while (playing)
@@ -258,7 +258,7 @@ void Sound::exit()
 void Sound::start()
 {
     playing = true;
-    Threads::create(&soundThread, nullptr, 16 * 1024);
+    Threads::create(16 * 1024, soundThread);
 }
 
 void Sound::stop()
