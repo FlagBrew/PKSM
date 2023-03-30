@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "添加保存",
     "APP_LEGALIZE": "Legalize via GPSS App",
     "APP_SCAN_QR": "Scan legal QR",
     "APP_USE_SOCKETS": "Legalize over Network",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": 向下滚动",
     "EDITOR_INST": "按选择, 返回",
     "GPSS_BROWSE": "浏览GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "十字键移动. 按A继续, START退出.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "选择要打开的存档. 按Y显示所有游戏.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "选择要打开的存档. 按Y显示现有游戏.",
     "L_BOX_PREV": ": 上一盒",

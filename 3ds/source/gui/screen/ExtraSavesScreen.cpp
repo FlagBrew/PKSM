@@ -40,7 +40,7 @@ ExtraSavesScreen::ExtraSavesScreen()
         1, 2, 104, 17,
         [&]()
         {
-            systemGroup = 0;
+            systemGroup = SystemGroup::GB_GBC_GBA;
             saveGroup   = 0;
             return false;
         },
@@ -51,7 +51,7 @@ ExtraSavesScreen::ExtraSavesScreen()
         108, 2, 104, 17,
         [&]()
         {
-            systemGroup = 1;
+            systemGroup = SystemGroup::DS_3DS;
             saveGroup   = 0;
             return false;
         },
@@ -62,7 +62,7 @@ ExtraSavesScreen::ExtraSavesScreen()
         215, 2, 104, 17,
         [&]()
         {
-            systemGroup = 2;
+            systemGroup = SystemGroup::SWITCH;
             saveGroup   = 0;
             return false;
         },
@@ -485,36 +485,8 @@ void ExtraSavesScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_A)
     {
-        switch (systemGroup)
-        {
-            case SystemGroup::GB_GBC_GBA:
-                // saveGroup += ExtraSavesSubScreen::Group::RGB; // no-op
-                break;
-            case SystemGroup::DS_3DS:
-                saveGroup += ExtraSavesSubScreen::Group::DP;
-                break;
-            case SystemGroup::SWITCH:
-                saveGroup += ExtraSavesSubScreen::Group::LGPE;
-                break;
-            default:
-                break;
-        }
         Gui::setScreen(
-            std::make_unique<ExtraSavesSubScreen>(ExtraSavesSubScreen::Group(saveGroup)));
-        switch (systemGroup)
-        {
-            case SystemGroup::GB_GBC_GBA:
-                // saveGroup -= ExtraSavesSubScreen::Group::RGB; // no-op
-                break;
-            case SystemGroup::DS_3DS:
-                saveGroup -= ExtraSavesSubScreen::Group::DP;
-                break;
-            case SystemGroup::SWITCH:
-                saveGroup -= ExtraSavesSubScreen::Group::LGPE;
-                break;
-            default:
-                break;
-        }
+            std::make_unique<ExtraSavesSubScreen>(calcSaveGroupFromSystem(systemGroup, saveGroup)));
     }
     else if (downKeys & KEY_B)
     {
@@ -526,22 +498,14 @@ void ExtraSavesScreen::update(touchPosition* touch)
     if (downKeys & KEY_L)
     {
         systemGroup--;
-        if (systemGroup < 0)
-        {
-            systemGroup = SystemGroup::SWITCH;
-        }
         saveGroup = 0;
-        tabs[systemGroup]->setState(true);
+        tabs[u8(systemGroup)]->setState(true);
     }
     else if (downKeys & KEY_R)
     {
         systemGroup++;
-        if (systemGroup > SystemGroup::SWITCH)
-        {
-            systemGroup = SystemGroup::GB_GBC_GBA;
-        }
         saveGroup = 0;
-        tabs[systemGroup]->setState(true);
+        tabs[u8(systemGroup)]->setState(true);
     }
 
     for (auto& button : tabs)

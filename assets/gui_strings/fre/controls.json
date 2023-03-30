@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Ajouter la sauvegarde",
     "APP_LEGALIZE": "Légaliser via l'appli GPSS",
     "APP_SCAN_QR": "Scan legal QR",
     "APP_USE_SOCKETS": "Légaliser via le réseau",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": DÙfiler vers le bas",
     "EDITOR_INST": "Appuyez sur  pour sélectionner,\n pour retourner en arrière",
     "GPSS_BROWSE": "Naviguer le GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "DPAD : déplacement, A : valider, START : quitter",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Choisir une sauvegarde à ouvrir. Appuyez sur Y pour les jeux manquants.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Choisir une sauvegarde à ouvrir. Appuyez sur Y pour les jeux installés.",
     "L_BOX_PREV": ": Boîte précédente",

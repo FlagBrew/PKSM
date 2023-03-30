@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Adaugă Un Save",
     "APP_LEGALIZE": "Legalizează prin Aplicația GPSS",
     "APP_SCAN_QR": "Scanează QR legal",
     "APP_USE_SOCKETS": "Legalizează prin Network",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": Mişcă pagina mai jos",
     "EDITOR_INST": "Apasă  ca să selectezi,  să te duci înapoi",
     "GPSS_BROWSE": "Uită-te prin GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Mişcă cu D-PAD-ul. Apasă A să continui, START să ieşi.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Alege un save de deschis. Apasă Y pentru jocuri absente.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Alege un save de deschis. Apasă Y pentru jocuri prezente",
     "L_BOX_PREV": ": Cutie anterioară",

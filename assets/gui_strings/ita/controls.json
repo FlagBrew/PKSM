@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Aggiungi Salvataggio",
     "APP_LEGALIZE": "Legalizza con l'App GPSS",
     "APP_SCAN_QR": "Scansiona QR",
     "APP_USE_SOCKETS": "Legalizza via rete",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": Scorri ù",
     "EDITOR_INST": "Clicca  per selezionare,\n per tornare indietro",
     "GPSS_BROWSE": "Naviga GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Clicca . Premi A per continuare, START per uscire.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Scegli un salvataggio. Clicca  per i giochi assenti.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Scegli un salvataggio. Clicca  per i giochi disponibili.",
     "L_BOX_PREV": ": Box precedente",

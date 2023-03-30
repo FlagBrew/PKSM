@@ -30,6 +30,7 @@
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "enums/Species.hpp"
+#include "ExtraSavesSubScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "MainMenu.hpp"
@@ -81,7 +82,15 @@ SaveLoadScreen::SaveLoadScreen()
 {
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(
-        200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+        200, 147, 96, 51,
+        [this]()
+        {
+            mustUpdateTitles = true;
+            Gui::setScreen(std::make_unique<ExtraSavesSubScreen>(
+                calcSaveGroupFromSystem(systemGroup, saveGroup)));
+            return true;
+        },
+        ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK, 10, 10));
@@ -102,7 +111,7 @@ SaveLoadScreen::SaveLoadScreen()
         1, 2, 104, 17,
         [&]()
         {
-            systemGroup = 0;
+            systemGroup = SystemGroup::GB_GBC_GBA;
             saveGroup   = 0;
             return false;
         },
@@ -113,7 +122,7 @@ SaveLoadScreen::SaveLoadScreen()
         108, 2, 104, 17,
         [&]()
         {
-            systemGroup = 1;
+            systemGroup = SystemGroup::DS_3DS;
             saveGroup   = 0;
             return false;
         },
@@ -124,7 +133,7 @@ SaveLoadScreen::SaveLoadScreen()
         215, 2, 104, 17,
         [&]()
         {
-            systemGroup = 2;
+            systemGroup = SystemGroup::SWITCH;
             saveGroup   = 0;
             return false;
         },
@@ -367,19 +376,7 @@ void SaveLoadScreen::drawTop(void) const
 
 void SaveLoadScreen::drawBottom() const
 {
-    int saveGroupButForThisVirtualFunction = saveGroup;
-    switch (systemGroup)
-    {
-        case SystemGroup::DS_3DS:
-            saveGroupButForThisVirtualFunction += 7;
-            break;
-        case SystemGroup::SWITCH:
-            saveGroupButForThisVirtualFunction += 16;
-            break;
-        case SystemGroup::GB_GBC_GBA:
-        default:
-            break;
-    }
+    SaveGroup fullSaveGroup = calcSaveGroupFromSystem(systemGroup, saveGroup);
 
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
@@ -389,8 +386,8 @@ void SaveLoadScreen::drawBottom() const
         tabButton->draw();
     }
 
-    Gui::text(std::string(names[saveGroupButForThisVirtualFunction]), 27, 26, FONT_SIZE_14,
-        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::string(names[u8(fullSaveGroup)]), 27, 26, FONT_SIZE_14, COLOR_WHITE,
+        TextPosX::LEFT, TextPosY::TOP);
 
     if (selectedSave > -1)
     {
@@ -400,12 +397,12 @@ void SaveLoadScreen::drawBottom() const
     int y = 97;
     for (int i = firstSave; i < firstSave + 6; i++)
     {
-        if (i < (int)saves[saveGroupButForThisVirtualFunction].size())
+        if (i < (int)saves[u8(fullSaveGroup)].size())
         {
-            std::string save = saves[saveGroupButForThisVirtualFunction][i].second.substr(
-                0, saves[saveGroupButForThisVirtualFunction][i].second.find_last_of('/'));
+            std::string save = saves[u8(fullSaveGroup)][i].second.substr(
+                0, saves[u8(fullSaveGroup)][i].second.find_last_of('/'));
             save = save.substr(save.find_last_of('/') + 1);
-            save = saves[saveGroupButForThisVirtualFunction][i].first + save;
+            save = saves[u8(fullSaveGroup)][i].first + save;
             if (i - firstSave == selectedSave)
             {
                 Gui::text(save, 29, y, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP,
@@ -430,8 +427,8 @@ void SaveLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 102, 197, 102, 193, 97, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    if (selectedSave < 5 && saves[saveGroupButForThisVirtualFunction].size() != 0 &&
-        (size_t)firstSave + 5 < saves[saveGroupButForThisVirtualFunction].size() - 1)
+    if (selectedSave < 5 && saves[u8(fullSaveGroup)].size() != 0 &&
+        (size_t)firstSave + 5 < saves[u8(fullSaveGroup)].size() - 1)
     {
         Gui::drawSolidRect(191, 186, 4, 5, PKSM_Color(0x0f, 0x16, 0x59, 255));
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
@@ -439,8 +436,8 @@ void SaveLoadScreen::drawBottom() const
 
     Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 163, FONT_SIZE_14, COLOR_WHITE,
-        TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(i18n::localize("ADD_SAVE"), 248, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::TOP);
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::TOP);
@@ -452,6 +449,8 @@ void SaveLoadScreen::drawBottom() const
 
 void SaveLoadScreen::update(touchPosition* touch)
 {
+    SaveGroup fullSaveGroup = calcSaveGroupFromSystem(systemGroup, saveGroup);
+
     if (mustUpdateTitles)
     {
         mustUpdateTitles = false;
@@ -484,47 +483,23 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_DOWN)
         {
-            switch (systemGroup)
-            {
-                case SystemGroup::DS_3DS:
-                    saveGroup += 7;
-                    break;
-                case SystemGroup::SWITCH:
-                    saveGroup += 16;
-                    break;
-                case SystemGroup::GB_GBC_GBA:
-                default:
-                    break;
-            }
             if (selectedSave == 4)
             {
-                if (firstSave + 5 < (int)saves[saveGroup].size() - 1)
+                if (firstSave + 5 < (int)saves[u8(fullSaveGroup)].size() - 1)
                 {
                     firstSave++;
                 }
-                else if (firstSave + selectedSave < (int)saves[saveGroup].size() - 1)
+                else if (firstSave + selectedSave < (int)saves[u8(fullSaveGroup)].size() - 1)
                 {
                     selectedSave++;
                 }
             }
             else
             {
-                if (firstSave + selectedSave < (int)saves[saveGroup].size() - 1)
+                if (firstSave + selectedSave < (int)saves[u8(fullSaveGroup)].size() - 1)
                 {
                     selectedSave++;
                 }
-            }
-            switch (systemGroup)
-            {
-                case SystemGroup::DS_3DS:
-                    saveGroup -= 7;
-                    break;
-                case SystemGroup::SWITCH:
-                    saveGroup -= 16;
-                    break;
-                case SystemGroup::GB_GBC_GBA:
-                default:
-                    break;
             }
         }
         if (downKeys & KEY_UP)
@@ -735,55 +710,23 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         if (downKeys & KEY_A)
         {
-            switch (systemGroup)
-            {
-                case SystemGroup::DS_3DS:
-                    saveGroup += 7;
-                    break;
-                case SystemGroup::SWITCH:
-                    saveGroup += 16;
-                    break;
-                case SystemGroup::GB_GBC_GBA:
-                default:
-                    break;
-            }
-            if (saves[saveGroup].size() != 0)
+            if (saves[u8(fullSaveGroup)].size() != 0)
             {
                 selectedGroup = true;
                 selectedSave  = 0;
-            }
-            switch (systemGroup)
-            {
-                case SystemGroup::DS_3DS:
-                    saveGroup -= 7;
-                    break;
-                case SystemGroup::SWITCH:
-                    saveGroup -= 16;
-                    break;
-                case SystemGroup::GB_GBC_GBA:
-                default:
-                    break;
             }
         }
         if (downKeys & KEY_L)
         {
             systemGroup--;
-            if (systemGroup < 0)
-            {
-                systemGroup = SystemGroup::SWITCH;
-            }
             saveGroup = 0;
-            tabs[systemGroup]->setState(true);
+            tabs[u8(systemGroup)]->setState(true);
         }
         else if (downKeys & KEY_R)
         {
             systemGroup++;
-            if (systemGroup > SystemGroup::SWITCH)
-            {
-                systemGroup = SystemGroup::GB_GBC_GBA;
-            }
             saveGroup = 0;
-            tabs[systemGroup]->setState(true);
+            tabs[u8(systemGroup)]->setState(true);
         }
         if (buttons[0]->update(touch))
         {
@@ -803,72 +746,28 @@ void SaveLoadScreen::update(touchPosition* touch)
 
 bool SaveLoadScreen::loadSave()
 {
-    switch (systemGroup)
-    {
-        case SystemGroup::DS_3DS:
-            saveGroup += 7;
-            break;
-        case SystemGroup::SWITCH:
-            saveGroup += 16;
-            break;
-        case SystemGroup::GB_GBC_GBA:
-        default:
-            break;
-    }
-    if (TitleLoader::load(nullptr, saves[saveGroup][selectedSave + firstSave].second))
+    SaveGroup fullSaveGroup = calcSaveGroupFromSystem(systemGroup, saveGroup);
+
+    if (TitleLoader::load(nullptr, saves[u8(fullSaveGroup)][selectedSave + firstSave].second))
     {
         Gui::setScreen(std::make_unique<MainMenu>());
-        switch (systemGroup)
-        {
-            case SystemGroup::DS_3DS:
-                saveGroup -= 7;
-                break;
-            case SystemGroup::SWITCH:
-                saveGroup -= 16;
-                break;
-            case SystemGroup::GB_GBC_GBA:
-            default:
-                break;
-        }
         return true;
-    }
-    switch (systemGroup)
-    {
-        case SystemGroup::DS_3DS:
-            saveGroup -= 7;
-            break;
-        case SystemGroup::SWITCH:
-            saveGroup -= 16;
-            break;
-        case SystemGroup::GB_GBC_GBA:
-        default:
-            break;
     }
     return false;
 }
 
 bool SaveLoadScreen::setSelectedSave(int i)
 {
-    switch (systemGroup)
-    {
-        case SystemGroup::DS_3DS:
-            saveGroup += 7;
-            break;
-        case SystemGroup::SWITCH:
-            saveGroup += 16;
-            break;
-        case SystemGroup::GB_GBC_GBA:
-        default:
-            break;
-    }
+    SaveGroup fullSaveGroup = calcSaveGroupFromSystem(systemGroup, saveGroup);
+
     if (i == 5)
     {
-        if (firstSave + 5 < (int)saves[saveGroup].size() - 1)
+        if (firstSave + 5 < (int)saves[u8(fullSaveGroup)].size() - 1)
         {
             firstSave++;
             selectedSave = 4;
         }
-        else if (firstSave + 5 < (int)saves[saveGroup].size())
+        else if (firstSave + 5 < (int)saves[u8(fullSaveGroup)].size())
         {
             selectedSave = 5;
         }
@@ -878,21 +777,9 @@ bool SaveLoadScreen::setSelectedSave(int i)
         firstSave--;
         selectedSave = 1;
     }
-    else if (firstSave + i < (int)saves[saveGroup].size())
+    else if (firstSave + i < (int)saves[u8(fullSaveGroup)].size())
     {
         selectedSave = i;
-    }
-    switch (systemGroup)
-    {
-        case SystemGroup::DS_3DS:
-            saveGroup -= 7;
-            break;
-        case SystemGroup::SWITCH:
-            saveGroup -= 16;
-            break;
-        case SystemGroup::GB_GBC_GBA:
-        default:
-            break;
     }
     return false;
 }

@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "セーブを追加",
     "APP_LEGALIZE": "GPSSアプリで整合性にする",
     "APP_SCAN_QR": "整合性のQRをスキャンします",
     "APP_USE_SOCKETS": "ネットワールで整合性にする",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": 下へスクロール",
     "EDITOR_INST": ": 選択、: 戻る",
     "GPSS_BROWSE": "GPSSをブラウズ",
-    "LOADER_INSTRUCTIONS_BOTTOM": "十字: 移動 A: 決定 START: 終了",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "十字: 選択 Y: 不在ゲームに切り替え",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "十字: 選択 Y: 現在ゲームに切り替え",
     "L_BOX_PREV": ": 前のボックス",

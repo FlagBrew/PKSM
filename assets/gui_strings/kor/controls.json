@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Add Save",
     "APP_LEGALIZE": "Legalize via GPSS App",
     "APP_SCAN_QR": "Scan legal QR",
     "APP_USE_SOCKETS": "Legalize over Network",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": Scroll down",
     "EDITOR_INST": "을 눌러 선택하고, 을 눌러 돌아갑니다.",
     "GPSS_BROWSE": "Browse GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "십자키를 움직이십시오. A 버튼을 눌러 진행하고, START 버튼을 눌러 나가십시오.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "열고 싶은 세이브 파일을 선택하십시오. 없는 게임은 Y 버튼을 누르십시오.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "열고 싶은 세이브 파일을 선택하십시오. 있는 게임은 Y 버튼을 누르십시오.",
     "L_BOX_PREV": ": Previous box",
