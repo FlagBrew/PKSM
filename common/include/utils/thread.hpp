@@ -28,10 +28,10 @@
 #define THREAD_HPP
 
 #include "coretypes.h"
+#include "utils/alignsort_tuple.hpp"
 #include <functional>
 #include <memory>
 #include <optional>
-#include <tuple>
 #include <utility>
 
 namespace Threads
@@ -54,24 +54,21 @@ namespace Threads
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Args&&... args)
         // clang-format on
         {
+            using tuple_type =
+                alignsort_tuple<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...>;
             return {std::invoke(
                         []<std::size_t... Indices>(std::index_sequence<Indices...>) {
                             return +[](void* argsRaw)
                             {
-                                std::unique_ptr<std::pair<std::remove_cvref_t<EPFunc>,
-                                    std::tuple<std::remove_cvref_t<Args>...>>>
-                                    args = std::unique_ptr<std::pair<std::remove_cvref_t<EPFunc>,
-                                        std::tuple<std::remove_cvref_t<Args>...>>>(
-                                        reinterpret_cast<std::pair<std::remove_cvref_t<EPFunc>,
-                                            std::tuple<std::remove_cvref_t<Args>...>>*>(argsRaw));
+                                std::unique_ptr<tuple_type> args = std::unique_ptr<tuple_type>(
+                                    reinterpret_cast<tuple_type*>(argsRaw));
 
-                                std::invoke(args->first, std::get<Indices>(args->second)...);
+                                std::invoke(std::get<Indices>(*args)...);
                             };
                         },
-                        std::index_sequence_for<Args...>{}),
-                static_cast<void*>(new std::pair<std::remove_cvref_t<EPFunc>,
-                    std::tuple<std::remove_cvref_t<Args>...>>(std::forward<EPFunc>(entrypoint),
-                    std::tuple<std::remove_cvref_t<Args>...>(std::forward<Args>(args)...)))};
+                        std::index_sequence_for<EPFunc, Args...>{}),
+                static_cast<void*>(
+                    new tuple_type(std::forward<EPFunc>(entrypoint), std::forward<Args>(args)...))};
         }
 
         // Convert any function refs to function pointers
