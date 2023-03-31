@@ -314,6 +314,19 @@ void MainMenu::update(touchPosition* touch)
             save();
         }
     }
+    else if (keysDown() & KEY_Y)
+    {
+        if (needsSave())
+        {
+            save();
+        }
+        if (u64 tid = TitleLoader::setRebootToTitle())
+        {
+            NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+        }
+        Gui::exitMainLoop();
+        return;
+    }
 }
 
 bool MainMenu::needsSave()
