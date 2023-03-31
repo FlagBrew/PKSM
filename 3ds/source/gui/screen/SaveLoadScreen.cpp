@@ -140,7 +140,7 @@ SaveLoadScreen::SaveLoadScreen()
         ui_sheet_res_null_idx, i18n::localize("SWITCH_CONSOLE"), FONT_SIZE_11, COLOR_WHITE,
         ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("SWITCH_CONSOLE"),
         FONT_SIZE_11, COLOR_BLACK, &tabs, false));
-    tabs[0]->setState(true);
+    tabs[1]->setState(true);
 
     updateTitles();
 }
