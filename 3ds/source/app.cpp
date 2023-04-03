@@ -682,6 +682,28 @@ namespace
             return;
         }
 
+        u8 today = Date::today().day();
+
+        FILE* timestamp = fopen("/3ds/PKSM/mgTimeCheck", "rb");
+        if (timestamp)
+        {
+            u8 day = 0;
+            fread(&day, 1, 1, timestamp);
+            fclose(timestamp);
+
+            if (day == today)
+            {
+                return;
+            }
+        }
+
+        timestamp = fopen("/3ds/PKSM/mgTimeCheck", "wb");
+        if (timestamp)
+        {
+            fwrite(&today, 1, 1, timestamp);
+            fclose(timestamp);
+        }
+
         struct giftCurlData
         {
             giftCurlData(FILE* file, const std::string& fileName)
