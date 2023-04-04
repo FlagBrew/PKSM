@@ -51,7 +51,16 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Result res = App::init(argc > 0 ? argv[0] : "");
+    Result res;
+    try
+    {
+        res = App::init(argc > 0 ? argv[0] : "");
+    }
+    catch (std::exception& e)
+    {
+        consoleDisplayError(e.what());
+        res = -1;
+    }
     if (R_FAILED(res))
     {
         App::exit();
