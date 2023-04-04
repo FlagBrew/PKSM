@@ -27,155 +27,59 @@
 #ifndef ALIGNSORT_TUPLE_HPP
 #define ALIGNSORT_TUPLE_HPP
 
+#include <array>
 #include <tuple>
-#include <type_traits>
 #include <utility>
 
 namespace internal
 {
-    template <typename ISeq>
-    struct SequenceDetails
-    {
-    private:
-        template <std::size_t Head, std::size_t... Tail>
-        static std::integral_constant<std::size_t, Head> IndexSequenceHead(
-            std::index_sequence<Head, Tail...>);
-
-        template <std::size_t Head, std::size_t... Tail>
-        static std::index_sequence<Tail...> IndexSequenceTail(std::index_sequence<Head, Tail...>);
-
-    public:
-        static constexpr std::size_t head = decltype(IndexSequenceHead(std::declval<ISeq>())){};
-        using tail                        = decltype(IndexSequenceTail(std::declval<ISeq>()));
-    };
-
-    template <std::size_t Idx, typename ISeq>
-    struct SequencePrepend
-    {
-    private:
-        template <std::size_t... Tail>
-        static std::index_sequence<Idx, Tail...> Prepend(std::index_sequence<Tail...>);
-
-    public:
-        using type = decltype(Prepend(std::declval<ISeq>()));
-    };
-
-    template <bool IsGEqual, typename details, typename origSubCalc, typename Arg0,
-        typename... Args>
-    struct calc_helper;
-
-    template <typename seq, typename... Args>
-    struct alignsort_tuple_calc_help;
-
-    template <typename details, typename origSubCalc, typename Arg0, typename... Args>
-    struct calc_helper<true, details, origSubCalc, Arg0, Args...>
-    {
-        using indices =
-            typename SequencePrepend<details::head, typename origSubCalc::indices>::type;
-        using type                             = decltype(std::tuple_cat(
-            std::declval<std::tuple<Arg0>>(), std::declval<typename origSubCalc::type>()));
-        static constexpr std::size_t max_align = alignof(Arg0);
-    };
-
-    template <typename details, typename origSubCalc, typename Arg0, typename... Args>
-    struct calc_helper<false, details, origSubCalc, Arg0, Args...>
-    {
-    private:
-        using oldCalcDetails      = SequenceDetails<typename origSubCalc::indices>;
-        using oldCalcMaxAlignType = std::tuple_element_t<0, typename origSubCalc::type>;
-
-        using newSubCalcIndices =
-            typename SequencePrepend<details::head, typename oldCalcDetails::tail>::type;
-
-        template <typename OldTupleHead, typename... OldTupleTail>
-        static std::tuple<OldTupleTail...> GetTupleTail(std::tuple<OldTupleHead, OldTupleTail...>);
-
-        using oldTupleTail = decltype(GetTupleTail(std::declval<typename origSubCalc::type>()));
-
-        template <typename... OldTail>
-        static alignsort_tuple_calc_help<newSubCalcIndices, Arg0, OldTail...> GetHelp(
-            std::tuple<OldTail...>);
-
-        using newSubCalc = decltype(GetHelp(std::declval<oldTupleTail>()));
-
-    public:
-        using type = decltype(std::tuple_cat(std::declval<std::tuple<oldCalcMaxAlignType>>(),
-            std::declval<typename newSubCalc::type>()));
-        using indices =
-            typename SequencePrepend<oldCalcDetails::head, typename newSubCalc::indices>::type;
-        static constexpr std::size_t max_align = alignof(oldCalcMaxAlignType);
-    };
-
-    template <typename Indices, typename Arg0, typename... Args>
-    struct alignsort_tuple_calc_help<Indices, Arg0, Args...>
-    {
-    private:
-        using details     = SequenceDetails<Indices>;
-        using origSubCalc = alignsort_tuple_calc_help<typename details::tail, Args...>;
-
-        using helper = calc_helper<alignof(Arg0) >= origSubCalc::max_align, details, origSubCalc,
-            Arg0, Args...>;
-
-    public:
-        using indices                          = typename helper::indices;
-        using type                             = typename helper::type;
-        static constexpr std::size_t max_align = helper::max_align;
-    };
-
-    template <typename Indices, typename Arg>
-    struct alignsort_tuple_calc_help<Indices, Arg>
-    {
-        using type                             = std::tuple<Arg>;
-        using indices                          = Indices;
-        static constexpr std::size_t max_align = alignof(Arg);
-    };
-
-    template <typename Indices>
-    struct alignsort_tuple_calc_help<Indices>
-    {
-        using type                             = std::tuple<>;
-        using indices                          = Indices;
-        static constexpr std::size_t max_align = 0;
-    };
-
     template <typename... Args>
     struct alignsort_tuple_calc
     {
     private:
-        using helper = alignsort_tuple_calc_help<std::index_sequence_for<Args...>, Args...>;
+        static constexpr std::array<std::size_t, sizeof...(Args)> alignments = {alignof(Args)...};
+
+        template <std::strict_weak_order<std::size_t, std::size_t> Checker>
+        static constexpr void stable_sort_on(
+            std::array<std::size_t, sizeof...(Args)>& sortMe, const Checker& checkFunc)
+        {
+            for (std::size_t i = 1; i < sortMe.size(); i++)
+            {
+                for (std::size_t j = i; j > 0 && checkFunc(sortMe[j - 1], sortMe[j]); j--)
+                {
+                    std::swap(sortMe[j], sortMe[j - 1]);
+                }
+            }
+        }
 
     public:
-        using type                             = typename helper::type;
-        using indices                          = typename helper::indices;
-        static constexpr std::size_t max_align = helper::max_align;
+        static constexpr std::array<std::size_t, sizeof...(Args)> indices = []
+        {
+            std::array<std::size_t, sizeof...(Args)> ret{};
+
+            for (std::size_t i = 0; i < ret.size(); i++)
+            {
+                ret[i] = i;
+            }
+
+            // Sort by alignment
+            stable_sort_on(
+                ret, [](std::size_t a, std::size_t b) { return alignments[a] < alignments[b]; });
+
+            return ret;
+        }();
+
+    private:
+        template <std::size_t... ArrAccess>
+        static constexpr auto get_tuple(std::index_sequence<ArrAccess...>)
+            -> std::tuple<std::tuple_element_t<indices[ArrAccess], std::tuple<Args...>>...>;
+
+    public:
+        using type = decltype(get_tuple(std::make_index_sequence<indices.size()>{}));
     };
 
     template <typename... Ts>
     using alignsort_tuple_calc_t = typename alignsort_tuple_calc<Ts...>::type;
-
-    template <std::size_t Which, typename IdxSeq>
-        requires (Which < IdxSeq::size())
-    struct IdxAccess
-    {
-    private:
-        using details = SequenceDetails<IdxSeq>;
-
-    public:
-        static constexpr std::size_t value = IdxAccess<Which - 1, typename details::tail>::value;
-    };
-
-    template <typename IdxSeq>
-    struct IdxAccess<0, IdxSeq>
-    {
-    private:
-        using details = SequenceDetails<IdxSeq>;
-
-    public:
-        static constexpr std::size_t value = details::head;
-    };
-
-    template <std::size_t Which, typename IdxSeq>
-    static constexpr std::size_t idx_access_v = IdxAccess<Which, IdxSeq>::value;
 } // namespace internal
 
 template <typename... Ts>
@@ -213,17 +117,58 @@ struct alignsort_tuple : public internal::alignsort_tuple_calc_t<Ts...>
 private:
     using calc = internal::alignsort_tuple_calc<Ts...>;
 
-    template <typename... Args, std::size_t... Indices>
-    constexpr alignsort_tuple(std::index_sequence<Indices...>, std::tuple<Args...>&& argsAsTuple)
-        : calc::type(std::get<Indices>(std::forward<std::tuple<Args...>>(argsAsTuple))...)
+    using parent                    = typename calc::type;
+    static constexpr std::array idx = calc::indices;
+
+    template <typename... Args, std::size_t... ArrAccess>
+    constexpr alignsort_tuple(std::tuple<Args...>&& argsAsTuple, std::index_sequence<ArrAccess...>)
+        : calc::type(std::get<idx[ArrAccess]>(std::forward<std::tuple<Args...>>(argsAsTuple))...)
     {
+    }
+
+    template <typename Alloc, typename... Args, std::size_t... ArrAccess>
+    constexpr alignsort_tuple(
+        const Alloc& a, std::tuple<Args...>&& argsAsTuple, std::index_sequence<ArrAccess...>)
+        : calc::type(std::allocator_arg_t{}, a,
+              std::get<idx[ArrAccess]>(std::forward<std::tuple<Args...>>(argsAsTuple))...)
+    {
+    }
+
+    // Turn std::tuple<>reftype into std::tuple<reftype>
+
+    template <typename... Args, std::size_t... Indices>
+    static constexpr auto create_ref_tuple(
+        std::tuple<Args...>& t, std::index_sequence<Indices...>) noexcept
+    {
+        return std::tuple<Args&...>(std::get<Indices>(t)...);
+    }
+
+    template <typename... Args, std::size_t... Indices>
+    static constexpr auto create_ref_tuple(
+        const std::tuple<Args...>& t, std::index_sequence<Indices...>) noexcept
+    {
+        return std::tuple<const Args&...>(std::get<Indices>(t)...);
+    }
+
+    template <typename... Args, std::size_t... Indices>
+    static constexpr auto create_ref_tuple(
+        std::tuple<Args...>&& t, std::index_sequence<Indices...>) noexcept
+    {
+        return std::tuple<Args&&...>(std::get<Indices>(t)...);
+    }
+
+    template <typename... Args, std::size_t... Indices>
+    static constexpr auto create_ref_tuple(
+        const std::tuple<Args...>&& t, std::index_sequence<Indices...>) noexcept
+    {
+        return std::tuple<const Args&&...>(std::get<Indices>(t)...);
     }
 
 public:
     template <typename... Args>
     constexpr alignsort_tuple(Args&&... args)
-        : alignsort_tuple(
-              typename calc::indices{}, std::tuple<Args&&...>(std::forward<Args>(args)...))
+        : alignsort_tuple(std::tuple<Args&&...>(std::forward<Args>(args)...),
+              std::make_index_sequence<idx.size()>{})
     {
     }
 
@@ -233,8 +178,242 @@ public:
     constexpr alignsort_tuple(alignsort_tuple&&)                 = default;
     constexpr alignsort_tuple& operator=(const alignsort_tuple&) = default;
     constexpr alignsort_tuple& operator=(alignsort_tuple&&)      = default;
-    constexpr alignsort_tuple(alignsort_tuple&)                  = default;
-    constexpr alignsort_tuple& operator=(alignsort_tuple&)       = default;
+
+    using parent::swap;
+    using parent::operator=;
+
+    constexpr void swap(alignsort_tuple& other) noexcept(noexcept(parent::swap(other)))
+    {
+        parent::swap(other);
+    }
+
+    // Conversion between alignsort_tuples of different arg order
+
+    template <typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(alignsort_tuple<Args...>& other)
+        : calc::type(static_cast<typename calc::type&>(other))
+    {
+    }
+
+    template <typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(const alignsort_tuple<Args...>& other)
+        : calc::type(static_cast<const typename calc::type&>(other))
+    {
+    }
+
+    template <typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(alignsort_tuple<Args...>&& other)
+        : calc::type(static_cast<typename calc::type&&>(other))
+    {
+    }
+
+    template <typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(const alignsort_tuple<Args...>&& other)
+        : calc::type(static_cast<const typename calc::type&&>(other))
+    {
+    }
+
+    // Conversion of std::tuple
+
+    template <typename... Args>
+    constexpr alignsort_tuple(std::tuple<Args...>& other)
+        : alignsort_tuple(create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename... Args>
+    constexpr alignsort_tuple(const std::tuple<Args...>& other)
+        : alignsort_tuple(create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename... Args>
+    constexpr alignsort_tuple(std::tuple<Args...>&& other)
+        : alignsort_tuple(create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename... Args>
+    constexpr alignsort_tuple(const std::tuple<Args...>&& other)
+        : alignsort_tuple(create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    // Conversion of std::pair
+
+    template <typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(std::pair<Arg0, Arg1>& p)
+        : alignsort_tuple(std::tuple<Arg0&, Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Arg0, typename Arg1>
+    alignsort_tuple(const std::pair<Arg0, Arg1>& p)
+        : alignsort_tuple(std::tuple<const Arg0&, const Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Arg0, typename Arg1>
+    alignsort_tuple(std::pair<Arg0, Arg1>&& p)
+        : alignsort_tuple(std::tuple<Arg0&&, Arg1&&>(std::forward<Arg0>(std::get<0>(p)),
+                              std::forward<Arg1>(std::get<1>(p))),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(const std::pair<Arg0, Arg1>&& p)
+        : alignsort_tuple(std::tuple<const Arg0&, const Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    // Allocator versions of above
+
+    // Empty constructor (allocator)
+    template <typename Alloc>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a)
+        : calc::type(std::allocator_arg_t{}, a)
+    {
+    }
+
+    // Main constructor (allocator)
+    template <typename Alloc, typename... Args>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, Args&&... args)
+        : alignsort_tuple(a, std::tuple<Args&&...>(std::forward<Args>(args)...),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    // Conversion from other alignsort_tuples of different arg order (allocator)
+
+    template <typename Alloc, typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, alignsort_tuple<Args...>& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<const typename calc::type&>(other))
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(
+        std::allocator_arg_t, const Alloc& a, const alignsort_tuple<Args...>& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<const typename calc::type&>(other))
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(
+        std::allocator_arg_t, const Alloc& a, alignsort_tuple<Args...>&& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<typename calc::type&&>(other))
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+        requires std::is_same_v<internal::alignsort_tuple_calc_t<Args...>, typename calc::type>
+    constexpr alignsort_tuple(
+        std::allocator_arg_t, const Alloc& a, const alignsort_tuple<Args...>&& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<const typename calc::type&&>(other))
+    {
+    }
+
+    // Conversion from std::tuple (allocator)
+    template <typename Alloc, typename... Args>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, std::tuple<Args...>& other)
+        : alignsort_tuple(a, create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+    constexpr alignsort_tuple(
+        std::allocator_arg_t, const Alloc& a, const std::tuple<Args...>& other)
+        : alignsort_tuple(a, create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, std::tuple<Args...>&& other)
+        : alignsort_tuple(a, create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename... Args>
+    constexpr alignsort_tuple(
+        std::allocator_arg_t, const Alloc& a, const std::tuple<Args...>&& other)
+        : alignsort_tuple(a, create_ref_tuple(other, std::index_sequence_for<Args...>{}),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    // Conversion from std::pair (allocator)
+
+    template <typename Alloc, typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, std::pair<Arg0, Arg1>& p)
+        : alignsort_tuple(a, std::tuple<Arg0&, Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, const std::pair<Arg0, Arg1>& p)
+        : alignsort_tuple(a, std::tuple<const Arg0&, const Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, std::pair<Arg0, Arg1>&& p)
+        : alignsort_tuple(a, std::tuple<Arg0&&, Arg1&&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    template <typename Alloc, typename Arg0, typename Arg1>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, const std::pair<Arg0, Arg1>&& p)
+        : alignsort_tuple(a, std::tuple<const Arg0&, const Arg1&>(std::get<0>(p), std::get<1>(p)),
+              std::make_index_sequence<idx.size()>{})
+    {
+    }
+
+    // Copy/move constructors (allocator)
+
+    template <typename Alloc>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, alignsort_tuple& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<calc::type&>(other))
+    {
+    }
+
+    template <typename Alloc>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, const alignsort_tuple& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<const calc::type&>(other))
+    {
+    }
+
+    template <typename Alloc>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, alignsort_tuple&& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<calc::type&&>(other))
+    {
+    }
+
+    template <typename Alloc>
+    constexpr alignsort_tuple(std::allocator_arg_t, const Alloc& a, const alignsort_tuple&& other)
+        : calc::type(std::allocator_arg_t{}, a, static_cast<const calc::type&&>(other))
+    {
+    }
 };
 
 namespace std
@@ -242,35 +421,31 @@ namespace std
     template <std::size_t I, typename... Args>
     constexpr tuple_element_t<I, alignsort_tuple<Args...>>& get(alignsort_tuple<Args...>& self)
     {
-        return std::get<
-            internal::idx_access_v<I, typename alignsort_tuple<Args...>::calc::indices>>(
-            static_cast<typename alignsort_tuple<Args...>::calc::type&>(self));
+        using AT = alignsort_tuple<Args...>;
+        return std::get<AT::idx[I]>(static_cast<typename AT::parent&>(self));
     }
 
     template <std::size_t I, typename... Args>
     constexpr tuple_element_t<I, alignsort_tuple<Args...>>&& get(alignsort_tuple<Args...>&& self)
     {
-        return std::get<
-            internal::idx_access_v<I, typename alignsort_tuple<Args...>::calc::indices>>(
-            static_cast<typename alignsort_tuple<Args...>::calc::type&&>(self));
+        using AT = alignsort_tuple<Args...>;
+        return std::get<AT::idx[I]>(static_cast<typename AT::parent&&>(self));
     }
 
     template <std::size_t I, typename... Args>
     constexpr const tuple_element_t<I, alignsort_tuple<Args...>>& get(
         const alignsort_tuple<Args...>& self)
     {
-        return std::get<
-            internal::idx_access_v<I, typename alignsort_tuple<Args...>::calc::indices>>(
-            static_cast<const typename alignsort_tuple<Args...>::calc::type&>(self));
+        using AT = alignsort_tuple<Args...>;
+        return std::get<AT::idx[I]>(static_cast<const typename AT::parent&>(self));
     }
 
     template <std::size_t I, typename... Args>
     constexpr const tuple_element_t<I, alignsort_tuple<Args...>>&& get(
         const alignsort_tuple<Args...>&& self)
     {
-        return std::get<
-            internal::idx_access_v<I, typename alignsort_tuple<Args...>::calc::indices>>(
-            static_cast<const typename alignsort_tuple<Args...>::calc::type&&>(self));
+        using AT = alignsort_tuple<Args...>;
+        return std::get<AT::idx[I]>(static_cast<const typename AT::parent&&>(self));
     }
 } // namespace std
 
