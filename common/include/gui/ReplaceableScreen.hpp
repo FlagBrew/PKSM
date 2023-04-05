@@ -28,6 +28,7 @@
 #define REPLACEABLESCREEN_HPP
 
 #include "Instructions.hpp"
+#include <concepts>
 #include <memory>
 
 class ReplaceableScreen
@@ -42,14 +43,15 @@ public:
 
     template <typename Class, typename... Params>
     void addOverlay(Params&&... args)
+        requires std::constructible_from<Class, ReplaceableScreen&, decltype(args)...>
     {
         if (overlay)
         {
-            overlay->addOverlay<Class>(std::forward<Params>(args)...);
+            overlay->addOverlay<Class>(std::forward<decltype(args)>(args)...);
         }
         else
         {
-            overlay = std::make_shared<Class>(*this, std::forward<Params>(args)...);
+            overlay = std::make_shared<Class>(*this, std::forward<decltype(args)>(args)...);
         }
     }
 
