@@ -50,8 +50,10 @@ namespace Threads
     {
         // clang-format off
         template <typename EPFunc, typename... Args>
-            requires std::invocable<EPFunc, Args...> && std::copy_constructible<std::remove_cvref_t<EPFunc>> && (std::copy_constructible<std::remove_cvref_t<Args>> && ...)
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Args&&... args)
+            requires std::invocable<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...> &&
+                     std::constructible_from<std::remove_cvref_t<EPFunc>, decltype(entrypoint)> &&
+                     (std::constructible_from<std::remove_cvref_t<Args>, decltype(args)> && ...)
         // clang-format on
         {
             using tuple_type =
@@ -67,8 +69,8 @@ namespace Threads
                             };
                         },
                         std::index_sequence_for<EPFunc, Args...>{}),
-                static_cast<void*>(
-                    new tuple_type(std::forward<EPFunc>(entrypoint), std::forward<Args>(args)...))};
+                static_cast<void*>(new tuple_type(std::forward<decltype(entrypoint)>(entrypoint),
+                    std::forward<decltype(args)>(args)...))};
         }
 
         // Convert any function refs to function pointers
@@ -78,7 +80,7 @@ namespace Threads
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Args&&... args)
         // clang-format on
         {
-            return getFuncAndArg(std::addressof(entrypoint), std::forward<Args>(args)...);
+            return getFuncAndArg(std::addressof(entrypoint), std::forward<decltype(args)>(args)...);
         }
 
         // Optimization for pointer-to-member-func with object arg or pointer to
@@ -126,7 +128,7 @@ namespace Threads
                     std::unique_ptr<EPFuncSelf> delOnScopeExit(func);
                     std::invoke(*delOnScopeExit);
                 },
-                new EPFuncSelf(std::forward<EPFuncSelf>(entrypoint)));
+                new EPFuncSelf(std::forward<decltype(entrypoint)>(entrypoint)));
         }
 
         template <typename MF>
@@ -147,40 +149,40 @@ namespace Threads
 
     // clang-format off
     template <typename EPFunc, typename... Args>
-        requires requires(EPFunc&& f, Args&&... a) {
-                     internal::getFuncAndArg(std::forward<EPFunc>(f), std::forward<Args>(a)...);
-                 }
     bool create(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
+        requires requires {
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                 }
     // clang-format on
     {
-        auto func =
-            internal::getFuncAndArg(std::forward<EPFunc>(entrypoint), std::forward<Args>(args)...);
+        auto func = internal::getFuncAndArg(
+            std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         return create(func.first, func.second, stackSize);
     }
 
     // clang-format off
     template <typename EPFunc, typename... Args>
-        requires requires(EPFunc&& f, Args&&... a) {
-                     internal::getFuncAndArg(std::forward<EPFunc>(f), std::forward<Args>(a)...);
-                 }
     bool create(EPFunc&& entrypoint, Args&&... args)
+        requires requires {
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                 }
     // clang-format on
     {
-        auto func =
-            internal::getFuncAndArg(std::forward<EPFunc>(entrypoint), std::forward<Args>(args)...);
+        auto func = internal::getFuncAndArg(
+            std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         return create(func.first, func.second, std::nullopt);
     }
 
     // clang-format off
     template <typename EPFunc, typename... Args>
-        requires requires(EPFunc&& f, Args&&... a) {
-                     internal::getFuncAndArg(std::forward<EPFunc>(f), std::forward<Args>(a)...);
-                 }
     void executeTask(EPFunc&& entrypoint, Args&&... args)
+        requires requires {
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                 }
     // clang-format on
     {
-        auto func =
-            internal::getFuncAndArg(std::forward<EPFunc>(entrypoint), std::forward<Args>(args)...);
+        auto func = internal::getFuncAndArg(
+            std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         executeTask(func.first, func.second);
     }
 
