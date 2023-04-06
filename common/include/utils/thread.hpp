@@ -48,13 +48,11 @@ namespace Threads
 
     namespace internal
     {
-        // clang-format off
         template <typename EPFunc, typename... Args>
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Args&&... args)
             requires std::invocable<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...> &&
                      std::constructible_from<std::remove_cvref_t<EPFunc>, decltype(entrypoint)> &&
                      (std::constructible_from<std::remove_cvref_t<Args>, decltype(args)> && ...)
-        // clang-format on
         {
             using tuple_type =
                 alignsort_tuple<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...>;
@@ -74,37 +72,32 @@ namespace Threads
         }
 
         // Convert any function refs to function pointers
-        // clang-format off
         template <typename EPFunc, typename... Args>
-            requires std::is_function_v<std::remove_cvref_t<EPFunc>> && std::is_reference_v<EPFunc>
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Args&&... args)
-        // clang-format on
+            requires std::is_function_v<std::remove_cvref_t<EPFunc>> && std::is_reference_v<EPFunc>
         {
             return getFuncAndArg(std::addressof(entrypoint), std::forward<decltype(args)>(args)...);
         }
 
         // Optimization for pointer-to-member-func with object arg or pointer to
         // function with single pointer arg
-        // clang-format off
         template <typename EPFunc, typename Arg>
-            requires std::invocable<EPFunc, Arg> &&
-                    (std::is_member_function_pointer_v<std::remove_cvref_t<EPFunc>> || std::is_function_v<std::remove_pointer_t<std::remove_cvref_t<EPFunc>>>) &&
-                    (sizeof(std::remove_cvref_t<EPFunc>) == sizeof(void (*)(void*))) &&
-                    std::is_pointer_v<std::remove_cvref_t<Arg>>
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint, Arg&& a)
-        // clang-format on
+            requires std::invocable<EPFunc, Arg> &&
+                     (std::is_member_function_pointer_v<std::remove_cvref_t<EPFunc>> ||
+                         std::is_function_v<std::remove_pointer_t<std::remove_cvref_t<EPFunc>>>) &&
+                     (sizeof(std::remove_cvref_t<EPFunc>) == sizeof(void (*)(void*))) &&
+                     std::is_pointer_v<std::remove_cvref_t<Arg>>
         {
             return {reinterpret_cast<void (*)(void*)>(entrypoint), reinterpret_cast<void*>(a)};
         }
 
         // Optimization for zero-arg pointer to func (or empty capture lambda)
-        // clang-format off
         template <typename EPFunc>
-            requires std::invocable<EPFunc> &&
-                    std::is_convertible_v<EPFunc, std::invoke_result_t<EPFunc> (*)()> &&
-                    (sizeof(std::invoke_result_t<EPFunc> (*)()) == sizeof(void*))
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint)
-        // clang-format on
+            requires std::invocable<EPFunc> &&
+                     std::is_convertible_v<EPFunc, std::invoke_result_t<EPFunc> (*)()> &&
+                     (sizeof(std::invoke_result_t<EPFunc>(*)()) == sizeof(void*))
         {
             return {+[](void* a)
                     { std::invoke(reinterpret_cast<std::invoke_result_t<EPFunc> (*)()>(a)); },
@@ -113,13 +106,11 @@ namespace Threads
         }
 
         // Optimization for non-empty captures lambda (or other stateful functor)
-        // clang-format off
         template <typename EPFunc>
-            requires std::invocable<EPFunc> &&
-                    (!std::is_convertible_v<EPFunc, std::invoke_result_t<EPFunc> (*)()>) &&
-                    std::copy_constructible<std::remove_cvref_t<EPFunc>>
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint)
-        // clang-format on
+            requires std::invocable<EPFunc> &&
+                     (!std::is_convertible_v<EPFunc, std::invoke_result_t<EPFunc> (*)()>) &&
+                     std::copy_constructible<std::remove_cvref_t<EPFunc>>
         {
             using EPFuncSelf = std::remove_cvref_t<EPFunc>;
             return getFuncAndArg(
@@ -147,69 +138,61 @@ namespace Threads
         using member_pointer_class_t = typename member_pointer_class<MF>::type;
     } // namespace internal
 
-    // clang-format off
     template <typename EPFunc, typename... Args>
     bool create(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                         std::forward<decltype(args)>(args)...);
                  }
-    // clang-format on
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         return create(func.first, func.second, stackSize);
     }
 
-    // clang-format off
     template <typename EPFunc, typename... Args>
     bool create(EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                         std::forward<decltype(args)>(args)...);
                  }
-    // clang-format on
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         return create(func.first, func.second, std::nullopt);
     }
 
-    // clang-format off
     template <typename EPFunc, typename... Args>
     void executeTask(EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                         std::forward<decltype(args)>(args)...);
                  }
-    // clang-format on
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
         executeTask(func.first, func.second);
     }
 
-    // clang-format off
     template <auto MP>
+    bool create(std::optional<size_t> stackSize,
+        internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
         requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
-    bool create(std::optional<size_t> stackSize, internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
-    // clang-format on
     {
         return create(
             stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
     }
 
-    // clang-format off
     template <auto MP>
-        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     bool create(internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
-    // clang-format on
+        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     {
         return create<MP>(std::nullopt, cv);
     }
 
-    // clang-format off
     template <auto MP>
-        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     bool executeTask(internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
-    // clang-format on
+        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     {
         return executeTask(
             +[](decltype(cv) cv) { return std::invoke(MP, cv); }, static_cast<void*>(cv));
