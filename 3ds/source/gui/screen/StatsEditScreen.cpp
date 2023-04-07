@@ -109,7 +109,7 @@ void StatsEditScreen::setIV(pksm::Stat which)
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         u8 iv = (u8)std::stoi(input);
-        pkm.iv(which, std::min(pkm.generation() >= pksm::Generation::THREE ? (u8)31 : (u8)15, iv));
+        pkm.iv(which, std::min<u8>(iv, pkm.maxIV()));
     }
 }
 
@@ -117,27 +117,13 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm.generation() >= pksm::Generation::THREE)
+        if (pkm.iv(which) < pkm.maxIV())
         {
-            if (pkm.iv(which) < 31)
-            {
-                pkm.iv(which, pkm.iv(which) + 1);
-            }
-            else
-            {
-                pkm.iv(which, 0);
-            }
+            pkm.iv(which, pkm.iv(which) + 1);
         }
         else
         {
-            if (pkm.iv(which) < 15)
-            {
-                pkm.iv(which, pkm.iv(which) + 1);
-            }
-            else
-            {
-                pkm.iv(which, 0);
-            }
+            pkm.iv(which, 0);
         }
     }
     else
@@ -148,7 +134,7 @@ bool StatsEditScreen::changeIV(pksm::Stat which, bool up)
         }
         else
         {
-            pkm.iv(which, pkm.generation() >= pksm::Generation::THREE ? 31 : 15);
+            pkm.iv(which, pkm.maxIV());
         }
     }
     return false;
@@ -166,27 +152,16 @@ void StatsEditScreen::setSecondaryStat(pksm::Stat which)
     input[pkm.generation() >= pksm::Generation::THREE ? 3 : 5] = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u16 val = (u16)std::min(
-            std::stoi(input), pkm.generation() >= pksm::Generation::THREE ? 252 : 65535);
-        if (pkm.generation() != pksm::Generation::LGPE)
+        u16 val = std::min<u16>(std::stoi(input), pkm.maxSecondaryStatCalc());
+        pkm.secondaryStatCalc(which, val);
+        u32 total = 0;
+        for (int i = 0; i < 6; i++)
         {
-            pkm.ev(which, val);
-            if (pkm.generation() >= pksm::Generation::THREE)
-            {
-                u16 total = 0;
-                for (int i = 0; i < 6; i++)
-                {
-                    total += statValues[i] != which ? pkm.ev(statValues[i]) : 0;
-                }
-                if (total + val > 510)
-                {
-                    pkm.ev(which, 510 - total);
-                }
-            }
+            total += statValues[i] != which ? pkm.secondaryStatCalc(statValues[i]) : 0;
         }
-        else
+        if (total + val > pkm.maxSecondaryStatCalcTotal())
         {
-            static_cast<pksm::PB7&>(pkm).awakened(which, std::min((int)val, 200));
+            pkm.secondaryStatCalc(which, pkm.maxSecondaryStatCalcTotal() - total);
         }
     }
 }
@@ -195,85 +170,39 @@ bool StatsEditScreen::changeSecondaryStat(pksm::Stat which, bool up)
 {
     if (up)
     {
-        if (pkm.generation() != pksm::Generation::LGPE)
+        if (pkm.secondaryStatCalc(which) >= pkm.maxSecondaryStatCalc())
         {
-            if (pkm.generation() >= pksm::Generation::THREE)
-            {
-                u16 total = 0;
-                for (int i = 0; i < 6; i++)
-                {
-                    total += pkm.ev(statValues[i]);
-                }
-                // TODO: remove hardcoded value and set it in classes
-                if (total < 510 || pkm.ev(which) == 0xFC)
-                {
-                    if (pkm.ev(which) < 0xFC)
-                    {
-                        pkm.ev(which, pkm.ev(which) + 1);
-                    }
-                    else
-                    {
-                        pkm.ev(which, 0);
-                    }
-                }
-            }
-            else
-            {
-                if (pkm.ev(which) != 65535)
-                {
-                    pkm.ev(which, pkm.ev(which) + 1);
-                }
-            }
+            pkm.secondaryStatCalc(which, 0);
         }
         else
         {
-            pksm::PB7& pb7 = static_cast<pksm::PB7&>(pkm);
-            if (pb7.awakened(which) < 200)
+            u32 total = 0;
+            for (int i = 0; i < 6; i++)
             {
-                pb7.awakened(which, pb7.awakened(which) + 1);
+                total += pkm.secondaryStatCalc(statValues[i]);
             }
-            else
+            if (total < pkm.maxSecondaryStatCalcTotal())
             {
-                pb7.awakened(which, 0);
+                pkm.secondaryStatCalc(which, pkm.secondaryStatCalc(which) + 1);
             }
         }
     }
     else
     {
-        if (pkm.generation() != pksm::Generation::LGPE)
+        if (pkm.secondaryStatCalc(which) > 0)
         {
-            if (pkm.ev(which) > 0)
-            {
-                pkm.ev(which, pkm.ev(which) - 1);
-            }
-            else if (pkm.generation() >= pksm::Generation::THREE)
-            {
-                u16 total = 0xFC;
-                for (int i = 0; i < 6; i++)
-                {
-                    total += pkm.ev(statValues[i]);
-                }
-                // TODO: remove hardcoded value and set it in classes
-                if (total <= 510)
-                {
-                    pkm.ev(which, 0xFC);
-                }
-            }
-            else
-            {
-                pkm.ev(which, 65535);
-            }
+            pkm.secondaryStatCalc(which, pkm.secondaryStatCalc(which) - 1);
         }
         else
         {
-            pksm::PB7& pb7 = static_cast<pksm::PB7&>(pkm);
-            if (pb7.awakened(which) > 0)
+            u32 total = pkm.maxSecondaryStatCalc();
+            for (int i = 0; i < 6; i++)
             {
-                pb7.awakened(which, pb7.awakened(which) - 1);
+                total += pkm.secondaryStatCalc(statValues[i]);
             }
-            else
+            if (total <= pkm.maxSecondaryStatCalcTotal())
             {
-                pb7.awakened(which, 200);
+                pkm.secondaryStatCalc(which, pkm.maxSecondaryStatCalc());
             }
         }
     }
@@ -346,16 +275,8 @@ void StatsEditScreen::drawBottom() const
         Gui::text(std::to_string((int)pkm.iv(statValues[i])), 132, 52 + i * 20, FONT_SIZE_12,
             pkm.hyperTrain(statValues[i]) ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
-        if (pkm.generation() != pksm::Generation::LGPE)
-        {
-            Gui::text(std::to_string((int)pkm.ev(statValues[i])), 213, 52 + i * 20, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
-                213, 52 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
+        Gui::text(std::to_string((int)pkm.secondaryStatCalc(statValues[i])), 213, 52 + i * 20,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::text(std::to_string((int)pkm.stat(statValues[i])), 274, 52 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }

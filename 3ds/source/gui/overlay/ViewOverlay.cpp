@@ -318,16 +318,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
         Gui::text(std::to_string((int)pkm.iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12,
             pkm.hyperTrain(statValues[i]) ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::RIGHT,
             TextPosY::TOP);
-        if (pkm.generation() == pksm::Generation::LGPE)
-        {
-            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
-                342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            Gui::text(std::to_string((int)pkm.ev(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
+        Gui::text(std::to_string(pkm.secondaryStatCalc(statValues[i])), 342, 16 + i * 20,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::text(std::to_string((int)pkm.stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
