@@ -944,7 +944,7 @@ bool EditorScreen::setSaveInfo()
         pkm->SID(TitleLoader::save->SID());
         pkm->otGender(TitleLoader::save->gender());
         pkm->version(TitleLoader::save->version());
-        pkm->currentHandler(0);
+        pkm->currentHandler(pksm::PKXHandler::OT);
     }
     return false;
 }
