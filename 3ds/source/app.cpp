@@ -255,6 +255,7 @@ namespace
                                 Gui::warn(i18n::localize("UPDATE_MISSING"));
                                 break;
                             case 401:
+                            case 403:
                                 Gui::warn(i18n::localize("NOT_PATRON") + '\n' +
                                           i18n::localize("INCIDENT_LOGGED"));
                                 break;
