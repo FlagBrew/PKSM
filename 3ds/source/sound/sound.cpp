@@ -199,6 +199,10 @@ namespace
 
 Result Sound::init()
 {
+    if (!Decoder::init())
+    {
+        return -1;
+    }
     LightEvent_Init(&frameEvent, RESET_ONESHOT);
     STDirectory dir("/3ds/PKSM/songs");
     if (dir.good())
@@ -253,6 +257,7 @@ void Sound::exit()
     stop();
     linearFree(bufferMem);
     ndspExit();
+    Decoder::exit();
 }
 
 void Sound::start()

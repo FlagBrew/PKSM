@@ -34,11 +34,6 @@ Mp3Decoder::Mp3Decoder(const std::string& filename)
     int err      = 0;
     int encoding = 0;
 
-    if ((err = mpg123_init()) != MPG123_OK)
-    {
-        return;
-    }
-
     if ((mh = mpg123_new(NULL, &err)) == NULL)
     {
         // fprintf(stderr, "Error: %s\n", mpg123_plain_strerror(err));
@@ -66,7 +61,6 @@ Mp3Decoder::~Mp3Decoder(void)
 {
     mpg123_close(mh);
     mpg123_delete(mh);
-    mpg123_exit();
     initialized = false;
 }
 

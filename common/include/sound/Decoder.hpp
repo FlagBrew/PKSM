@@ -44,6 +44,8 @@ public:
     virtual bool stereo()                               = 0;
     virtual u32 sampleRate()                            = 0;
     static std::unique_ptr<Decoder> get(const std::string& fileName);
+    static bool init();
+    static void exit();
 
 protected:
     bool initialized = false;
