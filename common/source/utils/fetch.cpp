@@ -231,11 +231,7 @@ void Fetch::exitMulti()
     multiThreadInfo = false; // Stop multi thread
     if (multiInitialized)
     {
-        while (!multiThreadInfo) // Wait for it to be done
-        {
-            static constexpr timespec sleepTime = {0, 100000};
-            nanosleep(&sleepTime, nullptr);
-        }
+        multiThreadInfo.wait(false); // Wait for it to be done
         // And finally clean up
         __lock_acquire(fetchesMutex);
         __lock_acquire(multiHandleMutex);
@@ -309,23 +305,18 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
     {
         CURLcode cres;
         std::atomic_flag wait;
-        wait.test_and_set();
         CURLMcode mRes = performAsync(fetch,
             [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>)
             {
                 cres = code;
-                wait.clear();
+                wait.test_and_set();
             });
         if (mRes != CURLM_OK)
         {
             return mRes;
         }
 
-        while (wait.test_and_set())
-        {
-            static constexpr timespec sleepTime = {0, 100000};
-            nanosleep(&sleepTime, nullptr);
-        }
+        wait.wait(false);
 
         return cres;
     }

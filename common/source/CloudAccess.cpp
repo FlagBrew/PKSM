@@ -295,11 +295,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 
 std::optional<int> CloudAccess::nextPage()
 {
-    while (!next->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    next->available.wait(false);
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -327,11 +323,7 @@ std::optional<int> CloudAccess::nextPage()
 
 std::optional<int> CloudAccess::prevPage()
 {
-    while (!prev->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    prev->available.wait(false);
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
