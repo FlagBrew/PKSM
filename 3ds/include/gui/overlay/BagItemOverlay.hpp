@@ -76,7 +76,7 @@ public:
 
 private:
     void searchBar();
-    const std::vector<std::pair<const std::string*, int>> validItems;
+    const std::vector<std::pair<const std::string*, int>>& validItems;
     std::vector<std::pair<const std::string*, int>> items;
     std::pair<pksm::Sav::Pouch, int> pouch;
     std::string searchString    = "";
