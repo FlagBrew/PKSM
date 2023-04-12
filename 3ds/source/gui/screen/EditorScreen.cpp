@@ -285,14 +285,17 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
     instructions.addBox(false, 124, 43, 70, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(
         186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
-    instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
-    instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
-    instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
-    instructions.addBox(
-        false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(
-        239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
-        ui_sheet_button_trainer_info_idx));
+    if (TitleLoader::save)
+    {
+        instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
+        instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
+        instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
+        instructions.addBox(
+            false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
+        buttons.push_back(NO_TEXT_CLICK(
+            239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
+            ui_sheet_button_trainer_info_idx));
+    }
 
     origHash = pksm::crypto::sha256(pkm->rawData());
 }

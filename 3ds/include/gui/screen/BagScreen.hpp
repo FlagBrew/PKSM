@@ -29,6 +29,7 @@
 
 #include "sav/Sav.hpp"
 #include "Screen.hpp"
+#include "utils/SmallVector.hpp"
 
 class Button;
 
@@ -42,8 +43,8 @@ public:
     void drawBottom() const override;
 
 private:
-    std::vector<std::pair<pksm::Sav::Pouch, int>> limits;
-    std::map<pksm::Sav::Pouch, std::vector<int>> allowedItems;
+    SmallVector<std::pair<pksm::Sav::Pouch, int>, 15> limits;
+    const std::map<pksm::Sav::Pouch, std::vector<int>>& allowedItems;
     std::vector<std::unique_ptr<Button>> amountButtons;
     std::vector<std::unique_ptr<Button>> buttons;
     static constexpr std::array<u16, 35> lgpeKeyItems = {101, 102, 103, 113, 115, 121, 122, 123,

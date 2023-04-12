@@ -61,7 +61,7 @@ BagScreen::BagScreen()
     buttons.push_back(std::make_unique<AccelButton>(
         117, -15, 198, 30, [this]() { return clickIndex(-1); }, ui_sheet_res_null_idx, "",
         FONT_SIZE_12, COLOR_BLACK, 10, 5));
-    for (size_t i = 0; i < std::min(allowedItems[limits[0].first].size(), (size_t)7); i++)
+    for (size_t i = 0; i < std::min(allowedItems.at(limits[0].first).size(), (size_t)7); i++)
     {
         buttons.push_back(std::make_unique<ClickButton>(
             117, 15 + i * 30, 131, 30, [this, i]() { return clickIndex(i); }, ui_sheet_res_null_idx,
@@ -410,7 +410,7 @@ bool BagScreen::switchPouch(int newPouch)
 
 void BagScreen::editItem()
 {
-    int limit = allowedItems[limits[currentPouch].first].size() + 1; // Add one for None
+    int limit = allowedItems.at(limits[currentPouch].first).size() + 1; // Add one for None
     std::vector<std::pair<const std::string*, int>> items(limit);
     items[0] = std::make_pair(&i18n::item(Configuration::getInstance().language(), 0), 0);
     auto currentItem =
@@ -449,7 +449,7 @@ void BagScreen::editItem()
 
     for (int i = 1; i < limit; i++)
     {
-        int itemId = allowedItems[limits[currentPouch].first][i - 1];
+        int itemId = allowedItems.at(limits[currentPouch].first)[i - 1];
         if (TitleLoader::save->generation() == pksm::Generation::ONE)
         {
             items[i] = std::make_pair(
