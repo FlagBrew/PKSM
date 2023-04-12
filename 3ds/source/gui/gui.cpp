@@ -593,7 +593,7 @@ void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Col
     // drawSolidTriangle(x2 - dx, y2 - dy, x2 + dx, y2 + dy, x1 + dx, y1 + dy, color);
 }
 
-void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Color color)
+void Gui::drawSolidPolygon(const std::vector<std::pair<float, float>>& points, PKSM_Color color)
 {
     if (points.size() > 2)
     {
@@ -607,7 +607,7 @@ void Gui::drawSolidPolygon(std::vector<std::pair<float, float>> points, PKSM_Col
 }
 
 void Gui::drawLinedPolygon(
-    std::vector<std::pair<float, float>> points, float width, PKSM_Color color)
+    const std::vector<std::pair<float, float>>& points, float width, PKSM_Color color)
 {
     if (points.size() > 2)
     {

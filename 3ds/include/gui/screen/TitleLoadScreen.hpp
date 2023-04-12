@@ -30,6 +30,7 @@
 #include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
+#include "utils/SmallVector.hpp"
 #include <cmath>
 #include <memory>
 
@@ -54,7 +55,7 @@ private:
     std::vector<std::string> availableCheckpointSaves;
     std::vector<std::unique_ptr<Button>> buttons;
     std::vector<std::unique_ptr<ToggleButton>> tabs;
-    std::vector<std::shared_ptr<Title>>* titles;
+    SmallVector<std::shared_ptr<Title>, 12>* titles;
     int selectedTitle = -2;
     int firstSave     = -1;
     int selectedSave  = -1;

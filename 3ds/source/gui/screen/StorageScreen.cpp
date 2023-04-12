@@ -29,7 +29,6 @@
 #include "app.hpp"
 #include "banks.hpp"
 #include "BankSelectionScreen.hpp"
-#include "BoxOverlay.hpp"
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
