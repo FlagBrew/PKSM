@@ -27,7 +27,6 @@
 #include "InjectorScreen.hpp"
 #include "Configuration.hpp"
 #include "EnablableToggleButton.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
@@ -35,6 +34,7 @@
 #include "ToggleButton.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
+#include <format>
 
 namespace
 {
@@ -371,13 +371,12 @@ void InjectorScreen::drawTop() const
                 sid  = TitleLoader::save->displaySID();
             }
             Gui::text(text, 87, 95, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-            Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), tid, sid), 87, 115, FONT_SIZE_14,
-                COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::format("{:d}/{:d}", tid, sid), 87, 115, FONT_SIZE_14, COLOR_BLACK,
+                TextPosX::LEFT, TextPosY::TOP);
             Gui::text(game, 87, 135, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             Date date = wondercard->date();
-            Gui::text(
-                fmt::format(FMT_STRING("{:d}/{:d}/{:d}"), date.day(), date.month(), date.year()),
-                87, 155, FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+            Gui::text(std::format("{:d}/{:d}/{:d}", date.day(), date.month(), date.year()), 87, 155,
+                FONT_SIZE_14, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
             if (wondercard->generation() == pksm::Generation::SEVEN)
             {
                 Gui::sprite(ui_sheet_point_big_idx, 1, 180);

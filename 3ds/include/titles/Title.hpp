@@ -28,10 +28,11 @@
 #define TITLE_HPP
 
 #include "spi.hpp"
-#include "xchar.h"
+#include "utils.hpp"
 #include <3ds.h>
 #include <algorithm>
 #include <citro2d.h>
+#include <format>
 #include <string>
 
 class Title
@@ -62,11 +63,11 @@ public:
     {
         if constexpr (std::is_same_v<std::string, StrType>)
         {
-            return fmt::format(FMT_STRING("0x{:05X}"), ((u32)tid) >> 8);
+            return std::format("0x{:05X}", ((u32)tid) >> 8);
         }
         else if constexpr (std::is_same_v<std::u16string, StrType>)
         {
-            return fmt::format(FMT_STRING(u"0x{:05X}"), ((u32)tid) >> 8);
+            return StringUtils::convert<std::u16string>(std::format("0x{:05X}", ((u32)tid) >> 8));
         }
     }
 

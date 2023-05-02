@@ -31,13 +31,13 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
 #include "PkmUtils.hpp"
+#include "printerator.hpp"
 #include "random.hpp"
 #include "revision.h"
 #include "thread.hpp"
@@ -47,6 +47,7 @@
 #include <3ds.h>
 #include <array>
 #include <atomic>
+#include <format>
 #include <malloc.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -151,11 +152,13 @@ namespace
     {
         moveIcon.clear();
         consoleInit(GFX_TOP, nullptr);
-        fmt::print(FMT_STRING("\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m"), VERSION_MAJOR,
-            VERSION_MINOR, VERSION_MICRO, GIT_REV);
-        fmt::print(FMT_STRING("\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m"), (u32)res);
-        fmt::print(FMT_STRING("\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m"), message);
-        fmt::print(FMT_STRING("\x1b[29;16HPress START to exit."));
+
+        std::format_to(Printerator{}, "\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m",
+            VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        std::format_to(
+            Printerator{}, "\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m", (u32)res);
+        std::format_to(Printerator{}, "\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m", message);
+        std::format_to(Printerator{}, "\x1b[29;16HPress START to exit.");
         gfxFlushBuffers();
         gfxSwapBuffers();
         gspWaitForVBlank();
@@ -815,8 +818,8 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(fmt::format(fmt::runtime(i18n::localize("MYSTERY_GIFT_DOWNLOAD")),
-                (size_t)filesDone, filesToDownload));
+            Gui::waitFrame(std::vformat(i18n::localize("MYSTERY_GIFT_DOWNLOAD"),
+                std::make_format_args((size_t)filesDone, filesToDownload)));
             svcSleepThread(50'000'000);
         }
 

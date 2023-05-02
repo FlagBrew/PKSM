@@ -29,13 +29,13 @@
 #include "base64.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKX.hpp"
 #include "revision.h"
 #include "thread.hpp"
 #include "website.h"
+#include <format>
 #include <unistd.h>
 
 namespace
@@ -354,8 +354,8 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     long ret            = 0;
     std::string version = "generation: " + (std::string)mon->generation();
     const std::string pksm_version =
-        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
-                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        "source: PKSM " +
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     std::string code = Configuration::getInstance().patronCode();
     if (!code.empty())
     {

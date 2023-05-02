@@ -30,7 +30,6 @@
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "EditSelectorScreen.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "InjectSelectorScreen.hpp"
 #include "loader.hpp"
@@ -40,6 +39,7 @@
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
+#include <format>
 
 namespace
 {
@@ -205,13 +205,13 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                              (std::string)TitleLoader::save->generation()),
+                Gui::text(std::vformat(i18n::localize("GENERATION"),
+                              std::make_format_args((std::string)TitleLoader::save->generation())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("TRAINER_NAME")),
-                              TitleLoader::save->otName()),
+                Gui::text(std::vformat(i18n::localize("TRAINER_NAME"),
+                              std::make_format_args(TitleLoader::save->otName())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
@@ -221,26 +221,25 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(fmt::format(fmt::runtime(
-                                          TitleLoader::save->generation() == pksm::Generation::SEVEN
-                                              ? i18n::localize("STAMPS")
-                                              : i18n::localize("BADGES")),
-                              TitleLoader::save->badges()),
+                Gui::text(std::vformat(TitleLoader::save->generation() == pksm::Generation::SEVEN
+                                           ? i18n::localize("STAMPS")
+                                           : i18n::localize("BADGES"),
+                              std::make_format_args(TitleLoader::save->badges())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("WC_NUM")),
-                              TitleLoader::save->currentGiftAmount()),
+                Gui::text(std::vformat(i18n::localize("WC_NUM"),
+                              std::make_format_args(TitleLoader::save->currentGiftAmount())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_SEEN")),
-                              TitleLoader::save->dexSeen()),
+                Gui::text(std::vformat(i18n::localize("DEX_SEEN"),
+                              std::make_format_args(TitleLoader::save->dexSeen())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_CAUGHT")),
-                              TitleLoader::save->dexCaught()),
+                Gui::text(std::vformat(i18n::localize("DEX_CAUGHT"),
+                              std::make_format_args(TitleLoader::save->dexCaught())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
@@ -248,8 +247,8 @@ void MainMenu::drawTop() const
         }
     }
 
-    const std::string version = fmt::format(
-        FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    const std::string version =
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     Gui::text("PKSM", 282, 16, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::CENTER);
     Gui::text(version, 398, 17, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::CENTER);
 }

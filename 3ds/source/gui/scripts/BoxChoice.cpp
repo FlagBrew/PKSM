@@ -29,7 +29,6 @@
 #include "banks.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
@@ -38,6 +37,7 @@
 #include "TitleLoadScreen.hpp"
 #include "utils/random.hpp"
 #include "ViewOverlay.hpp"
+#include <format>
 
 BoxChoice::BoxChoice(bool doCrypt) : RunnableScreen(std::make_tuple(0, -1, -1)), doCrypt(doCrypt)
 {
@@ -298,11 +298,11 @@ void BoxChoice::drawTop() const
             width = text->maxWidth(FONT_SIZE_12);
             Gui::text(text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
                 TextPosY::TOP);
-            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP),
+            info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::HP),
                 infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
             Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
                 TextPosY::TOP);
-            info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK),
+            info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::SPATK),
                 infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
             Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
                 TextPosY::TOP);

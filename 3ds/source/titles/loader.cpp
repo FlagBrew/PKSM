@@ -30,7 +30,6 @@
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "sav/Sav.hpp"
@@ -38,7 +37,7 @@
 #include "utils/crypto.hpp"
 #include <3ds.h>
 #include <atomic>
-#include <format.h>
+#include <format>
 #include <sys/stat.h>
 
 namespace
@@ -457,7 +456,7 @@ void TitleLoader::scanSaves(void)
     {
         for (const auto& tid : tids)
         {
-            std::string id                 = fmt::format(FMT_STRING("0x{:05X}"), ((u32)tid) >> 8);
+            std::string id                 = std::format("0x{:05X}", ((u32)tid) >> 8);
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
             {
@@ -520,10 +519,10 @@ void TitleLoader::backupSave(const std::string& id)
     }
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
     DateTime now     = DateTime::now();
-    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/{0:s}"), id);
+    std::string path = std::format("/3ds/PKSM/backups/{0:s}", id);
     mkdir(path.c_str(), 777);
-    path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(),
-        now.month(), now.day(), now.hour(), now.minute(), now.second());
+    path += std::format("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/", now.year(), now.month(), now.day(),
+        now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
     path      += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");

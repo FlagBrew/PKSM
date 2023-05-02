@@ -34,7 +34,6 @@
 #include "Configuration.hpp"
 #include "fetch.hpp"
 #include "FilterScreen.hpp"
-#include "format.h"
 #include "GroupCloudScreen.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -47,6 +46,7 @@
 #include "revision.h"
 #include "sav/Sav.hpp"
 #include "website.h"
+#include <format>
 #include <sys/stat.h>
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
@@ -208,8 +208,8 @@ void CloudScreen::drawTop() const
         "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(fmt::format(fmt::runtime(i18n::localize("CLOUD_BOX")), access.page()), 69 + 156 / 2,
-        24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(std::vformat(i18n::localize("CLOUD_BOX"), std::make_format_args(access.page())),
+        69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -326,11 +326,11 @@ void CloudScreen::drawTop() const
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(
             text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP),
+        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::HP),
             infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK),
+        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::SPATK),
             infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
@@ -344,8 +344,8 @@ void CloudScreen::update(touchPosition* touch)
     {
         if (access.currentPageError() != 0)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")),
-                access.currentPageError()));
+            Gui::warn(std::vformat(i18n::localize("GPSS_COMMUNICATION_ERROR"),
+                std::make_format_args(access.currentPageError())));
         }
         else
         {
@@ -644,7 +644,8 @@ bool CloudScreen::prevBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")), *err));
+            Gui::warn(std::vformat(
+                i18n::localize("GPSS_COMMUNICATION_ERROR"), std::make_format_args(*err)));
         }
         else
         {
@@ -679,7 +680,8 @@ bool CloudScreen::nextBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("GPSS_COMMUNICATION_ERROR")), *err));
+            Gui::warn(std::vformat(
+                i18n::localize("GPSS_COMMUNICATION_ERROR"), std::make_format_args(*err)));
         }
         else
         {
@@ -743,11 +745,10 @@ bool CloudScreen::dumpPkm()
             Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
         {
             DateTime now     = DateTime::now();
-            std::string path = fmt::format(FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"),
-                now.year(), now.month(), now.day());
+            std::string path = std::format(
+                "/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
             mkdir(path.c_str(), 777);
-            path += fmt::format(
-                FMT_STRING("/{0:d}-{1:d}-{2:d}"), now.hour(), now.minute(), now.second());
+            path += std::format("/{0:d}-{1:d}-{2:d}", now.hour(), now.minute(), now.second());
             if (cursorIndex == 0)
             {
                 return false;
@@ -755,8 +756,7 @@ bool CloudScreen::dumpPkm()
             else
             {
                 path += " - " + std::to_string(int(dumpMon->species())) + " - " +
-                        dumpMon->nickname() + " - " +
-                        fmt::format(FMT_STRING("{:08X}"), dumpMon->PID()) +
+                        dumpMon->nickname() + " - " + std::format("{:08X}", dumpMon->PID()) +
                         dumpMon->extension().data();
                 FILE* out = fopen(path.c_str(), "wb");
                 if (out)
@@ -794,8 +794,8 @@ void CloudScreen::shareSend()
     long status_code    = 0;
     std::string version = "generation: " + (std::string)infoMon->generation();
     const std::string pksm_version =
-        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
-                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        "source: PKSM " +
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     std::string code = Configuration::getInstance().patronCode();
     if (!code.empty())
     {

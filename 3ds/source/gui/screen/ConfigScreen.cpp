@@ -31,16 +31,17 @@
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
 #include "ExtraSavesScreen.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "PkmUtils.hpp"
 #include "pkx/PKX.hpp"
 #include "QRScanner.hpp"
+#include "revision.h"
 #include "thread.hpp"
 #include "TitleIdOverlay.hpp"
 #include "ToggleButton.hpp"
+#include <format>
 
 namespace
 {
@@ -653,32 +654,32 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 1)
     {
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::ONE),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::ONE)),
             19, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::TWO),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::TWO)),
             19, 46, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::THREE),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::THREE)),
             19, 62, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::FOUR),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::FOUR)),
             19, 78, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::FIVE),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::FIVE)),
             19, 94, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::SIX),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::SIX)),
             19, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::SEVEN),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::SEVEN)),
             19, 126, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::LGPE),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::LGPE)),
             19, 142, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                      (std::string)pksm::Generation::EIGHT),
+        Gui::text(std::vformat(i18n::localize("GENERATION"),
+                      std::make_format_args((std::string)pksm::Generation::EIGHT)),
             19, 158, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(i18n::localize("DAY"), 19, 174, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
@@ -1005,7 +1006,9 @@ void ConfigScreen::back()
 void ConfigScreen::drawTop() const
 {
     Gui::backgroundTop(false);
-    Gui::text("PKSM", 200, 12.5f, FONT_SIZE_12, COLOR_BLUE, TextPosX::CENTER, TextPosY::CENTER);
+    const std::string pksm = std::format(
+        "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    Gui::text(pksm, 200, 12.5f, FONT_SIZE_12, COLOR_BLUE, TextPosX::CENTER, TextPosY::CENTER);
     Gui::text(std::string(credits[0]), 200, 30, FONT_SIZE_14,
         PKSM_Color(0xFF, 0xFF, 0xFF, getNextAlpha(0)), TextPosX::CENTER, TextPosY::TOP);
     int y = 35;

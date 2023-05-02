@@ -26,8 +26,8 @@
 
 #include "Title.hpp"
 #include "Archive.hpp"
-#include "format.h"
 #include "smdh.hpp"
+#include <format>
 
 // Allocate once because threading shenanigans
 namespace
@@ -135,7 +135,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         }
 
         mName   = StringUtils::UTF16toUTF8((char16_t*)smdh->applicationTitles[1].shortDescription);
-        mPrefix = fmt::format(FMT_STRING("0x{:05X}"), lowId() >> 8);
+        mPrefix = std::format("0x{:05X}", lowId() >> 8);
 
         Archive archive = Archive::save(mMedia, lowId(), highId(), false);
         if (R_SUCCEEDED(archive.result()))

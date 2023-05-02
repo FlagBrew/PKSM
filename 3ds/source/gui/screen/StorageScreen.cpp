@@ -33,7 +33,6 @@
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
@@ -46,6 +45,7 @@
 #include "StorageOverlay.hpp"
 #include "StorageViewOverlay.hpp"
 #include "TitleLoadScreen.hpp"
+#include <format>
 #include <stack>
 #include <sys/stat.h>
 #include <variant>
@@ -596,11 +596,11 @@ void StorageScreen::drawTop() const
         width = text->maxWidth(FONT_SIZE_12);
         Gui::text(
             text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::HP),
+        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::HP),
             infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
         Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
-        info = fmt::format(FMT_STRING("{:2d}/{:2d}/{:2d}"), infoMon->iv(pksm::Stat::SPATK),
+        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::SPATK),
             infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
         Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
             TextPosY::TOP);
@@ -1311,8 +1311,9 @@ void StorageScreen::putDownSwap()
         bankMon = TitleLoader::save->transfer(*bankMon);
         if (!bankMon)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                (std::string)origGen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)origGen, (std::string)TitleLoader::save->generation())));
             return;
         }
         if (bankMon->species() == pksm::Species::None ||
@@ -1418,10 +1419,9 @@ void StorageScreen::putDownNonSwap()
                 {
                     if (moveMon.size() == 1)
                     {
-                        Gui::warn(
-                            fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                                (std::string)moveMon[index]->generation(),
-                                (std::string)TitleLoader::save->generation()));
+                        Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                            std::make_format_args((std::string)moveMon[index]->generation(),
+                                (std::string)TitleLoader::save->generation())));
                     }
                     continue;
                 }
@@ -1499,9 +1499,9 @@ void StorageScreen::pickup()
 
 void StorageScreen::doDump(const pksm::PKX& dumpMon)
 {
-    DateTime now       = DateTime::now();
-    std::string folder = fmt::format(
-        FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
+    DateTime now = DateTime::now();
+    std::string folder =
+        std::format("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
     mkdir(folder.c_str(), 777);
     std::string outPath;
     size_t newFileNumber = 0;
@@ -1512,16 +1512,15 @@ void StorageScreen::doDump(const pksm::PKX& dumpMon)
     {
         if (newFileNumber == 0)
         {
-            outPath = fmt::format(FMT_STRING("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}{:s}"),
-                folder, now.hour(), now.minute(), now.second(), int(dumpMon.species()),
-                dumpMon.nickname(), dumpMon.PID(), dumpMon.extension());
+            outPath = std::format("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}{:s}", folder,
+                now.hour(), now.minute(), now.second(), int(dumpMon.species()), dumpMon.nickname(),
+                dumpMon.PID(), dumpMon.extension());
         }
         else
         {
-            outPath =
-                fmt::format(FMT_STRING("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}({:d}){:s}"),
-                    folder, now.hour(), now.minute(), now.second(), int(dumpMon.species()),
-                    dumpMon.nickname(), dumpMon.PID(), newFileNumber, dumpMon.extension());
+            outPath = std::format("{:s}/{:d}-{:d}-{:d} - {:d} - {:s} - {:08X}({:d}){:s}", folder,
+                now.hour(), now.minute(), now.second(), int(dumpMon.species()), dumpMon.nickname(),
+                dumpMon.PID(), newFileNumber, dumpMon.extension());
         }
         newFileNumber++;
     }

@@ -31,7 +31,6 @@
 #include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "FortyChoice.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -66,6 +65,7 @@
 #include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <format>
 #include <netdb.h>
 #include <sys/socket.h>
 
@@ -410,8 +410,9 @@ void sav_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)gen, (std::string)TitleLoader::save->generation())));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -839,8 +840,9 @@ void party_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)gen, (std::string)TitleLoader::save->generation())));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);

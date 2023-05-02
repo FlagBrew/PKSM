@@ -29,7 +29,6 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
@@ -42,6 +41,7 @@
 #include "QRScanner.hpp"
 #include "sav/SavLGPE.hpp"
 #include "ViewOverlay.hpp"
+#include <format>
 #include <memory>
 
 void EditSelectorScreen::changeBoxName()
@@ -410,8 +410,9 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")), infoMon->formatTID(),
-                      infoMon->formatSID(), infoMon->TSV()),
+        Gui::text(
+            std::vformat(i18n::localize("EDITOR_IDS"),
+                std::make_format_args(infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV())),
             160, 224, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
