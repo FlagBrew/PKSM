@@ -776,8 +776,8 @@ namespace
                         if (memcmp(recvChecksum.data(), checksum.data(),
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
-                            if (fetch = Fetch::init(
-                                    CDN_URL "assets/gifts/" + fileName, true, nullptr, nullptr, ""))
+                            if ((fetch = Fetch::init(CDN_URL "assets/gifts/" + fileName, true,
+                                     nullptr, nullptr, "")))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
                                 FILE* outFile       = fopen(outPath.c_str(), "wb");

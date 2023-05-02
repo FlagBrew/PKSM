@@ -2319,11 +2319,18 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (size_t j = 0; j < 8; j++)
                     {
-                        const std::string& text =
-                            (size_t)currRibbon < gen8Ribbons.size()
-                                ? i18n::ribbon(Configuration::getInstance().language(),
-                                      gen8Ribbons[currRibbon])
-                                : i18n::localize("UNUSED");
+                        const std::string& text = [&]() -> const std::string&
+                        {
+                            if ((size_t)currRibbon < gen8Ribbons.size())
+                            {
+                                return i18n::ribbon(Configuration::getInstance().language(),
+                                    gen8Ribbons[currRibbon]);
+                            }
+                            else
+                            {
+                                return i18n::localize("UNUSED");
+                            }
+                        }();
                         buttons[i].push_back(std::make_unique<HexEditButton>(
                             30, 90 + j * 16, 13, 13,
                             [this, i, j]() { return this->toggleBit(i, j); },

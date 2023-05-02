@@ -30,6 +30,9 @@
 #include "base64.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
+#include "pkx/PK1.hpp"
+#include "pkx/PK2.hpp"
+#include "pkx/PK3.hpp"
 #include "pkx/PK4.hpp"
 #include "pkx/PK5.hpp"
 #include "pkx/PK6.hpp"
@@ -262,7 +265,8 @@ public:
             std::vector<u8> decoded = base64_decode(
                 std::string_view((const char*)data.data() + b64Begin, data.size() - b64Begin));
 
-            if constexpr (std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
+            if constexpr (std::is_same_v<Mode, pksm::PK1> || std::is_same_v<Mode, pksm::PK2> ||
+                          std::is_same_v<Mode, pksm::PK3> || std::is_same_v<Mode, pksm::PK4> ||
                           std::is_same_v<Mode, pksm::PK5> || std::is_same_v<Mode, pksm::PK6> ||
                           std::is_same_v<Mode, pksm::PK8>)
             {
