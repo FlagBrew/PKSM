@@ -34,7 +34,7 @@ namespace
     class QRData
     {
     public:
-        QRData() : image{new C3D_Tex, &subtex}, data(quirc_new())
+        QRData() : image{&tex, &subtex}, data(quirc_new())
         {
             std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
             C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
@@ -50,7 +50,6 @@ namespace
         ~QRData()
         {
             C3D_TexDelete(image.tex);
-            delete image.tex;
             quirc_destroy(data);
             svcCloseHandle(exitEvent);
         }
@@ -68,6 +67,7 @@ namespace
         void finish();
         std::array<u16, 400 * 240> cameraBuffer;
         LightLock bufferLock;
+        C3D_Tex tex;
         C2D_Image image;
         LightLock imageLock;
         quirc* data;

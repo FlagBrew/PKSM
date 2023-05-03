@@ -33,7 +33,8 @@
 namespace
 {
     constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
-    C2D_Image dsIcon                         = {nullptr, &dsIconSubt3x};
+    C3D_Tex dsIconTex;
+    C2D_Image dsIcon = {nullptr, &dsIconSubt3x};
 
     struct bannerData
     {
@@ -55,7 +56,7 @@ namespace
         static constexpr int HEIGHT_POW2 = 32;
         if (!dsIcon.tex)
         {
-            dsIcon.tex = new C3D_Tex;
+            dsIcon.tex = &dsIconTex;
             C3D_TexInit(dsIcon.tex, WIDTH_POW2, HEIGHT_POW2, GPU_RGB565);
             dsIcon.tex->border = 0xFFFFFFFF;
             C3D_TexSetWrap(dsIcon.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
