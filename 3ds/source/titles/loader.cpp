@@ -599,7 +599,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 // Save initialized only in bottom save. Only check it.
                 else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                 {
-                    Gui::warn("First save absent");
+                    // Gui::warn("First save absent");
                     // If the first header is garbage FF, we have to search for the second. It can
                     // only be at one of these possible sizes + 0x200 (for the size of the first
                     // header)
@@ -675,11 +675,11 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
 
                     if (firstInvalid)
                     {
-                        Gui::warn("First CMAC is invalid");
+                        // Gui::warn("First CMAC is invalid");
                         // Both CMACs are invalid. Run and hide.
                         if (secondInvalid)
                         {
-                            Gui::warn("Second CMAC is invalid");
+                            Gui::warn("Both CMACs are invalid");
                             // Dummy data
                             data = std::shared_ptr<u8[]>(new u8[1]);
                             size = 1;
@@ -700,7 +700,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         // The first CMAC is the only valid one. Use it
                         if (secondInvalid)
                         {
-                            Gui::warn("Second CMAC is invalid");
+                            // Gui::warn("Second CMAC is invalid");
                             size = header1->saveSize;
                             data = std::shared_ptr<u8[]>(new u8[size]);
                             // Always 0x200 after the first header
