@@ -97,12 +97,12 @@ bool Directory::loaded(void) const
 
 std::u16string Directory::item(size_t index) const
 {
-    return (char16_t*)list.at(index).name;
+    return (char16_t*)list[index].name;
 }
 
 bool Directory::folder(size_t index) const
 {
-    return index < list.size() ? list.at(index).attributes == FS_ATTRIBUTE_DIRECTORY : false;
+    return index < list.size() ? list[index].attributes == FS_ATTRIBUTE_DIRECTORY : false;
 }
 
 size_t Directory::count(void) const
