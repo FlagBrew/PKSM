@@ -38,7 +38,16 @@ namespace Threads
 {
     inline constexpr int MAX_THREADS = 32;
 
-    bool init(u8 workers);
+    inline constexpr size_t DEFAULT_STACK = 0x4000;
+    inline constexpr size_t WORKER_STACK  = 0x8000;
+
+    bool init(u8 minWorkers, u8 maxWorkers);
+
+    inline bool init(u8 workers)
+    {
+        return init(workers, workers);
+    }
+
     // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN
     // MIND IF YOU ARE PORTING
     bool create(void (*entrypoint)(void*), void* arg = nullptr,

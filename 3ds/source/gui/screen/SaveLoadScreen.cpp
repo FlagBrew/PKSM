@@ -798,7 +798,8 @@ void SaveLoadScreen::updateTitles()
         i.clear();
     }
 
-    for (auto i = TitleLoader::sdSaves.begin(); i != TitleLoader::sdSaves.end(); i++)
+    auto allSaves = TitleLoader::sdSaves.lock();
+    for (auto i = allSaves->begin(); i != allSaves->end(); i++)
     {
         if (i->first.size() == 4)
         {

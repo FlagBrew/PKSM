@@ -25,8 +25,10 @@
  */
 
 #include "thread.hpp"
+#include "DataMutex.hpp"
 #include <3ds.h>
 #include <algorithm>
+#include <atomic>
 #include <vector>
 
 namespace
@@ -77,36 +79,63 @@ namespace
         void* arg;
     };
 
-    std::vector<Task> workerTasks;
-    LightLock workerTaskLock;
+    DataMutex<std::vector<Task>> workerTasks;
     LightSemaphore moreTasks;
-    u8 numWorkers;
+    std::atomic<u8> numWorkers  = 0;
+    std::atomic<u8> freeWorkers = 0;
+    u8 maxWorkers               = 0;
+    u8 minWorkers               = 0;
 
     void taskWorkerThread()
     {
+        numWorkers++;
         while (true)
         {
-            LightSemaphore_Acquire(&moreTasks, 1);
-
-            LightLock_Lock(&workerTaskLock);
-
-            if (workerTasks.size() == 0)
+            if (LightSemaphore_TryAcquire(&moreTasks, 1))
             {
-                return;
+                if (numWorkers <= minWorkers)
+                {
+                    freeWorkers++;
+                    LightSemaphore_Acquire(&moreTasks, 1);
+                    freeWorkers--;
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            Task t = workerTasks[0];
-            workerTasks.erase(workerTasks.begin());
+            Task t = std::invoke(
+                []
+                {
+                    auto tasks = workerTasks.lock();
+                    if (tasks->size() == 0)
+                    {
+                        return Task{nullptr, nullptr};
+                    }
+                    else
+                    {
+                        Task ret = tasks.get()[0];
+                        tasks->erase(tasks->begin());
+                        return ret;
+                    }
+                });
 
-            LightLock_Unlock(&workerTaskLock);
+            if (!t.entrypoint)
+            {
+                break;
+            }
 
             t.entrypoint(t.arg);
         }
+        numWorkers--;
     }
 }
 
-bool Threads::init(u8 workers)
+bool Threads::init(u8 min, u8 max)
 {
+    minWorkers = min;
+    maxWorkers = max;
     LightLock_Init(&currentThreadsLock);
     if (R_FAILED(svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT)))
     {
@@ -127,11 +156,10 @@ bool Threads::init(u8 workers)
         return false;
     }
 
-    LightLock_Init(&workerTaskLock);
-    LightSemaphore_Init(&moreTasks, 0, workers);
-    for (int i = 0; i < workers; i++)
+    LightSemaphore_Init(&moreTasks, 0, 10000);
+    for (int i = 0; i < minWorkers; i++)
     {
-        if (!Threads::create(0x8000, taskWorkerThread))
+        if (!Threads::create(WORKER_STACK, taskWorkerThread))
         {
             return false;
         }
@@ -148,7 +176,7 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
     Thread thread =
-        threadCreate(entrypoint, arg, stackSize.value_or(4 * 1024), prio - 1, -2, false);
+        threadCreate(entrypoint, arg, stackSize.value_or(DEFAULT_STACK), prio - 1, -2, false);
 
     if (thread)
     {
@@ -164,19 +192,21 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
 
 void Threads::executeTask(void (*task)(void*), void* arg)
 {
-    LightLock_Lock(&workerTaskLock);
-    workerTasks.emplace_back(task, arg);
+    workerTasks.lock()->emplace_back(task, arg);
     LightSemaphore_Release(&moreTasks, 1);
-    LightLock_Unlock(&workerTaskLock);
+    if (numWorkers < maxWorkers && freeWorkers == 0)
+    {
+        Threads::create(WORKER_STACK, taskWorkerThread);
+    }
 }
 
 void Threads::exit(void)
 {
+    workerTasks.lock()->clear();
     LightSemaphore_Release(&moreTasks, numWorkers);
     svcSignalEvent(reaperThreadHandles[0]);
     threadJoin(reaperThread, U64_MAX);
     threadFree(reaperThread);
     svcCloseHandle(reaperThreadHandles[0]);
     svcCloseHandle(reaperThreadHandles[1]);
-    // All remove themselves, so no extra removal necessary
 }

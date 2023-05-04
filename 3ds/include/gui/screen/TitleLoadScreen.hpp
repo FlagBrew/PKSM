@@ -30,6 +30,7 @@
 #include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
+#include "utils/DataMutex.hpp"
 #include "utils/SmallVector.hpp"
 #include <cmath>
 #include <memory>
@@ -55,7 +56,7 @@ private:
     std::vector<std::string> availableCheckpointSaves;
     std::vector<std::unique_ptr<Button>> buttons;
     std::vector<std::unique_ptr<ToggleButton>> tabs;
-    SmallVector<std::shared_ptr<Title>, 12>* titles;
+    DataMutex<SmallVector<std::shared_ptr<Title>, 12>>* lockedTitles;
     int selectedTitle = -2;
     int firstSave     = -1;
     int selectedSave  = -1;

@@ -28,6 +28,7 @@
 #define LOADER_HPP
 
 #include "sav/Sav.hpp"
+#include "utils/DataMutex.hpp"
 #include "utils/SmallVector.hpp"
 #include <3ds.h>
 #include <functional>
@@ -66,12 +67,10 @@ namespace TitleLoader
     void reloadTitleIds(void);
 
     // Title lists
-    // Note that there can only be up to 12 installed titles of either type, which means a threaded
-    // push_back can only edit the end pointer and will not change the storage used
-    inline SmallVector<std::shared_ptr<Title>, 12> ctrTitles;
-    inline SmallVector<std::shared_ptr<Title>, 12> vcTitles;
-    inline std::shared_ptr<Title> cardTitle = nullptr;
-    inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
+    inline DataMutex<SmallVector<std::shared_ptr<Title>, 12>> ctrTitles;
+    inline DataMutex<SmallVector<std::shared_ptr<Title>, 12>> vcTitles;
+    inline std::atomic<std::shared_ptr<Title>> cardTitle = nullptr;
+    inline DataMutex<std::unordered_map<std::string, std::vector<std::string>>> sdSaves;
     inline std::shared_ptr<pksm::Sav> save;
 }
 
