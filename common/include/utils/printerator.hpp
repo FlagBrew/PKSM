@@ -51,7 +51,7 @@ public:
 
     constexpr const Printerator& operator*() const noexcept { return *this; }
 
-    constexpr bool operator==(const Printerator&) const noexcept  = default;
+    constexpr bool operator==(const Printerator&) const noexcept = default;
 
     constexpr Printerator& operator=(int c) noexcept
     {

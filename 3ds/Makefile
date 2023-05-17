@@ -171,9 +171,6 @@ LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
 			`curl-config --libs`
 
-CXX		:=	`which ccache` $(CXX)
-CC		:=	`which ccache` $(CC)
-
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib

@@ -44,7 +44,7 @@ public:
 
 private:
     SmallVector<std::pair<pksm::Sav::Pouch, int>, 15> limits;
-    const std::map<pksm::Sav::Pouch, std::vector<int>>& allowedItems;
+    SmallVector<std::pair<pksm::Sav::Pouch, std::span<const int>>, 15> allowedItems;
     std::vector<std::unique_ptr<Button>> amountButtons;
     std::vector<std::unique_ptr<Button>> buttons;
     static constexpr std::array<u16, 35> lgpeKeyItems = {101, 102, 103, 113, 115, 121, 122, 123,
@@ -61,6 +61,8 @@ private:
     void setCount(int selected);
     bool canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const;
     void updateFirstEmpty();
+
+    std::span<const int> itemsForPouch(pksm::Sav::Pouch pouch) const;
 
     int currentPouch    = 0;
     int selectedItem    = 0;

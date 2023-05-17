@@ -27,3 +27,6 @@ external/tools/*
 build.log
 assets/gui_strings/*/gui.json
 common/generate_categories_for_other_languages.py
+3ds_compile_commands.json
+switch_compile_commands.json
+.clangd

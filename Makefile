@@ -28,6 +28,8 @@ debug: 3ds-debug
 
 release: 3ds-release docs
 
+compile-commands: 3ds-compile-commands
+
 no-deps: 3ds-no-deps
 no-scripts: 3ds-no-scripts
 no-gifts: 3ds-no-gifts
@@ -62,6 +64,12 @@ endif
 
 3ds-release: revision
 	$(MAKE) -C 3ds RELEASE="1"
+
+3ds-compile-commands: revision
+	$(MAKE) -C 3ds clean
+	$(MAKE) -C 3ds GENERATE_COMPILE_COMMANDS=1
+	@mv 3ds/build/compile_commands.json 3ds_compile_commands.json
+	@echo 3DS compile commands written to 3ds_compile_commands.json
 
 docs:
 	@mkdir -p $(OUTDIR)
