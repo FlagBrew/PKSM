@@ -25,6 +25,8 @@
  */
 
 #include "QRScanner.hpp"
+#include "3ds/services/gspgpu.h"
+#include "DataMutex.hpp"
 #include "quirc/quirc.h"
 #include "thread.hpp"
 #include <atomic>
@@ -34,22 +36,21 @@ namespace
     class QRData
     {
     public:
-        QRData() : image{&tex, &subtex}, data(quirc_new())
+        QRData() : cameraBuffer(), image{&tex, &subtex}, data(quirc_new())
         {
-            std::fill(cameraBuffer.begin(), cameraBuffer.end(), 0);
-            C3D_TexInit(image.tex, 512, 256, GPU_RGB565);
-            C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
-            image.tex->border = 0xFFFFFFFF;
-            C3D_TexSetWrap(image.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
-            LightLock_Init(&bufferLock);
-            LightLock_Init(&imageLock);
+            std::ranges::fill(cameraBuffer.lock().get(), 0);
+            auto curImage = image.lock();
+            C3D_TexInit(curImage->tex, 512, 256, GPU_RGB565);
+            C3D_TexSetFilter(curImage->tex, GPU_LINEAR, GPU_LINEAR);
+            curImage->tex->border = 0xFFFFFFFF;
+            C3D_TexSetWrap(curImage->tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
             svcCreateEvent(&exitEvent, RESET_STICKY);
             quirc_resize(data, 400, 240);
         }
 
         ~QRData()
         {
-            C3D_TexDelete(image.tex);
+            C3D_TexDelete(image.lock()->tex);
             quirc_destroy(data);
             svcCloseHandle(exitEvent);
         }
@@ -65,11 +66,9 @@ namespace
     private:
         void buffToImage();
         void finish();
-        std::array<u16, 400 * 240> cameraBuffer;
-        LightLock bufferLock;
+        DataMutex<std::array<u16, 400 * 240>> cameraBuffer;
         C3D_Tex tex;
-        C2D_Image image;
-        LightLock imageLock;
+        DataMutex<C2D_Image> image;
         quirc* data;
         Handle exitEvent;
         static constexpr Tex3DS_SubTexture subtex = {512, 256, 0.0f, 1.0f, 1.0f, 0.0f};
@@ -87,7 +86,10 @@ namespace
 
 void QRData::buffToImage()
 {
-    LightLock_Lock(&bufferLock);
+    auto lockedImage  = image.lock();
+    auto lockedBuffer = cameraBuffer.lock();
+    u32 size;
+    void* imageData = C3D_Tex2DGetImagePtr(lockedImage->tex, 0, &size);
     for (u32 x = 0; x < 400; x++)
     {
         for (u32 y = 0; y < 240; y++)
@@ -97,10 +99,10 @@ void QRData::buffToImage()
                                  ((x & 4) << 2) | ((y & 4) << 3))) *
                          2;
             u32 srcPos = (y * 400 + x) * 2;
-            memcpy(((u8*)image.tex->data) + dstPos, ((u8*)cameraBuffer.data()) + srcPos, 2);
+            memcpy(((u8*)imageData) + dstPos, ((u8*)lockedBuffer->data()) + srcPos, 2);
         }
     }
-    LightLock_Unlock(&bufferLock);
+    GSPGPU_FlushDataCache(imageData, size);
 }
 
 void QRData::finish()
@@ -110,22 +112,17 @@ void QRData::finish()
     {
         svcSleepThread(1000000);
     }
-    LightLock_Lock(&bufferLock);
-    LightLock_Unlock(&bufferLock);
-    LightLock_Lock(&imageLock);
-    LightLock_Unlock(&imageLock);
 }
 
 void QRData::drawThread()
 {
-    LightLock_Lock(&imageLock);
     while (aptMainLoop() && !done())
     {
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         buffToImage();
 
         Gui::target(GFX_TOP);
-        Gui::drawImageAt(image, 0, 0, nullptr, 1.0f, 1.0f);
+        Gui::drawImageAt(image.lock().get(), 0, 0, nullptr, 1.0f, 1.0f);
 
         Gui::target(GFX_BOTTOM);
         Gui::backgroundBottom(false);
@@ -145,7 +142,6 @@ void QRData::drawThread()
         C3D_FrameEnd(0);
         Gui::frameClean();
     }
-    LightLock_Unlock(&imageLock);
 }
 
 void QRData::captureThread()
@@ -154,7 +150,7 @@ void QRData::captureThread()
     events[0]        = exitEvent;
     u32 transferUnit;
 
-    u16* buffer = new u16[400 * 240];
+    std::unique_ptr<u16[]> buffer = std::unique_ptr<u16[]>(new u16[400 * 240]);
     camInit();
     CAMU_SetSize(SELECT_OUT1, SIZE_CTR_TOP_LCD, CONTEXT_A);
     CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
@@ -171,7 +167,8 @@ void QRData::captureThread()
     CAMU_GetMaxBytes(&transferUnit, 400, 240);
     CAMU_SetTransferBytes(PORT_CAM1, transferUnit, 400, 240);
     CAMU_ClearBuffer(PORT_CAM1);
-    CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), (s16)transferUnit);
+    CAMU_SetReceiving(
+        &events[1], buffer.get(), PORT_CAM1, 400 * 240 * sizeof(u16), (s16)transferUnit);
     CAMU_StartCapture(PORT_CAM1);
     bool cancel = false;
     while (!cancel)
@@ -186,19 +183,20 @@ void QRData::captureThread()
             case 1:
                 svcCloseHandle(events[1]);
                 events[1] = 0;
-                LightLock_Lock(&bufferLock);
-                memcpy(cameraBuffer.data(), buffer, 400 * 240 * sizeof(u16));
-                GSPGPU_FlushDataCache(cameraBuffer.data(), 400 * 240 * sizeof(u16));
-                LightLock_Unlock(&bufferLock);
+                {
+                    auto lockedBuffer = cameraBuffer.lock();
+                    memcpy(lockedBuffer->data(), buffer.get(), 400 * 240 * sizeof(u16));
+                    GSPGPU_FlushDataCache(lockedBuffer->data(), 400 * 240 * sizeof(u16));
+                }
                 CAMU_SetReceiving(
-                    &events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                    &events[1], buffer.get(), PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
                 break;
             case 2:
                 svcCloseHandle(events[1]);
                 events[1] = 0;
                 CAMU_ClearBuffer(PORT_CAM1);
                 CAMU_SetReceiving(
-                    &events[1], buffer, PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
+                    &events[1], buffer.get(), PORT_CAM1, 400 * 240 * sizeof(u16), transferUnit);
                 CAMU_StartCapture(PORT_CAM1);
                 break;
             default:
@@ -217,7 +215,6 @@ void QRData::captureThread()
     CAMU_ClearBuffer(PORT_CAM1);
     CAMU_Activate(SELECT_NONE);
     camExit();
-    delete[] buffer;
     for (int i = 1; i < 3; i++)
     {
         if (events[i] != 0)
@@ -260,18 +257,19 @@ void QRData::handler(std::vector<u8>& out)
 
     int w, h;
     u8* image = (u8*)quirc_begin(data, &w, &h);
-    LightLock_Lock(&bufferLock);
-    for (ssize_t x = 0; x < w; x++)
     {
-        for (ssize_t y = 0; y < h; y++)
+        auto lockedBuffer = cameraBuffer.lock();
+        for (ssize_t x = 0; x < w; x++)
         {
-            u16 px = cameraBuffer[y * 400 + x];
-            image[y * w + x] =
-                (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) + ((px & 0x1F) << 3)) /
-                     3);
+            for (ssize_t y = 0; y < h; y++)
+            {
+                u16 px           = lockedBuffer.get()[y * 400 + x];
+                image[y * w + x] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) +
+                                            ((px & 0x1F) << 3)) /
+                                        3);
+            }
         }
     }
-    LightLock_Unlock(&bufferLock);
     quirc_end(data);
     if (quirc_count(data) > 0)
     {
