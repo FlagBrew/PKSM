@@ -124,7 +124,9 @@ namespace TextParse
         {
         }
 
+        // Chops off extra lines, with offset for begin
         std::shared_ptr<Text> truncate(size_t lines, size_t offset = 0) const;
+        // Chops off extra width, with offset for begin
         std::shared_ptr<Text> slice(float maxWidth, float scrollOffset = 0.0f) const;
         // These should ONLY be used when drawing text directly instead of using ScreenText, which
         // shouldn't happen often!
@@ -132,6 +134,7 @@ namespace TextParse
         void draw(float x, float y, float z, FontSize sizeX, FontSize sizeY, TextPosX textPos,
             PKSM_Color color = COLOR_BLACK) const;
 
+        // Gets the max line width of the text, given the font size scaling factor
         float maxWidth(float sizeX) const { return sizeX * maxLineWidth; }
 
         size_t lines() const { return lineWidths.size(); }
@@ -141,7 +144,7 @@ namespace TextParse
         std::vector<float> lineWidths;
         float maxLineWidth;
         void addWord(
-            std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth = 0.0f);
+            std::pair<std::vector<Glyph>, std::vector<float>>& word, float maxWidth = 0.0f);
     };
 
     class TextBuf
@@ -164,9 +167,10 @@ namespace TextParse
         std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
         void makeGlyphSheets(C2D_Font font);
 #endif
-        std::pair<std::vector<Glyph>, std::vector<float>> parseWord(
+        void parseWord(std::pair<std::vector<Glyph>, std::vector<float>>& output,
             std::string::const_iterator& str, float maxWidth);
-        std::variant<float, size_t> parseWhitespace(std::string::const_iterator& str);
+        // Returns the number of lines and width of the next leading whitespace
+        std::pair<float, size_t> parseWhitespace(std::string::const_iterator& str);
         std::vector<FontType> fonts;
         std::unordered_map<std::string, std::shared_ptr<Text>> parsedText;
         size_t maxGlyphs;
