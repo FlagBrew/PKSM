@@ -1665,16 +1665,20 @@ bool StorageScreen::swapBoxWithStorage()
         if (acceptGenChange || temPkm->generation() == TitleLoader::save->generation())
         {
             // Check for transfer path
-            temPkm = TitleLoader::save->transfer(*temPkm);
-            if (temPkm)
+            if (temPkm->species() == pksm::Species::None || isValidTransfer(*temPkm, true))
             {
-                if (temPkm->species() == pksm::Species::None || isValidTransfer(*temPkm, true))
+                temPkm = TitleLoader::save->transfer(*temPkm);
+                if (temPkm)
                 {
                     std::unique_ptr<pksm::PKX> otherTemPkm = TitleLoader::save->pkm(boxBox, i);
                     TitleLoader::save->pkm(
                         *temPkm, boxBox, i, Configuration::getInstance().transferEdit());
                     TitleLoader::save->dex(*temPkm);
                     Banks::bank->pkm(*otherTemPkm, storageBox, i);
+                }
+                else
+                {
+                    unswappedPkm.push_back(i + 1);
                 }
             }
             else
