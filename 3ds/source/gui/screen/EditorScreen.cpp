@@ -544,6 +544,7 @@ bool EditorScreen::hexEdit()
 
 bool EditorScreen::changeLevel(bool up)
 {
+    int min_level = pkm->generation() > pksm::Generation::THREE ? 1 : 2;
     if (up)
     {
         if (pkm->level() < 100)
@@ -553,7 +554,7 @@ bool EditorScreen::changeLevel(bool up)
     }
     else
     {
-        if (pkm->level() > 1)
+        if (pkm->level() > min_level)
         {
             pkm->level(pkm->level() - 1);
         }
@@ -570,9 +571,11 @@ void EditorScreen::setLevel()
     char input[4]   = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[3]        = '\0';
+
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 level = (u8)std::min(std::stoi(input), 100);
+        int min_level = pkm->generation() > pksm::Generation::THREE ? 1 : 2;
+        u8 level      = (u8)std::clamp(std::stoi(input), min_level, 100);
         pkm->level(level);
     }
 }
