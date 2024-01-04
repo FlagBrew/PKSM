@@ -29,7 +29,6 @@
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "EditorScreen.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
@@ -42,6 +41,7 @@
 #include "QRScanner.hpp"
 #include "sav/SavLGPE.hpp"
 #include "ViewOverlay.hpp"
+#include <format>
 #include <memory>
 
 void EditSelectorScreen::changeBoxName()
@@ -410,8 +410,9 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")), infoMon->formatTID(),
-                      infoMon->formatSID(), infoMon->TSV()),
+        Gui::text(
+            std::vformat(i18n::localize("EDITOR_IDS"),
+                std::make_format_args(infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV())),
             160, 224, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 
@@ -475,6 +476,7 @@ void EditSelectorScreen::update(touchPosition* touch)
     u32 downKeys   = hidKeysDown();
     u32 heldKeys   = hidKeysHeld();
     u32 repeatKeys = hidKeysDownRepeat();
+    u32 upKeys     = hidKeysUp();
 
     if (menu)
     {
@@ -698,11 +700,11 @@ void EditSelectorScreen::update(touchPosition* touch)
                 cursorPos += maxPkmInBox / 5;
             }
         }
-        else if (repeatKeys & KEY_R)
+        else if (repeatKeys & (~downKeys) & KEY_R || (upKeys & KEY_R))
         {
             nextBox();
         }
-        else if (repeatKeys & KEY_L)
+        else if (repeatKeys & (~downKeys) & KEY_L || (upKeys & KEY_L))
         {
             prevBox();
         }

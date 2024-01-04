@@ -30,13 +30,13 @@
 #include "ClickButton.hpp"
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "loader.hpp"
 #include "MainMenu.hpp"
 #include "sav/Sav.hpp"
 #include "SaveLoadScreen.hpp"
 #include "Title.hpp"
+#include <format>
 
 bool TitleLoadScreen::loadSave() const
 {
@@ -68,9 +68,13 @@ std::shared_ptr<Title> TitleLoadScreen::titleFromIndex(int i) const
     {
         return nullptr;
     }
-    else if ((size_t)i < titles->size())
+    else
     {
-        return (*titles)[i];
+        auto titles = lockedTitles->lock();
+        if ((size_t)i < titles->size())
+        {
+            return (*titles)[i];
+        }
     }
     return nullptr;
 }
@@ -97,7 +101,7 @@ TitleLoadScreen::TitleLoadScreen()
         200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
         COLOR_BLACK));
 
-    titles = &TitleLoader::ctrTitles;
+    lockedTitles = &TitleLoader::ctrTitles;
     tabs[0]->setState(true); // prevent uninitialized state
 }
 
@@ -113,7 +117,7 @@ void TitleLoadScreen::refreshLanguage()
         1, 2, 158, 17,
         [&]()
         {
-            titles = &TitleLoader::ctrTitles;
+            lockedTitles = &TitleLoader::ctrTitles;
             resetTitles();
             return true;
         },
@@ -124,7 +128,7 @@ void TitleLoadScreen::refreshLanguage()
         161, 2, 158, 17,
         [&]()
         {
-            titles = &TitleLoader::vcTitles;
+            lockedTitles = &TitleLoader::vcTitles;
             resetTitles();
             return true;
         },
@@ -132,7 +136,7 @@ void TitleLoadScreen::refreshLanguage()
         ui_sheet_emulated_button_tabs_2_unselected_idx, i18n::localize("VC_TITLES"), FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
 
-    tabs[0]->setState(titles == &TitleLoader::ctrTitles);
+    tabs[0]->setState(lockedTitles == &TitleLoader::ctrTitles);
 }
 
 void TitleLoadScreen::drawTop() const
@@ -142,7 +146,7 @@ void TitleLoadScreen::drawTop() const
     Gui::sprite(ui_sheet_emulated_gameselector_bg_idx, 4, 29);
     Gui::sprite(ui_sheet_gameselector_cart_idx, 35, 93);
 
-    if (auto title = TitleLoader::cardTitle)
+    if (auto title = TitleLoader::cardTitle.load())
     {
         if (title->icon().subtex->width == 48)
         {
@@ -158,20 +162,24 @@ void TitleLoadScreen::drawTop() const
         }
     }
 
-    for (size_t i = 0; i < titles->size(); i++)
     {
-        int y = titles->size() > 4 ? (i / 4) * 60 + (titles->size() > 8 ? 38 : 68) : 98;
-        int x = 150 + (4 - (titles->size() % 4 == 0 ? 4 : titles->size() % 4)) * 30 + (i % 4) * 60;
-
-        if ((titles->size() > 4 && i < 4) || (titles->size() > 8 && i < 8))
+        auto titles = lockedTitles->lock();
+        for (size_t i = 0; i < titles->size(); i++)
         {
-            x = 150 + (i % 4) * 60;
-        }
+            int y = titles->size() > 4 ? (i / 4) * 60 + (titles->size() > 8 ? 38 : 68) : 98;
+            int x =
+                150 + (4 - (titles->size() % 4 == 0 ? 4 : titles->size() % 4)) * 30 + (i % 4) * 60;
 
-        Gui::drawImageAt((*titles)[i]->icon(), x, y, NULL, 1.0f, 1.0f);
-        if (titleFromIndex(selectedTitle) == (*titles)[i])
-        {
-            Gui::drawSelector(x - 1, y - 1);
+            if ((titles->size() > 4 && i < 4) || (titles->size() > 8 && i < 8))
+            {
+                x = 150 + (i % 4) * 60;
+            }
+
+            Gui::drawImageAt((*titles)[i]->icon(), x, y, NULL, 1.0f, 1.0f);
+            if ((int)i == selectedTitle)
+            {
+                Gui::drawSelector(x - 1, y - 1);
+            }
         }
     }
 
@@ -217,8 +225,8 @@ void TitleLoadScreen::drawBottom() const
             Gui::drawImageAt(title->icon(), 253, 31, NULL, 1.0f, 1.0f);
         }
         Gui::text(title->name(), 27, 26, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(fmt::format(FMT_STRING("{:08X}"), title->lowId()), nextIdPart, 46, FONT_SIZE_11,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::format("{:08X}", title->lowId()), nextIdPart, 46, FONT_SIZE_11, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
 
         Gui::text(
             selectedTitle == -1 ? i18n::localize("LOADER_CARTRIDGE") : i18n::localize("LOADER_SD"),
@@ -308,13 +316,18 @@ void TitleLoadScreen::update(touchPosition* touch)
     {
         resetTitles();
     }
+    if (buttonsDown & KEY_START)
+    {
+        Gui::exitMainLoop();
+        return;
+    }
     if (selectedTitle == -2)
     {
-        if (TitleLoader::cardTitle == nullptr && !titles->empty())
+        if (TitleLoader::cardTitle.load() == nullptr && !lockedTitles->lock()->empty())
         {
             selectedTitle = 0;
         }
-        else if (TitleLoader::cardTitle != nullptr)
+        else if (TitleLoader::cardTitle.load() != nullptr)
         {
             selectedTitle = -1;
         }
@@ -335,13 +348,13 @@ void TitleLoadScreen::update(touchPosition* touch)
             else if (buttonsDown & KEY_L)
             {
                 tabs[0]->setState(true);
-                titles = &TitleLoader::ctrTitles;
+                lockedTitles = &TitleLoader::ctrTitles;
                 resetTitles();
             }
             else if (buttonsDown & KEY_R)
             {
                 tabs[1]->setState(true);
-                titles = &TitleLoader::vcTitles;
+                lockedTitles = &TitleLoader::vcTitles;
                 resetTitles();
             }
             for (auto& tabButton : tabs)
@@ -414,22 +427,23 @@ void TitleLoadScreen::update(touchPosition* touch)
     }
     else
     {
+        size_t titleSize = lockedTitles->lock()->size();
         if (buttonsDown & KEY_DOWN)
         {
-            if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
+            if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle.load())
             {
-                if (titles->size() > 4)
+                if (titleSize > 4)
                 {
                     selectedTitle = 4;
                 }
-                else if (!titles->empty())
+                else if (titleSize != 0)
                 {
                     selectedTitle = 0;
                 }
             }
             else
             {
-                if (titles->size() > 8)
+                if (titleSize > 8)
                 {
                     if (selectedTitle < 4)
                     {
@@ -437,34 +451,32 @@ void TitleLoadScreen::update(touchPosition* touch)
                     }
                     else if (selectedTitle < 8)
                     {
-                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
-                                          ? titles->size() - 1
-                                          : selectedTitle + 4;
+                        selectedTitle = selectedTitle + 4 > (int)titleSize - 1 ? titleSize - 1
+                                                                               : selectedTitle + 4;
                     }
                     else
                     {
                         selectedTitle %= 4;
                     }
                 }
-                else if (titles->size() > 4)
+                else if (titleSize > 4)
                 {
                     if (selectedTitle < 4)
                     {
-                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
-                                          ? titles->size() - 1
-                                          : selectedTitle + 4;
+                        selectedTitle = selectedTitle + 4 > (int)titleSize - 1 ? titleSize - 1
+                                                                               : selectedTitle + 4;
                     }
                     else
                     {
                         selectedTitle -= 4;
                     }
                 }
-                else if (titles->size() < 5)
+                else if (titleSize < 5)
                 {
                     selectedTitle++;
-                    if (selectedTitle == (int)titles->size())
+                    if (selectedTitle == (int)titleSize)
                     {
-                        if (TitleLoader::cardTitle)
+                        if (TitleLoader::cardTitle.load())
                         {
                             selectedTitle = -1;
                         }
@@ -478,20 +490,20 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else if (buttonsDown & KEY_UP)
         {
-            if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle)
+            if (titleFromIndex(selectedTitle) == TitleLoader::cardTitle.load())
             {
-                if (titles->size() > 4)
+                if (titleSize > 4)
                 {
                     selectedTitle = 0;
                 }
                 else
                 {
-                    selectedTitle = titles->size() - 1;
+                    selectedTitle = titleSize - 1;
                 }
             }
             else
             {
-                if (titles->size() > 4)
+                if (titleSize > 4)
                 {
                     if (selectedTitle > 3)
                     {
@@ -499,33 +511,31 @@ void TitleLoadScreen::update(touchPosition* touch)
                     }
                     else
                     {
-                        selectedTitle = selectedTitle + 4 > (int)titles->size() - 1
-                                          ? titles->size() - 1
-                                          : selectedTitle + 4;
+                        selectedTitle = selectedTitle + 4 > (int)titleSize - 1 ? titleSize - 1
+                                                                               : selectedTitle + 4;
                     }
                 }
-                else if (titles->size() < 5 && selectedTitle > -2)
+                else if (titleSize < 5 && selectedTitle > -2)
                 {
                     selectedTitle--;
-                    if (selectedTitle == -1 && !TitleLoader::cardTitle)
+                    if (selectedTitle == -1 && !TitleLoader::cardTitle.load())
                     {
-                        selectedTitle = titles->size() - 1;
+                        selectedTitle = titleSize - 1;
                     }
                 }
             }
         }
         else if (buttonsDown & KEY_RIGHT)
         {
-            if (selectedTitle == (int)titles->size() - 1 || selectedTitle == 3 ||
-                selectedTitle == 7)
+            if (selectedTitle == (int)titleSize - 1 || selectedTitle == 3 || selectedTitle == 7)
             {
-                if (TitleLoader::cardTitle)
+                if (TitleLoader::cardTitle.load())
                 {
                     selectedTitle = -1;
                 }
                 else
                 {
-                    if (titles->size() > 4 && selectedTitle > 3)
+                    if (titleSize > 4 && selectedTitle > 3)
                     {
                         if (selectedTitle > 7)
                         {
@@ -555,39 +565,39 @@ void TitleLoadScreen::update(touchPosition* touch)
         {
             if (selectedTitle == -1)
             {
-                selectedTitle = titles->size() < 4 ? titles->size() - 1 : 3;
+                selectedTitle = titleSize < 4 ? titleSize - 1 : 3;
             }
             else if (selectedTitle == 8)
             {
-                if (TitleLoader::cardTitle)
+                if (TitleLoader::cardTitle.load())
                 {
                     selectedTitle = -1;
                 }
                 else
                 {
-                    selectedTitle = (int)titles->size() - 1;
+                    selectedTitle = (int)titleSize - 1;
                 }
             }
             else if (selectedTitle == 4)
             {
-                if (TitleLoader::cardTitle)
+                if (TitleLoader::cardTitle.load())
                 {
                     selectedTitle = -1;
                 }
                 else
                 {
-                    selectedTitle = titles->size() > 8 ? 8 : ((int)titles->size() - 1);
+                    selectedTitle = titleSize > 8 ? 8 : ((int)titleSize - 1);
                 }
             }
             else if (selectedTitle == 0)
             {
-                if (TitleLoader::cardTitle)
+                if (TitleLoader::cardTitle.load())
                 {
                     selectedTitle = -1;
                 }
                 else
                 {
-                    selectedTitle = titles->size() > 4 ? 3 : (int)titles->size() - 1;
+                    selectedTitle = titleSize > 4 ? 3 : (int)titleSize - 1;
                 }
             }
             else
@@ -609,14 +619,14 @@ void TitleLoadScreen::update(touchPosition* touch)
         else if (buttonsDown & KEY_L)
         {
             tabs[0]->setState(true);
-            titles = &TitleLoader::ctrTitles;
+            lockedTitles = &TitleLoader::ctrTitles;
             resetTitles();
             return;
         }
         else if (buttonsDown & KEY_R)
         {
             tabs[1]->setState(true);
-            titles = &TitleLoader::vcTitles;
+            lockedTitles = &TitleLoader::vcTitles;
             resetTitles();
             return;
         }
@@ -635,7 +645,7 @@ void TitleLoadScreen::update(touchPosition* touch)
     }
     if (auto title = titleFromIndex(selectedTitle))
     {
-        availableCheckpointSaves = TitleLoader::sdSaves[title->checkpointPrefix()];
+        availableCheckpointSaves = TitleLoader::sdSaves.lock().get()[title->checkpointPrefix()];
     }
     else
     {

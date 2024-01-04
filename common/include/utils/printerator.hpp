@@ -24,45 +24,44 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef TITLELOADSCREEN_HPP
-#define TITLELOADSCREEN_HPP
+#ifndef PRINTERATOR_HPP
+#define PRINTERATOR_HPP
 
-#include "enums/Language.hpp"
-#include "Screen.hpp"
-#include "ToggleButton.hpp"
-#include "utils/DataMutex.hpp"
-#include "utils/SmallVector.hpp"
-#include <cmath>
-#include <memory>
+#include <cstdio>
+#include <iterator>
 
-class Title;
-class Button;
-
-class TitleLoadScreen : public Screen
+class Printerator
 {
-public:
-    TitleLoadScreen();
-    void drawTop() const override;
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
-    void refreshLanguage();
-
 private:
-    bool setSelectedSave(int i);
-    std::shared_ptr<Title> titleFromIndex(int i) const;
-    bool loadSave(void) const;
-    void resetTitles(void);
+    FILE* output;
 
-    std::vector<std::string> availableCheckpointSaves;
-    std::vector<std::unique_ptr<Button>> buttons;
-    std::vector<std::unique_ptr<ToggleButton>> tabs;
-    DataMutex<SmallVector<std::shared_ptr<Title>, 12>>* lockedTitles;
-    int selectedTitle = -2;
-    int firstSave     = -1;
-    int selectedSave  = -1;
-    pksm::Language oldLang;
-    bool selectedGame   = false;
-    bool uninstGameView = false;
+public:
+    constexpr Printerator() noexcept : Printerator(stdout) {}
+
+    constexpr explicit Printerator(FILE* o) noexcept : output(o) {}
+
+    using difference_type   = std::ptrdiff_t;
+    using value_type        = void;
+    using pointer           = void;
+    using reference         = void;
+    using iterator_category = std::output_iterator_tag;
+    using iterator_concept  = std::output_iterator_tag;
+
+    constexpr Printerator& operator*() noexcept { return *this; }
+
+    constexpr const Printerator& operator*() const noexcept { return *this; }
+
+    constexpr bool operator==(const Printerator&) const noexcept = default;
+
+    constexpr Printerator& operator=(int c) noexcept
+    {
+        std::fputc(c, output);
+        return *this;
+    }
+
+    constexpr Printerator& operator++() noexcept { return *this; }
+
+    constexpr Printerator& operator++(int) noexcept { return *this; }
 };
 
 #endif

@@ -27,7 +27,6 @@
 #include "InjectSelectorScreen.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "InjectorScreen.hpp"
@@ -40,6 +39,7 @@
 #include "wcx/PGT.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
+#include <format>
 #include <sys/stat.h>
 
 namespace
@@ -222,7 +222,7 @@ void InjectSelectorScreen::drawBottom() const
     Gui::text("\uE005", 228, 17, FONT_SIZE_18, PKSM_Color(197, 202, 233, 255), TextPosX::LEFT,
         TextPosY::TOP);
     Gui::text(
-        fmt::format(FMT_STRING("{:d}/{:d}"), hid.page() + 1,
+        std::format("{:d}/{:d}", hid.page() + 1,
             wondercards.size() % 10 == 0 ? wondercards.size() / 10 : wondercards.size() / 10 + 1),
         160, 20, FONT_SIZE_12, PKSM_Color(197, 202, 233, 255), TextPosX::CENTER, TextPosY::TOP);
 
@@ -430,13 +430,13 @@ bool InjectSelectorScreen::doQR()
 
 void InjectSelectorScreen::dumpCard(void) const
 {
-    auto wc          = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
-    DateTime now     = DateTime::now();
-    std::string path = fmt::format(
-        FMT_STRING("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}"), now.year(), now.month(), now.day());
+    auto wc      = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
+    DateTime now = DateTime::now();
+    std::string path =
+        std::format("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
     mkdir(path.c_str(), 777);
-    path      += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}"), now.hour(),
-             now.minute(), now.second(), wc->ID(), wc->title(), wc->extension().data());
+    path      += std::format("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}", now.hour(), now.minute(),
+             now.second(), wc->ID(), wc->title(), wc->extension().data());
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

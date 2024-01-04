@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Añadir archivo de guardado",
     "APP_LEGALIZE": "Legalice via GPSS App",
     "APP_SCAN_QR": "Escanee un código QR legal ",
     "APP_USE_SOCKETS": "Legalizar en internet",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": Desplace hacia abajo",
     "EDITOR_INST": "Presiona  para seleccionar,\n para volver",
     "GPSS_BROWSE": "Navegar GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Mueve el DPAD. A para continuar, START para salir.",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Elige una partida a cargar. Presione Y para juegos ausentes.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Elige una partida a cargar. Presione Y para juegos presentes.",
     "L_BOX_PREV": ": Caja Previa",
@@ -54,5 +55,6 @@
     "Y_GROUP_SINGLE": ": Cambiar entre singular/grupo",
     "Y_LEGALIZE": ": Verificación de legalidad",
     "Y_PRESENT": ": Juegos presentes",
-    "Y_RESIZE": ": Cambiar tamaño"
+    "Y_RESIZE": ": Cambiar tamaño",
+    "Y_SAVE_AND_LAUNCH": "\uE003: Save & Launch"
 }

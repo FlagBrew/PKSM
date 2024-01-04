@@ -26,13 +26,13 @@
 
 #include "ViewOverlay.hpp"
 #include "Configuration.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "pkx/PB7.hpp"
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
+#include <format>
 
 namespace
 {
@@ -226,8 +226,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
         case pksm::Gender::INVALID:
             break;
     }
-    Gui::text(fmt::format(fmt::runtime(i18n::localize("LVL")), pkm.level()), 143, 10, FONT_SIZE_9,
-        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::vformat(i18n::localize("LVL"), std::make_format_args(pkm.level())), 143, 10,
+        FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     if (pkm.shiny())
     {
         Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);
@@ -302,12 +302,12 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
             FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }
 
-    Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.PSV(), pkm.TSV()), 87, 156, FONT_SIZE_12,
+    Gui::text(std::format("{:d}/{:d}", pkm.PSV(), pkm.TSV()), 87, 156, FONT_SIZE_12, COLOR_BLACK,
+        TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(std::format("{:d}/{:d}", pkm.versionTID(), pkm.versionSID()), 87, 176, FONT_SIZE_12,
         COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.versionTID(), pkm.versionSID()), 87, 176,
+    Gui::text(std::format("{:d}/{:d}", pkm.currentFriendship(), pkm.otFriendship()), 122, 196,
         FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-    Gui::text(fmt::format(FMT_STRING("{:d}/{:d}"), pkm.currentFriendship(), pkm.otFriendship()),
-        122, 196, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::type(Configuration::getInstance().language(), pkm.hpType()), 122, 216,
         FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
 
@@ -318,16 +318,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
         Gui::text(std::to_string((int)pkm.iv(statValues[i])), 317, 16 + i * 20, FONT_SIZE_12,
             pkm.hyperTrain(statValues[i]) ? COLOR_UNSELECTRED : COLOR_BLACK, TextPosX::RIGHT,
             TextPosY::TOP);
-        if (pkm.generation() == pksm::Generation::LGPE)
-        {
-            Gui::text(std::to_string((int)static_cast<pksm::PB7&>(pkm).awakened(statValues[i])),
-                342, 16 + i * 20, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
-        else
-        {
-            Gui::text(std::to_string((int)pkm.ev(statValues[i])), 342, 16 + i * 20, FONT_SIZE_12,
-                COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-        }
+        Gui::text(std::to_string(pkm.secondaryStatCalc(statValues[i])), 342, 16 + i * 20,
+            FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
         Gui::text(std::to_string((int)pkm.stat(statValues[i])), 367, 16 + i * 20, FONT_SIZE_12,
             COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
     }

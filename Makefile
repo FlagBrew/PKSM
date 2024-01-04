@@ -2,8 +2,8 @@ export PKSM_TITLE		:= 	PKSM
 export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager
 export PKSM_AUTHOR		:=	FlagBrew
 
-export VERSION_MAJOR	:=	9
-export VERSION_MINOR	:=	2
+export VERSION_MAJOR	:=	10
+export VERSION_MINOR	:=	0
 export VERSION_MICRO	:=	0
 GIT_REV					:=	$(shell git rev-parse --short HEAD)
 OLD_INFO				:=	$(shell if [ -e appinfo.hash ]; then cat appinfo.hash; fi)
@@ -27,6 +27,8 @@ endif
 debug: 3ds-debug
 
 release: 3ds-release docs
+
+compile-commands: 3ds-compile-commands
 
 no-deps: 3ds-no-deps
 no-scripts: 3ds-no-scripts
@@ -65,6 +67,12 @@ endif
 
 switch-debug: revision
 	$(MAKE) -C switch
+	
+3ds-compile-commands: revision
+	$(MAKE) -C 3ds clean
+	$(MAKE) -C 3ds GENERATE_COMPILE_COMMANDS=1
+	@mv 3ds/build/compile_commands.json 3ds_compile_commands.json
+	@echo 3DS compile commands written to 3ds_compile_commands.json
 
 docs:
 	@mkdir -p $(OUTDIR)
@@ -73,8 +81,11 @@ docs:
 clean:
 	@rm -f appinfo.hash
 	@rm -f common/include/revision.h
-	@rm -f assets/gui_strings/*/gui.json
 	$(MAKE) -C 3ds clean
+
+clean-deps:
+	@rm -f assets/gui_strings/*/gui.json
+	$(MAKE) -C 3ds clean-deps
 
 spotless: clean
 	$(MAKE) -C 3ds spotless

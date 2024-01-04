@@ -1,5 +1,5 @@
 /*
- *   This file is part of PKExtraSavesSubScreen::Group::SM
+ *   This file is part of PKSaveGroup::SM
  *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -56,272 +56,276 @@ namespace
 
     // RGB will play by different rules, because of course they will. BDSP will be a breath of fresh
     // air.
-    std::string groupToId1(ExtraSavesSubScreen::Group g)
+    std::string groupToId1(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return std::string(dsIds[0]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return std::string(dsIds[1]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return std::string(dsIds[3]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return std::string(dsIds[5]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return std::string(dsIds[7]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return ctrIds[0];
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return ctrIds[2];
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return ctrIds[3];
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return ctrIds[5];
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return ctrIds[7];
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return ctrIds[9];
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return ctrIds[11];
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return ctrIds[16];
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return ctrIds[17];
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return ctrIds[19];
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return ctrIds[20];
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return ctrIds[22];
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
         return "";
     }
 
-    std::string groupToId2(ExtraSavesSubScreen::Group g)
+    std::string groupToId2(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return std::string(dsIds[0]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return std::string(dsIds[2]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return std::string(dsIds[4]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return std::string(dsIds[6]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return std::string(dsIds[8]) + dsPostfixes[0];
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return ctrIds[1];
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return ctrIds[2];
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return ctrIds[4];
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return ctrIds[6];
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return ctrIds[8];
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return ctrIds[10];
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return ctrIds[12];
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return ctrIds[16];
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return ctrIds[18];
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return ctrIds[19];
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return ctrIds[21];
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return ctrIds[23];
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
         return "";
     }
 
-    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel1(
-        ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel1(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return {"Pt", pksm::Species::Giratina, 1};
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return {"D", pksm::Species::Dialga, 0};
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return {"HG", pksm::Species::HoOh, 0};
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return {"B", pksm::Species::Reshiram, 0};
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return {"B2", pksm::Species::Kyurem, 2};
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return {"R", pksm::Species::Groudon, 0};
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return {"E", pksm::Species::Rayquaza, 0};
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return {"FR", pksm::Species::Charizard, 0};
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return {"X", pksm::Species::Xerneas, 0};
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return {"OR", pksm::Species::Groudon, 1};
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return {"S", pksm::Species::Solgaleo, 0};
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return {"US", pksm::Species::Necrozma, 1};
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return {"Y", pksm::Species::Pikachu, 0};
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return {"G", pksm::Species::HoOh, 0};
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return {"C", pksm::Species::Suicune, 0};
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return {"LGP", pksm::Species::Pikachu, 0};
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return {"Sw", pksm::Species::Zacian, 1};
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
         return {"", pksm::Species::None, 0};
     }
 
-    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel2(
-        ExtraSavesSubScreen::Group g)
+    constexpr std::tuple<const char*, pksm::Species, int> groupToLabel2(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return {"Pt", pksm::Species::Giratina, 1};
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return {"P", pksm::Species::Palkia, 0};
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return {"SS", pksm::Species::Lugia, 0};
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return {"W", pksm::Species::Zekrom, 0};
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return {"W2", pksm::Species::Kyurem, 1};
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return {"S", pksm::Species::Kyogre, 0};
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return {"E", pksm::Species::Rayquaza, 0};
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return {"LG", pksm::Species::Venusaur, 0};
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return {"Y", pksm::Species::Yveltal, 0};
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return {"AS", pksm::Species::Kyogre, 1};
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return {"M", pksm::Species::Lunala, 0};
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return {"UM", pksm::Species::Necrozma, 2};
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return {"Y", pksm::Species::Pikachu, 0};
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return {"S", pksm::Species::Lugia, 0};
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return {"C", pksm::Species::Suicune, 0};
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return {"LGE", pksm::Species::Eevee, 0};
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return {"Sh", pksm::Species::Zamazenta, 1};
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
         return {"", pksm::Species::None, 0};
     }
 
-    constexpr pksm::GameVersion groupToGameId1(ExtraSavesSubScreen::Group g)
+    constexpr pksm::GameVersion groupToGameId1(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return pksm::GameVersion::Pt;
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return pksm::GameVersion::D;
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return pksm::GameVersion::HG;
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return pksm::GameVersion::B;
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return pksm::GameVersion::B2;
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return pksm::GameVersion::R;
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return pksm::GameVersion::E;
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return pksm::GameVersion::FR;
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return pksm::GameVersion::X;
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return pksm::GameVersion::OR;
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return pksm::GameVersion::SN;
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return pksm::GameVersion::US;
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return pksm::GameVersion::YW;
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return pksm::GameVersion::GD;
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return pksm::GameVersion::C;
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return pksm::GameVersion::GP;
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return pksm::GameVersion::SW;
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
         return pksm::GameVersion::INVALID;
     }
 
-    constexpr pksm::GameVersion groupToGameId2(ExtraSavesSubScreen::Group g)
+    constexpr pksm::GameVersion groupToGameId2(SaveGroup g)
     {
         switch (g)
         {
-            case ExtraSavesSubScreen::Group::Pt:
+            using enum SaveGroup;
+            case Pt:
                 return pksm::GameVersion::Pt;
-            case ExtraSavesSubScreen::Group::DP:
+            case DP:
                 return pksm::GameVersion::P;
-            case ExtraSavesSubScreen::Group::HGSS:
+            case HGSS:
                 return pksm::GameVersion::SS;
-            case ExtraSavesSubScreen::Group::BW:
+            case BW:
                 return pksm::GameVersion::W;
-            case ExtraSavesSubScreen::Group::B2W2:
+            case B2W2:
                 return pksm::GameVersion::W2;
-            case ExtraSavesSubScreen::Group::RS:
+            case RS:
                 return pksm::GameVersion::S;
-            case ExtraSavesSubScreen::Group::E:
+            case E:
                 return pksm::GameVersion::E;
-            case ExtraSavesSubScreen::Group::FRLG:
+            case FRLG:
                 return pksm::GameVersion::LG;
-            case ExtraSavesSubScreen::Group::XY:
+            case XY:
                 return pksm::GameVersion::Y;
-            case ExtraSavesSubScreen::Group::ORAS:
+            case ORAS:
                 return pksm::GameVersion::AS;
-            case ExtraSavesSubScreen::Group::SM:
+            case SM:
                 return pksm::GameVersion::MN;
-            case ExtraSavesSubScreen::Group::USUM:
+            case USUM:
                 return pksm::GameVersion::UM;
-            case ExtraSavesSubScreen::Group::Y:
+            case Y:
                 return pksm::GameVersion::YW;
-            case ExtraSavesSubScreen::Group::GS:
+            case GS:
                 return pksm::GameVersion::SV;
-            case ExtraSavesSubScreen::Group::C:
+            case C:
                 return pksm::GameVersion::C;
-            case ExtraSavesSubScreen::Group::LGPE:
+            case LGPE:
                 return pksm::GameVersion::GE;
-            case ExtraSavesSubScreen::Group::SwSh:
+            case SwSh:
                 return pksm::GameVersion::SH;
-            case ExtraSavesSubScreen::Group::RGB:
+            case RGB:
                 // handled differently
                 break;
         }
@@ -338,7 +342,7 @@ namespace
     }
 }
 
-ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
+ExtraSavesSubScreen::ExtraSavesSubScreen(SaveGroup g)
     : Screen(i18n::localize("A_ADD_SAVE") + '\n' + i18n::localize("X_DELETE_SAVE") + '\n' +
              i18n::localize("B_BACK")),
       group(g)
@@ -363,9 +367,8 @@ ExtraSavesSubScreen::ExtraSavesSubScreen(Group g)
 
 void ExtraSavesSubScreen::updateSaves()
 {
-    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
-        group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
-        group == ExtraSavesSubScreen::Group::B2W2)
+    if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+        group == SaveGroup::BW || group == SaveGroup::B2W2)
     {
         dsCurrentSaves.clear();
         numSaves     = 0;
@@ -381,7 +384,8 @@ void ExtraSavesSubScreen::updateSaves()
     }
     switch (group)
     {
-        case ExtraSavesSubScreen::Group::Pt:
+        using enum SaveGroup;
+        case Pt:
             for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves =
@@ -393,7 +397,7 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::DP:
+        case DP:
             for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
@@ -407,7 +411,7 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::HGSS:
+        case HGSS:
             for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
@@ -421,7 +425,7 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::BW:
+        case BW:
             for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
@@ -435,7 +439,7 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::B2W2:
+        case B2W2:
             for (const auto& postfix : dsPostfixes)
             {
                 auto pFixSaves = Configuration::getInstance().extraSaves(
@@ -449,7 +453,7 @@ void ExtraSavesSubScreen::updateSaves()
                 }
             }
             break;
-        case ExtraSavesSubScreen::Group::RGB:
+        case RGB:
             currentSaves = Configuration::getInstance().extraSaves(std::string(
                 selectedGame ? ((selectedGame == 1) ? ctrIds[14] : ctrIds[15]) : ctrIds[13]));
             numSaves     = currentSaves.size();
@@ -465,7 +469,7 @@ void ExtraSavesSubScreen::updateSaves()
 void ExtraSavesSubScreen::drawTop() const
 {
     Gui::backgroundTop(true);
-    if (group == ExtraSavesSubScreen::Group::RGB)
+    if (group == SaveGroup::RGB)
     {
         std::tuple<const char*, pksm::Species, int> label = {"R", pksm::Species::Charmander, 0};
         drawIcon(label, 80, 96);
@@ -486,8 +490,8 @@ void ExtraSavesSubScreen::drawTop() const
             Gui::drawSelector(271, 95);
         }
     }
-    else if (group != ExtraSavesSubScreen::Group::Pt && group != ExtraSavesSubScreen::Group::E &&
-             group != ExtraSavesSubScreen::Group::C && group != ExtraSavesSubScreen::Group::Y)
+    else if (group != SaveGroup::Pt && group != SaveGroup::E && group != SaveGroup::C &&
+             group != SaveGroup::Y)
     {
         auto label = groupToLabel1(group);
         drawIcon(label, 128, 96);
@@ -517,9 +521,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
 {
     if (updateConfig)
     {
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
-            group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
-            group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+            group == SaveGroup::BW || group == SaveGroup::B2W2)
         {
             if (!addString.empty())
             {
@@ -530,7 +533,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
                 Configuration::getInstance().extraSaves(saves.first, saves.second);
             }
         }
-        else if (group == ExtraSavesSubScreen::Group::RGB)
+        else if (group == SaveGroup::RGB)
         {
             if (!addString.empty())
             {
@@ -556,7 +559,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     u32 down = hidKeysDown();
     if (down & KEY_LEFT || down & KEY_RIGHT)
     {
-        if (group == ExtraSavesSubScreen::Group::RGB)
+        if (group == SaveGroup::RGB)
         {
             if (down & KEY_LEFT)
             {
@@ -634,9 +637,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
 
     if (down & KEY_A)
     {
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
-            group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
-            group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+            group == SaveGroup::BW || group == SaveGroup::B2W2)
         {
             if (dsCurrentSaves.empty())
             {
@@ -658,9 +660,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     else if (down & KEY_X && selectedSave != -1)
     {
         const std::string* entry = nullptr;
-        if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
-            group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
-            group == ExtraSavesSubScreen::Group::B2W2)
+        if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+            group == SaveGroup::BW || group == SaveGroup::B2W2)
         {
             int i = 0;
             for (const auto& idGroup : dsCurrentSaves)
@@ -678,11 +679,8 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
         if (Gui::showChoiceMessage(
                 i18n::localize("DELETE_EXTRASAVE_ENTRY") + '\n' + ("\'" + *entry + "\'")))
         {
-            if (group == ExtraSavesSubScreen::Group::Pt ||
-                group == ExtraSavesSubScreen::Group::DP ||
-                group == ExtraSavesSubScreen::Group::HGSS ||
-                group == ExtraSavesSubScreen::Group::BW ||
-                group == ExtraSavesSubScreen::Group::B2W2)
+            if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+                group == SaveGroup::BW || group == SaveGroup::B2W2)
             {
                 int i = 0;
                 for (auto& idGroup : dsCurrentSaves)
@@ -708,7 +706,7 @@ void ExtraSavesSubScreen::drawBottom() const
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
 
-    if (group == ExtraSavesSubScreen::Group::RGB)
+    if (group == SaveGroup::RGB)
     {
         Gui::text(
             i18n::game(Configuration::getInstance().language(),
@@ -729,9 +727,8 @@ void ExtraSavesSubScreen::drawBottom() const
         Gui::drawSolidRect(24, 96 + 17 * selectedSave, 174, 16, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    if (group == ExtraSavesSubScreen::Group::Pt || group == ExtraSavesSubScreen::Group::DP ||
-        group == ExtraSavesSubScreen::Group::HGSS || group == ExtraSavesSubScreen::Group::BW ||
-        group == ExtraSavesSubScreen::Group::B2W2)
+    if (group == SaveGroup::Pt || group == SaveGroup::DP || group == SaveGroup::HGSS ||
+        group == SaveGroup::BW || group == SaveGroup::B2W2)
     {
         int y    = 97;
         size_t i = 0;
@@ -812,7 +809,7 @@ void ExtraSavesSubScreen::drawBottom() const
 
     Gui::drawSolidRect(245, 23, 48, 48, COLOR_BLACK);
     Gui::drawSolidRect(243, 21, 52, 52, PKSM_Color(15, 22, 89, 255));
-    if (group == ExtraSavesSubScreen::Group::RGB)
+    if (group == SaveGroup::RGB)
     {
         std::tuple<const char*, pksm::Species, int> rLabel = {"R", pksm::Species::Charmander, 0};
         std::tuple<const char*, pksm::Species, int> gLabel = {"G", pksm::Species::Bulbasaur, 0};

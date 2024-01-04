@@ -26,6 +26,7 @@
 
 #include "TextParse.hpp"
 #include <algorithm>
+#include <iterator>
 #include <type_traits>
 
 namespace
@@ -55,7 +56,7 @@ namespace
 
 namespace TextParse
 {
-    void Text::addWord(std::pair<std::vector<Glyph>, std::vector<float>>&& word, float maxWidth)
+    void Text::addWord(std::pair<std::vector<Glyph>, std::vector<float>>& word, float maxWidth)
     {
         if (word.second.size() > 1 ||
             (maxWidth > 0.0f && lineWidths.back() + word.second.front() > maxWidth))
@@ -74,11 +75,13 @@ namespace TextParse
             for (auto& glyph : word.first)
             {
                 glyph.xPos += lineWidths.back();
-                glyph.line = lines();
+                glyph.line  = lines();
             }
             lineWidths[lines() - 1] += word.second.front();
         }
         glyphs.insert(glyphs.end(), word.first.begin(), word.first.end());
+        word.first.clear();
+        word.second.clear();
     }
 
     void Text::optimize()
@@ -225,7 +228,7 @@ namespace TextParse
                                       GPU_TEXTURE_MIN_FILTER(GPU_LINEAR) |
                                       GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_BORDER) |
                                       GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_BORDER);
-                fontSheets[i].border   = 0xFFFFFFFF;
+                fontSheets[i].border   = 0;
                 fontSheets[i].lodParam = 0;
             }
             glyphSheets.emplace(font, std::move(fontSheets));
@@ -247,7 +250,7 @@ namespace TextParse
             fontSheets[i].param =
                 GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR) |
                 GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_BORDER) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_BORDER);
-            fontSheets[i].border   = 0xFFFFFFFF;
+            fontSheets[i].border   = 0;
             fontSheets[i].lodParam = 0;
         }
         glyphSheets.emplace(font, std::move(fontSheets));
@@ -292,12 +295,13 @@ namespace TextParse
         return nullptr;
     }
 
-    std::pair<std::vector<Glyph>, std::vector<float>> TextBuf::parseWord(
+    void TextBuf::parseWord(std::pair<std::vector<Glyph>, std::vector<float>>& output,
         std::string::const_iterator& str, float maxWidth)
     {
-        std::vector<Glyph> ret;
-        std::vector<float> lineWidths = {0.0f};
-        ssize_t iMod                  = 0;
+        auto& [ret, lineWidths] = output;
+        ret.clear();
+        lineWidths   = {0.0f};
+        ssize_t iMod = 0;
         for (; *str != '\0'; str += iMod)
         {
             u32 chr;
@@ -319,20 +323,26 @@ namespace TextParse
             {
                 if (maxWidth == 0.0f || lineWidths.back() + glyphPos.xAdvance <= maxWidth)
                 {
-                    ret.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)),
-                                         (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
-                                         glyphPos.texcoord.left, glyphPos.texcoord.top,
-                                         glyphPos.texcoord.right, glyphPos.texcoord.bottom},
+                    ret.emplace_back(
+                        Tex3DS_SubTexture{.width = static_cast<u16>(ceilf(glyphPos.width)),
+                            .height              = (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
+                            .left                = glyphPos.texcoord.left,
+                            .top                 = glyphPos.texcoord.top,
+                            .right               = glyphPos.texcoord.right,
+                            .bottom              = glyphPos.texcoord.bottom},
                         &glyphSheets[font][glyphPos.sheetIndex], font, lineWidths.size() - 1,
                         lineWidths.back() + glyphPos.xOffset, glyphPos.width);
                     lineWidths.back() += glyphPos.xAdvance;
                 }
                 else
                 {
-                    ret.emplace_back(Tex3DS_SubTexture{static_cast<u16>(ceilf(glyphPos.width)),
-                                         (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
-                                         glyphPos.texcoord.left, glyphPos.texcoord.top,
-                                         glyphPos.texcoord.right, glyphPos.texcoord.bottom},
+                    ret.emplace_back(
+                        Tex3DS_SubTexture{.width = static_cast<u16>(ceilf(glyphPos.width)),
+                            .height              = (u16)C2D_FontGetInfo(font)->tglp->cellHeight,
+                            .left                = glyphPos.texcoord.left,
+                            .top                 = glyphPos.texcoord.top,
+                            .right               = glyphPos.texcoord.right,
+                            .bottom              = glyphPos.texcoord.bottom},
                         &glyphSheets[font][glyphPos.sheetIndex], font, lineWidths.size(), 0,
                         glyphPos.width);
                     lineWidths.push_back(glyphPos.xAdvance);
@@ -343,10 +353,9 @@ namespace TextParse
                 break;
             }
         }
-        return {ret, lineWidths};
     }
 
-    std::variant<float, size_t> TextBuf::parseWhitespace(std::string::const_iterator& str)
+    std::pair<float, size_t> TextBuf::parseWhitespace(std::string::const_iterator& str)
     {
         float width  = 0.0f;
         size_t lines = 0;
@@ -363,6 +372,7 @@ namespace TextParse
             if (chr == '\n')
             {
                 lines++;
+                width = 0;
                 continue;
             }
             C2D_Font font = fontForCodepoint(chr);
@@ -371,17 +381,14 @@ namespace TextParse
                 font, &glyphPos, C2D_FontGlyphIndexFromCodePoint(font, chr), 0, 1.0f, 1.0f);
             if (glyphPos.width <= 0.0f)
             {
-                if (lines == 0)
-                {
-                    width += glyphPos.xAdvance;
-                }
+                width += glyphPos.xAdvance;
             }
             else
             {
                 break;
             }
         }
-        return lines == 0 ? std::variant<float, size_t>{width} : std::variant<float, size_t>{lines};
+        return {width, lines};
     }
 
     std::shared_ptr<Text> TextBuf::parse(const std::string& str, float maxWidth)
@@ -396,30 +403,17 @@ namespace TextParse
             std::shared_ptr<Text> tmp = std::make_shared<Text>();
             tmp->lineWidths.push_back(0.0f);
             auto strIt = str.begin();
+            std::pair<std::vector<Glyph>, std::vector<float>> inProgressWord;
             do
             {
-                auto word = parseWord(strIt, maxWidth);
-                tmp->addWord(std::move(word), maxWidth);
+                parseWord(inProgressWord, strIt, maxWidth);
+                tmp->addWord(inProgressWord, maxWidth);
                 auto whitespace = parseWhitespace(strIt);
-                if (whitespace.index() == 0)
+                for (size_t i = 0; i < whitespace.second; i++)
                 {
-                    if (maxWidth != 0.0f &&
-                        tmp->lineWidths.back() + std::get<0>(whitespace) > maxWidth)
-                    {
-                        tmp->lineWidths.push_back(0.0f);
-                    }
-                    else
-                    {
-                        tmp->lineWidths.back() += std::get<0>(whitespace);
-                    }
+                    tmp->lineWidths.push_back(0.0f);
                 }
-                else
-                {
-                    for (size_t i = 0; i < std::get<1>(whitespace); i++)
-                    {
-                        tmp->lineWidths.push_back(0.0f);
-                    }
-                }
+                tmp->lineWidths.back() += whitespace.first;
             }
             while (strIt != str.end());
 

@@ -31,13 +31,13 @@
 #include "Button.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
 #include "PkmUtils.hpp"
+#include "printerator.hpp"
 #include "random.hpp"
 #include "revision.h"
 #include "thread.hpp"
@@ -47,6 +47,7 @@
 #include <3ds.h>
 #include <array>
 #include <atomic>
+#include <format>
 #include <malloc.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -67,14 +68,14 @@ namespace
     };
 
     asset assets[2] = {
-        {"https://raw.githubusercontent.com/piepie62/PKResources/master/pkm_spritesheet.t3x",
-         "/3ds/PKSM/assets/pkm_spritesheet.t3x",   {0xa5, 0x0e, 0x59, 0x75, 0x00, 0xf0, 0xe1, 0x6a, 0x6e, 0xe9, 0xd4, 0x5b, 0xb3, 0x3b,
-                0x9c, 0x08, 0xe8, 0x69, 0xc0, 0x1d, 0x10, 0x53, 0x3f, 0xe0, 0xbe, 0x7e, 0x2c, 0xa4,
-                0xe7, 0x6d, 0xcc, 0x48}  },
-        {"https://raw.githubusercontent.com/piepie62/PKResources/master/types_spritesheet.t3x",
-         "/3ds/PKSM/assets/types_spritesheet.t3x", {0xea, 0x7f, 0x92, 0x86, 0x0a, 0x9b, 0x4d, 0x50, 0x3a, 0x0c, 0x2a, 0x6e, 0x48, 0x60,
-                0xfb, 0x93, 0x1f, 0xd3, 0xd7, 0x7d, 0x6a, 0xbb, 0x1d, 0xdb, 0xac, 0x59, 0xeb, 0xf1,
-                0x66, 0x34, 0xa4, 0x91}}
+        {CDN_URL "assets/pkm_spritesheet.t3x",   "/3ds/PKSM/assets/pkm_spritesheet.t3x",
+         {0xc5, 0x4b, 0x46, 0x4d, 0xe9, 0xe5, 0x6f, 0x5b, 0x04, 0xc7, 0xd6, 0x79, 0xbd, 0xf0,
+                0xb9, 0xb6, 0xc8, 0x4d, 0xbe, 0xa5, 0x55, 0x5b, 0xb7, 0xae, 0x62, 0x86, 0x2b, 0x18,
+                0x62, 0x08, 0x10, 0x32}},
+        {CDN_URL "assets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
+         {0x9f, 0xba, 0xa1, 0x0f, 0xe2, 0x05, 0xce, 0x57, 0xcf, 0x87, 0x32, 0xc3, 0x7f, 0x72,
+                0x42, 0x02, 0x04, 0xf9, 0x06, 0xd7, 0x5c, 0x65, 0xff, 0xae, 0xe8, 0xbf, 0x61, 0x5a,
+                0x08, 0xe4, 0x86, 0x85}}
     };
 
     bool matchSha256HashFromFile(
@@ -97,7 +98,7 @@ namespace
 
     bool assetsMatch(void)
     {
-        for (auto& item : assets)
+        for (const auto& item : assets)
         {
             if (!io::exists(item.path))
             {
@@ -115,7 +116,7 @@ namespace
     {
         Result res = 0;
 
-        for (auto item : assets)
+        for (const auto& item : assets)
         {
             bool downloadAsset = true;
             if (io::exists(item.path))
@@ -131,14 +132,12 @@ namespace
             }
             if (downloadAsset)
             {
-#if !CITRA_DEBUG
                 u32 status;
                 ACU_GetWifiStatus(&status);
                 if (status == 0)
                 {
                     return -1;
                 }
-#endif
                 Result res1 = Fetch::download(item.url, item.path);
                 if (R_FAILED(res1))
                 {
@@ -153,11 +152,13 @@ namespace
     {
         moveIcon.clear();
         consoleInit(GFX_TOP, nullptr);
-        fmt::print(FMT_STRING("\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m"), VERSION_MAJOR,
-            VERSION_MINOR, VERSION_MICRO, GIT_REV);
-        fmt::print(FMT_STRING("\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m"), (u32)res);
-        fmt::print(FMT_STRING("\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m"), message);
-        fmt::print(FMT_STRING("\x1b[29;16HPress START to exit."));
+
+        std::format_to(Printerator{}, "\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m",
+            VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        std::format_to(
+            Printerator{}, "\x1b[5;1HError during startup: \x1b[31m0x{:08X}\x1b[0m", (u32)res);
+        std::format_to(Printerator{}, "\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m", message);
+        std::format_to(Printerator{}, "\x1b[29;16HPress START to exit.");
         gfxFlushBuffers();
         gfxSwapBuffers();
         gspWaitForVBlank();
@@ -257,6 +258,7 @@ namespace
                                 Gui::warn(i18n::localize("UPDATE_MISSING"));
                                 break;
                             case 401:
+                            case 403:
                                 Gui::warn(i18n::localize("NOT_PATRON") + '\n' +
                                           i18n::localize("INCIDENT_LOGGED"));
                                 break;
@@ -482,9 +484,8 @@ namespace
         return false;
     }
 
-    void cartScan(void*)
+    void cartScan()
     {
-#if !CITRA_DEBUG
         bool oldCardIn;
         FSUSER_CardSlotIsInserted(&oldCardIn);
 
@@ -524,10 +525,9 @@ namespace
                 }
             }
         }
-#endif
     }
 
-    void iconThread(void*)
+    void iconThread()
     {
         int x = 176, y = 96;
         u16 w, h;
@@ -579,7 +579,7 @@ namespace
         }
     }
 
-    void i18nThread(void*)
+    void i18nThread()
     {
         static constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
             pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
@@ -608,10 +608,8 @@ namespace
         }
         else
         {
-#if !CITRA_DEBUG
             std::string path = execPath.substr(execPath.find('/'));
             res              = HBLDR_SetTarget(path.c_str());
-#endif
         }
         if (R_FAILED(res))
         {
@@ -641,16 +639,6 @@ namespace
         archive_getmtime(path.c_str(), &fileInfo.mtime);
         checksumFileInfo.exists = (stat(checksumPath.c_str(), &mystat) == 0);
         archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
-        stat(romfsPath.c_str(), &mystat);
-
-        if (mystat.st_mtim.tv_sec > (s64)fileInfo.mtime)
-        {
-            Archive::sd().deleteFile(path);
-            Archive::sd().deleteFile(checksumPath);
-
-            fileInfo.exists         = false;
-            checksumFileInfo.exists = false;
-        }
 
         // Either both exist and file was modified before checksum file, or checksum file exists and
         // file doesn't
@@ -691,14 +679,35 @@ namespace
 
     void updateGifts(void)
     {
-#if !CITRA_DEBUG
         u32 status;
         ACU_GetWifiStatus(&status);
         if (status == 0)
         {
             return;
         }
-#endif
+
+        u8 today = Date::today().day();
+
+        FILE* timestamp = fopen("/3ds/PKSM/mgTimeCheck", "rb");
+        if (timestamp)
+        {
+            u8 day = 0;
+            fread(&day, 1, 1, timestamp);
+            fclose(timestamp);
+
+            if (day == today)
+            {
+                return;
+            }
+        }
+
+        timestamp = fopen("/3ds/PKSM/mgTimeCheck", "wb");
+        if (timestamp)
+        {
+            fwrite(&today, 1, 1, timestamp);
+            fclose(timestamp);
+        }
+
         struct giftCurlData
         {
             giftCurlData(FILE* file, const std::string& fileName)
@@ -749,8 +758,7 @@ namespace
 
                 std::vector<u8> recvChecksum;
                 if (auto fetch = Fetch::init(
-                        WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName + ".sha", true,
-                        nullptr, nullptr, ""))
+                        CDN_URL "assets/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
                 {
                     fetch->setopt(
                         CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
@@ -771,9 +779,8 @@ namespace
                         if (memcmp(recvChecksum.data(), checksum.data(),
                                 std::min(checksum.size(), recvChecksum.size())))
                         {
-                            if (fetch = Fetch::init(
-                                    WEBSITE_URL "api/v2/files/download/mystery-gift/" + fileName,
-                                    true, nullptr, nullptr, ""))
+                            if ((fetch = Fetch::init(CDN_URL "assets/gifts/" + fileName, true,
+                                     nullptr, nullptr, "")))
                             {
                                 std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
                                 FILE* outFile       = fopen(outPath.c_str(), "wb");
@@ -811,8 +818,8 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(fmt::format(fmt::runtime(i18n::localize("MYSTERY_GIFT_DOWNLOAD")),
-                (size_t)filesDone, filesToDownload));
+            Gui::waitFrame(std::vformat(i18n::localize("MYSTERY_GIFT_DOWNLOAD"),
+                std::make_format_args((size_t)filesDone, filesToDownload)));
             svcSleepThread(50'000'000);
         }
 
@@ -845,19 +852,17 @@ Result App::init(const std::string& execPath)
 
     hidInit();
     gfxInitDefault();
-    Threads::init(1);
+    Threads::init(0, 2);
 
     moveIcon.test_and_set();
     Threads::create(iconThread);
 
-#if !CITRA_DEBUG
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
     {
         return consoleDisplayError(
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
     }
-#endif
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
 
@@ -884,6 +889,10 @@ Result App::init(const std::string& execPath)
     if (R_FAILED(res = acInit()))
     {
         return consoleDisplayError("acInit failed.", res);
+    }
+    if (R_FAILED(res = nsInit()))
+    {
+        return consoleDisplayError("nsInit failed.", res);
     }
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
@@ -954,14 +963,14 @@ Result App::init(const std::string& execPath)
 
     TitleLoader::init();
 
-    Threads::executeTask([](void*) { TitleLoader::scanTitles(); }, nullptr);
+    Threads::executeTask(TitleLoader::scanTitles);
     TitleLoader::scanSaves();
 
     doCartScan.test_and_set();
-    Threads::create(cartScan, nullptr);
+    Threads::create(cartScan);
 
     continueI18N.test_and_set();
-    Threads::executeTask(i18nThread, nullptr);
+    Threads::executeTask(i18nThread);
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
@@ -980,6 +989,7 @@ Result App::exit(void)
     Fetch::exitMulti();
     curl_global_cleanup();
     socExit();
+    nsExit();
     acExit();
     doCartScan.clear();
     Threads::exit();

@@ -82,7 +82,7 @@ private:
     Fetch& operator=(Fetch&&)      = default;
     std::unique_ptr<CURL, decltype(curl_easy_cleanup)*> curl;
 
-    static void multiMainThread(void*);
+    static void multiMainThread();
 };
 
 #endif

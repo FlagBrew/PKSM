@@ -29,6 +29,7 @@
 
 #include "sav/Sav.hpp"
 #include "Screen.hpp"
+#include "utils/SmallVector.hpp"
 
 class Button;
 
@@ -42,13 +43,16 @@ public:
     void drawBottom() const override;
 
 private:
-    std::vector<std::pair<pksm::Sav::Pouch, int>> limits;
-    std::map<pksm::Sav::Pouch, std::vector<int>> allowedItems;
+    SmallVector<std::pair<pksm::Sav::Pouch, int>, 15> limits;
+    SmallVector<std::pair<pksm::Sav::Pouch, std::span<const int>>, 15> allowedItems;
     std::vector<std::unique_ptr<Button>> amountButtons;
     std::vector<std::unique_ptr<Button>> buttons;
     static constexpr std::array<u16, 35> lgpeKeyItems = {101, 102, 103, 113, 115, 121, 122, 123,
         124, 125, 126, 127, 128, 442, 632, 651, 872, 873, 874, 875, 876, 877, 878, 885, 886, 887,
         888, 889, 890, 891, 892, 893, 894, 895, 896};
+
+    static constexpr std::array<u16, 19> rgbyKeyItems = {
+        6, 45, 48, 69, 41, 42, 64, 77, 71, 74, 70, 31, 76, 73, 43, 72, 63, 78, 5};
 
     bool clickIndex(int i);
     bool switchPouch(int i);
@@ -57,6 +61,8 @@ private:
     void setCount(int selected);
     bool canEdit(pksm::Sav::Pouch pouch, const pksm::Item& item) const;
     void updateFirstEmpty();
+
+    std::span<const int> itemsForPouch(pksm::Sav::Pouch pouch) const;
 
     int currentPouch    = 0;
     int selectedItem    = 0;

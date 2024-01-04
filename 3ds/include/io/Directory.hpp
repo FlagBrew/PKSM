@@ -47,8 +47,8 @@ public:
 
 private:
     std::vector<FS_DirectoryEntry> list;
-    Result err;
-    bool load;
+    Result err = 0;
+    bool load  = false;
 };
 
 #endif

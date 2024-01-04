@@ -26,19 +26,21 @@
 
 #include "app.hpp"
 #include "gui.hpp"
+#include "printerator.hpp"
 #include "revision.h"
 #include <3ds.h>
+#include <format>
 
 namespace
 {
     void consoleDisplayError(const char* message)
     {
         consoleInit(GFX_TOP, nullptr);
-        printf("\x1b[2;16H\x1b[34mPKSM v%d.%d.%d-%s\x1b[0m", VERSION_MAJOR, VERSION_MINOR,
-            VERSION_MICRO, GIT_REV);
-        printf("\x1b[5;1HAn exception has occurred during execution\x1b[0m");
-        printf("\x1b[8;1HDescription: \x1b[33m%s\x1b[0m", message);
-        printf("\x1b[29;16HPress START to exit.");
+        std::format_to(Printerator{}, "\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m",
+            VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        std::format_to(Printerator{}, "\x1b[5;1HAn exception has occurred during execution\x1b[0m");
+        std::format_to(Printerator{}, "\x1b[8;1HDescription: \x1b[33m{:s}\x1b[0m", message);
+        std::format_to(Printerator{}, "\x1b[29;16HPress START to exit.");
         gfxFlushBuffers();
         gfxSwapBuffers();
         gspWaitForVBlank();
@@ -51,7 +53,16 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Result res = App::init(argc > 0 ? argv[0] : "");
+    Result res;
+    try
+    {
+        res = App::init(argc > 0 ? argv[0] : "");
+    }
+    catch (std::exception& e)
+    {
+        consoleDisplayError(e.what());
+        res = -1;
+    }
     if (R_FAILED(res))
     {
         App::exit();

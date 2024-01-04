@@ -1,6 +1,5 @@
 #---------------------------------------------------------------------------------
 .SUFFIXES:
-.PRECIOUS: build/gfx/ui_sheet.t3x
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITARM)),)
@@ -124,7 +123,6 @@ ROMFS			:=	../assets/romfs
 GFXBUILD		:=	$(BUILD)/gfx
 PACKER			:=	../external/EventsGalleryPacker
 SCRIPTS			:=	../external/PKSM-Scripts
-CITRA_DEBUG		:=	0
 
 ICON			:=	../assets/icon.png
 BANNER_AUDIO	:=	../assets/audio.wav
@@ -141,20 +139,19 @@ ICON_FLAGS		:=	nosavebackups,visible
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 ifneq ($(strip $(RELEASE)),)
-OPTIMIZE		:=	-O3 -flto
-RELEASE_FLAGS	:=	-DNDEBUG
+OPTIMIZE		:=	-O3 -flto=auto
+RELEASE_FLAGS	:=	-DNDEBUG -Wno-unused-variable
 else
 OPTIMIZE		:=	-Og
 endif
 
-CFLAGS	:=	-g -gdwarf-4 -Wall -Wextra -Wno-psabi -mword-relocations \
+CFLAGS	:=	-g -Wall -Wextra -Werror -Wno-psabi -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			-Wno-unused-parameter \
 			$(ARCH) \
 			-DQUIRC_MAX_REGIONS=10000 \
 			-DUNIX_HOST \
 			-DUNIQUE_ID=${UNIQUE_ID} \
-			-DCITRA_DEBUG=${CITRA_DEBUG} \
 			-DPKSM_PORT=34567 \
 			-DFMT_HEADER_ONLY \
 			-DJSON_HAS_FILESYSTEM=0 \
@@ -167,15 +164,12 @@ CFLAGS	+=	$(INCLUDE) -D__3DS__ -D_GNU_SOURCE=1
 
 CXXFLAGS	:=	$(CFLAGS) -fno-rtti -std=gnu++20
 
-ASFLAGS	:=	-g -gdwarf-4 $(ARCH)
-LDFLAGS	=	-specs=3dsx.specs -g -gdwarf-4 $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
+ASFLAGS	:=	-g $(ARCH) $(OPTIMIZE)
+LDFLAGS	:=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -Wl,--wrap=abort $(OPTIMIZE)
 
 LIBS	:=	-lcitro2d -lcitro3d -lbz2 \
 			`arm-none-eabi-pkg-config libmpg123 --libs` \
 			`curl-config --libs`
-
-CXX		:=	`which ccache` $(CXX)
-CC		:=	`which ccache` $(CC)
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -275,19 +269,19 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all binaries buildelf deps checkgallery directories clean spotless no-deps no-gifts no-scripts format cppcheck cppclean
+.PHONY: all binaries buildelf deps checkgallery directories clean clean-deps spotless no-deps no-gifts no-scripts format cppcheck cppclean
 
 #---------------------------------------------------------------------------------
 all:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal"
 no-scripts:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/mg $(ROMFS)/i18n $(ROMFS)/personal"
 no-gifts:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/scripts $(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal"
 no-deps:
-	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/i18n"
+	@$(MAKE) binaries _ROMFS_DEPS="$(ROMFS)/i18n $(ROMFS)/personal"
 #---------------------------------------------------------------------------------
-deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n | directories
+deps: $(ROMFS)/mg $(ROMFS)/scripts $(ROMFS)/i18n $(ROMFS)/personal | directories
 
 $(ROMFS)/mg: $(PACKER)/EventsGallery
 	@echo Packing events...
@@ -309,6 +303,12 @@ $(ROMFS)/i18n: $(filter-out %/gui.json, $(wildcard $(ASSETWILDCARD))) $(shell fi
 	@cp -r ../core/strings/* $(ROMFS)/i18n
 	@touch $(ROMFS)/i18n
 
+$(ROMFS)/personal: $(shell find ../core/personals -type f -printf "\"%p\"\n" | sed -e 's/ /\\ /g' -e 's/"//g')
+	@echo Copying personal data...
+	@mkdir -p $(ROMFS)/personal
+	@cp ../core/personals/* $(ROMFS)/personal
+	@touch $(ROMFS)/personal
+
 $(PACKER)/EventsGallery: checkgallery
 
 checkgallery:
@@ -320,11 +320,17 @@ endif
 clean:
 	@echo clean ...
 	@rm -fr $(OUT_DEBUG)
+	@rm -fr $(BUILD_DEBUG)
+	@rm -fr $(GFXBUILD)
+	@rm -fr $(ROMFS)/gfx/*.bz2
+#---------------------------------------------------------------------------------
+clean-deps:
+	@echo clean-deps ...
 	@rm -fr $(ROMFS)/mg/
 	@rm -fr $(ROMFS)/i18n/
 	@rm -fr $(ROMFS)/scripts
-	@rm -fr $(BUILD_DEBUG) $(PACKER)/out $(PACKER)/EventsGallery
-	@rm -fr $(GFXBUILD)
+	@rm -fr $(ROMFS)/personal
+	@rm -fr $(PACKER)/out $(PACKER)/EventsGallery
 #---------------------------------------------------------------------------------
 spotless: clean
 	@rm -fr $(OUT_RELEASE)
@@ -358,7 +364,7 @@ buildelf: $(ROMFS_GFXFILES) | directories
 ../appinfo.hash:
 	@$(error appinfo.hash not found. Please run make from the project directory)
 
-binaries: $(OUTPUT).3dsx $(OUTPUT).cia
+binaries: $(OUTPUT).3dsx $(OUTPUT).cia | directories
 
 #---------------------------------------------------------------------------------
 format:
@@ -395,6 +401,12 @@ $(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/% | directories
 	@bzip2 -kf --best $< -c > $@
 
 else
+
+#---------------------------------------------------------------------------------
+../$(GFXBUILD)/%.t3x	%.h	:	../$(GRAPHICS)/%.t3s
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@tex3ds -i $< -H $*.h -d $(DEPSDIR)/$*.d -o $@
 
 #---------------------------------------------------------------------------------
 # main targets

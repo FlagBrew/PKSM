@@ -30,7 +30,6 @@
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "sav/Sav.hpp"
@@ -38,7 +37,7 @@
 #include "utils/crypto.hpp"
 #include <3ds.h>
 #include <atomic>
-#include <format.h>
+#include <format>
 #include <sys/stat.h>
 
 namespace
@@ -233,7 +232,7 @@ namespace
         if (directories.count(dir) == 0)
         {
             std::shared_ptr<Directory> d = Archive::sd().directory(dir);
-            if (d)
+            if (d && d->loaded())
             {
                 directories.emplace(dir, d);
             }
@@ -248,7 +247,7 @@ namespace
             if (!directories[dir]->loaded())
             {
                 std::shared_ptr<Directory> d = Archive::sd().directory(dir);
-                if (d)
+                if (d && d->loaded())
                 {
                     directories[dir] = d;
                 }
@@ -270,7 +269,7 @@ namespace
                     if (fileName.substr(0, id.size()) == id)
                     {
                         auto subdir = Archive::sd().directory(dir + u"/" + fileName);
-                        if (subdir)
+                        if (subdir && subdir->loaded())
                         {
                             for (size_t k = 0; k < subdir->count(); k++)
                             {
@@ -381,10 +380,10 @@ void TitleLoader::scanTitles(void)
     u32 count  = 0;
 
     // clear title lists if filled previously
-    ctrTitles.clear();
-    vcTitles.clear();
+    ctrTitles.lock()->clear();
+    vcTitles.lock()->clear();
 
-    if (continueScan.test_and_set())
+    if (continueScan.test())
     {
         scanCard();
     }
@@ -395,7 +394,7 @@ void TitleLoader::scanTitles(void)
 
     // get title count
     res = AM_GetTitleCount(MEDIATYPE_SD, &count);
-    if (R_FAILED(res) || !continueScan.test_and_set())
+    if (R_FAILED(res) || !continueScan.test())
     {
         return;
     }
@@ -404,21 +403,21 @@ void TitleLoader::scanTitles(void)
     std::vector<u64> ids(count);
     u64* p = ids.data();
     res    = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
-    if (R_FAILED(res) || !continueScan.test_and_set())
+    if (R_FAILED(res) || !continueScan.test())
     {
         return;
     }
 
     for (const u64& id : ctrTitleIds)
     {
-        if (continueScan.test_and_set())
+        if (continueScan.test())
         {
             if (std::find(ids.begin(), ids.end(), id) != ids.end())
             {
                 auto title = std::make_shared<Title>();
                 if (title->load(id, MEDIATYPE_SD, CARD_CTR))
                 {
-                    ctrTitles.push_back(title);
+                    ctrTitles.lock()->emplace_back(std::move(title));
                 }
             }
         }
@@ -430,14 +429,14 @@ void TitleLoader::scanTitles(void)
 
     for (const u64& id : vcTitleIds)
     {
-        if (continueScan.test_and_set())
+        if (continueScan.test())
         {
             if (std::find(ids.begin(), ids.end(), id) != ids.end())
             {
                 auto title = std::make_shared<Title>();
                 if (title->load(id, MEDIATYPE_SD, CARD_CTR))
                 {
-                    vcTitles.push_back(title);
+                    vcTitles.lock()->emplace_back(std::move(title));
                 }
             }
         }
@@ -457,12 +456,20 @@ void TitleLoader::scanSaves(void)
     {
         for (const auto& tid : tids)
         {
-            std::string id                 = fmt::format(FMT_STRING("0x{:05X}"), ((u32)tid) >> 8);
+            if (!continueScan.test())
+            {
+                return;
+            }
+            std::string id                 = std::format("0x{:05X}", ((u32)tid) >> 8);
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
             {
                 std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
                 saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
+            }
+            if (!continueScan.test())
+            {
+                return;
             }
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
@@ -475,11 +482,13 @@ void TitleLoader::scanSaves(void)
                     }
                 }
             }
-            sdSaves[id] = saves;
+            sdSaves.lock().get()[id] = std::move(saves);
         }
     };
 
-    sdSaves.clear();
+    {
+        sdSaves.lock()->clear();
+    }
 
     scan(vcTitleIds);
     scan(ctrTitleIds);
@@ -489,6 +498,10 @@ void TitleLoader::scanSaves(void)
     {
         for (size_t lang = 0; lang < 8; lang++)
         {
+            if (!continueScan.test())
+            {
+                return;
+            }
             std::string id                 = std::string(dsIds[game]) + langIds[lang];
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
@@ -507,7 +520,7 @@ void TitleLoader::scanSaves(void)
                     }
                 }
             }
-            sdSaves[id] = saves;
+            sdSaves.lock().get()[id] = std::move(saves);
         }
     }
 }
@@ -520,10 +533,10 @@ void TitleLoader::backupSave(const std::string& id)
     }
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
     DateTime now     = DateTime::now();
-    std::string path = fmt::format(FMT_STRING("/3ds/PKSM/backups/{0:s}"), id);
+    std::string path = std::format("/3ds/PKSM/backups/{0:s}", id);
     mkdir(path.c_str(), 777);
-    path += fmt::format(FMT_STRING("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/"), now.year(),
-        now.month(), now.day(), now.hour(), now.minute(), now.second());
+    path += std::format("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/", now.year(), now.month(), now.day(),
+        now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
     path      += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
@@ -535,7 +548,7 @@ void TitleLoader::backupSave(const std::string& id)
         TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
         {
-            sdSaves[id].emplace_back(path);
+            sdSaves.lock().get()[id].emplace_back(path);
         }
     }
     else
@@ -600,7 +613,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 // Save initialized only in bottom save. Only check it.
                 else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                 {
-                    Gui::warn("First save absent");
+                    // Gui::warn("First save absent");
                     // If the first header is garbage FF, we have to search for the second. It can
                     // only be at one of these possible sizes + 0x200 (for the size of the first
                     // header)
@@ -676,11 +689,11 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
 
                     if (firstInvalid)
                     {
-                        Gui::warn("First CMAC is invalid");
+                        // Gui::warn("First CMAC is invalid");
                         // Both CMACs are invalid. Run and hide.
                         if (secondInvalid)
                         {
-                            Gui::warn("Second CMAC is invalid");
+                            Gui::warn("Both CMACs are invalid");
                             // Dummy data
                             data = std::shared_ptr<u8[]>(new u8[1]);
                             size = 1;
@@ -701,7 +714,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         // The first CMAC is the only valid one. Use it
                         if (secondInvalid)
                         {
-                            Gui::warn("Second CMAC is invalid");
+                            // Gui::warn("Second CMAC is invalid");
                             size = header1->saveSize;
                             data = std::shared_ptr<u8[]>(new u8[size]);
                             // Always 0x200 after the first header
@@ -842,8 +855,9 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         }
         else
         {
-            bool done = false;
-            for (auto i = sdSaves.begin(); !done && i != sdSaves.end(); i++)
+            bool done  = false;
+            auto saves = sdSaves.lock();
+            for (auto i = saves->begin(); !done && i != saves->end(); i++)
             {
                 for (auto j = i->second.begin(); j != i->second.end(); j++)
                 {
@@ -865,11 +879,11 @@ void TitleLoader::saveToTitle(bool ask)
     Result res;
     if (loadedTitle)
     {
-        if (TitleLoader::cardTitle == loadedTitle &&
+        if (TitleLoader::cardTitle.load() == loadedTitle &&
             (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
                                             i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
-            auto& title = TitleLoader::cardTitle;
+            auto title = TitleLoader::cardTitle.load();
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
                 Archive archive =
@@ -916,7 +930,7 @@ void TitleLoader::saveToTitle(bool ask)
             // Just a linear search because it's a maximum of twenty titles
             auto doSave = [&](const auto& titles)
             {
-                for (const auto& title : titles)
+                for (const auto& title : *titles)
                 {
                     if (title == loadedTitle &&
                         (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
@@ -1117,8 +1131,8 @@ void TitleLoader::saveToTitle(bool ask)
                 }
             };
 
-            doSave(ctrTitles);
-            doSave(vcTitles);
+            doSave(ctrTitles.lock());
+            doSave(vcTitles.lock());
         }
 
         u8 out;
@@ -1129,6 +1143,32 @@ void TitleLoader::saveToTitle(bool ask)
             Gui::error(i18n::localize("SECURE_VALUE_ERROR"), res);
         }
     }
+}
+
+u64 TitleLoader::setRebootToTitle()
+{
+    if (titleIsRebootable())
+    {
+        if (loadedTitle->cardType() == FS_CardType::CARD_TWL)
+        {
+            u64 tid = 0x0004800000000000;
+            for (int i = 0; i < 4; i++)
+            {
+                tid |= loadedTitle->checkpointPrefix()[i] << ((3 - i) * 8);
+            }
+            return tid;
+        }
+        else
+        {
+            aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
+        }
+    }
+    return 0;
+}
+
+bool TitleLoader::titleIsRebootable()
+{
+    return (bool)loadedTitle;
 }
 
 void TitleLoader::saveChanges()
@@ -1166,8 +1206,8 @@ std::string TitleLoader::savePath()
 void TitleLoader::exit()
 {
     continueScan.clear();
-    ctrTitles.clear();
-    vcTitles.clear();
+    ctrTitles.lock()->clear();
+    vcTitles.lock()->clear();
     cardTitle   = nullptr;
     loadedTitle = nullptr;
 }
@@ -1217,7 +1257,7 @@ bool TitleLoader::scanCard()
                     auto title = std::make_shared<Title>();
                     if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
                     {
-                        cardTitle = title;
+                        cardTitle = std::move(title);
                     }
                 }
             }
@@ -1246,7 +1286,7 @@ bool TitleLoader::scanCard()
 
                 if (R_SUCCEEDED(res) && pksm::Sav::isValidDSSave(saveFile))
                 {
-                    cardTitle = title;
+                    cardTitle = std::move(title);
                 }
             }
             else

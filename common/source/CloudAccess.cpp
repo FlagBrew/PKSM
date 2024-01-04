@@ -29,13 +29,13 @@
 #include "base64.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKX.hpp"
 #include "revision.h"
 #include "thread.hpp"
 #include "website.h"
+#include <format>
 #include <unistd.h>
 
 namespace
@@ -295,11 +295,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 
 std::optional<int> CloudAccess::nextPage()
 {
-    while (!next->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    next->available.wait(false);
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -327,11 +323,7 @@ std::optional<int> CloudAccess::nextPage()
 
 std::optional<int> CloudAccess::prevPage()
 {
-    while (!prev->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    prev->available.wait(false);
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
@@ -362,8 +354,8 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     long ret            = 0;
     std::string version = "generation: " + (std::string)mon->generation();
     const std::string pksm_version =
-        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
-                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        "source: PKSM " +
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     std::string code = Configuration::getInstance().patronCode();
     if (!code.empty())
     {

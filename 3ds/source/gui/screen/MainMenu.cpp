@@ -30,7 +30,6 @@
 #include "ConfigScreen.hpp"
 #include "Configuration.hpp"
 #include "EditSelectorScreen.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "InjectSelectorScreen.hpp"
 #include "loader.hpp"
@@ -40,6 +39,7 @@
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
+#include <format>
 
 namespace
 {
@@ -133,15 +133,52 @@ void MainMenu::makeButtons()
             return false;
         },
         ui_sheet_button_save_idx, "", 0, COLOR_BLACK);
+
+    if (TitleLoader::titleIsRebootable())
+    {
+        buttons[7] = std::make_unique<ClickButton>(
+            3, 211, 28, 28,
+            [this]()
+            {
+                if (needsSave())
+                {
+                    save();
+                }
+                if (u64 tid = TitleLoader::setRebootToTitle())
+                {
+                    NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+                }
+                Gui::exitMainLoop();
+                return true;
+            },
+            ui_sheet_emulated_upload_save_button_idx, "", 0, COLOR_BLACK);
+    }
 }
 
 void MainMenu::makeInstructions()
 {
-    instructions = Instructions(i18n::localize("B_BACK"));
+    if (TitleLoader::titleIsRebootable())
+    {
+        instructions =
+            Instructions(i18n::localize("X_SAVE") + '\n' + i18n::localize("Y_SAVE_AND_LAUNCH") +
+                         '\n' + i18n::localize("B_BACK"));
+    }
+    else
+    {
+        instructions = Instructions(i18n::localize("X_SAVE") + '\n' + i18n::localize("B_BACK"));
+    }
+
     instructions.addBox(
         false, 200, 218, 60, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE"), COLOR_WHITE);
     instructions.addLine(false, 260, 225, 303, 225, 4, COLOR_GREY);
     instructions.addCircle(false, 303, 225, 4, COLOR_GREY);
+    if (TitleLoader::titleIsRebootable())
+    {
+        instructions.addBox(
+            false, 50, 218, 125, 14, COLOR_GREY, i18n::localize("EDITOR_SAVE_LAUNCH"), COLOR_WHITE);
+        instructions.addLine(false, 17, 225, 50, 225, 4, COLOR_GREY);
+        instructions.addCircle(false, 17, 225, 4, COLOR_GREY);
+    }
 }
 
 void MainMenu::drawTop() const
@@ -168,13 +205,13 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("GENERATION")),
-                              (std::string)TitleLoader::save->generation()),
+                Gui::text(std::vformat(i18n::localize("GENERATION"),
+                              std::make_format_args((std::string)TitleLoader::save->generation())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("TRAINER_NAME")),
-                              TitleLoader::save->otName()),
+                Gui::text(std::vformat(i18n::localize("TRAINER_NAME"),
+                              std::make_format_args(TitleLoader::save->otName())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
@@ -184,26 +221,25 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(fmt::format(fmt::runtime(
-                                          TitleLoader::save->generation() == pksm::Generation::SEVEN
-                                              ? i18n::localize("STAMPS")
-                                              : i18n::localize("BADGES")),
-                              TitleLoader::save->badges()),
+                Gui::text(std::vformat(TitleLoader::save->generation() == pksm::Generation::SEVEN
+                                           ? i18n::localize("STAMPS")
+                                           : i18n::localize("BADGES"),
+                              std::make_format_args(TitleLoader::save->badges())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("WC_NUM")),
-                              TitleLoader::save->currentGiftAmount()),
+                Gui::text(std::vformat(i18n::localize("WC_NUM"),
+                              std::make_format_args(TitleLoader::save->currentGiftAmount())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_SEEN")),
-                              TitleLoader::save->dexSeen()),
+                Gui::text(std::vformat(i18n::localize("DEX_SEEN"),
+                              std::make_format_args(TitleLoader::save->dexSeen())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(fmt::format(fmt::runtime(i18n::localize("DEX_CAUGHT")),
-                              TitleLoader::save->dexCaught()),
+                Gui::text(std::vformat(i18n::localize("DEX_CAUGHT"),
+                              std::make_format_args(TitleLoader::save->dexCaught())),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
@@ -211,8 +247,8 @@ void MainMenu::drawTop() const
         }
     }
 
-    const std::string version = fmt::format(
-        FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    const std::string version =
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     Gui::text("PKSM", 282, 16, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::CENTER);
     Gui::text(version, 398, 17, FONT_SIZE_11, COLOR_LIGHTBLUE, TextPosX::RIGHT, TextPosY::CENTER);
 }
@@ -225,7 +261,10 @@ void MainMenu::drawBottom() const
     Gui::backgroundAnimatedBottom();
     for (const auto& button : buttons)
     {
-        button->draw();
+        if (button)
+        {
+            button->draw();
+        }
     }
 }
 
@@ -250,9 +289,12 @@ void MainMenu::update(touchPosition* touch)
     }
     for (auto& button : buttons)
     {
-        if (button->update(touch))
+        if (button)
         {
-            return;
+            if (button->update(touch))
+            {
+                return;
+            }
         }
     }
     if (keysDown() & KEY_B)
@@ -270,6 +312,19 @@ void MainMenu::update(touchPosition* touch)
         {
             save();
         }
+    }
+    else if (keysDown() & KEY_Y)
+    {
+        if (needsSave())
+        {
+            save();
+        }
+        if (u64 tid = TitleLoader::setRebootToTitle())
+        {
+            NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+        }
+        Gui::exitMainLoop();
+        return;
     }
 }
 

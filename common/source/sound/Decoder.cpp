@@ -85,3 +85,17 @@ std::unique_ptr<Decoder> Decoder::get(const std::string& fileName)
     // fprintf(stderr, "Err: Failed to initalize decoder.");
     return nullptr;
 }
+
+bool Decoder::init()
+{
+    if (mpg123_init() != MPG123_OK)
+    {
+        return false;
+    }
+    return true;
+}
+
+void Decoder::exit()
+{
+    mpg123_exit();
+}

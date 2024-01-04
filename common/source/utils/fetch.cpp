@@ -157,7 +157,7 @@ std::unique_ptr<curl_mime, decltype(curl_mime_free)*> Fetch::mimeInit()
     return std::unique_ptr<curl_mime, decltype(curl_mime_free)*>(nullptr, &curl_mime_free);
 }
 
-void Fetch::multiMainThread(void*)
+void Fetch::multiMainThread()
 {
     int trash;
     while (multiThreadInfo)
@@ -217,7 +217,7 @@ Result Fetch::initMulti()
     __lock_init(multiHandleMutex);
     multiHandle     = curl_multi_init();
     multiThreadInfo = true;
-    if (!Threads::create(Fetch::multiMainThread, nullptr, 8 * 1024))
+    if (!Threads::create(8 * 1024, Fetch::multiMainThread))
     {
         multiInitialized = false;
         return -1;
@@ -231,11 +231,7 @@ void Fetch::exitMulti()
     multiThreadInfo = false; // Stop multi thread
     if (multiInitialized)
     {
-        while (!multiThreadInfo) // Wait for it to be done
-        {
-            static constexpr timespec sleepTime = {0, 100000};
-            nanosleep(&sleepTime, nullptr);
-        }
+        multiThreadInfo.wait(false); // Wait for it to be done
         // And finally clean up
         __lock_acquire(fetchesMutex);
         __lock_acquire(multiHandleMutex);
@@ -309,23 +305,18 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
     {
         CURLcode cres;
         std::atomic_flag wait;
-        wait.test_and_set();
         CURLMcode mRes = performAsync(fetch,
             [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>)
             {
                 cres = code;
-                wait.clear();
+                wait.test_and_set();
             });
         if (mRes != CURLM_OK)
         {
             return mRes;
         }
 
-        while (wait.test_and_set())
-        {
-            static constexpr timespec sleepTime = {0, 100000};
-            nanosleep(&sleepTime, nullptr);
-        }
+        wait.wait(false);
 
         return cres;
     }

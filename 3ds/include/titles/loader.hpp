@@ -28,6 +28,8 @@
 #define LOADER_HPP
 
 #include "sav/Sav.hpp"
+#include "utils/DataMutex.hpp"
+#include "utils/SmallVector.hpp"
 #include <3ds.h>
 #include <functional>
 #include <memory>
@@ -55,30 +57,20 @@ namespace TitleLoader
     void backupSave(const std::string& id);
     void saveChanges(void);
     void saveToTitle(bool ask);
+    // Returns TID to reboot to when the reboot can't be set because it's a DS title (so use NS
+    // instead)
+    u64 setRebootToTitle(void);
+    bool titleIsRebootable(void);
     void init(void);
     void exit(void);
     std::string savePath(void);
     void reloadTitleIds(void);
 
     // Title lists
-    // Note that there can only be up to 12 installed titles of either type, which means a threaded
-    // push_back can only edit the end pointer and will not change the storage used
-    inline std::vector<std::shared_ptr<Title>> ctrTitles = std::invoke(
-        []()
-        {
-            std::vector<std::shared_ptr<Title>> ret;
-            ret.reserve(12);
-            return ret;
-        });
-    inline std::vector<std::shared_ptr<Title>> vcTitles = std::invoke(
-        []()
-        {
-            std::vector<std::shared_ptr<Title>> ret;
-            ret.reserve(12);
-            return ret;
-        });
-    inline std::shared_ptr<Title> cardTitle = nullptr;
-    inline std::unordered_map<std::string, std::vector<std::string>> sdSaves;
+    inline DataMutex<SmallVector<std::shared_ptr<Title>, 12>> ctrTitles;
+    inline DataMutex<SmallVector<std::shared_ptr<Title>, 12>> vcTitles;
+    inline std::atomic<std::shared_ptr<Title>> cardTitle = nullptr;
+    inline DataMutex<std::unordered_map<std::string, std::vector<std::string>>> sdSaves;
     inline std::shared_ptr<pksm::Sav> save;
 }
 

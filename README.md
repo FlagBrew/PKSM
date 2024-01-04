@@ -2,18 +2,18 @@
 <p align="center"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></p>
 <p align="center"><img src="https://github.com/FlagBrew/PKSM/workflows/CI/badge.svg" /></p>
 
-Multipurpose and portable Pokemon save manager and editor for generations III to VIII, programmed in
+Multipurpose and portable Pokemon save manager and editor for generations I to VIII, programmed in
 C++.
 
-* Supports original cartridges and digital copies of games from FrLgRSE to SwSh
-* Allows on-the-fly modifications to all of your data
-* Allows internal and resizable offline storage to store your Pokémon
-* Capable of running custom scripts to allow injection of arbitrary data into
+- Supports original cartridges and digital copies of games from FrLgRSE to SwSh
+- Allows on-the-fly modifications to all of your data
+- Allows internal and resizable offline storage to store your Pokémon
+- Capable of running custom scripts to allow injection of arbitrary data into
   your saves
-* Capable of scanning QR codes to inject both .pkx files or event wondercards
-* Contains an offline wondercard database to get events from old distributions
-* Capable of automatic verification and legalization of all your data (internet connection required)
-  * Optional interfacing with an Android app to handle verification and legalization without a network connection
+- Capable of scanning QR codes to inject both .pkx files or event wondercards
+- Contains an offline wondercard database to get events from old distributions
+- Capable of automatic verification and legalization of all your data (internet connection required)
+  - Optional interfacing with an Android app to handle verification and legalization without a network connection
 
 **We do not support or condone cheating at the expense of others. Do not use
 significantly edited Pokémon in battle or in trades with those who are unaware
@@ -37,9 +37,9 @@ detailed documentation.
 This software works on CFW and Rosalina-based Homebrew Launchers. An internet
 connection is required when first launching PKSM.
 
-| Entrypoint | Instructions |
-| :--------: | :----------- |
-| CFW | Install the `PKSM.cia` file provided in the release page with your favourite installer. You can now launch the application from the Home Menu |
+|  Entrypoint  | Instructions                                                                                                                                                                     |
+| :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     CFW      | Install the `PKSM.cia` file provided in the release page with your favourite installer. You can now launch the application from the Home Menu                                    |
 | Rosalina HBL | Copy the `PKSM.3dsx` file provided in the release page into your SD card. You can now launch PKSM from a [Rosalina-based Homebrew Launcher](https://github.com/fincs/new-hbmenu) |
 
 Initial launch will require your system to be connected to the internet. This is
@@ -48,23 +48,23 @@ If your system is not connected to the internet, PKSM will close.
 
 ## Applications compatible with PKSM
 
-* **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6
+- **[PKHeX](https://github.com/kwsch/PKHeX)**: Generates .pk7, .pk6, .wc7, .wc6
   QR codes scannable from PKSM. Runs on PC.
-* **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR
+- **[MysteryGiftBot](https://twitter.com/mysterygiftbot)**: Generates .wc7 QR
   codes scannable from PKSM. Runs on Twitter.
-* **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: A toolkit to
+- **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: A toolkit to
   develop and compile .pksm and .c scripts.
-* **[The GPSS](https://flagbrew.org/gpss)**: An online Pokémon sharing platform.
-* **[GPSS Mobile](https://play.google.com/store/apps/details?id=com.flagbrew.gpss_mobile)**: Mobile interface for the GPSS and related features. Android only.
+- **[The GPSS](https://flagbrew.org/gpss)**: An online Pokémon sharing platform.
+- **[GPSS Mobile](https://play.google.com/store/apps/details?id=com.flagbrew.gpss_mobile)**: Mobile interface for the GPSS and related features. Android only.
 
 ## Working path
 
-* Additional assets are located at `/3ds/PKSM/assets`
-* Automatic save backups are located at `/3ds/PKSM/backups`
-* Extra storage data is located at `/3ds/PKSM/banks`
-* .pkx and .wcx dumps are located in `/3ds/PKSM/dumps`
-* Custom scripts are located in `/3ds/PKSM/scripts`
-* Custom background songs are located in `/3ds/PKSM/songs`
+- Additional assets are located at `/3ds/PKSM/assets`
+- Automatic save backups are located at `/3ds/PKSM/backups`
+- Extra storage data is located at `/3ds/PKSM/banks`
+- .pkx and .wcx dumps are located in `/3ds/PKSM/dumps`
+- Custom scripts are located in `/3ds/PKSM/scripts`
+- Custom background songs are located in `/3ds/PKSM/songs`
 
 ## Troubleshooting
 
@@ -106,36 +106,37 @@ all`.
 
 ## Credits
 
-* [Bernardo](https://github.com/BernardoGiordano/) for creating PKSM
-* [piepie62](https://github.com/piepie62) and
+- [Bernardo](https://github.com/BernardoGiordano/) for creating PKSM
+- [piepie62](https://github.com/piepie62) and
   [Admiral-Fish](https://github.com/Admiral-Fish) for the immense amount of
   dedication they put into the project
-* dsoldier for the gorgeous graphic work
-* [SpiredMoth](https://github.com/SpiredMoth),
+- dsoldier for the gorgeous graphic work
+- [SpiredMoth](https://github.com/SpiredMoth),
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
-* [Archit Date](https://github.com/architdate) for CoreConsole and PKHeX AutoLegalityMod
-* [Allen](https://github.com/FM1337) for the GPSS, CoreConsole's successor, CoreAPI and GPSS Mobile
-* [LiquidFenrir](https://github.com/LiquidFenrir) for the PoC of session stealing that led to Gen 3 support and GPSS Mobile
-* The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
+- [Archit Date](https://github.com/architdate) for CoreConsole and PKHeX AutoLegalityMod
+- [Allen](https://github.com/FM1337) for the GPSS, CoreConsole's successor, CoreAPI and GPSS Mobile
+- [LiquidFenrir](https://github.com/LiquidFenrir) for the PoC of session stealing that led to Gen 3 support and GPSS Mobile
+- The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
-* [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
+- [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)
   for PKHeX, memecrypto and documentation
-* [fincs](https://github.com/fincs) and
+- [fincs](https://github.com/fincs) and
   [WinterMute](https://github.com/WinterMute) for citro2d and devkitARM
-* [kamronbatman](https://github.com/kamronbatman) and ProjectPokemon.org for
+- [kamronbatman](https://github.com/kamronbatman) and ProjectPokemon.org for
   EventsGallery
-* [nayuki](https://github.com/nayuki) for [QR-Code-generator](https://github.com/nayuki/QR-Code-generator)
-* [jpoirier](https://github.com/jpoirier), [zsaleeba](https://gitlab.com/zsaleeba), and [Jan Švejda](https://gitlab.com/jenda.svejda) for the base and most improvements in [our picoC fork](https://github.com/FlagBrew/picoc)
-* [dlbeer](https://github.com/dlbeer) for [quirc](https://github.com/dlbeer/quirc)
-* [Griffin](https://github.com/GriffinG1) For FlagBot and all the help it has been on the server.
-* All the translators
-* Subject21_J and all the submitters for PKSM's icon
-* Allen, piepie62, SpiredMoth and all the contributors for the documentation
-* All the past contributors to the project
-* All the patrons and the huge amount of supporters that this project has gained
+- [nayuki](https://github.com/nayuki) for [QR-Code-generator](https://github.com/nayuki/QR-Code-generator)
+- [jpoirier](https://github.com/jpoirier), [zsaleeba](https://gitlab.com/zsaleeba), and [Jan Švejda](https://gitlab.com/jenda.svejda) for the base and most improvements in [our picoC fork](https://github.com/FlagBrew/picoc)
+- [dlbeer](https://github.com/dlbeer) for [quirc](https://github.com/dlbeer/quirc)
+- [Griffin](https://github.com/GriffinG1) For FlagBot and all the help it has been on the server.
+- [SNBeast](https://github.com/SNBeast) For Generation 1 and 2 support.
+- All the translators
+- Subject21_J and all the submitters for PKSM's icon
+- Allen, piepie62, SpiredMoth and all the contributors for the documentation
+- All the past contributors to the project
+- All the patrons and the huge amount of supporters that this project has gained
   over the year
-  
+
 Without you, this project wouldn't have existed. Thank you.
 
 ## Support us

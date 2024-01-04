@@ -31,7 +31,6 @@
 #include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "FortyChoice.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -66,6 +65,7 @@
 #include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <format>
 #include <netdb.h>
 #include <sys/socket.h>
 
@@ -410,8 +410,9 @@ void sav_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)gen, (std::string)TitleLoader::save->generation())));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -839,8 +840,9 @@ void party_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(fmt::format(fmt::runtime(i18n::localize("NO_TRANSFER_PATH_SINGLE")),
-                (std::string)gen, (std::string)TitleLoader::save->generation()));
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)gen, (std::string)TitleLoader::save->generation())));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -852,6 +854,10 @@ void party_inject_pkx(
         else
         {
             pkm->refreshChecksum();
+            if (pkm->isParty())
+            {
+                pkm->updatePartyData();
+            }
             TitleLoader::save->pkm(*pkm, slot);
             TitleLoader::save->fixParty();
             TitleLoader::save->dex(*pkm);
@@ -1073,6 +1079,8 @@ void pkx_generate(
         }
     }
 
+    pkm->species(pksm::Species{u16(species)});
+
     // From SpeciesOverlay
     std::string nick = pkm->species().localize(pkm->language());
     if (pkm->generation() <= pksm::Generation::FOUR)
@@ -1080,7 +1088,6 @@ void pkx_generate(
         nick = StringUtils::toUpper(nick);
     }
     pkm->nickname(nick);
-    pkm->species(pksm::Species{u16(species)});
     pkm->alternativeForm(0);
     pkm->setAbility(0);
     pkm->PID(pksm::PKX::getRandomPID(pkm->species(), pkm->gender(), pkm->version(), pkm->nature(),

@@ -28,7 +28,6 @@
 #include "Archive.hpp"
 #include "banks.hpp"
 #include "Configuration.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
@@ -42,6 +41,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "utils/VersionTables.hpp"
+#include <format>
 
 #define BANK(paths) (paths).first
 #define JSON(paths) (paths).second
@@ -52,7 +52,7 @@ class BankException : public std::exception
 {
 public:
     BankException(u32 badVal)
-        : string(fmt::format(FMT_STRING("BankException: Bad generation value: 0x{:X}"), badVal))
+        : string(std::format("BankException: Bad generation value: 0x{:X}", badVal))
     {
     }
 

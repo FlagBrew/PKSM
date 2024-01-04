@@ -27,6 +27,7 @@
 #ifndef EXTRASAVESSUBSCREEN_HPP
 #define EXTRASAVESSUBSCREEN_HPP
 
+#include "SaveGroups.hpp"
 #include "Screen.hpp"
 #include <unordered_map>
 #include <vector>
@@ -34,29 +35,7 @@
 class ExtraSavesSubScreen : public Screen
 {
 public:
-    enum Group : u8
-    {
-        RGB,
-        Y,
-        GS,
-        C,
-        RS,
-        E,
-        FRLG,
-        DP,
-        HGSS,
-        Pt,
-        BW,
-        B2W2,
-        XY,
-        ORAS,
-        SM,
-        USUM,
-        LGPE,
-        SwSh
-    };
-
-    ExtraSavesSubScreen(Group group);
+    ExtraSavesSubScreen(SaveGroup group);
 
     void update(touchPosition* touch) override;
     void drawTop(void) const override;
@@ -71,7 +50,7 @@ private:
     int selectedSave      = -1;
     int firstSave         = 0;
     int numSaves          = 0;
-    Group group;
+    SaveGroup group;
     int selectedGame = 0; // i'm pulling a sneaky where i can keep the existing code by using
                           // promotion and handle RGB
     bool updateConfig = false;

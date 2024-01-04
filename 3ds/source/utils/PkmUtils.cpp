@@ -187,6 +187,7 @@ namespace
         auto ret = pksm::PKX::getPKM<gen>(nullptr, pksm::GenToPkx<gen>::PKX::BOX_LENGTH);
 
         ret->otName("PKSM");
+        ret->level(1);
         ret->TID(12345);
         ret->SID(54321);
         ret->ball(pksm::Ball::Poke);

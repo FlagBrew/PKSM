@@ -121,14 +121,14 @@ void StorageOverlay::update(touchPosition* touch)
 bool StorageOverlay::selectBox()
 {
     std::vector<std::string> boxes;
-    boxes.reserve(Banks::bank->boxes());
+    boxes.reserve(storage ? Banks::bank->boxes() : TitleLoader::save->maxBoxes());
     if (storage)
     {
         for (int i = 0; i < Banks::bank->boxes(); i++)
         {
             boxes.emplace_back(Banks::bank->boxName(i));
         }
-        addOverlay<BoxOverlay>(boxes, storageBox);
+        addOverlay<BoxOverlay>(std::move(boxes), storageBox);
     }
     else
     {
@@ -136,7 +136,7 @@ bool StorageOverlay::selectBox()
         {
             boxes.emplace_back(TitleLoader::save->boxName(i));
         }
-        addOverlay<BoxOverlay>(boxes, boxBox);
+        addOverlay<BoxOverlay>(std::move(boxes), boxBox);
     }
     return true;
 }

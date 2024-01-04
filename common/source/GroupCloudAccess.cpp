@@ -28,7 +28,6 @@
 #include "base64.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
@@ -39,6 +38,7 @@
 #include "pkx/PK8.hpp"
 #include "revision.h"
 #include "website.h"
+#include <format>
 #include <unistd.h>
 
 GroupCloudAccess::Page::~Page() {}
@@ -237,11 +237,7 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
 
 std::optional<int> GroupCloudAccess::nextPage()
 {
-    while (!next->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    next->available.wait(false);
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -269,11 +265,7 @@ std::optional<int> GroupCloudAccess::nextPage()
 
 std::optional<int> GroupCloudAccess::prevPage()
 {
-    while (!prev->available)
-    {
-        static constexpr timespec sleepTime = {0, 100000};
-        nanosleep(&sleepTime, nullptr);
-    }
+    prev->available.wait(false);
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
@@ -403,8 +395,8 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     long ret = 0;
 
     const std::string pksm_version =
-        "source: PKSM " + fmt::format(FMT_STRING("v{:d}.{:d}.{:d}-{:s}"), VERSION_MAJOR,
-                              VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        "source: PKSM " +
+        std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
 
     std::string amount     = "count: " + std::to_string(sendMe.size());
     std::string code       = Configuration::getInstance().patronCode();
@@ -437,7 +429,7 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
         for (size_t i = 0; i < sendMe.size(); i++)
         {
             curl_mimepart* field  = curl_mime_addpart(mimeThing.get());
-            std::string fieldName = fmt::format("pkmn{:d}", i + 1);
+            std::string fieldName = std::format("pkmn{:d}", i + 1);
             curl_mime_name(field, fieldName.c_str());
             curl_mime_data(field, (char*)sendMe[i]->rawData().data(), sendMe[i]->getLength());
             curl_mime_filename(field, fieldName.c_str());

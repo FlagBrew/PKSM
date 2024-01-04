@@ -1,4 +1,5 @@
 {
+    "ADD_SAVE": "Add Save",
     "APP_LEGALIZE": "Legalisieren über GPSS App",
     "APP_SCAN_QR": "Scan legal QR",
     "APP_USE_SOCKETS": "Legalisiere über Netzwerk",
@@ -19,7 +20,7 @@
     "DOWN_SCROLL_DOWN": ": Runterscrollen",
     "EDITOR_INST": " auswählen,  zurück gehen",
     "GPSS_BROWSE": "Durchsuche GPSS",
-    "LOADER_INSTRUCTIONS_BOTTOM": "Bewege das Steuerkreuz. A fortfahren, START schließen",
+    "LOADER_INSTRUCTIONS_BOTTOM": "\uE006: Move   SELECT: Help",
     "LOADER_INSTRUCTIONS_TOP_ABSENT": "Wähle Speicherstand zum Öffnen. Drück Y für n. vorhandene Spiele.",
     "LOADER_INSTRUCTIONS_TOP_PRESENT": "Wähle Speicherstand zum Öffnen. Drück Y für vorhandene Spiele.",
     "L_BOX_PREV": ": Vorherige Box",
@@ -54,5 +55,6 @@
     "Y_GROUP_SINGLE": ": wechseln zwischen einzel/bundle",
     "Y_LEGALIZE": ": Überprüfe Legalität",
     "Y_PRESENT": ": Anwesende Spiele",
-    "Y_RESIZE": ": Größe ändern"
+    "Y_RESIZE": ": Größe ändern",
+    "Y_SAVE_AND_LAUNCH": "\uE003: Save & Launch"
 }

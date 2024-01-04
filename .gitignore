@@ -15,6 +15,7 @@ assets/romfs/mg/*.json.bz2
 assets/romfs/mg/*.bin.bz2
 assets/romfs/gfx/*
 assets/romfs/i18n/
+assets/romfs/personal/
 !assets/romfs/gfx/pkm_spritesheet.t3x
 !assets/romfs/gfx/types_spritesheet.t3x
 assets/romfs/scripts/
@@ -30,3 +31,6 @@ external/tools/*
 build.log
 assets/gui_strings/*/gui.json
 common/generate_categories_for_other_languages.py
+3ds_compile_commands.json
+switch_compile_commands.json
+.clangd

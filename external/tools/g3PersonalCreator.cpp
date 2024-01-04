@@ -29,11 +29,13 @@ struct PKHeXPersonalEntry
     u8 ability1;
     u8 ability2;
     u8 escapeRate;
+
     struct
     {
-        u8 color : 7;
+        u8 color  : 7;
         u8 noFlip : 1;
     };
+
     u8 padding[2];
 };
 
@@ -85,16 +87,23 @@ int main()
         outEntries[i].ability2       = inEntries[i].ability2;
     }
 
-    printf("constexpr unsigned char personal_rsfrlge[] = { ");
-    for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // printf("constexpr unsigned char personal_rsfrlge[] = { ");
+    // for (size_t i = 0; i < entries * sizeof(PKSMPersonalEntry) - 1; i++)
+    // {
+    //     printf("0x%x, ", *(((u8*)outEntries) + i));
+    // }
+    // printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
+
+    printf("constexpr int personal3_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
+
+    printf("constexpr int personal3_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+
+    FILE* outPersonal = fopen("personal3", "wb");
+    for (size_t i = 0; i < entries; i++)
     {
-        printf("0x%x, ", *(((u8*)outEntries) + i));
+        fwrite(outEntries + i, sizeof(outEntries[i]), 1, outPersonal);
     }
-    printf("0x%x };\n", *(((u8*)outEntries) + entries * sizeof(PKSMPersonalEntry) - 1));
-
-    printf("constexpr int personal_rsfrlge_size = %li;\n", entries * sizeof(PKSMPersonalEntry));
-
-    printf("constexpr int personal_rsfrlge_entrysize = %li;\n", sizeof(PKSMPersonalEntry));
+    fclose(outPersonal);
 
     return 0;
 }

@@ -28,6 +28,7 @@
 #define SAVELOADSCREEN_HPP
 
 #include "enums/Language.hpp"
+#include "SaveGroups.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
 #include <arpa/inet.h>
@@ -54,13 +55,6 @@ class SaveLoadScreen : public Screen
 public:
     SaveLoadScreen();
 
-    enum SystemGroup : u8
-    {
-        GB_GBC_GBA,
-        DS_3DS,
-        SWITCH
-    };
-
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -76,10 +70,10 @@ private:
     std::array<std::vector<std::pair<std::string, std::string>>, NUM_GROUPS> saves;
     std::vector<std::unique_ptr<Button>> buttons;
     std::vector<std::unique_ptr<ToggleButton>> tabs;
-    int firstSave    = 0;
-    int selectedSave = -1;
-    int saveGroup    = 0;
-    int systemGroup  = 0;
+    int firstSave           = 0;
+    int selectedSave        = -1;
+    int saveGroup           = 0;
+    SystemGroup systemGroup = SystemGroup::DS_3DS;
 
     pksm::Language oldLang;
     bool selectedGroup = false;

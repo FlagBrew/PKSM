@@ -26,14 +26,15 @@
 
 #include "Configuration.hpp"
 #include "DateTime.hpp"
-#include "format.h"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "MainMenu.hpp"
+#include "printerator.hpp"
 #include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
 #include <arpa/inet.h>
+#include <format>
 #include <unistd.h>
 
 namespace
@@ -63,7 +64,7 @@ bool receiveSaveFromBridge(void)
 {
     if (!Gui::showChoiceMessage(
             i18n::localize("WIRELESS_WARNING") + '\n' +
-            fmt::format(fmt::runtime(i18n::localize("WIRELESS_IP")), getHostId())))
+            std::vformat(i18n::localize("WIRELESS_IP"), std::make_format_args(getHostId()))))
     {
         return false;
     }
@@ -121,7 +122,8 @@ bool receiveSaveFromBridge(void)
         {
             break;
         }
-        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
+        std::format_to(
+            Printerator{stderr}, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
     }
 
     close(fdconn);
@@ -179,7 +181,8 @@ bool sendSaveToBridge(void)
             break;
         }
         total += n;
-        fmt::print(stderr, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
+        std::format_to(
+            Printerator{stderr}, "Recv {:d} bytes, {:d} still missing\n", total, size - total);
     }
     if (total == size)
     {
@@ -199,8 +202,8 @@ void backupBridgeChanges()
 {
     DateTime now = DateTime::now();
     std::string path =
-        fmt::format(FMT_STRING("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak"),
-            now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+        std::format("/3ds/PKSM/backups/bridge/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}.bak", now.year(),
+            now.month(), now.day(), now.hour(), now.minute(), now.second());
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

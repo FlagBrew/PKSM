@@ -187,7 +187,6 @@ private:
     void drawMeaning(void) const;
     bool rotateMark(u8 mark);
     std::pair<const std::string*, SecurityLevel> selectedDescription;
-    std::vector<int> selectBytes;
     pksm::PKX& pkm;
     Hid<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL> hid;
     // Normally I would just use the same buttons for every byte, but since there are some odd

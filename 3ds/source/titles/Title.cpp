@@ -26,14 +26,15 @@
 
 #include "Title.hpp"
 #include "Archive.hpp"
-#include "format.h"
 #include "smdh.hpp"
+#include <format>
 
 // Allocate once because threading shenanigans
 namespace
 {
     constexpr Tex3DS_SubTexture dsIconSubt3x = {32, 32, 0.0f, 1.0f, 1.0f, 0.0f};
-    C2D_Image dsIcon                         = {nullptr, &dsIconSubt3x};
+    C3D_Tex dsIconTex;
+    C2D_Image dsIcon = {nullptr, &dsIconSubt3x};
 
     struct bannerData
     {
@@ -55,7 +56,7 @@ namespace
         static constexpr int HEIGHT_POW2 = 32;
         if (!dsIcon.tex)
         {
-            dsIcon.tex = new C3D_Tex;
+            dsIcon.tex = &dsIconTex;
             C3D_TexInit(dsIcon.tex, WIDTH_POW2, HEIGHT_POW2, GPU_RGB565);
             dsIcon.tex->border = 0xFFFFFFFF;
             C3D_TexSetWrap(dsIcon.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
@@ -135,7 +136,7 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         }
 
         mName   = StringUtils::UTF16toUTF8((char16_t*)smdh->applicationTitles[1].shortDescription);
-        mPrefix = fmt::format(FMT_STRING("0x{:05X}"), lowId() >> 8);
+        mPrefix = std::format("0x{:05X}", lowId() >> 8);
 
         Archive archive = Archive::save(mMedia, lowId(), highId(), false);
         if (R_SUCCEEDED(archive.result()))

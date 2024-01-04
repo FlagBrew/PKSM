@@ -46,7 +46,7 @@ public:
     void makeInstructions();
 
 private:
-    std::array<std::unique_ptr<Button>, 7> buttons;
+    std::array<std::unique_ptr<Button>, 8> buttons;
     pksm::Language oldLang;
     bool justSwitched = true;
     decltype(pksm::crypto::sha256({})) oldHash;

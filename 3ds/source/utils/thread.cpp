@@ -25,8 +25,11 @@
  */
 
 #include "thread.hpp"
+#include "DataMutex.hpp"
+#include "SmallVector.hpp"
 #include <3ds.h>
 #include <algorithm>
+#include <atomic>
 #include <vector>
 
 namespace
@@ -34,39 +37,54 @@ namespace
     constexpr int MIN_HANDLES = 2;
     Thread reaperThread;
     // Exit event, "update your list" event, and threads themselves
-    Handle reaperThreadHandles[MIN_HANDLES + Threads::MAX_THREADS];
-    Thread threads[Threads::MAX_THREADS];
-    s32 currentThreads = 0;
-    LightLock currentThreadsLock;
+    DataMutex<std::pair<SmallVector<Thread, Threads::MAX_THREADS>,
+        SmallVector<Handle, MIN_HANDLES + Threads::MAX_THREADS>>>
+        threads;
 
     void reapThread(void* arg)
     {
         while (true)
         {
             s32 signaledHandle;
-            svcWaitSynchronizationN(
-                &signaledHandle, reaperThreadHandles, MIN_HANDLES + currentThreads, false, U64_MAX);
+            {
+                u32 size;
+                const Handle* handles;
+                // Letting the lock expire is fine because the only thing that could happen between
+                // then and the use is adding a handle, which won't change anything since we only
+                // use the original size
+                // In an ideal world, svcWaitSynchronizationN would atomically release and regain
+                // the lock, but we can't have nice things
+                {
+                    auto lockedThreadData                            = threads.lock();
+                    const auto& [lockedThreads, reaperThreadHandles] = *lockedThreadData;
+                    size                                             = lockedThreads.size();
+                    handles                                          = reaperThreadHandles.data();
+                }
+                svcWaitSynchronizationN(
+                    &signaledHandle, handles, MIN_HANDLES + size, false, U64_MAX);
+            }
             switch (signaledHandle)
             {
                 case 0:
-                    for (int i = 0; i < currentThreads; i++)
+                {
+                    auto lockedThreads = threads.lock();
+                    for (size_t i = 0; i < lockedThreads->first.size(); i++)
                     {
-                        svcWaitSynchronization(reaperThreadHandles[MIN_HANDLES + i], U64_MAX);
-                        threadFree(threads[i]);
+                        svcWaitSynchronization(lockedThreads->second[MIN_HANDLES + i], U64_MAX);
+                        threadFree(lockedThreads->first[i]);
                     }
                     return;
+                }
                 case 1:
                     continue;
                 default:
-                    LightLock_Lock(&currentThreadsLock);
-                    currentThreads--;
-                    threadFree(threads[signaledHandle - 2]);
-                    std::swap(threads[signaledHandle - 2], threads[currentThreads]);
-                    reaperThreadHandles[signaledHandle] = 0xFFFFFFFF;
-                    std::swap(reaperThreadHandles[signaledHandle],
-                        reaperThreadHandles[MIN_HANDLES + currentThreads]);
-                    LightLock_Unlock(&currentThreadsLock);
-                    break;
+                {
+                    auto lockedThreads = threads.lock();
+                    threadFree(lockedThreads->first[signaledHandle - 2]);
+                    lockedThreads->first.erase(lockedThreads->first.begin() + signaledHandle - 2);
+                    lockedThreads->second.erase(lockedThreads->second.begin() + signaledHandle);
+                }
+                break;
             }
         }
     }
@@ -77,42 +95,71 @@ namespace
         void* arg;
     };
 
-    std::vector<Task> workerTasks;
-    LightLock workerTaskLock;
+    DataMutex<std::vector<Task>> workerTasks;
     LightSemaphore moreTasks;
-    u8 numWorkers;
+    std::atomic<u8> numWorkers  = 0;
+    std::atomic<u8> freeWorkers = 0;
+    u8 maxWorkers               = 0;
+    u8 minWorkers               = 0;
 
-    void taskWorkerThread(void* arg)
+    void taskWorkerThread()
     {
+        numWorkers++;
         while (true)
         {
-            LightSemaphore_Acquire(&moreTasks, 1);
-
-            LightLock_Lock(&workerTaskLock);
-
-            if (workerTasks.size() == 0)
+            if (LightSemaphore_TryAcquire(&moreTasks, 1))
             {
-                return;
+                if (numWorkers <= minWorkers)
+                {
+                    freeWorkers++;
+                    LightSemaphore_Acquire(&moreTasks, 1);
+                    freeWorkers--;
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            Task t = workerTasks[0];
-            workerTasks.erase(workerTasks.begin());
+            Task t = std::invoke(
+                []
+                {
+                    auto tasks = workerTasks.lock();
+                    if (tasks->size() == 0)
+                    {
+                        return Task{nullptr, nullptr};
+                    }
+                    else
+                    {
+                        Task ret = tasks.get()[0];
+                        tasks->erase(tasks->begin());
+                        return ret;
+                    }
+                });
 
-            LightLock_Unlock(&workerTaskLock);
+            if (!t.entrypoint)
+            {
+                break;
+            }
 
             t.entrypoint(t.arg);
         }
+        numWorkers--;
     }
 }
 
-bool Threads::init(u8 workers)
+bool Threads::init(u8 min, u8 max)
 {
-    LightLock_Init(&currentThreadsLock);
-    if (R_FAILED(svcCreateEvent(&reaperThreadHandles[0], RESET_ONESHOT)))
+    minWorkers         = min;
+    maxWorkers         = max;
+    auto lockedThreads = threads.lock();
+    lockedThreads->second.emplace_back();
+    if (R_FAILED(svcCreateEvent(&lockedThreads->second[0], RESET_ONESHOT)))
     {
         return false;
     }
-    if (R_FAILED(svcCreateEvent(&reaperThreadHandles[1], RESET_ONESHOT)))
+    lockedThreads->second.emplace_back();
+    if (R_FAILED(svcCreateEvent(&lockedThreads->second[1], RESET_ONESHOT)))
     {
         return false;
     }
@@ -127,11 +174,10 @@ bool Threads::init(u8 workers)
         return false;
     }
 
-    LightLock_Init(&workerTaskLock);
-    LightSemaphore_Init(&moreTasks, 0, workers);
-    for (int i = 0; i < workers; i++)
+    LightSemaphore_Init(&moreTasks, 0, 10000);
+    for (int i = 0; i < minWorkers; i++)
     {
-        if (!Threads::create(taskWorkerThread, nullptr, 0x8000))
+        if (!Threads::create(WORKER_STACK, taskWorkerThread))
         {
             return false;
         }
@@ -141,21 +187,21 @@ bool Threads::init(u8 workers)
 
 bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
 {
-    if (currentThreads >= Threads::MAX_THREADS)
+    auto lockedThreads = threads.lock();
+    if (lockedThreads->first.size() >= Threads::MAX_THREADS)
     {
         return false;
     }
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
     Thread thread =
-        threadCreate(entrypoint, arg, stackSize.value_or(4 * 1024), prio - 1, -2, false);
+        threadCreate(entrypoint, arg, stackSize.value_or(DEFAULT_STACK), prio - 1, -2, false);
 
     if (thread)
     {
-        LightLock_Lock(&currentThreadsLock);
-        reaperThreadHandles[currentThreads++] = threadGetHandle(thread);
-        LightLock_Unlock(&currentThreadsLock);
-        svcSignalEvent(reaperThreadHandles[1]);
+        lockedThreads->first.emplace_back(thread);
+        lockedThreads->second.emplace_back(threadGetHandle(thread));
+        svcSignalEvent(lockedThreads->second[1]);
         return true;
     }
 
@@ -164,19 +210,21 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
 
 void Threads::executeTask(void (*task)(void*), void* arg)
 {
-    LightLock_Lock(&workerTaskLock);
-    workerTasks.emplace_back(task, arg);
+    workerTasks.lock()->emplace_back(task, arg);
     LightSemaphore_Release(&moreTasks, 1);
-    LightLock_Unlock(&workerTaskLock);
+    if (numWorkers < maxWorkers && freeWorkers == 0)
+    {
+        Threads::create(WORKER_STACK, taskWorkerThread);
+    }
 }
 
 void Threads::exit(void)
 {
+    workerTasks.lock()->clear();
     LightSemaphore_Release(&moreTasks, numWorkers);
-    svcSignalEvent(reaperThreadHandles[0]);
+    svcSignalEvent(threads.lock()->second[0]);
     threadJoin(reaperThread, U64_MAX);
     threadFree(reaperThread);
-    svcCloseHandle(reaperThreadHandles[0]);
-    svcCloseHandle(reaperThreadHandles[1]);
-    // All remove themselves, so no extra removal necessary
+    svcCloseHandle(threads.lock()->second[0]);
+    svcCloseHandle(threads.lock()->second[1]);
 }

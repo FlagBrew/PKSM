@@ -27,7 +27,6 @@
 #include "HexEditScreen.hpp"
 #include "Configuration.hpp"
 #include "endian.hpp"
-#include "format.h"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "pkx/PB7.hpp"
@@ -39,89 +38,96 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "sav/Sav.hpp"
+#include <format>
 
 namespace
 {
-    constexpr std::string_view hyperVals[] = {
+    constexpr std::array<std::string_view, 6> hyperVals = {
         "HYPER_HP", "HYPER_ATTACK", "HYPER_DEFENSE", "HYPER_SPATK", "HYPER_SPDEF", "HYPER_SPEED"};
-    constexpr std::string_view marks[] = {
+
+    constexpr std::array<std::string_view, 6> marks = {
         "CIRCLE", "TRIANGLE", "SQUARE", "HEART", "STAR", "DIAMOND"};
-    constexpr std::string_view gen3ToggleTexts[]       = {"BAD_EGG", "HAS_SPECIES", "EGG",
-              "HOENN_CHAMPION_RIBBON", "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON",
-              "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON",
-              "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON",
-              "WORLD_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "FATEFUL_ENCOUNTER"};
-    constexpr std::string_view gen4ToggleTexts[]       = {"SINNOH_CHAMP_RIBBON", "ABILITY_RIBBON",
-              "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON", "MULTI_ABILITY_RIBBON",
-              "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON",
-              "DOWNCAST_RIBBON", "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON",
-              "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON",
-              "RECORD_RIBBON", "HISTORY_RIBBON", "LEGEND_RIBBON", "RED_RIBBON", "GREEN_RIBBON",
-              "BLUE_RIBBON", "FESTIVAL_RIBBON", "CARNIVAL_RIBBON", "CLASSIC_RIBBON", "PREMIER_RIBBON",
-              "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON", "COOL_RIBBON_SUPER",
-              "COOL_RIBBON_HYPER", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_SUPER",
-              "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_SUPER",
-              "CUTE_RIBBON_HYPER", "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_SUPER",
-              "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_SUPER",
-              "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON", "WINNING_RIBBON",
-              "VICTORY_RIBBON", "ARTIST_RIBBON", "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON",
-              "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON",
-              "EARTH_RIBBON", "WORLD_RIBBON", "COOL_RIBBON", "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA",
-              "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_GREAT", "BEAUTY_RIBBON_ULTRA",
-              "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA",
-              "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA",
-              "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_GREAT", "TOUGH_RIBBON_ULTRA",
-              "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
-              "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED"};
-    constexpr std::string_view gen5ToggleTexts[]       = {"SINNOH_CHAMP_RIBBON", "ABILITY_RIBBON",
-              "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON", "MULTI_ABILITY_RIBBON",
-              "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON",
-              "DOWNCAST_RIBBON", "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON",
-              "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON",
-              "RECORD_RIBBON", "EVENT_RIBBON", "LEGEND_RIBBON", "WORLD_CHAMPION_RIBBON",
-              "BIRTHDAY_RIBBON", "SPECIAL_RIBBON", "SOUVENIR_RIBBON", "WISHING_RIBBON", "CLASSIC_RIBBON",
-              "PREMIER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON",
-              "COOL_RIBBON_SUPER", "COOL_RIBBON_HYPER", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON",
-              "BEAUTY_RIBBON_SUPER", "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON",
-              "CUTE_RIBBON_SUPER", "CUTE_RIBBON_HYPER", "CUTE_RIBBON_MASTER", "SMART_RIBBON",
-              "SMART_RIBBON_SUPER", "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON",
-              "TOUGH_RIBBON_SUPER", "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON",
-              "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON", "EFFORT_RIBBON",
-              "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON",
-              "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON", "WORLD_RIBBON", "COOL_RIBBON",
-              "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON",
-              "BEAUTY_RIBBON_GREAT", "BEAUTY_RIBBON_ULTRA", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON",
-              "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA", "CUTE_RIBBON_MASTER", "SMART_RIBBON",
-              "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA", "SMART_RIBBON_MASTER", "TOUGH_RIBBON",
-              "TOUGH_RIBBON_GREAT", "TOUGH_RIBBON_ULTRA", "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED",
-              "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
-              "UNUSED"};
-    constexpr std::string_view gen67ToggleTexts[]      = {"UNUSED", "UNUSED", "SPATK_LEVEL_1",
-             "HP_LEVEL_1", "ATTACK_LEVEL_1", "SPDEF_LEVEL_1", "SPEED_LEVEL_1", "DEFENSE_LEVEL_1",
-             "SPATK_LEVEL_2", "HP_LEVEL_2", "ATTACK_LEVEL_2", "SPDEF_LEVEL_2", "SPEED_LEVEL_2",
-             "DEFENSE_LEVEL_2", "SPATK_LEVEL_3", "HP_LEVEL_3", "ATTACK_LEVEL_3", "SPDEF_LEVEL_3",
-             "SPEED_LEVEL_3", "DEFENSE_LEVEL_3", "THE_TROUBLES_KEEP_ON_COMING?",
-             "THE_LEAF_STONE_CUP_BEGINS", "THE_FIRE_STONE_CUP_BEGINS", "THE_WATER_STONE_CUP_BEGINS",
-             "FOLLOW_THOSE_FLEEING_GOALS", "WATCH_OUT_THATS_ONE_TRICKY_SECOND_HALF",
-             "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS", "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT",
-             "SCATTERBUG_LUGS_BACK", "A_BARRAGE_OF_BITBOTS", "DRAG_DOWN_HYDREIGON",
-             "THE_BATTLE_FOR_THE_BEST_VERSION_X/Y", "KALOS_CHAMP_RIBBON", "CHAMPION_RIBBON",
-             "SINNOH_CHAMP_RIBBON", "BEST_FRIENDS_RIBBON", "TRAINING_RIBBON", "SKILLFUL_BATTLER_RIBBON",
-             "EXPERT_BATTLER_RIBBON", "EFFORT_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON",
-             "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON",
-             "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "ARTIST_RIBBON", "FOOTPRINT_RIBBON",
-             "RECORD_RIBBON", "LEGEND_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON",
-             "WORLD_RIBBON", "CLASSIC_RIBBON", "PREMIER_RIBBON", "EVENT_RIBBON", "BIRTHDAY_RIBBON",
-             "SPECIAL_RIBBON", "SOUVENIR_RIBBON", "WISHING_RIBBON", "BATTLE_CHAMPION_RIBBON",
-             "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "WORLD_CHAMPION_RIBBON", "UNUSED",
-             "UNUSED", "HOENN_CHAMPION_RIBBON", "CONTEST_STAR_RIBBON", "COOLNESS_MASTER_RIBBON",
-             "BEAUTY_MASTER_RIBBON", "CUTENESS_MASTER_RIBBON", "CLEVERNESS_MASTER_RIBBON",
-             "TOUGHNESS_MASTER_RIBBON", "ALOLA_CHAMPION_RIBBON", "BATTLE_ROYAL_RIBBON",
-             "BATTLE_TREE_GREAT_RIBBON", "BATTLE_TREE_MASTER_RIBBON", "UNUSED", "UNUSED", "UNUSED",
-             "UNUSED", "UNUSED", "UNUSED", "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS",
-             "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG",
-             "DAZZLING_DIZZYING_DANCE_SPOONS", "WHAT_UPSTART_MAGIKARP_MOVING_UP", "WATCH_MULTIPLE_MEGA",
-             "UNUSED", "UNUSED"};
+
+    constexpr std::array<std::string_view, 20> gen3ToggleTexts = {"BAD_EGG", "HAS_SPECIES", "EGG",
+        "HOENN_CHAMPION_RIBBON", "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON",
+        "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON",
+        "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON",
+        "WORLD_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "FATEFUL_ENCOUNTER"};
+
+    constexpr std::array<std::string_view, 96> gen4ToggleTexts = {"SINNOH_CHAMP_RIBBON",
+        "ABILITY_RIBBON", "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON", "MULTI_ABILITY_RIBBON",
+        "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON",
+        "DOWNCAST_RIBBON", "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON",
+        "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON",
+        "RECORD_RIBBON", "HISTORY_RIBBON", "LEGEND_RIBBON", "RED_RIBBON", "GREEN_RIBBON",
+        "BLUE_RIBBON", "FESTIVAL_RIBBON", "CARNIVAL_RIBBON", "CLASSIC_RIBBON", "PREMIER_RIBBON",
+        "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON", "COOL_RIBBON_SUPER",
+        "COOL_RIBBON_HYPER", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_SUPER",
+        "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_SUPER",
+        "CUTE_RIBBON_HYPER", "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_SUPER",
+        "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_SUPER",
+        "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON", "WINNING_RIBBON",
+        "VICTORY_RIBBON", "ARTIST_RIBBON", "EFFORT_RIBBON", "BATTLE_CHAMPION_RIBBON",
+        "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON",
+        "EARTH_RIBBON", "WORLD_RIBBON", "COOL_RIBBON", "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA",
+        "COOL_RIBBON_MASTER", "BEAUTY_RIBBON", "BEAUTY_RIBBON_GREAT", "BEAUTY_RIBBON_ULTRA",
+        "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON", "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA",
+        "CUTE_RIBBON_MASTER", "SMART_RIBBON", "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA",
+        "SMART_RIBBON_MASTER", "TOUGH_RIBBON", "TOUGH_RIBBON_GREAT", "TOUGH_RIBBON_ULTRA",
+        "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
+        "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED"};
+
+    constexpr std::array<std::string_view, 96> gen5ToggleTexts = {"SINNOH_CHAMP_RIBBON",
+        "ABILITY_RIBBON", "GREAT_ABILITY_RIBBON", "DOUBLE_ABILITY_RIBBON", "MULTI_ABILITY_RIBBON",
+        "PAIR_ABILITY_RIBBON", "WORLD_ABILITY_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON",
+        "DOWNCAST_RIBBON", "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON",
+        "GORGEOUS_RIBBON", "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "FOOTPRINT_RIBBON",
+        "RECORD_RIBBON", "EVENT_RIBBON", "LEGEND_RIBBON", "WORLD_CHAMPION_RIBBON",
+        "BIRTHDAY_RIBBON", "SPECIAL_RIBBON", "SOUVENIR_RIBBON", "WISHING_RIBBON", "CLASSIC_RIBBON",
+        "PREMIER_RIBBON", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "COOL_RIBBON",
+        "COOL_RIBBON_SUPER", "COOL_RIBBON_HYPER", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON",
+        "BEAUTY_RIBBON_SUPER", "BEAUTY_RIBBON_HYPER", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON",
+        "CUTE_RIBBON_SUPER", "CUTE_RIBBON_HYPER", "CUTE_RIBBON_MASTER", "SMART_RIBBON",
+        "SMART_RIBBON_SUPER", "SMART_RIBBON_HYPER", "SMART_RIBBON_MASTER", "TOUGH_RIBBON",
+        "TOUGH_RIBBON_SUPER", "TOUGH_RIBBON_HYPER", "TOUGH_RIBBON_MASTER", "CHAMPION_RIBBON",
+        "WINNING_RIBBON", "VICTORY_RIBBON", "ARTIST_RIBBON", "EFFORT_RIBBON",
+        "BATTLE_CHAMPION_RIBBON", "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON",
+        "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON", "WORLD_RIBBON", "COOL_RIBBON",
+        "COOL_RIBBON_GREAT", "COOL_RIBBON_ULTRA", "COOL_RIBBON_MASTER", "BEAUTY_RIBBON",
+        "BEAUTY_RIBBON_GREAT", "BEAUTY_RIBBON_ULTRA", "BEAUTY_RIBBON_MASTER", "CUTE_RIBBON",
+        "CUTE_RIBBON_GREAT", "CUTE_RIBBON_ULTRA", "CUTE_RIBBON_MASTER", "SMART_RIBBON",
+        "SMART_RIBBON_GREAT", "SMART_RIBBON_ULTRA", "SMART_RIBBON_MASTER", "TOUGH_RIBBON",
+        "TOUGH_RIBBON_GREAT", "TOUGH_RIBBON_ULTRA", "TOUGH_RIBBON_MASTER", "UNUSED", "UNUSED",
+        "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED", "UNUSED",
+        "UNUSED"};
+
+    constexpr std::array<std::string_view, 96> gen67ToggleTexts = {"UNUSED", "UNUSED",
+        "SPATK_LEVEL_1", "HP_LEVEL_1", "ATTACK_LEVEL_1", "SPDEF_LEVEL_1", "SPEED_LEVEL_1",
+        "DEFENSE_LEVEL_1", "SPATK_LEVEL_2", "HP_LEVEL_2", "ATTACK_LEVEL_2", "SPDEF_LEVEL_2",
+        "SPEED_LEVEL_2", "DEFENSE_LEVEL_2", "SPATK_LEVEL_3", "HP_LEVEL_3", "ATTACK_LEVEL_3",
+        "SPDEF_LEVEL_3", "SPEED_LEVEL_3", "DEFENSE_LEVEL_3", "THE_TROUBLES_KEEP_ON_COMING?",
+        "THE_LEAF_STONE_CUP_BEGINS", "THE_FIRE_STONE_CUP_BEGINS", "THE_WATER_STONE_CUP_BEGINS",
+        "FOLLOW_THOSE_FLEEING_GOALS", "WATCH_OUT_THATS_ONE_TRICKY_SECOND_HALF",
+        "AN_OPENING_OF_LIGHTING_QUICK_ATTACKS", "THOSE_LONG_SHOTS_ARE_NO_LONG_SHOT",
+        "SCATTERBUG_LUGS_BACK", "A_BARRAGE_OF_BITBOTS", "DRAG_DOWN_HYDREIGON",
+        "THE_BATTLE_FOR_THE_BEST_VERSION_X/Y", "KALOS_CHAMP_RIBBON", "CHAMPION_RIBBON",
+        "SINNOH_CHAMP_RIBBON", "BEST_FRIENDS_RIBBON", "TRAINING_RIBBON", "SKILLFUL_BATTLER_RIBBON",
+        "EXPERT_BATTLER_RIBBON", "EFFORT_RIBBON", "ALERT_RIBBON", "SHOCK_RIBBON", "DOWNCAST_RIBBON",
+        "CARELESS_RIBBON", "RELAX_RIBBON", "SNOOZE_RIBBON", "SMILE_RIBBON", "GORGEOUS_RIBBON",
+        "ROYAL_RIBBON", "GORGEOUS_ROYAL_RIBBON", "ARTIST_RIBBON", "FOOTPRINT_RIBBON",
+        "RECORD_RIBBON", "LEGEND_RIBBON", "COUNTRY_RIBBON", "NATIONAL_RIBBON", "EARTH_RIBBON",
+        "WORLD_RIBBON", "CLASSIC_RIBBON", "PREMIER_RIBBON", "EVENT_RIBBON", "BIRTHDAY_RIBBON",
+        "SPECIAL_RIBBON", "SOUVENIR_RIBBON", "WISHING_RIBBON", "BATTLE_CHAMPION_RIBBON",
+        "REGIONAL_CHAMPION_RIBBON", "NATIONAL_CHAMPION_RIBBON", "WORLD_CHAMPION_RIBBON", "UNUSED",
+        "UNUSED", "HOENN_CHAMPION_RIBBON", "CONTEST_STAR_RIBBON", "COOLNESS_MASTER_RIBBON",
+        "BEAUTY_MASTER_RIBBON", "CUTENESS_MASTER_RIBBON", "CLEVERNESS_MASTER_RIBBON",
+        "TOUGHNESS_MASTER_RIBBON", "ALOLA_CHAMPION_RIBBON", "BATTLE_ROYAL_RIBBON",
+        "BATTLE_TREE_GREAT_RIBBON", "BATTLE_TREE_MASTER_RIBBON", "UNUSED", "UNUSED", "UNUSED",
+        "UNUSED", "UNUSED", "UNUSED", "FEARSOME_TWIN_TALES_OF_JUTTING_JAWS",
+        "DANGER_ZIPPED_UP_TIGHT", "STUCK_BETWEEN_STRONG_AND_STRONG",
+        "DAZZLING_DIZZYING_DANCE_SPOONS", "WHAT_UPSTART_MAGIKARP_MOVING_UP", "WATCH_MULTIPLE_MEGA",
+        "UNUSED", "UNUSED"};
+
     constexpr std::array<pksm::Ribbon, 98> gen8Ribbons = {pksm::Ribbon::ChampionKalos,
         pksm::Ribbon::ChampionG3Hoenn, pksm::Ribbon::ChampionSinnoh, pksm::Ribbon::BestFriends,
         pksm::Ribbon::Training, pksm::Ribbon::BattlerSkillful, pksm::Ribbon::BattlerExpert,
@@ -419,7 +425,7 @@ bool HexEditScreen::checkValue()
                     return false;
                 }
                 return true;
-            case 0xB ... 0xD:
+            case 0xB ... 0xE:
                 if (TitleLoader::save->availableMoves().count(pkm.move(i - 0xB)) == 0)
                 {
                     return false;
@@ -1637,18 +1643,15 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     if (i <= 0x34)
                     {
                         return std::make_pair(
-                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                            &i18n::localize("OT_NAME"), OPEN); // floating terminator
                     }
-                    return std::make_pair(
-                        &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("NICKNAME"), OPEN); // floating terminator
                 }
                 if (i <= 0x39)
                 {
-                    return std::make_pair(
-                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("OT_NAME"), OPEN); // floating terminator
                 }
-                return std::make_pair(
-                    &i18n::localize("NICKNAME"), UNRESTRICTED); // floating terminator
+                return std::make_pair(&i18n::localize("NICKNAME"), OPEN); // floating terminator
             }
         }
     }
@@ -1731,22 +1734,21 @@ std::pair<const std::string*, HexEditScreen::SecurityLevel> HexEditScreen::descr
                     if (i <= 0x38)
                     {
                         return std::make_pair(
-                            &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                            &i18n::localize("OT_NAME"), OPEN); // floating terminator
                     }
                     if (i == 0x3E)
                     {
-                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                        return std::make_pair(&i18n::localize("NULL_TERMINATOR"), OPEN);
                     }
                     return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
                 }
                 if (i <= 0x3D)
                 {
-                    return std::make_pair(
-                        &i18n::localize("OT_NAME"), UNRESTRICTED); // floating terminator
+                    return std::make_pair(&i18n::localize("OT_NAME"), OPEN); // floating terminator
                 }
                 if (i == 0x48)
                 {
-                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), UNRESTRICTED);
+                    return std::make_pair(&i18n::localize("NULL_TERMINATOR"), OPEN);
                 }
                 return std::make_pair(&i18n::localize("NICKNAME"), NORMAL);
             }
@@ -2317,11 +2319,18 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     }
                     for (size_t j = 0; j < 8; j++)
                     {
-                        const std::string& text =
-                            (size_t)currRibbon < gen8Ribbons.size()
-                                ? i18n::ribbon(Configuration::getInstance().language(),
-                                      gen8Ribbons[currRibbon])
-                                : i18n::localize("UNUSED");
+                        const std::string& text = [&]() -> const std::string&
+                        {
+                            if ((size_t)currRibbon < gen8Ribbons.size())
+                            {
+                                return i18n::ribbon(Configuration::getInstance().language(),
+                                    gen8Ribbons[currRibbon]);
+                            }
+                            else
+                            {
+                                return i18n::localize("UNUSED");
+                            }
+                        }();
                         buttons[i].push_back(std::make_unique<HexEditButton>(
                             30, 90 + j * 16, 13, 13,
                             [this, i, j]() { return this->toggleBit(i, j); },
@@ -2484,7 +2493,7 @@ void HexEditScreen::drawTop() const
                 {
                     color = PKSM_Color(0, 0, 0, 120);
                 }
-                Gui::text(fmt::format(FMT_STRING("{:02X}"),
+                Gui::text(std::format("{:02X}",
                               pkm.rawData()[x + y * 16 + hid.page() * hid.maxVisibleEntries()]),
                     x * 25 + 24 / 2, y * 15 + 1, FONT_SIZE_9, color, TextPosX::CENTER,
                     TextPosY::TOP);
@@ -2503,12 +2512,11 @@ void HexEditScreen::drawTop() const
 void HexEditScreen::drawBottom() const
 {
     Gui::backgroundBottom(false);
-    Gui::text(fmt::format(FMT_STRING("{:s} 0x{:02X}"), i18n::localize("HEX_SELECTED_BYTE"),
-                  hid.fullIndex()),
+    Gui::text(std::format("{:s} 0x{:02X}", i18n::localize("HEX_SELECTED_BYTE"), hid.fullIndex()),
         160, 8, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_emulated_button_selected_blue_idx, 140, 50);
-    Gui::text(fmt::format(FMT_STRING("{:01X} {:01X}"), pkm.rawData()[hid.fullIndex()] >> 4,
+    Gui::text(std::format("{:01X} {:01X}", pkm.rawData()[hid.fullIndex()] >> 4,
                   pkm.rawData()[hid.fullIndex()] & 0x0F),
         160, 52, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
     if (level >= selectedDescription.second)
@@ -2676,8 +2684,9 @@ void HexEditScreen::drawMeaning() const
                         100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xF ... 0x10:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
@@ -2701,8 +2710,9 @@ void HexEditScreen::drawMeaning() const
                         100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x9:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x21:
@@ -2715,8 +2725,9 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x4 ... 0x7:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x8 ... 0x11:
@@ -2766,8 +2777,9 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
@@ -2825,8 +2837,9 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
@@ -2973,8 +2986,9 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(fmt::format(fmt::runtime(i18n::localize("EDITOR_IDS")),
-                                  pkm.formatTID(), pkm.formatSID(), pkm.TSV()),
+                    Gui::text(
+                        std::vformat(i18n::localize("EDITOR_IDS"),
+                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14 ... 0x15:

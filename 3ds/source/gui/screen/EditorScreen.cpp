@@ -285,14 +285,17 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
     instructions.addBox(false, 124, 43, 70, 16, COLOR_GREY, i18n::localize("GENDER"), COLOR_WHITE);
     buttons.push_back(NO_TEXT_CLICK(
         186, 7, 12, 12, [this]() { return this->genderSwitch(); }, ui_sheet_res_null_idx));
-    instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
-    instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
-    instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
-    instructions.addBox(
-        false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
-    buttons.push_back(NO_TEXT_CLICK(
-        239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
-        ui_sheet_button_trainer_info_idx));
+    if (TitleLoader::save)
+    {
+        instructions.addCircle(false, 260, 14, 11, COLOR_GREY);
+        instructions.addLine(false, 214, 14, 260, 14, 4, COLOR_GREY);
+        instructions.addLine(false, 216, 16, 216, 64, 4, COLOR_GREY);
+        instructions.addBox(
+            false, 98, 64, 120, 16, COLOR_GREY, i18n::localize("SET_SAVE_INFO"), COLOR_WHITE);
+        buttons.push_back(NO_TEXT_CLICK(
+            239, 3, 43, 22, [this]() { return this->setSaveInfo(); },
+            ui_sheet_button_trainer_info_idx));
+    }
 
     origHash = pksm::crypto::sha256(pkm->rawData());
 }
@@ -541,6 +544,7 @@ bool EditorScreen::hexEdit()
 
 bool EditorScreen::changeLevel(bool up)
 {
+    int min_level = pkm->generation() > pksm::Generation::THREE ? 1 : 2;
     if (up)
     {
         if (pkm->level() < 100)
@@ -550,7 +554,7 @@ bool EditorScreen::changeLevel(bool up)
     }
     else
     {
-        if (pkm->level() > 1)
+        if (pkm->level() > min_level)
         {
             pkm->level(pkm->level() - 1);
         }
@@ -567,9 +571,11 @@ void EditorScreen::setLevel()
     char input[4]   = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[3]        = '\0';
+
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        u8 level = (u8)std::min(std::stoi(input), 100);
+        int min_level = pkm->generation() > pksm::Generation::THREE ? 1 : 2;
+        u8 level      = (u8)std::clamp(std::stoi(input), min_level, 100);
         pkm->level(level);
     }
 }
@@ -944,7 +950,7 @@ bool EditorScreen::setSaveInfo()
         pkm->SID(TitleLoader::save->SID());
         pkm->otGender(TitleLoader::save->gender());
         pkm->version(TitleLoader::save->version());
-        pkm->currentHandler(0);
+        pkm->currentHandler(pksm::PKXHandler::OT);
     }
     return false;
 }

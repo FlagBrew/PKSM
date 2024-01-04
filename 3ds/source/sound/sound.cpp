@@ -143,7 +143,7 @@ namespace
         return ret;
     }
 
-    void soundThread(void*)
+    void soundThread()
     {
         finished = false;
         while (playing)
@@ -199,6 +199,10 @@ namespace
 
 Result Sound::init()
 {
+    if (!Decoder::init())
+    {
+        return -1;
+    }
     LightEvent_Init(&frameEvent, RESET_ONESHOT);
     STDirectory dir("/3ds/PKSM/songs");
     if (dir.good())
@@ -253,12 +257,13 @@ void Sound::exit()
     stop();
     linearFree(bufferMem);
     ndspExit();
+    Decoder::exit();
 }
 
 void Sound::start()
 {
     playing = true;
-    Threads::create(&soundThread, nullptr, 16 * 1024);
+    Threads::create(16 * 1024, soundThread);
 }
 
 void Sound::stop()
