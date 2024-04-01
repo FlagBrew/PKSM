@@ -1,0 +1,22 @@
+{
+  "titleId": "010b738b48480000",
+  "name": "PKSM",
+  "author": {
+    "name": "FlagBrew"
+  },
+  "version": "11.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "build": "esbuild --bundle --sourcemap --sources-content=false --target=es2022 --format=esm src/main.ts --outfile=romfs/main.js",
+    "nro": "nxjs-nro",
+    "nsp": "nxjs-nsp"
+  },
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "@nx.js/nro": "^0.0.41",
+    "@nx.js/nsp": "^0.0.41",
+    "esbuild": "^0.17.19",
+    "nxjs-runtime": "^0.0.41"
+  }
+}
