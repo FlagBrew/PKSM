@@ -1,7 +1,22 @@
+import { HidNpadButton } from "@nx.js/constants";
 import { Page } from "../renderer/page";
 import { drawText } from "../renderer/text";
+import { event } from "../types/event";
+import { MainPage } from "./main";
+import { router } from "../router/router";
 
-export class MainPage extends Page {
+export class SecondPage extends Page {
+  protected events: event[] = [
+    {
+      event: "buttondown",
+      callback: (event) => {
+        if (event.detail & HidNpadButton.B) {
+          router.go("/");
+        }
+      },
+    },
+  ];
+
   protected _renderTitle(): void {
     super._renderTitle();
 
@@ -32,10 +47,6 @@ export class MainPage extends Page {
     this.ctx.closePath();
     this.ctx.stroke();
 
-    drawText(
-      `${JSON.stringify(this.bodyArea)}`,
-      this.bodyArea.x,
-      this.bodyArea.y + 20
-    );
+    drawText("This is the second page!", this.bodyArea.x, this.bodyArea.y + 20);
   }
 }

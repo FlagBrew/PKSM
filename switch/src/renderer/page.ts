@@ -1,4 +1,6 @@
+import { event } from "../types/event";
 import { Rectangle } from "../types/rectangle";
+import { drawText } from "./text";
 
 export abstract class Page {
   /**
@@ -21,6 +23,8 @@ export abstract class Page {
     y2: screen.availHeight - 120,
   };
 
+  protected events: event[] = [];
+
   title: string;
   ctx: CanvasRenderingContext2D;
 
@@ -31,11 +35,6 @@ export abstract class Page {
   }
 
   protected _renderTitle() {
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "42px system-ui";
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "top";
-
     // Clear the title area
     this.ctx.clearRect(
       this.titleArea.x,
@@ -43,7 +42,15 @@ export abstract class Page {
       this.titleArea.x2,
       this.titleArea.y2
     );
-    this.ctx.fillText(this.title, screen.availWidth / 2, this.titleArea.y2 / 2);
+
+    drawText(
+      this.title,
+      screen.availWidth / 2,
+      this.titleArea.y2 / 2,
+      42,
+      "top",
+      "center"
+    );
   }
 
   protected _renderBody() {
@@ -54,10 +61,29 @@ export abstract class Page {
       this.bodyArea.x2,
       this.bodyArea.y2
     );
+
+    // Body will be rendered by the class extending this abstract class.
+  }
+
+  private _registerEventListeners() {
+    for (var event of this.events) {
+      addEventListener(event.event, event.callback);
+    }
+  }
+
+  private _destroyEventListeners() {
+    for (var event of this.events) {
+      removeEventListener(event.event, event.callback);
+    }
+  }
+
+  _unload() {
+    this._destroyEventListeners();
   }
 
   render() {
     this._renderTitle();
     this._renderBody();
+    this._registerEventListeners();
   }
 }
