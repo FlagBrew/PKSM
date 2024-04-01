@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@nx.js/constants':
+    specifier: ^0.1.0
+    version: 0.1.0
+
 devDependencies:
   '@nx.js/nro':
     specifier: ^0.0.41
@@ -974,6 +979,10 @@ packages:
       '@babel/runtime': 7.24.1
       regenerator-runtime: 0.13.11
     dev: true
+
+  /@nx.js/constants@0.1.0:
+    resolution: {integrity: sha512-It/hPlfRbdxOwJ8r3Aj7DsT5YHHvMgg5LX9/I5kt79Zm1+QYWaqbwDp2P4Ve4pIvQyKqdMwaeeDy13u6Hccl8g==}
+    dev: false
 
   /@nx.js/nro@0.0.41:
     resolution: {integrity: sha512-1bYwfJnugx44GIGe9yiAUfC0VlGu7FXx8jIxLJpR4I1X7QsyiYM8L3wIKmcGXG/e5qpMG/q+iBg4nSEapGB41g==}

@@ -1,16 +1,35 @@
-import { drawList, drawTitle } from "./utils/text";
+// import { drawList, drawText, drawTitle } from "./utils/text";
 
-drawTitle("Main Screen");
+import { MainPage } from "./pages/main";
+import { SecondPage } from "./pages/second";
+import { HidNpadButton } from "@nx.js/constants";
 
+// drawTitle("Main Screen");
 
-function listApplications() {
-    let items = []
-    for (const app of Switch.Application) {
-        items.push(app.name);
-    }
+// function listApplications() {
+//     let items = []
+//     for (const app of Switch.Application) {
+//         items.push(app.name);
+//     }
 
-    drawList(items, 150, 125);
-}
+//     drawList(items, 150, 125);
+// }
 
+// listApplications();
 
-listApplications();
+// addEventListener('buttondown', (event) => {
+//     drawText(`Pushed button ${event.which}`, 300, 300);
+// })
+
+const page1 = new MainPage("Main Page");
+const page2 = new SecondPage("Second Page");
+
+page1.render();
+
+addEventListener("buttondown", (event) => {
+  if (event.detail & HidNpadButton.A) {
+    page2.render();
+  } else if (event.detail & HidNpadButton.B) {
+    page1.render();
+  }
+});
