@@ -18,5 +18,8 @@
     "@nx.js/nsp": "^0.0.41",
     "esbuild": "^0.17.19",
     "nxjs-runtime": "^0.0.41"
+  },
+  "dependencies": {
+    "@nx.js/constants": "^0.1.0"
   }
 }
