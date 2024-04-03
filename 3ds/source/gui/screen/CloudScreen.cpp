@@ -928,13 +928,23 @@ void CloudScreen::shareReceive()
                 }
 
                 nlohmann::json retJson = nlohmann::json::parse(retData, nullptr, false);
+                
+                std::string generation = "";
+                if (retJson.contains("generation")) {
+                    if(retJson["generation"].is_string()) {
+                        generation = retJson["generation"].get<std::string>();
+                    } else if(retJson["generation"].is_number()) {
+                        // convert the number to a string
+                        generation = std::to_string(retJson["generation"].get<int>());
+                    }
+                }
+                
 
-                if (retJson.is_object() && retJson.contains("generation") &&
-                    retJson["generation"].is_string() && retJson.contains("pokemon") &&
+                if (retJson.is_object() && generation != "" && retJson.contains("pokemon") &&
                     retJson["pokemon"].is_string())
                 {
                     pksm::Generation gen =
-                        pksm::Generation::fromString(retJson["generation"].get_ref<std::string&>());
+                        pksm::Generation::fromString(generation);
 
                     auto retData = base64_decode(retJson["pokemon"].get_ref<std::string&>());
 
