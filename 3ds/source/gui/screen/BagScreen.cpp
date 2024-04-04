@@ -622,8 +622,7 @@ std::span<const int> BagScreen::itemsForPouch(pksm::Sav::Pouch pouch) const
 
     if (found->second.size() > 1000 || found->second.size() == 0) {
         // Should a match fail to be found, we don't want the app freaking out, so return an empty array.
-        std::array<int, 0UL> catchArr = {};
-        return std::span{catchArr};
+        return {};
     }
 
     return found->second;
