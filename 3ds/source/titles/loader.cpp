@@ -55,8 +55,7 @@ namespace
         u32 saveOffset; // Always 0x200
         u32 saveSize;
         u8 padding3[8];      // Always 0xFF
-        u8 arm7Registers[8]; // Not really sure what to do with this. Seems to be 0x7F 00 00 00 00
-                             // 00 00 00?
+        u8 arm7Registers[8]; // Might be RTC?
         u8 padding4[0x198];  // Get it to the proper size
     };
 
@@ -538,7 +537,7 @@ void TitleLoader::backupSave(const std::string& id)
     path += std::format("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/", now.year(), now.month(), now.day(),
         now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
-    path      += idToSaveName(id);
+    path     += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {
@@ -1006,6 +1005,13 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->seek(0, SEEK_SET);
                                             // Increment save count
                                             header1->savesMade++;
+                                            if (save->getLength() <=
+                                                save->getEntireLengthIncludingFooter() - 8)
+                                            {
+                                                std::copy_n(
+                                                    save->rawData().get() + save->getLength(), 8,
+                                                    header1->arm7Registers);
+                                            }
                                             out->write(header1.get(), sizeof(GbaHeader));
                                             out->write(save->rawData().get(), save->getLength());
 
@@ -1050,6 +1056,13 @@ void TitleLoader::saveToTitle(bool ask)
                                             // save was valid to begin with is immaterial
                                             header1->savesMade = header2->savesMade + 1;
                                             out->seek(0, SEEK_SET);
+                                            if (save->getLength() <=
+                                                save->getEntireLengthIncludingFooter() - 8)
+                                            {
+                                                std::copy_n(
+                                                    save->rawData().get() + save->getLength(), 8,
+                                                    header1->arm7Registers);
+                                            }
                                             out->write(header1.get(), sizeof(GbaHeader));
                                             out->write(save->rawData().get(), save->getLength());
                                             out->seek(0, SEEK_SET);
@@ -1069,6 +1082,13 @@ void TitleLoader::saveToTitle(bool ask)
                                             {
                                                 header1->savesMade = header2->savesMade + 1;
                                                 out->seek(0, SEEK_SET);
+                                                if (save->getLength() <=
+                                                    save->getEntireLengthIncludingFooter() - 8)
+                                                {
+                                                    std::copy_n(
+                                                        save->rawData().get() + save->getLength(),
+                                                        8, header1->arm7Registers);
+                                                }
                                                 out->write(header1.get(), sizeof(GbaHeader));
                                                 out->write(
                                                     save->rawData().get(), save->getLength());
@@ -1086,6 +1106,13 @@ void TitleLoader::saveToTitle(bool ask)
                                                 out->seek(sizeof(GbaHeader) + header1->saveSize,
                                                     SEEK_SET);
                                                 header2->savesMade = header1->savesMade + 1;
+                                                if (save->getLength() <=
+                                                    save->getEntireLengthIncludingFooter() - 8)
+                                                {
+                                                    std::copy_n(
+                                                        save->rawData().get() + save->getLength(),
+                                                        8, header2->arm7Registers);
+                                                }
                                                 out->write(header2.get(), sizeof(GbaHeader));
                                                 out->write(
                                                     save->rawData().get(), save->getLength());
