@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62, FM1337
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -92,6 +92,14 @@ namespace
         {
             std::copy(str.begin(), str.end(), ret);
             ret[str.size()] = u'\0';
+        }
+        return (void*)ret;
+    }
+
+    void* bufToRet(const void* buf, size_t size) {
+        char* ret = (char*)malloc(size);
+        if (ret) {
+            std::memcpy(ret, buf, size);
         }
         return (void*)ret;
     }
@@ -2126,6 +2134,52 @@ void pkx_get_value(
             scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
     delete pkm;
+}
+
+void pkx_update_party_data(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    auto pkm = getPokemon(data, gen, true);
+
+    if(!pkm) {
+        scriptFail(Parser, "Not a Pokemon");
+    }
+    
+    pkm->refreshChecksum();
+    pkm->updatePartyData();
+}
+
+void sav_get_palpark(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs) 
+{
+    char** out   = (char**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+
+    if (TitleLoader::save->generation() != pksm::Generation::FOUR) {
+        Gui::warn("PalPark is only in Gen 4");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    std::vector<std::unique_ptr<pksm::PK4>> mons = ((pksm::Sav4*)TitleLoader::save.get())->PalParkMons();
+
+    if (mons.empty()) {
+        Gui::warn("No PalPark Pokemon Stored");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    for (int i = 0; i < 6; i++) {
+        out[i] = static_cast<char*>(bufToRet(mons[i]->rawData().data(), 0xEC));
+    }
+    
+    *outSize = 6;
+
+    ReturnValue->Val->Integer = 1;
 }
 
 void sav_inject_wcx(

@@ -169,6 +169,7 @@ void sav_get_int(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_int(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
+void sav_get_palpark(struct ParseState*, struct Value*, struct Value**, int);
 // i/o stuff
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);
@@ -186,6 +187,7 @@ void pkx_generate(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_update_party_data(struct ParseState*, struct Value*, struct Value**, int);
 // random utilities
 void pksm_utf8_to_ucs2(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_ucs2_to_utf8(struct ParseState*, struct Value*, struct Value**, int);
