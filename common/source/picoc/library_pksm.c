@@ -49,6 +49,7 @@ struct LibraryFunction UnixFunctions[] =
     { sav_get_string,       "char* sav_get_string(int off1, int off2, unsigned int codepoints);" },
     { sav_set_string,       "void sav_set_string(char* string, int off1, int off2, unsigned int codepoints);" },
     { sav_get_palpark,       "int sav_get_palpark(char** out, int* outSize);" },
+    { sav_set_palpark,       "int sav_set_palpark(char** data, int inSize);" }, // does it need to be char**?
     // pkm
     { pkx_encrypt,          "void pkx_decrypt(char* data, enum Generation type, int isParty);" },
     { pkx_decrypt,          "void pkx_encrypt(char* data, enum Generation type, int isParty);" },

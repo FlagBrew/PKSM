@@ -170,6 +170,7 @@ void sav_set_int(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_set_string(struct ParseState*, struct Value*, struct Value**, int);
 void sav_get_palpark(struct ParseState*, struct Value*, struct Value**, int);
+void sav_set_palpark(struct ParseState*, struct Value*, struct Value**, int);
 // i/o stuff
 void current_directory(struct ParseState*, struct Value*, struct Value**, int);
 void read_directory(struct ParseState*, struct Value*, struct Value**, int);

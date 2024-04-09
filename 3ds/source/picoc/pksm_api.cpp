@@ -2182,6 +2182,39 @@ void sav_get_palpark(
     ReturnValue->Val->Integer = 1;
 }
 
+void sav_set_palpark(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs) 
+{
+    u8** data   = (u8**)Param[0]->Val->Pointer;
+    int inSize = Param[1]->Val->Integer;
+
+    if (TitleLoader::save->generation() != pksm::Generation::FOUR) {
+        Gui::warn("PalPark is only in Gen 4");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    if (inSize != 6) {
+        Gui::warn("Please provide 6 Pokemon");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    std::vector<std::unique_ptr<pksm::PK4>> mons;
+
+    mons.reserve(inSize);
+
+
+    for (int i = 0; i < inSize; i++) {
+        auto ptr = getPokemon(data[i], pksm::Generation::FOUR, true);
+        mons.push_back(std::unique_ptr<pksm::PK4>(static_cast<pksm::PK4*>(ptr.release())));
+    }
+
+    ((pksm::Sav4*)TitleLoader::save.get())->PalParkMons(std::move(mons));
+
+    ReturnValue->Val->Integer = 1;
+}
+
 void sav_inject_wcx(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
