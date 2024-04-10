@@ -2162,6 +2162,44 @@ void pkx_update_party_data(
     pkm->updatePartyData();
 }
 
+void pkx_ribbon_exists(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
+    pksm::Ribbon ribbon = pksm::Ribbon(Param[1]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    ReturnValue->Val->Integer = PkmUtils::getDefault(gen)->hasRibbon(ribbon) ? 1 : 0;
+}
+
+void pkx_get_ribbon(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    pksm::Ribbon ribbon = pksm::Ribbon(Param[2]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    auto pkm = getPokemon(data, gen, false);
+
+    ReturnValue->Val->Integer = pkm->ribbon(ribbon) ? 1 : 0;
+}
+
+void pkx_set_ribbon(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+    pksm::Ribbon ribbon = pksm::Ribbon(Param[2]->Val->Integer);
+    int shouldHave = Param[3]->Val->Integer;
+
+    checkGen(Parser, gen);
+
+    auto pkm = getPokemon(data, gen, false);
+
+    pkm->ribbon(ribbon, shouldHave != 0);
+}
+
 void sav_get_palpark(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {

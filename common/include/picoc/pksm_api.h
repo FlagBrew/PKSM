@@ -189,6 +189,9 @@ void pkx_is_valid(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_set_value(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_get_value(struct ParseState*, struct Value*, struct Value**, int);
 void pkx_update_party_data(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_ribbon_exists(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_get_ribbon(struct ParseState*, struct Value*, struct Value**, int);
+void pkx_set_ribbon(struct ParseState*, struct Value*, struct Value**, int);
 // random utilities
 void pksm_utf8_to_ucs2(struct ParseState*, struct Value*, struct Value**, int);
 void pksm_ucs2_to_utf8(struct ParseState*, struct Value*, struct Value**, int);

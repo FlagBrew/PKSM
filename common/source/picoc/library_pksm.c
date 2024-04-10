@@ -60,6 +60,9 @@ struct LibraryFunction UnixFunctions[] =
     { pkx_set_value,        "void pkx_set_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
     { pkx_get_value,        "unsigned int pkx_get_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
     { pkx_update_party_data, "void pkx_update_party_data(char* data, enum Generation gen);"},
+    { pkx_ribbon_exists,    "int pkx_ribbon_exists(enum Generation gen, enum Ribbon ribbon);"},
+    { pkx_get_ribbon,       "int pkx_get_ribbon(char* data, enum Generation gen, enum Ribbon ribbon);"},
+    { pkx_set_ribbon,       "void pkx_set_ribbon(char* data, enum Generation gen, enum Ribbon ribbon, int hasRibbon);"},
     // io
     { current_directory,    "char* current_directory(void);" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
@@ -127,5 +130,28 @@ void PlatformLibraryInit(Picoc *pc)
                     "SAV_LANGUAGE, SAV_MONEY, SAV_BP, SAV_HOURS, SAV_MINUTES, SAV_SECONDS, SAV_ITEM };"
     "enum SAV_MaxField { MAX_SLOTS, MAX_BOXES, MAX_WONDER_CARDS, MAX_FORM, MAX_IN_POUCH };"
     "enum SAV_CheckValue { SAV_VALUE_SPECIES, SAV_VALUE_MOVE, SAV_VALUE_ITEM, SAV_VALUE_ABILITY, SAV_VALUE_BALL };"
-    "enum Pouch { NormalItem, KeyItem, TM, Mail, Medicine, Berry, Ball, Battle, Candy, ZCrystals };");
+    "enum Pouch { NormalItem, KeyItem, TM, Mail, Medicine, Berry, Ball, Battle, Candy, ZCrystals };"
+    "enum Ribbon {RIB_ChampionKalos, RIB_ChampionG3Hoenn, RIB_ChampionSinnoh, RIB_BestFriends, RIB_Training, RIB_BattlerSkillful,"
+                 "RIB_BattlerExpert, RIB_Effort, RIB_Alert, RIB_Shock, RIB_Downcast, RIB_Careless, RIB_Relax, RIB_Snooze, RIB_Smile, RIB_Gorgeous,"
+                 "RIB_Royal, RIB_GorgeousRoyal, RIB_Artist, RIB_Footprint, RIB_Record, RIB_Legend, RIB_Country, RIB_National, RIB_Earth, RIB_World,"
+                 "RIB_Classic, RIB_Premier, RIB_Event, RIB_Birthday, RIB_Special, RIB_Souvenir, RIB_Wishing, RIB_ChampionBattle, RIB_ChampionRegional,"
+                 "RIB_ChampionNational, RIB_ChampionWorld, RIB_MemoryContest, RIB_MemoryBattle, RIB_ChampionG6Hoenn, RIB_ContestStar,"
+                 "RIB_MasterCoolness, RIB_MasterBeauty, RIB_MasterCuteness, RIB_MasterCleverness, RIB_MasterToughness, RIB_G3Cool,"
+                 "RIB_G3CoolSuper, RIB_G3CoolHyper, RIB_G3CoolMaster, RIB_G3Beauty, RIB_G3BeautySuper, RIB_G3BeautyHyper, RIB_G3BeautyMaster,"
+                 "RIB_G3Cute, RIB_G3CuteSuper, RIB_G3CuteHyper, RIB_G3CuteMaster, RIB_G3Smart, RIB_G3SmartSuper, RIB_G3SmartHyper, RIB_G3SmartMaster,"
+                 "RIB_G3Tough, RIB_G3ToughSuper, RIB_G3ToughHyper, RIB_G3ToughMaster, RIB_G4Cool, RIB_G4CoolSuper, RIB_G4CoolHyper, RIB_G4CoolMaster,"
+                 "RIB_G4Beauty, RIB_G4BeautySuper, RIB_G4BeautyHyper, RIB_G4BeautyMaster, RIB_G4Cute, RIB_G4CuteSuper, RIB_G4CuteHyper,"
+                 "RIB_G4CuteMaster, RIB_G4Smart, RIB_G4SmartSuper, RIB_G4SmartHyper, RIB_G4SmartMaster, RIB_G4Tough, RIB_G4ToughSuper,"
+                 "RIB_G4ToughHyper, RIB_G4ToughMaster, RIB_Winning, RIB_Victory, RIB_Ability, RIB_AbilityGreat, RIB_AbilityDouble, RIB_AbilityMulti,"
+                 "RIB_AbilityPair, RIB_AbilityWorld, RIB_ChampionAlola, RIB_BattleRoyale, RIB_BattleTreeGreat, RIB_BattleTreeMaster,"
+                 "RIB_ChampionGalar, RIB_TowerMaster, RIB_MasterRank, RIB_MarkLunchtime, RIB_MarkSleepyTime, RIB_MarkDusk, RIB_MarkDawn,"
+                 "RIB_MarkCloudy, RIB_MarkRainy, RIB_MarkStormy, RIB_MarkSnowy, RIB_MarkBlizzard, RIB_MarkDry, RIB_MarkSandstorm, RIB_MarkMisty,"
+                 "RIB_MarkDestiny, RIB_MarkFishing, RIB_MarkCurry, RIB_MarkUncommon, RIB_MarkRare, RIB_MarkRowdy, RIB_MarkAbsentMinded,"
+                 "RIB_MarkJittery, RIB_MarkExcited, RIB_MarkCharismatic, RIB_MarkCalmness, RIB_MarkIntense, RIB_MarkZonedOut, RIB_MarkJoyful,"
+                 "RIB_MarkAngry, RIB_MarkSmiley, RIB_MarkTeary, RIB_MarkUpbeat, RIB_MarkPeeved, RIB_MarkIntellectual, RIB_MarkFerocious,"
+                 "RIB_MarkCrafty, RIB_MarkScowling, RIB_MarkKindly, RIB_MarkFlustered, RIB_MarkPumpedUp, RIB_MarkZeroEnergy, RIB_MarkPrideful,"
+                 "RIB_MarkUnsure, RIB_MarkHumble, RIB_MarkThorny, RIB_MarkVigor, RIB_MarkSlump, RIB_G4CoolGreat = RIB_G4CoolSuper,"
+                 "RIB_G4CoolUltra = RIB_G4CoolHyper, RIB_G4BeautyGreat = RIB_G4BeautySuper, RIB_G4BeautyUltra = RIB_G4BeautyHyper,"
+                 "RIB_G4CuteGreat = RIB_G4CuteSuper, RIB_G4CuteUltra = RIB_G4CuteHyper, RIB_G4SmartGreat = RIB_G4SmartSuper,"
+                 "RIB_G4SmartUltra = RIB_G4SmartHyper, RIB_G4ToughGreat = RIB_G4ToughSuper, RIB_G4ToughUltra = RIB_G4ToughHyper };");
 }
