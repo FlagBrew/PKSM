@@ -2218,6 +2218,11 @@ void sav_set_palpark(
         return;
     }
 
+    for (int i = 0; i < 6; i++)
+    {
+        checkGen(Parser, generations[i]);
+    }
+
     std::array<std::unique_ptr<pksm::PK4>, 6> mons;
 
     std::array<pksm::Sav::BadTransferReason, 6> reasons = {pksm::Sav::BadTransferReason::OKAY,
