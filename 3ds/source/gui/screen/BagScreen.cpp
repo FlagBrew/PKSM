@@ -620,8 +620,10 @@ std::span<const int> BagScreen::itemsForPouch(pksm::Sav::Pouch pouch) const
     const auto found = std::find_if(allowedItems.begin(), allowedItems.end(),
         [s = pouch](const auto& i) { return i.first == s; });
 
-    if (found->second.size() > 1000 || found->second.size() == 0) {
-        // Should a match fail to be found, we don't want the app freaking out, so return an empty array.
+    if (found->second.size() > 1000 || found->second.size() == 0)
+    {
+        // Should a match fail to be found, we don't want the app freaking out, so return an empty
+        // array.
         return {};
     }
 

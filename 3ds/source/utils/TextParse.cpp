@@ -75,7 +75,7 @@ namespace TextParse
             for (auto& glyph : word.first)
             {
                 glyph.xPos += lineWidths.back();
-                glyph.line  = lines();
+                glyph.line = lines();
             }
             lineWidths[lines() - 1] += word.second.front();
         }

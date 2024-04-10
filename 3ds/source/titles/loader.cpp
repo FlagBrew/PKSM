@@ -98,7 +98,7 @@ namespace
         pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM, pksm::GameVersion::GP,
         pksm::GameVersion::GE, pksm::GameVersion::SW, pksm::GameVersion::SH};
 
-    std::string idToSaveName(const std::string& id)
+    std::string idToSaveName(std::string_view id)
     {
         if (id.size() == 3 || id.size() == 4)
         {
@@ -160,7 +160,7 @@ namespace
         return "main";
     }
 
-    std::string idToSaveName(const std::u16string& id)
+    std::string idToSaveName(std::u16string_view id)
     {
         if (id.size() == 3 || id.size() == 4)
         {
@@ -537,7 +537,7 @@ void TitleLoader::backupSave(const std::string& id)
     path += std::format("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/", now.year(), now.month(), now.day(),
         now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
-    path     += idToSaveName(id);
+    path      += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {
