@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62, FM1337
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -94,6 +94,21 @@ namespace
             ret[str.size()] = u'\0';
         }
         return (void*)ret;
+    }
+
+    void* bufToRet(const void* buf, size_t size)
+    {
+        void* ret = malloc(size);
+        if (ret)
+        {
+            std::memcpy(ret, buf, size);
+        }
+        return ret;
+    }
+
+    u8* bufToRet(std::span<const u8> buf)
+    {
+        return (u8*)bufToRet(buf.data(), buf.size_bytes());
     }
 
     template <typename... Ts>
@@ -2126,6 +2141,123 @@ void pkx_get_value(
             scriptFail(Parser, "Field number %i is invalid", (int)field);
     }
     delete pkm;
+}
+
+void pkx_update_party_data(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8* data             = (u8*)Param[0]->Val->Pointer;
+    pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
+
+    checkGen(Parser, gen);
+
+    auto pkm = getPokemon(data, gen, true);
+
+    if (!pkm)
+    {
+        scriptFail(Parser, "Not a Pokemon");
+    }
+
+    pkm->refreshChecksum();
+    pkm->updatePartyData();
+}
+
+void sav_get_palpark(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8** out     = (u8**)Param[0]->Val->Pointer;
+    int* outSize = (int*)Param[1]->Val->Pointer;
+
+    if (TitleLoader::save->generation() != pksm::Generation::FOUR)
+    {
+        Gui::warn("PalPark is only in Gen 4");
+        ReturnValue->Val->Integer = 0;
+        *outSize = 0;
+        return;
+    }
+
+    std::optional<std::array<std::unique_ptr<pksm::PK4>, 6>> mons =
+        (static_cast<pksm::Sav4&>(*TitleLoader::save)).palPark();
+
+    if (!mons)
+    {
+        Gui::warn("No PalPark Pokemon Stored");
+        ReturnValue->Val->Integer = 0;
+        *outSize = 0;
+        return;
+    }
+
+    for (int i = 0; i < 6; i++)
+    {
+        out[i] = bufToRet((*mons)[i]->rawData());
+    }
+
+    *outSize = 6;
+
+    ReturnValue->Val->Integer = 1;
+}
+
+void sav_set_palpark(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+{
+    u8** data                     = (u8**)Param[0]->Val->Pointer;
+    pksm::Generation* generations = (pksm::Generation*)Param[1]->Val->Pointer;
+    int inSize                    = Param[2]->Val->Integer;
+
+    if (TitleLoader::save->generation() != pksm::Generation::FOUR)
+    {
+        Gui::warn("PalPark is only in Gen 4");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    if (inSize != 6)
+    {
+        Gui::warn("Please provide 6 Pokemon");
+        ReturnValue->Val->Integer = 0;
+        return;
+    }
+
+    std::array<std::unique_ptr<pksm::PK4>, 6> mons;
+
+    std::array<pksm::Sav::BadTransferReason, 6> reasons = {pksm::Sav::BadTransferReason::OKAY,
+        pksm::Sav::BadTransferReason::OKAY, pksm::Sav::BadTransferReason::OKAY,
+        pksm::Sav::BadTransferReason::OKAY, pksm::Sav::BadTransferReason::OKAY,
+        pksm::Sav::BadTransferReason::OKAY};
+
+    for (int i = 0; i < 6; i++)
+    {
+        auto pkx = getPokemon(data[i], generations[i], true);
+
+        mons[i] = std::unique_ptr<pksm::PK4>{
+            static_cast<pksm::PK4*>(TitleLoader::save->transfer(*pkx).release())};
+
+        reasons[i] = TitleLoader::save->invalidTransferReason(*pkx);
+    }
+
+    for (int i = 0; i < 6; i++)
+    {
+        if (!mons[i])
+        {
+            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                std::make_format_args(
+                    (std::string)generations[i], (std::string)TitleLoader::save->generation())));
+            ReturnValue->Val->Integer = 0;
+            return;
+        }
+
+        if (reasons[i] != pksm::Sav::BadTransferReason::OKAY)
+        {
+            Gui::warn(i18n::localize("NO_TRANSFER_PATH") + '\n' +
+                      i18n::badTransfer(Configuration::getInstance().language(), reasons[i]));
+            ReturnValue->Val->Integer = 0;
+            return;
+        }
+    }
+
+    static_cast<pksm::Sav4&>(*TitleLoader::save).palPark(mons);
+
+    ReturnValue->Val->Integer = 1;
 }
 
 void sav_inject_wcx(

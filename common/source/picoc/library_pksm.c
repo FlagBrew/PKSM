@@ -48,6 +48,8 @@ struct LibraryFunction UnixFunctions[] =
     { sav_set_int,          "void sav_set_int(int data, int off1, int off2);" },
     { sav_get_string,       "char* sav_get_string(int off1, int off2, unsigned int codepoints);" },
     { sav_set_string,       "void sav_set_string(char* string, int off1, int off2, unsigned int codepoints);" },
+    { sav_get_palpark,       "int sav_get_palpark(char** out, int* outSize);" },
+    { sav_set_palpark,       "int sav_set_palpark(char** data, int inSize);" }, // does it need to be char**?
     // pkm
     { pkx_encrypt,          "void pkx_decrypt(char* data, enum Generation type, int isParty);" },
     { pkx_decrypt,          "void pkx_encrypt(char* data, enum Generation type, int isParty);" },
@@ -57,6 +59,7 @@ struct LibraryFunction UnixFunctions[] =
     { pkx_is_valid,         "int pkx_is_valid(char* data, enum Generation gen);" },
     { pkx_set_value,        "void pkx_set_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
     { pkx_get_value,        "unsigned int pkx_get_value(char* data, enum Generation gen, enum PKX_Field field, ...);" },
+    { pkx_update_party_data, "void pkx_update_party_data(char* data, enum Generation gen);"},
     // io
     { current_directory,    "char* current_directory(void);" },
     { read_directory,       "struct directory* read_directory(char* dir);" },
