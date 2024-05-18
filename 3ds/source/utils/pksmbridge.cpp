@@ -33,6 +33,7 @@
 #include "printerator.hpp"
 #include "Sav.hpp"
 #include "TitleLoadScreen.hpp"
+#include "utils/format.hpp"
 #include <arpa/inet.h>
 #include <format>
 #include <unistd.h>
@@ -62,9 +63,8 @@ void setLoadedSaveFromBridge(bool v)
 
 bool receiveSaveFromBridge(void)
 {
-    if (!Gui::showChoiceMessage(
-            i18n::localize("WIRELESS_WARNING") + '\n' +
-            std::vformat(i18n::localize("WIRELESS_IP"), std::make_format_args(getHostId()))))
+    if (!Gui::showChoiceMessage(i18n::localize("WIRELESS_WARNING") + '\n' +
+                                pksm::format(i18n::localize("WIRELESS_IP"), getHostId())))
     {
         return false;
     }

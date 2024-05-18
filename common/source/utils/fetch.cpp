@@ -26,6 +26,7 @@
 
 #include "fetch.hpp"
 #include "thread.hpp"
+#include <algorithm>
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>

@@ -32,6 +32,7 @@
 #include "pkx/PK1.hpp"
 #include "pkx/PK2.hpp"
 #include "pkx/PK3.hpp"
+#include "utils/format.hpp"
 #include <format>
 
 namespace
@@ -226,8 +227,8 @@ void ViewOverlay::drawPkm(pksm::PKX& pkm) const
         case pksm::Gender::INVALID:
             break;
     }
-    Gui::text(std::vformat(i18n::localize("LVL"), std::make_format_args(pkm.level())), 143, 10,
-        FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(pksm::format(i18n::localize("LVL"), pkm.level()), 143, 10, FONT_SIZE_9, COLOR_WHITE,
+        TextPosX::LEFT, TextPosY::TOP);
     if (pkm.shiny())
     {
         Gui::sprite(ui_sheet_icon_shiny_idx, 191, 5);

@@ -39,6 +39,7 @@
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
+#include "utils/format.hpp"
 #include <format>
 
 namespace
@@ -205,13 +206,12 @@ void MainMenu::drawTop() const
         switch (i)
         {
             case 0:
-                Gui::text(std::vformat(i18n::localize("GENERATION"),
-                              std::make_format_args((std::string)TitleLoader::save->generation())),
+                Gui::text(pksm::format(i18n::localize("GENERATION"),
+                              (std::string)TitleLoader::save->generation()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 1:
-                Gui::text(std::vformat(i18n::localize("TRAINER_NAME"),
-                              std::make_format_args(TitleLoader::save->otName())),
+                Gui::text(pksm::format(i18n::localize("TRAINER_NAME"), TitleLoader::save->otName()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 2:
@@ -221,26 +221,25 @@ void MainMenu::drawTop() const
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 3:
-                Gui::text(std::vformat(TitleLoader::save->generation() == pksm::Generation::SEVEN
+                Gui::text(pksm::format(TitleLoader::save->generation() == pksm::Generation::SEVEN
                                            ? i18n::localize("STAMPS")
                                            : i18n::localize("BADGES"),
-                              std::make_format_args(TitleLoader::save->badges())),
+                              TitleLoader::save->badges()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 4:
-                Gui::text(std::vformat(i18n::localize("WC_NUM"),
-                              std::make_format_args(TitleLoader::save->currentGiftAmount())),
+                Gui::text(
+                    pksm::format(i18n::localize("WC_NUM"), TitleLoader::save->currentGiftAmount()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 5:
-                Gui::text(std::vformat(i18n::localize("DEX_SEEN"),
-                              std::make_format_args(TitleLoader::save->dexSeen())),
+                Gui::text(pksm::format(i18n::localize("DEX_SEEN"), TitleLoader::save->dexSeen()),
                     10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             case 6:
-                Gui::text(std::vformat(i18n::localize("DEX_CAUGHT"),
-                              std::make_format_args(TitleLoader::save->dexCaught())),
-                    10, y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
+                Gui::text(
+                    pksm::format(i18n::localize("DEX_CAUGHT"), TitleLoader::save->dexCaught()), 10,
+                    y, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
                 break;
             default:
                 break;

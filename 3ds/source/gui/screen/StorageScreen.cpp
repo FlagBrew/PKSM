@@ -45,6 +45,7 @@
 #include "StorageOverlay.hpp"
 #include "StorageViewOverlay.hpp"
 #include "TitleLoadScreen.hpp"
+#include "utils/format.hpp"
 #include <format>
 #include <stack>
 #include <sys/stat.h>
@@ -1311,9 +1312,8 @@ void StorageScreen::putDownSwap()
         bankMon = TitleLoader::save->transfer(*bankMon);
         if (!bankMon)
         {
-            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                std::make_format_args(
-                    (std::string)origGen, (std::string)TitleLoader::save->generation())));
+            Gui::warn(pksm::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)origGen,
+                (std::string)TitleLoader::save->generation()));
             return;
         }
         if (bankMon->species() == pksm::Species::None ||
@@ -1419,9 +1419,9 @@ void StorageScreen::putDownNonSwap()
                 {
                     if (moveMon.size() == 1)
                     {
-                        Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                            std::make_format_args((std::string)moveMon[index]->generation(),
-                                (std::string)TitleLoader::save->generation())));
+                        Gui::warn(pksm::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                            (std::string)moveMon[index]->generation(),
+                            (std::string)TitleLoader::save->generation()));
                     }
                     continue;
                 }

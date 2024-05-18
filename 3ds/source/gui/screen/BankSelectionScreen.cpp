@@ -29,8 +29,8 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "utils/format.hpp"
 #include <algorithm>
-#include <format>
 
 BankSelectionScreen::BankSelectionScreen(int& storageBox)
     : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
@@ -129,8 +129,8 @@ void BankSelectionScreen::update(touchPosition* touch)
         }
         if (strings.size() > 2)
         {
-            if (Gui::showChoiceMessage(std::vformat(i18n::localize("BANK_DELETE"),
-                    std::make_format_args(strings[hid.fullIndex()].first))))
+            if (Gui::showChoiceMessage(
+                    pksm::format(i18n::localize("BANK_DELETE"), strings[hid.fullIndex()].first)))
             {
                 auto i = strings.begin() + hid.fullIndex();
                 Banks::removeBank(i->first);

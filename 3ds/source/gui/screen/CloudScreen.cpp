@@ -45,6 +45,7 @@
 #include "QRScanner.hpp"
 #include "revision.h"
 #include "sav/Sav.hpp"
+#include "utils/format.hpp"
 #include "website.h"
 #include <format>
 #include <sys/stat.h>
@@ -208,8 +209,8 @@ void CloudScreen::drawTop() const
         "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(std::vformat(i18n::localize("CLOUD_BOX"), std::make_format_args(access.page())),
-        69 + 156 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
+    Gui::text(pksm::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24,
+        FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 50);
@@ -344,8 +345,8 @@ void CloudScreen::update(touchPosition* touch)
     {
         if (access.currentPageError() != 0)
         {
-            Gui::warn(std::vformat(i18n::localize("GPSS_COMMUNICATION_ERROR"),
-                std::make_format_args(access.currentPageError())));
+            Gui::warn(pksm::format(
+                i18n::localize("GPSS_COMMUNICATION_ERROR"), access.currentPageError()));
         }
         else
         {
@@ -644,8 +645,7 @@ bool CloudScreen::prevBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(std::vformat(
-                i18n::localize("GPSS_COMMUNICATION_ERROR"), std::make_format_args(*err)));
+            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
         }
         else
         {
@@ -680,8 +680,7 @@ bool CloudScreen::nextBoxTop()
     {
         if (*err != 0)
         {
-            Gui::warn(std::vformat(
-                i18n::localize("GPSS_COMMUNICATION_ERROR"), std::make_format_args(*err)));
+            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
         }
         else
         {

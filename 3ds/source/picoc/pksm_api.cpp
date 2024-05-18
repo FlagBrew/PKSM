@@ -52,6 +52,7 @@
 #include "STDirectory.hpp"
 #include "ThirtyChoice.hpp"
 #include "utils/flagUtil.hpp"
+#include "utils/format.hpp"
 #include "utils/genToPkx.hpp"
 #include "utils/random.hpp"
 #include "utils/utils.hpp"
@@ -425,9 +426,8 @@ void sav_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                std::make_format_args(
-                    (std::string)gen, (std::string)TitleLoader::save->generation())));
+            Gui::warn(pksm::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
+                (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -855,9 +855,8 @@ void party_inject_pkx(
         pkm = TitleLoader::save->transfer(*pkm);
         if (!pkm)
         {
-            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                std::make_format_args(
-                    (std::string)gen, (std::string)TitleLoader::save->generation())));
+            Gui::warn(pksm::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"), (std::string)gen,
+                (std::string)TitleLoader::save->generation()));
             return;
         }
         auto invalidReason = TitleLoader::save->invalidTransferReason(*pkm);
@@ -2166,18 +2165,19 @@ void pkx_ribbon_exists(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     pksm::Generation gen = pksm::Generation(Param[0]->Val->Integer);
-    pksm::Ribbon ribbon = pksm::Ribbon(Param[1]->Val->Integer);
+    pksm::Ribbon ribbon  = pksm::Ribbon(Param[1]->Val->Integer);
 
     checkGen(Parser, gen);
 
     ReturnValue->Val->Integer = PkmUtils::getDefault(gen)->hasRibbon(ribbon) ? 1 : 0;
 }
 
-void pkx_get_ribbon(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_get_ribbon(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data = (u8*)Param[0]->Val->Pointer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
-    pksm::Ribbon ribbon = pksm::Ribbon(Param[2]->Val->Integer);
+    pksm::Ribbon ribbon  = pksm::Ribbon(Param[2]->Val->Integer);
 
     checkGen(Parser, gen);
 
@@ -2186,12 +2186,13 @@ void pkx_get_ribbon(struct ParseState* Parser, struct Value* ReturnValue, struct
     ReturnValue->Val->Integer = pkm->ribbon(ribbon) ? 1 : 0;
 }
 
-void pkx_set_ribbon(struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
+void pkx_set_ribbon(
+    struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    u8* data = (u8*)Param[0]->Val->Pointer;
+    u8* data             = (u8*)Param[0]->Val->Pointer;
     pksm::Generation gen = pksm::Generation(Param[1]->Val->Integer);
-    pksm::Ribbon ribbon = pksm::Ribbon(Param[2]->Val->Integer);
-    int shouldHave = Param[3]->Val->Integer;
+    pksm::Ribbon ribbon  = pksm::Ribbon(Param[2]->Val->Integer);
+    int shouldHave       = Param[3]->Val->Integer;
 
     checkGen(Parser, gen);
 
@@ -2210,7 +2211,7 @@ void sav_get_palpark(
     {
         Gui::warn("PalPark is only in Gen 4");
         ReturnValue->Val->Integer = 0;
-        *outSize = 0;
+        *outSize                  = 0;
         return;
     }
 
@@ -2221,7 +2222,7 @@ void sav_get_palpark(
     {
         Gui::warn("No PalPark Pokemon Stored");
         ReturnValue->Val->Integer = 0;
-        *outSize = 0;
+        *outSize                  = 0;
         return;
     }
 
@@ -2282,9 +2283,8 @@ void sav_set_palpark(
     {
         if (!mons[i])
         {
-            Gui::warn(std::vformat(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
-                std::make_format_args(
-                    (std::string)generations[i], (std::string)TitleLoader::save->generation())));
+            Gui::warn(pksm::format(i18n::localize("NO_TRANSFER_PATH_SINGLE"),
+                (std::string)generations[i], (std::string)TitleLoader::save->generation()));
             ReturnValue->Val->Integer = 0;
             return;
         }

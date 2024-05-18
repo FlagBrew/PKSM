@@ -38,6 +38,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "sav/Sav.hpp"
+#include "utils/format.hpp"
 #include <format>
 
 namespace
@@ -2684,9 +2685,8 @@ void HexEditScreen::drawMeaning() const
                         100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xF ... 0x10:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
             }
@@ -2710,9 +2710,8 @@ void HexEditScreen::drawMeaning() const
                         100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x9:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x21:
@@ -2725,9 +2724,8 @@ void HexEditScreen::drawMeaning() const
             switch (i)
             {
                 case 0x4 ... 0x7:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x8 ... 0x11:
@@ -2777,9 +2775,8 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x15:
@@ -2837,9 +2834,8 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14:
@@ -2986,9 +2982,8 @@ void HexEditScreen::drawMeaning() const
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0xC ... 0xF:
-                    Gui::text(
-                        std::vformat(i18n::localize("EDITOR_IDS"),
-                            std::make_format_args(pkm.formatTID(), pkm.formatSID(), pkm.TSV())),
+                    Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), pkm.formatTID(),
+                                  pkm.formatSID(), pkm.TSV()),
                         160, 100, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                     break;
                 case 0x14 ... 0x15:

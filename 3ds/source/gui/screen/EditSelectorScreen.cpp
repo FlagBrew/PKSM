@@ -40,6 +40,7 @@
 #include "pkx/PK8.hpp"
 #include "QRScanner.hpp"
 #include "sav/SavLGPE.hpp"
+#include "utils/format.hpp"
 #include "ViewOverlay.hpp"
 #include <format>
 #include <memory>
@@ -410,9 +411,8 @@ void EditSelectorScreen::drawBottom() const
 
     if (infoMon)
     {
-        Gui::text(
-            std::vformat(i18n::localize("EDITOR_IDS"),
-                std::make_format_args(infoMon->formatTID(), infoMon->formatSID(), infoMon->TSV())),
+        Gui::text(pksm::format(i18n::localize("EDITOR_IDS"), infoMon->formatTID(),
+                      infoMon->formatSID(), infoMon->TSV()),
             160, 224, FONT_SIZE_9, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     }
 

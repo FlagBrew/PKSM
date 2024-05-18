@@ -43,6 +43,7 @@
 #include "thread.hpp"
 #include "TitleLoadScreen.hpp"
 #include "utils/crypto.hpp"
+#include "utils/format.hpp"
 #include "website.h"
 #include <3ds.h>
 #include <array>
@@ -818,8 +819,8 @@ namespace
 
         while (filesDone != filesToDownload)
         {
-            Gui::waitFrame(std::vformat(i18n::localize("MYSTERY_GIFT_DOWNLOAD"),
-                std::make_format_args((size_t)filesDone, filesToDownload)));
+            Gui::waitFrame(pksm::format(
+                i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
             svcSleepThread(50'000'000);
         }
 
