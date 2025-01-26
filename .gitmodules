@@ -10,3 +10,9 @@
 [submodule "external/picoc"]
 	path = external/picoc
 	url = https://github.com/FlagBrew/picoc
+[submodule "Plutonium"]
+	path = switch/Plutonium
+	url = https://github.com/XorTroll/Plutonium.git
+[submodule "switch/Plutonium"]
+	path = switch/Plutonium
+	url = https://github.com/XorTroll/Plutonium.git
