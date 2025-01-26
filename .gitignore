@@ -32,3 +32,11 @@ switch_compile_commands.json
 .clangd
 out
 .idea
+
+# Switch-specific ignores
+switch/build/
+switch/*.elf
+switch/*.nacp
+switch/*.nro
+switch/*.map
+switch/romfs/
