@@ -17,7 +17,8 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
         std::make_shared<titles::Title>("Pokémon Ultra Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00175F00)
     };
 
-    selectedTitle = -2; // No selection initially
+    selectedTitle = -1;  // Start with game card selected
+    lastSelectedTitle = -1;  // Initialize last selected title
     
     // Set background color to match DS version - deeper blue
     this->SetBackgroundColor(pu::ui::Color(10, 15, 75, 255));
@@ -48,17 +49,21 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
     this->installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
     this->Add(this->installedText);
 
-    // Add game card image
+    // Create game card image
     if (mockCartridgeTitle) {
         this->gameCardImage = FocusableImage::New(
-            GAME_CARD_X, GAME_SECTION_Y,
-            mockCartridgeTitle->getIcon()
+            GAME_CARD_X,
+            GAME_SECTION_Y,
+            mockCartridgeTitle->getIcon(),
+            128,  // Default alpha
+            GAME_OUTLINE_PADDING  // Add padding to the outline
         );
-        this->gameCardImage->SetWidth(GAME_CARD_SIZE);
-        this->gameCardImage->SetHeight(GAME_CARD_SIZE);
-        this->gameCardImage->SetFocused(false);
-        this->Add(this->gameCardImage);
-        this->Add(this->gameCardImage->GetOverlay());
+        gameCardImage->SetWidth(GAME_CARD_SIZE);
+        gameCardImage->SetHeight(GAME_CARD_SIZE);
+        gameCardImage->SetSelected(true);  // Initially selected
+        gameCardImage->SetFocused(true);   // Initially focused
+        this->Add(gameCardImage);
+        this->Add(gameCardImage->GetOverlay());
     }
 
     // Add installed game images
@@ -66,7 +71,9 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
         auto gameImage = FocusableImage::New(
             INSTALLED_START_X + (i * GAME_SPACING),
             GAME_SECTION_Y,
-            mockInstalledTitles[i]->getIcon()
+            mockInstalledTitles[i]->getIcon(),
+            128,  // Default alpha
+            GAME_OUTLINE_PADDING  // Add padding to the outline
         );
         gameImage->SetWidth(INSTALLED_GAME_SIZE);
         gameImage->SetHeight(INSTALLED_GAME_SIZE);
@@ -84,7 +91,7 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
         pu::ui::Color(0, 0, 0, 200),  // Semi-transparent black
         pu::ui::Color(0, 150, 255, 255),  // Selection color
         SAVE_ITEM_HEIGHT,
-        6  // Show 6 items at once
+        5  // Show 5 items at once
     );
 
     // Enable scrolling and selection handling
@@ -123,18 +130,177 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
     // Set up input handling for the layout
     this->SetOnInput(std::bind(&TitleLoadScreen::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
+    // Set up game selection handler
+    gameSelectionHandler.SetOnMoveLeft([this]() { MoveGameSelectionLeft(); });
+    gameSelectionHandler.SetOnMoveRight([this]() { MoveGameSelectionRight(); });
+    gameSelectionHandler.SetOnMoveDown([this]() { FocusSaveList(); });
+
+    // Set up button handler
+    buttonHandler.SetOnMoveUp([this]() { MoveButtonSelectionUp(); });
+    buttonHandler.SetOnMoveDown([this]() { MoveButtonSelectionDown(); });
+    buttonHandler.SetOnMoveLeft([this]() { 
+        this->loadButton->SetFocused(false);
+        this->wirelessButton->SetFocused(false);
+        this->saveList->SetFocused(true);
+    });
+
+    // Set up save list handler
+    saveListHandler.SetOnMoveRight([this]() { TransitionToButtons(); });
+    saveListHandler.SetOnMoveUp([this]() {
+        // Only move up to games if we're at the top of the list
+        if (this->saveList->GetSelectedIndex() == 0) {
+            FocusGameSection();
+        }
+    });
+
     // Load initial saves
     this->LoadSaves();
 }
 
 void TitleLoadScreen::LoadSaves() {
-    this->saveList->ClearItems();
+    // Prepare the data source based on selected title
+    std::vector<std::string> saveItems;
+    std::string prefix;
     
-    // Add some test items for now
-    for (int i = 0; i < 5; i++) {
-        auto item = pu::ui::elm::MenuItem::New("Save " + std::to_string(i + 1));
-        item->SetColor(pu::ui::Color(255, 255, 255, 255));
-        this->saveList->AddItem(item);
+    if (selectedTitle == -1) {
+        // Game card - Ultra Sun
+        prefix = "Cartridge";
+        saveItems = {
+            prefix + " Main Save",
+            prefix + " Challenge Mode",
+            prefix + " Nuzlocke"
+        };
+    } else {
+        switch(selectedTitle) {
+            case 0: // Sun
+                prefix = "Digital";
+                saveItems = {
+                    prefix + " Main Save",
+                    prefix + " Speedrun",
+                    prefix + " Living Dex",
+                    prefix + " Shiny Hunt",
+                    prefix + " Competitive",
+                    prefix + " Nuzlocke",
+                    prefix + " Battle Tree"
+                };
+                break;
+            case 1: // Moon
+                prefix = "Digital";
+                saveItems = {
+                    prefix + " Main Save",
+                    prefix + " Nuzlocke"
+                };
+                break;
+            case 2: // Ultra Moon
+                prefix = "Digital";
+                saveItems = {
+                    prefix + " Main Save",
+                    prefix + " Challenge Mode",
+                    prefix + " Speedrun",
+                    prefix + " Living Dex",
+                    prefix + " Shiny Hunt",
+                    prefix + " Competitive",
+                    prefix + " Nuzlocke",
+                    prefix + " Battle Tree"
+                };
+                break;
+            default:
+                prefix = "Unknown";
+                saveItems = { prefix + " Main Save" };
+        }
+    }
+    
+    // Update the menu's data source
+    this->saveList->SetDataSource(saveItems);
+}
+
+void TitleLoadScreen::MoveGameSelectionLeft() {
+    if (selectedTitle > 0) {
+        selectedTitle--;
+    } else if (selectedTitle == 0) {
+        selectedTitle = -1;
+    }
+    UpdateGameHighlights();
+}
+
+void TitleLoadScreen::MoveGameSelectionRight() {
+    if (selectedTitle == -1) {
+        selectedTitle = 0;
+    } else if (selectedTitle >= 0 && selectedTitle < (int)installedGameImages.size() - 1) {
+        selectedTitle++;
+    }
+    UpdateGameHighlights();
+}
+
+void TitleLoadScreen::MoveButtonSelectionUp() {
+    if (this->wirelessButton->IsFocused()) {
+        this->loadButton->SetFocused(true);
+        this->wirelessButton->SetFocused(false);
+    }
+    else if (this->loadButton->IsFocused()) {
+        this->wirelessButton->SetFocused(true);
+        this->loadButton->SetFocused(false);
+    }
+}
+
+void TitleLoadScreen::MoveButtonSelectionDown() {
+    if (this->loadButton->IsFocused()) {
+        this->loadButton->SetFocused(false);
+        this->wirelessButton->SetFocused(true);
+    }
+    else if (this->wirelessButton->IsFocused()) {
+        this->wirelessButton->SetFocused(false);
+        this->loadButton->SetFocused(true);
+    }
+}
+
+void TitleLoadScreen::FocusGameSection() {
+    this->saveList->SetFocused(false);  // This will automatically store position
+    selectedTitle = lastSelectedTitle; // Restore last game selection
+    UpdateGameHighlights();
+}
+
+void TitleLoadScreen::FocusSaveList() {
+    lastSelectedTitle = selectedTitle; // Store for returning from save list
+    bool inGameSelection = false;
+    if (mockCartridgeTitle) {
+        this->gameCardImage->SetFocused(inGameSelection);
+    }
+    for (auto& image : installedGameImages) {
+        image->SetFocused(inGameSelection);
+    }
+    
+    selectedTitle = -2;  // Move to save list
+    this->saveList->SetFocused(true);  // This will automatically restore position
+}
+
+void TitleLoadScreen::TransitionToSaveList() {
+    FocusSaveList();
+}
+
+void TitleLoadScreen::TransitionToButtons() {
+    this->saveList->SetFocused(false);
+    this->loadButton->SetFocused(true);
+}
+
+void TitleLoadScreen::UpdateGameHighlights() {
+    bool inGameSelection = selectedTitle >= -1 && selectedTitle != -2;  // True when actively selecting games
+    
+    // Update game card highlight
+    if (mockCartridgeTitle) {
+        this->gameCardImage->SetSelected(selectedTitle == -1);  // Remove overlay when selected
+        this->gameCardImage->SetFocused(inGameSelection);      // Only pulse when actively navigating games
+    }
+
+    // Update installed games highlight
+    for (size_t i = 0; i < installedGameImages.size(); i++) {
+        installedGameImages[i]->SetSelected(selectedTitle == (int)i);  // Remove overlay when selected
+        installedGameImages[i]->SetFocused(inGameSelection);          // Only pulse when actively navigating games
+    }
+
+    // Update save list if game selection changed
+    if (selectedTitle >= -1) {
+        LoadSaves();
     }
 }
 
@@ -143,25 +309,8 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     if (selectedTitle == -2) {
         if (this->loadButton->IsFocused() || this->wirelessButton->IsFocused()) {
             // Handle button group navigation
-            if (down & HidNpadButton_Down) {
-                if (this->loadButton->IsFocused()) {
-                    this->loadButton->SetFocused(false);
-                    this->wirelessButton->SetFocused(true);
-                }
-                else if (this->wirelessButton->IsFocused()) {
-                    this->wirelessButton->SetFocused(false);
-                    this->loadButton->SetFocused(true);
-                }
-            }
-            else if (down & HidNpadButton_Up) {
-                if (this->wirelessButton->IsFocused()) {
-                    this->loadButton->SetFocused(true);
-                    this->wirelessButton->SetFocused(false);
-                }
-                else if (this->loadButton->IsFocused()) {
-                    this->wirelessButton->SetFocused(true);
-                    this->loadButton->SetFocused(false);
-                }
+            if (buttonHandler.HandleInput(down, held)) {
+                // Input was handled by directional handler
             }
             else if (down & HidNpadButton_B) {
                 this->loadButton->SetFocused(false);
@@ -178,59 +327,31 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
         } else {
             // Save list is focused
             this->saveList->SetFocused(true);
-            this->saveList->OnInput(down, up, held, {});
             
-            if (down & HidNpadButton_Right) {
-                this->saveList->SetFocused(false);
-                this->loadButton->SetFocused(true);
+            if (saveListHandler.HandleInput(down, held)) {
+                // Input was handled by directional handler
             }
             else if (down & HidNpadButton_B) {
-                this->saveList->SetFocused(false);
-                selectedTitle = selectedTitle >= 0 ? 0 : -1;
+                FocusGameSection();
             }
             else if (down & HidNpadButton_A) {
-                this->saveList->SetFocused(false);
-                this->loadButton->SetFocused(true);
+                TransitionToButtons();
             }
         }
     } else {
         // Game selection mode
-        if (down & HidNpadButton_Left) {
-            if (selectedTitle > 0) {
-                selectedTitle--;
-            } else if (selectedTitle == 0) {
-                selectedTitle = -1;
+        if (gameSelectionHandler.HandleInput(down, held)) {
+            // Store last selected title before potential change
+            int previousTitle = selectedTitle;
+            
+            // Input was handled by directional handler
+            // If the selected title changed, reset save list
+            if (previousTitle != selectedTitle && selectedTitle >= -1) {
+                LoadSaves();
             }
-        }
-        else if (down & HidNpadButton_Right) {
-            if (selectedTitle == -1) {
-                selectedTitle = 0;
-            } else if (selectedTitle >= 0 && selectedTitle < (int)installedGameImages.size() - 1) {
-                selectedTitle++;
-            }
-        }
-        else if (down & HidNpadButton_Down) {
-            selectedTitle = -2;
-            this->saveList->SetFocused(true);
         }
         else if (down & HidNpadButton_A) {
-            selectedTitle = -2;
-            this->saveList->SetFocused(true);
-        }
-
-        // Update game card highlight
-        if (mockCartridgeTitle) {
-            this->gameCardImage->SetFocused(selectedTitle == -1);
-        }
-
-        // Update installed games highlight
-        for (size_t i = 0; i < installedGameImages.size(); i++) {
-            installedGameImages[i]->SetFocused(selectedTitle == (int)i);
-        }
-
-        // Update save list
-        if (selectedTitle >= -1) {
-            LoadSaves();  // Reload saves for selected game
+            FocusSaveList();
         }
     }
 }
