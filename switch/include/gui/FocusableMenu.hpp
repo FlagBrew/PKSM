@@ -1,9 +1,13 @@
 #pragma once
 #include <pu/Plutonium>
+#include "gui/PulsingOutline.hpp"
 
 class FocusableMenu : public pu::ui::elm::Menu {
     private:
         bool focused;
+        PulsingOutline::Ref outline;
+        int lastPosition;  // Stores position when unfocusing
+        std::vector<std::string> currentDataSource;  // Owns the current data source
 
     public:
         using Ref = std::shared_ptr<FocusableMenu>;
@@ -14,8 +18,19 @@ class FocusableMenu : public pu::ui::elm::Menu {
             return std::make_shared<FocusableMenu>(x, y, width, items_clr, items_focus_clr, items_height, items_to_show);
         }
         
+        void OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) override;
         void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
         
         void SetFocused(bool focused);
         bool IsFocused() const;
+
+        // Data source management
+        void SetDataSource(const std::vector<std::string>& items);
+        const std::vector<std::string>& GetDataSource() const;
+        
+    private:
+        // Position management methods
+        void StorePosition();
+        void RestorePosition();
+        void ResetPosition();  // Called when data source changes
 }; 

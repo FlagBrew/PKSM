@@ -5,6 +5,7 @@
 #include "gui/FocusableButton.hpp"
 #include "gui/FocusableImage.hpp"
 #include "gui/FocusableMenu.hpp"
+#include "gui/DirectionalInputHandler.hpp"
 #include <vector>
 #include <string>
 #include <memory>
@@ -30,6 +31,7 @@ private:
     static constexpr u32 INSTALLED_START_X = SECTION_DIVIDER + SECTION_DIVIDER_PADDING;
     static constexpr u32 INSTALLED_GAME_SIZE = 240;
     static constexpr u32 GAME_SPACING = 280;
+    static constexpr u32 GAME_OUTLINE_PADDING = 15; 
     
     // Save list section (bottom)
     static constexpr u32 SAVE_LIST_TOP_MARGIN = 140;
@@ -44,6 +46,11 @@ private:
     static constexpr u32 BUTTON_SPACING = 20;
     static constexpr u32 SAVE_ITEM_HEIGHT = 50;
 
+    // Input handling
+    DirectionalInputHandler gameSelectionHandler;
+    DirectionalInputHandler buttonHandler;
+    DirectionalInputHandler saveListHandler;
+
     // UI Elements
     pu::ui::elm::TextBlock::Ref headerText;
     pu::ui::elm::TextBlock::Ref cartridgeText;
@@ -54,15 +61,16 @@ private:
     FocusableButton::Ref loadButton;
     FocusableButton::Ref wirelessButton;
 
-    // Mock data (will be replaced with real data later)
-    titles::TitleRef mockCartridgeTitle;
-    std::vector<titles::TitleRef> mockInstalledTitles;
-    int selectedTitle;  // -2: none, -1: cartridge, >= 0: installed game index
-    
     // Save list state
     int selectedSave = -1;
     int firstSave = -1;
     std::vector<std::string> availableSaves;
+
+    // Mock data (will be replaced with real data later)
+    titles::TitleRef mockCartridgeTitle;
+    std::vector<titles::TitleRef> mockInstalledTitles;
+    int selectedTitle;  // -2: none, -1: cartridge, >= 0: installed game index
+    int lastSelectedTitle;  // Stores the last selected game position
 
     // Event handlers
     void OnSaveSelected();
@@ -74,6 +82,19 @@ private:
     // Helper methods
     void LoadSaves();
     bool LoadSelectedSave();
+    
+    // Navigation helpers
+    void MoveGameSelectionLeft();
+    void MoveGameSelectionRight();
+    void MoveButtonSelectionUp();
+    void MoveButtonSelectionDown();
+    void TransitionToSaveList();
+    void TransitionToButtons();
+    void UpdateGameHighlights();
+
+    // Focus management
+    void FocusGameSection();
+    void FocusSaveList();
 
 public:
     TitleLoadScreen();
