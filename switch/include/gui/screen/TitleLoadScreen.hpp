@@ -14,6 +14,12 @@
 
 class TitleLoadScreen : public pu::ui::Layout {
 private:
+    enum class TitleSelectionState {
+        InSaveList,
+        GameCard,
+        InstalledGame
+    };
+
     // Layout constants
     static constexpr u32 SCREEN_WIDTH = 1280;
     static constexpr u32 SCREEN_HEIGHT = 720;
@@ -68,8 +74,10 @@ private:
     std::shared_ptr<ISaveDataProvider> saveProvider;
 
     // State
-    int selectedTitle;  // -2: none, -1: cartridge, >= 0: installed game index
-    int lastSelectedTitle;  // Stores the last selected game position
+    TitleSelectionState selectionState;
+    size_t selectedGameIndex;  // Only valid when selectionState == InstalledGame
+    TitleSelectionState lastSelectionState;
+    size_t lastSelectedGameIndex;
 
     // Event handlers
     void OnSaveSelected();
