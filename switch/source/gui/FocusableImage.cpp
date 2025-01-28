@@ -54,7 +54,7 @@ void FocusableImage::SetOutlinePadding(const pu::i32 padding) {
 
 void FocusableImage::SetSelected(bool select) {
     this->selected = select;
-    overlay->SetVisible(!select);  // Hide overlay when selected
+    overlay->SetVisible(!select);  // Show overlay for unselected items
 }
 
 bool FocusableImage::IsSelected() const {
@@ -76,6 +76,13 @@ pu::ui::elm::Rectangle::Ref FocusableImage::GetOverlay() {
 
 void FocusableImage::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
     Image::OnRender(drawer, x, y);
+    
+    // Draw the overlay for unselected items
+    if (!selected) {
+        overlay->OnRender(drawer, x, y);
+    }
+    
+    // Draw the outline only for the focused and selected item
     if (focused && selected) {
         outline->OnRender(drawer, x, y);
     }

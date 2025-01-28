@@ -5,6 +5,7 @@
 #include "gui/FocusableButton.hpp"
 #include "gui/FocusableImage.hpp"
 #include "gui/FocusableMenu.hpp"
+#include "gui/GameList.hpp"
 #include "gui/DirectionalInputHandler.hpp"
 #include "data/ITitleDataProvider.hpp"
 #include "data/ISaveDataProvider.hpp"
@@ -24,29 +25,17 @@ private:
     static constexpr u32 SCREEN_WIDTH = 1280;
     static constexpr u32 SCREEN_HEIGHT = 720;
     static constexpr u32 HEADER_HEIGHT = 80;
-    static constexpr u32 HEADER_BOTTOM_MARGIN = 20;
-    static constexpr u32 GAME_SECTION_Y = 180;
+    static constexpr u32 HEADER_BOTTOM_MARGIN = 70;
     
-    // Game card section (left side)
-    static constexpr u32 GAME_CARD_SIZE = 350;
-    static constexpr u32 GAME_CARD_X = 150;
-    
-    // Section divider
-    static constexpr u32 SECTION_DIVIDER_PADDING = 100;
-    static constexpr u32 SECTION_DIVIDER = GAME_CARD_X + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
-    
-    // Installed games section (right side)
-    static constexpr u32 INSTALLED_START_X = SECTION_DIVIDER + SECTION_DIVIDER_PADDING;
-    static constexpr u32 INSTALLED_GAME_SIZE = 240;
-    static constexpr u32 GAME_SPACING = 280;
-    static constexpr u32 GAME_OUTLINE_PADDING = 15;
+    // Game list section
+    static constexpr u32 GAME_LIST_HEIGHT = 350;      // Height of game list component
+    static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 250;  // Space between game list and save list
     
     // Save list section (bottom)
-    static constexpr u32 SAVE_LIST_TOP_MARGIN = 140;
     static constexpr u32 SAVE_LIST_WIDTH = 1100;
     static constexpr u32 SAVE_LIST_HEIGHT = 300;
     static constexpr u32 SAVE_LIST_X = (SCREEN_WIDTH - SAVE_LIST_WIDTH) / 2 + 105;
-    static constexpr u32 SAVE_LIST_Y = GAME_SECTION_Y + GAME_CARD_SIZE + 250;
+    static constexpr u32 SAVE_LIST_Y = HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + GAME_LIST_HEIGHT + GAME_LIST_BOTTOM_MARGIN;
     
     // Buttons
     static constexpr u32 BUTTON_WIDTH = 400;
@@ -55,16 +44,13 @@ private:
     static constexpr u32 SAVE_ITEM_HEIGHT = 50;
 
     // Input handling
-    DirectionalInputHandler gameSelectionHandler;
     DirectionalInputHandler buttonHandler;
     DirectionalInputHandler saveListHandler;
+    DirectionalInputHandler gameListHandler;
 
     // UI Elements
     pu::ui::elm::TextBlock::Ref headerText;
-    pu::ui::elm::TextBlock::Ref cartridgeText;
-    pu::ui::elm::TextBlock::Ref installedText;
-    FocusableImage::Ref gameCardImage;
-    std::vector<FocusableImage::Ref> installedGameImages;
+    GameList::Ref gameList;
     FocusableMenu::Ref saveList;
     FocusableButton::Ref loadButton;
     FocusableButton::Ref wirelessButton;
@@ -75,9 +61,7 @@ private:
 
     // State
     TitleSelectionState selectionState;
-    size_t selectedGameIndex;  // Only valid when selectionState == InstalledGame
     TitleSelectionState lastSelectionState;
-    size_t lastSelectedGameIndex;
 
     // Event handlers
     void OnSaveSelected();
@@ -91,15 +75,10 @@ private:
     titles::TitleRef GetSelectedTitle() const;
     
     // Navigation helpers
-    void MoveGameSelectionLeft();
-    void MoveGameSelectionRight();
     void MoveButtonSelectionUp();
     void MoveButtonSelectionDown();
     void TransitionToSaveList();
     void TransitionToButtons();
-    void UpdateGameHighlights();
-
-    // Focus management
     void FocusGameSection();
     void FocusSaveList();
 
