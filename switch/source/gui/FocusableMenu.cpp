@@ -1,7 +1,11 @@
 #include "gui/FocusableMenu.hpp"
 
-FocusableMenu::FocusableMenu(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr, const pu::i32 items_height, const u32 items_to_show)
-    : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show), focused(false), lastPosition(0) {
+FocusableMenu::FocusableMenu(
+    const pu::i32 x, const pu::i32 y, const pu::i32 width,
+    const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr,
+    const pu::i32 items_height, const u32 items_to_show
+) : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show),
+    focused(false), lastPosition(0) {
     outline = PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255));
     outline->SetVisible(false);
 }
@@ -15,7 +19,8 @@ void FocusableMenu::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i3
     outline->SetWidth(this->GetWidth());
     
     // Calculate actual height based on number of items currently in the menu
-    pu::i32 actualHeight = static_cast<pu::i32>(std::min(this->GetItems().size(), static_cast<size_t>(this->GetNumberOfItemsToShow()))) * this->GetItemsHeight();
+    pu::i32 actualHeight = static_cast<pu::i32>(std::min(this->GetItems().size(), 
+        static_cast<size_t>(this->GetNumberOfItemsToShow()))) * this->GetItemsHeight();
     outline->SetHeight(actualHeight);
     
     // Render the outline if focused
