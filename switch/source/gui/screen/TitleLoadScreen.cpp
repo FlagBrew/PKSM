@@ -323,13 +323,6 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     }
 }
 
-void TitleLoadScreen::OnSaveItemKey() {
-    auto selected = this->saveList->GetSelectedItem();
-    if (selected) {
-        // Handle save item key press
-    }
-}
-
 void TitleLoadScreen::OnLoadButtonClick() {
     // TODO: Implement load functionality
 }
@@ -339,29 +332,5 @@ void TitleLoadScreen::OnWirelessButtonClick() {
 }
 
 void TitleLoadScreen::OnSaveSelected() {
-    // Update colors for all items
-    auto items = this->saveList->GetItems();
-    for (auto& item : items) {
-        item->SetColor(pu::ui::Color(255, 255, 255, 255));
-    }
-    
-    // Highlight selected item
-    auto selected = this->saveList->GetSelectedItem();
-    if (selected) {
-        selected->SetColor(pu::ui::Color(0, 255, 0, 255));
-    }
+    // TODO: This is when the save to be loaded on load press would be stored
 }
-
-bool TitleLoadScreen::LoadSelectedSave() {
-    auto title = GetSelectedTitle();
-    if (!title) {
-        return false;
-    }
-    
-    auto selectedItem = saveList->GetSelectedItem();
-    if (!selectedItem) {
-        return false;
-    }
-    
-    return saveProvider->LoadSave(title, selectedItem->GetName());
-} 
