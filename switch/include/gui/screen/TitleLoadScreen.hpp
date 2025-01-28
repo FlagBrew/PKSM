@@ -88,7 +88,6 @@ private:
 
     // Helper methods
     void LoadSaves();
-    bool LoadSelectedSave();
     titles::TitleRef GetSelectedTitle() const;
     
     // Navigation helpers
