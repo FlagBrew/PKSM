@@ -4,10 +4,9 @@
 #include <sys/stat.h>
 
 TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider)
-    : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider) {
-    
-    selectedTitle = -1;  // Start with game card selected
-    lastSelectedTitle = -1;  // Initialize last selected title
+    : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider),
+      selectionState(TitleSelectionState::GameCard), selectedGameIndex(0),
+      lastSelectionState(TitleSelectionState::GameCard), lastSelectedGameIndex(0) {
     
     // Set background color to match DS version - deeper blue
     this->SetBackgroundColor(pu::ui::Color(10, 15, 75, 255));
@@ -45,7 +44,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
             GAME_CARD_X,
             GAME_SECTION_Y,
             cartTitle->getIcon(),
-            128,  // Default alpha
+            94,  // Default alpha
             GAME_OUTLINE_PADDING  // Add padding to the outline
         );
         gameCardImage->SetWidth(GAME_CARD_SIZE);
@@ -63,7 +62,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
             INSTALLED_START_X + (i * GAME_SPACING),
             GAME_SECTION_Y,
             installedTitles[i]->getIcon(),
-            128,  // Default alpha
+            94,  // Default alpha
             GAME_OUTLINE_PADDING  // Add padding to the outline
         );
         gameImage->SetWidth(INSTALLED_GAME_SIZE);
@@ -159,31 +158,39 @@ void TitleLoadScreen::LoadSaves() {
 }
 
 titles::TitleRef TitleLoadScreen::GetSelectedTitle() const {
-    if (selectedTitle == -1) {
-        return titleProvider->GetGameCardTitle();
-    } else if (selectedTitle >= 0) {
-        auto titles = titleProvider->GetInstalledTitles();
-        if (selectedTitle < static_cast<int>(titles.size())) {
-            return titles[selectedTitle];
+    switch (selectionState) {
+        case TitleSelectionState::GameCard:
+            return titleProvider->GetGameCardTitle();
+        case TitleSelectionState::InstalledGame: {
+            auto titles = titleProvider->GetInstalledTitles();
+            if (selectedGameIndex < titles.size()) {
+                return titles[selectedGameIndex];
+            }
+            return nullptr;
         }
+        default:
+            return nullptr;
     }
-    return nullptr;
 }
 
 void TitleLoadScreen::MoveGameSelectionLeft() {
-    if (selectedTitle > 0) {
-        selectedTitle--;
-    } else if (selectedTitle == 0) {
-        selectedTitle = -1;
+    if (selectionState == TitleSelectionState::InstalledGame && selectedGameIndex > 0) {
+        selectedGameIndex--;
+    } else if (selectionState == TitleSelectionState::InstalledGame && selectedGameIndex == 0) {
+        selectionState = TitleSelectionState::GameCard;
     }
     UpdateGameHighlights();
 }
 
 void TitleLoadScreen::MoveGameSelectionRight() {
-    if (selectedTitle == -1) {
-        selectedTitle = 0;
-    } else if (selectedTitle >= 0 && selectedTitle < (int)installedGameImages.size() - 1) {
-        selectedTitle++;
+    auto titles = titleProvider->GetInstalledTitles();
+    if (selectionState == TitleSelectionState::GameCard) {
+        if (!titles.empty()) {
+            selectionState = TitleSelectionState::InstalledGame;
+            selectedGameIndex = 0;
+        }
+    } else if (selectionState == TitleSelectionState::InstalledGame && selectedGameIndex < titles.size() - 1) {
+        selectedGameIndex++;
     }
     UpdateGameHighlights();
 }
@@ -212,12 +219,15 @@ void TitleLoadScreen::MoveButtonSelectionDown() {
 
 void TitleLoadScreen::FocusGameSection() {
     this->saveList->SetFocused(false);  // This will automatically store position
-    selectedTitle = lastSelectedTitle; // Restore last game selection
+    selectionState = lastSelectionState;
+    selectedGameIndex = lastSelectedGameIndex;
     UpdateGameHighlights();
 }
 
 void TitleLoadScreen::FocusSaveList() {
-    lastSelectedTitle = selectedTitle; // Store for returning from save list
+    lastSelectionState = selectionState;
+    lastSelectedGameIndex = selectedGameIndex;
+    
     bool inGameSelection = false;
     if (gameCardImage) {
         this->gameCardImage->SetFocused(inGameSelection);
@@ -226,7 +236,7 @@ void TitleLoadScreen::FocusSaveList() {
         image->SetFocused(inGameSelection);
     }
     
-    selectedTitle = -2;  // Move to save list
+    selectionState = TitleSelectionState::InSaveList;
     this->saveList->SetFocused(true);  // This will automatically restore position
 }
 
@@ -240,29 +250,30 @@ void TitleLoadScreen::TransitionToButtons() {
 }
 
 void TitleLoadScreen::UpdateGameHighlights() {
-    bool inGameSelection = selectedTitle >= -1 && selectedTitle != -2;  // True when actively selecting games
+    bool inGameSelection = selectionState != TitleSelectionState::InSaveList;
     
     // Update game card highlight
     if (gameCardImage) {
-        this->gameCardImage->SetSelected(selectedTitle == -1);  // Remove overlay when selected
-        this->gameCardImage->SetFocused(inGameSelection);      // Only pulse when actively navigating games
+        this->gameCardImage->SetSelected(selectionState == TitleSelectionState::GameCard);
+        this->gameCardImage->SetFocused(inGameSelection);
     }
 
     // Update installed games highlight
     for (size_t i = 0; i < installedGameImages.size(); i++) {
-        installedGameImages[i]->SetSelected(selectedTitle == (int)i);  // Remove overlay when selected
-        installedGameImages[i]->SetFocused(inGameSelection);          // Only pulse when actively navigating games
+        installedGameImages[i]->SetSelected(
+            selectionState == TitleSelectionState::InstalledGame && selectedGameIndex == i
+        );
+        installedGameImages[i]->SetFocused(inGameSelection);
     }
 
     // Update save list if game selection changed
-    if (selectedTitle >= -1) {
+    if (selectionState != TitleSelectionState::InSaveList) {
         LoadSaves();
     }
 }
 
 void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
-    // Let menu handle its own input when focused
-    if (selectedTitle == -2) {
+    if (selectionState == TitleSelectionState::InSaveList) {
         if (this->loadButton->IsFocused() || this->wirelessButton->IsFocused()) {
             // Handle button group navigation
             if (buttonHandler.HandleInput(down, held)) {
@@ -297,12 +308,12 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     } else {
         // Game selection mode
         if (gameSelectionHandler.HandleInput(down, held)) {
-            // Store last selected title before potential change
-            int previousTitle = selectedTitle;
+            auto previousState = selectionState;
+            auto previousIndex = selectedGameIndex;
             
-            // Input was handled by directional handler
             // If the selected title changed, reset save list
-            if (previousTitle != selectedTitle && selectedTitle >= -1) {
+            if (previousState != selectionState || 
+                (selectionState == TitleSelectionState::InstalledGame && previousIndex != selectedGameIndex)) {
                 LoadSaves();
             }
         }
