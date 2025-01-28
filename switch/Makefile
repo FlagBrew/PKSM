@@ -39,8 +39,8 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	switch-pksm
 BUILD		:=	build
-SOURCES		:=	source source/gui/screen source/gui
-INCLUDES	:=	include include/gui/screen Plutonium/Plutonium/include
+SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock
+INCLUDES	:=	include include/gui/screen include/data include/data/mock Plutonium/Plutonium/include
 DATA		:=	data
 ROMFS		:=	romfs
 

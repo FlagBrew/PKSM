@@ -3,20 +3,9 @@
 #include <algorithm>
 #include <sys/stat.h>
 
-TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
-    // Initialize mock data
-    mockCartridgeTitle = std::make_shared<titles::Title>(
-        "Pokémon Ultra Sun", 
-        "romfs:/gfx/ui/gameselector_cart.png", 
-        0x00175E00
-    );
-
-    mockInstalledTitles = {
-        std::make_shared<titles::Title>("Pokémon Sun", "romfs:/gfx/ui/gameselector_cart.png", 0x00164800),
-        std::make_shared<titles::Title>("Pokémon Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00164900),
-        std::make_shared<titles::Title>("Pokémon Ultra Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00175F00)
-    };
-
+TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider)
+    : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider) {
+    
     selectedTitle = -1;  // Start with game card selected
     lastSelectedTitle = -1;  // Initialize last selected title
     
@@ -50,11 +39,12 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
     this->Add(this->installedText);
 
     // Create game card image
-    if (mockCartridgeTitle) {
+    auto cartTitle = titleProvider->GetGameCardTitle();
+    if (cartTitle) {
         this->gameCardImage = FocusableImage::New(
             GAME_CARD_X,
             GAME_SECTION_Y,
-            mockCartridgeTitle->getIcon(),
+            cartTitle->getIcon(),
             128,  // Default alpha
             GAME_OUTLINE_PADDING  // Add padding to the outline
         );
@@ -67,11 +57,12 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
     }
 
     // Add installed game images
-    for (size_t i = 0; i < mockInstalledTitles.size(); i++) {
+    auto installedTitles = titleProvider->GetInstalledTitles();
+    for (size_t i = 0; i < installedTitles.size(); i++) {
         auto gameImage = FocusableImage::New(
             INSTALLED_START_X + (i * GAME_SPACING),
             GAME_SECTION_Y,
-            mockInstalledTitles[i]->getIcon(),
+            installedTitles[i]->getIcon(),
             128,  // Default alpha
             GAME_OUTLINE_PADDING  // Add padding to the outline
         );
@@ -158,60 +149,25 @@ TitleLoadScreen::TitleLoadScreen() : Layout::Layout() {
 }
 
 void TitleLoadScreen::LoadSaves() {
-    // Prepare the data source based on selected title
-    std::vector<std::string> saveItems;
-    std::string prefix;
-    
-    if (selectedTitle == -1) {
-        // Game card - Ultra Sun
-        prefix = "Cartridge";
-        saveItems = {
-            prefix + " Main Save",
-            prefix + " Challenge Mode",
-            prefix + " Nuzlocke"
-        };
+    auto title = GetSelectedTitle();
+    if (title) {
+        auto saves = saveProvider->GetSavesForTitle(title);
+        this->saveList->SetDataSource(saves);
     } else {
-        switch(selectedTitle) {
-            case 0: // Sun
-                prefix = "Digital";
-                saveItems = {
-                    prefix + " Main Save",
-                    prefix + " Speedrun",
-                    prefix + " Living Dex",
-                    prefix + " Shiny Hunt",
-                    prefix + " Competitive",
-                    prefix + " Nuzlocke",
-                    prefix + " Battle Tree"
-                };
-                break;
-            case 1: // Moon
-                prefix = "Digital";
-                saveItems = {
-                    prefix + " Main Save",
-                    prefix + " Nuzlocke"
-                };
-                break;
-            case 2: // Ultra Moon
-                prefix = "Digital";
-                saveItems = {
-                    prefix + " Main Save",
-                    prefix + " Challenge Mode",
-                    prefix + " Speedrun",
-                    prefix + " Living Dex",
-                    prefix + " Shiny Hunt",
-                    prefix + " Competitive",
-                    prefix + " Nuzlocke",
-                    prefix + " Battle Tree"
-                };
-                break;
-            default:
-                prefix = "Unknown";
-                saveItems = { prefix + " Main Save" };
+        this->saveList->SetDataSource({});
+    }
+}
+
+titles::TitleRef TitleLoadScreen::GetSelectedTitle() const {
+    if (selectedTitle == -1) {
+        return titleProvider->GetGameCardTitle();
+    } else if (selectedTitle >= 0) {
+        auto titles = titleProvider->GetInstalledTitles();
+        if (selectedTitle < static_cast<int>(titles.size())) {
+            return titles[selectedTitle];
         }
     }
-    
-    // Update the menu's data source
-    this->saveList->SetDataSource(saveItems);
+    return nullptr;
 }
 
 void TitleLoadScreen::MoveGameSelectionLeft() {
@@ -263,7 +219,7 @@ void TitleLoadScreen::FocusGameSection() {
 void TitleLoadScreen::FocusSaveList() {
     lastSelectedTitle = selectedTitle; // Store for returning from save list
     bool inGameSelection = false;
-    if (mockCartridgeTitle) {
+    if (gameCardImage) {
         this->gameCardImage->SetFocused(inGameSelection);
     }
     for (auto& image : installedGameImages) {
@@ -287,7 +243,7 @@ void TitleLoadScreen::UpdateGameHighlights() {
     bool inGameSelection = selectedTitle >= -1 && selectedTitle != -2;  // True when actively selecting games
     
     // Update game card highlight
-    if (mockCartridgeTitle) {
+    if (gameCardImage) {
         this->gameCardImage->SetSelected(selectedTitle == -1);  // Remove overlay when selected
         this->gameCardImage->SetFocused(inGameSelection);      // Only pulse when actively navigating games
     }
@@ -386,6 +342,15 @@ void TitleLoadScreen::OnSaveSelected() {
 }
 
 bool TitleLoadScreen::LoadSelectedSave() {
-    // TODO: Implement loading the selected save
-    return false;
+    auto title = GetSelectedTitle();
+    if (!title) {
+        return false;
+    }
+    
+    auto selectedItem = saveList->GetSelectedItem();
+    if (!selectedItem) {
+        return false;
+    }
+    
+    return saveProvider->LoadSave(title, selectedItem->GetName());
 } 

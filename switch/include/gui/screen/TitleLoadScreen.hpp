@@ -6,6 +6,8 @@
 #include "gui/FocusableImage.hpp"
 #include "gui/FocusableMenu.hpp"
 #include "gui/DirectionalInputHandler.hpp"
+#include "data/ITitleDataProvider.hpp"
+#include "data/ISaveDataProvider.hpp"
 #include <vector>
 #include <string>
 #include <memory>
@@ -31,7 +33,7 @@ private:
     static constexpr u32 INSTALLED_START_X = SECTION_DIVIDER + SECTION_DIVIDER_PADDING;
     static constexpr u32 INSTALLED_GAME_SIZE = 240;
     static constexpr u32 GAME_SPACING = 280;
-    static constexpr u32 GAME_OUTLINE_PADDING = 15; 
+    static constexpr u32 GAME_OUTLINE_PADDING = 15;
     
     // Save list section (bottom)
     static constexpr u32 SAVE_LIST_TOP_MARGIN = 140;
@@ -61,14 +63,11 @@ private:
     FocusableButton::Ref loadButton;
     FocusableButton::Ref wirelessButton;
 
-    // Save list state
-    int selectedSave = -1;
-    int firstSave = -1;
-    std::vector<std::string> availableSaves;
+    // Data providers
+    std::shared_ptr<ITitleDataProvider> titleProvider;
+    std::shared_ptr<ISaveDataProvider> saveProvider;
 
-    // Mock data (will be replaced with real data later)
-    titles::TitleRef mockCartridgeTitle;
-    std::vector<titles::TitleRef> mockInstalledTitles;
+    // State
     int selectedTitle;  // -2: none, -1: cartridge, >= 0: installed game index
     int lastSelectedTitle;  // Stores the last selected game position
 
@@ -82,6 +81,7 @@ private:
     // Helper methods
     void LoadSaves();
     bool LoadSelectedSave();
+    titles::TitleRef GetSelectedTitle() const;
     
     // Navigation helpers
     void MoveGameSelectionLeft();
@@ -97,6 +97,6 @@ private:
     void FocusSaveList();
 
 public:
-    TitleLoadScreen();
+    TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider);
     PU_SMART_CTOR(TitleLoadScreen)
 }; 
