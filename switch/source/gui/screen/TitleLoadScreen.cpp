@@ -10,15 +10,17 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     // Set background color to match DS version - deeper blue
     this->SetBackgroundColor(pu::ui::Color(10, 15, 75, 255));
 
-    // Create header text
-    this->headerText = pu::ui::elm::TextBlock::New(
-        10, 10, "Choose a save to open. Press Y for absent games.");
+    // Create header text (initially empty, will be updated in LoadSaves)
+    this->headerText = pu::ui::elm::TextBlock::New(0, 0, "");
     this->headerText->SetColor(pu::ui::Color(255, 255, 255, 255));
     this->Add(this->headerText);
 
-    // Create game list
-    this->gameList = GameList::New(GAME_LIST_LEFT_MARGIN, HEADER_HEIGHT + HEADER_BOTTOM_MARGIN);
-    this->gameList->SetFocused(true);  // Initially focused
+    // Create game list at the adjusted Y position
+    this->gameList = GameList::New(
+        GAME_LIST_LEFT_MARGIN, 
+        HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN
+    );
+    this->gameList->SetFocused(true);
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
     
     // Set initial data
@@ -108,10 +110,23 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
 void TitleLoadScreen::LoadSaves() {
     auto title = GetSelectedTitle();
     if (title) {
+        // Update header text with selected title
+        std::string titleText = title->getName();
+        this->headerText->SetText(titleText);
+        
+        // Center the header text horizontally and vertically
+        pu::i32 textWidth = this->headerText->GetWidth();
+        pu::i32 textHeight = this->headerText->GetHeight();
+        
+        // Horizontal center
+        this->headerText->SetX((SCREEN_WIDTH - textWidth) / 2);
+        
+        // Vertical center within header area
+        this->headerText->SetY(HEADER_TOP_MARGIN + (HEADER_HEIGHT - textHeight) / 2);
+        
+        // Update save list
         auto saves = saveProvider->GetSavesForTitle(title);
         this->saveList->SetDataSource(saves);
-    } else {
-        this->saveList->SetDataSource({});
     }
 }
 
@@ -220,5 +235,5 @@ void TitleLoadScreen::OnSaveSelected() {
 }
 
 pu::i32 TitleLoadScreen::GetBottomSectionY() const {
-    return HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + this->gameList->GetHeight() + GAME_LIST_BOTTOM_MARGIN;
+    return HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + this->gameList->GetHeight() + GAME_LIST_BOTTOM_MARGIN;
 }
