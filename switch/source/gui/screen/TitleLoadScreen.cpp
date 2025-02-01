@@ -1,5 +1,6 @@
 #include "gui/screen/TitleLoadScreen.hpp"
 #include "titles/Title.hpp"
+#include "gui/UIConstants.hpp"
 #include <algorithm>
 #include <sys/stat.h>
 
@@ -8,11 +9,11 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
       selectionState(TitleSelectionState::GameCard), lastSelectionState(TitleSelectionState::GameCard) {
     
     // Set background color to match DS version - deeper blue
-    this->SetBackgroundColor(pu::ui::Color(10, 15, 75, 255));
+    this->SetBackgroundColor(UIConstants::BACKGROUND_BLUE);
 
     // Create header text (initially empty, will be updated in LoadSaves)
     this->headerText = pu::ui::elm::TextBlock::New(0, 0, "");
-    this->headerText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    this->headerText->SetColor(UIConstants::TEXT_WHITE);
     this->Add(this->headerText);
 
     // Create game list at the adjusted Y position
