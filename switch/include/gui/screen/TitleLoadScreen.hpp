@@ -25,23 +25,21 @@ private:
     static constexpr u32 SCREEN_WIDTH = 1280;
     static constexpr u32 SCREEN_HEIGHT = 720;
     static constexpr u32 HEADER_HEIGHT = 80;
-    static constexpr u32 HEADER_BOTTOM_MARGIN = 70;
+    static constexpr u32 HEADER_BOTTOM_MARGIN = 48;
     
     // Game list section
-    static constexpr u32 GAME_LIST_HEIGHT = 350;      // Height of game list component
-    static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 250;  // Space between game list and save list
+    static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 48;  // Space between game list and save list
     
     // Save list section (bottom)
     static constexpr u32 SAVE_LIST_WIDTH = 1100;
     static constexpr u32 SAVE_LIST_HEIGHT = 300;
     static constexpr u32 SAVE_LIST_X = (SCREEN_WIDTH - SAVE_LIST_WIDTH) / 2 + 105;
-    static constexpr u32 SAVE_LIST_Y = HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + GAME_LIST_HEIGHT + GAME_LIST_BOTTOM_MARGIN;
     
     // Buttons
     static constexpr u32 BUTTON_WIDTH = 400;
     static constexpr u32 BUTTON_HEIGHT = 117;
     static constexpr u32 BUTTON_SPACING = 20;
-    static constexpr u32 SAVE_ITEM_HEIGHT = 50;
+    static constexpr u32 SAVE_ITEM_HEIGHT = 48;
 
     // Input handling
     DirectionalInputHandler buttonHandler;
@@ -73,6 +71,7 @@ private:
     // Helper methods
     void LoadSaves();
     titles::TitleRef GetSelectedTitle() const;
+    pu::i32 GetBottomSectionY() const;  // Helper to calculate Y position for save list and buttons
     
     // Navigation helpers
     void MoveButtonSelectionUp();

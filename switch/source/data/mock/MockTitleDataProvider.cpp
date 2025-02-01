@@ -11,7 +11,8 @@ MockTitleDataProvider::MockTitleDataProvider() {
     mockInstalledTitles = {
         std::make_shared<titles::Title>("Pokémon Sun", "romfs:/gfx/ui/gameselector_cart.png", 0x00164800),
         std::make_shared<titles::Title>("Pokémon Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00164900),
-        std::make_shared<titles::Title>("Pokémon Ultra Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00175F00)
+        std::make_shared<titles::Title>("Pokémon Ultra Moon", "romfs:/gfx/ui/gameselector_cart.png", 0x00175F00),
+        std::make_shared<titles::Title>("Pokémon Omega Ruby", "romfs:/gfx/ui/gameselector_cart.png", 0x00175E00)
     };
 }
 

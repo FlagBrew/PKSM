@@ -36,7 +36,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     // Create save list menu with a dark semi-transparent background
     this->saveList = FocusableMenu::New(
         SAVE_LIST_X,
-        SAVE_LIST_Y,
+        GetBottomSectionY(),
         SAVE_LIST_WIDTH,
         pu::ui::Color(0, 0, 0, 200),  // Semi-transparent black
         pu::ui::Color(0, 150, 255, 255),  // Selection color
@@ -53,7 +53,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     // Create load button
     this->loadButton = FocusableButton::New(
         SAVE_LIST_X + SAVE_LIST_WIDTH + BUTTON_SPACING,
-        SAVE_LIST_Y,
+        GetBottomSectionY(),  // Same Y as save list
         BUTTON_WIDTH,
         BUTTON_HEIGHT,
         "Load Save"
@@ -62,7 +62,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     // Create settings button
     this->wirelessButton = FocusableButton::New(
         SAVE_LIST_X + SAVE_LIST_WIDTH + BUTTON_SPACING,
-        SAVE_LIST_Y + BUTTON_HEIGHT + BUTTON_SPACING,
+        GetBottomSectionY() + BUTTON_HEIGHT + BUTTON_SPACING,  // Below load button
         BUTTON_WIDTH,
         BUTTON_HEIGHT,
         "Wireless"
@@ -217,4 +217,8 @@ void TitleLoadScreen::OnWirelessButtonClick() {
 
 void TitleLoadScreen::OnSaveSelected() {
     // TODO: This is when the save to be loaded on load press would be stored
+}
+
+pu::i32 TitleLoadScreen::GetBottomSectionY() const {
+    return HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + this->gameList->GetHeight() + GAME_LIST_BOTTOM_MARGIN;
 }
