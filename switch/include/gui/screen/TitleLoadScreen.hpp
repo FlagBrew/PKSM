@@ -22,10 +22,13 @@ private:
     };
 
     // Layout constants
-    static constexpr u32 SCREEN_WIDTH = 1280;
-    static constexpr u32 SCREEN_HEIGHT = 720;
-    static constexpr u32 HEADER_HEIGHT = 80;
-    static constexpr u32 HEADER_BOTTOM_MARGIN = 48;
+    static constexpr u32 SCREEN_WIDTH = 1920;
+    static constexpr u32 SCREEN_HEIGHT = 1080;
+
+    // Header sectionimage.png
+    static constexpr u32 HEADER_TOP_MARGIN = 24;     // Space between screen top and header
+    static constexpr u32 HEADER_HEIGHT = 80;         // Height of header text area
+    static constexpr u32 HEADER_BOTTOM_MARGIN = 24;  // Space between header and game list
     
     // Game list section
     static constexpr u32 GAME_LIST_LEFT_MARGIN = 75;  // Left margin for game list component
@@ -34,7 +37,7 @@ private:
     // Save list section (bottom)
     static constexpr u32 SAVE_LIST_WIDTH = 1100;
     static constexpr u32 SAVE_LIST_HEIGHT = 300;
-    static constexpr u32 SAVE_LIST_X = (SCREEN_WIDTH - SAVE_LIST_WIDTH) / 2 + 105;
+    static constexpr u32 SAVE_LIST_X = (SCREEN_WIDTH - SAVE_LIST_WIDTH) / 2 - 105;
     
     // Buttons
     static constexpr u32 BUTTON_WIDTH = 400;
