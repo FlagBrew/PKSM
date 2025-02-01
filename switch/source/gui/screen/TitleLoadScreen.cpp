@@ -17,7 +17,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     this->Add(this->headerText);
 
     // Create game list
-    this->gameList = GameList::New(0, HEADER_HEIGHT + HEADER_BOTTOM_MARGIN);
+    this->gameList = GameList::New(GAME_LIST_LEFT_MARGIN, HEADER_HEIGHT + HEADER_BOTTOM_MARGIN);
     this->gameList->SetFocused(true);  // Initially focused
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
     

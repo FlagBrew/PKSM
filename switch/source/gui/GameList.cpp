@@ -2,30 +2,40 @@
 
 GameList::GameList(const pu::i32 x, const pu::i32 y)
     : Element(), selectionState(SelectionState::GameCard), selectedGameIndex(0), focused(false),
-      backgroundColor(pu::ui::Color(75, 75, 75, 255)), onSelectionChangedCallback(nullptr) {
+      backgroundColor(pu::ui::Color(75, 75, 75, 255)), onSelectionChangedCallback(nullptr),
+      x(x), y(y) {
+    
+    // Calculate key positions relative to our component's origin
+    pu::i32 gameCardX = x + GAME_CARD_LEFT_PADDING;
+    pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
+    pu::i32 installedStartX = dividerX + SECTION_DIVIDER_PADDING;
     
     // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
     
-    // Center game card text in its section (centered over the game card size)
-    pu::i32 gameCardTextX = GAME_CARD_X + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
+    // Center game card text in its section
+    pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
     cartridgeText->SetX(gameCardTextX);
 
     installedText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
     
-    // Center installed games text in its section (centered over the installed games area)
+    // Center installed games text in its section
     pu::i32 installedGamesWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
-    pu::i32 installedTextX = INSTALLED_START_X + (installedGamesWidth - installedText->GetWidth()) / 2;
+    pu::i32 installedTextX = installedStartX + (installedGamesWidth - installedText->GetWidth()) / 2;
     installedText->SetX(installedTextX);
 
-    // Create section divider with height matching our new background
+    // Create section divider
     divider = pu::ui::elm::Rectangle::New(
-        SECTION_DIVIDER, y,  // Start at our origin
-        2, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,  // Full height including all margins
-        pu::ui::Color(255, 255, 255, 128)  // Semi-transparent white
+        dividerX, y,  // Position relative to our origin
+        2, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,
+        pu::ui::Color(255, 255, 255, 128)
     );
+
+    // Store key positions for later use in SetDataSource
+    this->gameCardX = gameCardX;
+    this->installedStartX = installedStartX;
 
     // Set up input handler
     inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
@@ -33,17 +43,17 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
 }
 
 pu::i32 GameList::GetX() {
-    return GAME_CARD_X - MARGIN_LEFT;  // Add left margin
+    return x;
 }
 
 pu::i32 GameList::GetY() {
-    // Start from our origin point
-    return divider->GetY();
+    return y;
 }
 
 pu::i32 GameList::GetWidth() {
-    // Width spans from game card to maximum installed game per row (i.e 4), plus margins
-    return (INSTALLED_START_X + (GAME_SPACING * INSTALLED_GAME_ITEMS_PER_ROW) + MARGIN_RIGHT) - GetX();
+    // Width from left edge to last possible installed game
+    pu::i32 totalInstalledWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
+    return (installedStartX + totalInstalledWidth + MARGIN_RIGHT) - GetX();
 }
 
 pu::i32 GameList::GetHeight() {
@@ -102,10 +112,10 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     // Create game card image if first title exists
     if (!titles.empty()) {
         gameCardImage = FocusableImage::New(
-            GAME_CARD_X,
-            cartridgeText->GetY() + SECTION_TITLE_SPACING,  // Position relative to section header
+            gameCardX,
+            cartridgeText->GetY() + SECTION_TITLE_SPACING,
             titles[0]->getIcon(),
-            94,  // Default alpha
+            94,
             GAME_OUTLINE_PADDING
         );
         gameCardImage->SetWidth(GAME_CARD_SIZE);
@@ -115,10 +125,10 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     // Create installed game images for remaining titles
     for (size_t i = 1; i < titles.size(); i++) {
         auto gameImage = FocusableImage::New(
-            INSTALLED_START_X + ((i-1) * GAME_SPACING),
-            cartridgeText->GetY() + SECTION_TITLE_SPACING,  // Position relative to section header
+            installedStartX + ((i-1) * GAME_SPACING),
+            cartridgeText->GetY() + SECTION_TITLE_SPACING,
             titles[i]->getIcon(),
-            94,  // Default alpha
+            94,
             GAME_OUTLINE_PADDING
         );
         gameImage->SetWidth(INSTALLED_GAME_SIZE);

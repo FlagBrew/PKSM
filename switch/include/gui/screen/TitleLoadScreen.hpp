@@ -28,6 +28,7 @@ private:
     static constexpr u32 HEADER_BOTTOM_MARGIN = 48;
     
     // Game list section
+    static constexpr u32 GAME_LIST_LEFT_MARGIN = 75;  // Left margin for game list component
     static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 48;  // Space between game list and save list
     
     // Save list section (bottom)
