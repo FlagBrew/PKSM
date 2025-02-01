@@ -35,12 +35,12 @@ private:
     static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 48;  // Space between game list and save list
     
     // Save list section (bottom)
-    static constexpr u32 SAVE_LIST_WIDTH = 1100;
+    static constexpr u32 SAVE_LIST_WIDTH = 1200;
     static constexpr u32 SAVE_LIST_HEIGHT = 300;
-    static constexpr u32 SAVE_LIST_X = (SCREEN_WIDTH - SAVE_LIST_WIDTH) / 2 - 105;
+    static constexpr u32 SAVE_LIST_X = GAME_LIST_LEFT_MARGIN;
     
     // Buttons
-    static constexpr u32 BUTTON_WIDTH = 400;
+    static constexpr u32 BUTTON_WIDTH = 508;
     static constexpr u32 BUTTON_HEIGHT = 117;
     static constexpr u32 BUTTON_SPACING = 20;
     static constexpr u32 SAVE_ITEM_HEIGHT = 48;
