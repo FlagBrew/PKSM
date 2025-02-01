@@ -5,6 +5,7 @@
 #include "gui/FocusableImage.hpp"
 #include "gui/PulsingOutline.hpp"
 #include "gui/DirectionalInputHandler.hpp"
+#include "gui/UIConstants.hpp"
 #include <vector>
 #include <memory>
 #include <functional>
@@ -22,6 +23,10 @@ private:
     static constexpr u32 GAME_SPACING = 280;          // Spacing between installed games
     static constexpr u32 INSTALLED_GAME_ITEMS_PER_ROW = 4;
     static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
+
+    // Divider constants
+    static constexpr u32 SECTION_DIVIDER_WIDTH = 20;   // Width of the section divider
+    static constexpr pu::ui::Color SECTION_DIVIDER_COLOR = UIConstants::BACKGROUND_BLUE; // Color of the divider
 
     // Background margin constants
     static constexpr u32 MARGIN_LEFT = 75;     // Left padding of the component

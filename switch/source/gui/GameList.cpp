@@ -8,7 +8,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Calculate key positions relative to our component's origin
     pu::i32 gameCardX = x + GAME_CARD_LEFT_PADDING;
     pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
-    pu::i32 installedStartX = dividerX + SECTION_DIVIDER_PADDING;
+    pu::i32 installedStartX = dividerX + SECTION_DIVIDER_WIDTH + SECTION_DIVIDER_PADDING;
     
     // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
@@ -29,8 +29,8 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Create section divider
     divider = pu::ui::elm::Rectangle::New(
         dividerX, y,  // Position relative to our origin
-        2, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,
-        pu::ui::Color(255, 255, 255, 128)
+        SECTION_DIVIDER_WIDTH, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,
+        SECTION_DIVIDER_COLOR
     );
 
     // Store key positions for later use in SetDataSource
