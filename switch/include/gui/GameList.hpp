@@ -25,7 +25,17 @@ private:
     static constexpr u32 INSTALLED_START_X = SECTION_DIVIDER + SECTION_DIVIDER_PADDING;
     static constexpr u32 INSTALLED_GAME_SIZE = 240;
     static constexpr u32 GAME_SPACING = 280;
+    static constexpr u32 INSTALLED_GAME_ITEMS_PER_ROW = 4;
     static constexpr u32 GAME_OUTLINE_PADDING = 15;
+
+    // Background margin constants
+    static constexpr u32 MARGIN_LEFT = 75;     // Left padding from game card
+    static constexpr u32 MARGIN_RIGHT = 24;    // Right padding after last installed game
+    static constexpr u32 MARGIN_TOP = 20;      // Space between background and section titles
+    static constexpr u32 MARGIN_BOTTOM = 150;  // Space below game icons
+    
+    // Section spacing constants
+    static constexpr u32 SECTION_TITLE_SPACING = 75;  // Space between section titles and game icons
 
     // UI Elements
     pu::ui::elm::Rectangle::Ref divider;

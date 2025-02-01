@@ -2,23 +2,23 @@
 
 GameList::GameList(const pu::i32 x, const pu::i32 y)
     : Element(), selectionState(SelectionState::GameCard), selectedGameIndex(0), focused(false),
-      backgroundColor(pu::ui::Color(10, 15, 75, 255)), onSelectionChangedCallback(nullptr) {
+      backgroundColor(pu::ui::Color(75, 75, 75, 255)), onSelectionChangedCallback(nullptr) {
     
-    // Create section divider
-    divider = pu::ui::elm::Rectangle::New(
-        SECTION_DIVIDER, y,
-        2, GAME_CARD_SIZE + 100,  // Height matches game card section
-        pu::ui::Color(255, 255, 255, 128)  // Semi-transparent white
-    );
-
-    // Create section headers
+    // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(
-        GAME_CARD_X + (GAME_CARD_SIZE/2 - 105), y - 50, "Game Card");
+        GAME_CARD_X + (GAME_CARD_SIZE/2 - 105), y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
 
     installedText = pu::ui::elm::TextBlock::New(
-        INSTALLED_START_X + (INSTALLED_GAME_SIZE/2 + 165), y - 50, "Installed Games");
+        INSTALLED_START_X + (INSTALLED_GAME_SIZE/2 + 165), y + MARGIN_TOP, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
+
+    // Create section divider with height matching our new background
+    divider = pu::ui::elm::Rectangle::New(
+        SECTION_DIVIDER, y,  // Start at our origin
+        2, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,  // Full height including all margins
+        pu::ui::Color(255, 255, 255, 128)  // Semi-transparent white
+    );
 
     // Set up input handler
     inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
@@ -26,20 +26,22 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
 }
 
 pu::i32 GameList::GetX() {
-    return GAME_CARD_X;  // Leftmost position
+    return GAME_CARD_X - MARGIN_LEFT;  // Add left margin
 }
 
 pu::i32 GameList::GetY() {
-    return GAME_SECTION_Y;
+    // Start from our origin point
+    return divider->GetY();
 }
 
 pu::i32 GameList::GetWidth() {
-    // Width spans from game card to last installed game
-    return (INSTALLED_START_X + (GAME_SPACING * 3)) - GAME_CARD_X;
+    // Width spans from game card to maximum installed game per row (i.e 4), plus margins
+    return (INSTALLED_START_X + (GAME_SPACING * INSTALLED_GAME_ITEMS_PER_ROW) + MARGIN_RIGHT) - GetX();
 }
 
 pu::i32 GameList::GetHeight() {
-    return GAME_CARD_SIZE;  // Height of game card section
+    // Include space for headers and extend to match divider height
+    return divider->GetHeight();
 }
 
 void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
@@ -94,7 +96,7 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     if (!titles.empty()) {
         gameCardImage = FocusableImage::New(
             GAME_CARD_X,
-            GAME_SECTION_Y,
+            cartridgeText->GetY() + SECTION_TITLE_SPACING,  // Position relative to section header
             titles[0]->getIcon(),
             94,  // Default alpha
             GAME_OUTLINE_PADDING
@@ -107,7 +109,7 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     for (size_t i = 1; i < titles.size(); i++) {
         auto gameImage = FocusableImage::New(
             INSTALLED_START_X + ((i-1) * GAME_SPACING),
-            GAME_SECTION_Y,
+            cartridgeText->GetY() + SECTION_TITLE_SPACING,  // Position relative to section header
             titles[i]->getIcon(),
             94,  // Default alpha
             GAME_OUTLINE_PADDING
