@@ -5,13 +5,20 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
       backgroundColor(pu::ui::Color(75, 75, 75, 255)), onSelectionChangedCallback(nullptr) {
     
     // Create section headers first (we need their position)
-    cartridgeText = pu::ui::elm::TextBlock::New(
-        GAME_CARD_X + (GAME_CARD_SIZE/2 - 105), y + MARGIN_TOP, "Game Card");
+    cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    
+    // Center game card text in its section (centered over the game card size)
+    pu::i32 gameCardTextX = GAME_CARD_X + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
+    cartridgeText->SetX(gameCardTextX);
 
-    installedText = pu::ui::elm::TextBlock::New(
-        INSTALLED_START_X + (INSTALLED_GAME_SIZE/2 + 165), y + MARGIN_TOP, "Installed Games");
+    installedText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    
+    // Center installed games text in its section (centered over the installed games area)
+    pu::i32 installedGamesWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
+    pu::i32 installedTextX = INSTALLED_START_X + (installedGamesWidth - installedText->GetWidth()) / 2;
+    installedText->SetX(installedTextX);
 
     // Create section divider with height matching our new background
     divider = pu::ui::elm::Rectangle::New(
