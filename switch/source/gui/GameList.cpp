@@ -13,6 +13,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    cartridgeText->SetFont(pu::ui::MakeDefaultFontName(UIConstants::FONT_SIZE_HEADER));
     
     // Center game card text in its section
     pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
@@ -20,6 +21,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
 
     installedText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    installedText->SetFont(pu::ui::MakeDefaultFontName(UIConstants::FONT_SIZE_HEADER));
     
     // Center installed games text in its section
     pu::i32 installedGamesWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;

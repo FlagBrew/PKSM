@@ -14,6 +14,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     // Create header text (initially empty, will be updated in LoadSaves)
     this->headerText = pu::ui::elm::TextBlock::New(0, 0, "");
     this->headerText->SetColor(UIConstants::TEXT_WHITE);
+    this->headerText->SetFont(UIConstants::MakeHeavyFontName(UIConstants::FONT_SIZE_TITLE));
     this->Add(this->headerText);
 
     // Create game list at the adjusted Y position
