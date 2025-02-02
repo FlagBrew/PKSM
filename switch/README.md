@@ -161,7 +161,11 @@ void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const 
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
     }
-    // Handle touch input...
+    // Handle touch input regardless of focus state
+    if (!touch_pos.IsEmpty()) {
+        // Process touch input even when not focused
+        // This allows for touch-to-focus behavior
+    }
 }
 ```
 
@@ -172,23 +176,28 @@ void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const 
    - Only handle directional input when the component is focused
    - Implement clear focus transitions between components
    - Use visual feedback to indicate focus state
+   - Consider both selection and focus states for complex components
 
 2. Touch Input:
 
+   - Process touch input regardless of focus state to allow touch-to-focus
    - Check touch position against component bounds
    - Provide immediate visual feedback for touch interactions
    - Consider both tap and drag gestures if needed
+   - Avoid duplicate notifications when handling touch events
 
 3. Directional Input:
 
    - Use the `DirectionalInputHandler` for consistent behavior
    - Handle both d-pad and analog stick input
    - Implement logical navigation patterns
+   - Consider edge cases (e.g., moving beyond boundaries)
 
 4. Component Integration:
    - Combine focus, touch, and directional input cohesively
    - Use callbacks to notify parent components of input events
    - Follow existing patterns in the codebase (see `GameList`, `FocusableMenu`, etc.)
+   - Maintain clear parent-child relationships for input propagation
 
 ### Example Components
 
@@ -197,3 +206,4 @@ For reference implementations, see:
 - `FocusableButton`: Simple focusable component with touch support
 - `FocusableMenu`: List-based component with focus and touch
 - `GameList`: Complex component with multi-item focus and touch handling
+- `GameGrid`: Grid-based component with advanced focus and selection states

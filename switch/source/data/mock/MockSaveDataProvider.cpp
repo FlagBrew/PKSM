@@ -3,13 +3,17 @@
 MockSaveDataProvider::MockSaveDataProvider() {
     // Initialize mock save data
     mockSaves = {
-        // Ultra Sun (cartridge)
+        // Legends Arceus (cartridge)
         {0x00175E00, {
             "Cartridge Main Save",
             "Cartridge Challenge Mode",
-            "Cartridge Nuzlocke"
+            "Cartridge Nuzlocke",
+            "Digital Shiny Hunt",
+            "Digital Competitive",
+            "Digital Nuzlocke",
+            "Digital Battle Tree"
         }},
-        // Sun
+        // Violet
         {0x00164800, {
             "Digital Main Save",
             "Digital Speedrun",
@@ -19,12 +23,13 @@ MockSaveDataProvider::MockSaveDataProvider() {
             "Digital Nuzlocke",
             "Digital Battle Tree"
         }},
-        // Moon
+        // Brilliant Diamond
         {0x00164900, {
             "Digital Main Save",
-            "Digital Nuzlocke"
+            "Digital Nuzlocke",
+            "Digital Challenge Mode",
         }},
-        // Ultra Moon
+        // Scarlet
         {0x00175F00, {
             "Digital Main Save",
             "Digital Challenge Mode",
@@ -35,15 +40,42 @@ MockSaveDataProvider::MockSaveDataProvider() {
             "Digital Nuzlocke",
             "Digital Battle Tree"
         }},
-        // Omega Ruby
+        // Let's Go Pikachu
         {0x00175200, {
-            "Emulator Main Save",
-            "Emulator Nuzlocke",
-            "Emulator Speedrun",
-            "Emulator Competitive",
-            "Emulator Battle Tree",
-            "Emulator Living Dex",
-            "Emulator Shiny Hunt"
+            "Digital Main Save",
+            "Digital Shiny Hunt",
+            "Digital Living Dex",
+            "Digital Master Trainer"
+        }},
+        // Let's Go Eevee
+        {0x00175201, {
+            "Digital Main Save",
+            "Digital Shiny Hunt",
+            "Digital Living Dex",
+            "Digital Master Trainer"
+        }},
+        // Sword
+        {0x00175202, {
+            "Digital Main Save",
+            "Digital Challenge Mode",
+            "Digital Competitive",
+            "Digital Living Dex",
+            "Digital Shiny Hunt"
+        }},
+        // Shield
+        {0x00175203, {
+            "Digital Main Save",
+            "Digital Challenge Mode",
+            "Digital Competitive",
+            "Digital Living Dex",
+            "Digital Shiny Hunt"
+        }},
+        // Shining Pearl
+        {0x00175204, {
+            "Digital Main Save",
+            "Digital Nuzlocke",
+            "Digital Challenge Mode",
+            "Digital Living Dex"
         }}
     };
 }

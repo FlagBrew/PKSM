@@ -8,6 +8,10 @@ FocusableMenu::FocusableMenu(
     focused(false), lastPosition(0) {
     outline = PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255));
     outline->SetVisible(false);
+
+    // Set up input handler
+    inputHandler.SetOnMoveUp([this]() { MoveUp(); });
+    inputHandler.SetOnMoveDown([this]() { MoveDown(); });
 }
 
 void FocusableMenu::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
@@ -39,8 +43,30 @@ void FocusableMenu::OnInput(const u64 keys_down, const u64 keys_up, const u64 ke
             onTouchSelectCallback();
         }
     } else if (focused) {
-        // If focused, pass through normal input
+        // Handle directional input through our handler
+        if (inputHandler.HandleInput(keys_down, keys_held)) {
+            return;  // Input was handled by directional handler
+        }
+
+
         Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
+}
+
+void FocusableMenu::MoveUp() {
+    if (this->GetSelectedIndex() > 0) {
+        this->SetSelectedIndex(this->GetSelectedIndex() - 1);
+    }
+}
+
+void FocusableMenu::MoveDown() {
+    if (!this->GetItems().empty()) {
+        size_t nextIndex = this->GetSelectedIndex() + 1;
+        if (nextIndex >= this->GetItems().size()) {
+            // Wrap around to top
+            nextIndex = 0;
+        }
+        this->SetSelectedIndex(nextIndex);
     }
 }
 
