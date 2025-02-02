@@ -2,6 +2,7 @@
 #include <pu/Plutonium>
 #include "gui/PulsingOutline.hpp"
 #include "gui/IFocusable.hpp"
+#include "gui/DirectionalInputHandler.hpp"
 
 class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
     private:
@@ -10,6 +11,7 @@ class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
         int lastPosition;  // Stores position when unfocusing
         std::vector<std::string> currentDataSource;  // Owns the current data source
         std::function<void()> onTouchSelectCallback;  // New callback for touch selection
+        DirectionalInputHandler inputHandler;  // Handles directional input
 
     public:
         FocusableMenu(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr, const pu::i32 items_height, const u32 items_to_show);
@@ -39,4 +41,8 @@ class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
         void StorePosition();
         void RestorePosition();
         void ResetPosition();  // Called when data source changes
+
+        // Movement methods
+        void MoveUp();
+        void MoveDown();
 }; 
