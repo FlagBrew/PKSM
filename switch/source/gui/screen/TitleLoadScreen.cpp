@@ -1,6 +1,7 @@
 #include "gui/screen/TitleLoadScreen.hpp"
 #include "titles/Title.hpp"
 #include "gui/UIConstants.hpp"
+#include "gui/GameList.hpp"
 #include <algorithm>
 #include <sys/stat.h>
 
@@ -107,7 +108,11 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     });
 
     // Set up game list handler
-    gameListHandler.SetOnMoveDown([this]() { FocusSaveList(); });
+    gameListHandler.SetOnMoveDown([this]() {
+        if (gameList->ShouldResignDownFocus()) {
+            FocusSaveList();
+        }
+    });
 
     // Load initial saves
     this->LoadSaves();
@@ -261,6 +266,7 @@ void TitleLoadScreen::OnGameTouchSelect() {
     this->wirelessButton->SetFocused(false);
     this->saveList->SetFocused(false);
     selectionState = lastSelectionState;  // Restore the game selection state
+    this->gameList->SetFocused(true);
 }
 
 void TitleLoadScreen::OnSaveListTouchSelect() {

@@ -37,10 +37,10 @@ include $(DEVKITPRO)/libnx/switch_rules
 #   of a homebrew executable (.nro). This is intended to be used for sysmodules.
 #   NACP building is skipped as well.
 #---------------------------------------------------------------------------------
-TARGET		:=	switch-pksm
+TARGET		:=	PKSM
 BUILD		:=	build
-SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock
-INCLUDES	:=	include include/gui/screen include/data include/data/mock Plutonium/Plutonium/include
+SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock source/ui/render
+INCLUDES	:=	include include/gui/screen include/data include/data/mock include/ui/render Plutonium/Plutonium/include
 DATA		:=	data
 ROMFS		:=	romfs
 

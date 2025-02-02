@@ -1,8 +1,13 @@
 #include "gui/GameList.hpp"
 #include "gui/UIConstants.hpp"
+#include <cmath>
+#include "ui/render/LineRenderer.hpp"
+#include "ui/render/PatternRenderer.hpp"
+
+using namespace pksm;  // Add namespace to avoid fully qualifying every use
 
 GameList::GameList(const pu::i32 x, const pu::i32 y)
-    : Element(), selectionState(SelectionState::GameCard), selectedGameIndex(0), focused(false),
+    : Element(), selectionState(SelectionState::GameCard), focused(false),
       backgroundColor(pu::ui::Color(40, 51, 135, 255)), onSelectionChangedCallback(nullptr),
       x(x), y(y) {
     
@@ -24,25 +29,79 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
     installedText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
     
-    // Center installed games text in its section
-    pu::i32 installedGamesWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
-    pu::i32 installedTextX = installedStartX + (installedGamesWidth - installedText->GetWidth()) / 2;
-    installedText->SetX(installedTextX);
-
     // Create section divider
     divider = pu::ui::elm::Rectangle::New(
         dividerX, y,  // Position relative to our origin
         SECTION_DIVIDER_WIDTH, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,
-        SECTION_DIVIDER_COLOR
+        UIConstants::BACKGROUND_BLUE
     );
 
-    // Store key positions for later use in SetDataSource
+    // Create game grid for installed games
+    installedGames = GameGrid::New(
+        installedStartX,
+        y,
+        y + MARGIN_TOP + SECTION_TITLE_SPACING
+    );
+
+    // Center installed games text in its section
+    pu::i32 installedGamesWidth = installedGames->GetWidth();
+    pu::i32 installedTextX = installedStartX + (installedGamesWidth - installedText->GetWidth()) / 2;
+    installedText->SetX(installedTextX);
+
+    // Store key positions for later use
     this->gameCardX = gameCardX;
     this->installedStartX = installedStartX;
 
-    // Set up input handler
-    inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
-    inputHandler.SetOnMoveRight([this]() { MoveRight(); });
+    // Set up input handler for transitions between game card and grid
+    inputHandler.SetOnMoveLeft([this]() {
+        if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
+            selectionState = SelectionState::GameCard;
+            installedGames->SetFocused(false);  // Remove focus from grid
+            installedGames->SetSelected(false); // Remove selection from grid
+            UpdateHighlights();
+            HandleOnSelectionChanged();
+        }
+    });
+    inputHandler.SetOnMoveRight([this]() {
+        if (selectionState == SelectionState::GameCard && !titles.empty()) {
+            selectionState = SelectionState::InstalledGame;
+            installedGames->SetSelected(true);  // Select the grid item
+            installedGames->SetSelectedIndex(0);  // Always select first game when moving right
+            UpdateHighlights();
+            HandleOnSelectionChanged();
+        }
+    });
+
+    // Set up grid callbacks
+    installedGames->SetOnSelectionChanged([this]() {
+        HandleOnSelectionChanged();
+    });
+    installedGames->SetOnTouchSelect([this]() {
+        if (selectionState != SelectionState::InstalledGame || !focused) {
+            selectionState = SelectionState::InstalledGame;
+            focused = true;
+            UpdateHighlights();
+            HandleOnSelectionChanged();
+            if (onTouchSelectCallback) {
+                onTouchSelectCallback();
+            }
+        }
+    });
+
+    // Create and initialize the background texture with diagonal lines
+    InitializeBackgroundTexture();
+}
+
+void GameList::InitializeBackgroundTexture() {
+    // Create the diagonal line pattern texture using PatternRenderer
+    backgroundTexture = ui::render::PatternRenderer::CreateDiagonalLinePattern(
+        GetWidth(),
+        GetHeight(),
+        CORNER_RADIUS,
+        14,  // Line spacing
+        8,   // Line thickness
+        pu::ui::Color(31, 41, 139, 255)  // Line color
+    );
 }
 
 pu::i32 GameList::GetX() {
@@ -54,9 +113,8 @@ pu::i32 GameList::GetY() {
 }
 
 pu::i32 GameList::GetWidth() {
-    // Width from left edge to last possible installed game
-    pu::i32 totalInstalledWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
-    return (installedStartX + totalInstalledWidth + MARGIN_RIGHT) - GetX();
+    // Width from left edge to end of installed games section
+    return (installedStartX + installedGames->GetWidth() + MARGIN_RIGHT) - GetX();
 }
 
 pu::i32 GameList::GetHeight() {
@@ -65,8 +123,12 @@ pu::i32 GameList::GetHeight() {
 }
 
 void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
-    // Draw background
-    drawer->RenderRectangleFill(backgroundColor, x, y, GetWidth(), GetHeight());
+    // Draw background with rounded corners
+    drawer->RenderRoundedRectangleFill(backgroundColor, x, y, GetWidth(), GetHeight() - 1, CORNER_RADIUS);
+
+    // Draw the pre-rendered background texture
+    SDL_Rect destRect = { x, y, GetWidth(), GetHeight() };
+    SDL_RenderCopy(pu::ui::render::GetMainRenderer(), backgroundTexture, nullptr, &destRect);
 
     // Draw section headers and divider
     cartridgeText->OnRender(drawer, cartridgeText->GetX(), cartridgeText->GetY());
@@ -78,25 +140,42 @@ void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, 
         gameCardImage->OnRender(drawer, gameCardImage->GetX(), gameCardImage->GetY());
     }
 
-    // Draw installed games
-    for (auto& image : installedGameImages) {
-        image->OnRender(drawer, image->GetX(), image->GetY());
-    }
+    // Enable clipping for installed games section
+    SDL_Rect clipRect = {
+        static_cast<pu::i32>(installedStartX - GAME_OUTLINE_PADDING),  // Account for outline on left
+        static_cast<pu::i32>(y + MARGIN_TOP + SECTION_TITLE_SPACING - GAME_OUTLINE_PADDING),  // Start at first row of games
+        static_cast<pu::i32>(GetWidth() - (installedStartX - x) + (GAME_OUTLINE_PADDING * 2)),  // Width plus outline padding
+        static_cast<pu::i32>(GetHeight() - (MARGIN_TOP + SECTION_TITLE_SPACING))  // Height of visible area
+    };
+    SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), &clipRect);
+
+    // Draw installed games (they will be clipped)
+    installedGames->OnRender(drawer, installedGames->GetX(), installedGames->GetY());
+
+    // Disable clipping
+    SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), nullptr);
 }
 
 void GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
+
+        // Let the grid handle its own directional input when it's focused
+        if (selectionState == SelectionState::InstalledGame) {
+            installedGames->OnInput(keys_down, keys_up, keys_held, touch_pos);
+        }
     }
 
-    // Let each image handle its own touch input
-    if (gameCardImage) {
-        gameCardImage->OnInput(keys_down, keys_up, keys_held, touch_pos);
-    }
-    
-    for (auto& image : installedGameImages) {
-        image->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    // Always handle touch input regardless of focus state
+    if (!touch_pos.IsEmpty()) {
+        // Let game card handle its own touch input
+        if (gameCardImage) {
+            gameCardImage->OnInput(keys_down, keys_up, keys_held, touch_pos);
+        }
+
+        // Let grid handle touch input
+        installedGames->OnInput(keys_down, keys_up, keys_held, touch_pos);
     }
 }
 
@@ -119,8 +198,7 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     // Store titles
     this->titles = titles;
 
-    // Clear existing images
-    installedGameImages.clear();
+    // Clear existing game card
     gameCardImage = nullptr;
 
     // Create game card image if first title exists
@@ -138,7 +216,6 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
             if (selectionState != SelectionState::GameCard || !focused) {
                 focused = true;
                 selectionState = SelectionState::GameCard;
-                selectedGameIndex = 0;
                 UpdateHighlights();
                 HandleOnSelectionChanged();
                 if (onTouchSelectCallback) {
@@ -148,37 +225,12 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         });
     }
 
-    // Create installed game images for remaining titles
-    for (size_t i = 1; i < titles.size(); i++) {
-        auto gameImage = FocusableImage::New(
-            installedStartX + ((i-1) * GAME_SPACING),
-            cartridgeText->GetY() + SECTION_TITLE_SPACING,
-            titles[i]->getIcon(),
-            94,
-            GAME_OUTLINE_PADDING
-        );
-        gameImage->SetWidth(INSTALLED_GAME_SIZE);
-        gameImage->SetHeight(INSTALLED_GAME_SIZE);
-        
-        // Set up touch handling for this installed game
-        const size_t installedIndex = i - 1;  // Store index for lambda capture
-        gameImage->SetOnTouchSelect([this, installedIndex]() {
-            if (selectionState != SelectionState::InstalledGame || 
-                selectedGameIndex != installedIndex || 
-                !focused) {
-                focused = true;
-                selectionState = SelectionState::InstalledGame;
-                selectedGameIndex = installedIndex;
-                UpdateHighlights();
-                HandleOnSelectionChanged();
-                if (onTouchSelectCallback) {
-                    onTouchSelectCallback();
-                }
-            }
-        });
-        
-        installedGameImages.push_back(gameImage);
+    // Set up installed games grid with remaining titles
+    std::vector<titles::TitleRef> installedTitles;
+    if (titles.size() > 1) {
+        installedTitles.assign(titles.begin() + 1, titles.end());
     }
+    installedGames->SetDataSource(installedTitles);
 
     UpdateHighlights();
 }
@@ -187,43 +239,9 @@ titles::TitleRef GameList::GetSelectedTitle() const {
     if (selectionState == SelectionState::GameCard) {
         // Return game card title if it exists
         return !titles.empty() ? titles[0] : nullptr;
-    } else if (selectionState == SelectionState::InstalledGame && selectedGameIndex < installedGameImages.size()) {
+    } else {
         // Return selected installed title
-        return titles[selectedGameIndex + 1];  // +1 because first title is game card
-    }
-    return nullptr;
-}
-
-void GameList::MoveLeft() {
-    auto prevState = selectionState;
-    auto prevIndex = selectedGameIndex;
-
-    if (selectionState == SelectionState::InstalledGame && selectedGameIndex > 0) {
-        selectedGameIndex--;
-    } else if (selectionState == SelectionState::InstalledGame && selectedGameIndex == 0) {
-        selectionState = SelectionState::GameCard;
-    }
-
-    if (prevState != selectionState || prevIndex != selectedGameIndex) {
-        UpdateHighlights();
-        HandleOnSelectionChanged();
-    }
-}
-
-void GameList::MoveRight() {
-    auto prevState = selectionState;
-    auto prevIndex = selectedGameIndex;
-
-    if (selectionState == SelectionState::GameCard && !installedGameImages.empty()) {
-        selectionState = SelectionState::InstalledGame;
-        selectedGameIndex = 0;
-    } else if (selectionState == SelectionState::InstalledGame && selectedGameIndex < installedGameImages.size() - 1) {
-        selectedGameIndex++;
-    }
-
-    if (prevState != selectionState || prevIndex != selectedGameIndex) {
-        UpdateHighlights();
-        HandleOnSelectionChanged();
+        return installedGames->GetSelectedTitle();
     }
 }
 
@@ -236,11 +254,8 @@ void GameList::UpdateHighlights() {
     }
 
     // Update installed games highlight
-    for (size_t i = 0; i < installedGameImages.size(); i++) {
-        bool isSelected = selectionState == SelectionState::InstalledGame && selectedGameIndex == i;
-        installedGameImages[i]->SetSelected(isSelected);
-        installedGameImages[i]->SetFocused(focused && isSelected);
-    }
+    installedGames->SetFocused(focused && selectionState == SelectionState::InstalledGame);
+    installedGames->SetSelected(selectionState == SelectionState::InstalledGame);
 }
 
 void GameList::SetOnSelectionChanged(std::function<void()> callback) {
@@ -254,5 +269,11 @@ void GameList::SetOnTouchSelect(std::function<void()> callback) {
 void GameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         onSelectionChangedCallback();
+    }
+}
+
+GameList::~GameList() {
+    if (backgroundTexture) {
+        SDL_DestroyTexture(backgroundTexture);
     }
 } 
