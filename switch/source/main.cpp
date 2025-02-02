@@ -4,6 +4,7 @@
 #include "data/mock/MockTitleDataProvider.hpp"
 #include "data/mock/MockSaveDataProvider.hpp"
 #include "gui/UIConstants.hpp"
+#include "gui/FontManager.hpp"
 
 // Main application class
 class PKSMApplication : public pu::ui::Application {
@@ -29,11 +30,10 @@ private:
     // Configure font settings
     static void ConfigureFonts(pu::ui::render::RendererInitOptions& renderer_opts) {
         // Register default (light) font
-        renderer_opts.AddDefaultFontPath("romfs:/gfx/ui/dinnextw1g_light.ttf");
+        renderer_opts.AddDefaultFontPath("romfs:/gfx/fonts/dinnextw1g_light.ttf");
 
         // Register all custom font sizes
-        renderer_opts.AddExtraDefaultFontSize(UIConstants::FONT_SIZE_TITLE);
-        renderer_opts.AddExtraDefaultFontSize(UIConstants::FONT_SIZE_HEADER);
+        gui::FontManager::ConfigureRendererFontSizes(renderer_opts);
     }
 
     // Configure input settings
@@ -46,10 +46,19 @@ private:
 
     // Register additional fonts that require romfs to be mounted
     static void RegisterAdditionalFonts() {
-        // Register heavy font
-        auto heavy_font = std::make_shared<pu::ttf::Font>(UIConstants::FONT_SIZE_TITLE);
-        heavy_font->LoadFromFile("romfs:/gfx/ui/dinnextw1g_heavy.ttf");
-        pu::ui::render::AddFont(UIConstants::MakeHeavyFontName(UIConstants::FONT_SIZE_TITLE), heavy_font);
+        // Register heavy font for all custom sizes
+        gui::FontManager::RegisterFont(
+            "romfs:/gfx/fonts/dinnextw1g_heavy.ttf",
+            UIConstants::MakeHeavyFontName
+        );
+
+        // Register medium font for all custom sizes
+        gui::FontManager::RegisterFont(
+            "romfs:/gfx/fonts/dinnextw1g_medium.ttf",
+            UIConstants::MakeMediumFontName
+        );
+
+        // Additional fonts can be registered here with their own name generators
     }
 
 public:

@@ -29,15 +29,15 @@ private:
     static constexpr pu::ui::Color SECTION_DIVIDER_COLOR = UIConstants::BACKGROUND_BLUE; // Color of the divider
 
     // Background margin constants
-    static constexpr u32 MARGIN_LEFT = 75;     // Left padding of the component
-    static constexpr u32 MARGIN_RIGHT = 24;    // Right padding of the component
+    static constexpr u32 MARGIN_LEFT = 80;     // Left padding of the component
+    static constexpr u32 MARGIN_RIGHT = 80;    // Right padding of the component
     static constexpr u32 MARGIN_TOP = 20;      // Space between background and section titles
     static constexpr u32 MARGIN_BOTTOM = 150;  // Space below game icons
     
     // Section spacing constants
-    static constexpr u32 SECTION_TITLE_SPACING = 75;  // Space between section titles and game icons
-    static constexpr u32 GAME_CARD_LEFT_PADDING = 75; // Padding from left edge to game card
-    static constexpr u32 SECTION_DIVIDER_PADDING = 100; // Padding around the divider
+    static constexpr u32 SECTION_TITLE_SPACING = 80;  // Space between section titles and game icons
+    static constexpr u32 GAME_CARD_LEFT_PADDING = 80; // Padding from left edge to game card
+    static constexpr u32 SECTION_DIVIDER_PADDING = 80; // Padding around the divider
 
     // State
     SelectionState selectionState;
@@ -45,6 +45,7 @@ private:
     bool focused;
     pu::ui::Color backgroundColor;
     std::function<void()> onSelectionChangedCallback;
+    std::function<void()> onTouchSelectCallback;  // New callback for touch selection
 
     // Position tracking
     pu::i32 x;                  // Component's x position
@@ -88,6 +89,7 @@ public:
     void SetDataSource(const std::vector<titles::TitleRef>& titles);
     titles::TitleRef GetSelectedTitle() const;
     void SetOnSelectionChanged(std::function<void()> callback);
+    void SetOnTouchSelect(std::function<void()> callback);  // New method to set touch callback
 
     // Movement methods
     void MoveLeft();

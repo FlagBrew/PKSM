@@ -15,10 +15,15 @@ namespace UIConstants {
 
     // Font Sizes - Custom
     static constexpr u32 FONT_SIZE_TITLE = 60;
-    static constexpr u32 FONT_SIZE_HEADER = 45;
+    static constexpr u32 FONT_SIZE_HEADER = 40;
+    static constexpr u32 FONT_SIZE_BUTTON = 40;
 
     // Font Names
     inline std::string MakeHeavyFontName(const u32 font_size) {
         return "HeavyFont@" + std::to_string(font_size);
+    }
+
+    inline std::string MakeMediumFontName(const u32 font_size) {
+        return "MediumFont@" + std::to_string(font_size);
     }
 } 

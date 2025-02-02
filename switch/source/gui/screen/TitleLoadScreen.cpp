@@ -24,6 +24,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     );
     this->gameList->SetFocused(true);
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
+    this->gameList->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnGameTouchSelect, this));
     
     // Set initial data
     std::vector<titles::TitleRef> titles;
@@ -53,6 +54,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     this->saveList->SetScrollbarWidth(16);
     this->saveList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::OnSaveSelected, this));
     this->saveList->SetFocused(false);  // Initially not focused
+    this->saveList->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnSaveListTouchSelect, this));
 
     // Create load button
     this->loadButton = FocusableButton::New(
@@ -62,6 +64,9 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
         BUTTON_HEIGHT,
         "Load Save"
     );
+    this->loadButton->SetOnClick(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
+    this->loadButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
+    this->loadButton->SetContentFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_BUTTON));
 
     // Create settings button
     this->wirelessButton = FocusableButton::New(
@@ -71,10 +76,9 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
         BUTTON_HEIGHT,
         "Wireless"
     );
-
-    // Set up button click handlers
-    this->loadButton->SetOnClick(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
     this->wirelessButton->SetOnClick(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
+    this->wirelessButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
+    this->wirelessButton->SetContentFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_BUTTON));
 
     // Add elements to layout
     this->Add(this->saveList);
@@ -201,8 +205,6 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
             }
         } else {
             // Save list is focused
-            this->saveList->SetFocused(true);
-            
             if (saveListHandler.HandleInput(down, held)) {
                 // Input was handled by directional handler
             }
@@ -224,16 +226,51 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     }
 }
 
+void TitleLoadScreen::HandleButtonInteraction(FocusableButton::Ref& buttonToFocus) {
+    // When a button is touched/clicked, focus the button area and update selection state
+    this->gameList->SetFocused(false);
+    this->saveList->SetFocused(false);
+    selectionState = TitleSelectionState::InSaveList;  // We're in the save/button section
+    
+    // Unfocus all buttons
+    this->loadButton->SetFocused(false);
+    this->wirelessButton->SetFocused(false);
+    
+    // Focus the selected button
+    buttonToFocus->SetFocused(true);
+}
+
 void TitleLoadScreen::OnLoadButtonClick() {
+    HandleButtonInteraction(this->loadButton);
     // TODO: Implement load functionality
 }
 
 void TitleLoadScreen::OnWirelessButtonClick() {
+    HandleButtonInteraction(this->wirelessButton);
     // TODO: Implement settings functionality
 }
 
 void TitleLoadScreen::OnSaveSelected() {
     // TODO: This is when the save to be loaded on load press would be stored
+}
+
+void TitleLoadScreen::OnGameTouchSelect() {
+    // When a game is selected via touch, ensure we're in game selection mode
+    // and other components are unfocused
+    this->loadButton->SetFocused(false);
+    this->wirelessButton->SetFocused(false);
+    this->saveList->SetFocused(false);
+    selectionState = lastSelectionState;  // Restore the game selection state
+}
+
+void TitleLoadScreen::OnSaveListTouchSelect() {
+    // When save list is touched, focus it but preserve game selection
+    this->loadButton->SetFocused(false);
+    this->wirelessButton->SetFocused(false);
+    this->gameList->SetFocused(false);
+    lastSelectionState = selectionState;  // Store current game selection state
+    selectionState = TitleSelectionState::InSaveList;
+    this->saveList->SetFocused(true);
 }
 
 pu::i32 TitleLoadScreen::GetBottomSectionY() const {

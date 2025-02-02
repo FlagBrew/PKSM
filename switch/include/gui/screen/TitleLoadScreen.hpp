@@ -31,17 +31,17 @@ private:
     static constexpr u32 HEADER_BOTTOM_MARGIN = 24;  // Space between header and game list
     
     // Game list section
-    static constexpr u32 GAME_LIST_LEFT_MARGIN = 75;  // Left margin for game list component
+    static constexpr u32 GAME_LIST_LEFT_MARGIN = 70;  // Left margin for game list component
     static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 48;  // Space between game list and save list
     
     // Save list section (bottom)
-    static constexpr u32 SAVE_LIST_WIDTH = 1200;
+    static constexpr u32 SAVE_LIST_WIDTH = 1240;
     static constexpr u32 SAVE_LIST_HEIGHT = 300;
     static constexpr u32 SAVE_LIST_X = GAME_LIST_LEFT_MARGIN;
     
     // Buttons
     static constexpr u32 BUTTON_WIDTH = 508;
-    static constexpr u32 BUTTON_HEIGHT = 117;
+    static constexpr u32 BUTTON_HEIGHT = 111;
     static constexpr u32 BUTTON_SPACING = 20;
     static constexpr u32 SAVE_ITEM_HEIGHT = 48;
 
@@ -71,6 +71,8 @@ private:
     void OnWirelessButtonClick();
     void OnSaveItemKey();
     void OnInput(u64 down, u64 up, u64 held);
+    void OnGameTouchSelect();
+    void OnSaveListTouchSelect();
 
     // Helper methods
     void LoadSaves();
@@ -84,6 +86,7 @@ private:
     void TransitionToButtons();
     void FocusGameSection();
     void FocusSaveList();
+    void HandleButtonInteraction(FocusableButton::Ref& buttonToFocus);
 
 public:
     TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider);

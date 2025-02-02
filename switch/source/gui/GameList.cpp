@@ -1,8 +1,9 @@
 #include "gui/GameList.hpp"
+#include "gui/UIConstants.hpp"
 
 GameList::GameList(const pu::i32 x, const pu::i32 y)
     : Element(), selectionState(SelectionState::GameCard), selectedGameIndex(0), focused(false),
-      backgroundColor(pu::ui::Color(75, 75, 75, 255)), onSelectionChangedCallback(nullptr),
+      backgroundColor(pu::ui::Color(40, 51, 135, 255)), onSelectionChangedCallback(nullptr),
       x(x), y(y) {
     
     // Calculate key positions relative to our component's origin
@@ -13,7 +14,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
-    cartridgeText->SetFont(pu::ui::MakeDefaultFontName(UIConstants::FONT_SIZE_HEADER));
+    cartridgeText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
     
     // Center game card text in its section
     pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
@@ -21,7 +22,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
 
     installedText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
-    installedText->SetFont(pu::ui::MakeDefaultFontName(UIConstants::FONT_SIZE_HEADER));
+    installedText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
     
     // Center installed games text in its section
     pu::i32 installedGamesWidth = GAME_SPACING * (INSTALLED_GAME_ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
@@ -84,8 +85,19 @@ void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, 
 }
 
 void GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
-    if (!focused) return;
-    inputHandler.HandleInput(keys_down, keys_held);
+    // Handle directional input only when focused
+    if (focused) {
+        inputHandler.HandleInput(keys_down, keys_held);
+    }
+
+    // Let each image handle its own touch input
+    if (gameCardImage) {
+        gameCardImage->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
+    
+    for (auto& image : installedGameImages) {
+        image->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
 }
 
 void GameList::SetFocused(bool focused) {
@@ -122,6 +134,18 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         );
         gameCardImage->SetWidth(GAME_CARD_SIZE);
         gameCardImage->SetHeight(GAME_CARD_SIZE);
+        gameCardImage->SetOnTouchSelect([this]() {
+            if (selectionState != SelectionState::GameCard || !focused) {
+                focused = true;
+                selectionState = SelectionState::GameCard;
+                selectedGameIndex = 0;
+                UpdateHighlights();
+                HandleOnSelectionChanged();
+                if (onTouchSelectCallback) {
+                    onTouchSelectCallback();
+                }
+            }
+        });
     }
 
     // Create installed game images for remaining titles
@@ -135,6 +159,24 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         );
         gameImage->SetWidth(INSTALLED_GAME_SIZE);
         gameImage->SetHeight(INSTALLED_GAME_SIZE);
+        
+        // Set up touch handling for this installed game
+        const size_t installedIndex = i - 1;  // Store index for lambda capture
+        gameImage->SetOnTouchSelect([this, installedIndex]() {
+            if (selectionState != SelectionState::InstalledGame || 
+                selectedGameIndex != installedIndex || 
+                !focused) {
+                focused = true;
+                selectionState = SelectionState::InstalledGame;
+                selectedGameIndex = installedIndex;
+                UpdateHighlights();
+                HandleOnSelectionChanged();
+                if (onTouchSelectCallback) {
+                    onTouchSelectCallback();
+                }
+            }
+        });
+        
         installedGameImages.push_back(gameImage);
     }
 
@@ -203,6 +245,10 @@ void GameList::UpdateHighlights() {
 
 void GameList::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
+}
+
+void GameList::SetOnTouchSelect(std::function<void()> callback) {
+    onTouchSelectCallback = callback;
 }
 
 void GameList::HandleOnSelectionChanged() {

@@ -11,6 +11,7 @@ private:
     pu::ui::elm::Rectangle::Ref overlay;
     PulsingOutline::Ref outline;
     pu::i32 outlinePadding;  // Padding between image and outline
+    std::function<void()> onTouchSelectCallback;  // New callback for touch selection
 
 public:
     FocusableImage(
@@ -48,4 +49,10 @@ public:
     pu::ui::elm::Rectangle::Ref GetOverlay();
 
     void OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) override;
+
+    // Touch selection callback
+    void SetOnTouchSelect(std::function<void()> callback);
+
+    // Override OnInput to handle touch
+    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 }; 

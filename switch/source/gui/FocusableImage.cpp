@@ -86,4 +86,21 @@ void FocusableImage::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i
     if (focused && selected) {
         outline->OnRender(drawer, x, y);
     }
+}
+
+void FocusableImage::SetOnTouchSelect(std::function<void()> callback) {
+    onTouchSelectCallback = callback;
+}
+
+void FocusableImage::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
+    // Let the base image handle its normal touch behavior first
+    Image::OnInput(keys_down, keys_up, keys_held, touch_pos);
+
+    // If the image was touched and we're not focused, notify about touch selection
+    if (!touch_pos.IsEmpty() && 
+        touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight()) &&
+        !focused && 
+        onTouchSelectCallback) {
+        onTouchSelectCallback();
+    }
 } 
