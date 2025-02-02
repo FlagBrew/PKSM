@@ -30,7 +30,16 @@ void FocusableMenu::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i3
 }
 
 void FocusableMenu::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
-    if (focused) {
+    if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight())) {
+        // Let the menu handle the touch input first
+        Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
+        
+        // Notify about touch selection if we're not already focused
+        if (!focused && onTouchSelectCallback) {
+            onTouchSelectCallback();
+        }
+    } else if (focused) {
+        // If focused, pass through normal input
         Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
     }
 }
@@ -90,4 +99,8 @@ void FocusableMenu::SetDataSource(const std::vector<std::string>& items) {
 
 const std::vector<std::string>& FocusableMenu::GetDataSource() const {
     return currentDataSource;
+}
+
+void FocusableMenu::SetOnTouchSelect(std::function<void()> callback) {
+    onTouchSelectCallback = callback;
 } 

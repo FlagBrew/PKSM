@@ -9,6 +9,7 @@ class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
         PulsingOutline::Ref outline;
         int lastPosition;  // Stores position when unfocusing
         std::vector<std::string> currentDataSource;  // Owns the current data source
+        std::function<void()> onTouchSelectCallback;  // New callback for touch selection
 
     public:
         FocusableMenu(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr, const pu::i32 items_height, const u32 items_to_show);
@@ -29,6 +30,9 @@ class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
         // Data source management
         void SetDataSource(const std::vector<std::string>& items);
         const std::vector<std::string>& GetDataSource() const;
+
+        // Touch selection callback
+        void SetOnTouchSelect(std::function<void()> callback);
         
     private:
         // Position management methods

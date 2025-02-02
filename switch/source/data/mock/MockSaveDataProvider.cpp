@@ -34,6 +34,16 @@ MockSaveDataProvider::MockSaveDataProvider() {
             "Digital Competitive",
             "Digital Nuzlocke",
             "Digital Battle Tree"
+        }},
+        // Omega Ruby
+        {0x00175200, {
+            "Emulator Main Save",
+            "Emulator Nuzlocke",
+            "Emulator Speedrun",
+            "Emulator Competitive",
+            "Emulator Battle Tree",
+            "Emulator Living Dex",
+            "Emulator Shiny Hunt"
         }}
     };
 }
