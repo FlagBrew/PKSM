@@ -15,4 +15,4 @@
 	url = https://github.com/XorTroll/Plutonium.git
 [submodule "switch/Plutonium"]
 	path = switch/Plutonium
-	url = https://github.com/XorTroll/Plutonium.git
+	url = git@github-personal:Omar-Kay/Plutonium.git
