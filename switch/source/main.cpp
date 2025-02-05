@@ -58,6 +58,12 @@ private:
             UIConstants::MakeMediumFontName
         );
 
+        // Register switch button font for all custom sizes
+        gui::FontManager::RegisterFont(
+            "romfs:/gfx/fonts/NintendoExtLE003.ttf",
+            UIConstants::MakeSwitchButtonFontName
+        );
+
         // Additional fonts can be registered here with their own name generators
     }
 

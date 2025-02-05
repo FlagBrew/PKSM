@@ -17,7 +17,7 @@ private:
     static constexpr u32 ROW_SPACING = 40;            // Vertical spacing between rows
     static constexpr u32 ITEMS_PER_ROW = 4;          // Number of games per row
     static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
-    static constexpr u32 SECTION_TITLE_SPACING = 80;  // Space between section title and game icons
+    static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section title and game icons
 
     // Touch scrolling constants
     static constexpr float SCROLL_FRICTION = 0.95f;    // Friction applied to scroll momentum

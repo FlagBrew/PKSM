@@ -77,9 +77,6 @@ LIBS	:= -lpu -lfreetype -lSDL2_mixer -lopusfile -lopus -lmodplug -lmpg123 -lvorb
 #---------------------------------------------------------------------------------
 LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Plutonium/Plutonium
 
-# Add romfs assets copying
-ROMFS_ASSETS := $(CURDIR)/../assets/gfx/ui
-
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
