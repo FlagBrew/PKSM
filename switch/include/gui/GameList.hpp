@@ -20,7 +20,6 @@ private:
 
     // Layout constants
     static constexpr u32 GAME_CARD_SIZE = 350;        // Size of the game card image
-    static constexpr u32 GAME_CARD_LEFT_PADDING = 80; // Padding from left edge to game card
     static constexpr u32 SECTION_DIVIDER_WIDTH = 20;   // Width of the section divider
     static constexpr u32 SECTION_DIVIDER_PADDING = 80; // Padding around the divider
     static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
@@ -29,11 +28,11 @@ private:
     // Background margin constants
     static constexpr u32 MARGIN_LEFT = 80;     // Left padding of the component
     static constexpr u32 MARGIN_RIGHT = 80;    // Right padding of the component
-    static constexpr u32 MARGIN_TOP = 20;      // Space between background and section titles
+    static constexpr u32 MARGIN_TOP = 85;      // Space between background and section titles
     static constexpr u32 MARGIN_BOTTOM = 150;  // Space below game icons
     
     // Section spacing constants
-    static constexpr u32 SECTION_TITLE_SPACING = 80;  // Space between section titles and game icons
+    static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section titles and game icons
     static constexpr u32 SECTION_BOTTOM_SPACING = SECTION_TITLE_SPACING; // Space below the installed games section
 
     // State
@@ -53,6 +52,7 @@ private:
     pu::ui::elm::Rectangle::Ref divider;
     pu::ui::elm::TextBlock::Ref cartridgeText;
     pu::ui::elm::TextBlock::Ref installedText;
+    pu::ui::elm::TextBlock::Ref LButtonText;
     FocusableImage::Ref gameCardImage;
     GameGrid::Ref installedGames;
 

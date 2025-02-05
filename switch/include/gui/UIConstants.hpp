@@ -26,4 +26,8 @@ namespace UIConstants {
     inline std::string MakeMediumFontName(const u32 font_size) {
         return "MediumFont@" + std::to_string(font_size);
     }
+
+    inline std::string MakeSwitchButtonFontName(const u32 font_size) {
+        return "SwitchButtonFont@" + std::to_string(font_size);
+    }
 } 
