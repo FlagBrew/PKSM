@@ -4,10 +4,13 @@
 #include "gui/GameList.hpp"
 #include <algorithm>
 #include <sys/stat.h>
+#include "utils/Logger.hpp"
 
 TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider)
     : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider),
       selectionState(TitleSelectionState::GameCard), lastSelectionState(TitleSelectionState::GameCard) {
+    
+    LOG_DEBUG("Initializing TitleLoadScreen...");
     
     // Set background color to match DS version - deeper blue
     this->SetBackgroundColor(UIConstants::BACKGROUND_BLUE);
@@ -31,14 +34,20 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     std::vector<titles::TitleRef> titles;
     auto cartTitle = titleProvider->GetGameCardTitle();
     if (cartTitle) {
+        LOG_DEBUG("Game card title found: " + cartTitle->getName());
         titles.push_back(cartTitle);
+    } else {
+        LOG_DEBUG("No game card title found");
     }
+    
     auto installedTitles = titleProvider->GetInstalledTitles();
+    LOG_DEBUG("Found " + std::to_string(installedTitles.size()) + " installed titles");
     titles.insert(titles.end(), installedTitles.begin(), installedTitles.end());
     this->gameList->SetDataSource(titles);
     
     this->Add(this->gameList);
 
+    LOG_DEBUG("Setting up UI components...");
     // Create save list menu with a dark semi-transparent background
     this->saveList = FocusableMenu::New(
         SAVE_LIST_X,
@@ -116,11 +125,15 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
 
     // Load initial saves
     this->LoadSaves();
+
+    LOG_DEBUG("TitleLoadScreen initialization complete");
 }
 
 void TitleLoadScreen::LoadSaves() {
     auto title = GetSelectedTitle();
     if (title) {
+        LOG_DEBUG("Loading saves for title: " + title->getName());
+        
         // Update header text with selected title
         std::string titleText = title->getName();
         this->headerText->SetText(titleText);
@@ -137,6 +150,7 @@ void TitleLoadScreen::LoadSaves() {
         
         // Update save list
         auto saves = saveProvider->GetSavesForTitle(title);
+        LOG_DEBUG("Found " + std::to_string(saves.size()) + " saves for title");
         this->saveList->SetDataSource(saves);
     }
 }
@@ -147,10 +161,12 @@ titles::TitleRef TitleLoadScreen::GetSelectedTitle() const {
 
 void TitleLoadScreen::MoveButtonSelectionUp() {
     if (this->wirelessButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection up from Wireless to Load Save");
         this->loadButton->SetFocused(true);
         this->wirelessButton->SetFocused(false);
     }
     else if (this->loadButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection up from Load Save to Wireless");
         this->wirelessButton->SetFocused(true);
         this->loadButton->SetFocused(false);
     }
@@ -158,33 +174,39 @@ void TitleLoadScreen::MoveButtonSelectionUp() {
 
 void TitleLoadScreen::MoveButtonSelectionDown() {
     if (this->loadButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection down from Load Save to Wireless");
         this->loadButton->SetFocused(false);
         this->wirelessButton->SetFocused(true);
     }
     else if (this->wirelessButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection down from Wireless to Load Save");
         this->wirelessButton->SetFocused(false);
         this->loadButton->SetFocused(true);
     }
 }
 
 void TitleLoadScreen::FocusGameSection() {
-    this->saveList->SetFocused(false);  // This will automatically store position
+    LOG_DEBUG("Focusing game section");
+    this->saveList->SetFocused(false);
     selectionState = lastSelectionState;
     this->gameList->SetFocused(true);
 }
 
 void TitleLoadScreen::FocusSaveList() {
+    LOG_DEBUG("Focusing save list");
     lastSelectionState = selectionState;
     this->gameList->SetFocused(false);
     selectionState = TitleSelectionState::InSaveList;
-    this->saveList->SetFocused(true);  // This will automatically restore position
+    this->saveList->SetFocused(true);
 }
 
 void TitleLoadScreen::TransitionToSaveList() {
+    LOG_DEBUG("Transitioning focus to save list");
     FocusSaveList();
 }
 
 void TitleLoadScreen::TransitionToButtons() {
+    LOG_DEBUG("Transitioning focus to button region");
     this->saveList->SetFocused(false);
     this->loadButton->SetFocused(true);
 }
@@ -197,14 +219,17 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
                 // Input was handled by directional handler
             }
             else if (down & HidNpadButton_B) {
+                LOG_DEBUG("Returning to save list from button region");
                 this->loadButton->SetFocused(false);
                 this->wirelessButton->SetFocused(false);
                 this->saveList->SetFocused(true);
             }
             else if (down & HidNpadButton_A) {
                 if (this->loadButton->IsFocused()) {
+                    LOG_DEBUG("Load button activated via A button");
                     this->OnLoadButtonClick();
                 } else if (this->wirelessButton->IsFocused()) {
+                    LOG_DEBUG("Wireless button activated via A button");
                     this->OnWirelessButtonClick();
                 }
             }
@@ -214,9 +239,11 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
                 // Input was handled by directional handler
             }
             else if (down & HidNpadButton_B) {
+                LOG_DEBUG("Returning to game selection from save list");
                 FocusGameSection();
             }
             else if (down & HidNpadButton_A) {
+                LOG_DEBUG("Transitioning from save list to button region");
                 TransitionToButtons();
             }
         }
@@ -226,12 +253,15 @@ void TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
             // Input was handled by directional handler
         }
         else if (down & HidNpadButton_A) {
+            LOG_DEBUG("Transitioning from game selection to save list");
             FocusSaveList();
         }
     }
 }
 
 void TitleLoadScreen::HandleButtonInteraction(FocusableButton::Ref& buttonToFocus) {
+    LOG_DEBUG("Handling button interaction, focusing " + buttonToFocus->GetContent());
+    
     // When a button is touched/clicked, focus the button area and update selection state
     this->gameList->SetFocused(false);
     this->saveList->SetFocused(false);
@@ -246,20 +276,23 @@ void TitleLoadScreen::HandleButtonInteraction(FocusableButton::Ref& buttonToFocu
 }
 
 void TitleLoadScreen::OnLoadButtonClick() {
+    LOG_DEBUG("Load button clicked");
     HandleButtonInteraction(this->loadButton);
     // TODO: Implement load functionality
 }
 
 void TitleLoadScreen::OnWirelessButtonClick() {
+    LOG_DEBUG("Wireless button clicked");
     HandleButtonInteraction(this->wirelessButton);
     // TODO: Implement settings functionality
 }
 
 void TitleLoadScreen::OnSaveSelected() {
-    // TODO: This is when the save to be loaded on load press would be stored
+    LOG_DEBUG("Save selected: " + saveList->GetSelectedItemText());
 }
 
 void TitleLoadScreen::OnGameTouchSelect() {
+    LOG_DEBUG("Game selected via touch, restoring game selection mode");
     // When a game is selected via touch, ensure we're in game selection mode
     // and other components are unfocused
     this->loadButton->SetFocused(false);
@@ -270,6 +303,7 @@ void TitleLoadScreen::OnGameTouchSelect() {
 }
 
 void TitleLoadScreen::OnSaveListTouchSelect() {
+    LOG_DEBUG("Save list selected via touch");
     // When save list is touched, focus it but preserve game selection
     this->loadButton->SetFocused(false);
     this->wirelessButton->SetFocused(false);

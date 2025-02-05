@@ -9,6 +9,9 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITPRO)/libnx/switch_rules
 
+# Add debug build option
+DEBUG ?= 0
+
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
@@ -39,8 +42,8 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	PKSM
 BUILD		:=	build
-SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock source/ui/render
-INCLUDES	:=	include include/gui/screen include/data include/data/mock include/ui/render Plutonium/Plutonium/include
+SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock source/ui/render source/utils
+INCLUDES	:=	include include/gui/screen include/data include/data/mock include/ui/render include/utils Plutonium/Plutonium/include
 DATA		:=	data
 ROMFS		:=	romfs
 
@@ -58,9 +61,20 @@ APP_VERSION := $(VER_MAJOR).$(VER_MINOR).$(VER_MICRO)
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS	:=	-g -O2 -ffunction-sections -Wall $(ARCH) $(DEFINES)
+# Debug build
+ifeq ($(DEBUG),1)
+    CFLAGS	:=	-g -O0 -ffunction-sections -Wall $(ARCH) $(DEFINES)
+else
+    CFLAGS	:=	-g -O2 -ffunction-sections -Wall $(ARCH) $(DEFINES)
+endif
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ `sdl2-config --cflags`
+
+ifeq ($(DEBUG),1)
+    CFLAGS	+=	-DDEBUG
+else
+    CFLAGS	+=	-DNDEBUG
+endif
 
 CFLAGS	+=	-DPKSM_MAJOR=$(VER_MAJOR) -DPKSM_MINOR=$(VER_MINOR) -DPKSM_MICRO=$(VER_MICRO) -DPKSM_VERSION=\"$(APP_VERSION)\"
 
@@ -164,10 +178,13 @@ ifneq ($(ROMFS),)
 	export NROFLAGS += --romfsdir=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: $(BUILD) clean all
+.PHONY: $(BUILD) clean all debug
 
 #---------------------------------------------------------------------------------
 all: $(BUILD)
+
+debug:
+	@$(MAKE) DEBUG=1
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
@@ -181,7 +198,6 @@ ifeq ($(strip $(APP_JSON)),)
 else
 	@rm -fr $(BUILD) $(TARGET).nsp $(TARGET).nso $(TARGET).npdm $(TARGET).elf
 endif
-
 
 #---------------------------------------------------------------------------------
 else
