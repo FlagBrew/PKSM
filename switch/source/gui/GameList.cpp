@@ -12,7 +12,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
       x(x), y(y) {
     
     // Calculate key positions relative to our component's origin
-    pu::i32 gameCardX = x + GAME_CARD_LEFT_PADDING;
+    pu::i32 gameCardX = x + MARGIN_LEFT;
     pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
     pu::i32 installedStartX = dividerX + SECTION_DIVIDER_WIDTH + SECTION_DIVIDER_PADDING;
     
@@ -20,6 +20,11 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
     cartridgeText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
+
+    // Create L button text
+    LButtonText = pu::ui::elm::TextBlock::New(x, y, "\ue0a4");
+    LButtonText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    LButtonText->SetFont(UIConstants::MakeSwitchButtonFontName(UIConstants::FONT_SIZE_TITLE));
     
     // Center game card text in its section
     pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
@@ -133,6 +138,7 @@ void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, 
     // Draw section headers and divider
     cartridgeText->OnRender(drawer, cartridgeText->GetX(), cartridgeText->GetY());
     installedText->OnRender(drawer, installedText->GetX(), installedText->GetY());
+    LButtonText->OnRender(drawer, LButtonText->GetX(), LButtonText->GetY());
     divider->OnRender(drawer, divider->GetX(), divider->GetY());
 
     // Draw game card if present
