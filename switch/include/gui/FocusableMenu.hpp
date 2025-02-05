@@ -3,6 +3,7 @@
 #include "gui/PulsingOutline.hpp"
 #include "gui/IFocusable.hpp"
 #include "gui/DirectionalInputHandler.hpp"
+#include <functional>
 
 class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
     private:
@@ -35,6 +36,11 @@ class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
 
         // Touch selection callback
         void SetOnTouchSelect(std::function<void()> callback);
+        
+        std::string GetSelectedItemText() const;
+        
+        // Const-correct version of GetSelectedIndex
+        pu::i32 GetSelectedIndex() const { return Menu::selected_item_idx; }
         
     private:
         // Position management methods

@@ -84,6 +84,10 @@ void FocusableButton::SetContent(const std::string& content) {
     text->SetY(textY);
 }
 
+std::string FocusableButton::GetContent() const {
+    return text->GetText();
+}
+
 void FocusableButton::SetContentFont(const std::string& font) {
     text->SetFont(font);
     // Re-center text with new font

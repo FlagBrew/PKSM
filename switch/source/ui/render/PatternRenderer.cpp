@@ -1,5 +1,7 @@
 #include "ui/render/PatternRenderer.hpp"
 #include <pu/ui/render/render_Renderer.hpp>
+#include "utils/Logger.hpp"
+#include <sstream>
 
 namespace pksm::ui::render {
 
@@ -23,10 +25,22 @@ namespace pksm::ui::render {
         const pu::i32 lineThickness,
         const pu::ui::Color& lineColor
     ) {
+        LOG_DEBUG("Starting CreateDiagonalLinePattern");
+        
         // Safety check
         if (width <= 0 || height <= 0) {
+            LOG_ERROR("Invalid dimensions for pattern texture");
             return nullptr;
         }
+
+        #ifdef DEBUG
+        {
+            std::stringstream ss;
+            ss << "Creating texture with dimensions: " << width << "x" << height
+               << ", spacing: " << lineSpacing << ", thickness: " << lineThickness;
+            LOG_DEBUG(ss.str());
+        }
+        #endif
 
         // Create render target texture
         SDL_Texture* texture = SDL_CreateTexture(
@@ -37,12 +51,28 @@ namespace pksm::ui::render {
             height
         );
 
+        if (!texture) {
+            LOG_ERROR("Failed to create SDL texture");
+            return nullptr;
+        }
+        LOG_DEBUG("SDL texture created successfully");
+
         // Set blend mode for transparency
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        if (SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND) < 0) {
+            LOG_ERROR("Failed to set texture blend mode");
+            SDL_DestroyTexture(texture);
+            return nullptr;
+        }
 
         // Set this texture as the render target
-        SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), texture);
+        if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), texture) < 0) {
+            LOG_ERROR("Failed to set render target");
+            SDL_DestroyTexture(texture);
+            return nullptr;
+        }
 
+        LOG_DEBUG("Starting to draw diagonal lines");
+        
         // Clear with transparent background
         SDL_SetRenderDrawColor(pu::ui::render::GetMainRenderer(), 0, 0, 0, 0);
         SDL_RenderClear(pu::ui::render::GetMainRenderer());
@@ -100,8 +130,13 @@ namespace pksm::ui::render {
         }
 
         // Reset render target
-        SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), nullptr);
+        if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), nullptr) < 0) {
+            LOG_ERROR("Failed to reset render target");
+            SDL_DestroyTexture(texture);
+            return nullptr;
+        }
 
+        LOG_DEBUG("Pattern texture creation complete");
         return texture;
     }
 

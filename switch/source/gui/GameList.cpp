@@ -1,8 +1,10 @@
 #include "gui/GameList.hpp"
 #include "gui/UIConstants.hpp"
 #include <cmath>
+#include <sstream>
 #include "ui/render/LineRenderer.hpp"
 #include "ui/render/PatternRenderer.hpp"
+#include "utils/Logger.hpp"
 
 using namespace pksm;  // Add namespace to avoid fully qualifying every use
 
@@ -10,6 +12,8 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     : Element(), selectionState(SelectionState::GameCard), focused(false),
       backgroundColor(pu::ui::Color(40, 51, 135, 255)), onSelectionChangedCallback(nullptr),
       x(x), y(y) {
+    
+    LOG_DEBUG("Initializing GameList component...");
     
     // Calculate key positions relative to our component's origin
     pu::i32 gameCardX = x + MARGIN_LEFT;
@@ -60,6 +64,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Set up input handler for transitions between game card and grid
     inputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
+            LOG_DEBUG("Transitioning selection from installed games to game card");
             selectionState = SelectionState::GameCard;
             installedGames->SetFocused(false);  // Remove focus from grid
             installedGames->SetSelected(false); // Remove selection from grid
@@ -69,6 +74,7 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     });
     inputHandler.SetOnMoveRight([this]() {
         if (selectionState == SelectionState::GameCard && !titles.empty()) {
+            LOG_DEBUG("Transitioning selection from game card to installed games");
             selectionState = SelectionState::InstalledGame;
             installedGames->SetSelected(true);  // Select the grid item
             installedGames->SetSelectedIndex(0);  // Always select first game when moving right
@@ -93,11 +99,20 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
         }
     });
 
-    // Create and initialize the background texture with diagonal lines
-    InitializeBackgroundTexture();
+    LOG_DEBUG("GameList component initialization complete");
 }
 
 void GameList::InitializeBackgroundTexture() {
+    LOG_DEBUG("Starting InitializeBackgroundTexture");
+    #ifdef DEBUG
+    {
+        std::stringstream ss;
+        ss << "Creating pattern with dimensions: " << GetWidth() << "x" << GetHeight() 
+           << ", corner radius: " << CORNER_RADIUS;
+        LOG_DEBUG(ss.str());
+    }
+    #endif
+
     // Create the diagonal line pattern texture using PatternRenderer
     backgroundTexture = ui::render::PatternRenderer::CreateDiagonalLinePattern(
         GetWidth(),
@@ -107,6 +122,12 @@ void GameList::InitializeBackgroundTexture() {
         8,   // Line thickness
         pu::ui::Color(31, 41, 139, 255)  // Line color
     );
+
+    if (!backgroundTexture) {
+        LOG_ERROR("Failed to create background texture!");
+    } else {
+        LOG_DEBUG("Background texture created successfully");
+    }
 }
 
 pu::i32 GameList::GetX() {
@@ -187,6 +208,7 @@ void GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_he
 
 void GameList::SetFocused(bool focused) {
     if (this->focused != focused) {
+        LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
         UpdateHighlights();
     }
@@ -200,7 +222,10 @@ void GameList::SetBackgroundColor(const pu::ui::Color& color) {
     backgroundColor = color;
 }
 
-void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
+void pksm::GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
+    LOG_DEBUG("Setting GameList data source with " + std::to_string(titles.size()) + " titles");
+    LOG_MEMORY();  // Memory check when loading new titles
+    
     // Store titles
     this->titles = titles;
 
@@ -209,6 +234,7 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
 
     // Create game card image if first title exists
     if (!titles.empty()) {
+        LOG_DEBUG("Creating game card image for first title");
         gameCardImage = FocusableImage::New(
             gameCardX,
             cartridgeText->GetY() + SECTION_TITLE_SPACING,
@@ -234,6 +260,7 @@ void GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     // Set up installed games grid with remaining titles
     std::vector<titles::TitleRef> installedTitles;
     if (titles.size() > 1) {
+        LOG_DEBUG("Setting up installed games grid with " + std::to_string(titles.size() - 1) + " titles");
         installedTitles.assign(titles.begin() + 1, titles.end());
     }
     installedGames->SetDataSource(installedTitles);
@@ -274,6 +301,10 @@ void GameList::SetOnTouchSelect(std::function<void()> callback) {
 
 void GameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
+        auto selected = GetSelectedTitle();
+        if (selected) {
+            LOG_DEBUG("Selection changed to title: " + selected->getName());
+        }
         onSelectionChangedCallback();
     }
 }
