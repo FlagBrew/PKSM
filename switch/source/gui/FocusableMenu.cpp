@@ -129,4 +129,13 @@ const std::vector<std::string>& FocusableMenu::GetDataSource() const {
 
 void FocusableMenu::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
+}
+
+std::string FocusableMenu::GetSelectedItemText() const {
+    if (!currentDataSource.empty()) {
+        if (selected_item_idx < currentDataSource.size()) {
+            return currentDataSource[selected_item_idx];
+        }
+    }
+    return "";
 } 

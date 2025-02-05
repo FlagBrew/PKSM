@@ -57,6 +57,7 @@ public:
 
     // Button specific methods
     void SetContent(const std::string& content);
+    std::string GetContent() const;
     void SetContentFont(const std::string& font);
     void SetContentColor(const pu::ui::Color& color);
     void SetBackgroundColor(const pu::ui::Color& color);
