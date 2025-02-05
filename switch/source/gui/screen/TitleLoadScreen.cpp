@@ -22,7 +22,7 @@ TitleLoadScreen::TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvid
     this->Add(this->headerText);
 
     // Create game list at the adjusted Y position
-    this->gameList = GameList::New(
+    this->gameList = pksm::GameList::New(
         GAME_LIST_LEFT_MARGIN, 
         HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN
     );

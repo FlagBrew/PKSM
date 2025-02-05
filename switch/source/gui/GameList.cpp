@@ -6,9 +6,7 @@
 #include "ui/render/PatternRenderer.hpp"
 #include "utils/Logger.hpp"
 
-using namespace pksm;  // Add namespace to avoid fully qualifying every use
-
-GameList::GameList(const pu::i32 x, const pu::i32 y)
+pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
     : Element(), selectionState(SelectionState::GameCard), focused(false),
       backgroundColor(pu::ui::Color(40, 51, 135, 255)), onSelectionChangedCallback(nullptr),
       x(x), y(y) {
@@ -61,6 +59,16 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     this->gameCardX = gameCardX;
     this->installedStartX = installedStartX;
 
+    // Create background pattern
+    background = ui::render::PatternBackground::New(
+        x, 
+        y,
+        GetWidth(), 
+        GetHeight() - 1, // -1 to account for bottom of the divider
+        CORNER_RADIUS,
+        backgroundColor
+    );
+
     // Set up input handler for transitions between game card and grid
     inputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
@@ -102,59 +110,29 @@ GameList::GameList(const pu::i32 x, const pu::i32 y)
     LOG_DEBUG("GameList component initialization complete");
 }
 
-void GameList::InitializeBackgroundTexture() {
-    LOG_DEBUG("Starting InitializeBackgroundTexture");
-    #ifdef DEBUG
-    {
-        std::stringstream ss;
-        ss << "Creating pattern with dimensions: " << GetWidth() << "x" << GetHeight() 
-           << ", corner radius: " << CORNER_RADIUS;
-        LOG_DEBUG(ss.str());
-    }
-    #endif
-
-    // Create the diagonal line pattern texture using PatternRenderer
-    backgroundTexture = ui::render::PatternRenderer::CreateDiagonalLinePattern(
-        GetWidth(),
-        GetHeight(),
-        CORNER_RADIUS,
-        14,  // Line spacing
-        8,   // Line thickness
-        pu::ui::Color(31, 41, 139, 255)  // Line color
-    );
-
-    if (!backgroundTexture) {
-        LOG_ERROR("Failed to create background texture!");
-    } else {
-        LOG_DEBUG("Background texture created successfully");
-    }
-}
-
-pu::i32 GameList::GetX() {
+pu::i32 pksm::GameList::GetX() {
     return x;
 }
 
-pu::i32 GameList::GetY() {
+pu::i32 pksm::GameList::GetY() {
     return y;
 }
 
-pu::i32 GameList::GetWidth() {
+pu::i32 pksm::GameList::GetWidth() {
     // Width from left edge to end of installed games section
     return (installedStartX + installedGames->GetWidth() + MARGIN_RIGHT) - GetX();
 }
 
-pu::i32 GameList::GetHeight() {
+pu::i32 pksm::GameList::GetHeight() {
     // Include space for headers and extend to match divider height
     return divider->GetHeight();
 }
 
-void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
-    // Draw background with rounded corners
-    drawer->RenderRoundedRectangleFill(backgroundColor, x, y, GetWidth(), GetHeight() - 1, CORNER_RADIUS);
-
-    // Draw the pre-rendered background texture
-    SDL_Rect destRect = { x, y, GetWidth(), GetHeight() };
-    SDL_RenderCopy(pu::ui::render::GetMainRenderer(), backgroundTexture, nullptr, &destRect);
+void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
+    // Draw background pattern
+    if (background) {
+        background->OnRender(drawer, x, y);
+    }
 
     // Draw section headers and divider
     cartridgeText->OnRender(drawer, cartridgeText->GetX(), cartridgeText->GetY());
@@ -183,7 +161,7 @@ void GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, 
     SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), nullptr);
 }
 
-void GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
+void pksm::GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
@@ -206,7 +184,7 @@ void GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_he
     }
 }
 
-void GameList::SetFocused(bool focused) {
+void pksm::GameList::SetFocused(bool focused) {
     if (this->focused != focused) {
         LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
@@ -214,12 +192,15 @@ void GameList::SetFocused(bool focused) {
     }
 }
 
-bool GameList::IsFocused() const {
+bool pksm::GameList::IsFocused() const {
     return focused;
 }
 
-void GameList::SetBackgroundColor(const pu::ui::Color& color) {
+void pksm::GameList::SetBackgroundColor(const pu::ui::Color& color) {
     backgroundColor = color;
+    if (background) {
+        background->SetBackgroundColor(color);
+    }
 }
 
 void pksm::GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
@@ -268,7 +249,7 @@ void pksm::GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) 
     UpdateHighlights();
 }
 
-titles::TitleRef GameList::GetSelectedTitle() const {
+titles::TitleRef pksm::GameList::GetSelectedTitle() const {
     if (selectionState == SelectionState::GameCard) {
         // Return game card title if it exists
         return !titles.empty() ? titles[0] : nullptr;
@@ -278,7 +259,7 @@ titles::TitleRef GameList::GetSelectedTitle() const {
     }
 }
 
-void GameList::UpdateHighlights() {
+void pksm::GameList::UpdateHighlights() {
     // Update game card highlight
     if (gameCardImage) {
         bool isSelected = selectionState == SelectionState::GameCard;
@@ -291,15 +272,15 @@ void GameList::UpdateHighlights() {
     installedGames->SetSelected(selectionState == SelectionState::InstalledGame);
 }
 
-void GameList::SetOnSelectionChanged(std::function<void()> callback) {
+void pksm::GameList::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
 }
 
-void GameList::SetOnTouchSelect(std::function<void()> callback) {
+void pksm::GameList::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
-void GameList::HandleOnSelectionChanged() {
+void pksm::GameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         auto selected = GetSelectedTitle();
         if (selected) {
@@ -309,8 +290,6 @@ void GameList::HandleOnSelectionChanged() {
     }
 }
 
-GameList::~GameList() {
-    if (backgroundTexture) {
-        SDL_DestroyTexture(backgroundTexture);
-    }
+pksm::GameList::~GameList() {
+    // PatternBackground will clean up its own texture
 } 

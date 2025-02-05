@@ -52,7 +52,7 @@ private:
 
     // UI Elements
     pu::ui::elm::TextBlock::Ref headerText;
-    GameList::Ref gameList;
+    pksm::GameList::Ref gameList;
     FocusableMenu::Ref saveList;
     FocusableButton::Ref loadButton;
     FocusableButton::Ref wirelessButton;
