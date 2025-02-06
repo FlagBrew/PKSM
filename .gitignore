@@ -41,3 +41,4 @@ switch/*.nro
 switch/*.map
 switch/romfs/gfx/ui/
 switch/romfs/gfx/mock/
+PKSM.lst

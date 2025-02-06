@@ -22,11 +22,6 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + MARGIN_TOP, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
     cartridgeText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
-
-    // Create L button text
-    LButtonText = pu::ui::elm::TextBlock::New(x, y, "\ue0a4");
-    LButtonText->SetColor(pu::ui::Color(255, 255, 255, 255));
-    LButtonText->SetFont(UIConstants::MakeSwitchButtonFontName(UIConstants::FONT_SIZE_TITLE));
     
     // Center game card text in its section
     pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
@@ -39,7 +34,7 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Create section divider
     divider = pu::ui::elm::Rectangle::New(
         dividerX, y,  // Position relative to our origin
-        SECTION_DIVIDER_WIDTH, GAME_CARD_SIZE + SECTION_TITLE_SPACING + MARGIN_TOP + MARGIN_BOTTOM,
+        SECTION_DIVIDER_WIDTH, 0,  // Height will be set after we know our height
         UIConstants::BACKGROUND_BLUE
     );
 
@@ -124,8 +119,10 @@ pu::i32 pksm::GameList::GetWidth() {
 }
 
 pu::i32 pksm::GameList::GetHeight() {
-    // Include space for headers and extend to match divider height
-    return divider->GetHeight();
+    // Calculate height based on our layout requirements
+    pu::i32 height = MARGIN_TOP + SECTION_TITLE_SPACING + GAME_CARD_SIZE + MARGIN_BOTTOM;
+    
+    return height;
 }
 
 void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
@@ -137,8 +134,8 @@ void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i
     // Draw section headers and divider
     cartridgeText->OnRender(drawer, cartridgeText->GetX(), cartridgeText->GetY());
     installedText->OnRender(drawer, installedText->GetX(), installedText->GetY());
-    LButtonText->OnRender(drawer, LButtonText->GetX(), LButtonText->GetY());
     divider->OnRender(drawer, divider->GetX(), divider->GetY());
+    divider->SetHeight(this->GetHeight());
 
     // Draw game card if present
     if (gameCardImage) {
@@ -245,6 +242,10 @@ void pksm::GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) 
         installedTitles.assign(titles.begin() + 1, titles.end());
     }
     installedGames->SetDataSource(installedTitles);
+    
+    // Update grid's available height based on our height, accounting for the header area
+    pu::i32 gridHeight = GetHeight() - (MARGIN_TOP + SECTION_TITLE_SPACING);
+    installedGames->SetAvailableHeight(gridHeight);
 
     UpdateHighlights();
 }

@@ -39,6 +39,7 @@ private:
     pu::i32 startY;            // Starting Y position for grid items
     pu::i32 scrollOffset;       // Current vertical scroll offset
     pu::i32 contentHeight;      // Total height of all content
+    pu::i32 availableHeight;    // Height available from parent component
 
     // Touch scrolling state
     bool isDragging;            // Whether we're currently dragging
@@ -104,4 +105,9 @@ public:
     // Grid state queries
     bool IsFirstInRow() const { return selectedIndex % ITEMS_PER_ROW == 0; }
     bool IsOnLastRow() const { return (selectedIndex / ITEMS_PER_ROW) == ((gameImages.size() - 1) / ITEMS_PER_ROW); }
+
+    void SetAvailableHeight(pu::i32 height) { 
+        availableHeight = height;
+        ClampScrollOffset();  // Recalculate scroll bounds with new height
+    }
 }; 
