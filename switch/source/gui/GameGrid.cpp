@@ -4,7 +4,7 @@
 
 GameGrid::GameGrid(const pu::i32 x, const pu::i32 y, const pu::i32 startY)
     : Element(), selectedIndex(0), focused(false), selected(false),
-      x(x), y(y), startY(startY), scrollOffset(0), contentHeight(0),
+      x(x), y(y), startY(startY), scrollOffset(0), contentHeight(0), availableHeight(0),
       isDragging(false), touchStartedOnGame(false), touchStartY(0), lastTouchY(0),
       scrollStartOffset(0), scrollVelocity(0.0f), hasMomentum(false) {
     
@@ -29,6 +29,11 @@ pu::i32 GameGrid::GetWidth() {
 }
 
 pu::i32 GameGrid::GetHeight() {
+    // Use available height if set, otherwise calculate from content
+    if (availableHeight > 0) {
+        return availableHeight;
+    }
+    
     if (gameImages.empty()) {
         return 0;
     }
@@ -174,8 +179,12 @@ void GameGrid::UpdateScrollMomentum() {
 }
 
 void GameGrid::ClampScrollOffset() {
-    // Only add padding at the bottom where we need it for the outline
-    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + GAME_OUTLINE_PADDING - GetHeight());
+    // Get the actual visible height (from parent)
+    pu::i32 visibleHeight = GetHeight();
+    
+    // Calculate max scroll considering content height and outline padding
+    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + GAME_OUTLINE_PADDING - visibleHeight);
+              
     scrollOffset = std::max<pu::i32>(0, std::min<pu::i32>(scrollOffset, maxScroll));
     
     // If we hit bounds, stop momentum
@@ -244,7 +253,9 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
     // Calculate total content height including padding for outline and row spacing
     if (!gameImages.empty()) {
         auto lastGame = gameImages.back();
-        contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING + ROW_SPACING) - GetY();
+        auto firstGame = gameImages.front();
+        // Include outline padding for both top and bottom of content area
+        contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING) - (firstGame->GetY() - GAME_OUTLINE_PADDING);
     } else {
         contentHeight = 0;
     }
@@ -370,18 +381,22 @@ void GameGrid::EnsureRowVisible(size_t row) {
 
     // Calculate row boundaries including outline padding
     pu::i32 rowTop = startY + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)) - GAME_OUTLINE_PADDING;
-    pu::i32 rowBottom = rowTop + INSTALLED_GAME_SIZE + (2 * GAME_OUTLINE_PADDING) + ROW_SPACING;
+    pu::i32 rowBottom = rowTop + INSTALLED_GAME_SIZE + (2 * GAME_OUTLINE_PADDING);
 
     // Calculate visible boundaries
+    pu::i32 visibleHeight = GetHeight();
     pu::i32 visibleTop = GetY();
-    pu::i32 visibleBottom = visibleTop + GetHeight();
+    pu::i32 visibleBottom = visibleTop + visibleHeight;
+
+    // Calculate max scroll using same logic as ClampScrollOffset
+    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + GAME_OUTLINE_PADDING - visibleHeight);
 
     // Adjust scroll offset to make row fully visible
     if (rowTop - scrollOffset < visibleTop) {
-        // Scroll up to show row top with padding
+        // Scroll up to show row top
         scrollOffset = rowTop - visibleTop;
     } else if (rowBottom - scrollOffset > visibleBottom) {
-        // Scroll down to show row bottom with padding
+        // Scroll down to show row bottom
         scrollOffset = rowBottom - visibleBottom;
     }
 
@@ -390,17 +405,12 @@ void GameGrid::EnsureRowVisible(size_t row) {
         scrollOffset = 0;
     }
 
-    // Special case: if we're on the last row, ensure full visibility with padding
+    // Special case: if we're on the last row, ensure full visibility
     size_t lastRow = (gameImages.size() - 1) / ITEMS_PER_ROW;
     if (row == lastRow) {
-        // Calculate the minimum scroll needed to show the last row with full padding
-        pu::i32 lastRowBottom = startY + (lastRow * (INSTALLED_GAME_SIZE + ROW_SPACING)) + 
-                               INSTALLED_GAME_SIZE + (2 * GAME_OUTLINE_PADDING) + ROW_SPACING;
-        pu::i32 minScroll = std::max<pu::i32>(0, lastRowBottom - visibleBottom);
-        scrollOffset = std::max<pu::i32>(scrollOffset, minScroll);
+        scrollOffset = maxScroll;
     }
 
-    // Clamp scroll offset
-    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + (2 * GAME_OUTLINE_PADDING) + ROW_SPACING - GetHeight());
+    // Clamp scroll offset using same logic as ClampScrollOffset
     scrollOffset = std::max<pu::i32>(0, std::min<pu::i32>(scrollOffset, maxScroll));
 } 
