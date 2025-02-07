@@ -63,6 +63,9 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
         backgroundColor
     );
 
+    // Create trigger buttons
+    CreateTriggerButtons();
+
     // Set up input handler for transitions between game card and grid
     inputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
@@ -104,6 +107,30 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
     LOG_DEBUG("GameList component initialization complete");
 }
 
+void pksm::GameList::CreateTriggerButtons() {
+    // Create left trigger button
+    leftTrigger = ui::TriggerButton::New(
+        x - TRIGGER_HORIZONTAL_OFFSET,  // Position slightly outside the component
+        y - TRIGGER_VERTICAL_OFFSET,
+        TRIGGER_BUTTON_WIDTH,
+        TRIGGER_BUTTON_HEIGHT,
+        CORNER_RADIUS,
+        ui::TriggerButton::Side::Left,
+        TRIGGER_BUTTON_COLOR
+    );
+
+    // Create right trigger button
+    rightTrigger = ui::TriggerButton::New(
+        x + GetWidth() - TRIGGER_BUTTON_WIDTH + TRIGGER_HORIZONTAL_OFFSET,  // Position slightly outside the component
+        y - TRIGGER_VERTICAL_OFFSET,
+        TRIGGER_BUTTON_WIDTH,
+        TRIGGER_BUTTON_HEIGHT,
+        CORNER_RADIUS,
+        ui::TriggerButton::Side::Right,
+        TRIGGER_BUTTON_COLOR
+    );
+}
+
 pu::i32 pksm::GameList::GetX() {
     return x;
 }
@@ -125,6 +152,10 @@ pu::i32 pksm::GameList::GetHeight() {
 }
 
 void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
+    // Draw trigger buttons
+    leftTrigger->OnRender(drawer, leftTrigger->GetX(), leftTrigger->GetY());
+    rightTrigger->OnRender(drawer, rightTrigger->GetX(), rightTrigger->GetY());
+
     // Draw background pattern
     if (background) {
         background->OnRender(drawer, x, y);
@@ -165,6 +196,26 @@ void pksm::GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 k
 
         // Let grid handle touch input
         installedGames->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
+
+    if (keys_down & HidNpadButton_L) {
+        LOG_DEBUG("Left trigger button pressed");
+        leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+    }
+
+    if (keys_up & HidNpadButton_L) {
+        LOG_DEBUG("Left trigger button released");
+        leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+    }
+
+    if (keys_down & HidNpadButton_R) {
+        LOG_DEBUG("Right trigger button pressed");
+        rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+    }
+
+    if (keys_up & HidNpadButton_R) {
+        LOG_DEBUG("Right trigger button released");
+        rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
     }
 }
 

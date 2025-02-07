@@ -28,7 +28,7 @@ private:
     // Header sectionimage.png
     static constexpr u32 HEADER_TOP_MARGIN = 24;     // Space between screen top and header
     static constexpr u32 HEADER_HEIGHT = 80;         // Height of header text area
-    static constexpr u32 HEADER_BOTTOM_MARGIN = 24;  // Space between header and game list
+    static constexpr u32 HEADER_BOTTOM_MARGIN = 64;  // Space between header and game list
     
     // Game list section
     static constexpr u32 GAME_LIST_LEFT_MARGIN = 70;  // Left margin for game list component
