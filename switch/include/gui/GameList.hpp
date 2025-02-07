@@ -7,6 +7,7 @@
 #include "gui/DirectionalInputHandler.hpp"
 #include "gui/GameGrid.hpp"
 #include "gui/UIConstants.hpp"
+#include "gui/TriggerButton.hpp"
 #include <vector>
 #include <memory>
 #include <functional>
@@ -38,6 +39,14 @@ namespace pksm {
         static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section titles and game icons
         static constexpr u32 SECTION_BOTTOM_SPACING = SECTION_TITLE_SPACING; // Space below the installed games section
 
+        // Trigger button constants
+        static constexpr u32 TRIGGER_BUTTON_WIDTH = 180;   // Width of L/R trigger buttons
+        static constexpr u32 TRIGGER_BUTTON_HEIGHT = 100;   // Height of L/R trigger buttons
+        static constexpr u32 TRIGGER_HORIZONTAL_OFFSET = 16;   // Offset from component edges
+        static constexpr u32 TRIGGER_VERTICAL_OFFSET = 28;   // Offset from component edges
+        static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR = pu::ui::Color(135, 135, 135, 255);
+        static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
+
         // State
         SelectionState selectionState;
         bool focused;
@@ -58,6 +67,10 @@ namespace pksm {
         FocusableImage::Ref gameCardImage;
         GameGrid::Ref installedGames;
 
+        // Trigger buttons
+        ui::TriggerButton::Ref leftTrigger;
+        ui::TriggerButton::Ref rightTrigger;
+
         // Data
         std::vector<titles::TitleRef> titles;
 
@@ -70,6 +83,7 @@ namespace pksm {
         // Helper methods
         void UpdateHighlights();
         void HandleOnSelectionChanged();
+        void CreateTriggerButtons();
 
     public:
         GameList(const pu::i32 x, const pu::i32 y);
