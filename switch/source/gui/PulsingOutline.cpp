@@ -26,13 +26,13 @@ void PulsingOutline::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i
     constexpr u32 BORDER_WIDTH = 2;
     
     // Top
-    drawer->RenderRectangle(pulseColor, this->x, this->y, this->width, BORDER_WIDTH);
+    drawer->RenderRectangle(pulseColor, x, y, width, BORDER_WIDTH);
     // Bottom
-    drawer->RenderRectangle(pulseColor, this->x, this->y + this->height - BORDER_WIDTH, this->width, BORDER_WIDTH);
+    drawer->RenderRectangle(pulseColor, x, y + height - BORDER_WIDTH, width, BORDER_WIDTH);
     // Left
-    drawer->RenderRectangle(pulseColor, this->x, this->y, BORDER_WIDTH, this->height);
+    drawer->RenderRectangle(pulseColor, x, y, BORDER_WIDTH, height);
     // Right
-    drawer->RenderRectangle(pulseColor, this->x + this->width - BORDER_WIDTH, this->y, BORDER_WIDTH, this->height);
+    drawer->RenderRectangle(pulseColor, x + width - BORDER_WIDTH, y, BORDER_WIDTH, height);
 }
 
 void PulsingOutline::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
