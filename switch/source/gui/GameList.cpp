@@ -41,7 +41,6 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
     // Create game grid for installed games
     installedGames = GameGrid::New(
         installedStartX,
-        y,
         y + MARGIN_TOP + SECTION_TITLE_SPACING
     );
 
@@ -142,20 +141,8 @@ void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i
         gameCardImage->OnRender(drawer, gameCardImage->GetX(), gameCardImage->GetY());
     }
 
-    // Enable clipping for installed games section
-    SDL_Rect clipRect = {
-        static_cast<pu::i32>(installedStartX - GAME_OUTLINE_PADDING),  // Account for outline on left
-        static_cast<pu::i32>(y + MARGIN_TOP + SECTION_TITLE_SPACING - GAME_OUTLINE_PADDING),  // Start at first row of games
-        static_cast<pu::i32>(GetWidth() - (installedStartX - x) + (GAME_OUTLINE_PADDING * 2)),  // Width plus outline padding
-        static_cast<pu::i32>(GetHeight() - (MARGIN_TOP + SECTION_TITLE_SPACING))  // Height of visible area
-    };
-    SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), &clipRect);
-
-    // Draw installed games (they will be clipped)
+    // Draw installed games
     installedGames->OnRender(drawer, installedGames->GetX(), installedGames->GetY());
-
-    // Disable clipping
-    SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), nullptr);
 }
 
 void pksm::GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {

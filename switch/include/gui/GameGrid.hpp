@@ -4,6 +4,7 @@
 #include "titles/Title.hpp"
 #include "gui/FocusableImage.hpp"
 #include "gui/DirectionalInputHandler.hpp"
+#include "gui/ScrollView.hpp"
 #include "gui/UIConstants.hpp"
 #include <vector>
 #include <memory>
@@ -17,12 +18,6 @@ private:
     static constexpr u32 ROW_SPACING = 40;            // Vertical spacing between rows
     static constexpr u32 ITEMS_PER_ROW = 4;          // Number of games per row
     static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
-    static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section title and game icons
-
-    // Touch scrolling constants
-    static constexpr float SCROLL_FRICTION = 0.95f;    // Friction applied to scroll momentum
-    static constexpr float MIN_SCROLL_VELOCITY = 0.5f; // Minimum velocity to continue momentum
-    static constexpr u32 DRAG_THRESHOLD = 10;         // Minimum pixels moved to start dragging
 
     // State
     size_t selectedIndex;
@@ -36,22 +31,10 @@ private:
     // Position tracking
     pu::i32 x;                  // Component's x position
     pu::i32 y;                  // Component's y position
-    pu::i32 startY;            // Starting Y position for grid items
-    pu::i32 scrollOffset;       // Current vertical scroll offset
-    pu::i32 contentHeight;      // Total height of all content
-    pu::i32 availableHeight;    // Height available from parent component
-
-    // Touch scrolling state
-    bool isDragging;            // Whether we're currently dragging
-    bool touchStartedOnGame;    // Whether the touch started on a game icon
-    pu::i32 touchStartY;        // Y position where touch started
-    pu::i32 lastTouchY;         // Last touch Y position for delta calculation
-    pu::i32 scrollStartOffset;  // Scroll offset when drag started
-    float scrollVelocity;       // Current scroll velocity for momentum
-    bool hasMomentum;           // Whether momentum scrolling is active
 
     // UI Elements
     std::vector<FocusableImage::Ref> gameImages;
+    std::unique_ptr<ScrollView> scrollView;
 
     // Data
     std::vector<titles::TitleRef> titles;
@@ -65,12 +48,9 @@ private:
     bool IsInTopRow() const;
     bool IsInBottomRow() const;
     void EnsureRowVisible(size_t row);
-    void UpdateScrollMomentum();
-    void ClampScrollOffset();
-    bool ShouldStartDragging(const pu::ui::TouchPoint& touch_pos) const;
 
 public:
-    GameGrid(const pu::i32 x, const pu::i32 y, const pu::i32 startY);
+    GameGrid(const pu::i32 x, const pu::i32 y);
     ~GameGrid() = default;
     PU_SMART_CTOR(GameGrid)
 
@@ -106,8 +86,5 @@ public:
     bool IsFirstInRow() const { return selectedIndex % ITEMS_PER_ROW == 0; }
     bool IsOnLastRow() const { return (selectedIndex / ITEMS_PER_ROW) == ((gameImages.size() - 1) / ITEMS_PER_ROW); }
 
-    void SetAvailableHeight(pu::i32 height) { 
-        availableHeight = height;
-        ClampScrollOffset();  // Recalculate scroll bounds with new height
-    }
+    void SetAvailableHeight(pu::i32 height);
 }; 

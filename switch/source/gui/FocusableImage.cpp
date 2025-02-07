@@ -75,6 +75,7 @@ pu::ui::elm::Rectangle::Ref FocusableImage::GetOverlay() {
 }
 
 void FocusableImage::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
+    // Draw the base image at the adjusted position
     Image::OnRender(drawer, x, y);
     
     // Draw the overlay for unselected items
@@ -84,7 +85,8 @@ void FocusableImage::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i
     
     // Draw the outline only for the focused and selected item
     if (focused && selected) {
-        outline->OnRender(drawer, x, y);
+        // Pass the adjusted position directly to the outline
+        outline->OnRender(drawer, x - outlinePadding, y - outlinePadding);
     }
 }
 

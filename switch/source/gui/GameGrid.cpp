@@ -2,11 +2,17 @@
 #include "gui/UIConstants.hpp"
 #include <cmath>
 
-GameGrid::GameGrid(const pu::i32 x, const pu::i32 y, const pu::i32 startY)
+GameGrid::GameGrid(const pu::i32 x, const pu::i32 y)
     : Element(), selectedIndex(0), focused(false), selected(false),
-      x(x), y(y), startY(startY), scrollOffset(0), contentHeight(0), availableHeight(0),
-      isDragging(false), touchStartedOnGame(false), touchStartY(0), lastTouchY(0),
-      scrollStartOffset(0), scrollVelocity(0.0f), hasMomentum(false) {
+      x(x), y(y) {
+    
+    // Initialize ScrollView
+    scrollView = std::make_unique<ScrollView>(
+        x - GAME_OUTLINE_PADDING, 
+        y - GAME_OUTLINE_PADDING, 
+        GAME_SPACING * (ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE + (GAME_OUTLINE_PADDING * 2), 
+        0
+    );
     
     // Set up input handler
     inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
@@ -29,43 +35,12 @@ pu::i32 GameGrid::GetWidth() {
 }
 
 pu::i32 GameGrid::GetHeight() {
-    // Use available height if set, otherwise calculate from content
-    if (availableHeight > 0) {
-        return availableHeight;
-    }
-    
-    if (gameImages.empty()) {
-        return 0;
-    }
-
-    // Find the last game's bottom edge
-    auto lastGame = gameImages.back();
-    return (lastGame->GetY() + lastGame->GetHeight()) - GetY();
+    // Use ScrollView's height if set
+    return scrollView->GetHeight();
 }
 
 void GameGrid::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
-    // Update momentum scrolling if active
-    if (hasMomentum) {
-        UpdateScrollMomentum();
-    }
-
-    // Draw all game images with scroll offset applied
-    for (auto& image : gameImages) {
-        // Calculate position including outline padding
-        pu::i32 imageY = image->GetY() - scrollOffset;
-        
-        // Update the image's actual position to keep outline in sync
-        image->SetY(imageY);
-        image->OnRender(drawer, image->GetX(), imageY);
-        
-        // Restore original position for next frame
-        image->SetY(image->GetY() + scrollOffset);
-    }
-}
-
-bool GameGrid::ShouldStartDragging(const pu::ui::TouchPoint& touch_pos) const {
-    // Only start dragging if we've moved beyond the threshold
-    return std::abs(touch_pos.y - touchStartY) > DRAG_THRESHOLD;
+    scrollView->OnRender(drawer, x, y);
 }
 
 void GameGrid::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
@@ -74,129 +49,14 @@ void GameGrid::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_he
         inputHandler.HandleInput(keys_down, keys_held);
     }
     
-    // Handle touch input
-    if (!touch_pos.IsEmpty()) {
-        // Check if touch hits any game first
-        bool hitGame = false;
-        for (size_t i = 0; i < gameImages.size(); i++) {
-            auto& image = gameImages[i];
-            if (touch_pos.HitsRegion(image->GetX(), image->GetY() - scrollOffset, image->GetWidth(), image->GetHeight())) {
-                hitGame = true;
-                
-                if (focused) {
-                    // Handle drag and selection when focused
-                    if (!isDragging) {
-                        // Store initial touch state
-                        if (touchStartY == 0) {  // New touch
-                            touchStartY = touch_pos.y;
-                            lastTouchY = touch_pos.y;
-                            scrollStartOffset = scrollOffset;
-                            touchStartedOnGame = true;
-                        } else if (ShouldStartDragging(touch_pos)) {
-                            // Convert to drag if moved enough
-                            isDragging = true;
-                            hasMomentum = false;
-                            scrollVelocity = 0.0f;
-                        } else if (touch_pos.y == touchStartY) {  // Clean tap
-                            // Update selection and notify parent
-                            if (selectedIndex != i || !selected) {
-                                selectedIndex = i;
-                                selected = true;
-                                EnsureRowVisible(i / ITEMS_PER_ROW);
-                                UpdateHighlights();
-                                HandleOnSelectionChanged();
-                            }
-                        }
-                    }
-                } else {
-                    // When not focused, just forward touches to game images
-                    image->OnInput(keys_down, keys_up, keys_held, touch_pos);
-                }
-                break;
-            }
-        }
-        
-        if (focused) {  // Only handle grid area drags when focused
-            // If we didn't hit a game but hit the grid area, prepare for potential drag
-            if (!hitGame && touch_pos.HitsRegion(GetX(), GetY(), GetWidth(), GetHeight())) {
-                if (!isDragging && touchStartY == 0) {  // New touch
-                    touchStartY = touch_pos.y;
-                    lastTouchY = touch_pos.y;
-                    scrollStartOffset = scrollOffset;
-                    touchStartedOnGame = false;
-                } else if (!isDragging && ShouldStartDragging(touch_pos)) {
-                    isDragging = true;
-                    hasMomentum = false;
-                    scrollVelocity = 0.0f;
-                }
-            }
-
-            if (isDragging) {
-                // Continue drag
-                pu::i32 deltaY = lastTouchY - touch_pos.y;
-                scrollOffset = scrollStartOffset + (touchStartY - touch_pos.y);
-                
-                // Calculate velocity for momentum
-                scrollVelocity = static_cast<float>(deltaY);
-                
-                // Update last touch position
-                lastTouchY = touch_pos.y;
-                
-                // Ensure we stay in bounds
-                ClampScrollOffset();
-            }
-        }
-    } else {
-        // Touch released
-        if (isDragging) {
-            isDragging = false;
-            // Start momentum if we have enough velocity
-            if (std::abs(scrollVelocity) > MIN_SCROLL_VELOCITY) {
-                hasMomentum = true;
-            }
-        }
-        // Reset touch tracking
-        touchStartY = 0;
-        touchStartedOnGame = false;
-    }
-}
-
-void GameGrid::UpdateScrollMomentum() {
-    // Apply velocity to scroll position
-    scrollOffset += static_cast<pu::i32>(scrollVelocity);
-    
-    // Apply friction
-    scrollVelocity *= SCROLL_FRICTION;
-    
-    // Stop momentum if velocity is too low
-    if (std::abs(scrollVelocity) < MIN_SCROLL_VELOCITY) {
-        hasMomentum = false;
-        scrollVelocity = 0.0f;
-    }
-    
-    // Ensure we stay in bounds
-    ClampScrollOffset();
-}
-
-void GameGrid::ClampScrollOffset() {
-    // Get the actual visible height (from parent)
-    pu::i32 visibleHeight = GetHeight();
-    
-    // Calculate max scroll considering content height and outline padding
-    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + GAME_OUTLINE_PADDING - visibleHeight);
-              
-    scrollOffset = std::max<pu::i32>(0, std::min<pu::i32>(scrollOffset, maxScroll));
-    
-    // If we hit bounds, stop momentum
-    if (scrollOffset == 0 || scrollOffset == maxScroll) {
-        hasMomentum = false;
-        scrollVelocity = 0.0f;
-    }
+    // Let ScrollView handle all touch input
+    scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
 
 void GameGrid::SetFocused(bool focused) {
     if (this->focused != focused) {
         this->focused = focused;
+        this->scrollView->SetFocused(focused);
         UpdateHighlights();
     }
 }
@@ -211,7 +71,6 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
 
     // Clear existing images
     gameImages.clear();
-    scrollOffset = 0;
 
     // Create game images for all titles
     for (size_t i = 0; i < titles.size(); i++) {
@@ -221,7 +80,7 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
 
         auto gameImage = FocusableImage::New(
             GetX() + (col * GAME_SPACING),
-            startY + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)),
+            y + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)),
             titles[i]->getIcon(),
             94,
             GAME_OUTLINE_PADDING
@@ -232,22 +91,17 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         // Set up touch handling for this game
         const size_t index = i;  // Store index for lambda capture
         gameImage->SetOnTouchSelect([this, index]() {
-            if (selectedIndex != index) {
-                selectedIndex = index;
-                UpdateHighlights();
-                EnsureRowVisible(index / ITEMS_PER_ROW);
-                HandleOnSelectionChanged();
-            }
-            // Only notify parent if we weren't already focused
+            SetSelectedIndex(index);
             if (!focused && onTouchSelectCallback) {
-                focused = true;
-                selected = true;  // Ensure selected state is set
+                this->SetFocused(true);
+                this->SetSelected(true);  // Ensure selected state is set
                 UpdateHighlights();  // Update highlights after changing states
                 onTouchSelectCallback();
             }
         });
         
         gameImages.push_back(gameImage);
+        scrollView->Add(gameImage);
     }
 
     // Calculate total content height including padding for outline and row spacing
@@ -255,9 +109,11 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         auto lastGame = gameImages.back();
         auto firstGame = gameImages.front();
         // Include outline padding for both top and bottom of content area
-        contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING) - (firstGame->GetY() - GAME_OUTLINE_PADDING);
+        pu::i32 contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING) - 
+                               (firstGame->GetY() - GAME_OUTLINE_PADDING);
+        scrollView->SetContentHeight(contentHeight);
     } else {
-        contentHeight = 0;
+        scrollView->SetContentHeight(0);
     }
 
     UpdateHighlights();
@@ -275,19 +131,11 @@ size_t GameGrid::GetSelectedIndex() const {
 }
 
 void GameGrid::MoveLeft() {
-    if (selectedIndex > 0) {
-        selectedIndex--;
-        UpdateHighlights();
-        HandleOnSelectionChanged();
-    }
+    SetSelectedIndex(selectedIndex - 1);
 }
 
 void GameGrid::MoveRight() {
-    if (selectedIndex < gameImages.size() - 1) {
-        selectedIndex++;
-        UpdateHighlights();
-        HandleOnSelectionChanged();
-    }
+    SetSelectedIndex(selectedIndex + 1);
 }
 
 void GameGrid::MoveUp() {
@@ -295,25 +143,18 @@ void GameGrid::MoveUp() {
         if (onTopRowCallback) {
             onTopRowCallback();
         }
-    } else if (selectedIndex >= ITEMS_PER_ROW) {
-        selectedIndex -= ITEMS_PER_ROW;
-        EnsureRowVisible(selectedIndex / ITEMS_PER_ROW);
-        UpdateHighlights();
-        HandleOnSelectionChanged();
+    } else {
+        SetSelectedIndex(selectedIndex - ITEMS_PER_ROW);
     }
 }
 
 void GameGrid::MoveDown() {
-    size_t nextIndex = selectedIndex + ITEMS_PER_ROW;
     if (IsInBottomRow()) {
         if (onBottomRowCallback) {
             onBottomRowCallback();
         }
-    } else if (nextIndex < gameImages.size()) {
-        selectedIndex = nextIndex;
-        EnsureRowVisible(selectedIndex / ITEMS_PER_ROW);
-        UpdateHighlights();
-        HandleOnSelectionChanged();
+    } else {
+        SetSelectedIndex(selectedIndex + ITEMS_PER_ROW);
     }
 }
 
@@ -368,7 +209,7 @@ void GameGrid::HandleOnSelectionChanged() {
 }
 
 void GameGrid::SetSelectedIndex(size_t index) {
-    if (index < gameImages.size() && selectedIndex != index) {
+    if (index >= 0 && index < gameImages.size() && selectedIndex != index) {
         selectedIndex = index;
         EnsureRowVisible(index / ITEMS_PER_ROW);
         UpdateHighlights();
@@ -380,37 +221,12 @@ void GameGrid::EnsureRowVisible(size_t row) {
     if (gameImages.empty()) return;
 
     // Calculate row boundaries including outline padding
-    pu::i32 rowTop = startY + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)) - GAME_OUTLINE_PADDING;
-    pu::i32 rowBottom = rowTop + INSTALLED_GAME_SIZE + (2 * GAME_OUTLINE_PADDING);
+    pu::i32 rowTop = 0 + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)) - GAME_OUTLINE_PADDING;
+    
+    // Scroll to make the row visible
+    scrollView->ScrollToOffset(rowTop, true);
+}
 
-    // Calculate visible boundaries
-    pu::i32 visibleHeight = GetHeight();
-    pu::i32 visibleTop = GetY();
-    pu::i32 visibleBottom = visibleTop + visibleHeight;
-
-    // Calculate max scroll using same logic as ClampScrollOffset
-    pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight + GAME_OUTLINE_PADDING - visibleHeight);
-
-    // Adjust scroll offset to make row fully visible
-    if (rowTop - scrollOffset < visibleTop) {
-        // Scroll up to show row top
-        scrollOffset = rowTop - visibleTop;
-    } else if (rowBottom - scrollOffset > visibleBottom) {
-        // Scroll down to show row bottom
-        scrollOffset = rowBottom - visibleBottom;
-    }
-
-    // Special case: if we're on the first row, always scroll to top
-    if (row == 0) {
-        scrollOffset = 0;
-    }
-
-    // Special case: if we're on the last row, ensure full visibility
-    size_t lastRow = (gameImages.size() - 1) / ITEMS_PER_ROW;
-    if (row == lastRow) {
-        scrollOffset = maxScroll;
-    }
-
-    // Clamp scroll offset using same logic as ClampScrollOffset
-    scrollOffset = std::max<pu::i32>(0, std::min<pu::i32>(scrollOffset, maxScroll));
+void GameGrid::SetAvailableHeight(pu::i32 height) {
+    scrollView->SetHeight(height);
 } 
