@@ -4,12 +4,12 @@
 
 class MockTitleDataProvider : public ITitleDataProvider {
 private:
-    titles::TitleRef mockCartridgeTitle;
-    std::vector<titles::TitleRef> mockInstalledTitles;
+    pksm::titles::Title::Ref mockCartridgeTitle;
+    std::vector<pksm::titles::Title::Ref> mockInstalledTitles;
 
 public:
     MockTitleDataProvider();
-    
-    titles::TitleRef GetGameCardTitle() const override;
-    std::vector<titles::TitleRef> GetInstalledTitles() const override;
-}; 
+
+    pksm::titles::Title::Ref GetGameCardTitle() const override;
+    std::vector<pksm::titles::Title::Ref> GetInstalledTitles() const override;
+};

@@ -1,84 +1,81 @@
 #pragma once
 
+#include <memory>
 #include <pu/Plutonium>
-#include "titles/Title.hpp"
+#include <string>
+#include <vector>
+
+#include "data/ISaveDataProvider.hpp"
+#include "data/ITitleDataProvider.hpp"
+#include "gui/DirectionalInputHandler.hpp"
 #include "gui/FocusableButton.hpp"
 #include "gui/FocusableImage.hpp"
-#include "gui/FocusableMenu.hpp"
 #include "gui/GameList.hpp"
-#include "gui/DirectionalInputHandler.hpp"
-#include "data/ITitleDataProvider.hpp"
-#include "data/ISaveDataProvider.hpp"
-#include <vector>
-#include <string>
-#include <memory>
+#include "gui/SaveList.hpp"
+#include "input/FocusManager.hpp"
+#include "titles/Title.hpp"
 
+namespace pksm::layout {
 class TitleLoadScreen : public pu::ui::Layout {
 private:
-    enum class TitleSelectionState {
-        InSaveList,
-        GameCard,
-        InstalledGame
-    };
-
-    // Layout constants
-    static constexpr u32 SCREEN_WIDTH = 1920;
-    static constexpr u32 SCREEN_HEIGHT = 1080;
-
     // Header sectionimage.png
-    static constexpr u32 HEADER_TOP_MARGIN = 24;     // Space between screen top and header
-    static constexpr u32 HEADER_HEIGHT = 80;         // Height of header text area
+    static constexpr u32 HEADER_TOP_MARGIN = 24;  // Space between screen top and header
+    static constexpr u32 HEADER_HEIGHT = 80;  // Height of header text area
     static constexpr u32 HEADER_BOTTOM_MARGIN = 64;  // Space between header and game list
-    
+    static constexpr u32 HEADER_TOTAL_VERTICAL_SPACE = HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN;
+
     // Game list section
-    static constexpr u32 GAME_LIST_LEFT_MARGIN = 70;  // Left margin for game list component
-    static constexpr u32 GAME_LIST_BOTTOM_MARGIN = 48;  // Space between game list and save list
-    
+    static constexpr u32 GAME_LIST_SIDE_MARGIN = 70;  // Side margin for game list component
+
     // Save list section (bottom)
+    static constexpr u32 SAVE_LIST_TOP_MARGIN = 48;  // Space between game list and save list
     static constexpr u32 SAVE_LIST_WIDTH = 1240;
-    static constexpr u32 SAVE_LIST_HEIGHT = 300;
-    static constexpr u32 SAVE_LIST_X = GAME_LIST_LEFT_MARGIN;
-    
+    static constexpr u32 SAVE_LIST_X = GAME_LIST_SIDE_MARGIN;
+    static constexpr u32 SAVE_ITEM_HEIGHT = 48;
+    static constexpr u32 SAVE_LIST_MAX_VISIBLE_ITEMS = 5;
+    static constexpr u32 SAVE_LIST_HEIGHT = SAVE_ITEM_HEIGHT * SAVE_LIST_MAX_VISIBLE_ITEMS;
+    static constexpr u32 SAVE_LIST_BOTTOM_MARGIN = 48;  // Space between save list and bottom
+    static constexpr u32 SAVE_LIST_TOTAL_VERTICAL_SPACE = SAVE_LIST_TOP_MARGIN + SAVE_LIST_HEIGHT +
+        SAVE_LIST_BOTTOM_MARGIN;
+
     // Buttons
     static constexpr u32 BUTTON_WIDTH = 508;
     static constexpr u32 BUTTON_HEIGHT = 111;
     static constexpr u32 BUTTON_SPACING = 20;
-    static constexpr u32 SAVE_ITEM_HEIGHT = 48;
 
     // Input handling
-    DirectionalInputHandler buttonHandler;
-    DirectionalInputHandler saveListHandler;
-    DirectionalInputHandler gameListHandler;
+    pksm::input::DirectionalInputHandler buttonHandler;
+    pksm::input::DirectionalInputHandler saveListHandler;
+    pksm::input::DirectionalInputHandler gameListHandler;
+
+    // Focus management
+    pksm::input::FocusManager::Ref titleLoadFocusManager;
+    pksm::input::FocusManager::Ref gameListManager;
 
     // UI Elements
     pu::ui::elm::TextBlock::Ref headerText;
-    pksm::GameList::Ref gameList;
-    FocusableMenu::Ref saveList;
-    FocusableButton::Ref loadButton;
-    FocusableButton::Ref wirelessButton;
+    pksm::ui::GameList::Ref gameList;
+    pksm::ui::SaveList::Ref saveList;
+    pksm::ui::FocusableButton::Ref loadButton;
+    pksm::ui::FocusableButton::Ref wirelessButton;
 
     // Data providers
-    std::shared_ptr<ITitleDataProvider> titleProvider;
-    std::shared_ptr<ISaveDataProvider> saveProvider;
-
-    // State
-    TitleSelectionState selectionState;
-    TitleSelectionState lastSelectionState;
+    ITitleDataProvider::Ref titleProvider;
+    ISaveDataProvider::Ref saveProvider;
 
     // Event handlers
     void OnSaveSelected();
     void OnLoadButtonClick();
     void OnWirelessButtonClick();
-    void OnSaveItemKey();
     void OnInput(u64 down, u64 up, u64 held);
     void OnGameTouchSelect();
     void OnSaveListTouchSelect();
 
     // Helper methods
     void LoadSaves();
-    titles::TitleRef GetSelectedTitle() const;
+    pksm::titles::Title::Ref GetSelectedTitle() const;
     pu::i32 GetBottomSectionY() const;  // Helper to calculate Y position for save list and buttons
-    
+
     // Navigation helpers
     void MoveButtonSelectionUp();
     void MoveButtonSelectionDown();
@@ -86,9 +83,10 @@ private:
     void TransitionToButtons();
     void FocusGameSection();
     void FocusSaveList();
-    void HandleButtonInteraction(FocusableButton::Ref& buttonToFocus);
+    void HandleButtonInteraction(pksm::ui::FocusableButton::Ref& buttonToFocus);
 
 public:
-    TitleLoadScreen(std::shared_ptr<ITitleDataProvider> titleProvider, std::shared_ptr<ISaveDataProvider> saveProvider);
+    TitleLoadScreen(ITitleDataProvider::Ref titleProvider, ISaveDataProvider::Ref saveProvider);
     PU_SMART_CTOR(TitleLoadScreen)
-}; 
+};
+}  // namespace pksm::layout

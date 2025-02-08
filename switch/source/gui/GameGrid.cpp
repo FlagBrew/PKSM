@@ -1,75 +1,110 @@
 #include "gui/GameGrid.hpp"
-#include "gui/UIConstants.hpp"
+
 #include <cmath>
 
-GameGrid::GameGrid(const pu::i32 x, const pu::i32 y)
-    : Element(), selectedIndex(0), focused(false), selected(false),
-      x(x), y(y) {
-    
+#include "gui/UIConstants.hpp"
+#include "utils/Logger.hpp"
+
+pksm::ui::GameGrid::GameGrid(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 height,
+    input::FocusManager::Ref parentFocusManager,
+    input::SelectionManager::Ref parentSelectionManager
+)
+  : Element(), selectedIndex(0), focused(false), selected(false), x(x), y(y), height(height) {
+    // Initialize container
+    container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
+
     // Initialize ScrollView
-    scrollView = std::make_unique<ScrollView>(
-        x - GAME_OUTLINE_PADDING, 
-        y - GAME_OUTLINE_PADDING, 
-        GAME_SPACING * (ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE + (GAME_OUTLINE_PADDING * 2), 
-        0
+    scrollView = ScrollView::New(
+        x - GAME_OUTLINE_PADDING,
+        y - GAME_OUTLINE_PADDING,
+        GetWidth() + (GAME_OUTLINE_PADDING * 2),
+        height
     );
-    
+    container->Add(scrollView);
+    container->PreRender();
+
     // Set up input handler
     inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
     inputHandler.SetOnMoveRight([this]() { MoveRight(); });
     inputHandler.SetOnMoveUp([this]() { MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { MoveDown(); });
+
+    SetFocusManager(parentFocusManager);
+    SetSelectionManager(parentSelectionManager);
+
+    LOG_DEBUG("GameGrid component initialization complete");
 }
 
-pu::i32 GameGrid::GetX() {
+pu::i32 pksm::ui::GameGrid::GetX() {
     return x;
 }
 
-pu::i32 GameGrid::GetY() {
+pu::i32 pksm::ui::GameGrid::GetY() {
     return y;
 }
 
-pu::i32 GameGrid::GetWidth() {
+pu::i32 pksm::ui::GameGrid::GetWidth() {
     // Width is the space needed for all items in a row
     return GAME_SPACING * (ITEMS_PER_ROW - 1) + INSTALLED_GAME_SIZE;
 }
 
-pu::i32 GameGrid::GetHeight() {
+pu::i32 pksm::ui::GameGrid::GetHeight() {
     // Use ScrollView's height if set
-    return scrollView->GetHeight();
+    return height;
 }
 
-void GameGrid::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
+void pksm::ui::GameGrid::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
     scrollView->OnRender(drawer, x, y);
 }
 
-void GameGrid::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
+void pksm::ui::GameGrid::OnInput(
+    const u64 keys_down,
+    const u64 keys_up,
+    const u64 keys_held,
+    const pu::ui::TouchPoint touch_pos
+) {
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
     }
-    
+
     // Let ScrollView handle all touch input
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
 
-void GameGrid::SetFocused(bool focused) {
+void pksm::ui::GameGrid::SetFocused(bool focused) {
+    LOG_DEBUG("[GameGrid] Setting focused: " + std::to_string(focused));
     if (this->focused != focused) {
         this->focused = focused;
         this->scrollView->SetFocused(focused);
-        UpdateHighlights();
+
+        // When gaining focus, ensure the selected game is focused
+        if (focused && selectedIndex < gameImages.size()) {
+            gameImages[selectedIndex]->RequestFocus();
+        }
     }
 }
 
-bool GameGrid::IsFocused() const {
+bool pksm::ui::GameGrid::IsFocused() const {
     return focused;
 }
 
-void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
+void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
     // Store titles
     this->titles = titles;
 
-    // Clear existing images
+    // Clear existing images and unregister them from focus manager
+    for (auto& image : gameImages) {
+        if (auto fm = this->focusManager.lock()) {
+            fm->UnregisterFocusable(image);
+        }
+        if (auto sm = this->selectionManager.lock()) {
+            sm->UnregisterSelectable(image);
+        }
+    }
     gameImages.clear();
 
     // Create game images for all titles
@@ -85,21 +120,27 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
             94,
             GAME_OUTLINE_PADDING
         );
+        gameImage->IFocusable::SetName("GameImage Element with title: " + titles[i]->getName());
+        gameImage->ISelectable::SetName("GameImage Element with title: " + titles[i]->getName());
         gameImage->SetWidth(INSTALLED_GAME_SIZE);
         gameImage->SetHeight(INSTALLED_GAME_SIZE);
-        
+
         // Set up touch handling for this game
         const size_t index = i;  // Store index for lambda capture
         gameImage->SetOnTouchSelect([this, index]() {
             SetSelectedIndex(index);
             if (!focused && onTouchSelectCallback) {
-                this->SetFocused(true);
-                this->SetSelected(true);  // Ensure selected state is set
-                UpdateHighlights();  // Update highlights after changing states
+                this->RequestFocus();
                 onTouchSelectCallback();
             }
         });
-        
+
+        if (auto fm = this->focusManager.lock()) {
+            fm->RegisterFocusable(gameImage);
+        }
+        if (auto sm = this->selectionManager.lock()) {
+            sm->RegisterSelectable(gameImage);
+        }
         gameImages.push_back(gameImage);
         scrollView->Add(gameImage);
     }
@@ -109,124 +150,101 @@ void GameGrid::SetDataSource(const std::vector<titles::TitleRef>& titles) {
         auto lastGame = gameImages.back();
         auto firstGame = gameImages.front();
         // Include outline padding for both top and bottom of content area
-        pu::i32 contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING) - 
-                               (firstGame->GetY() - GAME_OUTLINE_PADDING);
+        pu::i32 contentHeight = (lastGame->GetY() + lastGame->GetHeight() + GAME_OUTLINE_PADDING) -
+            (firstGame->GetY() - GAME_OUTLINE_PADDING);
         scrollView->SetContentHeight(contentHeight);
     } else {
         scrollView->SetContentHeight(0);
     }
-
-    UpdateHighlights();
 }
 
-titles::TitleRef GameGrid::GetSelectedTitle() const {
+pksm::titles::Title::Ref pksm::ui::GameGrid::GetSelectedTitle() const {
     if (selectedIndex < titles.size()) {
         return titles[selectedIndex];
     }
     return nullptr;
 }
 
-size_t GameGrid::GetSelectedIndex() const {
+size_t pksm::ui::GameGrid::GetSelectedIndex() const {
     return selectedIndex;
 }
 
-void GameGrid::MoveLeft() {
+void pksm::ui::GameGrid::MoveLeft() {
     SetSelectedIndex(selectedIndex - 1);
 }
 
-void GameGrid::MoveRight() {
+void pksm::ui::GameGrid::MoveRight() {
     SetSelectedIndex(selectedIndex + 1);
 }
 
-void GameGrid::MoveUp() {
+void pksm::ui::GameGrid::MoveUp() {
     if (IsInTopRow()) {
-        if (onTopRowCallback) {
-            onTopRowCallback();
-        }
+        return;
     } else {
         SetSelectedIndex(selectedIndex - ITEMS_PER_ROW);
     }
 }
 
-void GameGrid::MoveDown() {
+void pksm::ui::GameGrid::MoveDown() {
     if (IsInBottomRow()) {
-        if (onBottomRowCallback) {
-            onBottomRowCallback();
-        }
+        return;
     } else {
         SetSelectedIndex(selectedIndex + ITEMS_PER_ROW);
     }
 }
 
-bool GameGrid::IsInTopRow() const {
+bool pksm::ui::GameGrid::IsInTopRow() const {
     return selectedIndex < ITEMS_PER_ROW;
 }
 
-bool GameGrid::IsInBottomRow() const {
+bool pksm::ui::GameGrid::IsInBottomRow() const {
     size_t nextIndex = selectedIndex + ITEMS_PER_ROW;
     return nextIndex >= gameImages.size();
 }
 
-void GameGrid::UpdateHighlights() {
-    for (size_t i = 0; i < gameImages.size(); i++) {
-        bool isSelected = selected && selectedIndex == i;
-        gameImages[i]->SetSelected(isSelected);
-        gameImages[i]->SetFocused(focused && isSelected);
-    }
-}
-
-void GameGrid::SetSelected(bool selected) {
-    if (this->selected != selected) {
-        this->selected = selected;
-        UpdateHighlights();
-    }
-}
-
-bool GameGrid::IsSelected() const {
+bool pksm::ui::GameGrid::IsSelected() const {
     return selected;
 }
 
-void GameGrid::SetOnSelectionChanged(std::function<void()> callback) {
+void pksm::ui::GameGrid::SetSelected(bool selected) {
+    this->selected = selected;
+}
+
+void pksm::ui::GameGrid::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
 }
 
-void GameGrid::SetOnTouchSelect(std::function<void()> callback) {
+void pksm::ui::GameGrid::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
-void GameGrid::SetOnTopRow(std::function<void()> callback) {
-    onTopRowCallback = callback;
-}
-
-void GameGrid::SetOnBottomRow(std::function<void()> callback) {
-    onBottomRowCallback = callback;
-}
-
-void GameGrid::HandleOnSelectionChanged() {
+void pksm::ui::GameGrid::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         onSelectionChangedCallback();
     }
 }
 
-void GameGrid::SetSelectedIndex(size_t index) {
+void pksm::ui::GameGrid::SetSelectedIndex(size_t index) {
     if (index >= 0 && index < gameImages.size() && selectedIndex != index) {
         selectedIndex = index;
         EnsureRowVisible(index / ITEMS_PER_ROW);
-        UpdateHighlights();
+
+        // Request focus on the newly selected game
+        if (focused) {
+            gameImages[selectedIndex]->RequestFocus();
+        }
+
         HandleOnSelectionChanged();
     }
 }
 
-void GameGrid::EnsureRowVisible(size_t row) {
-    if (gameImages.empty()) return;
+void pksm::ui::GameGrid::EnsureRowVisible(size_t row) {
+    if (gameImages.empty())
+        return;
 
     // Calculate row boundaries including outline padding
     pu::i32 rowTop = 0 + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)) - GAME_OUTLINE_PADDING;
-    
+
     // Scroll to make the row visible
     scrollView->ScrollToOffset(rowTop, true);
 }
-
-void GameGrid::SetAvailableHeight(pu::i32 height) {
-    scrollView->SetHeight(height);
-} 
