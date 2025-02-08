@@ -1,52 +1,92 @@
 #include "gui/ConsoleGameList.hpp"
-#include "gui/UIConstants.hpp"
+
 #include <cmath>
 #include <sstream>
+
+#include "gui/UIConstants.hpp"
 #include "utils/Logger.hpp"
 
-pksm::ConsoleGameList::ConsoleGameList(const pu::i32 x, const pu::i32 y, const LayoutConfig& config)
-    : Element(), selectionState(SelectionState::GameCard), focused(false),
-      onSelectionChangedCallback(nullptr), x(x), y(y), config(config) {
-    
+pksm::ui::ConsoleGameList::ConsoleGameList(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 width,
+    const pu::i32 height,
+    const LayoutConfig& config,
+    input::FocusManager::Ref parentFocusManager
+)
+  : Element(),
+    selectionState(SelectionState::GameCard),
+    focused(false),
+    onSelectionChangedCallback(nullptr),
+    x(x),
+    y(y),
+    width(width),
+    height(height),
+    config(config) {
     LOG_DEBUG("Initializing ConsoleGameList component...");
 
+    // Initialize selection managers
+    consoleGameListSelectionManager = input::SelectionManager::New("ConsoleGameList Manager");
+    consoleGameListSelectionManager->SetActive(true);  // This is a root selection manager
+    gameGridSelectionManager = input::SelectionManager::New("GameGrid Manager");
+    consoleGameListSelectionManager->RegisterChildManager(gameGridSelectionManager);
+
+    LOG_DEBUG("ConsoleGameList selection manager set");
+
+    // Initialize focus managers
+    installedGamesManager = input::FocusManager::New("InstalledGames (GameGrid) Manager");
+
     // Initialize container
-    container = std::make_unique<pu::ui::Container>(x, y, 0, 0);  // Width/height will be set after we know our dimensions
-    
+    container = pu::ui::Container::New(x, y, width, height);
+
     // Calculate key positions relative to our component's origin
-    pu::i32 gameCardX = x + config.marginLeft;
+    pu::i32 gameCardX = x + config.paddingLeft;
     pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
     pu::i32 installedStartX = dividerX + SECTION_DIVIDER_WIDTH + SECTION_DIVIDER_PADDING;
-    
+
     // Create section headers first (we need their position)
-    cartridgeText = pu::ui::elm::TextBlock::New(0, y + config.marginTop, "Game Card");
+    cartridgeText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, "Game Card");
     cartridgeText->SetColor(pu::ui::Color(255, 255, 255, 255));
-    cartridgeText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
+    cartridgeText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
     container->Add(cartridgeText);
-    
+
     // Center game card text in its section
     pu::i32 gameCardTextX = gameCardX + (GAME_CARD_SIZE - cartridgeText->GetWidth()) / 2;
     cartridgeText->SetX(gameCardTextX);
 
-    installedText = pu::ui::elm::TextBlock::New(0, y + config.marginTop, "Installed Games");
+    installedText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, "Installed Games");
     installedText->SetColor(pu::ui::Color(255, 255, 255, 255));
-    installedText->SetFont(UIConstants::MakeMediumFontName(UIConstants::FONT_SIZE_HEADER));
+    installedText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
     container->Add(installedText);
-    
+
     // Create section divider
     divider = pu::ui::elm::Rectangle::New(
-        dividerX, y,  // Position relative to our origin
-        SECTION_DIVIDER_WIDTH, 0,  // Height will be set after we know our height
-        UIConstants::BACKGROUND_BLUE
+        dividerX,
+        y,  // Position relative to our origin
+        SECTION_DIVIDER_WIDTH,
+        height,  //
+        pksm::ui::global::BACKGROUND_BLUE
     );
     container->Add(divider);
 
     // Create game grid for installed games
     installedGames = GameGrid::New(
         installedStartX,
-        y + config.marginTop + config.sectionTitleSpacing
+        y + config.paddingTop + config.sectionTitleSpacing,
+        GetHeight() - (config.paddingTop + config.sectionTitleSpacing),
+        installedGamesManager,
+        gameGridSelectionManager
     );
     container->Add(installedGames);
+    installedGames->IFocusable::SetName("GameGrid Element");
+    installedGames->IFocusable::EstablishOwningRelationship();
+    LOG_DEBUG("GameGrid Element established Focusable owning relationship");
+    installedGames->ISelectable::SetName("GameGrid Element");
+    installedGames->ISelectable::EstablishOwningRelationship();
+    LOG_DEBUG("GameGrid Element established Selectable owning relationship");
+
+    // Let container prepare elements
+    container->PreRender();
 
     // Center installed games text in its section
     pu::i32 installedGamesWidth = installedGames->GetWidth();
@@ -57,14 +97,37 @@ pksm::ConsoleGameList::ConsoleGameList(const pu::i32 x, const pu::i32 y, const L
     this->gameCardX = gameCardX;
     this->installedStartX = installedStartX;
 
+    // Create the game card image component (initially without an image)
+    gameCardImage = FocusableImage::New(
+        gameCardX,
+        cartridgeText->GetY() + config.sectionTitleSpacing,
+        nullptr,  // No initial image
+        94,
+        config.gameOutlinePadding
+    );
+    gameCardImage->ISelectable::SetName("GameCard Image Element");
+    gameCardImage->SetWidth(GAME_CARD_SIZE);
+    gameCardImage->SetHeight(GAME_CARD_SIZE);
+    gameCardImage->SetOnTouchSelect([this]() {
+        if (selectionState != SelectionState::GameCard || !focused) {
+            focused = true;
+            selectionState = SelectionState::GameCard;
+            gameCardImage->ISelectable::RequestFocus();
+            HandleOnSelectionChanged();
+            if (onTouchSelectCallback) {
+                onTouchSelectCallback();
+            }
+        }
+    });
+    container->Add(gameCardImage);
+    consoleGameListSelectionManager->RegisterSelectable(gameCardImage);
+
     // Set up input handler for transitions between game card and grid
     inputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
             LOG_DEBUG("Transitioning selection from installed games to game card");
             selectionState = SelectionState::GameCard;
-            installedGames->SetFocused(false);  // Remove focus from grid
-            installedGames->SetSelected(false); // Remove selection from grid
-            UpdateHighlights();
+            gameCardImage->ISelectable::RequestFocus();
             HandleOnSelectionChanged();
         }
     });
@@ -72,22 +135,19 @@ pksm::ConsoleGameList::ConsoleGameList(const pu::i32 x, const pu::i32 y, const L
         if (selectionState == SelectionState::GameCard && !titles.empty()) {
             LOG_DEBUG("Transitioning selection from game card to installed games");
             selectionState = SelectionState::InstalledGame;
-            installedGames->SetSelected(true);  // Select the grid item
             installedGames->SetSelectedIndex(0);  // Always select first game when moving right
-            UpdateHighlights();
+            installedGames->RequestFocus();
             HandleOnSelectionChanged();
         }
     });
 
     // Set up grid callbacks
-    installedGames->SetOnSelectionChanged([this]() {
-        HandleOnSelectionChanged();
-    });
+    installedGames->SetOnSelectionChanged([this]() { HandleOnSelectionChanged(); });
     installedGames->SetOnTouchSelect([this]() {
         if (selectionState != SelectionState::InstalledGame || !focused) {
             selectionState = SelectionState::InstalledGame;
             focused = true;
-            UpdateHighlights();
+            installedGames->RequestFocus();
             HandleOnSelectionChanged();
             if (onTouchSelectCallback) {
                 onTouchSelectCallback();
@@ -95,46 +155,40 @@ pksm::ConsoleGameList::ConsoleGameList(const pu::i32 x, const pu::i32 y, const L
         }
     });
 
+    SetFocusManager(parentFocusManager);
+
     LOG_DEBUG("ConsoleGameList component initialization complete");
 }
 
-pu::i32 pksm::ConsoleGameList::GetX() {
+pu::i32 pksm::ui::ConsoleGameList::GetX() {
     return x;
 }
 
-pu::i32 pksm::ConsoleGameList::GetY() {
+pu::i32 pksm::ui::ConsoleGameList::GetY() {
     return y;
 }
 
-pu::i32 pksm::ConsoleGameList::GetWidth() {
-    // Width from left edge to end of installed games section
-    return (installedStartX + installedGames->GetWidth() + config.marginRight) - GetX();
+pu::i32 pksm::ui::ConsoleGameList::GetWidth() {
+    return width;
 }
 
-pu::i32 pksm::ConsoleGameList::GetHeight() {
-    // Calculate height based on our layout requirements
-    pu::i32 height = config.marginTop + config.sectionTitleSpacing + GAME_CARD_SIZE + config.marginBottom;
+pu::i32 pksm::ui::ConsoleGameList::GetHeight() {
     return height;
 }
 
-void pksm::ConsoleGameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
-    // Update container dimensions
-    container->SetWidth(GetWidth());
-    container->SetHeight(GetHeight());
-
-    // Update divider height
-    divider->SetHeight(GetHeight());
-
-    // Let container prepare elements
-    container->PreRender();
-
+void pksm::ui::ConsoleGameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
     // Render all elements in the container
     for (auto& element : container->GetElements()) {
         element->OnRender(drawer, element->GetX(), element->GetY());
     }
 }
 
-void pksm::ConsoleGameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
+void pksm::ui::ConsoleGameList::OnInput(
+    const u64 keys_down,
+    const u64 keys_up,
+    const u64 keys_held,
+    const pu::ui::TouchPoint touch_pos
+) {
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
@@ -157,76 +211,68 @@ void pksm::ConsoleGameList::OnInput(const u64 keys_down, const u64 keys_up, cons
     }
 }
 
-void pksm::ConsoleGameList::SetFocused(bool focused) {
+void pksm::ui::ConsoleGameList::SetFocused(bool focused) {
     if (this->focused != focused) {
         LOG_DEBUG(focused ? "ConsoleGameList gained focus" : "ConsoleGameList lost focus");
         this->focused = focused;
-        UpdateHighlights();
+        // Update visual state only, don't request focus
+        if (focused) {
+            // Just update the visual state of the appropriate section
+            if (selectionState == SelectionState::GameCard) {
+                LOG_DEBUG("Requesting focus on game card image");
+                gameCardImage->ISelectable::RequestFocus();
+            } else {
+                LOG_DEBUG("Requesting focus on installed games");
+                installedGames->RequestFocus();
+            }
+        }
     }
 }
 
-bool pksm::ConsoleGameList::IsFocused() const {
+bool pksm::ui::ConsoleGameList::IsFocused() const {
     return focused;
 }
 
-void pksm::ConsoleGameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
+void pksm::ui::ConsoleGameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
+    LOG_DEBUG("Setting focus manager on ConsoleGameList");
+    IFocusable::SetFocusManager(manager);
+
+    // When we get a focus manager, register our child managers
+    if (manager) {
+        manager->RegisterChildManager(installedGamesManager);
+        manager->RegisterFocusable(gameCardImage);
+    }
+}
+
+void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
     LOG_DEBUG("Setting ConsoleGameList data source with " + std::to_string(titles.size()) + " titles");
     LOG_MEMORY();  // Memory check when loading new titles
-    
+
     // Store titles
     this->titles = titles;
 
-    // Clear existing game card
-    if (gameCardImage) {
-        container->GetElements().erase(
-            std::remove(container->GetElements().begin(), container->GetElements().end(), gameCardImage),
-            container->GetElements().end()
-        );
-        gameCardImage = nullptr;
-    }
-
-    // Create game card image if first title exists
+    // Update game card image if available
     if (!titles.empty()) {
-        LOG_DEBUG("Creating game card image for first title");
-        gameCardImage = FocusableImage::New(
-            gameCardX,
-            cartridgeText->GetY() + config.sectionTitleSpacing,
-            titles[0]->getIcon(),
-            94,
-            config.gameOutlinePadding
-        );
+        LOG_DEBUG("Setting game card image for first title");
+        gameCardImage->ISelectable::SetName(gameCardImage->ISelectable::GetName() + " " + titles[0]->getName());
+        gameCardImage->SetImage(titles[0]->getIcon());
         gameCardImage->SetWidth(GAME_CARD_SIZE);
         gameCardImage->SetHeight(GAME_CARD_SIZE);
-        gameCardImage->SetOnTouchSelect([this]() {
-            if (selectionState != SelectionState::GameCard || !focused) {
-                focused = true;
-                selectionState = SelectionState::GameCard;
-                UpdateHighlights();
-                HandleOnSelectionChanged();
-                if (onTouchSelectCallback) {
-                    onTouchSelectCallback();
-                }
-            }
-        });
-        container->Add(gameCardImage);
+    } else {
+        LOG_DEBUG("No titles available, clearing game card image");
+        gameCardImage->SetImage(nullptr);
     }
 
     // Set up installed games grid with remaining titles
-    std::vector<titles::TitleRef> installedTitles;
+    std::vector<titles::Title::Ref> installedTitles;
     if (titles.size() > 1) {
         LOG_DEBUG("Setting up installed games grid with " + std::to_string(titles.size() - 1) + " titles");
         installedTitles.assign(titles.begin() + 1, titles.end());
     }
     installedGames->SetDataSource(installedTitles);
-
-    // Update grid's available height based on our height, accounting for the header area
-    pu::i32 gridHeight = GetHeight() - (config.marginTop + config.sectionTitleSpacing);
-    installedGames->SetAvailableHeight(gridHeight);
-
-    UpdateHighlights();
 }
 
-titles::TitleRef pksm::ConsoleGameList::GetSelectedTitle() const {
+pksm::titles::Title::Ref pksm::ui::ConsoleGameList::GetSelectedTitle() const {
     if (selectionState == SelectionState::GameCard) {
         // Return game card title if it exists
         return !titles.empty() ? titles[0] : nullptr;
@@ -236,28 +282,15 @@ titles::TitleRef pksm::ConsoleGameList::GetSelectedTitle() const {
     }
 }
 
-void pksm::ConsoleGameList::UpdateHighlights() {
-    // Update game card highlight
-    if (gameCardImage) {
-        bool isSelected = selectionState == SelectionState::GameCard;
-        gameCardImage->SetSelected(isSelected);
-        gameCardImage->SetFocused(focused && isSelected);
-    }
-
-    // Update installed games highlight
-    installedGames->SetFocused(focused && selectionState == SelectionState::InstalledGame);
-    installedGames->SetSelected(selectionState == SelectionState::InstalledGame);
-}
-
-void pksm::ConsoleGameList::SetOnSelectionChanged(std::function<void()> callback) {
+void pksm::ui::ConsoleGameList::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
 }
 
-void pksm::ConsoleGameList::SetOnTouchSelect(std::function<void()> callback) {
+void pksm::ui::ConsoleGameList::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
-void pksm::ConsoleGameList::HandleOnSelectionChanged() {
+void pksm::ui::ConsoleGameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         auto selected = GetSelectedTitle();
         if (selected) {
@@ -266,5 +299,3 @@ void pksm::ConsoleGameList::HandleOnSelectionChanged() {
         onSelectionChangedCallback();
     }
 }
-
-pksm::ConsoleGameList::~ConsoleGameList() = default; 

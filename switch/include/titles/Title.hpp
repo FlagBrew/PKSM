@@ -1,20 +1,20 @@
 #pragma once
 
-#include <string>
 #include <memory>
 #include <pu/pu_Include.hpp>
 #include <pu/ui/render/render_Renderer.hpp>
+#include <string>
 
-namespace titles {
+namespace pksm::titles {
 
 class Title {
 public:
-    Title(const std::string& name, const std::string& iconPath, u64 titleId)
-        : name(name), titleId(titleId) {
+    Title(const std::string& name, const std::string& iconPath, u64 titleId) : name(name), titleId(titleId) {
         // Load icon texture
         auto image = pu::ui::render::LoadImage(iconPath);
         iconTexture = pu::sdl2::TextureHandle::New(image);
     }
+    PU_SMART_CTOR(Title)
 
     // Getters
     const std::string& getName() const { return name; }
@@ -26,7 +26,4 @@ private:
     u64 titleId;
     pu::sdl2::TextureHandle::Ref iconTexture;
 };
-
-using TitleRef = std::shared_ptr<Title>;
-
-} // namespace titles 
+}  // namespace pksm::titles

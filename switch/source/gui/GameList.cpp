@@ -1,41 +1,69 @@
 #include "gui/GameList.hpp"
-#include "gui/UIConstants.hpp"
+
 #include <cmath>
 #include <sstream>
+
+#include "gui/UIConstants.hpp"
 #include "ui/render/LineRenderer.hpp"
 #include "ui/render/PatternRenderer.hpp"
 #include "utils/Logger.hpp"
 
-pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
-    : Element(), focused(false),
-      backgroundColor(pu::ui::Color(40, 51, 135, 255)), onSelectionChangedCallback(nullptr),
-      x(x), y(y) {
-    
+pksm::ui::GameList::GameList(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 width,
+    const pu::i32 height,
+    input::FocusManager::Ref parentFocusManager
+)
+  : Element(),
+    focused(false),
+    backgroundColor(pu::ui::Color(40, 51, 135, 255)),
+    onSelectionChangedCallback(nullptr),
+    x(x),
+    y(y),
+    width(width),
+    height(height) {
     LOG_DEBUG("Initializing GameList component...");
 
-    // Create console game list
+    // Initialize focus manager for console game list
+    consoleGameListManager = input::FocusManager::New("ConsoleGameList Manager");
+
+    // Create console game list first since other components depend on its dimensions
     ConsoleGameList::LayoutConfig config = {
-        .marginLeft = MARGIN_LEFT,
-        .marginRight = MARGIN_RIGHT,
-        .marginTop = MARGIN_TOP,
-        .marginBottom = MARGIN_BOTTOM,
+        .paddingLeft = PADDING_LEFT,
+        .paddingRight = PADDING_RIGHT,
+        .paddingTop = PADDING_TOP,
+        .paddingBottom = PADDING_BOTTOM,
         .sectionTitleSpacing = SECTION_TITLE_SPACING,
         .gameOutlinePadding = GAME_OUTLINE_PADDING
     };
-    consoleGameList = ConsoleGameList::New(x, y, config);
-
-    // Create background pattern
-    background = ui::render::PatternBackground::New(
-        x, 
-        y,
-        GetWidth(), 
-        GetHeight() - 1, // -1 to account for bottom of the divider
-        CORNER_RADIUS,
-        backgroundColor
-    );
+    consoleGameList = ConsoleGameList::New(x, y, width, height, config, consoleGameListManager);
+    consoleGameList->SetName("Console Game List Element");
+    consoleGameList->EstablishOwningRelationship();
+    // Initialize container with proper dimensions
+    container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
     // Create trigger buttons
     CreateTriggerButtons();
+    container->Add(leftTrigger);
+    container->Add(rightTrigger);
+
+    // Create background pattern
+    background = ui::render::PatternBackground::New(
+        x,
+        y,
+        GetWidth(),
+        GetHeight() - 1,  // -1 to account for bottom of the divider
+        CORNER_RADIUS,
+        backgroundColor
+    );
+    container->Add(background);
+
+    // Add console game list last (it should render on top)
+    container->Add(consoleGameList);
+
+    // Let container prepare elements
+    container->PreRender();
 
     // Set up callbacks
     consoleGameList->SetOnSelectionChanged([this]() {
@@ -49,10 +77,12 @@ pksm::GameList::GameList(const pu::i32 x, const pu::i32 y)
         }
     });
 
+    SetFocusManager(parentFocusManager);
+
     LOG_DEBUG("GameList component initialization complete");
 }
 
-void pksm::GameList::CreateTriggerButtons() {
+void pksm::ui::GameList::CreateTriggerButtons() {
     // Create left trigger button
     leftTrigger = ui::TriggerButton::New(
         x - TRIGGER_HORIZONTAL_OFFSET,  // Position slightly outside the component
@@ -63,6 +93,11 @@ void pksm::GameList::CreateTriggerButtons() {
         ui::TriggerButton::Side::Left,
         TRIGGER_BUTTON_COLOR
     );
+    leftTrigger->SetName("LeftTrigger Button Element");
+    leftTrigger->SetOnTouchSelect([this]() {
+        LOG_DEBUG("Left trigger button touched");
+        leftTrigger->RequestFocus();
+    });
 
     // Create right trigger button
     rightTrigger = ui::TriggerButton::New(
@@ -74,99 +109,137 @@ void pksm::GameList::CreateTriggerButtons() {
         ui::TriggerButton::Side::Right,
         TRIGGER_BUTTON_COLOR
     );
+    rightTrigger->SetName("RightTrigger Button Element");
+    rightTrigger->SetOnTouchSelect([this]() {
+        LOG_DEBUG("Right trigger button touched");
+        rightTrigger->RequestFocus();
+    });
 }
 
-pu::i32 pksm::GameList::GetX() {
+pu::i32 pksm::ui::GameList::GetX() {
     return x;
 }
 
-pu::i32 pksm::GameList::GetY() {
+pu::i32 pksm::ui::GameList::GetY() {
     return y;
 }
 
-pu::i32 pksm::GameList::GetWidth() {
-    return consoleGameList->GetWidth();
+pu::i32 pksm::ui::GameList::GetWidth() {
+    return width;
 }
 
-pu::i32 pksm::GameList::GetHeight() {
-    return consoleGameList->GetHeight();
+pu::i32 pksm::ui::GameList::GetHeight() {
+    return height;
 }
 
-void pksm::GameList::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
-    // Draw trigger buttons
+void pksm::ui::GameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+    // Render elements in specific order for correct layering
     leftTrigger->OnRender(drawer, leftTrigger->GetX(), leftTrigger->GetY());
     rightTrigger->OnRender(drawer, rightTrigger->GetX(), rightTrigger->GetY());
-
-    // Draw background pattern
-    if (background) {
-        background->OnRender(drawer, x, y);
-    }
-
-    // Draw console game list
+    background->OnRender(drawer, x, y);
     consoleGameList->OnRender(drawer, consoleGameList->GetX(), consoleGameList->GetY());
 }
 
-void pksm::GameList::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
-    // Forward input to console game list
-    consoleGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
-
+void pksm::ui::GameList::OnInput(
+    const u64 keys_down,
+    const u64 keys_up,
+    const u64 keys_held,
+    const pu::ui::TouchPoint touch_pos
+) {
     // Handle trigger button states
     if (keys_down & HidNpadButton_L) {
-        LOG_DEBUG("Left trigger button pressed");
-        leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+        OnTriggerButtonPressed(ui::TriggerButton::Side::Left);
     }
 
     if (keys_up & HidNpadButton_L) {
-        LOG_DEBUG("Left trigger button released");
-        leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+        OnTriggerButtonReleased(ui::TriggerButton::Side::Left);
     }
 
     if (keys_down & HidNpadButton_R) {
-        LOG_DEBUG("Right trigger button pressed");
-        rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+        OnTriggerButtonPressed(ui::TriggerButton::Side::Right);
     }
 
     if (keys_up & HidNpadButton_R) {
-        LOG_DEBUG("Right trigger button released");
-        rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+        OnTriggerButtonReleased(ui::TriggerButton::Side::Right);
     }
+
+    // Forward input to console game list
+    consoleGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    leftTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    rightTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
 
-void pksm::GameList::SetFocused(bool focused) {
+void pksm::ui::GameList::SetFocused(bool focused) {
     if (this->focused != focused) {
         LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
-        consoleGameList->SetFocused(focused);
+        // Only request focus if the triggers are not focused
+        if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
+            consoleGameList->RequestFocus();
+        }
     }
 }
 
-bool pksm::GameList::IsFocused() const {
+bool pksm::ui::GameList::IsFocused() const {
     return focused;
 }
 
-void pksm::GameList::SetBackgroundColor(const pu::ui::Color& color) {
+void pksm::ui::GameList::SetBackgroundColor(const pu::ui::Color& color) {
     backgroundColor = color;
     if (background) {
         background->SetBackgroundColor(color);
     }
 }
 
-void pksm::GameList::SetDataSource(const std::vector<titles::TitleRef>& titles) {
+void pksm::ui::GameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
     LOG_DEBUG("Setting GameList data source with " + std::to_string(titles.size()) + " titles");
     this->titles = titles;
     consoleGameList->SetDataSource(titles);
 }
 
-titles::TitleRef pksm::GameList::GetSelectedTitle() const {
+pksm::titles::Title::Ref pksm::ui::GameList::GetSelectedTitle() const {
     return consoleGameList->GetSelectedTitle();
 }
 
-void pksm::GameList::SetOnSelectionChanged(std::function<void()> callback) {
+void pksm::ui::GameList::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
 }
 
-void pksm::GameList::SetOnTouchSelect(std::function<void()> callback) {
+void pksm::ui::GameList::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
-pksm::GameList::~GameList() = default; 
+void pksm::ui::GameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
+    LOG_DEBUG("Setting focus manager on GameList");
+    IFocusable::SetFocusManager(manager);
+
+    manager->RegisterChildManager(consoleGameListManager);
+    manager->RegisterFocusable(leftTrigger);
+    manager->RegisterFocusable(rightTrigger);
+}
+
+void pksm::ui::GameList::OnTriggerButtonPressed(ui::TriggerButton::Side side) {
+    switch (side) {
+        case ui::TriggerButton::Side::Left:
+            leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+            LOG_DEBUG("Left trigger button pressed");
+            break;
+        case ui::TriggerButton::Side::Right:
+            rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+            LOG_DEBUG("Right trigger button pressed");
+            break;
+    }
+}
+
+void pksm::ui::GameList::OnTriggerButtonReleased(ui::TriggerButton::Side side) {
+    switch (side) {
+        case ui::TriggerButton::Side::Left:
+            leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+            LOG_DEBUG("Left trigger button released");
+            break;
+        case ui::TriggerButton::Side::Right:
+            rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+            LOG_DEBUG("Right trigger button released");
+            break;
+    }
+}

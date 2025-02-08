@@ -42,8 +42,8 @@ DEBUG ?= 0
 #---------------------------------------------------------------------------------
 TARGET		:=	PKSM
 BUILD		:=	build
-SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock source/ui/render source/utils
-INCLUDES	:=	include include/gui/screen include/data include/data/mock include/ui/render include/utils Plutonium/Plutonium/include
+SOURCES		:=	source source/gui/screen source/gui source/data source/data/mock source/ui/render source/utils source/input source/input/base source/saves
+INCLUDES	:=	include include/gui/screen include/data include/data/mock include/ui/render include/utils include/input include/input/base include/saves Plutonium/Plutonium/include
 DATA		:=	data
 ROMFS		:=	romfs
 
