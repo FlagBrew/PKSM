@@ -8,6 +8,7 @@
 #include "gui/GameGrid.hpp"
 #include "gui/UIConstants.hpp"
 #include "gui/TriggerButton.hpp"
+#include "gui/ConsoleGameList.hpp"
 #include <vector>
 #include <memory>
 #include <functional>
@@ -17,16 +18,7 @@ namespace pksm {
 
     class GameList : public pu::ui::elm::Element {
     private:
-        enum class SelectionState {
-            GameCard,
-            InstalledGame
-        };
-
         // Layout constants
-        static constexpr u32 GAME_CARD_SIZE = 350;        // Size of the game card image
-        static constexpr u32 SECTION_DIVIDER_WIDTH = 20;   // Width of the section divider
-        static constexpr u32 SECTION_DIVIDER_PADDING = 80; // Padding around the divider
-        static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
         static constexpr u32 CORNER_RADIUS = 30;          // Radius for rounded corners
 
         // Background margin constants
@@ -37,7 +29,7 @@ namespace pksm {
         
         // Section spacing constants
         static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section titles and game icons
-        static constexpr u32 SECTION_BOTTOM_SPACING = SECTION_TITLE_SPACING; // Space below the installed games section
+        static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
 
         // Trigger button constants
         static constexpr u32 TRIGGER_BUTTON_WIDTH = 180;   // Width of L/R trigger buttons
@@ -48,7 +40,6 @@ namespace pksm {
         static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
 
         // State
-        SelectionState selectionState;
         bool focused;
         pu::ui::Color backgroundColor;
         std::function<void()> onSelectionChangedCallback;
@@ -57,15 +48,9 @@ namespace pksm {
         // Position tracking
         pu::i32 x;                  // Component's x position
         pu::i32 y;                  // Component's y position
-        pu::i32 gameCardX;          // X position of game card
-        pu::i32 installedStartX;    // Starting X position of installed games section
 
         // UI Elements
-        pu::ui::elm::Rectangle::Ref divider;
-        pu::ui::elm::TextBlock::Ref cartridgeText;
-        pu::ui::elm::TextBlock::Ref installedText;
-        FocusableImage::Ref gameCardImage;
-        GameGrid::Ref installedGames;
+        ConsoleGameList::Ref consoleGameList;
 
         // Trigger buttons
         ui::TriggerButton::Ref leftTrigger;
@@ -74,15 +59,10 @@ namespace pksm {
         // Data
         std::vector<titles::TitleRef> titles;
 
-        // Input handling
-        DirectionalInputHandler inputHandler;
-
         // Replace SDL_Texture* with PatternBackground
         std::shared_ptr<ui::render::PatternBackground> background;
 
         // Helper methods
-        void UpdateHighlights();
-        void HandleOnSelectionChanged();
         void CreateTriggerButtons();
 
     public:
@@ -108,6 +88,6 @@ namespace pksm {
         void SetOnTouchSelect(std::function<void()> callback);
 
         // Focus management
-        bool ShouldResignDownFocus() const { return selectionState == SelectionState::GameCard || (selectionState == SelectionState::InstalledGame && installedGames->IsOnLastRow()); }
+        bool ShouldResignDownFocus() const { return consoleGameList->ShouldResignDownFocus(); }
     };
 } 
