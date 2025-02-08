@@ -1,16 +1,18 @@
 #pragma once
 
-#include "data/ISaveDataProvider.hpp"
 #include <map>
+
+#include "data/ISaveDataProvider.hpp"
+#include "saves/Save.hpp"
 
 class MockSaveDataProvider : public ISaveDataProvider {
 private:
     // Map of title ID to list of save names
-    std::map<u64, std::vector<std::string>> mockSaves;
+    std::map<u64, std::vector<pksm::saves::Save::Ref>> mockSaves;
 
 public:
     MockSaveDataProvider();
-    
-    std::vector<std::string> GetSavesForTitle(const titles::TitleRef& title) const override;
-    bool LoadSave(const titles::TitleRef& title, const std::string& saveName) override;
-}; 
+
+    std::vector<pksm::saves::Save::Ref> GetSavesForTitle(const pksm::titles::Title::Ref& title) const override;
+    bool LoadSave(const pksm::titles::Title::Ref& title, const std::string& saveName) override;
+};

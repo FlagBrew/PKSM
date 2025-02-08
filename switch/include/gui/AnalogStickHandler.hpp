@@ -1,19 +1,14 @@
 #pragma once
-#include <pu/Plutonium>
-#include <functional>
 #include <chrono>
+#include <functional>
+#include <pu/Plutonium>
 
+namespace pksm::input {
 class AnalogStickHandler {
 private:
     static constexpr s64 DEFAULT_MOVE_WAIT_TIME_MS = 150;
 
-    enum class MoveStatus {
-        None,
-        WaitingLeft,
-        WaitingRight,
-        WaitingUp,
-        WaitingDown
-    };
+    enum class MoveStatus { None, WaitingLeft, WaitingRight, WaitingUp, WaitingDown };
 
     MoveStatus moveStatus = MoveStatus::None;
     std::chrono::time_point<std::chrono::steady_clock> moveStartTime;
@@ -27,6 +22,7 @@ private:
 
 public:
     AnalogStickHandler(s64 waitTimeMs = DEFAULT_MOVE_WAIT_TIME_MS) : moveWaitTimeMs(waitTimeMs) {}
+    PU_SMART_CTOR(AnalogStickHandler)
 
     // Set movement callbacks
     void SetOnMoveLeft(std::function<void()> callback) { onMoveLeft = callback; }
@@ -36,4 +32,5 @@ public:
 
     // Handle input - returns true if input was handled
     bool HandleInput(u64 held);
-}; 
+};
+}  // namespace pksm::input

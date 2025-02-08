@@ -1,4 +1,5 @@
 #include "utils/Logger.hpp"
+
 #include <cstdio>
 #include <ctime>
 #include <iomanip>
@@ -17,7 +18,7 @@ void Logger::Initialize() {
         // Initialize socket for nxlink first
         Result rc = socketInitializeDefault();
         socket_initialized = R_SUCCEEDED(rc);
-        
+
         if (socket_initialized) {
             // Try to redirect output to nxlink
             console_initialized = nxlinkStdio() > 0;
@@ -31,9 +32,9 @@ void Logger::Initialize() {
             consoleInit(NULL);
             console_initialized = true;
         }
-        
+
         initialized = true;
-        
+
         // Log initialization status
         if (socket_initialized) {
             LOG_INFO("Socket initialized successfully");
@@ -86,10 +87,10 @@ void Logger::Log(Level level, const std::string& message) {
     // Get current time
     auto now = std::time(nullptr);
     auto tm = std::localtime(&now);
-    
+
     std::stringstream ss;
     ss << "[" << std::put_time(tm, "%H:%M:%S") << "] ";
-    
+
     // Add log level
     switch (level) {
         case Level::Debug:
@@ -105,14 +106,14 @@ void Logger::Log(Level level, const std::string& message) {
             ss << "[ERROR] ";
             break;
     }
-    
+
     ss << message << std::endl;
     printf("%s", ss.str().c_str());
     fflush(stdout);
-    
+
     // Give a small delay after each log to ensure it's flushed
     if (socket_initialized) {
-        svcSleepThread(1'000'000); // 1ms delay
+        svcSleepThread(1'000'000);  // 1ms delay
     }
 }
 
@@ -123,24 +124,24 @@ void Logger::LogMemoryInfo() {
 
     u64 total = 0;
     u64 used = 0;
-    
+
     // Get total memory
     Result rc = svcGetInfo(&total, InfoType_TotalMemorySize, CUR_PROCESS_HANDLE, 0);
     if (R_FAILED(rc)) {
         Error("Failed to get total memory size");
         return;
     }
-    
+
     // Get used memory
     rc = svcGetInfo(&used, InfoType_UsedMemorySize, CUR_PROCESS_HANDLE, 0);
     if (R_FAILED(rc)) {
         Error("Failed to get used memory size");
         return;
     }
-    
+
     // Calculate available memory
     u64 available = total - used;
-    
+
     std::stringstream ss;
     ss << "Memory - Total: " << (total / 1024 / 1024) << "MB, "
        << "Used: " << (used / 1024 / 1024) << "MB, "
@@ -148,6 +149,6 @@ void Logger::LogMemoryInfo() {
     Debug(ss.str());
 }
 
-} // namespace utils
+}  // namespace utils
 
-#endif // NDEBUG 
+#endif  // NDEBUG

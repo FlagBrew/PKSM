@@ -1,93 +1,112 @@
 #pragma once
 
-#include <pu/Plutonium>
-#include "titles/Title.hpp"
-#include "gui/FocusableImage.hpp"
-#include "gui/PulsingOutline.hpp"
-#include "gui/DirectionalInputHandler.hpp"
-#include "gui/GameGrid.hpp"
-#include "gui/UIConstants.hpp"
-#include "gui/TriggerButton.hpp"
-#include "gui/ConsoleGameList.hpp"
-#include <vector>
-#include <memory>
 #include <functional>
+#include <memory>
+#include <pu/Plutonium>
+#include <vector>
+
+#include "gui/ConsoleGameList.hpp"
+#include "gui/DirectionalInputHandler.hpp"
+#include "gui/FocusableImage.hpp"
+#include "gui/GameGrid.hpp"
+#include "gui/PulsingOutline.hpp"
+#include "gui/TriggerButton.hpp"
+#include "gui/UIConstants.hpp"
+#include "input/FocusManager.hpp"
+#include "titles/Title.hpp"
 #include "ui/render/PatternRenderer.hpp"
 
-namespace pksm {
+namespace pksm::ui {
 
-    class GameList : public pu::ui::elm::Element {
-    private:
-        // Layout constants
-        static constexpr u32 CORNER_RADIUS = 30;          // Radius for rounded corners
+class GameList : public pu::ui::elm::Element, public IFocusable {
+private:
+    // Layout constants
+    static constexpr u32 CORNER_RADIUS = 30;  // Radius for rounded corners
 
-        // Background margin constants
-        static constexpr u32 MARGIN_LEFT = 80;     // Left padding of the component
-        static constexpr u32 MARGIN_RIGHT = 80;    // Right padding of the component
-        static constexpr u32 MARGIN_TOP = 20;      // Space between background and section titles
-        static constexpr u32 MARGIN_BOTTOM = 120;  // Space below game icons
-        
-        // Section spacing constants
-        static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section titles and game icons
-        static constexpr u32 GAME_OUTLINE_PADDING = 15;   // Padding for the selection outline
+    // Background margin constants
+    static constexpr u32 PADDING_LEFT = 80;  // Left padding of the component
+    static constexpr u32 PADDING_RIGHT = 80;  // Right padding of the component
+    static constexpr u32 PADDING_TOP = 20;  // Space between background and section titles
+    static constexpr u32 PADDING_BOTTOM = 120;  // Space below game icons
 
-        // Trigger button constants
-        static constexpr u32 TRIGGER_BUTTON_WIDTH = 180;   // Width of L/R trigger buttons
-        static constexpr u32 TRIGGER_BUTTON_HEIGHT = 100;   // Height of L/R trigger buttons
-        static constexpr u32 TRIGGER_HORIZONTAL_OFFSET = 16;   // Offset from component edges
-        static constexpr u32 TRIGGER_VERTICAL_OFFSET = 28;   // Offset from component edges
-        static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR = pu::ui::Color(135, 135, 135, 255);
-        static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
+    // Section spacing constants
+    static constexpr u32 SECTION_TITLE_SPACING = 70;  // Space between section titles and game icons
+    static constexpr u32 GAME_OUTLINE_PADDING = 15;  // Padding for the selection outline
 
-        // State
-        bool focused;
-        pu::ui::Color backgroundColor;
-        std::function<void()> onSelectionChangedCallback;
-        std::function<void()> onTouchSelectCallback;
+    // Trigger button constants
+    static constexpr u32 TRIGGER_BUTTON_WIDTH = 180;  // Width of L/R trigger buttons
+    static constexpr u32 TRIGGER_BUTTON_HEIGHT = 100;  // Height of L/R trigger buttons
+    static constexpr u32 TRIGGER_HORIZONTAL_OFFSET = 16;  // Offset from component edges
+    static constexpr u32 TRIGGER_VERTICAL_OFFSET = 28;  // Offset from component edges
+    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR = pu::ui::Color(135, 135, 135, 255);
+    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
 
-        // Position tracking
-        pu::i32 x;                  // Component's x position
-        pu::i32 y;                  // Component's y position
+    // State
+    bool focused = false;
+    pu::ui::Color backgroundColor;
+    std::function<void()> onSelectionChangedCallback;
+    std::function<void()> onTouchSelectCallback;
 
-        // UI Elements
-        ConsoleGameList::Ref consoleGameList;
+    // Position tracking
+    pu::i32 x;  // Component's x position
+    pu::i32 y;  // Component's y position
+    pu::i32 width;  // Component's width
+    pu::i32 height;  // Component's height
 
-        // Trigger buttons
-        ui::TriggerButton::Ref leftTrigger;
-        ui::TriggerButton::Ref rightTrigger;
+    // Focus management
+    input::FocusManager::Ref consoleGameListManager;
+    input::FocusManager::Ref leftTriggerFocusManager;
+    input::FocusManager::Ref rightTriggerFocusManager;
 
-        // Data
-        std::vector<titles::TitleRef> titles;
+    // Core components
+    pu::ui::Container::Ref container;
 
-        // Replace SDL_Texture* with PatternBackground
-        std::shared_ptr<ui::render::PatternBackground> background;
+    // UI Elements
+    ui::TriggerButton::Ref leftTrigger;
+    ui::TriggerButton::Ref rightTrigger;
+    ui::render::PatternBackground::Ref background;
+    ConsoleGameList::Ref consoleGameList;
 
-        // Helper methods
-        void CreateTriggerButtons();
+    // Data
+    std::vector<titles::Title::Ref> titles;
 
-    public:
-        GameList(const pu::i32 x, const pu::i32 y);
-        ~GameList();
-        PU_SMART_CTOR(GameList)
+    // Trigger button methods
+    void CreateTriggerButtons();
+    void OnTriggerButtonPressed(ui::TriggerButton::Side side);
+    void OnTriggerButtonReleased(ui::TriggerButton::Side side);
 
-        // Element implementation
-        pu::i32 GetX() override;
-        pu::i32 GetY() override;
-        pu::i32 GetWidth() override;
-        pu::i32 GetHeight() override;
-        void OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) override;
-        void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
+public:
+    GameList(
+        const pu::i32 x,
+        const pu::i32 y,
+        const pu::i32 width,
+        const pu::i32 height,
+        input::FocusManager::Ref parentFocusManager
+    );
+    PU_SMART_CTOR(GameList)
 
-        // Public interface
-        void SetFocused(bool focused);
-        bool IsFocused() const;
-        void SetBackgroundColor(const pu::ui::Color& color);
-        void SetDataSource(const std::vector<titles::TitleRef>& titles);
-        titles::TitleRef GetSelectedTitle() const;
-        void SetOnSelectionChanged(std::function<void()> callback);
-        void SetOnTouchSelect(std::function<void()> callback);
+    // Element implementation
+    pu::i32 GetX() override;
+    pu::i32 GetY() override;
+    pu::i32 GetWidth() override;
+    pu::i32 GetHeight() override;
+    void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
+    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
+        override;
 
-        // Focus management
-        bool ShouldResignDownFocus() const { return consoleGameList->ShouldResignDownFocus(); }
-    };
-} 
+    // IFocusable implementation
+    void SetFocused(bool focused) override;
+    bool IsFocused() const override;
+    void SetFocusManager(std::shared_ptr<input::FocusManager> manager);
+
+    // Public interface
+    void SetBackgroundColor(const pu::ui::Color& color);
+    void SetDataSource(const std::vector<titles::Title::Ref>& titles);
+    titles::Title::Ref GetSelectedTitle() const;
+    void SetOnSelectionChanged(std::function<void()> callback);
+    void SetOnTouchSelect(std::function<void()> callback);
+
+    // Focus management
+    bool ShouldResignDownFocus() const { return consoleGameList->ShouldResignDownFocus(); }
+};
+}  // namespace pksm::ui

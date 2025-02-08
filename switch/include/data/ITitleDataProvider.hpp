@@ -2,15 +2,17 @@
 
 #include <memory>
 #include <vector>
+
 #include "titles/Title.hpp"
 
 class ITitleDataProvider {
 public:
+    PU_SMART_CTOR(ITitleDataProvider)
     virtual ~ITitleDataProvider() = default;
-    
+
     // Get the currently inserted game card title, or nullptr if none
-    virtual titles::TitleRef GetGameCardTitle() const = 0;
-    
+    virtual pksm::titles::Title::Ref GetGameCardTitle() const = 0;
+
     // Get list of installed titles
-    virtual std::vector<titles::TitleRef> GetInstalledTitles() const = 0;
-}; 
+    virtual std::vector<pksm::titles::Title::Ref> GetInstalledTitles() const = 0;
+};

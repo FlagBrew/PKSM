@@ -47,9 +47,9 @@ PKSM uses a custom font system that supports multiple font weights and sizes. He
 
    ```cpp
    // In PKSMApplication::RegisterAdditionalFonts
-   gui::FontManager::RegisterFont(
+   pksm::ui::FontManager::RegisterFont(
        "romfs:/gfx/ui/my_font.ttf",
-       UIConstants::MakeItalicFontName  // Your font name generator
+       pksm::ui::global::MakeItalicFontName  // Your font name generator
    );
    ```
 
@@ -61,13 +61,13 @@ To use a font in a UI element:
 
 ```cpp
 // Using the default (light) font
-textBlock->SetFont(pu::ui::MakeDefaultFontName(UIConstants::FONT_SIZE_MEDIUM));
+textBlock->SetFont(pu::ui::MakeDefaultFontName(pksm::ui::global::FONT_SIZE_MEDIUM));
 
 // Using the heavy font
-textBlock->SetFont(UIConstants::MakeHeavyFontName(UIConstants::FONT_SIZE_TITLE));
+textBlock->SetFont(pksm::ui::global::MakeHeavyFontName(pksm::ui::global::FONT_SIZE_TITLE));
 
 // Using your custom font
-textBlock->SetFont(UIConstants::MakeItalicFontName(UIConstants::MY_NEW_SIZE));
+textBlock->SetFont(pksm::ui::global::MakeItalicFontName(pksm::ui::global::MY_NEW_SIZE));
 ```
 
 ### Best Practices

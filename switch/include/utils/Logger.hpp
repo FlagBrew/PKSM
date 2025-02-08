@@ -7,12 +7,7 @@ namespace utils {
 
 class Logger {
 public:
-    enum class Level {
-        Debug,
-        Info,
-        Warning,
-        Error
-    };
+    enum class Level { Debug, Info, Warning, Error };
 
 #ifdef NDEBUG
     static inline void Initialize() {}
@@ -29,6 +24,7 @@ public:
     static void Warning(const std::string& message);
     static void Error(const std::string& message);
     static void LogMemoryInfo();
+
 private:
     static void Log(Level level, const std::string& message);
     static bool initialized;
@@ -37,7 +33,7 @@ private:
 #endif
 };
 
-} // namespace utils
+}  // namespace utils
 
 #ifdef NDEBUG
 #define LOG_DEBUG(msg) ((void)0)
@@ -51,4 +47,4 @@ private:
 #define LOG_WARNING(msg) utils::Logger::Warning(msg)
 #define LOG_ERROR(msg) utils::Logger::Error(msg)
 #define LOG_MEMORY() utils::Logger::LogMemoryInfo()
-#endif 
+#endif

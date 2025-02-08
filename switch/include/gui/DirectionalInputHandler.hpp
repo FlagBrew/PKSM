@@ -1,14 +1,16 @@
 #pragma once
-#include <pu/Plutonium>
-#include "gui/AnalogStickHandler.hpp"
+#include <chrono>
 #include <functional>
 #include <memory>
-#include <chrono>
+#include <pu/Plutonium>
 
+#include "gui/AnalogStickHandler.hpp"
+
+namespace pksm::input {
 class DirectionalInputHandler {
 private:
-    std::unique_ptr<AnalogStickHandler> analogHandler;
-    
+    AnalogStickHandler::Ref analogHandler;
+
     // Movement callbacks
     std::function<void()> onMoveLeft;
     std::function<void()> onMoveRight;
@@ -16,25 +18,31 @@ private:
     std::function<void()> onMoveDown;
 
     // D-pad timing mechanism
-    enum class DPadMoveStatus {
-        None,
-        WaitingLeft,
-        WaitingRight,
-        WaitingUp,
-        WaitingDown
-    };
+    enum class DPadMoveStatus { None, WaitingLeft, WaitingRight, WaitingUp, WaitingDown };
 
     DPadMoveStatus dpadMoveStatus = DPadMoveStatus::None;
     std::chrono::time_point<std::chrono::steady_clock> dpadMoveStartTime;
     static constexpr s64 DPAD_MOVE_WAIT_TIME_MS = 150;  // Same as analog stick default
 
 public:
-    DirectionalInputHandler() : analogHandler(std::make_unique<AnalogStickHandler>()) {
+    DirectionalInputHandler() : analogHandler(AnalogStickHandler::New()) {
         // Set up analog handler callbacks
-        analogHandler->SetOnMoveLeft([this]() { if (onMoveLeft) onMoveLeft(); });
-        analogHandler->SetOnMoveRight([this]() { if (onMoveRight) onMoveRight(); });
-        analogHandler->SetOnMoveUp([this]() { if (onMoveUp) onMoveUp(); });
-        analogHandler->SetOnMoveDown([this]() { if (onMoveDown) onMoveDown(); });
+        analogHandler->SetOnMoveLeft([this]() {
+            if (onMoveLeft)
+                onMoveLeft();
+        });
+        analogHandler->SetOnMoveRight([this]() {
+            if (onMoveRight)
+                onMoveRight();
+        });
+        analogHandler->SetOnMoveUp([this]() {
+            if (onMoveUp)
+                onMoveUp();
+        });
+        analogHandler->SetOnMoveDown([this]() {
+            if (onMoveDown)
+                onMoveDown();
+        });
     }
 
     // Set movement callbacks - these will be called for both d-pad and analog stick
@@ -48,31 +56,36 @@ public:
         // First check for d-pad input with timing
         if (dpadMoveStatus != DPadMoveStatus::None) {
             const auto curTime = std::chrono::steady_clock::now();
-            const auto timeDiffMs = std::chrono::duration_cast<std::chrono::milliseconds>(curTime - dpadMoveStartTime).count();
-            
+            const auto timeDiffMs =
+                std::chrono::duration_cast<std::chrono::milliseconds>(curTime - dpadMoveStartTime).count();
+
             if (timeDiffMs >= DPAD_MOVE_WAIT_TIME_MS) {
                 // Execute the movement based on direction
                 switch (dpadMoveStatus) {
                     case DPadMoveStatus::WaitingLeft:
-                        if (onMoveLeft) onMoveLeft();
+                        if (onMoveLeft)
+                            onMoveLeft();
                         break;
-                        
+
                     case DPadMoveStatus::WaitingRight:
-                        if (onMoveRight) onMoveRight();
+                        if (onMoveRight)
+                            onMoveRight();
                         break;
-                        
+
                     case DPadMoveStatus::WaitingUp:
-                        if (onMoveUp) onMoveUp();
+                        if (onMoveUp)
+                            onMoveUp();
                         break;
-                        
+
                     case DPadMoveStatus::WaitingDown:
-                        if (onMoveDown) onMoveDown();
+                        if (onMoveDown)
+                            onMoveDown();
                         break;
 
                     default:  // This handles DPadMoveStatus::None
                         break;
                 }
-                
+
                 // Reset state to allow next movement
                 dpadMoveStatus = DPadMoveStatus::None;
                 return true;
@@ -84,18 +97,15 @@ public:
             dpadMoveStatus = DPadMoveStatus::WaitingLeft;
             dpadMoveStartTime = std::chrono::steady_clock::now();
             return true;
-        }
-        else if (down & HidNpadButton_Right) {
+        } else if (down & HidNpadButton_Right) {
             dpadMoveStatus = DPadMoveStatus::WaitingRight;
             dpadMoveStartTime = std::chrono::steady_clock::now();
             return true;
-        }
-        else if (down & HidNpadButton_Up) {
+        } else if (down & HidNpadButton_Up) {
             dpadMoveStatus = DPadMoveStatus::WaitingUp;
             dpadMoveStartTime = std::chrono::steady_clock::now();
             return true;
-        }
-        else if (down & HidNpadButton_Down) {
+        } else if (down & HidNpadButton_Down) {
             dpadMoveStatus = DPadMoveStatus::WaitingDown;
             dpadMoveStartTime = std::chrono::steady_clock::now();
             return true;
@@ -104,4 +114,5 @@ public:
         // Then check for analog stick input (with its own timing)
         return analogHandler->HandleInput(held);
     }
-}; 
+};
+}  // namespace pksm::input

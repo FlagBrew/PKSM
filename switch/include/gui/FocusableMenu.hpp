@@ -1,54 +1,63 @@
 #pragma once
-#include <pu/Plutonium>
-#include "gui/PulsingOutline.hpp"
-#include "gui/IFocusable.hpp"
-#include "gui/DirectionalInputHandler.hpp"
 #include <functional>
+#include <pu/Plutonium>
 
+#include "gui/DirectionalInputHandler.hpp"
+#include "gui/IFocusable.hpp"
+#include "gui/PulsingOutline.hpp"
+
+namespace pksm::ui {
 class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
-    private:
-        bool focused;
-        PulsingOutline::Ref outline;
-        int lastPosition;  // Stores position when unfocusing
-        std::vector<std::string> currentDataSource;  // Owns the current data source
-        std::function<void()> onTouchSelectCallback;  // New callback for touch selection
-        DirectionalInputHandler inputHandler;  // Handles directional input
+private:
+    bool focused;
+    pksm::ui::PulsingOutline::Ref outline;
+    int lastPosition;  // Stores position when unfocusing
+    std::vector<std::string> currentDataSource;  // Owns the current data source
+    pksm::input::DirectionalInputHandler inputHandler;  // Handles directional input
 
-    public:
-        FocusableMenu(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr, const pu::i32 items_height, const u32 items_to_show);
-        
-        static Ref New(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::ui::Color items_clr, const pu::ui::Color items_focus_clr, const pu::i32 items_height, const u32 items_to_show) {
-            return std::make_shared<FocusableMenu>(x, y, width, items_clr, items_focus_clr, items_height, items_to_show);
-        }
-        
-        PU_SMART_CTOR(FocusableMenu)
-        
-        void OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) override;
-        void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
-        
-        // IFocusable implementation
-        void SetFocused(bool focused) override;
-        bool IsFocused() const override;
+protected:
+    std::function<void()> onTouchSelectCallback;
 
-        // Data source management
-        void SetDataSource(const std::vector<std::string>& items);
-        const std::vector<std::string>& GetDataSource() const;
+public:
+    FocusableMenu(
+        const pu::i32 x,
+        const pu::i32 y,
+        const pu::i32 width,
+        const pu::ui::Color items_clr,
+        const pu::ui::Color items_focus_clr,
+        const pu::i32 items_height,
+        const u32 items_to_show
+    );
+    PU_SMART_CTOR(FocusableMenu)
 
-        // Touch selection callback
-        void SetOnTouchSelect(std::function<void()> callback);
-        
-        std::string GetSelectedItemText() const;
-        
-        // Const-correct version of GetSelectedIndex
-        pu::i32 GetSelectedIndex() const { return Menu::selected_item_idx; }
-        
-    private:
-        // Position management methods
-        void StorePosition();
-        void RestorePosition();
-        void ResetPosition();  // Called when data source changes
+    void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
+    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
+        override;
 
-        // Movement methods
-        void MoveUp();
-        void MoveDown();
-}; 
+    // IFocusable implementation
+    void SetFocused(bool focused) override;
+    bool IsFocused() const override;
+
+    // Data source management
+    void SetDataSource(const std::vector<std::string>& items);
+    const std::vector<std::string>& GetDataSource() const;
+
+    // Touch selection callback
+    void SetOnTouchSelect(std::function<void()> callback);
+
+    std::string GetSelectedItemText() const;
+
+    // Const-correct version of GetSelectedIndex
+    pu::i32 GetSelectedIndex() const { return Menu::selected_item_idx; }
+
+private:
+    // Position management methods
+    void StorePosition();
+    void RestorePosition();
+    void ResetPosition();  // Called when data source changes
+
+    // Movement methods
+    void MoveUp();
+    void MoveDown();
+};
+}  // namespace pksm::ui

@@ -1,12 +1,13 @@
 #pragma once
 
-#include <pu/Plutonium>
-#include <vector>
-#include <string>
 #include <functional>
+#include <pu/Plutonium>
+#include <string>
+#include <vector>
+
 #include "gui/UIConstants.hpp"
 
-namespace gui {
+namespace pksm::ui {
 
 class FontManager {
 public:
@@ -16,9 +17,14 @@ public:
     // Register a font with all custom sizes
     static void RegisterFont(const std::string& fontPath, const FontNameGenerator& nameGenerator) {
         const std::vector<u32> sizes = {
-            UIConstants::FONT_SIZE_TITLE,
-            UIConstants::FONT_SIZE_HEADER,
-            UIConstants::FONT_SIZE_BUTTON
+            pksm::ui::global::FONT_SIZE_SMALL,
+            pksm::ui::global::FONT_SIZE_MEDIUM,
+            pksm::ui::global::FONT_SIZE_MEDIUM_LARGE,
+            pksm::ui::global::FONT_SIZE_LARGE,
+            pksm::ui::global::FONT_SIZE_TITLE,
+            pksm::ui::global::FONT_SIZE_HEADER,
+            pksm::ui::global::FONT_SIZE_BUTTON,
+            pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON
             // New sizes will automatically be included when added to UIConstants
         };
 
@@ -32,11 +38,11 @@ public:
     // Configure renderer options with all custom font sizes
     static void ConfigureRendererFontSizes(pu::ui::render::RendererInitOptions& renderer_opts) {
         // Register all custom font sizes
-        renderer_opts.AddExtraDefaultFontSize(UIConstants::FONT_SIZE_TITLE);
-        renderer_opts.AddExtraDefaultFontSize(UIConstants::FONT_SIZE_HEADER);
-        renderer_opts.AddExtraDefaultFontSize(UIConstants::FONT_SIZE_BUTTON);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TITLE);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_HEADER);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_BUTTON);
         // New sizes will automatically be included when added to UIConstants
     }
 };
 
-} // namespace gui 
+}  // namespace pksm::ui

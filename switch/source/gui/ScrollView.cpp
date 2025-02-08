@@ -1,45 +1,54 @@
 #include "gui/ScrollView.hpp"
+
 #include <cmath>
 
-ScrollView::ScrollView(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::i32 height)
-    : Element(), container(std::make_unique<pu::ui::Container>(x, y, width, height)),
-      focused(false), scrollOffset(0), contentHeight(0), availableHeight(0),
-      isDragging(false), touchStartedOnChild(false), touchStartY(0), lastTouchY(0),
-      scrollStartOffset(0), scrollVelocity(0.0f), hasMomentum(false),
-      isScrollingProgrammatically(false), lastProgrammaticScrollTime(0),
-      isAnimatingScroll(false), animationStartOffset(0), animationTargetOffset(0), animationStartTime(0) {
-}
+pksm::ui::ScrollView::ScrollView(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::i32 height)
+  : Element(),
+    container(pu::ui::Container::New(x, y, width, height)),
+    focused(false),
+    scrollOffset(0),
+    contentHeight(0),
+    availableHeight(0),
+    isAnimatingScroll(false),
+    animationStartOffset(0),
+    animationTargetOffset(0),
+    animationStartTime(0),
+    isDragging(false),
+    touchStartedOnChild(false),
+    touchStartY(0),
+    lastTouchY(0),
+    scrollStartOffset(0),
+    scrollVelocity(0.0f),
+    hasMomentum(false),
+    isScrollingProgrammatically(false),
+    lastProgrammaticScrollTime(0) {}
 
-pu::i32 ScrollView::GetX() {
+pu::i32 pksm::ui::ScrollView::GetX() {
     return container->GetX();
 }
 
-pu::i32 ScrollView::GetY() {
+pu::i32 pksm::ui::ScrollView::GetY() {
     return container->GetY();
 }
 
-pu::i32 ScrollView::GetWidth() {
+pu::i32 pksm::ui::ScrollView::GetWidth() {
     return container->GetWidth();
 }
 
-pu::i32 ScrollView::GetHeight() {
+pu::i32 pksm::ui::ScrollView::GetHeight() {
     return container->GetHeight();
 }
 
-void ScrollView::SetHeight(pu::i32 height) {
-    container->SetHeight(height);
-}
-
-void ScrollView::SetContentHeight(pu::i32 height) {
+void pksm::ui::ScrollView::SetContentHeight(pu::i32 height) {
     contentHeight = height;
     ClampScrollOffset();
 }
 
-pu::i32 ScrollView::GetContentHeight() const {
+pu::i32 pksm::ui::ScrollView::GetContentHeight() const {
     return contentHeight;
 }
 
-void ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
+void pksm::ui::ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
     // Clamp the target offset first
     pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight - GetHeight());
     pu::i32 targetOffset = std::max<pu::i32>(0, std::min<pu::i32>(offset, maxScroll));
@@ -50,7 +59,7 @@ void ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
         animationStartOffset = scrollOffset;
         animationTargetOffset = targetOffset;
         animationStartTime = SDL_GetTicks64();
-        
+
         // Stop any existing momentum
         hasMomentum = false;
         scrollVelocity = 0.0f;
@@ -59,34 +68,34 @@ void ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
         scrollOffset = targetOffset;
         isAnimatingScroll = false;
     }
-    
+
     // Set debounce state
     isScrollingProgrammatically = true;
     lastProgrammaticScrollTime = SDL_GetTicks64();
 }
 
-pu::i32 ScrollView::GetScrollOffset() const {
+pu::i32 pksm::ui::ScrollView::GetScrollOffset() const {
     return scrollOffset;
 }
 
-void ScrollView::Add(pu::ui::elm::Element::Ref elem) {
+void pksm::ui::ScrollView::Add(pu::ui::elm::Element::Ref elem) {
     container->Add(elem);
 }
 
-std::vector<pu::ui::elm::Element::Ref>& ScrollView::GetElements() {
+std::vector<pu::ui::elm::Element::Ref>& pksm::ui::ScrollView::GetElements() {
     return container->GetElements();
 }
 
-void ScrollView::Clear() {
+void pksm::ui::ScrollView::Clear() {
     container->Clear();
 }
 
-void ScrollView::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x, const pu::i32 y) {
+void pksm::ui::ScrollView::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
     // Update animation if active
     if (isAnimatingScroll) {
         u64 currentTime = SDL_GetTicks64();
         u64 elapsedTime = currentTime - animationStartTime;
-        
+
         if (elapsedTime >= SCROLL_ANIMATION_DURATION) {
             // Animation complete
             scrollOffset = animationTargetOffset;
@@ -94,8 +103,8 @@ void ScrollView::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x
         } else {
             // Calculate progress (0.0 to 1.0) using easing
             float progress = static_cast<float>(elapsedTime) / SCROLL_ANIMATION_DURATION;
-            float easedProgress = 1.0f - (1.0f - progress) * (1.0f - progress); // Ease out quad
-            
+            float easedProgress = 1.0f - (1.0f - progress) * (1.0f - progress);  // Ease out quad
+
             // Update scroll position
             pu::i32 delta = animationTargetOffset - animationStartOffset;
             scrollOffset = animationStartOffset + static_cast<pu::i32>(delta * easedProgress);
@@ -136,11 +145,11 @@ void ScrollView::OnRender(pu::ui::render::Renderer::Ref &drawer, const pu::i32 x
     SDL_RenderSetClipRect(pu::ui::render::GetMainRenderer(), nullptr);
 }
 
-bool ScrollView::ShouldStartDragging(const pu::ui::TouchPoint& touch_pos) const {
+bool pksm::ui::ScrollView::ShouldStartDragging(const pu::ui::TouchPoint& touch_pos) const {
     return std::abs(touch_pos.y - touchStartY) > DRAG_THRESHOLD;
 }
 
-void ScrollView::SetFocused(bool focused) {
+void pksm::ui::ScrollView::SetFocused(bool focused) {
     this->focused = focused;
     if (!focused) {
         // Clear any ongoing scroll state when losing focus
@@ -150,11 +159,16 @@ void ScrollView::SetFocused(bool focused) {
     }
 }
 
-bool ScrollView::IsFocused() const {
+bool pksm::ui::ScrollView::IsFocused() const {
     return focused;
 }
 
-void ScrollView::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) {
+void pksm::ui::ScrollView::OnInput(
+    const u64 keys_down,
+    const u64 keys_up,
+    const u64 keys_held,
+    const pu::ui::TouchPoint touch_pos
+) {
     // Check if we should clear the programmatic scrolling state
     if (isScrollingProgrammatically) {
         u64 currentTime = SDL_GetTicks64();
@@ -172,7 +186,7 @@ void ScrollView::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_
         for (auto& child : GetElements()) {
             if (adjusted_pos.HitsRegion(child->GetX(), child->GetY(), child->GetWidth(), child->GetHeight())) {
                 hitChild = true;
-                
+
                 if (focused) {
                     // Don't start dragging if we're in the debounce period
                     if (!isDragging && !isScrollingProgrammatically) {
@@ -197,8 +211,9 @@ void ScrollView::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_
                 break;
             }
         }
-        
-        if (focused && !isScrollingProgrammatically) {  // Only handle scrollview area drags when focused and not in debounce
+
+        if (focused && !isScrollingProgrammatically) {  // Only handle scrollview area drags when
+                                                        // focused and not in debounce
             // If we didn't hit a child but hit the scrollview area, prepare for potential drag
             if (!hitChild && touch_pos.HitsRegion(GetX(), GetY(), GetWidth(), GetHeight())) {
                 if (!isDragging && touchStartY == 0) {  // New touch
@@ -217,13 +232,13 @@ void ScrollView::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_
                 // Continue drag
                 pu::i32 deltaY = lastTouchY - touch_pos.y;
                 scrollOffset = scrollStartOffset + (touchStartY - touch_pos.y);
-                
+
                 // Calculate velocity for momentum
                 scrollVelocity = static_cast<float>(deltaY);
-                
+
                 // Update last touch position
                 lastTouchY = touch_pos.y;
-                
+
                 // Ensure we stay in bounds
                 ClampScrollOffset();
             }
@@ -243,32 +258,32 @@ void ScrollView::OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_
     }
 }
 
-void ScrollView::UpdateScrollMomentum() {
+void pksm::ui::ScrollView::UpdateScrollMomentum() {
     // Apply velocity to scroll position
     scrollOffset += static_cast<pu::i32>(scrollVelocity);
-    
+
     // Apply friction
     scrollVelocity *= SCROLL_FRICTION;
-    
+
     // Stop momentum if velocity is too low
     if (std::abs(scrollVelocity) < MIN_SCROLL_VELOCITY) {
         hasMomentum = false;
         scrollVelocity = 0.0f;
     }
-    
+
     // Ensure we stay in bounds
     ClampScrollOffset();
 }
 
-void ScrollView::ClampScrollOffset() {
+void pksm::ui::ScrollView::ClampScrollOffset() {
     // Calculate max scroll
     pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight - GetHeight());
-              
+
     scrollOffset = std::max<pu::i32>(0, std::min<pu::i32>(scrollOffset, maxScroll));
-    
+
     // If we hit bounds, stop momentum
     if (scrollOffset == 0 || scrollOffset == maxScroll) {
         hasMomentum = false;
         scrollVelocity = 0.0f;
     }
-} 
+}
