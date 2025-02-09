@@ -105,9 +105,14 @@ void LegalInfoScreen::attemptLegalization()
     curl_slist* headers = curl_slist_append(NULL, version.c_str());
     headers             = curl_slist_append(headers, generation.c_str());
 
-    std::string url = Configuration::getInstance().useApiUrl()
-                        ? Configuration::getInstance().apiUrl()
-                        : WEBSITE_URL;
+    std::string url = Configuration::getInstance().apiUrl();
+
+    if (url == "") {
+        Gui::warn("You must configure the API Url in settings!");
+        curl_slist_free_all(headers);
+        return;
+    }
+                
 
     std::string writeData;
     if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))

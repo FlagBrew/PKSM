@@ -74,6 +74,7 @@ private:
     int storageBox    = 0;
     bool justSwitched = true;
     bool cloudChosen  = false;
+    std::string websiteURL = "";
 };
 
 #endif

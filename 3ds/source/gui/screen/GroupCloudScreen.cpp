@@ -102,6 +102,8 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
     clickButtons[30] = std::make_unique<ClickButton>(
         25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK);
+    
+    websiteURL = Configuration::getInstance().apiUrl();
 }
 
 void GroupCloudScreen::drawBottom() const
@@ -861,7 +863,7 @@ void GroupCloudScreen::shareReceive()
     }
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        const std::string url = WEBSITE_URL "api/v2/gpss/download/bundle/" + std::string(input);
+        const std::string url = websiteURL + "api/v2/gpss/download/bundle/" + std::string(input);
         std::string jsonData  = "";
         if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
         {

@@ -110,8 +110,9 @@ namespace
     {
         SwkbdState state;
         swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 29);
-        swkbdSetHintText(&state, "API Url");
-        swkbdSetInitialText(&state, "");
+        swkbdSetHintText(&state, "API Url, MUST END WITH SLASH");
+        std::string apiUri = Configuration::getInstance().apiUrl();
+        swkbdSetInitialText(&state, apiUri.c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
         char input[88]  = {0};
         SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
@@ -188,7 +189,7 @@ void ConfigScreen::initButtons()
         ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(
-        215, 2, 104, 17,
+        215, 2, 52, 17,
         [&]()
         {
             currentTab = 2;
@@ -196,6 +197,16 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE,
         ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("MISC"), FONT_SIZE_11,
+        COLOR_BLACK, &tabs, false));
+    tabs.push_back(std::make_unique<ToggleButton>(
+        267, 2, 30, 17,
+        [&]()
+        {
+            currentTab = 4;
+            return false;
+        },
+        ui_sheet_res_null_idx, "API", FONT_SIZE_11, COLOR_WHITE,
+        ui_sheet_emulated_button_tabs_3_unselected_idx, "API", FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
     tabs[0]->setState(true);
 
@@ -602,14 +613,14 @@ void ConfigScreen::initButtons()
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-    tabButtons[4].push_back(std::make_unique<ClickButton>(
-        247, 111, 15, 12,
-        [this]()
-        {
-            Configuration::getInstance().useApiUrl(!Configuration::getInstance().useApiUrl());
-            return true;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    // tabButtons[4].push_back(std::make_unique<ClickButton>(
+    //     247, 111, 15, 12,
+    //     [this]()
+    //     {
+    //         Configuration::getInstance().useApiUrl(!Configuration::getInstance().useApiUrl());
+    //         return true;
+    //     },
+    //     ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void ConfigScreen::drawBottom() const
@@ -806,19 +817,19 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 4)
     {
-        Gui::text("Debug", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text("API Options", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text("URL", 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text("Server URL", 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])
         {
             button->draw();
         }
 
-        Gui::text(
-            Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"),
-            270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        // Gui::text(
+        //     Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"),
+        //     270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

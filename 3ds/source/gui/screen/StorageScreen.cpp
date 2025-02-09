@@ -207,6 +207,11 @@ StorageScreen::StorageScreen()
         3, 211, 28, 28,
         [this]()
         {
+            if (Configuration::getInstance().apiUrl() == "") {
+                Gui::warn("You must configure the API Url in settings!");
+                return false;    
+            }
+            
             Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;

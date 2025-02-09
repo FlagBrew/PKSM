@@ -232,7 +232,7 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
     post_data.push_back({"sort_field", "latest"});
     post_data.push_back({"sort_direction", false});
 
-    return {WEBSITE_URL "api/v2/gpss/search/bundles?page=" + std::to_string(num), post_data.dump()};
+    return {Configuration::getInstance().apiUrl() + "api/v2/gpss/search/bundles?page=" + std::to_string(num), post_data.dump()};
 }
 
 std::optional<int> GroupCloudAccess::nextPage()
@@ -340,7 +340,7 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
         {
             auto ret = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/gpss/download/pokemon/" +
+            if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/pokemon/" +
                                              group["download_codes"][pokeIndex].get<std::string>(),
                     true, nullptr, nullptr, ""))
             {
@@ -379,7 +379,7 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
             // incremented
             ret.emplace_back(pkm(groupIndex, i));
         }
-        if (auto fetch = Fetch::init(WEBSITE_URL "api/v2/gpss/download/bundles/" +
+        if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/bundles/" +
                                          group["download_code"].get<std::string>(),
                 true, nullptr, nullptr, ""))
         {
@@ -423,7 +423,7 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
 
     std::string writeData;
     if (auto fetch =
-            Fetch::init(WEBSITE_URL "api/v2/gpss/upload/bundle", true, &writeData, headers, ""))
+            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/bundle", true, &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)

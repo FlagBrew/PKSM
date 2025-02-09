@@ -205,9 +205,19 @@ namespace
         {
             return false;
         }
+        const std::string patronCode = Configuration::getInstance().patronCode();
+
+        if (Configuration::getInstance().alphaChannel() && !patronCode.empty()) {
+            Gui::warn("Sorry, patreon builds discontinued for now,");
+            Gui::warn("Auto update also turned off to avoid issues,");
+            Gui::warn("You can re-enable it in the settings.");
+            Configuration::getInstance().alphaChannel(false);
+            Configuration::getInstance().autoUpdate(false);
+            return false;
+        }
+
         execPath        = execPath.substr(execPath.find(':') + 1);
         std::string url = "", path = "", retString = "";
-        const std::string patronCode = Configuration::getInstance().patronCode();
         if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
         {
             struct curl_slist* headers = NULL;

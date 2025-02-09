@@ -55,6 +55,7 @@ namespace
 
 CloudAccess::Page::~Page() {}
 
+
 void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
     bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
 {
@@ -243,7 +244,7 @@ std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type,
     post_data.push_back({"sort_field", sortTypeToString(type)});
     post_data.push_back({"sort_direction", !ascend});
 
-    return {WEBSITE_URL "api/v2/gpss/search/pokemon?page=" + std::to_string(num), post_data.dump()};
+    return {Configuration::getInstance().apiUrl() + "api/v2/gpss/search/pokemon?page=" + std::to_string(num), post_data.dump()};
 }
 
 std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
@@ -281,7 +282,7 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
         auto ret = pkm(slot);
 
         if (auto fetch =
-                Fetch::init(WEBSITE_URL "api/v2/gpss/download/pokemon/" +
+                Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/pokemon/" +
                                 (*current->data)["pokemon"][slot]["code"].get<std::string>(),
                     true, nullptr, nullptr, ""))
         {
@@ -372,7 +373,7 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 
     std::string writeData = "";
     if (auto fetch =
-            Fetch::init(WEBSITE_URL "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))
+            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());
