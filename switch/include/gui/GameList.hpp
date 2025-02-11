@@ -7,8 +7,10 @@
 
 #include "gui/ConsoleGameList.hpp"
 #include "gui/DirectionalInputHandler.hpp"
+#include "gui/EmulatorGameList.hpp"
 #include "gui/FocusableImage.hpp"
 #include "gui/GameGrid.hpp"
+#include "gui/GameListCommon.hpp"
 #include "gui/PulsingOutline.hpp"
 #include "gui/TriggerButton.hpp"
 #include "gui/UIConstants.hpp"
@@ -54,18 +56,19 @@ private:
     pu::i32 height;  // Component's height
 
     // Focus management
-    input::FocusManager::Ref consoleGameListManager;
+    input::FocusManager::Ref emulatorGameListManager;
     input::FocusManager::Ref leftTriggerFocusManager;
     input::FocusManager::Ref rightTriggerFocusManager;
 
     // Core components
     pu::ui::Container::Ref container;
+    pksm::input::DirectionalInputHandler inputHandler;
 
     // UI Elements
     ui::TriggerButton::Ref leftTrigger;
     ui::TriggerButton::Ref rightTrigger;
     ui::render::PatternBackground::Ref background;
-    ConsoleGameList::Ref consoleGameList;
+    EmulatorGameList::Ref emulatorGameList;
 
     // Data
     std::vector<titles::Title::Ref> titles;
@@ -94,6 +97,9 @@ public:
     void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
         override;
 
+    // Handle non-directional button presses
+    bool HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held);
+
     // IFocusable implementation
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
@@ -107,6 +113,6 @@ public:
     void SetOnTouchSelect(std::function<void()> callback);
 
     // Focus management
-    bool ShouldResignDownFocus() const { return consoleGameList->ShouldResignDownFocus(); }
+    bool ShouldResignDownFocus() const;
 };
 }  // namespace pksm::ui
