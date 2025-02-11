@@ -20,11 +20,11 @@ private:
     static constexpr u32 INSTALLED_GAME_SIZE = 240;  // Size of installed game images
     static constexpr u32 GAME_SPACING = 280;  // Horizontal spacing between games
     static constexpr u32 ROW_SPACING = 40;  // Vertical spacing between rows
-    static constexpr u32 ITEMS_PER_ROW = 4;  // Number of games per row
     static constexpr u32 GAME_OUTLINE_PADDING = 15;  // Padding for the selection outline
 
     // State
-    size_t selectedIndex;
+    size_t selectedIndex = 0;
+    size_t itemsPerRow;  // Number of items per row (moved from constant to member)
     bool focused = false;
     bool selected = false;  // Whether any item in the grid is selected
     std::function<void()> onSelectionChangedCallback;
@@ -50,8 +50,6 @@ private:
 
     // Helper methods
     void HandleOnSelectionChanged();
-    bool IsInTopRow() const;
-    bool IsInBottomRow() const;
     void EnsureRowVisible(size_t row);
 
 public:
@@ -59,6 +57,7 @@ public:
         const pu::i32 x,
         const pu::i32 y,
         const pu::i32 height,
+        const size_t itemsPerRow,
         input::FocusManager::Ref parentFocusManager,
         input::SelectionManager::Ref parentSelectionManager
     );
@@ -92,7 +91,8 @@ public:
     void MoveRight();
 
     // Grid state queries
-    bool IsFirstInRow() const { return selectedIndex % ITEMS_PER_ROW == 0; }
-    bool IsOnLastRow() const { return (selectedIndex / ITEMS_PER_ROW) == ((gameImages.size() - 1) / ITEMS_PER_ROW); }
+    bool IsFirstInRow() const { return selectedIndex % itemsPerRow == 0; }
+    bool InOnTopRow() const { return selectedIndex < itemsPerRow; }
+    bool IsOnBottomRow() const { return (selectedIndex / itemsPerRow) == ((gameImages.size() - 1) / itemsPerRow); }
 };
 }  // namespace pksm::ui

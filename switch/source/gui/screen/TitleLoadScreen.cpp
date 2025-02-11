@@ -255,6 +255,8 @@ void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
         // Game selection mode
         if (gameListHandler.HandleInput(down, held)) {
             // Input was handled by directional handler
+        } else if (gameList->HandleNonDirectionalInput(down, up, held)) {
+            // Input was handled by internal game list handler
         } else if (down & HidNpadButton_A) {
             LOG_DEBUG("Transitioning from game selection to save list");
             FocusSaveList();

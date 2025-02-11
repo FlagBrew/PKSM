@@ -17,9 +17,9 @@
 
 namespace pksm::ui {
 
-class ConsoleGameList : public pu::ui::elm::Element, public IFocusable {
+class EmulatorGameList : public pu::ui::elm::Element, public IFocusable {
 public:
-    ConsoleGameList(
+    EmulatorGameList(
         const pu::i32 x,
         const pu::i32 y,
         const pu::i32 width,
@@ -27,7 +27,7 @@ public:
         const GameListLayoutConfig& config,
         input::FocusManager::Ref parentFocusManager
     );
-    PU_SMART_CTOR(ConsoleGameList)
+    PU_SMART_CTOR(EmulatorGameList)
 
     pu::i32 GetX() override;
     pu::i32 GetY() override;
@@ -47,37 +47,24 @@ public:
     void SetOnSelectionChanged(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);
 
-    bool ShouldResignUpFocus() const {
-        return selectionState == SelectionState::GameCard || installedGames->InOnTopRow();
-    }
-    bool ShouldResignDownFocus() const {
-        return selectionState == SelectionState::GameCard ||
-            (selectionState == SelectionState::InstalledGame && installedGames->IsOnBottomRow());
-    }
+    bool ShouldResignUpFocus() const { return gameGrid->InOnTopRow(); }
+    bool ShouldResignDownFocus() const { return gameGrid->IsOnBottomRow(); }
 
     // Returns a value between 0.0 and 1.0 indicating the relative horizontal position
     // of the current selection (0.0 = leftmost, 1.0 = rightmost)
     float GetSelectionHorizontalPosition() const {
-        if (selectionState == SelectionState::GameCard) {
-            return 0.0f;  // Game card is always on the left
-        }
-        // For grid items, calculate relative position based on column
-        size_t column = installedGames->GetSelectedIndex() % GRID_ITEMS_PER_ROW;
+        size_t column = gameGrid->GetSelectedIndex() % GRID_ITEMS_PER_ROW;
         return static_cast<float>(column) / (GRID_ITEMS_PER_ROW - 1);  // Normalize to [0,1]
     }
 
 private:
-    enum class SelectionState { GameCard, InstalledGame };
-
     // Grid layout constants
-    static constexpr size_t GRID_ITEMS_PER_ROW = 4;
+    static constexpr size_t GRID_ITEMS_PER_ROW = 6;
 
     void HandleOnSelectionChanged();
 
     // State
-    SelectionState selectionState;
     bool focused = false;
-    bool selected = false;
     std::function<void()> onSelectionChangedCallback;
 
     // Position tracking
@@ -85,8 +72,6 @@ private:
     pu::i32 y;
     pu::i32 width;
     pu::i32 height;
-    pu::i32 gameCardX;
-    pu::i32 installedStartX;
 
     // Layout config
     GameListLayoutConfig config;
@@ -96,11 +81,8 @@ private:
     pksm::input::DirectionalInputHandler inputHandler;
 
     // UI Elements
-    pu::ui::elm::TextBlock::Ref cartridgeText;
-    pu::ui::elm::TextBlock::Ref installedText;
-    pu::ui::elm::Rectangle::Ref divider;
-    FocusableImage::Ref gameCardImage;
-    GameGrid::Ref installedGames;
+    pu::ui::elm::TextBlock::Ref titleText;
+    GameGrid::Ref gameGrid;
 
     // Data
     std::vector<titles::Title::Ref> titles;
@@ -108,16 +90,10 @@ private:
     // Callbacks
     std::function<void()> onTouchSelectCallback;
 
-    // Console-specific layout constants
-    static constexpr pu::i32 GAME_CARD_SIZE = 350;
-    static constexpr pu::i32 SECTION_DIVIDER_WIDTH = 20;
-    static constexpr pu::i32 SECTION_DIVIDER_PADDING = 80;
-
     // Focus management
-    input::FocusManager::Ref installedGamesManager;
+    input::FocusManager::Ref gameGridManager;
 
     // Selection management
-    input::SelectionManager::Ref consoleGameListSelectionManager;
     input::SelectionManager::Ref gameGridSelectionManager;
 };
 
