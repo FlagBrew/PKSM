@@ -11,7 +11,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
-    const LayoutConfig& config,
+    const GameListLayoutConfig& config,
     input::FocusManager::Ref parentFocusManager
 )
   : Element(),
@@ -74,6 +74,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
         installedStartX,
         y + config.paddingTop + config.sectionTitleSpacing,
         GetHeight() - (config.paddingTop + config.sectionTitleSpacing),
+        GRID_ITEMS_PER_ROW,
         installedGamesManager,
         gameGridSelectionManager
     );
