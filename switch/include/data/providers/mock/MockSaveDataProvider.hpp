@@ -2,6 +2,7 @@
 
 #include <map>
 #include <pu/Plutonium>
+#include <vector>
 
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/saves/Save.hpp"
@@ -9,7 +10,8 @@
 class MockSaveDataProvider : public ISaveDataProvider {
 private:
     // Map of title ID to list of save names
-    std::map<u64, std::vector<pksm::saves::Save::Ref>> mockSaves;
+    std::map<u64, std::vector<pksm::saves::Save::Ref>> mockConsoleSaves;
+    std::map<u64, std::vector<pksm::saves::Save::Ref>> mockEmulatorSaves;
 
 public:
     MockSaveDataProvider();
