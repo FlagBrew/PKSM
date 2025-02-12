@@ -9,7 +9,6 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/ConsoleGameList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/EmulatorGameList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
-#include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/TriggerButton.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
@@ -55,7 +54,7 @@ private:
     pu::i32 height;  // Component's height
 
     // Focus management
-    input::FocusManager::Ref emulatorGameListManager;
+    input::FocusManager::Ref consoleGameListManager;
     input::FocusManager::Ref leftTriggerFocusManager;
     input::FocusManager::Ref rightTriggerFocusManager;
 
@@ -67,7 +66,7 @@ private:
     ui::TriggerButton::Ref leftTrigger;
     ui::TriggerButton::Ref rightTrigger;
     ui::render::PatternBackground::Ref background;
-    EmulatorGameList::Ref emulatorGameList;
+    ConsoleGameList::Ref consoleGameList;
 
     // Data
     std::vector<titles::Title::Ref> titles;

@@ -71,6 +71,6 @@ private:
 
     static constexpr u32 TRIGGER_BUTTON_GLYPH_Y_OFFSET = -7;
     static constexpr u32 TRIGGER_BUTTON_OUTLINE_PADDING = 15;
-    static constexpr u32 NAVIGATION_TEXT_PADDING = 10;  // Padding between button and navigation text
+    static constexpr u32 NAVIGATION_TEXT_PADDING = 16;  // Padding between button and navigation text
 };
 }  // namespace pksm::ui
