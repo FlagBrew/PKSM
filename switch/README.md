@@ -10,7 +10,7 @@ PKSM uses a custom font system that supports multiple font weights and sizes. He
 
 ### Adding a New Font Size
 
-1. Add your new font size to `include/gui/UIConstants.hpp`:
+1. Add your new font size to `include/gui/shared/UIConstants.hpp`:
 
    ```cpp
    // Custom font sizes
@@ -25,7 +25,7 @@ PKSM uses a custom font system that supports multiple font weights and sizes. He
 
 1. Add your font file (TTF format) to `romfs/gfx/ui/`
 
-2. Define a font name generator in `include/gui/UIConstants.hpp`:
+2. Define a font name generator in `include/gui/shared/UIConstants.hpp`:
 
    ```cpp
    // Example for a new italic font
