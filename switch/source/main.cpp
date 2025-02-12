@@ -2,11 +2,11 @@
 #include <sstream>
 #include <switch.h>
 
-#include "data/mock/MockSaveDataProvider.hpp"
-#include "data/mock/MockTitleDataProvider.hpp"
-#include "gui/FontManager.hpp"
-#include "gui/UIConstants.hpp"
-#include "gui/screen/TitleLoadScreen.hpp"
+#include "data/providers/mock/MockSaveDataProvider.hpp"
+#include "data/providers/mock/MockTitleDataProvider.hpp"
+#include "gui/screens/title-load-screen/TitleLoadScreen.hpp"
+#include "gui/shared/FontManager.hpp"
+#include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 
 // Main application class
