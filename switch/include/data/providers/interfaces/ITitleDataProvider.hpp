@@ -15,4 +15,7 @@ public:
 
     // Get list of installed titles
     virtual std::vector<pksm::titles::Title::Ref> GetInstalledTitles() const = 0;
+
+    // Get list of emulator titles
+    virtual std::vector<pksm::titles::Title::Ref> GetEmulatorTitles() const = 0;
 };
