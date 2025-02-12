@@ -27,7 +27,7 @@ pksm::ui::GameList::GameList(
     LOG_DEBUG("Initializing GameList component...");
 
     // Initialize focus manager for console game list
-    emulatorGameListManager = input::FocusManager::New("EmulatorGameList Manager");
+    consoleGameListManager = input::FocusManager::New("ConsoleGameList Manager");
 
     // Create console game list first since other components depend on its dimensions
     GameListLayoutConfig config = {
@@ -38,9 +38,9 @@ pksm::ui::GameList::GameList(
         .sectionTitleSpacing = SECTION_TITLE_SPACING,
         .gameOutlinePadding = GAME_OUTLINE_PADDING
     };
-    emulatorGameList = EmulatorGameList::New(x, y, width, height, config, emulatorGameListManager);
-    emulatorGameList->SetName("Emulator Game List Element");
-    emulatorGameList->EstablishOwningRelationship();
+    consoleGameList = ConsoleGameList::New(x, y, width, height, config, consoleGameListManager);
+    consoleGameList->SetName("Console Game List Element");
+    consoleGameList->EstablishOwningRelationship();
     // Initialize container with proper dimensions
     container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
@@ -60,19 +60,19 @@ pksm::ui::GameList::GameList(
     );
     container->Add(background);
 
-    // Add emulator game list last (it should render on top)
-    container->Add(emulatorGameList);
+    // Add console game list last (it should render on top)
+    container->Add(consoleGameList);
 
     // Let container prepare elements
     container->PreRender();
 
     // Set up callbacks
-    emulatorGameList->SetOnSelectionChanged([this]() {
+    consoleGameList->SetOnSelectionChanged([this]() {
         if (onSelectionChangedCallback) {
             onSelectionChangedCallback();
         }
     });
-    emulatorGameList->SetOnTouchSelect([this]() {
+    consoleGameList->SetOnTouchSelect([this]() {
         if (onTouchSelectCallback) {
             onTouchSelectCallback();
         }
@@ -80,9 +80,9 @@ pksm::ui::GameList::GameList(
 
     // Set up input handler
     inputHandler.SetOnMoveUp([this]() {
-        if (emulatorGameList->IsFocused() && emulatorGameList->ShouldResignUpFocus()) {
+        if (consoleGameList->IsFocused() && consoleGameList->ShouldResignUpFocus()) {
             // Use the horizontal position to determine which trigger is closer
-            float position = emulatorGameList->GetSelectionHorizontalPosition();
+            float position = consoleGameList->GetSelectionHorizontalPosition();
             if (position > 0.5f) {
                 rightTrigger->RequestFocus();
             } else {
@@ -105,7 +105,7 @@ pksm::ui::GameList::GameList(
 
     inputHandler.SetOnMoveDown([this]() {
         if (rightTrigger->IsFocused() || leftTrigger->IsFocused()) {
-            emulatorGameList->RequestFocus();
+            consoleGameList->RequestFocus();
         }
     });
 
@@ -126,7 +126,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_COLOR
     );
     leftTrigger->SetName("LeftTrigger Button Element");
-    leftTrigger->SetNavigationText("Custom");
+    leftTrigger->SetNavigationText("Emulator");
     leftTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Left trigger button touched");
         leftTrigger->RequestFocus();
@@ -143,7 +143,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_COLOR
     );
     rightTrigger->SetName("RightTrigger Button Element");
-    rightTrigger->SetNavigationText("Console");
+    rightTrigger->SetNavigationText("Custom");
     rightTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Right trigger button touched");
         rightTrigger->RequestFocus();
@@ -171,7 +171,7 @@ void pksm::ui::GameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const p
     leftTrigger->OnRender(drawer, leftTrigger->GetX(), leftTrigger->GetY());
     rightTrigger->OnRender(drawer, rightTrigger->GetX(), rightTrigger->GetY());
     background->OnRender(drawer, x, y);
-    emulatorGameList->OnRender(drawer, emulatorGameList->GetX(), emulatorGameList->GetY());
+    consoleGameList->OnRender(drawer, consoleGameList->GetX(), consoleGameList->GetY());
 }
 
 void pksm::ui::GameList::OnInput(
@@ -201,7 +201,7 @@ void pksm::ui::GameList::OnInput(
     }
 
     // Forward input to console game list
-    emulatorGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    consoleGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
     leftTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
     rightTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
@@ -212,7 +212,7 @@ void pksm::ui::GameList::SetFocused(bool focused) {
         this->focused = focused;
         // Only request focus if the triggers are not focused
         if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
-            emulatorGameList->RequestFocus();
+            consoleGameList->RequestFocus();
         }
     }
 }
@@ -231,11 +231,11 @@ void pksm::ui::GameList::SetBackgroundColor(const pu::ui::Color& color) {
 void pksm::ui::GameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
     LOG_DEBUG("Setting GameList data source with " + std::to_string(titles.size()) + " titles");
     this->titles = titles;
-    emulatorGameList->SetDataSource(titles);
+    consoleGameList->SetDataSource(titles);
 }
 
 pksm::titles::Title::Ref pksm::ui::GameList::GetSelectedTitle() const {
-    return emulatorGameList->GetSelectedTitle();
+    return consoleGameList->GetSelectedTitle();
 }
 
 void pksm::ui::GameList::SetOnSelectionChanged(std::function<void()> callback) {
@@ -250,14 +250,14 @@ bool pksm::ui::GameList::ShouldResignDownFocus() const {
     if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
         return false;
     }
-    return emulatorGameList->ShouldResignDownFocus();
+    return consoleGameList->ShouldResignDownFocus();
 }
 
 void pksm::ui::GameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
     LOG_DEBUG("Setting focus manager on GameList");
     IFocusable::SetFocusManager(manager);
 
-    manager->RegisterChildManager(emulatorGameListManager);
+    manager->RegisterChildManager(consoleGameListManager);
     manager->RegisterFocusable(leftTrigger);
     manager->RegisterFocusable(rightTrigger);
 }
@@ -315,7 +315,7 @@ bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u6
     }
     if (keys_down & HidNpadButton_B) {
         if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
-            emulatorGameList->RequestFocus();
+            consoleGameList->RequestFocus();
             return true;
         }
     }
