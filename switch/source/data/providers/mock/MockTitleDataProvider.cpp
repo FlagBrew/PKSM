@@ -1,6 +1,7 @@
 #include "data/providers/mock/MockTitleDataProvider.hpp"
 
 MockTitleDataProvider::MockTitleDataProvider() {
+    customTitleProvider = CustomTitleProvider::New();
     // Initialize mock data
     mockCartridgeTitle = std::make_shared<pksm::titles::Title>(
         "Pokémon Legends: Arceus",
@@ -173,4 +174,8 @@ std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetInstalledTitles(
 
 std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetEmulatorTitles() const {
     return mockEmulatorTitles;
+}
+
+std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetCustomTitles() const {
+    return customTitleProvider->GetCustomTitles();
 }

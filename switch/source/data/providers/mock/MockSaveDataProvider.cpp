@@ -188,6 +188,23 @@ MockSaveDataProvider::MockSaveDataProvider() {
         {0x0018001B,
          {pksm::saves::Save::New("Classic", "Classic"), pksm::saves::Save::New("Pikachu Fan", "Pikachu Fan")}}
     };
+
+    mockCustomSaves = {// Yellow
+                       {0x00164A00,
+                        {pksm::saves::Save::New("Main Story", "Main Story"),
+                         pksm::saves::Save::New("Nuzlocke", "Nuzlocke"),
+                         pksm::saves::Save::New("Shiny Hunt", "Shiny Hunt")}},
+                       // Crystal
+                       {0x00164B00,
+                        {pksm::saves::Save::New("Main Story", "Main Story"),
+                         pksm::saves::Save::New("Nuzlocke", "Nuzlocke"),
+                         pksm::saves::Save::New("Shiny Hunt", "Shiny Hunt")}},
+                       // Emerald
+                       {0x00164C00,
+                        {pksm::saves::Save::New("Main Story", "Main Story"),
+                         pksm::saves::Save::New("Nuzlocke", "Nuzlocke"),
+                         pksm::saves::Save::New("Shiny Hunt", "Shiny Hunt")}}
+    };
 }
 
 std::vector<pksm::saves::Save::Ref> MockSaveDataProvider::GetSavesForTitle(const pksm::titles::Title::Ref& title
@@ -206,6 +223,12 @@ std::vector<pksm::saves::Save::Ref> MockSaveDataProvider::GetSavesForTitle(const
     auto emulatorIt = mockEmulatorSaves.find(title->getTitleId());
     if (emulatorIt != mockEmulatorSaves.end()) {
         return emulatorIt->second;
+    }
+
+    // Then check custom saves
+    auto customIt = mockCustomSaves.find(title->getTitleId());
+    if (customIt != mockCustomSaves.end()) {
+        return customIt->second;
     }
 
     return {pksm::saves::Save::New("Main Save", "Main Save")};  // Default for unknown titles

@@ -18,4 +18,7 @@ public:
 
     // Get list of emulator titles
     virtual std::vector<pksm::titles::Title::Ref> GetEmulatorTitles() const = 0;
+
+    // Get list of custom titles
+    virtual std::vector<pksm::titles::Title::Ref> GetCustomTitles() const = 0;
 };

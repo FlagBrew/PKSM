@@ -272,13 +272,11 @@ void pksm::layout::TitleLoadScreen::HandleButtonInteraction(pksm::ui::FocusableB
 void pksm::layout::TitleLoadScreen::OnLoadButtonClick() {
     LOG_DEBUG("Load button clicked");
     HandleButtonInteraction(this->loadButton);
-    // TODO: Implement load functionality
 }
 
 void pksm::layout::TitleLoadScreen::OnWirelessButtonClick() {
     LOG_DEBUG("Wireless button clicked");
     HandleButtonInteraction(this->wirelessButton);
-    // TODO: Implement settings functionality
 }
 
 void pksm::layout::TitleLoadScreen::OnSaveSelected() {
