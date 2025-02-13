@@ -32,34 +32,20 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->headerText->SetFont(pksm::ui::global::MakeHeavyFontName(pksm::ui::global::FONT_SIZE_TITLE));
     this->Add(this->headerText);
 
-    // Create game list at the adjusted Y position
+    // Set up UI components
     this->gameList = pksm::ui::GameList::New(
         GAME_LIST_SIDE_MARGIN,
         HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN,
         GetWidth() - (GAME_LIST_SIDE_MARGIN * 2),  // Width is screen width minus margins
         GetHeight() - (HEADER_TOTAL_VERTICAL_SPACE + SAVE_LIST_TOTAL_VERTICAL_SPACE),
-        gameListManager
+        gameListManager,
+        titleProvider
     );
     this->gameList->SetName("GameList Element");
     this->gameList->EstablishOwningRelationship();
     this->gameList->RequestFocus();
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
     this->gameList->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnGameTouchSelect, this));
-
-    // Set initial data
-    std::vector<pksm::titles::Title::Ref> titles;
-    auto cartTitle = titleProvider->GetGameCardTitle();
-    if (cartTitle) {
-        LOG_DEBUG("Game card title found: " + cartTitle->getName());
-        titles.push_back(cartTitle);
-    } else {
-        LOG_DEBUG("No game card title found");
-    }
-
-    auto installedTitles = titleProvider->GetInstalledTitles();
-    LOG_DEBUG("Found " + std::to_string(installedTitles.size()) + " installed titles");
-    titles.insert(titles.end(), installedTitles.begin(), installedTitles.end());
-    this->gameList->SetDataSource(titles);
 
     this->Add(this->gameList);
 
