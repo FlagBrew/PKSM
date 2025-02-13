@@ -5,15 +5,20 @@
 #include <pu/Plutonium>
 #include <vector>
 
+#include "data/providers/interfaces/ITitleDataProvider.hpp"
 #include "gui/render/PatternRenderer.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/ConsoleGameList.hpp"
+#include "gui/screens/title-load-screen/sub-components/game-list/CustomGameList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/EmulatorGameList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
+#include "gui/screens/title-load-screen/sub-components/game-list/IGameList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/TriggerButton.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
+#include "input/visual-feedback/interfaces/IFocusable.hpp"
 #include "titles/Title.hpp"
 
 namespace pksm::ui {
@@ -22,6 +27,9 @@ class GameList : public pu::ui::elm::Element, public IFocusable {
 private:
     // Layout constants
     static constexpr u32 CORNER_RADIUS = 30;  // Radius for rounded corners
+
+    // Navigation constants
+    static const std::vector<GameListInfo> NAVIGATION_ORDER;
 
     // Background margin constants
     static constexpr u32 PADDING_LEFT = 80;  // Left padding of the component
@@ -52,11 +60,13 @@ private:
     pu::i32 y;  // Component's y position
     pu::i32 width;  // Component's width
     pu::i32 height;  // Component's height
+    ITitleDataProvider::Ref titleProvider;
+    size_t currentGameListIndex;
 
     // Focus management
     input::FocusManager::Ref consoleGameListManager;
-    input::FocusManager::Ref leftTriggerFocusManager;
-    input::FocusManager::Ref rightTriggerFocusManager;
+    input::FocusManager::Ref customGameListManager;
+    input::FocusManager::Ref emulatorGameListManager;
 
     // Core components
     pu::ui::Container::Ref container;
@@ -66,12 +76,13 @@ private:
     ui::TriggerButton::Ref leftTrigger;
     ui::TriggerButton::Ref rightTrigger;
     ui::render::PatternBackground::Ref background;
-    ConsoleGameList::Ref consoleGameList;
+    std::vector<IGameList::Ref> gameLists;  // All available game lists
+    IGameList::Ref activeGameList;  // Currently active game list
 
-    // Data
-    std::vector<titles::Title::Ref> titles;
-
-    // Trigger button methods
+    // Helper methods
+    void SwitchToNextGameList(bool forward);
+    void SetupGameListCallbacks(IGameList::Ref gameList);
+    void UpdateGameListData();
     void CreateTriggerButtons();
     void OnTriggerButtonPressed(ui::TriggerButton::Side side);
     void OnTriggerButtonReleased(ui::TriggerButton::Side side);
@@ -82,7 +93,8 @@ public:
         const pu::i32 y,
         const pu::i32 width,
         const pu::i32 height,
-        input::FocusManager::Ref parentFocusManager
+        input::FocusManager::Ref parentFocusManager,
+        ITitleDataProvider::Ref titleProvider
     );
     PU_SMART_CTOR(GameList)
 
@@ -105,7 +117,6 @@ public:
 
     // Public interface
     void SetBackgroundColor(const pu::ui::Color& color);
-    void SetDataSource(const std::vector<titles::Title::Ref>& titles);
     titles::Title::Ref GetSelectedTitle() const;
     void SetOnSelectionChanged(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);

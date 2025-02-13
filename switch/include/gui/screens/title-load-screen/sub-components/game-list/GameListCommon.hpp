@@ -1,8 +1,16 @@
 #pragma once
 
 #include <pu/Plutonium>
+#include <string>
 
 namespace pksm::ui {
+
+enum class GameListType { Console, Custom, Emulator };
+
+struct GameListInfo {
+    GameListType type;
+    std::string navigationTitle;
+};
 
 struct GameListLayoutConfig {
     pu::i32 paddingLeft;
@@ -12,4 +20,4 @@ struct GameListLayoutConfig {
     pu::i32 sectionTitleSpacing;
     pu::i32 gameOutlinePadding;
 };
-} 
+}  // namespace pksm::ui

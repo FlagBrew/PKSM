@@ -17,7 +17,7 @@ FullWidthGameList::FullWidthGameList(
     input::FocusManager::Ref parentFocusManager,
     const std::string& titleStr
 )
-  : Element(),
+  : IGameList(),
     focused(false),
     onSelectionChangedCallback(nullptr),
     x(x),

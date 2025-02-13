@@ -14,7 +14,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     const GameListLayoutConfig& config,
     input::FocusManager::Ref parentFocusManager
 )
-  : Element(),
+  : IGameList(),
     selectionState(SelectionState::GameCard),
     focused(false),
     onSelectionChangedCallback(nullptr),

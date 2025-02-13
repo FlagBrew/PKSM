@@ -7,6 +7,7 @@
 
 #include "gui/screens/title-load-screen/sub-components/game-list/GameGrid.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
+#include "gui/screens/title-load-screen/sub-components/game-list/IGameList.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
@@ -16,7 +17,7 @@
 
 namespace pksm::ui {
 
-class ConsoleGameList : public pu::ui::elm::Element, public IFocusable {
+class ConsoleGameList : public IGameList {
 public:
     ConsoleGameList(
         const pu::i32 x,
@@ -28,35 +29,36 @@ public:
     );
     PU_SMART_CTOR(ConsoleGameList)
 
+    // Element interface
     pu::i32 GetX() override;
     pu::i32 GetY() override;
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
-
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
     void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
         override;
 
+    // IFocusable interface
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
-    void SetFocusManager(std::shared_ptr<input::FocusManager> manager);
+    void SetFocusManager(std::shared_ptr<input::FocusManager> manager) override;
 
-    void SetDataSource(const std::vector<titles::Title::Ref>& titles);
-    titles::Title::Ref GetSelectedTitle() const;
-    void SetOnSelectionChanged(std::function<void()> callback);
-    void SetOnTouchSelect(std::function<void()> callback);
-
-    bool ShouldResignUpFocus() const {
+    // IGameList interface
+    void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
+    titles::Title::Ref GetSelectedTitle() const override;
+    void SetOnSelectionChanged(std::function<void()> callback) override;
+    void SetOnTouchSelect(std::function<void()> callback) override;
+    bool ShouldResignUpFocus() const override {
         return selectionState == SelectionState::GameCard || installedGames->InOnTopRow();
     }
-    bool ShouldResignDownFocus() const {
+    bool ShouldResignDownFocus() const override {
         return selectionState == SelectionState::GameCard ||
             (selectionState == SelectionState::InstalledGame && installedGames->IsOnBottomRow());
     }
 
     // Returns a value between 0.0 and 1.0 indicating the relative horizontal position
     // of the current selection (0.0 = leftmost, 1.0 = rightmost)
-    float GetSelectionHorizontalPosition() const {
+    float GetSelectionHorizontalPosition() const override {
         if (selectionState == SelectionState::GameCard) {
             return 0.0f;  // Game card is always on the left
         }
