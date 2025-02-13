@@ -4,9 +4,9 @@
 
 namespace pksm::ui {
 
-class EmulatorGameList : public FullWidthGameList {
+class CustomGameList : public FullWidthGameList {
 public:
-    EmulatorGameList(
+    CustomGameList(
         const pu::i32 x,
         const pu::i32 y,
         const pu::i32 width,
@@ -14,9 +14,9 @@ public:
         const GameListLayoutConfig& config,
         input::FocusManager::Ref parentFocusManager
     )
-      : FullWidthGameList(x, y, width, height, config, parentFocusManager, "Emulator Games") {}
+      : FullWidthGameList(x, y, width, height, config, parentFocusManager, "Custom Games") {}
 
-    PU_SMART_CTOR(EmulatorGameList)
+    PU_SMART_CTOR(CustomGameList)
 };
 
 }  // namespace pksm::ui

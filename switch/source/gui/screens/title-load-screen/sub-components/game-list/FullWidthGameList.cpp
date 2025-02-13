@@ -1,4 +1,4 @@
-#include "gui/screens/title-load-screen/sub-components/game-list/EmulatorGameList.hpp"
+#include "gui/screens/title-load-screen/sub-components/game-list/FullWidthGameList.hpp"
 
 #include <cmath>
 #include <sstream>
@@ -6,13 +6,16 @@
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 
-pksm::ui::EmulatorGameList::EmulatorGameList(
+namespace pksm::ui {
+
+FullWidthGameList::FullWidthGameList(
     const pu::i32 x,
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
     const GameListLayoutConfig& config,
-    input::FocusManager::Ref parentFocusManager
+    input::FocusManager::Ref parentFocusManager,
+    const std::string& titleStr
 )
   : Element(),
     focused(false),
@@ -22,13 +25,13 @@ pksm::ui::EmulatorGameList::EmulatorGameList(
     width(width),
     height(height),
     config(config) {
-    LOG_DEBUG("Initializing EmulatorGameList component...");
+    LOG_DEBUG("Initializing FullWidthGameList component...");
 
     // Initialize selection managers
     gameGridSelectionManager = input::SelectionManager::New("GameGrid Manager");
     gameGridSelectionManager->SetActive(true);  // This is a root selection manager
 
-    LOG_DEBUG("EmulatorGameList selection manager set");
+    LOG_DEBUG("FullWidthGameList selection manager set");
 
     // Initialize focus managers
     gameGridManager = input::FocusManager::New("GameGrid Manager");
@@ -37,7 +40,7 @@ pksm::ui::EmulatorGameList::EmulatorGameList(
     container = pu::ui::Container::New(x, y, width, height);
 
     // Create section header
-    titleText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, "Emulator Games");
+    titleText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, titleStr);
     titleText->SetColor(pu::ui::Color(255, 255, 255, 255));
     titleText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
     container->Add(titleText);
@@ -82,33 +85,33 @@ pksm::ui::EmulatorGameList::EmulatorGameList(
 
     SetFocusManager(parentFocusManager);
 
-    LOG_DEBUG("EmulatorGameList component initialization complete");
+    LOG_DEBUG("FullWidthGameList component initialization complete");
 }
 
-pu::i32 pksm::ui::EmulatorGameList::GetX() {
+pu::i32 FullWidthGameList::GetX() {
     return x;
 }
 
-pu::i32 pksm::ui::EmulatorGameList::GetY() {
+pu::i32 FullWidthGameList::GetY() {
     return y;
 }
 
-pu::i32 pksm::ui::EmulatorGameList::GetWidth() {
+pu::i32 FullWidthGameList::GetWidth() {
     return width;
 }
 
-pu::i32 pksm::ui::EmulatorGameList::GetHeight() {
+pu::i32 FullWidthGameList::GetHeight() {
     return height;
 }
 
-void pksm::ui::EmulatorGameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+void FullWidthGameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
     // Render all elements in the container
     for (auto& element : container->GetElements()) {
         element->OnRender(drawer, element->GetX(), element->GetY());
     }
 }
 
-void pksm::ui::EmulatorGameList::OnInput(
+void FullWidthGameList::OnInput(
     const u64 keys_down,
     const u64 keys_up,
     const u64 keys_held,
@@ -125,9 +128,9 @@ void pksm::ui::EmulatorGameList::OnInput(
     }
 }
 
-void pksm::ui::EmulatorGameList::SetFocused(bool focused) {
+void FullWidthGameList::SetFocused(bool focused) {
     if (this->focused != focused) {
-        LOG_DEBUG(focused ? "EmulatorGameList gained focus" : "EmulatorGameList lost focus");
+        LOG_DEBUG(focused ? "FullWidthGameList gained focus" : "FullWidthGameList lost focus");
         this->focused = focused;
         if (focused) {
             gameGrid->RequestFocus();
@@ -135,12 +138,12 @@ void pksm::ui::EmulatorGameList::SetFocused(bool focused) {
     }
 }
 
-bool pksm::ui::EmulatorGameList::IsFocused() const {
+bool FullWidthGameList::IsFocused() const {
     return focused;
 }
 
-void pksm::ui::EmulatorGameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
-    LOG_DEBUG("Setting focus manager on EmulatorGameList");
+void FullWidthGameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
+    LOG_DEBUG("Setting focus manager on FullWidthGameList");
     IFocusable::SetFocusManager(manager);
 
     // When we get a focus manager, register our child managers
@@ -149,28 +152,28 @@ void pksm::ui::EmulatorGameList::SetFocusManager(std::shared_ptr<input::FocusMan
     }
 }
 
-void pksm::ui::EmulatorGameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
-    LOG_DEBUG("Setting EmulatorGameList data source with " + std::to_string(titles.size()) + " titles");
-    LOG_MEMORY();  // Memory check when loading new titles
+void FullWidthGameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
+    LOG_DEBUG("Setting FullWidthGameList data source with " + std::to_string(titles.size()) + " titles");
+    LOG_MEMORY();
 
     // Store titles
     this->titles = titles;
     gameGrid->SetDataSource(titles);
 }
 
-pksm::titles::Title::Ref pksm::ui::EmulatorGameList::GetSelectedTitle() const {
+pksm::titles::Title::Ref FullWidthGameList::GetSelectedTitle() const {
     return gameGrid->GetSelectedTitle();
 }
 
-void pksm::ui::EmulatorGameList::SetOnSelectionChanged(std::function<void()> callback) {
+void FullWidthGameList::SetOnSelectionChanged(std::function<void()> callback) {
     onSelectionChangedCallback = callback;
 }
 
-void pksm::ui::EmulatorGameList::SetOnTouchSelect(std::function<void()> callback) {
+void FullWidthGameList::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
-void pksm::ui::EmulatorGameList::HandleOnSelectionChanged() {
+void FullWidthGameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         auto selected = GetSelectedTitle();
         if (selected) {
@@ -179,3 +182,5 @@ void pksm::ui::EmulatorGameList::HandleOnSelectionChanged() {
         onSelectionChangedCallback();
     }
 }
+
+}  // namespace pksm::ui
