@@ -9,12 +9,19 @@
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 
+const std::vector<pksm::ui::GameListInfo> pksm::ui::GameList::NAVIGATION_ORDER = {
+    {GameListType::Console, "Console"},
+    {GameListType::Custom, "Custom"},
+    {GameListType::Emulator, "Emulator"}
+};
+
 pksm::ui::GameList::GameList(
     const pu::i32 x,
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
-    input::FocusManager::Ref parentFocusManager
+    input::FocusManager::Ref parentFocusManager,
+    ITitleDataProvider::Ref titleProvider
 )
   : Element(),
     focused(false),
@@ -23,13 +30,17 @@ pksm::ui::GameList::GameList(
     x(x),
     y(y),
     width(width),
-    height(height) {
+    height(height),
+    titleProvider(titleProvider),
+    currentGameListIndex(0) {
     LOG_DEBUG("Initializing GameList component...");
 
-    // Initialize focus manager for console game list
+    // Initialize focus managers for each game list type
     consoleGameListManager = input::FocusManager::New("ConsoleGameList Manager");
+    customGameListManager = input::FocusManager::New("CustomGameList Manager");
+    emulatorGameListManager = input::FocusManager::New("EmulatorGameList Manager");
 
-    // Create console game list first since other components depend on its dimensions
+    // Create game lists with proper dimensions
     GameListLayoutConfig config = {
         .paddingLeft = PADDING_LEFT,
         .paddingRight = PADDING_RIGHT,
@@ -38,9 +49,35 @@ pksm::ui::GameList::GameList(
         .sectionTitleSpacing = SECTION_TITLE_SPACING,
         .gameOutlinePadding = GAME_OUTLINE_PADDING
     };
-    consoleGameList = ConsoleGameList::New(x, y, width, height, config, consoleGameListManager);
-    consoleGameList->SetName("Console Game List Element");
-    consoleGameList->EstablishOwningRelationship();
+
+    // Initialize all game lists
+    gameLists.resize(NAVIGATION_ORDER.size());
+    for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
+        const auto& info = NAVIGATION_ORDER[i];
+        IGameList::Ref list;
+
+        switch (info.type) {
+            case GameListType::Console:
+                list = ConsoleGameList::New(x, y, width, height, config, consoleGameListManager);
+                list->SetName("Console Game List Element");
+                break;
+            case GameListType::Custom:
+                list = CustomGameList::New(x, y, width, height, config, customGameListManager);
+                list->SetName("Custom Game List Element");
+                break;
+            case GameListType::Emulator:
+                list = EmulatorGameList::New(x, y, width, height, config, emulatorGameListManager);
+                list->SetName("Emulator Game List Element");
+                break;
+        }
+
+        list->EstablishOwningRelationship();
+        gameLists[i] = list;
+    }
+
+    // Set active game list to first in navigation order
+    activeGameList = gameLists[currentGameListIndex];
+
     // Initialize container with proper dimensions
     container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
@@ -60,29 +97,24 @@ pksm::ui::GameList::GameList(
     );
     container->Add(background);
 
-    // Add console game list last (it should render on top)
-    container->Add(consoleGameList);
+    // Add all game lists to container (only active one will be visible)
+    for (auto& list : gameLists) {
+        container->Add(list);
+        list->SetVisible(false);
+    }
+    activeGameList->SetVisible(true);
 
     // Let container prepare elements
     container->PreRender();
 
-    // Set up callbacks
-    consoleGameList->SetOnSelectionChanged([this]() {
-        if (onSelectionChangedCallback) {
-            onSelectionChangedCallback();
-        }
-    });
-    consoleGameList->SetOnTouchSelect([this]() {
-        if (onTouchSelectCallback) {
-            onTouchSelectCallback();
-        }
-    });
+    // Set up callbacks for active game list
+    SetupGameListCallbacks(activeGameList);
 
     // Set up input handler
     inputHandler.SetOnMoveUp([this]() {
-        if (consoleGameList->IsFocused() && consoleGameList->ShouldResignUpFocus()) {
+        if (activeGameList->IsFocused() && activeGameList->ShouldResignUpFocus()) {
             // Use the horizontal position to determine which trigger is closer
-            float position = consoleGameList->GetSelectionHorizontalPosition();
+            float position = activeGameList->GetSelectionHorizontalPosition();
             if (position > 0.5f) {
                 rightTrigger->RequestFocus();
             } else {
@@ -105,11 +137,14 @@ pksm::ui::GameList::GameList(
 
     inputHandler.SetOnMoveDown([this]() {
         if (rightTrigger->IsFocused() || leftTrigger->IsFocused()) {
-            consoleGameList->RequestFocus();
+            activeGameList->RequestFocus();
         }
     });
 
     SetFocusManager(parentFocusManager);
+
+    // Set initial data for all game lists
+    UpdateGameListData();
 
     LOG_DEBUG("GameList component initialization complete");
 }
@@ -126,7 +161,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_COLOR
     );
     leftTrigger->SetName("LeftTrigger Button Element");
-    leftTrigger->SetNavigationText("Emulator");
+    leftTrigger->SetNavigationText("Custom");
     leftTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Left trigger button touched");
         leftTrigger->RequestFocus();
@@ -143,7 +178,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_COLOR
     );
     rightTrigger->SetName("RightTrigger Button Element");
-    rightTrigger->SetNavigationText("Custom");
+    rightTrigger->SetNavigationText("Console");
     rightTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Right trigger button touched");
         rightTrigger->RequestFocus();
@@ -171,7 +206,7 @@ void pksm::ui::GameList::OnRender(pu::ui::render::Renderer::Ref& drawer, const p
     leftTrigger->OnRender(drawer, leftTrigger->GetX(), leftTrigger->GetY());
     rightTrigger->OnRender(drawer, rightTrigger->GetX(), rightTrigger->GetY());
     background->OnRender(drawer, x, y);
-    consoleGameList->OnRender(drawer, consoleGameList->GetX(), consoleGameList->GetY());
+    activeGameList->OnRender(drawer, activeGameList->GetX(), activeGameList->GetY());
 }
 
 void pksm::ui::GameList::OnInput(
@@ -201,7 +236,7 @@ void pksm::ui::GameList::OnInput(
     }
 
     // Forward input to console game list
-    consoleGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    activeGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
     leftTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
     rightTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
@@ -212,7 +247,7 @@ void pksm::ui::GameList::SetFocused(bool focused) {
         this->focused = focused;
         // Only request focus if the triggers are not focused
         if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
-            consoleGameList->RequestFocus();
+            activeGameList->RequestFocus();
         }
     }
 }
@@ -228,14 +263,8 @@ void pksm::ui::GameList::SetBackgroundColor(const pu::ui::Color& color) {
     }
 }
 
-void pksm::ui::GameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
-    LOG_DEBUG("Setting GameList data source with " + std::to_string(titles.size()) + " titles");
-    this->titles = titles;
-    consoleGameList->SetDataSource(titles);
-}
-
 pksm::titles::Title::Ref pksm::ui::GameList::GetSelectedTitle() const {
-    return consoleGameList->GetSelectedTitle();
+    return activeGameList->GetSelectedTitle();
 }
 
 void pksm::ui::GameList::SetOnSelectionChanged(std::function<void()> callback) {
@@ -250,14 +279,18 @@ bool pksm::ui::GameList::ShouldResignDownFocus() const {
     if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
         return false;
     }
-    return consoleGameList->ShouldResignDownFocus();
+    return activeGameList->ShouldResignDownFocus();
 }
 
 void pksm::ui::GameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
     LOG_DEBUG("Setting focus manager on GameList");
     IFocusable::SetFocusManager(manager);
 
+    // Register all child managers
     manager->RegisterChildManager(consoleGameListManager);
+    manager->RegisterChildManager(customGameListManager);
+    manager->RegisterChildManager(emulatorGameListManager);
+
     manager->RegisterFocusable(leftTrigger);
     manager->RegisterFocusable(rightTrigger);
 }
@@ -280,11 +313,89 @@ void pksm::ui::GameList::OnTriggerButtonReleased(ui::TriggerButton::Side side) {
         case ui::TriggerButton::Side::Left:
             leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
             LOG_DEBUG("Left trigger button released");
+            SwitchToNextGameList(false);  // Move backwards
             break;
         case ui::TriggerButton::Side::Right:
             rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
             LOG_DEBUG("Right trigger button released");
+            SwitchToNextGameList(true);  // Move forwards
             break;
+    }
+}
+
+void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
+    // Hide current game list
+    activeGameList->SetVisible(false);
+
+    // Calculate next index
+    size_t nextIndex;
+    if (forward) {
+        nextIndex = (currentGameListIndex + 1) % NAVIGATION_ORDER.size();
+    } else {
+        nextIndex = (currentGameListIndex == 0) ? NAVIGATION_ORDER.size() - 1 : currentGameListIndex - 1;
+    }
+
+    // Update current index and active game list
+    currentGameListIndex = nextIndex;
+    activeGameList = gameLists[currentGameListIndex];
+
+    // Show new game list and request focus
+    activeGameList->SetVisible(true);
+    activeGameList->RequestFocus();
+
+    // Update trigger button text
+    size_t prevIndex = (currentGameListIndex == 0) ? NAVIGATION_ORDER.size() - 1 : currentGameListIndex - 1;
+    nextIndex = (currentGameListIndex + 1) % NAVIGATION_ORDER.size();
+
+    leftTrigger->SetNavigationText(NAVIGATION_ORDER[prevIndex].navigationTitle);
+    rightTrigger->SetNavigationText(NAVIGATION_ORDER[nextIndex].navigationTitle);
+
+    // Set up callbacks for new active game list
+    SetupGameListCallbacks(activeGameList);
+    onSelectionChangedCallback();
+}
+
+void pksm::ui::GameList::SetupGameListCallbacks(IGameList::Ref gameList) {
+    gameList->SetOnSelectionChanged([this]() {
+        if (onSelectionChangedCallback) {
+            onSelectionChangedCallback();
+        }
+    });
+
+    gameList->SetOnTouchSelect([this]() {
+        if (onTouchSelectCallback) {
+            onTouchSelectCallback();
+        }
+    });
+}
+
+void pksm::ui::GameList::UpdateGameListData() {
+    // Update data for each game list type
+    for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
+        const auto& info = NAVIGATION_ORDER[i];
+        auto& list = gameLists[i];
+
+        switch (info.type) {
+            case GameListType::Console: {
+                std::vector<titles::Title::Ref> consoleTitles;
+                // Add game card title if present
+                auto gameCardTitle = titleProvider->GetGameCardTitle();
+                if (gameCardTitle) {
+                    consoleTitles.push_back(gameCardTitle);
+                }
+                // Add installed titles
+                auto installedTitles = titleProvider->GetInstalledTitles();
+                consoleTitles.insert(consoleTitles.end(), installedTitles.begin(), installedTitles.end());
+                list->SetDataSource(consoleTitles);
+                break;
+            }
+            case GameListType::Custom:
+                list->SetDataSource(titleProvider->GetCustomTitles());
+                break;
+            case GameListType::Emulator:
+                list->SetDataSource(titleProvider->GetEmulatorTitles());
+                break;
+        }
     }
 }
 
@@ -315,7 +426,7 @@ bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u6
     }
     if (keys_down & HidNpadButton_B) {
         if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
-            consoleGameList->RequestFocus();
+            activeGameList->RequestFocus();
             return true;
         }
     }

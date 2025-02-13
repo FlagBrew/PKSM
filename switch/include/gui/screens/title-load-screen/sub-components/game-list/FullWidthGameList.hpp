@@ -7,6 +7,7 @@
 
 #include "gui/screens/title-load-screen/sub-components/game-list/GameGrid.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
+#include "gui/screens/title-load-screen/sub-components/game-list/IGameList.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
@@ -17,7 +18,7 @@
 
 namespace pksm::ui {
 
-class FullWidthGameList : public pu::ui::elm::Element, public IFocusable {
+class FullWidthGameList : public IGameList {
 public:
     FullWidthGameList(
         const pu::i32 x,
@@ -41,19 +42,19 @@ public:
 
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
-    void SetFocusManager(std::shared_ptr<input::FocusManager> manager);
+    void SetFocusManager(std::shared_ptr<input::FocusManager> manager) override;
 
-    void SetDataSource(const std::vector<titles::Title::Ref>& titles);
-    titles::Title::Ref GetSelectedTitle() const;
-    void SetOnSelectionChanged(std::function<void()> callback);
-    void SetOnTouchSelect(std::function<void()> callback);
+    void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
+    titles::Title::Ref GetSelectedTitle() const override;
+    void SetOnSelectionChanged(std::function<void()> callback) override;
+    void SetOnTouchSelect(std::function<void()> callback) override;
 
-    bool ShouldResignUpFocus() const { return gameGrid->InOnTopRow(); }
-    bool ShouldResignDownFocus() const { return gameGrid->IsOnBottomRow(); }
+    bool ShouldResignUpFocus() const override { return gameGrid->InOnTopRow(); }
+    bool ShouldResignDownFocus() const override { return gameGrid->IsOnBottomRow(); }
 
     // Returns a value between 0.0 and 1.0 indicating the relative horizontal position
     // of the current selection (0.0 = leftmost, 1.0 = rightmost)
-    float GetSelectionHorizontalPosition() const {
+    float GetSelectionHorizontalPosition() const override {
         size_t column = gameGrid->GetSelectedIndex() % GRID_ITEMS_PER_ROW;
         return static_cast<float>(column) / (GRID_ITEMS_PER_ROW - 1);  // Normalize to [0,1]
     }

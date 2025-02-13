@@ -75,7 +75,7 @@ void pksm::ui::FocusableButton::OnInput(
                 // If we're not focused, trigger touch select
                 if (!focused && onTouchSelectCallback) {
                     onTouchSelectCallback();
-                    SetFocused(true);
+                    RequestFocus();
                 }
             }
         }
