@@ -12,6 +12,7 @@ private:
     // Map of title ID to list of save names
     std::map<u64, std::vector<pksm::saves::Save::Ref>> mockConsoleSaves;
     std::map<u64, std::vector<pksm::saves::Save::Ref>> mockEmulatorSaves;
+    std::map<u64, std::vector<pksm::saves::Save::Ref>> mockCustomSaves;
 
 public:
     MockSaveDataProvider();
