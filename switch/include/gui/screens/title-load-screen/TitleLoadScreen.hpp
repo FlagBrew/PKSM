@@ -53,6 +53,7 @@ private:
     pksm::input::DirectionalInputHandler buttonHandler;
     pksm::input::DirectionalInputHandler saveListHandler;
     pksm::input::DirectionalInputHandler gameListHandler;
+    pksm::input::DirectionalInputHandler userIconButtonHandler;
 
     // Focus management
     pksm::input::FocusManager::Ref titleLoadFocusManager;

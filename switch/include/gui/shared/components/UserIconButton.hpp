@@ -41,11 +41,11 @@ private:
     pu::i32 y;
     pu::i32 diameter;
     bool focused;
-    std::function<void()> onClickCallback;
     data::AccountManager& accountManager;
-    bool isProcessingClick;  // Flag to prevent double execution
-
-    SDL_Texture* maskedIconTexture;  // Store the masked icon texture
+    SDL_Texture* maskedIconTexture;
+    SDL_TimerID clickTimer;
+    bool isProcessingClick;
+    std::function<void()> onClickCallback;
     pu::ui::elm::TextBlock::Ref usernameText;
     pksm::ui::PulsingOutlineBase::Ref pulsingOutline;
     pksm::ui::StaticOutlineBase::Ref outline;

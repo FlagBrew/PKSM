@@ -245,6 +245,9 @@ void pksm::ui::GameList::SetFocused(bool focused) {
     if (this->focused != focused) {
         LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
+        if (!focused) {
+            inputHandler.ClearState();
+        }
         // Only request focus if the triggers are not focused
         if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
             activeGameList->RequestFocus();
@@ -280,6 +283,10 @@ bool pksm::ui::GameList::ShouldResignDownFocus() const {
         return false;
     }
     return activeGameList->ShouldResignDownFocus();
+}
+
+bool pksm::ui::GameList::ShouldResignUpFocus() const {
+    return (leftTrigger->IsFocused() || rightTrigger->IsFocused());
 }
 
 void pksm::ui::GameList::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
