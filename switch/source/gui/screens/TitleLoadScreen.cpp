@@ -144,6 +144,14 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
         }
     });
 
+    gameListHandler.SetOnMoveUp([this]() {
+        if (gameList->ShouldResignUpFocus()) {
+            this->userIconButton->RequestFocus();
+        }
+    });
+
+    userIconButtonHandler.SetOnMoveDown([this]() { gameList->RequestFocus(); });
+
     // Load initial saves
     this->LoadSaves();
 
@@ -225,7 +233,9 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     if (this->userIconButton->IsFocused()) {
-        if (down & HidNpadButton_A) {
+        if (userIconButtonHandler.HandleInput(down, held)) {
+            // Input was handled by directional handler
+        } else if (down & HidNpadButton_A) {
             LOG_DEBUG("User icon button activated via A button");
             this->accountManager.ShowAccountSelector();
         } else if (down & HidNpadButton_B || down & HidNpadButton_Down) {

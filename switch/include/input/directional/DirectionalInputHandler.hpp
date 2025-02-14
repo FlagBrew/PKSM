@@ -35,5 +35,7 @@ public:
 
     // Handle input - returns true if input was handled
     bool HandleInput(u64 down, u64 held);
+
+    void ClearState();
 };
 }  // namespace pksm::input

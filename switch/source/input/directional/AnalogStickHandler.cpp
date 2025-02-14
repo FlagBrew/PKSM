@@ -40,25 +40,30 @@ bool pksm::input::AnalogStickHandler::HandleInput(u64 held) {
         return true;  // Input is being handled, even if we're still waiting
     }
     // Start new movement if not already waiting
-    else if (moveStatus == MoveStatus::None) {
-        if (held & (HidNpadButton_StickLLeft | HidNpadButton_StickRLeft)) {
-            moveStatus = MoveStatus::WaitingLeft;
-            moveStartTime = std::chrono::steady_clock::now();
-            return true;
-        } else if (held & (HidNpadButton_StickLRight | HidNpadButton_StickRRight)) {
-            moveStatus = MoveStatus::WaitingRight;
-            moveStartTime = std::chrono::steady_clock::now();
-            return true;
-        } else if (held & (HidNpadButton_StickLUp | HidNpadButton_StickRUp)) {
-            moveStatus = MoveStatus::WaitingUp;
-            moveStartTime = std::chrono::steady_clock::now();
-            return true;
-        } else if (held & (HidNpadButton_StickLDown | HidNpadButton_StickRDown)) {
-            moveStatus = MoveStatus::WaitingDown;
-            moveStartTime = std::chrono::steady_clock::now();
-            return true;
-        }
+    else if (held & (HidNpadButton_StickLLeft | HidNpadButton_StickRLeft)) {
+        moveStatus = MoveStatus::WaitingLeft;
+        moveStartTime = std::chrono::steady_clock::now();
+        return true;
+    } else if (held & (HidNpadButton_StickLRight | HidNpadButton_StickRRight)) {
+        moveStatus = MoveStatus::WaitingRight;
+        moveStartTime = std::chrono::steady_clock::now();
+        return true;
+    } else if (held & (HidNpadButton_StickLUp | HidNpadButton_StickRUp)) {
+        moveStatus = MoveStatus::WaitingUp;
+        moveStartTime = std::chrono::steady_clock::now();
+        return true;
+    } else if (held & (HidNpadButton_StickLDown | HidNpadButton_StickRDown)) {
+        moveStatus = MoveStatus::WaitingDown;
+        moveStartTime = std::chrono::steady_clock::now();
+        return true;
+    } else {
+        // Clear state if no relevant input is detected
+        moveStatus = MoveStatus::None;
     }
 
     return false;
+}
+
+void pksm::input::AnalogStickHandler::ClearState() {
+    moveStatus = MoveStatus::None;
 }
