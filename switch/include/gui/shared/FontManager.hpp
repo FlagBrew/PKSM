@@ -24,7 +24,8 @@ public:
             pksm::ui::global::FONT_SIZE_TITLE,
             pksm::ui::global::FONT_SIZE_HEADER,
             pksm::ui::global::FONT_SIZE_BUTTON,
-            pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION
+            pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION,
+            pksm::ui::global::FONT_SIZE_ACCOUNT_NAME
             // New sizes will automatically be included when added to UIConstants
         };
 

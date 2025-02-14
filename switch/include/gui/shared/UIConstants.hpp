@@ -17,6 +17,7 @@ static constexpr auto FONT_SIZE_LARGE = static_cast<u32>(pu::ui::DefaultFontSize
 static constexpr u32 FONT_SIZE_TITLE = 60;
 static constexpr u32 FONT_SIZE_HEADER = 40;
 static constexpr u32 FONT_SIZE_BUTTON = 40;
+static constexpr u32 FONT_SIZE_ACCOUNT_NAME = 28;
 static constexpr u32 FONT_SIZE_TRIGGER_BUTTON_NAVIGATION = 36;
 
 // Font Names

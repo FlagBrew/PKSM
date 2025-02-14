@@ -2,6 +2,7 @@
 #include <sstream>
 #include <switch.h>
 
+#include "data/AccountManager.hpp"
 #include "data/providers/mock/MockSaveDataProvider.hpp"
 #include "data/providers/mock/MockTitleDataProvider.hpp"
 #include "gui/screens/title-load-screen/TitleLoadScreen.hpp"
@@ -13,6 +14,7 @@
 class PKSMApplication : public pu::ui::Application {
 private:
     pksm::layout::TitleLoadScreen::Ref titleLoadScreen;
+    pksm::data::AccountManager accountManager;
 
     // Initialize renderer options with basic configuration
     static pu::ui::render::RendererInitOptions CreateRendererOptions() {
@@ -139,6 +141,14 @@ public:
             LOG_DEBUG("Loading title screen...");
             LOG_MEMORY();  // Initial title screen memory state
 
+            // Initialize account manager
+            LOG_DEBUG("Initializing account manager...");
+            Result res = accountManager.Initialize();
+            if (R_FAILED(res)) {
+                LOG_ERROR("Failed to initialize account manager");
+                throw std::runtime_error("Account manager initialization failed");
+            }
+
             // Create data providers
             LOG_DEBUG("Creating data providers...");
             auto titleProvider = std::make_shared<MockTitleDataProvider>();
@@ -148,7 +158,7 @@ public:
             LOG_DEBUG("Creating title screen...");
 
             try {
-                this->titleLoadScreen = pksm::layout::TitleLoadScreen::New(titleProvider, saveProvider);
+                this->titleLoadScreen = pksm::layout::TitleLoadScreen::New(titleProvider, saveProvider, accountManager);
                 LOG_DEBUG("Title screen object created");
                 LOG_MEMORY();  // Memory after title screen creation
             } catch (const std::exception& e) {

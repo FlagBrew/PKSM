@@ -10,9 +10,10 @@
 
 pksm::layout::TitleLoadScreen::TitleLoadScreen(
     ITitleDataProvider::Ref titleProvider,
-    ISaveDataProvider::Ref saveProvider
+    ISaveDataProvider::Ref saveProvider,
+    data::AccountManager& accountManager
 )
-  : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider) {
+  : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider), accountManager(accountManager) {
     LOG_DEBUG("Initializing TitleLoadScreen...");
 
     // Initialize focus managers
@@ -25,6 +26,19 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
 
     // Set background color to match DS version - deeper blue
     this->SetBackgroundColor(pksm::ui::global::BACKGROUND_BLUE);
+
+    // Create user icon button in top left corner
+    this->userIconButton = pksm::ui::UserIconButton::New(
+        USER_ICON_MARGIN,
+        HEADER_TOP_MARGIN + (HEADER_HEIGHT - USER_ICON_SIZE) / 2,  // Vertically center in header
+        USER_ICON_SIZE,
+        accountManager
+    );
+    this->userIconButton->SetName("UserIconButton Element");
+    this->userIconButton->SetOnClick([this]() { this->accountManager.ShowAccountSelector(); });
+    this->accountManager.SetOnAccountSelected([this](AccountUid) { this->userIconButton->UpdateAccountInfo(); });
+    titleLoadFocusManager->RegisterFocusable(this->userIconButton);
+    this->Add(this->userIconButton);
 
     // Create header text (initially empty, will be updated in LoadSaves)
     this->headerText = pu::ui::elm::TextBlock::New(0, 0, "");
@@ -210,7 +224,15 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
-    if (this->loadButton->IsFocused() || this->wirelessButton->IsFocused()) {
+    if (this->userIconButton->IsFocused()) {
+        if (down & HidNpadButton_A) {
+            LOG_DEBUG("User icon button activated via A button");
+            this->accountManager.ShowAccountSelector();
+        } else if (down & HidNpadButton_B || down & HidNpadButton_Down) {
+            LOG_DEBUG("Moving focus from user icon to game list");
+            FocusGameSection();
+        }
+    } else if (this->loadButton->IsFocused() || this->wirelessButton->IsFocused()) {
         // Handle button group navigation
         if (buttonHandler.HandleInput(down, held)) {
             // Input was handled by directional handler
@@ -246,6 +268,9 @@ void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
         } else if (down & HidNpadButton_A) {
             LOG_DEBUG("Transitioning from game selection to save list");
             FocusSaveList();
+        } else if (down & HidNpadButton_Up) {
+            LOG_DEBUG("Moving focus from game list to user icon");
+            this->userIconButton->RequestFocus();
         }
     }
 }

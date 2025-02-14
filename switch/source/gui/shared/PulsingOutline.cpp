@@ -1,26 +1,16 @@
 #include "gui/shared/components/PulsingOutline.hpp"
 
-pksm::ui::PulsingOutline::PulsingOutline(
+pksm::ui::PulsingOutlineBase::PulsingOutlineBase(
     const pu::i32 x,
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
     const pu::ui::Color color,
-    const pu::i32 radius
+    const u32 borderWidth
 )
-  : x(x),
-    y(y),
-    width(width),
-    height(height),
-    color(color),
-    radius(radius),
-    startTime(std::chrono::steady_clock::now()),
-    visible(true) {}
+  : StaticOutlineBase(x, y, width, height, color, borderWidth), startTime(std::chrono::steady_clock::now()) {}
 
-void pksm::ui::PulsingOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
-    if (!visible)
-        return;
-
+pu::ui::Color pksm::ui::PulsingOutlineBase::calculatePulseColor() const {
     auto now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
     float time = (duration % 1000) / 1000.0f;  // Convert to 0-1 range
@@ -29,17 +19,37 @@ void pksm::ui::PulsingOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, c
     float intensity = std::abs(time - 0.5f) * 2.0f;  // Creates a triangle wave
 
     // Interpolate color
-    pu::ui::Color pulseColor = {
+    return pu::ui::Color{
         static_cast<u8>(color.r + ((255 - color.r) * intensity)),
         static_cast<u8>(color.g + ((255 - color.g) * intensity)),
         static_cast<u8>(color.b + ((255 - color.b) * intensity)),
         255
     };
+}
 
-    constexpr u32 BORDER_WIDTH = 3;
+// RectangularPulsingOutline implementation
+pksm::ui::RectangularPulsingOutline::RectangularPulsingOutline(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 width,
+    const pu::i32 height,
+    const pu::ui::Color color,
+    const pu::i32 radius,
+    const u32 borderWidth
+)
+  : PulsingOutlineBase(x, y, width, height, color, borderWidth), radius(radius) {}
 
-    // Draw concentric rounded rectangles to create border effect
-    for (u32 i = 0; i < BORDER_WIDTH; i++) {
+void pksm::ui::RectangularPulsingOutline::OnRender(
+    pu::ui::render::Renderer::Ref& drawer,
+    const pu::i32 x,
+    const pu::i32 y
+) {
+    if (!visible)
+        return;
+
+    pu::ui::Color pulseColor = calculatePulseColor();
+
+    for (u32 i = 0; i < borderWidth; i++) {
         drawer->RenderRoundedRectangle(
             pulseColor,
             x + i,
@@ -51,51 +61,28 @@ void pksm::ui::PulsingOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, c
     }
 }
 
-void pksm::ui::PulsingOutline::OnInput(
-    const u64 keys_down,
-    const u64 keys_up,
-    const u64 keys_held,
-    const pu::ui::TouchPoint touch_pos
-) {
-    // No input handling needed
-}
+// CircularPulsingOutline implementation
+pksm::ui::CircularPulsingOutline::CircularPulsingOutline(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 diameter,
+    const pu::ui::Color color,
+    const u32 borderWidth
+)
+  : PulsingOutlineBase(x, y, diameter, diameter, color, borderWidth) {}
 
-pu::i32 pksm::ui::PulsingOutline::GetX() {
-    return x;
-}
+void pksm::ui::CircularPulsingOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+    if (!visible)
+        return;
 
-pu::i32 pksm::ui::PulsingOutline::GetY() {
-    return y;
-}
+    pu::ui::Color pulseColor = calculatePulseColor();
 
-pu::i32 pksm::ui::PulsingOutline::GetWidth() {
-    return width;
-}
+    pu::i32 baseRadius = this->width / 2;  // treat 'width' as diameter for circles
+    pu::i32 centerX = x + baseRadius;
+    pu::i32 centerY = y + baseRadius;
 
-pu::i32 pksm::ui::PulsingOutline::GetHeight() {
-    return height;
-}
-
-void pksm::ui::PulsingOutline::SetX(const pu::i32 x) {
-    this->x = x;
-}
-
-void pksm::ui::PulsingOutline::SetY(const pu::i32 y) {
-    this->y = y;
-}
-
-void pksm::ui::PulsingOutline::SetWidth(const pu::i32 width) {
-    this->width = width;
-}
-
-void pksm::ui::PulsingOutline::SetHeight(const pu::i32 height) {
-    this->height = height;
-}
-
-void pksm::ui::PulsingOutline::SetVisible(bool visible) {
-    this->visible = visible;
-}
-
-bool pksm::ui::PulsingOutline::IsVisible() const {
-    return visible;
+    // Draw from inside out, adding to radius each time
+    for (u32 i = 0; i < borderWidth; i++) {
+        drawer->RenderCircle(pulseColor, centerX, centerY, baseRadius + i);
+    }
 }
