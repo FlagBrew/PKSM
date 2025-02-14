@@ -15,7 +15,6 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/TriggerButton.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
-#include "gui/shared/components/PulsingOutline.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"

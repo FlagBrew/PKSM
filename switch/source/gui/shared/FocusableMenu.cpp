@@ -14,7 +14,8 @@ pksm::ui::FocusableMenu::FocusableMenu(
     const u32 items_to_show
 )
   : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show), focused(false), lastPosition(0) {
-    outline = pksm::ui::PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255));
+    outline =
+        pksm::ui::PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255), 0, 4);
     outline->SetVisible(false);
 
     // Set up input handler

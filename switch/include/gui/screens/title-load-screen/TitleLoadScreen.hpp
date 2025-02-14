@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "data/AccountManager.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/providers/interfaces/ITitleDataProvider.hpp"
 #include "data/titles/Title.hpp"
@@ -12,6 +13,7 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/GameList.hpp"
 #include "gui/shared/components/FocusableButton.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
+#include "gui/shared/components/UserIconButton.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 
@@ -21,8 +23,12 @@ private:
     // Header sectionimage.png
     static constexpr u32 HEADER_TOP_MARGIN = 24;  // Space between screen top and header
     static constexpr u32 HEADER_HEIGHT = 80;  // Height of header text area
-    static constexpr u32 HEADER_BOTTOM_MARGIN = 56;  // Space between header and game list
+    static constexpr u32 HEADER_BOTTOM_MARGIN = 60;  // Space between header and game list
     static constexpr u32 HEADER_TOTAL_VERTICAL_SPACE = HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN;
+
+    // User icon section
+    static constexpr u32 USER_ICON_SIZE = 72;
+    static constexpr u32 USER_ICON_MARGIN = 28;
 
     // Game list section
     static constexpr u32 GAME_LIST_SIDE_MARGIN = 70;  // Side margin for game list component
@@ -58,10 +64,12 @@ private:
     pksm::ui::SaveList::Ref saveList;
     pksm::ui::FocusableButton::Ref loadButton;
     pksm::ui::FocusableButton::Ref wirelessButton;
+    pksm::ui::UserIconButton::Ref userIconButton;
 
-    // Data providers
+    // Data providers and managers
     ITitleDataProvider::Ref titleProvider;
     ISaveDataProvider::Ref saveProvider;
+    data::AccountManager& accountManager;
 
     // Event handlers
     void OnSaveSelected();
@@ -86,7 +94,11 @@ private:
     void HandleButtonInteraction(pksm::ui::FocusableButton::Ref& buttonToFocus);
 
 public:
-    TitleLoadScreen(ITitleDataProvider::Ref titleProvider, ISaveDataProvider::Ref saveProvider);
+    TitleLoadScreen(
+        ITitleDataProvider::Ref titleProvider,
+        ISaveDataProvider::Ref saveProvider,
+        data::AccountManager& accountManager
+    );
     PU_SMART_CTOR(TitleLoadScreen)
 };
 }  // namespace pksm::layout
