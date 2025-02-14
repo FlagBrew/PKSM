@@ -122,5 +122,6 @@ public:
 
     // Focus management
     bool ShouldResignDownFocus() const;
+    bool ShouldResignUpFocus() const;
 };
 }  // namespace pksm::ui

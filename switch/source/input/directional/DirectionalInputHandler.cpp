@@ -92,10 +92,18 @@ bool DirectionalInputHandler::HandleInput(u64 down, u64 held) {
         dpadMoveStatus = DPadMoveStatus::WaitingDown;
         dpadMoveStartTime = std::chrono::steady_clock::now();
         return true;
+    } else {
+        // Clear state if no relevant input is detected
+        dpadMoveStatus = DPadMoveStatus::None;
     }
 
     // Then check for analog stick input (with its own timing)
     return analogHandler->HandleInput(held);
+}
+
+void DirectionalInputHandler::ClearState() {
+    dpadMoveStatus = DPadMoveStatus::None;
+    analogHandler->ClearState();
 }
 
 }  // namespace pksm::input
