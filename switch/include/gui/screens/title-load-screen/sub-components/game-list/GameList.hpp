@@ -31,7 +31,8 @@ private:
     static const std::vector<GameListInfo> NAVIGATION_ORDER;
 
     // Background margin constants
-    static constexpr u32 PADDING_LEFT = 80;  // Left padding of the component
+    static constexpr u32 FULL_WIDTH_LIST_PADDING_LEFT = 72;  // Left padding of the component
+    static constexpr u32 CONSOLE_LIST_PADDING_LEFT = 80;  // Left padding of the component
     static constexpr u32 PADDING_RIGHT = 80;  // Right padding of the component
     static constexpr u32 PADDING_TOP = 20;  // Space between background and section titles
     static constexpr u32 PADDING_BOTTOM = 120;  // Space below game icons
@@ -53,6 +54,7 @@ private:
     pu::ui::Color backgroundColor;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
+    std::function<void()> onGameListChangedCallback;
 
     // Position tracking
     pu::i32 x;  // Component's x position
@@ -77,6 +79,7 @@ private:
     ui::render::PatternBackground::Ref background;
     std::vector<IGameList::Ref> gameLists;  // All available game lists
     IGameList::Ref activeGameList;  // Currently active game list
+    GameListType activeGameListType;
 
     // Helper methods
     void SwitchToNextGameList(bool forward);
@@ -117,9 +120,10 @@ public:
     // Public interface
     void SetBackgroundColor(const pu::ui::Color& color);
     titles::Title::Ref GetSelectedTitle() const;
+    bool IsGameListDependentOnUser() const;
     void SetOnSelectionChanged(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);
-
+    void SetOnGameListChanged(std::function<void()> callback);
     // Focus management
     bool ShouldResignDownFocus() const;
     bool ShouldResignUpFocus() const;
