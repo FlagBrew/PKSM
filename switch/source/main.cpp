@@ -149,10 +149,10 @@ public:
                 throw std::runtime_error("Account manager initialization failed");
             }
 
-            // Create data providers
+            // Create data providers with initial account
             LOG_DEBUG("Creating data providers...");
-            auto titleProvider = std::make_shared<MockTitleDataProvider>();
-            auto saveProvider = std::make_shared<MockSaveDataProvider>();
+            auto titleProvider = std::make_shared<MockTitleDataProvider>(accountManager.GetCurrentAccount());
+            auto saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
 
             // Create and load the title screen
             LOG_DEBUG("Creating title screen...");

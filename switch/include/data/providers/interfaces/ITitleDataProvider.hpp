@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <switch.h>
 #include <vector>
 
 #include "data/titles/Title.hpp"
@@ -13,8 +14,8 @@ public:
     // Get the currently inserted game card title, or nullptr if none
     virtual pksm::titles::Title::Ref GetGameCardTitle() const = 0;
 
-    // Get list of installed titles
-    virtual std::vector<pksm::titles::Title::Ref> GetInstalledTitles() const = 0;
+    // Get list of installed titles for a specific user
+    virtual std::vector<pksm::titles::Title::Ref> GetInstalledTitles(const AccountUid& userId) const = 0;
 
     // Get list of emulator titles
     virtual std::vector<pksm::titles::Title::Ref> GetEmulatorTitles() const = 0;

@@ -81,6 +81,8 @@ private:
     IGameList::Ref activeGameList;  // Currently active game list
     GameListType activeGameListType;
 
+    AccountUid currentUserId;  // Add current user ID field
+
     // Helper methods
     void SwitchToNextGameList(bool forward);
     void SetupGameListCallbacks(IGameList::Ref gameList);
@@ -88,6 +90,7 @@ private:
     void CreateTriggerButtons();
     void OnTriggerButtonPressed(ui::TriggerButton::Side side);
     void OnTriggerButtonReleased(ui::TriggerButton::Side side);
+    void UpdateConsoleGameListData();  // New helper method
 
 public:
     GameList(
@@ -96,7 +99,8 @@ public:
         const pu::i32 width,
         const pu::i32 height,
         input::FocusManager::Ref parentFocusManager,
-        ITitleDataProvider::Ref titleProvider
+        ITitleDataProvider::Ref titleProvider,
+        const AccountUid& initialUserId  // Add initial user ID parameter
     );
     PU_SMART_CTOR(GameList)
 
@@ -127,5 +131,8 @@ public:
     // Focus management
     bool ShouldResignDownFocus() const;
     bool ShouldResignUpFocus() const;
+
+    // Add method to update current user
+    void OnAccountChanged(const AccountUid& newUserId);
 };
 }  // namespace pksm::ui

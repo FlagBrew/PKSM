@@ -36,7 +36,10 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     );
     this->userIconButton->SetName("UserIconButton Element");
     this->userIconButton->SetOnClick([this]() { this->accountManager.ShowAccountSelector(); });
-    this->accountManager.SetOnAccountSelected([this](AccountUid) { this->userIconButton->UpdateAccountInfo(); });
+    this->accountManager.SetOnAccountSelected([this](AccountUid newUserId) {
+        this->userIconButton->UpdateAccountInfo();
+        this->gameList->OnAccountChanged(newUserId);
+    });
     titleLoadFocusManager->RegisterFocusable(this->userIconButton);
     this->Add(this->userIconButton);
 
@@ -53,7 +56,8 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
         GetWidth() - (GAME_LIST_SIDE_MARGIN * 2),  // Width is screen width minus margins
         GetHeight() - (HEADER_TOTAL_VERTICAL_SPACE + SAVE_LIST_TOTAL_VERTICAL_SPACE),
         gameListManager,
-        titleProvider
+        titleProvider,
+        accountManager.GetCurrentAccount()
     );
     this->gameList->SetName("GameList Element");
     this->gameList->EstablishOwningRelationship();
@@ -182,8 +186,8 @@ void pksm::layout::TitleLoadScreen::LoadSaves() {
         // Vertical center within header area
         this->headerText->SetY(HEADER_TOP_MARGIN + (HEADER_HEIGHT - textHeight) / 2);
 
-        // Update save list
-        auto saves = saveProvider->GetSavesForTitle(title);
+        // Update save list with current user
+        auto saves = saveProvider->GetSavesForTitle(title, accountManager.GetCurrentAccount());
         LOG_DEBUG("Found " + std::to_string(saves.size()) + " saves for title");
         this->saveList->SetDataSource(saves);
     }

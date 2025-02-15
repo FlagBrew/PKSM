@@ -21,7 +21,8 @@ pksm::ui::GameList::GameList(
     const pu::i32 width,
     const pu::i32 height,
     input::FocusManager::Ref parentFocusManager,
-    ITitleDataProvider::Ref titleProvider
+    ITitleDataProvider::Ref titleProvider,
+    const AccountUid& initialUserId
 )
   : Element(),
     focused(false),
@@ -32,7 +33,8 @@ pksm::ui::GameList::GameList(
     width(width),
     height(height),
     titleProvider(titleProvider),
-    currentGameListIndex(0) {
+    currentGameListIndex(0),
+    currentUserId(initialUserId) {
     LOG_DEBUG("Initializing GameList component...");
 
     // Initialize focus managers for each game list type
@@ -407,8 +409,8 @@ void pksm::ui::GameList::UpdateGameListData() {
                 if (gameCardTitle) {
                     consoleTitles.push_back(gameCardTitle);
                 }
-                // Add installed titles
-                auto installedTitles = titleProvider->GetInstalledTitles();
+                // Add installed titles for current user
+                auto installedTitles = titleProvider->GetInstalledTitles(currentUserId);
                 consoleTitles.insert(consoleTitles.end(), installedTitles.begin(), installedTitles.end());
                 list->SetDataSource(consoleTitles);
                 break;
@@ -421,6 +423,35 @@ void pksm::ui::GameList::UpdateGameListData() {
                 break;
         }
     }
+}
+
+void pksm::ui::GameList::UpdateConsoleGameListData() {
+    // Only update the console game list
+    for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
+        const auto& info = NAVIGATION_ORDER[i];
+        if (info.type == GameListType::Console) {
+            auto& list = gameLists[i];
+            std::vector<titles::Title::Ref> consoleTitles;
+
+            // Add game card title if present
+            auto gameCardTitle = titleProvider->GetGameCardTitle();
+            if (gameCardTitle) {
+                consoleTitles.push_back(gameCardTitle);
+            }
+
+            // Add installed titles for current user
+            auto installedTitles = titleProvider->GetInstalledTitles(currentUserId);
+            consoleTitles.insert(consoleTitles.end(), installedTitles.begin(), installedTitles.end());
+            list->SetDataSource(consoleTitles);
+            onSelectionChangedCallback();
+            break;
+        }
+    }
+}
+
+void pksm::ui::GameList::OnAccountChanged(const AccountUid& newUserId) {
+    currentUserId = newUserId;
+    UpdateConsoleGameListData();
 }
 
 bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held) {
