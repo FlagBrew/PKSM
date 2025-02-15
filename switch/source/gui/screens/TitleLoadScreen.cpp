@@ -60,6 +60,8 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->gameList->RequestFocus();
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
     this->gameList->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnGameTouchSelect, this));
+    this->gameList->SetOnGameListChanged(std::bind(&TitleLoadScreen::OnGameListChanged, this));
+    this->userIconButton->SetVisible(this->gameList->IsGameListDependentOnUser());
 
     this->Add(this->gameList);
 
@@ -306,6 +308,11 @@ void pksm::layout::TitleLoadScreen::OnSaveSelected() {
 
 void pksm::layout::TitleLoadScreen::OnGameTouchSelect() {
     LOG_DEBUG("Game selected via touch");
+}
+
+void pksm::layout::TitleLoadScreen::OnGameListChanged() {
+    LOG_DEBUG("Game list changed");
+    this->userIconButton->SetVisible(this->gameList->IsGameListDependentOnUser());
 }
 
 void pksm::layout::TitleLoadScreen::OnSaveListTouchSelect() {

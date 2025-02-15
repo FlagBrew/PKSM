@@ -41,8 +41,8 @@ pksm::ui::GameList::GameList(
     emulatorGameListManager = input::FocusManager::New("EmulatorGameList Manager");
 
     // Create game lists with proper dimensions
-    GameListLayoutConfig config = {
-        .paddingLeft = PADDING_LEFT,
+    GameListLayoutConfig consoleListConfig = {
+        .paddingLeft = CONSOLE_LIST_PADDING_LEFT,
         .paddingRight = PADDING_RIGHT,
         .paddingTop = PADDING_TOP,
         .paddingBottom = PADDING_BOTTOM,
@@ -50,6 +50,14 @@ pksm::ui::GameList::GameList(
         .gameOutlinePadding = GAME_OUTLINE_PADDING
     };
 
+    GameListLayoutConfig fullWidthListConfig = {
+        .paddingLeft = FULL_WIDTH_LIST_PADDING_LEFT,
+        .paddingRight = PADDING_RIGHT,
+        .paddingTop = PADDING_TOP,
+        .paddingBottom = PADDING_BOTTOM,
+        .sectionTitleSpacing = SECTION_TITLE_SPACING,
+        .gameOutlinePadding = GAME_OUTLINE_PADDING
+    };
     // Initialize all game lists
     gameLists.resize(NAVIGATION_ORDER.size());
     for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
@@ -58,15 +66,15 @@ pksm::ui::GameList::GameList(
 
         switch (info.type) {
             case GameListType::Console:
-                list = ConsoleGameList::New(x, y, width, height, config, consoleGameListManager);
+                list = ConsoleGameList::New(x, y, width, height, consoleListConfig, consoleGameListManager);
                 list->SetName("Console Game List Element");
                 break;
             case GameListType::Custom:
-                list = CustomGameList::New(x, y, width, height, config, customGameListManager);
+                list = CustomGameList::New(x, y, width, height, fullWidthListConfig, customGameListManager);
                 list->SetName("Custom Game List Element");
                 break;
             case GameListType::Emulator:
-                list = EmulatorGameList::New(x, y, width, height, config, emulatorGameListManager);
+                list = EmulatorGameList::New(x, y, width, height, fullWidthListConfig, emulatorGameListManager);
                 list->SetName("Emulator Game List Element");
                 break;
         }
@@ -77,6 +85,7 @@ pksm::ui::GameList::GameList(
 
     // Set active game list to first in navigation order
     activeGameList = gameLists[currentGameListIndex];
+    activeGameListType = NAVIGATION_ORDER[currentGameListIndex].type;
 
     // Initialize container with proper dimensions
     container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
@@ -278,6 +287,10 @@ void pksm::ui::GameList::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
 
+void pksm::ui::GameList::SetOnGameListChanged(std::function<void()> callback) {
+    onGameListChangedCallback = callback;
+}
+
 bool pksm::ui::GameList::ShouldResignDownFocus() const {
     if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
         return false;
@@ -345,7 +358,7 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
     // Update current index and active game list
     currentGameListIndex = nextIndex;
     activeGameList = gameLists[currentGameListIndex];
-
+    activeGameListType = NAVIGATION_ORDER[currentGameListIndex].type;
     // Show new game list and request focus
     activeGameList->SetVisible(true);
     activeGameList->RequestFocus();
@@ -356,6 +369,10 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
 
     leftTrigger->SetNavigationText(NAVIGATION_ORDER[prevIndex].navigationTitle);
     rightTrigger->SetNavigationText(NAVIGATION_ORDER[nextIndex].navigationTitle);
+
+    if (onGameListChangedCallback) {
+        onGameListChangedCallback();
+    }
 
     // Set up callbacks for new active game list
     SetupGameListCallbacks(activeGameList);
@@ -439,4 +456,8 @@ bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u6
     }
 
     return false;
+}
+
+bool pksm::ui::GameList::IsGameListDependentOnUser() const {
+    return activeGameListType == GameListType::Console;
 }

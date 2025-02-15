@@ -79,6 +79,7 @@ private:
     void OnInput(u64 down, u64 up, u64 held);
     void OnGameTouchSelect();
     void OnSaveListTouchSelect();
+    void OnGameListChanged();
 
     // Helper methods
     void LoadSaves();
