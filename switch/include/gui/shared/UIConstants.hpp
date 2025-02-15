@@ -18,7 +18,7 @@ static constexpr u32 FONT_SIZE_TITLE = 60;
 static constexpr u32 FONT_SIZE_HEADER = 40;
 static constexpr u32 FONT_SIZE_BUTTON = 40;
 static constexpr u32 FONT_SIZE_ACCOUNT_NAME = 28;
-static constexpr u32 FONT_SIZE_TRIGGER_BUTTON_NAVIGATION = 36;
+static constexpr u32 FONT_SIZE_TRIGGER_BUTTON_NAVIGATION = 32;
 
 // Font Names
 inline std::string MakeHeavyFontName(const u32 font_size) {

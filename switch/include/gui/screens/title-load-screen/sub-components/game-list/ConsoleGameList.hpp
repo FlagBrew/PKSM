@@ -112,8 +112,8 @@ private:
     // Console-specific layout constants
     static constexpr pu::i32 GAME_CARD_SIZE = 350;
     static constexpr pu::i32 SECTION_DIVIDER_WIDTH = 20;
-    static constexpr pu::i32 SECTION_DIVIDER_PADDING = 80;
-
+    static constexpr pu::i32 SECTION_DIVIDER_PADDING_LEFT = 80;
+    static constexpr pu::i32 SECTION_DIVIDER_PADDING_RIGHT = 88;
     // Focus management
     input::FocusManager::Ref installedGamesManager;
 

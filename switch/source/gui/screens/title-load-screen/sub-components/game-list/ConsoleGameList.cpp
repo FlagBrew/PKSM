@@ -41,8 +41,8 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
 
     // Calculate key positions relative to our component's origin
     pu::i32 gameCardX = x + config.paddingLeft;
-    pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING;
-    pu::i32 installedStartX = dividerX + SECTION_DIVIDER_WIDTH + SECTION_DIVIDER_PADDING;
+    pu::i32 dividerX = gameCardX + GAME_CARD_SIZE + SECTION_DIVIDER_PADDING_LEFT;
+    pu::i32 installedStartX = dividerX + SECTION_DIVIDER_WIDTH + SECTION_DIVIDER_PADDING_LEFT;
 
     // Create section headers first (we need their position)
     cartridgeText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, "Game Card");
