@@ -188,6 +188,7 @@ nlohmann::json CloudAccess::grabPage(int num)
     headers = curl_slist_append(headers, "pksm-mode: yes");
 
     auto fetch = Fetch::init(url, true, &retData, headers, postData);
+    fetch->setopt(CURLOPT_TIMEOUT, 10L);
     auto res   = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 

@@ -176,6 +176,7 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
 
     const auto [url, postData] = GroupCloudAccess::makeURL(num, legal, low, high, LGPE);
     auto fetch                 = Fetch::init(url, true, &retData, headers, postData);
+    fetch->setopt(CURLOPT_TIMEOUT, 10L);
     auto res                   = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 
