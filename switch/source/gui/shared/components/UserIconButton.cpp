@@ -156,7 +156,7 @@ void UserIconButton::UpdateAccountInfo() {
     usernameText->SetText(username);
 
     // Create new masked icon texture
-    auto icon = accountManager.GetAccountIcon();
+    auto icon = accountManager.GetCurrentAccountIcon();
     if (icon) {
         // Create final texture for the masked result
         maskedIconTexture = SDL_CreateTexture(
