@@ -1,6 +1,6 @@
 #include "data/providers/mock/MockSaveDataProvider.hpp"
 
-MockSaveDataProvider::MockSaveDataProvider() {
+MockSaveDataProvider::MockSaveDataProvider(const AccountUid& initialUserId) : initialUserId(initialUserId) {
     // Initialize mock save data
     mockConsoleSaves = {// Legends Arceus (cartridge)
                         {0x00175E00,
@@ -207,34 +207,71 @@ MockSaveDataProvider::MockSaveDataProvider() {
     };
 }
 
-std::vector<pksm::saves::Save::Ref> MockSaveDataProvider::GetSavesForTitle(const pksm::titles::Title::Ref& title
+std::vector<pksm::saves::Save::Ref> MockSaveDataProvider::GetUserSpecificSaves(
+    const std::vector<pksm::saves::Save::Ref>& baseSaves,
+    bool isOtherUser
+) const {
+    if (!isOtherUser) {
+        return baseSaves;
+    }
+
+    // For other users, append "Extra" to save names
+    std::vector<pksm::saves::Save::Ref> userSaves;
+    userSaves.reserve(baseSaves.size());
+    for (const auto& save : baseSaves) {
+        std::string newName = save->getName() + " Extra";
+        userSaves.push_back(pksm::saves::Save::New(newName, newName));
+    }
+    return userSaves;
+}
+
+std::vector<pksm::saves::Save::Ref> MockSaveDataProvider::GetSavesForTitle(
+    const pksm::titles::Title::Ref& title,
+    const std::optional<AccountUid>& currentUser
 ) const {
     if (!title) {
         return {};
     }
 
-    // First check console saves
+    // Check if this is a console save
     auto consoleIt = mockConsoleSaves.find(title->getTitleId());
     if (consoleIt != mockConsoleSaves.end()) {
-        return consoleIt->second;
+        // For console saves, we need a user ID
+        if (!currentUser) {
+            return {};  // No saves available without a user ID for console titles
+        }
+
+        // Check if this is the initial user
+        bool isOtherUser = !(initialUserId.uid[0] == currentUser->uid[0] && initialUserId.uid[1] == currentUser->uid[1]);
+        return GetUserSpecificSaves(consoleIt->second, isOtherUser);
     }
 
-    // Then check emulator saves
+    // For emulator and custom saves, return as is (no user-specific modifications)
     auto emulatorIt = mockEmulatorSaves.find(title->getTitleId());
     if (emulatorIt != mockEmulatorSaves.end()) {
         return emulatorIt->second;
     }
 
-    // Then check custom saves
     auto customIt = mockCustomSaves.find(title->getTitleId());
     if (customIt != mockCustomSaves.end()) {
         return customIt->second;
     }
 
-    return {pksm::saves::Save::New("Main Save", "Main Save")};  // Default for unknown titles
+    return {pksm::saves::Save::New("Main Save", "Main Save")};
 }
 
-bool MockSaveDataProvider::LoadSave(const pksm::titles::Title::Ref& title, const std::string& saveName) {
+bool MockSaveDataProvider::LoadSave(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName,
+    const AccountUid* userId
+) {
+    // For installed titles, userId is required
+    if (mockConsoleSaves.find(title->getTitleId()) != mockConsoleSaves.end()) {
+        if (!userId) {
+            return false;
+        }
+    }
+
     // Mock implementation - just return true to indicate success
     return true;
 }

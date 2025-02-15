@@ -1,7 +1,13 @@
 #include "data/providers/mock/MockTitleDataProvider.hpp"
 
-MockTitleDataProvider::MockTitleDataProvider() {
+#include <algorithm>
+#include <numeric>
+#include <random>
+
+MockTitleDataProvider::MockTitleDataProvider(const AccountUid& initialUserId)
+  : initialUserId(initialUserId), userSpecificTitles(), rng(std::random_device{}()) {
     customTitleProvider = CustomTitleProvider::New();
+
     // Initialize mock data
     mockCartridgeTitle = std::make_shared<pksm::titles::Title>(
         "Pokémon Legends: Arceus",
@@ -164,12 +170,45 @@ MockTitleDataProvider::MockTitleDataProvider() {
     };
 }
 
+std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GenerateRandomTitleSubset(
+    const std::vector<pksm::titles::Title::Ref>& source
+) const {
+    std::vector<pksm::titles::Title::Ref> subset;
+    std::vector<size_t> indices(source.size());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // Randomly select 30-70% of the titles
+    std::shuffle(indices.begin(), indices.end(), rng);
+    size_t count = source.size() * (0.3 + (rng() % 40) / 100.0);
+
+    subset.reserve(count);
+    for (size_t i = 0; i < count && i < indices.size(); i++) {
+        subset.push_back(source[indices[i]]);
+    }
+
+    return subset;
+}
+
 pksm::titles::Title::Ref MockTitleDataProvider::GetGameCardTitle() const {
     return mockCartridgeTitle;
 }
 
-std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetInstalledTitles() const {
-    return mockInstalledTitles;
+std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetInstalledTitles(const AccountUid& userId) const {
+    // For the initial user, return all titles
+    if (userId.uid[0] == initialUserId.uid[0] && userId.uid[1] == initialUserId.uid[1]) {
+        return mockInstalledTitles;
+    }
+
+    // For other users, check if we have already generated their subset
+    auto it = userSpecificTitles.find(userId);
+    if (it != userSpecificTitles.end()) {
+        return it->second;
+    }
+
+    // Generate and store a new random subset for this user
+    auto subset = GenerateRandomTitleSubset(mockInstalledTitles);
+    userSpecificTitles[userId] = subset;
+    return subset;
 }
 
 std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetEmulatorTitles() const {

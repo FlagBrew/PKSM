@@ -107,6 +107,7 @@ void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& ti
         }
     }
     gameImages.clear();
+    scrollView->Clear();  // Clear all elements from the scrollView
 
     // Create game images for all titles
     for (size_t i = 0; i < titles.size(); i++) {
