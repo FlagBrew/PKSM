@@ -3,7 +3,10 @@
 
 #include <SDL2/SDL.h>
 #include <functional>
+#include <memory>
+#include <mutex>
 #include <pu/Plutonium>
+#include <queue>
 #include <string>
 #include <switch.h>
 
@@ -11,9 +14,11 @@
 
 namespace pksm::data {
 
+struct AccountUpdate;
+
 class AccountManager {
 public:
-    using OnAccountSelectedCallback = std::function<void(AccountUid)>;
+    using AccountSelectedCallback = std::function<void(AccountUid)>;
 
     AccountManager();
     ~AccountManager();
@@ -21,17 +26,21 @@ public:
     Result Initialize();
     void Exit();
 
-    AccountUid GetCurrentAccount() const { return currentAccount; }
-    std::string GetAccountUsername() const;
-    pu::sdl2::TextureHandle::Ref GetAccountIcon() const { return currentIcon; }
-
     void ShowAccountSelector();
-    void SetOnAccountSelected(OnAccountSelectedCallback callback) { onAccountSelectedCallback = callback; }
+    void ProcessPendingUpdates();
+
+    std::string GetAccountUsername() const;
+    std::shared_ptr<pu::sdl2::TextureHandle> GetCurrentAccountIcon() const { return currentIcon; }
+    AccountUid GetCurrentAccount() const { return currentAccount; }
+    void SetOnAccountSelected(AccountSelectedCallback callback) { onAccountSelectedCallback = callback; }
 
 private:
     AccountUid currentAccount{};
-    OnAccountSelectedCallback onAccountSelectedCallback;
-    pu::sdl2::TextureHandle::Ref currentIcon;
+    std::shared_ptr<pu::sdl2::TextureHandle> currentIcon;
+    AccountSelectedCallback onAccountSelectedCallback;
+
+    std::queue<AccountUpdate> pendingUpdates;
+    std::mutex updateMutex;
 
     void LoadCurrentAccountIcon();
 };

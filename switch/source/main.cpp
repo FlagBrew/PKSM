@@ -93,7 +93,10 @@ private:
     }
 
 public:
-    using Application::Application;  // Inherit constructor
+    PKSMApplication(pu::ui::render::Renderer::Ref renderer) : pu::ui::Application(renderer), accountManager() {
+        // Add render callback to process account updates
+        AddRenderCallback([this]() { accountManager.ProcessPendingUpdates(); });
+    }
 
     PU_SMART_CTOR(PKSMApplication)
 
