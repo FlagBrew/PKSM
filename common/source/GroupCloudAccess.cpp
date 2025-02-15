@@ -53,6 +53,7 @@ void GroupCloudAccess::downloadGroupPage(std::shared_ptr<Page> page, int number,
 
     const auto [url, postData] = GroupCloudAccess::makeURL(number, legal, low, high, LGPE);
     auto fetch                 = Fetch::init(url, true, retData, headers, postData);
+    fetch->setopt(CURLOPT_TIMEOUT, 10L);
     Fetch::performAsync(fetch,
         [page, retData, headers](CURLcode code, std::shared_ptr<Fetch> fetch)
         {
@@ -435,6 +436,7 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
             curl_mime_filename(field, fieldName.c_str());
         }
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        fetch->setopt(CURLOPT_TIMEOUT, 10L);
 
         auto res = Fetch::perform(fetch);
         if (res.index() == 1 && std::get<1>(res) == CURLE_OK)

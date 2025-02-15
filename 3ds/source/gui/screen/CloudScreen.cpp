@@ -821,6 +821,7 @@ void CloudScreen::shareSend()
         curl_mime_data(field, (char*)infoMon->rawData().data(), infoMon->getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        fetch->setopt(CURLOPT_TIMEOUT, 10L);
 
         auto res = Fetch::perform(fetch);
         if (res.index() == 0)
