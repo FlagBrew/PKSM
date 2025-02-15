@@ -1,6 +1,9 @@
 {
     "ADAPT_LANGUAGE": "Adapter l. du jeu à la CM",
     "ALPHA_UPDATES": "Utiliser les versions alpha",
+    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_OPTIONS": "API Options",
+    "API_URL": "Server URL",
     "CONFIG_AUTO_UPDATE": "Mises à jour automatiques de PKSM",
     "CONFIG_BACKUP_INJECTION": "Activer l'injection de backups",
     "CONFIG_BACKUP_SAVE": "Archivage auto au lancement",

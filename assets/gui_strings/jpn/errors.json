@@ -1,6 +1,7 @@
 {
     "ALREADY_LEGAL": "ポケモンはすでに整合性です!",
     "AUTO_LEGALIZE_ERROR": "このポケモンは整合性チェックを使用できません!",
+    "API_URL_REQUIRED": "You must configure the API Url in settings!",
     "BACKUP_FAIL_SAVE_1": "バンクのバックアップに失敗しました。",
     "BACKUP_FAIL_SAVE_2": "バックアップ無しで保存しますか?",
     "BAD_CIA_FILE": "CIAの読み取りに失敗しました!",

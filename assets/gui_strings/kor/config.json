@@ -1,6 +1,9 @@
 {
     "ADAPT_LANGUAGE": "원더카드로 언어 맞추기",
     "ALPHA_UPDATES": "Use Alpha Builds",
+    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_OPTIONS": "API Options",
+    "API_URL": "Server URL",
     "CONFIG_AUTO_UPDATE": "Automatically Update PKSM",
     "CONFIG_BACKUP_INJECTION": "백업 파일 주입 활성화",
     "CONFIG_BACKUP_SAVE": "실행 시 자동으로 백업",

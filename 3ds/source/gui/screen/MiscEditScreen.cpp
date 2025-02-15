@@ -26,7 +26,6 @@
 
 #include "MiscEditScreen.hpp"
 #include "AccelButton.hpp"
-#include "AppLegalityOverlay.hpp"
 #include "base64.hpp"
 #include "ClickButton.hpp"
 #include "Configuration.hpp"
@@ -64,19 +63,6 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
             return true;
         },
         ui_sheet_button_editor_idx, "", 0.0f, COLOR_BLACK));
-
-    instructions.addCircle(false, 272 + 24, 24, 6, COLOR_GREY);
-    instructions.addLine(false, 272 + 24, 24, 272 + 24, 64, 4, COLOR_GREY);
-    instructions.addBox(
-        false, 76 + 24, 64, 200, 18, COLOR_GREY, i18n::localize("APP_LEGALIZE"), COLOR_WHITE);
-    buttons.push_back(std::make_unique<ClickButton>(
-        278, 0, 42, 42,
-        [this]()
-        {
-            addOverlay<AppLegalityOverlay>(this->pkm);
-            return true;
-        },
-        ui_sheet_gpssmobile_curve_idx, "", 0.0f, COLOR_BLACK));
 
     instructions.addCircle(false, 22, 225, 8, COLOR_GREY);
     instructions.addLine(false, 22, 175, 22, 225, 4, COLOR_GREY);
@@ -729,7 +715,7 @@ void MiscEditScreen::validate()
     std::string url = Configuration::getInstance().apiUrl();
 
     if (url == "") {
-        Gui::warn("You must configure the API Url in settings!");
+        Gui::warn(i18n::localize("API_URL_REQUIRED"));
         curl_slist_free_all(headers);
         return;
     }
@@ -744,6 +730,8 @@ void MiscEditScreen::validate()
         curl_mime_data(field, (char*)pkm.rawData().data(), pkm.getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        // Incase you forgot to start the server or entered the wrong IP, it'll timeout after 10 seconds
+        fetch->setopt(CURLOPT_TIMEOUT, 10L); 
 
         auto res = Fetch::perform(fetch);
         if (res.index() == 0)

@@ -208,7 +208,7 @@ StorageScreen::StorageScreen()
         [this]()
         {
             if (Configuration::getInstance().apiUrl() == "") {
-                Gui::warn("You must configure the API Url in settings!");
+                Gui::warn(i18n::localize("API_URL_REQUIRED"));
                 return false;    
             }
             

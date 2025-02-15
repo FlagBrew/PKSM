@@ -108,7 +108,7 @@ void LegalInfoScreen::attemptLegalization()
     std::string url = Configuration::getInstance().apiUrl();
 
     if (url == "") {
-        Gui::warn("You must configure the API Url in settings!");
+        Gui::warn(i18n::localize("API_URL_REQUIRED"));
         curl_slist_free_all(headers);
         return;
     }
@@ -123,6 +123,11 @@ void LegalInfoScreen::attemptLegalization()
         curl_mime_data(field, (char*)pkm->get().rawData().data(), pkm->get().getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
+        // Longer than the initial legal check, because it might need to brute force?
+        // Either way after 120 seconds it will timeout if it didn't get a response.
+        // It's higher than the previous check, but if you forgot to start the server
+        // you couldn't get to this point as it would timeout on the legality check after 5 seconds.
+        fetch->setopt(CURLOPT_TIMEOUT, 120L); 
 
         auto res = Fetch::perform(fetch);
         curl_slist_free_all(headers);

@@ -12,8 +12,8 @@ C++.
   your saves
 - Capable of scanning QR codes to inject both .pkx files or event wondercards
 - Contains an offline wondercard database to get events from old distributions
-- Capable of automatic verification and legalization of all your data (internet connection required)
-  - Optional interfacing with an Android app to handle verification and legalization without a network connection
+- Capable of automatic verification and legalization of all your data (internet connection and local hosting required)
+  - Requires you to run your own [local-gpss](https://github.com/FlagBrew/local-gpss) (or to use one hosted by someone else in the future)
 
 **We do not support or condone cheating at the expense of others. Do not use
 significantly edited Pokémon in battle or in trades with those who are unaware
@@ -54,8 +54,7 @@ If your system is not connected to the internet, PKSM will close.
   codes scannable from PKSM. Runs on Twitter.
 - **[PKSM-Scripts](https://github.com/FlagBrew/PKSM-Scripts)**: A toolkit to
   develop and compile .pksm and .c scripts.
-- **[The GPSS](https://flagbrew.org/gpss)**: An online Pokémon sharing platform.
-- **[GPSS Mobile](https://play.google.com/store/apps/details?id=com.flagbrew.gpss_mobile)**: Mobile interface for the GPSS and related features. Android only.
+- **[Local GPSS](https://github.com/FlagBrew/local-gpss)**: A local hostable version of GPSS with (Auto)Legality functionality
 
 ## Working path
 
@@ -115,8 +114,8 @@ all`.
   [trainboy2019](https://github.com/trainboy2019) and all the scripters for
   making PKSM-Scripts great
 - [Archit Date](https://github.com/architdate) for CoreConsole and PKHeX AutoLegalityMod
-- [Allen](https://github.com/FM1337) for the GPSS, CoreConsole's successor, CoreAPI and GPSS Mobile
-- [LiquidFenrir](https://github.com/LiquidFenrir) for the PoC of session stealing that led to Gen 3 support and GPSS Mobile
+- [Allen (FM1337/FMCore/Sigkill)](https://github.com/FM1337) for the GPSS (2019-2025), CoreConsole's successor: [CoreAPI](https://github.com/FlagBrew/CoreAPI) and GPSS Mobile (2020-2025) and [Local GPSS](https://github.com/FlagBrew/local-gpss)
+- [LiquidFenrir](https://github.com/LiquidFenrir) for the PoC of session stealing that led to Gen 3 support and GPSS Mobile (2019-2025)
 - The whole [FlagBrew](https://github.com/FlagBrew) team for collaborating with
   us
 - [kwsch](https://github.com/kwsch) and [SciresM](https://github.com/SciresM)

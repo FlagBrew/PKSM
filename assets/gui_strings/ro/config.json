@@ -1,6 +1,9 @@
 {
     "ADAPT_LANGUAGE": "Adaptează limba la Wonder Card",
     "ALPHA_UPDATES": "Foloseşte Alpha Builds",
+    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_OPTIONS": "API Options",
+    "API_URL": "Server URL",
     "CONFIG_AUTO_UPDATE": "Updatează Automat PKSM",
     "CONFIG_BACKUP_INJECTION": "Permite Injecție Backup",
     "CONFIG_BACKUP_SAVE": "Backup Automat La Încărcare",

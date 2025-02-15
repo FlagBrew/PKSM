@@ -1,6 +1,9 @@
 {
     "ADAPT_LANGUAGE": "Adaptar idioma a WC",
     "ALPHA_UPDATES": "Utilice versiones Alfa",
+    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_OPTIONS": "API Options",
+    "API_URL": "Server URL",
     "CONFIG_AUTO_UPDATE": "Actualizar PKSM automáticamente",
     "CONFIG_BACKUP_INJECTION": "Habilitar «backup injection»",
     "CONFIG_BACKUP_SAVE": "Crear copia de seguridad automática",

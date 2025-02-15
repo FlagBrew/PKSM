@@ -1,6 +1,7 @@
 {
     "ALREADY_LEGAL": "Il tuo Pokémon è già legale!",
     "AUTO_LEGALIZE_ERROR": "Il tuo Pokémon non può essere auto legalizzato!",
+    "API_URL_REQUIRED": "You must configure the API Url in settings!",
     "BACKUP_FAIL_SAVE_1": "Impossibile salvare il backup dello storage.",
     "BACKUP_FAIL_SAVE_2": "Continuare il salvataggio?",
     "BAD_CIA_FILE": "Non è stato possible leggere l'eseguibile!",

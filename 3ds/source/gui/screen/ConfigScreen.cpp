@@ -55,7 +55,7 @@ namespace
         "fincs and WinterMute for citro2d and devkitARM",
         "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators",
         "Subject21_J and all the submitters for PKSM's icon",
-        "Allen (FMCore/FM1337) for the GPSS backend", "Bernardo for creating PKSM"};
+        "Allen (FMCore/FM1337/Sigkill) for the GPSS/Local GPSS", "Bernardo for creating PKSM"};
 
     void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
     {
@@ -110,7 +110,7 @@ namespace
     {
         SwkbdState state;
         swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 29);
-        swkbdSetHintText(&state, "API Url, MUST END WITH SLASH");
+        swkbdSetHintText(&state, i18n::localize("API_HINT").c_str());
         std::string apiUri = Configuration::getInstance().apiUrl();
         swkbdSetInitialText(&state, apiUri.c_str());
         swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
@@ -613,14 +613,6 @@ void ConfigScreen::initButtons()
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-    // tabButtons[4].push_back(std::make_unique<ClickButton>(
-    //     247, 111, 15, 12,
-    //     [this]()
-    //     {
-    //         Configuration::getInstance().useApiUrl(!Configuration::getInstance().useApiUrl());
-    //         return true;
-    //     },
-    //     ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
 }
 
 void ConfigScreen::drawBottom() const
@@ -817,9 +809,9 @@ void ConfigScreen::drawBottom() const
     }
     else if (currentTab == 4)
     {
-        Gui::text("API Options", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
+        Gui::text(i18n::localize("API_OPTIONS"), 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
 
-        Gui::text("Server URL", 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("API_URL"), 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         // Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])

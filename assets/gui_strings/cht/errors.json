@@ -1,6 +1,7 @@
 {
     "ALREADY_LEGAL": "Your Pokémon was already legal!",
     "AUTO_LEGALIZE_ERROR": "你的Pokemon没`自动合法化",
+    "API_URL_REQUIRED": "You must configure the API Url in settings!",
     "BACKUP_FAIL_SAVE_1": "无法保存银行备份.",
     "BACKUP_FAIL_SAVE_2": "继续保存?",
     "BAD_CIA_FILE": "CIA 不知道!",

@@ -1,6 +1,7 @@
 {
     "ALREADY_LEGAL": "Pokémon-ul tău era deja legal!",
     "AUTO_LEGALIZE_ERROR": "Pokémon-ul tău nu poate fi legalizat automat!",
+    "API_URL_REQUIRED": "You must configure the API Url in settings!",
     "BACKUP_FAIL_SAVE_1": "Backup-ul băncii a eşuat!",
     "BACKUP_FAIL_SAVE_2": "Salvezi banca oricum?",
     "BAD_CIA_FILE": "Fişierul CIA nu poate fi citit!",

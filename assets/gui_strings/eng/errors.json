@@ -1,6 +1,7 @@
 {
     "AUTO_LEGALIZE_ERROR": "Your Pok\u00e9mon cannot be auto legalized!",
     "ALREADY_LEGAL": "Your Pok\u00e9mon was already legal!",
+    "API_URL_REQUIRED": "You must configure the API Url in settings!",
     "BACKUP_FAIL_SAVE_1": "Bank backup failed!",
     "BACKUP_FAIL_SAVE_2": "Save the bank anyway?",
     "BAD_CIA_FILE": "The CIA could not be read!",
