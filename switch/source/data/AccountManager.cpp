@@ -1,10 +1,18 @@
 #include "data/AccountManager.hpp"
 
+#include <mutex>
+#include <queue>
+
 #include "utils/Logger.hpp"
 
 namespace pksm::data {
 
-AccountManager::AccountManager() = default;
+struct AccountUpdate {
+    AccountUid newAccount;
+    bool needsIconReload;
+};
+
+AccountManager::AccountManager() : pendingUpdates(), updateMutex() {}
 
 AccountManager::~AccountManager() {
     Exit();
@@ -65,6 +73,20 @@ void AccountManager::LoadCurrentAccountIcon() {
     }
 }
 
+void AccountManager::ProcessPendingUpdates() {
+    std::lock_guard<std::mutex> lock(updateMutex);
+    while (!pendingUpdates.empty()) {
+        const auto& update = pendingUpdates.front();
+        if (update.needsIconReload) {
+            LoadCurrentAccountIcon();
+        }
+        if (onAccountSelectedCallback) {
+            onAccountSelectedCallback(update.newAccount);
+        }
+        pendingUpdates.pop();
+    }
+}
+
 void AccountManager::ShowAccountSelector() {
     LibAppletArgs args;
     libappletArgsCreate(&args, 0x10000);
@@ -78,10 +100,9 @@ void AccountManager::ShowAccountSelector() {
             AccountUid newAccount = *(AccountUid*)&st_out[8];
             if (newAccount.uid[0] != currentAccount.uid[0] || newAccount.uid[1] != currentAccount.uid[1]) {
                 currentAccount = newAccount;
-                LoadCurrentAccountIcon();
-                if (onAccountSelectedCallback) {
-                    onAccountSelectedCallback(currentAccount);
-                }
+                // Queue the update instead of processing immediately
+                std::lock_guard<std::mutex> lock(updateMutex);
+                pendingUpdates.push({newAccount, true});
             }
         }
     }
