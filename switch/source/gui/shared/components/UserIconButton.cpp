@@ -13,26 +13,6 @@
 
 namespace pksm::ui {
 
-// Timer callback function - needs to be outside the class since it's a C-style callback
-static Uint32 ExecuteCallback(Uint32 interval, void* param) {
-    auto* data = static_cast<std::pair<SDL_TimerID*, std::function<void()>>*>(param);
-    // Store local copies since we'll delete the data
-    auto callback = data->second;
-    auto timerIdPtr = data->first;
-
-    // Clear and delete before executing callback to prevent race conditions
-    SDL_TimerID timerId = *timerIdPtr;
-    *timerIdPtr = 0;
-    delete data;
-
-    // Remove the timer first
-    SDL_RemoveTimer(timerId);
-
-    // Now execute the callback
-    callback();
-    return 0;  // Don't repeat the timer
-}
-
 UserIconButton::UserIconButton(
     const pu::i32 x,
     const pu::i32 y,
@@ -45,9 +25,7 @@ UserIconButton::UserIconButton(
     diameter(diameter),
     focused(false),
     accountManager(accountManager),
-    maskedIconTexture(nullptr),
-    clickTimer(0),
-    isProcessingClick(false) {
+    maskedIconTexture(nullptr) {
     // Create username text element
     usernameText = pu::ui::elm::TextBlock::New(
         x + diameter + 10,  // Initial position to the right of icon with padding
@@ -85,10 +63,6 @@ UserIconButton::~UserIconButton() {
         SDL_DestroyTexture(maskedIconTexture);
         maskedIconTexture = nullptr;
     }
-    if (clickTimer) {
-        SDL_RemoveTimer(clickTimer);
-        clickTimer = 0;
-    }
 }
 
 void UserIconButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -116,20 +90,9 @@ void UserIconButton::OnInput(
 ) {
     if (!touch_pos.IsEmpty()) {
         if (touch_pos.HitsRegion(x, y, diameter, diameter)) {
-            if (onClickCallback && !isProcessingClick) {
-                isProcessingClick = true;
+            if (onClickCallback) {
                 RequestFocus();
-                // Remove any existing timer
-                if (clickTimer) {
-                    SDL_RemoveTimer(clickTimer);
-                }
-                // Create data bundle with timer ID pointer and callback
-                auto* data =
-                    new std::pair<SDL_TimerID*, std::function<void()>>(&clickTimer, [this, cb = onClickCallback]() {
-                        cb();
-                        isProcessingClick = false;
-                    });
-                clickTimer = SDL_AddTimer(4, ExecuteCallback, data);
+                onClickCallback();
             }
         }
     }

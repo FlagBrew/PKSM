@@ -43,8 +43,6 @@ private:
     bool focused;
     data::AccountManager& accountManager;
     SDL_Texture* maskedIconTexture;
-    SDL_TimerID clickTimer;
-    bool isProcessingClick;
     std::function<void()> onClickCallback;
     pu::ui::elm::TextBlock::Ref usernameText;
     pksm::ui::PulsingOutlineBase::Ref pulsingOutline;

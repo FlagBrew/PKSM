@@ -271,6 +271,8 @@ void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::R
         installedTitles.assign(titles.begin() + 1, titles.end());
     }
     installedGames->SetDataSource(installedTitles);
+    installedGames->SetSelectedIndex(0);
+    selectionState = SelectionState::GameCard;
 }
 
 pksm::titles::Title::Ref pksm::ui::ConsoleGameList::GetSelectedTitle() const {

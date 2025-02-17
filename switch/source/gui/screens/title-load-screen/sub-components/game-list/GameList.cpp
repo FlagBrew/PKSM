@@ -452,6 +452,7 @@ void pksm::ui::GameList::UpdateConsoleGameListData() {
 void pksm::ui::GameList::OnAccountChanged(const AccountUid& newUserId) {
     currentUserId = newUserId;
     UpdateConsoleGameListData();
+    activeGameList->RequestFocus();
 }
 
 bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held) {

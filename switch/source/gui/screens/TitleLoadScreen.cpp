@@ -238,6 +238,14 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
+    if ((down & HidNpadButton_ZL)) {
+        LOG_DEBUG("ZL button pressed");
+        if (this->gameList->IsGameListDependentOnUser()) {
+            this->userIconButton->RequestFocus();
+            this->accountManager.ShowAccountSelector();
+        }
+    }
+
     if (this->userIconButton->IsFocused()) {
         if (userIconButtonHandler.HandleInput(down, held)) {
             // Input was handled by directional handler

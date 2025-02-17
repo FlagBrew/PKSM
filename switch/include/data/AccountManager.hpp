@@ -41,8 +41,11 @@ private:
 
     std::queue<AccountUpdate> pendingUpdates;
     std::mutex updateMutex;
+    SDL_TimerID selectorTimer{0};
+    bool isShowingSelector{false};
 
     void LoadCurrentAccountIcon();
+    void ShowAccountSelectorImpl();
 };
 
 }  // namespace pksm::data
