@@ -152,4 +152,11 @@ void TriggerButton::OnInput(
             onTouchNavigationCallback();
     }
 }
+
+std::vector<pksm::ui::HelpItem> TriggerButton::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+    return {{{pksm::ui::HelpButton::A}, "Go to " + navigationText + " games"}, {{pksm::ui::HelpButton::B}, "Back"}};
+}
 }  // namespace pksm::ui

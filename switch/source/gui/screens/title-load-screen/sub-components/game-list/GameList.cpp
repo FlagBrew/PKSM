@@ -127,28 +127,28 @@ pksm::ui::GameList::GameList(
             // Use the horizontal position to determine which trigger is closer
             float position = activeGameList->GetSelectionHorizontalPosition();
             if (position > 0.5f) {
-                rightTrigger->RequestFocus();
+                FocusRightTrigger();
             } else {
-                leftTrigger->RequestFocus();
+                FocusLeftTrigger();
             }
         }
     });
 
     inputHandler.SetOnMoveRight([this]() {
         if (leftTrigger->IsFocused()) {
-            rightTrigger->RequestFocus();
+            FocusRightTrigger();
         }
     });
 
     inputHandler.SetOnMoveLeft([this]() {
         if (rightTrigger->IsFocused()) {
-            leftTrigger->RequestFocus();
+            FocusLeftTrigger();
         }
     });
 
     inputHandler.SetOnMoveDown([this]() {
         if (rightTrigger->IsFocused() || leftTrigger->IsFocused()) {
-            activeGameList->RequestFocus();
+            FocusActiveGameList();
         }
     });
 
@@ -175,7 +175,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
     leftTrigger->SetNavigationText("Custom");
     leftTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Left trigger button touched");
-        leftTrigger->RequestFocus();
+        FocusLeftTrigger();
     });
 
     // Create right trigger button
@@ -192,7 +192,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
     rightTrigger->SetNavigationText("Console");
     rightTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Right trigger button touched");
-        rightTrigger->RequestFocus();
+        FocusRightTrigger();
     });
 }
 
@@ -226,6 +226,10 @@ void pksm::ui::GameList::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
+    if (disabled) {
+        return;
+    }
+
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
     }
@@ -261,7 +265,7 @@ void pksm::ui::GameList::SetFocused(bool focused) {
         }
         // Only request focus if the triggers are not focused
         if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
-            activeGameList->RequestFocus();
+            FocusActiveGameList();
         }
     }
 }
@@ -363,7 +367,7 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
     activeGameListType = NAVIGATION_ORDER[currentGameListIndex].type;
     // Show new game list and request focus
     activeGameList->SetVisible(true);
-    activeGameList->RequestFocus();
+    FocusActiveGameList();
 
     // Update trigger button text
     size_t prevIndex = (currentGameListIndex == 0) ? NAVIGATION_ORDER.size() - 1 : currentGameListIndex - 1;
@@ -452,7 +456,7 @@ void pksm::ui::GameList::UpdateConsoleGameListData() {
 void pksm::ui::GameList::OnAccountChanged(const AccountUid& newUserId) {
     currentUserId = newUserId;
     UpdateConsoleGameListData();
-    activeGameList->RequestFocus();
+    FocusActiveGameList();
 }
 
 bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held) {
@@ -482,7 +486,7 @@ bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u6
     }
     if (keys_down & HidNpadButton_B) {
         if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
-            activeGameList->RequestFocus();
+            FocusActiveGameList();
             return true;
         }
     }
@@ -490,6 +494,58 @@ bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u6
     return false;
 }
 
+void pksm::ui::GameList::FocusLeftTrigger() {
+    leftTrigger->RequestFocus();
+    if (onShouldUpdateHelpTextCallback) {
+        onShouldUpdateHelpTextCallback();
+    }
+}
+
+void pksm::ui::GameList::FocusRightTrigger() {
+    rightTrigger->RequestFocus();
+    if (onShouldUpdateHelpTextCallback) {
+        onShouldUpdateHelpTextCallback();
+    }
+}
+
+void pksm::ui::GameList::FocusActiveGameList() {
+    activeGameList->RequestFocus();
+    if (onShouldUpdateHelpTextCallback) {
+        onShouldUpdateHelpTextCallback();
+    }
+}
+
 bool pksm::ui::GameList::IsGameListDependentOnUser() const {
     return activeGameListType == GameListType::Console;
+}
+
+void pksm::ui::GameList::SetOnShouldUpdateHelpText(std::function<void()> callback) {
+    onShouldUpdateHelpTextCallback = callback;
+}
+
+std::vector<pksm::ui::HelpItem> pksm::ui::GameList::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+
+    if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
+        // Delegate to trigger buttons when they're focused
+        return leftTrigger->IsFocused() ? leftTrigger->GetHelpItems() : rightTrigger->GetHelpItems();
+    }
+
+    if (activeGameList->IsFocused()) {
+        std::vector<pksm::ui::HelpItem> items = {{{pksm::ui::HelpButton::A}, "Select"}};
+
+        if (IsGameListDependentOnUser()) {
+            items.push_back({{pksm::ui::HelpButton::ZL}, "Change Player"});
+        }
+
+        return items;
+    }
+
+    return {};
+}
+
+void pksm::ui::GameList::SetDisabled(bool disabled) {
+    this->disabled = disabled;
 }

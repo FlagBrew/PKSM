@@ -3,10 +3,12 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
+
 namespace pksm::ui {
 
-class TriggerButton : public pu::ui::elm::Element, public IFocusable {
+class TriggerButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
 public:
     enum class Side { Left, Right };
 
@@ -44,6 +46,8 @@ public:
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
     void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
         override;
+
+    std::vector<HelpItem> GetHelpItems() const override;
 
 private:
     void UpdateTextPosition();

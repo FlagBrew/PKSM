@@ -11,9 +11,16 @@
 pksm::layout::TitleLoadScreen::TitleLoadScreen(
     ITitleDataProvider::Ref titleProvider,
     ISaveDataProvider::Ref saveProvider,
-    data::AccountManager& accountManager
+    data::AccountManager& accountManager,
+    std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
+    std::function<void()> onHideOverlay
 )
-  : Layout::Layout(), titleProvider(titleProvider), saveProvider(saveProvider), accountManager(accountManager) {
+  : Layout::Layout(),
+    titleProvider(titleProvider),
+    saveProvider(saveProvider),
+    accountManager(accountManager),
+    onShowOverlay(onShowOverlay),
+    onHideOverlay(onHideOverlay) {
     LOG_DEBUG("Initializing TitleLoadScreen...");
 
     // Initialize focus managers
@@ -67,6 +74,13 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->gameList->SetOnGameListChanged(std::bind(&TitleLoadScreen::OnGameListChanged, this));
     this->userIconButton->SetVisible(this->gameList->IsGameListDependentOnUser());
 
+    // Set up help text updates
+    this->gameList->SetOnShouldUpdateHelpText([this]() {
+        if (this->gameList->IsFocused()) {
+            this->UpdateHelpItems(this->gameList);
+        }
+    });
+
     this->Add(this->gameList);
 
     LOG_DEBUG("Setting up UI components...");
@@ -100,9 +114,10 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->loadButton->SetOnClick(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
     this->loadButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
     this->loadButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
+    this->loadButton->SetHelpText("Load Save");
     titleLoadFocusManager->RegisterFocusable(this->loadButton);
 
-    // Create settings button
+    // Create wireless button
     this->wirelessButton = pksm::ui::FocusableButton::New(
         SAVE_LIST_X + SAVE_LIST_WIDTH + BUTTON_SPACING,
         GetBottomSectionY() + BUTTON_HEIGHT + BUTTON_SPACING,  // Below load button
@@ -114,12 +129,20 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->wirelessButton->SetOnClick(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
     this->wirelessButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
     this->wirelessButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
+    this->wirelessButton->SetHelpText("Load Wireless");
     titleLoadFocusManager->RegisterFocusable(this->wirelessButton);
 
     // Add elements to layout
     this->Add(this->saveList);
     this->Add(this->loadButton);
     this->Add(this->wirelessButton);
+
+    // Create help footer
+    this->helpFooter = pksm::ui::HelpFooter::New(0, GetHeight() - pksm::ui::HelpFooter::FOOTER_HEIGHT, GetWidth());
+    this->Add(this->helpFooter);
+
+    // Initialize help state
+    this->isHelpOverlayVisible = false;
 
     // Let container prepare elements
     this->PreRender();
@@ -132,7 +155,7 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     // Set up button handler
     buttonHandler.SetOnMoveUp([this]() { MoveButtonSelectionUp(); });
     buttonHandler.SetOnMoveDown([this]() { MoveButtonSelectionDown(); });
-    buttonHandler.SetOnMoveLeft([this]() { this->saveList->RequestFocus(); });
+    buttonHandler.SetOnMoveLeft([this]() { this->FocusSaveList(); });
 
     // Set up save list handler
     saveListHandler.SetOnMoveRight([this]() { TransitionToButtons(); });
@@ -152,7 +175,7 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
 
     gameListHandler.SetOnMoveUp([this]() {
         if (gameList->ShouldResignUpFocus()) {
-            this->userIconButton->RequestFocus();
+            this->FocusUserIcon();
         }
     });
 
@@ -163,6 +186,7 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
 
     // Set initial focus
     this->gameList->RequestFocus();
+    UpdateHelpItems(this->gameList);
 
     LOG_DEBUG("TitleLoadScreen initialization complete");
 }
@@ -200,48 +224,81 @@ pksm::titles::Title::Ref pksm::layout::TitleLoadScreen::GetSelectedTitle() const
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionUp() {
     if (this->wirelessButton->IsFocused()) {
         LOG_DEBUG("Moving button selection up from Wireless to Load Save");
-        this->loadButton->RequestFocus();
+        this->FocusLoadButton();
     } else if (this->loadButton->IsFocused()) {
         LOG_DEBUG("Moving button selection up from Load Save to Wireless");
-        this->wirelessButton->RequestFocus();
+        this->FocusWirelessButton();
     }
 }
 
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionDown() {
     if (this->loadButton->IsFocused()) {
         LOG_DEBUG("Moving button selection down from Load Save to Wireless");
-        this->wirelessButton->RequestFocus();
+        this->FocusWirelessButton();
     } else if (this->wirelessButton->IsFocused()) {
         LOG_DEBUG("Moving button selection down from Wireless to Load Save");
-        this->loadButton->RequestFocus();
+        this->FocusLoadButton();
     }
 }
 
 void pksm::layout::TitleLoadScreen::FocusGameSection() {
     LOG_DEBUG("Focusing game section");
     this->gameList->RequestFocus();
+    UpdateHelpItems(this->gameList);
 }
 
 void pksm::layout::TitleLoadScreen::FocusSaveList() {
     LOG_DEBUG("Focusing save list");
     this->saveList->RequestFocus();
+    UpdateHelpItems(this->saveList);
 }
 
-void pksm::layout::TitleLoadScreen::TransitionToSaveList() {
-    LOG_DEBUG("Transitioning focus to save list");
-    FocusSaveList();
+void pksm::layout::TitleLoadScreen::FocusUserIcon() {
+    LOG_DEBUG("Focusing user icon");
+    this->userIconButton->RequestFocus();
+    UpdateHelpItems(this->userIconButton);
+}
+
+void pksm::layout::TitleLoadScreen::FocusLoadButton() {
+    LOG_DEBUG("Focusing load button");
+    this->loadButton->RequestFocus();
+    UpdateHelpItems(this->loadButton);
+}
+
+void pksm::layout::TitleLoadScreen::FocusWirelessButton() {
+    LOG_DEBUG("Focusing wireless button");
+    this->wirelessButton->RequestFocus();
+    UpdateHelpItems(this->wirelessButton);
 }
 
 void pksm::layout::TitleLoadScreen::TransitionToButtons() {
     LOG_DEBUG("Transitioning focus to button region");
-    this->loadButton->RequestFocus();
+    this->FocusLoadButton();
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
+    if (down & HidNpadButton_Minus) {
+        LOG_DEBUG("Minus button pressed");
+        if (isHelpOverlayVisible) {
+            HideHelpOverlay();
+        } else {
+            ShowHelpOverlay();
+        }
+        return;  // Don't process other input while toggling help
+    }
+
+    if (isHelpOverlayVisible) {
+        if (down & HidNpadButton_B) {
+            LOG_DEBUG("B button pressed while help overlay visible");
+            HideHelpOverlay();
+        }
+        return;  // Don't process other input while help is visible
+    }
+
     if ((down & HidNpadButton_ZL)) {
         LOG_DEBUG("ZL button pressed");
         if (this->gameList->IsGameListDependentOnUser()) {
-            this->userIconButton->RequestFocus();
+            this->FocusUserIcon();
             this->accountManager.ShowAccountSelector();
         }
     }
@@ -262,7 +319,7 @@ void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
             // Input was handled by directional handler
         } else if (down & HidNpadButton_B) {
             LOG_DEBUG("Returning to save list from button region");
-            this->saveList->RequestFocus();
+            FocusSaveList();
         } else if (down & HidNpadButton_A) {
             if (this->loadButton->IsFocused()) {
                 LOG_DEBUG("Load button activated via A button");
@@ -294,7 +351,7 @@ void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
             FocusSaveList();
         } else if (down & HidNpadButton_Up) {
             LOG_DEBUG("Moving focus from game list to user icon");
-            this->userIconButton->RequestFocus();
+            this->FocusUserIcon();
         }
     }
 }
@@ -336,4 +393,47 @@ void pksm::layout::TitleLoadScreen::OnSaveListTouchSelect() {
 pu::i32 pksm::layout::TitleLoadScreen::GetBottomSectionY() const {
     return HEADER_TOP_MARGIN + HEADER_HEIGHT + HEADER_BOTTOM_MARGIN + this->gameList->GetHeight() +
         SAVE_LIST_TOP_MARGIN;
+}
+
+void pksm::layout::TitleLoadScreen::UpdateHelpItems(pksm::ui::IHelpProvider::Ref helpItemProvider) {
+    if (helpFooter) {
+        helpFooter->SetHelpItems(helpItemProvider->GetHelpItems());
+    }
+}
+
+void pksm::layout::TitleLoadScreen::ShowHelpOverlay() {
+    LOG_DEBUG("Showing help overlay");
+    if (!isHelpOverlayVisible) {
+        // Create and show overlay
+        auto overlay = pksm::ui::HelpOverlay::New(0, 0, GetWidth(), GetHeight());
+        std::vector<pksm::ui::HelpItem> helpItems = {
+            {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
+            {{{pksm::ui::HelpButton::B}}, "Back"}
+        };
+
+        if (gameList->IsGameListDependentOnUser()) {
+            helpItems.push_back({{{pksm::ui::HelpButton::ZL}}, "Change Player"});
+        }
+
+        helpItems.insert(
+            helpItems.end(),
+            {{{{pksm::ui::HelpButton::L, pksm::ui::HelpButton::R}}, "Change Game List"},
+             {{{pksm::ui::HelpButton::AnalogStick, pksm::ui::HelpButton::DPad}}, "Navigate"},
+             {{{pksm::ui::HelpButton::Minus}}, "Close Help"}}
+        );
+
+        overlay->SetHelpItems(helpItems);
+        onShowOverlay(overlay);
+        gameList->SetDisabled(true);
+        isHelpOverlayVisible = true;
+    }
+}
+
+void pksm::layout::TitleLoadScreen::HideHelpOverlay() {
+    LOG_DEBUG("Hiding help overlay");
+    if (isHelpOverlayVisible) {
+        onHideOverlay();
+        gameList->SetDisabled(false);
+        isHelpOverlayVisible = false;
+    }
 }

@@ -53,4 +53,11 @@ void SaveList::SetOnSelectionChanged(std::function<void()> callback) {
     });
 }
 
+std::vector<HelpItem> SaveList::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+    return {{{pksm::ui::HelpButton::A}, "Select Save"}, {{pksm::ui::HelpButton::B}, "Back"}};
+}
+
 }  // namespace pksm::ui

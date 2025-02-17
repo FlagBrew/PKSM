@@ -15,6 +15,7 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/TriggerButton.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/FocusableImage.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
@@ -22,7 +23,7 @@
 
 namespace pksm::ui {
 
-class GameList : public pu::ui::elm::Element, public IFocusable {
+class GameList : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
 private:
     // Layout constants
     static constexpr u32 CORNER_RADIUS = 30;  // Radius for rounded corners
@@ -51,10 +52,17 @@ private:
 
     // State
     bool focused = false;
+    bool disabled = false;
     pu::ui::Color backgroundColor;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
     std::function<void()> onGameListChangedCallback;
+    std::function<void()> onShouldUpdateHelpTextCallback;
+
+    // Focus consolidation
+    void FocusLeftTrigger();
+    void FocusRightTrigger();
+    void FocusActiveGameList();
 
     // Position tracking
     pu::i32 x;  // Component's x position
@@ -128,11 +136,17 @@ public:
     void SetOnSelectionChanged(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);
     void SetOnGameListChanged(std::function<void()> callback);
+    void SetOnShouldUpdateHelpText(std::function<void()> callback);
+    void SetDisabled(bool disabled);
+
     // Focus management
     bool ShouldResignDownFocus() const;
     bool ShouldResignUpFocus() const;
 
     // Add method to update current user
     void OnAccountChanged(const AccountUid& newUserId);
+
+    // IHelpProvider implementation
+    std::vector<HelpItem> GetHelpItems() const override;
 };
 }  // namespace pksm::ui
