@@ -138,15 +138,8 @@ all`.
 
 Without you, this project wouldn't have existed. Thank you.
 
-## Support us
-
-If you appreciate our work, you can support us on
-[Patreon](https://www.patreon.com/FlagBrew)!
-
 ## License
 
 This project is licensed under the GNU GPLv3. Additional Terms 7.b and 7.c of
 GPLv3 apply to this. See
 [LICENSE](https://github.com/FlagBrew/PKSM/blob/master/LICENSE) for details.
-
-Visit us on [flagbrew.org](https://flagbrew.org/)!
