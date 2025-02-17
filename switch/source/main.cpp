@@ -161,7 +161,13 @@ public:
             LOG_DEBUG("Creating title screen...");
 
             try {
-                this->titleLoadScreen = pksm::layout::TitleLoadScreen::New(titleProvider, saveProvider, accountManager);
+                this->titleLoadScreen = pksm::layout::TitleLoadScreen::New(
+                    titleProvider,
+                    saveProvider,
+                    accountManager,
+                    [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+                    [this]() { this->EndOverlay(); }
+                );
                 LOG_DEBUG("Title screen object created");
                 LOG_MEMORY();  // Memory after title screen creation
             } catch (const std::exception& e) {

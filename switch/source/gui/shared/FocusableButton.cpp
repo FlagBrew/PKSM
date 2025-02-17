@@ -136,3 +136,16 @@ void pksm::ui::FocusableButton::SetOnClick(std::function<void()> callback) {
 void pksm::ui::FocusableButton::SetOnTouchSelect(std::function<void()> callback) {
     onTouchSelectCallback = callback;
 }
+void pksm::ui::FocusableButton::SetHelpText(const std::string& text) {
+    helpText = text;
+}
+
+std::vector<pksm::ui::HelpItem> pksm::ui::FocusableButton::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+    return {
+        {{pksm::ui::HelpButton::A}, helpText.empty() ? GetContent() : helpText},
+        {{pksm::ui::HelpButton::B}, "Back"}
+    };
+}

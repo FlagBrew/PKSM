@@ -4,11 +4,12 @@
 #include <vector>
 
 #include "gui/shared/components/FocusableMenu.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "saves/Save.hpp"
 
 namespace pksm::ui {
 
-class SaveList : public FocusableMenu {
+class SaveList : public FocusableMenu, public IHelpProvider {
 private:
     std::vector<saves::Save::Ref> saves;  // Store actual save objects
     std::function<void()> onSelectionChangedCallback;
@@ -36,6 +37,8 @@ public:
 
     // Selection changed callback
     void SetOnSelectionChanged(std::function<void()> callback);
+
+    std::vector<HelpItem> GetHelpItems() const override;
 };
 
 }  // namespace pksm::ui
