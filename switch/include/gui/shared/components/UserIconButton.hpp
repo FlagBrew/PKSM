@@ -7,11 +7,12 @@
 #include "data/AccountManager.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
 
-class UserIconButton : public pu::ui::elm::Element, public IFocusable {
+class UserIconButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
 public:
     static constexpr pu::i32 OUTLINE_PADDING = 2;
     static constexpr pu::i32 USERNAME_PADDING = 16;
@@ -35,6 +36,8 @@ public:
     pu::i32 GetY() override;
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
+
+    std::vector<HelpItem> GetHelpItems() const override;
 
 private:
     pu::i32 x;

@@ -3,10 +3,11 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
-class FocusableButton : public pu::ui::elm::Element, public IFocusable {
+class FocusableButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
 private:
     bool focused;
     pu::ui::Color normalColor;
@@ -14,6 +15,7 @@ private:
     pksm::ui::PulsingOutline::Ref outline;
     std::function<void()> onClickCallback;
     std::function<void()> onTouchSelectCallback;
+    std::string helpText;  // Text to show for A button in help
 
     // UI Elements
     pu::ui::elm::Rectangle::Ref background;
@@ -61,5 +63,9 @@ public:
     void SetBackgroundColor(const pu::ui::Color& color);
     void SetOnClick(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);
+
+    // IHelpProvider implementation
+    void SetHelpText(const std::string& text);
+    std::vector<HelpItem> GetHelpItems() const override;
 };
 }  // namespace pksm::ui

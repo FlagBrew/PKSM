@@ -190,4 +190,11 @@ void UserIconButton::SetOnClick(std::function<void()> callback) {
     onClickCallback = callback;
 }
 
+std::vector<pksm::ui::HelpItem> UserIconButton::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+    return {{{pksm::ui::HelpButton::A}, "Change Player"}, {{pksm::ui::HelpButton::B}, "Back"}};
+}
+
 }  // namespace pksm::ui
