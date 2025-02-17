@@ -12,9 +12,33 @@ struct AccountUpdate {
     bool needsIconReload;
 };
 
-AccountManager::AccountManager() : pendingUpdates(), updateMutex() {}
+// Timer callback function - needs to be outside the class since it's a C-style callback
+static Uint32 ExecuteCallback(Uint32 interval, void* param) {
+    auto* data = static_cast<std::pair<SDL_TimerID*, std::function<void()>>*>(param);
+    // Store local copies since we'll delete the data
+    auto callback = data->second;
+    auto timerIdPtr = data->first;
+
+    // Clear and delete before executing callback to prevent race conditions
+    SDL_TimerID timerId = *timerIdPtr;
+    *timerIdPtr = 0;
+    delete data;
+
+    // Remove the timer first
+    SDL_RemoveTimer(timerId);
+
+    // Now execute the callback
+    callback();
+    return 0;  // Don't repeat the timer
+}
+
+AccountManager::AccountManager() : pendingUpdates(), updateMutex(), selectorTimer(0), isShowingSelector(false) {}
 
 AccountManager::~AccountManager() {
+    if (selectorTimer) {
+        SDL_RemoveTimer(selectorTimer);
+        selectorTimer = 0;
+    }
     Exit();
 }
 
@@ -88,6 +112,22 @@ void AccountManager::ProcessPendingUpdates() {
 }
 
 void AccountManager::ShowAccountSelector() {
+    if (!isShowingSelector) {
+        isShowingSelector = true;
+        // Remove any existing timer
+        if (selectorTimer) {
+            SDL_RemoveTimer(selectorTimer);
+        }
+        // Create data bundle with timer ID pointer and callback
+        auto* data = new std::pair<SDL_TimerID*, std::function<void()>>(&selectorTimer, [this]() {
+            ShowAccountSelectorImpl();
+            isShowingSelector = false;
+        });
+        selectorTimer = SDL_AddTimer(4, ExecuteCallback, data);
+    }
+}
+
+void AccountManager::ShowAccountSelectorImpl() {
     LibAppletArgs args;
     libappletArgsCreate(&args, 0x10000);
     u8 st_in[0xA0] = {0};
