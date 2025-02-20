@@ -73,10 +73,12 @@ APP_VERSION := $(VER_MAJOR).$(VER_MINOR).$(VER_MICRO)
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
 # Debug build
+# Note: Using -O0 for both debug and non-debug builds because higher optimization levels
+# (-O2) cause issues with SDL2 image loading, likely due to timing-sensitive initialization
 ifeq ($(DEBUG),1)
     CFLAGS	:=	-g -O0 -ffunction-sections -Wall $(ARCH) $(DEFINES)
 else
-    CFLAGS	:=	-g -O2 -ffunction-sections -Wall $(ARCH) $(DEFINES)
+    CFLAGS	:=	-g -O0 -ffunction-sections -Wall $(ARCH) $(DEFINES)
 endif
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ `sdl2-config --cflags`
