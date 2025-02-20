@@ -13,14 +13,16 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     ISaveDataProvider::Ref saveProvider,
     data::AccountManager& accountManager,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
-    std::function<void()> onHideOverlay
+    std::function<void()> onHideOverlay,
+    std::function<void()> onSaveLoaded
 )
   : Layout::Layout(),
     titleProvider(titleProvider),
     saveProvider(saveProvider),
     accountManager(accountManager),
     onShowOverlay(onShowOverlay),
-    onHideOverlay(onHideOverlay) {
+    onHideOverlay(onHideOverlay),
+    onSaveLoaded(onSaveLoaded) {
     LOG_DEBUG("Initializing TitleLoadScreen...");
 
     // Initialize focus managers
@@ -112,7 +114,6 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     );
     this->loadButton->SetName("LoadSaveButton Element");
     this->loadButton->SetOnClick(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
-    this->loadButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
     this->loadButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
     this->loadButton->SetHelpText("Load Save");
     titleLoadFocusManager->RegisterFocusable(this->loadButton);
@@ -127,7 +128,6 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     );
     this->wirelessButton->SetName("WirelessButton Element");
     this->wirelessButton->SetOnClick(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
-    this->wirelessButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
     this->wirelessButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
     this->wirelessButton->SetHelpText("Load Wireless");
     titleLoadFocusManager->RegisterFocusable(this->wirelessButton);
@@ -364,6 +364,9 @@ void pksm::layout::TitleLoadScreen::HandleButtonInteraction(pksm::ui::FocusableB
 void pksm::layout::TitleLoadScreen::OnLoadButtonClick() {
     LOG_DEBUG("Load button clicked");
     HandleButtonInteraction(this->loadButton);
+    if (onSaveLoaded) {
+        onSaveLoaded();
+    }
 }
 
 void pksm::layout::TitleLoadScreen::OnWirelessButtonClick() {

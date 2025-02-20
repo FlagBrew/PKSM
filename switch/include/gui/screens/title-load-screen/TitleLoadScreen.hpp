@@ -79,6 +79,7 @@ private:
     data::AccountManager& accountManager;
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay;
     std::function<void()> onHideOverlay;
+    std::function<void()> onSaveLoaded;
 
     // Help state
     bool isHelpOverlayVisible;
@@ -117,7 +118,8 @@ public:
         ISaveDataProvider::Ref saveProvider,
         data::AccountManager& accountManager,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
-        std::function<void()> onHideOverlay
+        std::function<void()> onHideOverlay,
+        std::function<void()> onSaveLoaded
     );
     PU_SMART_CTOR(TitleLoadScreen)
 };
