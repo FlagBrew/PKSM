@@ -163,6 +163,12 @@ bool pksm::ui::ScrollView::IsFocused() const {
     return focused;
 }
 
+bool pksm::ui::ScrollView::IsPointInVisibleArea(pu::i32 pointY) const {
+    pu::i32 visibleTop = container->GetY();
+    pu::i32 visibleBottom = visibleTop + container->GetHeight();
+    return pointY >= visibleTop && pointY <= visibleBottom;
+}
+
 void pksm::ui::ScrollView::OnInput(
     const u64 keys_down,
     const u64 keys_up,
@@ -185,6 +191,11 @@ void pksm::ui::ScrollView::OnInput(
 
         for (auto& child : GetElements()) {
             if (adjusted_pos.HitsRegion(child->GetX(), child->GetY(), child->GetWidth(), child->GetHeight())) {
+                // Check if the touch point is within the visible area
+                if (!IsPointInVisibleArea(touch_pos.y)) {
+                    continue;  // Skip if touch is outside visible area
+                }
+
                 hitChild = true;
 
                 if (focused) {

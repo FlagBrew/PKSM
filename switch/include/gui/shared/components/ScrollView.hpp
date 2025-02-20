@@ -40,6 +40,7 @@ protected:
     void UpdateScrollMomentum();
     void ClampScrollOffset();
     bool ShouldStartDragging(const pu::ui::TouchPoint& touch_pos) const;
+    bool IsPointInVisibleArea(pu::i32 pointY) const;
 
 private:
     // Container for elements
