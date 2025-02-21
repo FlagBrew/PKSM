@@ -10,18 +10,24 @@ class AnimatedBackground : public pu::ui::elm::Element {
 private:
     static constexpr float SCROLL_SPEED = 100.0f;  // Pixels per second
 
-    pu::sdl2::TextureHandle::Ref bg_texture1;
-    pu::sdl2::TextureHandle::Ref bg_texture2;
-    float bg_x1;  // Using float for smoother animation
-    float bg_x2;
+    pu::sdl2::TextureHandle::Ref bg_texture1;  // Animated squares texture
+    pu::sdl2::TextureHandle::Ref static_bg_texture;  // Static background texture
+    float bg_x1;
     u64 lastFrameTime;
     pu::i32 textureWidth;
     pu::i32 textureHeight;
+    pu::i32 staticBgWidth;  // Dimensions for the static background
+    pu::i32 staticBgHeight;
     std::optional<pu::ui::Color> tintColor;  // Optional tint color
     float customScaleFactor;  // Scale factor for the background
 
     void InitializeBackground();
     void UpdateBackgroundAnimation();
+    void RenderStaticBackground(
+        pu::ui::render::Renderer::Ref& drawer,
+        const pu::i32 screenWidth,
+        const pu::i32 screenHeight
+    );
 
 public:
     AnimatedBackground();
