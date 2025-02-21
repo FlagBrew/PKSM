@@ -35,7 +35,7 @@ void AnimatedBackground::InitializeBackground() {
     LOG_DEBUG("Initializing animated background");
 
     // Load background texture using the LoadImage function from the Plutonium codebase
-    pu::sdl2::Texture loadedTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/anim_squares4.png");
+    pu::sdl2::Texture loadedTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/anim_squares.png");
     if (!loadedTexture) {
         LOG_ERROR("Failed to load background texture");
         return;
