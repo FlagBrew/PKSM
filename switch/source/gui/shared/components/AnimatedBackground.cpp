@@ -11,12 +11,13 @@ namespace pksm::ui {
 AnimatedBackground::AnimatedBackground()
   : Element(),
     bg_texture1(nullptr),
-    bg_texture2(nullptr),
+    static_bg_texture(nullptr),
     bg_x1(0),
-    bg_x2(0),
     lastFrameTime(SDL_GetTicks64()),
     textureWidth(0),
     textureHeight(0),
+    staticBgWidth(0),
+    staticBgHeight(0),
     tintColor(std::nullopt),
     customScaleFactor(1.5f) {
     InitializeBackground();
@@ -34,10 +35,21 @@ void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
 void AnimatedBackground::InitializeBackground() {
     LOG_DEBUG("Initializing animated background");
 
-    // Load background texture using the LoadImage function from the Plutonium codebase
+    // Load static background first
+    pu::sdl2::Texture staticTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/bg_style.png");
+    if (!staticTexture) {
+        LOG_ERROR("Failed to load static background texture");
+    } else {
+        static_bg_texture = pu::sdl2::TextureHandle::New(staticTexture);
+        staticBgWidth = pu::ui::render::GetTextureWidth(static_bg_texture->Get());
+        staticBgHeight = pu::ui::render::GetTextureHeight(static_bg_texture->Get());
+        LOG_DEBUG("Static background loaded successfully");
+    }
+
+    // Load animated squares texture
     pu::sdl2::Texture loadedTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/anim_squares.png");
     if (!loadedTexture) {
-        LOG_ERROR("Failed to load background texture");
+        LOG_ERROR("Failed to load animated squares texture");
         return;
     }
 
@@ -60,6 +72,39 @@ void AnimatedBackground::InitializeBackground() {
     bg_x1 = 0;
 
     LOG_DEBUG("Background initialized successfully");
+}
+
+void AnimatedBackground::RenderStaticBackground(
+    pu::ui::render::Renderer::Ref& drawer,
+    const pu::i32 screenWidth,
+    const pu::i32 screenHeight
+) {
+    if (!static_bg_texture) {
+        return;
+    }
+
+    // Calculate scaling factors for width and height
+    float scaleX = static_cast<float>(screenWidth) / staticBgWidth;
+    float scaleY = static_cast<float>(screenHeight) / staticBgHeight;
+
+    // Use the larger scale factor to ensure the image fills the screen
+    float scale = std::max(scaleX, scaleY);
+
+    // Calculate dimensions that maintain aspect ratio and fill screen
+    pu::i32 renderWidth = static_cast<pu::i32>(staticBgWidth * scale);
+    pu::i32 renderHeight = static_cast<pu::i32>(staticBgHeight * scale);
+
+    // Calculate position to center the image
+    pu::i32 xPos = (screenWidth - renderWidth) / 2;
+    pu::i32 yPos = (screenHeight - renderHeight) / 2;
+
+    // Create render options
+    pu::ui::render::TextureRenderOptions opts;
+    opts.width = renderWidth;
+    opts.height = renderHeight;
+
+    // Render the static background
+    drawer->RenderTexture(static_bg_texture->Get(), xPos, yPos, opts);
 }
 
 void AnimatedBackground::UpdateBackgroundAnimation() {
@@ -85,15 +130,19 @@ void AnimatedBackground::UpdateBackgroundAnimation() {
 }
 
 void AnimatedBackground::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+    // Get current screen dimensions
+    auto [screenWidth, screenHeight] = pu::ui::render::GetDimensions();
+
+    // Render static background first
+    RenderStaticBackground(drawer, screenWidth, screenHeight);
+
+    // Then render animated squares
     if (!bg_texture1) {
         return;
     }
 
     // Update animation before rendering
     UpdateBackgroundAnimation();
-
-    // Get current screen dimensions
-    auto [screenWidth, screenHeight] = pu::ui::render::GetDimensions();
 
     // Calculate base scaling to fit screen while maintaining aspect ratio
     float baseScale = std::min((float)screenWidth / textureWidth, (float)screenHeight / textureHeight);
