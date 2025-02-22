@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <pu/Plutonium>
+#include <switch.h>
 
 #include "data/AccountManager.hpp"
 #include "data/providers/mock/MockSaveDataProvider.hpp"
