@@ -1,7 +1,6 @@
 #include "PKSMApplication.hpp"
 
 #include <sstream>
-#include <switch.h>
 
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
@@ -107,6 +106,13 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         // Register additional fonts after romfs is mounted
         RegisterAdditionalFonts();
+
+        auto recordingInitResult = appletInitializeGamePlayRecording();
+        if (R_FAILED(recordingInitResult)) {
+            LOG_ERROR("Failed to initialize game play recording");
+        } else {
+            appletSetGamePlayRecordingState(true);
+        }
 
         // Create and prepare application
         LOG_DEBUG("Creating application...");
