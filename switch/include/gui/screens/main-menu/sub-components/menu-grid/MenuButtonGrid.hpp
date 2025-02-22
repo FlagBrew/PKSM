@@ -24,6 +24,7 @@ private:
     pu::i32 buttonSize;  // Calculated button size
 
     bool hasBeenFocused = false;
+    bool disabled = false;
 
     // Components
     std::vector<MenuButton::Ref> buttons;
@@ -59,6 +60,9 @@ public:
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
     void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
         override;
+
+    // Disable/enable functionality
+    void SetDisabled(bool disabled);
 };
 
 }  // namespace pksm::ui
