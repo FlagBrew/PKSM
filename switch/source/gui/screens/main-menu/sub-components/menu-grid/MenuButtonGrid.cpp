@@ -142,12 +142,14 @@ void MenuButtonGrid::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    // Handle directional input
-    inputHandler.HandleInput(keys_down, keys_held);
+    if (!disabled) {
+        // Handle directional input
+        inputHandler.HandleInput(keys_down, keys_held);
 
-    // Let each button handle its own input for touch/click events
-    for (auto& button : buttons) {
-        button->OnInput(keys_down, keys_up, keys_held, touch_pos);
+        // Let each button handle its own input for touch/click events
+        for (auto& button : buttons) {
+            button->OnInput(keys_down, keys_up, keys_held, touch_pos);
+        }
     }
 }
 
@@ -156,6 +158,10 @@ void MenuButtonGrid::RequestInitialFocusIfNeeded() {
         buttons[0]->RequestFocus();
         hasBeenFocused = true;
     }
+}
+
+void MenuButtonGrid::SetDisabled(bool disabled) {
+    this->disabled = disabled;
 }
 
 }  // namespace pksm::ui
