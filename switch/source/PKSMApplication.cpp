@@ -158,9 +158,13 @@ void PKSMApplication::OnLoad() {
         titleProvider = std::make_shared<MockTitleDataProvider>(accountManager.GetCurrentAccount());
         saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
 
-        // Create main menu with back callback
+        // Create main menu with back callback and overlay handlers
         LOG_DEBUG("Creating main menu...");
-        mainMenu = pksm::layout::MainMenu::New([this]() { this->ShowTitleLoadScreen(); });
+        mainMenu = pksm::layout::MainMenu::New(
+            [this]() { this->ShowTitleLoadScreen(); },
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); }
+        );
 
         // Create title load screen
         LOG_DEBUG("Creating title load screen...");
