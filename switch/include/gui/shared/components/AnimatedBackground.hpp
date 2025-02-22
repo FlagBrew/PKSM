@@ -8,14 +8,32 @@ namespace pksm::ui {
 
 class AnimatedBackground : public pu::ui::elm::Element {
 private:
-    static constexpr float SCROLL_SPEED = 100.0f;  // Pixels per second
+    struct LayerConfig {
+        bool enabled = true;
+        float scrollSpeed = 100.0f;  // Pixels per second
 
-    pu::sdl2::TextureHandle::Ref bg_texture1;  // Animated squares texture
+        // Bobbing configuration
+        bool bobEnabled = false;
+        float bobAmplitude = 10.0f;  // Pixels to move up/down
+        float bobFrequency = 2.0f;  // Complete cycles per second
+        float bobDelay = 0.0f;  // Milliseconds before starting bob
+
+        LayerConfig() = default;
+        LayerConfig(float speed) : scrollSpeed(speed) {}
+    };
+
+    static constexpr int NUM_LAYERS = 3;
+    LayerConfig layerConfigs[NUM_LAYERS];
+
+    // Three layers of animated squares textures
+    pu::sdl2::TextureHandle::Ref bg_textures[NUM_LAYERS];
     pu::sdl2::TextureHandle::Ref static_bg_texture;  // Static background texture
-    float bg_x1;
+    float bg_positions[NUM_LAYERS];  // X positions for each layer
+    float bg_y_offsets[NUM_LAYERS];  // Y offset for bobbing animation
     u64 lastFrameTime;
-    pu::i32 textureWidth;
-    pu::i32 textureHeight;
+    u64 startTime;  // For timing bob delays
+    pu::i32 textureWidths[NUM_LAYERS];
+    pu::i32 textureHeights[NUM_LAYERS];
     pu::i32 staticBgWidth;  // Dimensions for the static background
     pu::i32 staticBgHeight;
     std::optional<pu::ui::Color> tintColor;  // Optional tint color
@@ -23,6 +41,7 @@ private:
 
     void InitializeBackground();
     void UpdateBackgroundAnimation();
+    void ConfigureDefaultAnimations();  // New method to set up default animations
     void RenderStaticBackground(
         pu::ui::render::Renderer::Ref& drawer,
         const pu::i32 screenWidth,
@@ -33,6 +52,18 @@ public:
     AnimatedBackground();
     PU_SMART_CTOR(AnimatedBackground)
     ~AnimatedBackground() override;
+
+    // Animation configuration methods
+    void ConfigureLayer(
+        int layer,
+        float scrollSpeed,
+        bool bobEnabled = false,
+        float bobAmplitude = 10.0f,
+        float bobFrequency = 2.0f,
+        float bobDelay = 0.0f
+    );
+    void EnableLayer(int layer, bool enabled);
+    void EnableBobbing(int layer, bool enabled);
 
     // Set a tint color for the background texture
     void SetTintColor(const pu::ui::Color& color);
