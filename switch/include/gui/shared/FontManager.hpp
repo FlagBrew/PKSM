@@ -17,16 +17,12 @@ public:
     // Register a font with all custom sizes
     static void RegisterFont(const std::string& fontPath, const FontNameGenerator& nameGenerator) {
         const std::vector<u32> sizes = {
-            pksm::ui::global::FONT_SIZE_SMALL,
-            pksm::ui::global::FONT_SIZE_MEDIUM,
-            pksm::ui::global::FONT_SIZE_MEDIUM_LARGE,
-            pksm::ui::global::FONT_SIZE_LARGE,
             pksm::ui::global::FONT_SIZE_TITLE,
             pksm::ui::global::FONT_SIZE_HEADER,
             pksm::ui::global::FONT_SIZE_BUTTON,
             pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION,
-            pksm::ui::global::FONT_SIZE_ACCOUNT_NAME
-            // New sizes will automatically be included when added to UIConstants
+            pksm::ui::global::FONT_SIZE_ACCOUNT_NAME,
+            pksm::ui::global::FONT_SIZE_TRAINER_INFO_STATS
         };
 
         for (const auto& size : sizes) {
@@ -42,7 +38,9 @@ public:
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TITLE);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_HEADER);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_BUTTON);
-        // New sizes will automatically be included when added to UIConstants
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_ACCOUNT_NAME);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TRAINER_INFO_STATS);
     }
 };
 
