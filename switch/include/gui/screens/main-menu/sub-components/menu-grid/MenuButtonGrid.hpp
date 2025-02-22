@@ -23,10 +23,10 @@ private:
     pu::i32 height;
     pu::i32 buttonSize;  // Calculated button size
 
-    bool hasBeenFocused = false;
     bool disabled = false;
 
     // Components
+    pu::ui::Container::Ref container;
     std::vector<MenuButton::Ref> buttons;
     input::FocusManager::Ref focusManager;
     pksm::input::DirectionalInputHandler inputHandler;
@@ -34,7 +34,6 @@ private:
     // Helper methods
     void InitializeButtons();
     void MoveFocus(size_t newIndex);
-    void RequestInitialFocusIfNeeded();
 
     // Navigation methods
     void MoveLeft();

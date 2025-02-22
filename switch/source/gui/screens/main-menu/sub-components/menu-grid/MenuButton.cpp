@@ -22,7 +22,8 @@ MenuButton::MenuButton(
         y - OUTLINE_PADDING,
         width + (OUTLINE_PADDING * 2),
         height + (OUTLINE_PADDING * 2),
-        OUTLINE_COLOR
+        OUTLINE_COLOR,
+        CORNER_RADIUS
     );
     outline->SetVisible(false);
 

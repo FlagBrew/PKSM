@@ -7,6 +7,11 @@ namespace pksm::ui {
 MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 width)
   : Element(), x(x), y(y), width(width) {
     LOG_DEBUG("Initializing MenuButtonGrid...");
+
+    // Initialize container
+    container = pu::ui::Container::New(x, y, width, 0);  // Height will be updated after initialization
+
+    // Initialize focus manager
     focusManager = input::FocusManager::New("MenuButtonGrid Manager");
     focusManager->SetActive(true);  // since this is the root manager
 
@@ -21,6 +26,14 @@ MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 w
     buttonSize = std::max(MIN_BUTTON_SIZE, availableWidth / BUTTONS_PER_ROW);
 
     InitializeButtons();
+
+    // Update container height and prepare elements
+    container->SetHeight(height);
+    container->PreRender();
+
+    if (buttons.size() > 0) {
+        buttons[0]->RequestFocus();
+    }
 
     LOG_DEBUG("MenuButtonGrid initialization complete");
 }
@@ -58,6 +71,7 @@ void MenuButtonGrid::InitializeButtons() {
         button->SetOnClick([this, button]() { button->RequestFocus(); });
         focusManager->RegisterFocusable(button);
         buttons.push_back(button);
+        container->Add(button);  // Add to container
     }
 }
 
@@ -128,12 +142,10 @@ pu::i32 MenuButtonGrid::GetHeight() {
 }
 
 void MenuButtonGrid::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
-    // Render each button
-    for (auto& button : buttons) {
-        button->OnRender(drawer, button->GetX(), button->GetY());
+    // Render all elements in the container
+    for (auto& element : container->GetElements()) {
+        element->OnRender(drawer, element->GetX(), element->GetY());
     }
-
-    RequestInitialFocusIfNeeded();
 }
 
 void MenuButtonGrid::OnInput(
@@ -146,17 +158,10 @@ void MenuButtonGrid::OnInput(
         // Handle directional input
         inputHandler.HandleInput(keys_down, keys_held);
 
-        // Let each button handle its own input for touch/click events
-        for (auto& button : buttons) {
-            button->OnInput(keys_down, keys_up, keys_held, touch_pos);
+        // Let each element handle its own input
+        for (auto& element : container->GetElements()) {
+            element->OnInput(keys_down, keys_up, keys_held, touch_pos);
         }
-    }
-}
-
-void MenuButtonGrid::RequestInitialFocusIfNeeded() {
-    if (!hasBeenFocused && !buttons.empty()) {
-        buttons[0]->RequestFocus();
-        hasBeenFocused = true;
     }
 }
 
