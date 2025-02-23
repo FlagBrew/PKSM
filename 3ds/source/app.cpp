@@ -926,6 +926,8 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
 
+    // link3dsStdio();
+
     if (R_FAILED(res = downloadAdditionalAssets()))
     {
         return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're "
