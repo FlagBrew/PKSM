@@ -32,6 +32,10 @@ public:
     void SetOnClick(std::function<void()> callback);
     void UpdateAccountInfo();
 
+    // Disable/enable the button (affects input handling only)
+    void SetDisabled(bool disabled);
+    bool IsDisabled() const;
+
     pu::i32 GetX() override;
     pu::i32 GetY() override;
     pu::i32 GetWidth() override;
@@ -44,6 +48,7 @@ private:
     pu::i32 y;
     pu::i32 diameter;
     bool focused;
+    bool disabled;
     data::AccountManager& accountManager;
     SDL_Texture* maskedIconTexture;
     std::function<void()> onClickCallback;
