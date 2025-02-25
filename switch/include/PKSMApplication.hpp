@@ -5,6 +5,7 @@
 #include <switch.h>
 
 #include "data/AccountManager.hpp"
+#include "data/providers/mock/MockSaveDataAccessor.hpp"
 #include "data/providers/mock/MockSaveDataProvider.hpp"
 #include "data/providers/mock/MockTitleDataProvider.hpp"
 #include "gui/screens/main-menu/MainMenu.hpp"
@@ -22,6 +23,7 @@ private:
     pksm::data::AccountManager accountManager;
     ITitleDataProvider::Ref titleProvider;
     ISaveDataProvider::Ref saveProvider;
+    std::shared_ptr<MockSaveDataAccessor> saveDataAccessor;
 
     // Initialize renderer options with basic configuration
     static pu::ui::render::RendererInitOptions CreateRendererOptions();
@@ -38,6 +40,9 @@ private:
     // Navigation methods
     void ShowMainMenu();
     void ShowTitleLoadScreen();
+
+    // Save handling
+    void OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save);
 
 public:
     PKSMApplication(pu::ui::render::Renderer::Ref renderer);

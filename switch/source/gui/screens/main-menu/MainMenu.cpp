@@ -8,9 +8,10 @@ namespace pksm::layout {
 MainMenu::MainMenu(
     std::function<void()> onBack,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
-    std::function<void()> onHideOverlay
+    std::function<void()> onHideOverlay,
+    ISaveDataAccessor::Ref saveDataAccessor
 )
-  : BaseLayout(onShowOverlay, onHideOverlay), onBack(onBack) {
+  : BaseLayout(onShowOverlay, onHideOverlay), onBack(onBack), saveDataAccessor(saveDataAccessor) {
     LOG_DEBUG("Initializing MainMenu...");
 
     this->SetBackgroundColor(bgColor);
@@ -22,13 +23,13 @@ MainMenu::MainMenu(
         TRAINER_INFO_SIDE_MARGIN,
         TRAINER_INFO_TOP_MARGIN,
         TRAINER_INFO_WIDTH,
-        "Wow",  // OT Name
-        3,  // Badges
-        0,  // Wonder Cards
-        54,  // National Dex Seen
-        26,  // National Dex Caught
-        0.48f,  // Completion
-        "26h 15m"  // Time played
+        "",  // OT Name (will be updated)
+        0,  // Badges (will be updated)
+        0,  // Wonder Cards (will be updated)
+        0,  // National Dex Seen (will be updated)
+        0,  // National Dex Caught (will be updated)
+        0.0f,  // Completion (will be updated)
+        ""  // Time played (will be updated)
     );
     this->Add(trainerInfo);
 
@@ -57,7 +58,41 @@ MainMenu::MainMenu(
         std::bind(&MainMenu::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
     );
 
+    // Set up save data change callback
+    saveDataAccessor->setOnSaveDataChanged([this](pksm::saves::SaveData::Ref saveData) {
+        LOG_DEBUG("Save data changed, updating trainer info");
+        UpdateTrainerInfo();
+    });
+
+    // Update trainer info with current save data
+    UpdateTrainerInfo();
+
     LOG_DEBUG("MainMenu initialization complete");
+}
+
+void MainMenu::UpdateTrainerInfo() {
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (saveData) {
+        LOG_DEBUG("Updating trainer info with save data");
+
+        // Update trainer info with save data
+        trainerInfo->SetTrainerInfo(
+            saveData->getOTName(),
+            saveData->getBadges(),
+            saveData->getWonderCards(),
+            saveData->getDexSeen(),
+            saveData->getDexCaught(),
+            saveData->getDexCompletionPercentage() /
+                100.0f,  // Convert from percentage (0-100) to 0-1 range for progress bar
+            saveData->getPlayedTimeString(),
+            saveData->getGeneration()
+        );
+    } else {
+        LOG_DEBUG("No save data available, using default trainer info");
+
+        // Set default values
+        trainerInfo->SetTrainerInfo("No Save Loaded", 0, 0, 0, 0, 0.0f, "00:00:00", pksm::saves::Generation::TWO);
+    }
 }
 
 MainMenu::~MainMenu() = default;
