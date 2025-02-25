@@ -61,6 +61,7 @@ MainMenu::MainMenu(
     // Set up save data change callback
     saveDataAccessor->setOnSaveDataChanged([this](pksm::saves::SaveData::Ref saveData) {
         LOG_DEBUG("Save data changed, updating trainer info");
+        menuGrid->SetSelectedIndex(0);
         UpdateTrainerInfo();
     });
 

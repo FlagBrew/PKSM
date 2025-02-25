@@ -6,6 +6,7 @@
 #include <pu/ui/render/render_SDL2.hpp>
 
 #include "utils/Logger.hpp"
+#include "utils/SDLHelper.hpp"
 
 namespace pksm::ui {
 
@@ -74,7 +75,7 @@ void AnimatedBackground::InitializeBackground() {
         textureHeights[i] = pu::ui::render::GetTextureHeight(bg_textures[i]->Get());
 
         // Set blending mode for smooth animation
-        SDL_SetTextureBlendMode(bg_textures[i]->Get(), SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(bg_textures[i]->Get(), pksm::sdl::BlendModeBlend());
 
         // Apply tint color if one is set
         if (tintColor) {

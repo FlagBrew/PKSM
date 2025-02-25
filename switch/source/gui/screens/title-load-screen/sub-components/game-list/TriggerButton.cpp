@@ -19,6 +19,14 @@ TriggerButton::TriggerButton(
     const pu::ui::Color& navigationTextColor
 )
   : Element(),
+    ShakeableWithOutline(pksm::ui::PulsingOutline::New(
+        x - TRIGGER_BUTTON_OUTLINE_PADDING,
+        y - TRIGGER_BUTTON_OUTLINE_PADDING,
+        width + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
+        height + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
+        pksm::ui::global::OUTLINE_COLOR,
+        cornerRadius
+    )),
     x(x),
     y(y),
     width(width),
@@ -32,16 +40,6 @@ TriggerButton::TriggerButton(
     focused(false),
     isPressed(false),
     lastTouchTime(0) {
-    outline = pksm::ui::PulsingOutline::New(
-        x - TRIGGER_BUTTON_OUTLINE_PADDING,
-        y - TRIGGER_BUTTON_OUTLINE_PADDING,
-        width + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
-        height + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
-        pu::ui::Color(0, 150, 255, 255),
-        cornerRadius
-    );
-    outline->SetVisible(false);
-
     // Create text block for the trigger button glyph
     textBlock = pu::ui::elm::TextBlock::New(x, y + TRIGGER_BUTTON_GLYPH_Y_OFFSET, "");
     textBlock->SetColor(textColor);
@@ -120,14 +118,14 @@ void TriggerButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i3
     }
 
     if (focused) {
-        outline->OnRender(drawer, x - TRIGGER_BUTTON_OUTLINE_PADDING, y - TRIGGER_BUTTON_OUTLINE_PADDING);
+        pulsingOutline->OnRender(drawer, x - TRIGGER_BUTTON_OUTLINE_PADDING, y - TRIGGER_BUTTON_OUTLINE_PADDING);
     }
 }
 
 void TriggerButton::SetFocused(bool focus) {
     LOG_DEBUG("Trigger button SetFocused: " + std::to_string(focus));
     this->focused = focus;
-    outline->SetVisible(focus);
+    pulsingOutline->SetVisible(focus);
 }
 
 bool TriggerButton::IsFocused() const {

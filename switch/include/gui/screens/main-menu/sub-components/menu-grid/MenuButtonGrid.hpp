@@ -3,6 +3,7 @@
 #include <pu/Plutonium>
 
 #include "gui/screens/main-menu/sub-components/menu-grid/MenuButton.hpp"
+#include "gui/shared/components/IShakeable.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 
@@ -23,6 +24,8 @@ private:
     pu::i32 height;
     pu::i32 buttonSize;  // Calculated button size
 
+    // State
+    size_t selectedIndex = 0;
     bool disabled = false;
 
     // Components
@@ -33,7 +36,6 @@ private:
 
     // Helper methods
     void InitializeButtons();
-    void MoveFocus(size_t newIndex);
 
     // Navigation methods
     void MoveLeft();
@@ -62,6 +64,10 @@ public:
 
     // Disable/enable functionality
     void SetDisabled(bool disabled);
+
+    // Get the currently selected index
+    size_t GetSelectedIndex() const { return selectedIndex; }
+    void SetSelectedIndex(size_t index);
 };
 
 }  // namespace pksm::ui

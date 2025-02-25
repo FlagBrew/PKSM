@@ -13,19 +13,23 @@ MenuButton::MenuButton(
     const std::string& text,
     const std::string& iconName
 )
-  : Element(), x(x), y(y), width(width), height(height), focused(false), text(text), iconName(iconName) {
-    LOG_DEBUG("Initializing MenuButton...");
-
-    // Create outline with padding
-    outline = PulsingOutline::New(
+  : Element(),
+    ShakeableWithOutline(PulsingOutline::New(
         x - OUTLINE_PADDING,
         y - OUTLINE_PADDING,
         width + (OUTLINE_PADDING * 2),
         height + (OUTLINE_PADDING * 2),
-        OUTLINE_COLOR,
+        pksm::ui::global::OUTLINE_COLOR,
         CORNER_RADIUS
-    );
-    outline->SetVisible(false);
+    )),
+    x(x),
+    y(y),
+    width(width),
+    height(height),
+    focused(false),
+    text(text),
+    iconName(iconName) {
+    LOG_DEBUG("Initializing MenuButton...");
 
     // Load icon texture
     pu::sdl2::Texture iconTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/" + iconName + ".png");
@@ -33,7 +37,7 @@ MenuButton::MenuButton(
         LOG_ERROR("Failed to load icon texture: " + iconName);
     } else {
         // Set blend mode for the texture
-        SDL_SetTextureBlendMode(iconTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(iconTexture, pksm::sdl::BlendModeBlend());
         icon = pu::sdl2::TextureHandle::New(iconTexture);
         LOG_DEBUG("Icon loaded successfully: " + iconName);
     }
@@ -103,7 +107,7 @@ void MenuButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
 
     // Draw outline if focused
     if (focused) {
-        outline->OnRender(drawer, x - OUTLINE_PADDING, y - OUTLINE_PADDING);
+        pulsingOutline->OnRender(drawer, x - OUTLINE_PADDING, y - OUTLINE_PADDING);
     }
 }
 
@@ -123,7 +127,7 @@ void MenuButton::OnInput(
 void MenuButton::SetFocused(bool focused) {
     LOG_DEBUG("[MenuButton] Setting focused: " + std::to_string(focused));
     this->focused = focused;
-    outline->SetVisible(focused);
+    pulsingOutline->SetVisible(focused);
 }
 
 bool MenuButton::IsFocused() const {
@@ -134,7 +138,7 @@ void MenuButton::SetX(const pu::i32 x) {
     this->x = x;
 
     // Update outline position
-    outline->SetX(x - OUTLINE_PADDING);
+    pulsingOutline->SetX(x - OUTLINE_PADDING);
 
     // Update text position
     const pu::i32 textX = x + ((width - textBlock->GetWidth()) / 2);
@@ -145,7 +149,7 @@ void MenuButton::SetY(const pu::i32 y) {
     this->y = y;
 
     // Update outline position
-    outline->SetY(y - OUTLINE_PADDING);
+    pulsingOutline->SetY(y - OUTLINE_PADDING);
 
     // Update text position
     const pu::i32 textY = y + ICON_SIZE + TEXT_MARGIN;

@@ -11,6 +11,7 @@ pksm::ui::FocusableButton::FocusableButton(
     const pu::ui::Color& focusedColor
 )
   : Element(),
+    ShakeableWithOutline(pksm::ui::RectangularPulsingOutline::New(x, y, w, h)),
     focused(false),
     normalColor(normalColor),
     focusedColor(focusedColor),
@@ -22,10 +23,6 @@ pksm::ui::FocusableButton::FocusableButton(
     width(w),
     height(h),
     isPressed(false) {
-    // Create outline
-    outline = pksm::ui::PulsingOutline::New(x, y, width, height, pu::ui::Color(0, 150, 255, 255));
-    outline->SetVisible(false);
-
     // Create background rectangle
     background = pu::ui::elm::Rectangle::New(x, y, w, h, normalColor);
 
@@ -58,7 +55,7 @@ void pksm::ui::FocusableButton::OnRender(pu::ui::render::Renderer::Ref& drawer, 
     text->OnRender(drawer, text->GetX(), text->GetY());
 
     if (focused) {
-        outline->OnRender(drawer, x, y);
+        pulsingOutline->OnRender(drawer, x, y);
     }
 }
 
@@ -100,7 +97,7 @@ void pksm::ui::FocusableButton::SetFocused(bool focus) {
     LOG_DEBUG("FocusableButton SetFocused: " + std::to_string(focus));
     this->focused = focus;
     background->SetColor(focus ? focusedColor : normalColor);
-    outline->SetVisible(focused);
+    pulsingOutline->SetVisible(focused);
 }
 
 bool pksm::ui::FocusableButton::IsFocused() const {

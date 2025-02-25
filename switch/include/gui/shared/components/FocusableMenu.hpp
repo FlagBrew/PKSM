@@ -3,14 +3,14 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
-class FocusableMenu : public pu::ui::elm::Menu, public IFocusable {
+class FocusableMenu : public pu::ui::elm::Menu, public IFocusable, public ShakeableWithOutline {
 private:
     bool focused;
-    pksm::ui::PulsingOutline::Ref outline;
     int lastPosition;  // Stores position when unfocusing
     std::vector<std::string> currentDataSource;  // Owns the current data source
     pksm::input::DirectionalInputHandler inputHandler;  // Handles directional input

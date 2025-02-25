@@ -3,11 +3,15 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
-class FocusableButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
+class FocusableButton : public pu::ui::elm::Element,
+                        public IFocusable,
+                        public IHelpProvider,
+                        public ShakeableWithOutline {
 private:
     bool focused;
     pu::ui::Color normalColor;

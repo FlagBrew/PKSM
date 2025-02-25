@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <pu/Plutonium>
 #include <vector>
@@ -12,7 +13,6 @@
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
 #include "titles/Title.hpp"
-
 namespace pksm::ui {
 class GameGrid : public pu::ui::elm::Element, public ISelectable {
 private:
@@ -27,6 +27,7 @@ private:
     size_t itemsPerRow;  // Number of items per row (moved from constant to member)
     bool focused = false;
     bool selected = false;  // Whether any item in the grid is selected
+    std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
 
@@ -59,7 +60,9 @@ public:
         const pu::i32 height,
         const size_t itemsPerRow,
         input::FocusManager::Ref parentFocusManager,
-        input::SelectionManager::Ref parentSelectionManager
+        input::SelectionManager::Ref parentSelectionManager,
+        const std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds =
+            {{ShakeDirection::LEFT, true}, {ShakeDirection::RIGHT, true}}
     );
     PU_SMART_CTOR(GameGrid)
 
@@ -92,6 +95,9 @@ public:
 
     // Grid state queries
     bool IsFirstInRow() const { return selectedIndex % itemsPerRow == 0; }
+    bool IsLastInRow() const {
+        return (selectedIndex + 1) % itemsPerRow == 0 || selectedIndex == gameImages.size() - 1;
+    }
     bool InOnTopRow() const { return selectedIndex < itemsPerRow; }
     bool IsOnBottomRow() const { return (selectedIndex / itemsPerRow) == ((gameImages.size() - 1) / itemsPerRow); }
 };

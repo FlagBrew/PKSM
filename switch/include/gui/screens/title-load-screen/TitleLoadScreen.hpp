@@ -96,6 +96,7 @@ private:
     // Navigation helpers
     void MoveButtonSelectionUp();
     void MoveButtonSelectionDown();
+    void MoveButtonSelectionRight();
     void TransitionToButtons();
     void FocusGameSection();
     void FocusSaveList();
