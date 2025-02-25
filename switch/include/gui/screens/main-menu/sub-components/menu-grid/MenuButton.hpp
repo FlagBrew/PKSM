@@ -3,11 +3,13 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
+#include "utils/SDLHelper.hpp"
 
 namespace pksm::ui {
 
-class MenuButton : public pu::ui::elm::Element, public IFocusable {
+class MenuButton : public pu::ui::elm::Element, public IFocusable, public ShakeableWithOutline {
 private:
     // Layout constants
     static constexpr pu::i32 ICON_SIZE = 80;
@@ -18,7 +20,6 @@ private:
     // Colors - matching TrainerInfo alpha values
     static constexpr pu::ui::Color BACKGROUND_COLOR = pu::ui::Color(30, 50, 120, 160);  // Same as stats background
     static constexpr pu::ui::Color TEXT_COLOR = pu::ui::Color(255, 255, 255, 180);
-    static constexpr pu::ui::Color OUTLINE_COLOR = pu::ui::Color(0, 150, 255, 255);
     static constexpr pu::i32 FOCUSED_ALPHA = 255;
     static constexpr pu::i32 UNFOCUSED_ALPHA = 102;
 
@@ -36,7 +37,6 @@ private:
     // UI Elements
     pu::sdl2::TextureHandle::Ref icon;
     pu::ui::elm::TextBlock::Ref textBlock;
-    PulsingOutline::Ref outline;
     std::function<void()> onClickCallback;
 
 public:

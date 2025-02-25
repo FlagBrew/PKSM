@@ -2,17 +2,22 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDLHelper.hpp>
 #include <pu/Plutonium>
 
 #include "data/AccountManager.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
 
-class UserIconButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
+class UserIconButton : public pu::ui::elm::Element,
+                       public IFocusable,
+                       public IHelpProvider,
+                       public ShakeableWithOutline {
 public:
     static constexpr pu::i32 OUTLINE_PADDING = 2;
     static constexpr pu::i32 USERNAME_PADDING = 16;
@@ -53,7 +58,6 @@ private:
     SDL_Texture* maskedIconTexture;
     std::function<void()> onClickCallback;
     pu::ui::elm::TextBlock::Ref usernameText;
-    pksm::ui::PulsingOutlineBase::Ref pulsingOutline;
     pksm::ui::StaticOutlineBase::Ref outline;
 };
 

@@ -11,17 +11,28 @@ pksm::ui::GameGrid::GameGrid(
     const pu::i32 height,
     const size_t itemsPerRow,
     input::FocusManager::Ref parentFocusManager,
-    input::SelectionManager::Ref parentSelectionManager
+    input::SelectionManager::Ref parentSelectionManager,
+    const std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds
 )
-  : Element(), selectedIndex(0), itemsPerRow(itemsPerRow), focused(false), selected(false), x(x), y(y), height(height) {
+  : Element(),
+    selectedIndex(0),
+    itemsPerRow(itemsPerRow),
+    focused(false),
+    selected(false),
+    shouldConsiderSideOutOfBounds(shouldConsiderSideOutOfBounds),
+    x(x),
+    y(y),
+    height(height) {
     // Initialize container
     container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
     // Initialize ScrollView
     scrollView = ScrollView::New(
-        x - GAME_OUTLINE_PADDING,
+        x - (GAME_OUTLINE_PADDING + 20),
         y - GAME_OUTLINE_PADDING,
-        GetWidth() + (GAME_OUTLINE_PADDING * 2),
+        GetWidth() + (GAME_OUTLINE_PADDING * 2) +
+            (20 * 2),  // extra 20 to account for out of bounds shake animation to the
+                       // side (extra viewport to the side does not really matter)
         height
     );
     container->Add(scrollView);
@@ -176,11 +187,19 @@ size_t pksm::ui::GameGrid::GetSelectedIndex() const {
 }
 
 void pksm::ui::GameGrid::MoveLeft() {
-    SetSelectedIndex(selectedIndex - 1);
+    if (IsFirstInRow() && shouldConsiderSideOutOfBounds[ShakeDirection::LEFT]) {
+        gameImages[selectedIndex]->shakeOutOfBounds(ShakeDirection::LEFT);
+    } else {
+        SetSelectedIndex(selectedIndex - 1);
+    }
 }
 
 void pksm::ui::GameGrid::MoveRight() {
-    SetSelectedIndex(selectedIndex + 1);
+    if (IsLastInRow() && shouldConsiderSideOutOfBounds[ShakeDirection::RIGHT]) {
+        gameImages[selectedIndex]->shakeOutOfBounds(ShakeDirection::RIGHT);
+    } else {
+        SetSelectedIndex(selectedIndex + 1);
+    }
 }
 
 void pksm::ui::GameGrid::MoveUp() {

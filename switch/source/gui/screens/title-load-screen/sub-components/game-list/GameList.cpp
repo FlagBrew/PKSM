@@ -137,12 +137,16 @@ pksm::ui::GameList::GameList(
     inputHandler.SetOnMoveRight([this]() {
         if (leftTrigger->IsFocused()) {
             FocusRightTrigger();
+        } else if (rightTrigger->IsFocused()) {
+            rightTrigger->shakeOutOfBounds(ShakeDirection::RIGHT);
         }
     });
 
     inputHandler.SetOnMoveLeft([this]() {
         if (rightTrigger->IsFocused()) {
             FocusLeftTrigger();
+        } else if (leftTrigger->IsFocused()) {
+            leftTrigger->shakeOutOfBounds(ShakeDirection::LEFT);
         }
     });
 

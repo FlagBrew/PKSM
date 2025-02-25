@@ -5,7 +5,7 @@
 namespace pksm::ui {
 
 MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 width)
-  : Element(), x(x), y(y), width(width) {
+  : Element(), x(x), y(y), width(width), selectedIndex(0) {
     LOG_DEBUG("Initializing MenuButtonGrid...");
 
     // Initialize container
@@ -31,8 +31,10 @@ MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 w
     container->SetHeight(height);
     container->PreRender();
 
-    if (buttons.size() > 0) {
+    // Set initial selection after buttons are created
+    if (!buttons.empty()) {
         buttons[0]->RequestFocus();
+        LOG_DEBUG("Initial button focused");
     }
 
     LOG_DEBUG("MenuButtonGrid initialization complete");
@@ -68,60 +70,55 @@ void MenuButtonGrid::InitializeButtons() {
         auto button =
             MenuButton::New(buttonX, buttonY, buttonSize, buttonSize, buttonData[i].first, buttonData[i].second);
         button->IFocusable::SetName("MenuButton Element: " + buttonData[i].first);
-        button->SetOnClick([this, button]() { button->RequestFocus(); });
+
+        // Set up touch handling for this button
+        const size_t index = i;  // Store index for lambda capture
+        button->SetOnClick([this, index]() { SetSelectedIndex(index); });
+
         focusManager->RegisterFocusable(button);
         buttons.push_back(button);
         container->Add(button);  // Add to container
     }
 }
 
-void MenuButtonGrid::MoveFocus(size_t newIndex) {
-    if (newIndex < buttons.size()) {
-        buttons[newIndex]->RequestFocus();
+void MenuButtonGrid::SetSelectedIndex(size_t index) {
+    if (index < buttons.size() && selectedIndex != index) {
+        selectedIndex = index;
+
+        // Request focus on the newly selected button
+        buttons[selectedIndex]->RequestFocus();
     }
 }
 
 void MenuButtonGrid::MoveLeft() {
-    for (size_t i = 0; i < buttons.size(); i++) {
-        if (buttons[i]->IsFocused()) {
-            if (!IsFirstInRow(i)) {
-                MoveFocus(i - 1);
-            }
-            break;
-        }
+    if (IsFirstInRow(selectedIndex)) {
+        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::LEFT);
+    } else {
+        SetSelectedIndex(selectedIndex - 1);
     }
 }
 
 void MenuButtonGrid::MoveRight() {
-    for (size_t i = 0; i < buttons.size(); i++) {
-        if (buttons[i]->IsFocused()) {
-            if (!IsLastInRow(i)) {
-                MoveFocus(i + 1);
-            }
-            break;
-        }
+    if (IsLastInRow(selectedIndex)) {
+        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::RIGHT);
+    } else {
+        SetSelectedIndex(selectedIndex + 1);
     }
 }
 
 void MenuButtonGrid::MoveUp() {
-    for (size_t i = 0; i < buttons.size(); i++) {
-        if (buttons[i]->IsFocused()) {
-            if (!IsInFirstRow(i)) {
-                MoveFocus(i - BUTTONS_PER_ROW);
-            }
-            break;
-        }
+    if (IsInFirstRow(selectedIndex)) {
+        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::UP);
+    } else {
+        SetSelectedIndex(selectedIndex - BUTTONS_PER_ROW);
     }
 }
 
 void MenuButtonGrid::MoveDown() {
-    for (size_t i = 0; i < buttons.size(); i++) {
-        if (buttons[i]->IsFocused()) {
-            if (!IsInLastRow(i) && (i + BUTTONS_PER_ROW) < buttons.size()) {
-                MoveFocus(i + BUTTONS_PER_ROW);
-            }
-            break;
-        }
+    if (IsInLastRow(selectedIndex)) {
+        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::DOWN);
+    } else if ((selectedIndex + BUTTONS_PER_ROW) < buttons.size()) {
+        SetSelectedIndex(selectedIndex + BUTTONS_PER_ROW);
     }
 }
 
