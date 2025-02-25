@@ -84,7 +84,7 @@ void MenuButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
         pu::ui::render::TextureRenderOptions opts;
         opts.width = ICON_SIZE;
         opts.height = ICON_SIZE;
-        opts.alpha_mod = focused ? 255 : 180;  // Full opacity when focused, translucent otherwise
+        opts.alpha_mod = focused ? FOCUSED_ALPHA : UNFOCUSED_ALPHA;
         drawer->RenderTexture(icon->Get(), iconX, iconY, opts);
 
         // Update text position to be below icon
@@ -97,7 +97,7 @@ void MenuButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
     textBlock->SetColor(textColor);
 
     // Use the base render alpha to control overall opacity during rendering
-    drawer->SetBaseRenderAlpha(focused ? 255 : 180);
+    drawer->SetBaseRenderAlpha(focused ? FOCUSED_ALPHA : UNFOCUSED_ALPHA);
     textBlock->OnRender(drawer, textBlock->GetX(), textBlock->GetY());
     drawer->ResetBaseRenderAlpha();
 

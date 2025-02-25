@@ -19,6 +19,8 @@ private:
     static constexpr pu::ui::Color BACKGROUND_COLOR = pu::ui::Color(30, 50, 120, 160);  // Same as stats background
     static constexpr pu::ui::Color TEXT_COLOR = pu::ui::Color(255, 255, 255, 180);
     static constexpr pu::ui::Color OUTLINE_COLOR = pu::ui::Color(0, 150, 255, 255);
+    static constexpr pu::i32 FOCUSED_ALPHA = 255;
+    static constexpr pu::i32 UNFOCUSED_ALPHA = 102;
 
     // Position and size
     pu::i32 x;
