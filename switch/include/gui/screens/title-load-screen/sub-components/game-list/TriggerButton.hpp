@@ -3,12 +3,16 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
 
-class TriggerButton : public pu::ui::elm::Element, public IFocusable, public IHelpProvider {
+class TriggerButton : public pu::ui::elm::Element,
+                      public IFocusable,
+                      public IHelpProvider,
+                      public ShakeableWithOutline {
 public:
     enum class Side { Left, Right };
 
@@ -67,7 +71,6 @@ private:
     pu::ui::elm::TextBlock::Ref navigationTextBlock;
     std::string navigationText;
     pu::ui::Color navigationTextColor;
-    pksm::ui::PulsingOutline::Ref outline;
     pu::i32 outlinePadding;
     bool focused;
     std::function<void()> onTouchSelectCallback;

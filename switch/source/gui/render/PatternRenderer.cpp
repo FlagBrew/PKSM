@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "utils/Logger.hpp"
+#include "utils/SDLHelper.hpp"
 
 namespace pksm::ui::render {
 
@@ -158,7 +159,7 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
     LOG_DEBUG("Pattern texture created successfully");
 
     // Set up the pattern texture
-    if (SDL_SetTextureBlendMode(patternTexture, SDL_BLENDMODE_BLEND) < 0) {
+    if (SDL_SetTextureBlendMode(patternTexture, pksm::sdl::BlendModeBlend()) < 0) {
         LOG_ERROR("Failed to set pattern texture blend mode");
         SDL_DestroyTexture(patternTexture);
         return nullptr;
@@ -225,7 +226,7 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
     }
 
     // Set up the final texture
-    if (SDL_SetTextureBlendMode(finalTexture, SDL_BLENDMODE_BLEND) < 0) {
+    if (SDL_SetTextureBlendMode(finalTexture, pksm::sdl::BlendModeBlend()) < 0) {
         LOG_ERROR("Failed to set final texture blend mode");
         SDL_DestroyTexture(patternTexture);
         SDL_DestroyTexture(finalTexture);
@@ -253,7 +254,7 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
     }
 
     // Apply corner radius masking - using existing logic
-    SDL_SetRenderDrawBlendMode(pu::ui::render::GetMainRenderer(), SDL_BLENDMODE_NONE);
+    SDL_SetRenderDrawBlendMode(pu::ui::render::GetMainRenderer(), pksm::sdl::BlendModeNone());
     for (pu::i32 y = 0; y < height; y++) {
         for (pu::i32 x = 0; x < width; x++) {
             bool shouldMask = false;

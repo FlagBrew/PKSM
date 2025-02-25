@@ -10,6 +10,7 @@
 
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
+#include "utils/SDLHelper.hpp"
 
 namespace pksm::ui {
 
@@ -20,6 +21,13 @@ UserIconButton::UserIconButton(
     data::AccountManager& accountManager
 )
   : Element(),
+    ShakeableWithOutline(pksm::ui::CircularPulsingOutline::New(
+        x - OUTLINE_PADDING,
+        y - OUTLINE_PADDING,
+        diameter + (OUTLINE_PADDING * 2),
+        pksm::ui::global::OUTLINE_COLOR,
+        4
+    )),
     x(x),
     y(y),
     diameter(diameter),
@@ -35,15 +43,6 @@ UserIconButton::UserIconButton(
     );
     usernameText->SetColor(pu::ui::Color(255, 255, 255, 255));
     usernameText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_ACCOUNT_NAME));
-    // Create pulsingOutline
-    pulsingOutline = pksm::ui::CircularPulsingOutline::New(
-        x - OUTLINE_PADDING,
-        y - OUTLINE_PADDING,
-        diameter + (OUTLINE_PADDING * 2),
-        pu::ui::Color(0, 150, 255, 255),
-        4
-    );
-    pulsingOutline->SetVisible(false);
 
     // Create outline
     outline = pksm::ui::CircularOutline::New(
@@ -138,7 +137,7 @@ void UserIconButton::UpdateAccountInfo() {
 
         if (maskedIconTexture) {
             // Set up blend mode for final texture
-            SDL_SetTextureBlendMode(maskedIconTexture, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureBlendMode(maskedIconTexture, pksm::sdl::BlendModeBlend());
 
             // Set render target to final texture
             SDL_Renderer* renderer = pu::ui::render::GetMainRenderer();
@@ -154,7 +153,7 @@ void UserIconButton::UpdateAccountInfo() {
             SDL_RenderCopy(renderer, icon->Get(), NULL, &destRect);
 
             // Apply circular mask
-            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+            SDL_SetRenderDrawBlendMode(renderer, pksm::sdl::BlendModeNone());
 
             pu::i32 radius = diameter / 2;
             for (pu::i32 py = 0; py < diameter; py++) {

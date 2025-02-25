@@ -3,16 +3,16 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/components/PulsingOutline.hpp"
+#include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 #include "input/visual-feedback/interfaces/ISelectable.hpp"
 
 namespace pksm::ui {
-class FocusableImage : public pu::ui::elm::Image, public ISelectable {
+class FocusableImage : public pu::ui::elm::Image, public ISelectable, public ShakeableWithOutline {
 private:
     bool focused;
     bool selected;
     pu::ui::elm::Rectangle::Ref overlay;
-    pksm::ui::PulsingOutline::Ref outline;
     pu::i32 outlinePadding;  // Padding between image and outline
     std::function<void()> onTouchSelectCallback;  // New callback for touch selection
 

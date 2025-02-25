@@ -152,8 +152,10 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     buttonHandler.SetOnMoveUp([this]() { MoveButtonSelectionUp(); });
     buttonHandler.SetOnMoveDown([this]() { MoveButtonSelectionDown(); });
     buttonHandler.SetOnMoveLeft([this]() { this->FocusSaveList(); });
+    buttonHandler.SetOnMoveRight([this]() { MoveButtonSelectionRight(); });
 
     // Set up save list handler
+    saveListHandler.SetOnMoveLeft([this]() { saveList->shakeOutOfBounds(pksm::ui::ShakeDirection::LEFT); });
     saveListHandler.SetOnMoveRight([this]() { TransitionToButtons(); });
     saveListHandler.SetOnMoveUp([this]() {
         // Only move up to games if we're at the top of the list
@@ -176,6 +178,14 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     });
 
     userIconButtonHandler.SetOnMoveDown([this]() { gameList->RequestFocus(); });
+    userIconButtonHandler.SetOnMoveRight([this]() {
+        this->userIconButton->shakeOutOfBounds(pksm::ui::ShakeDirection::RIGHT);
+    });
+    userIconButtonHandler.SetOnMoveLeft([this]() {
+        this->userIconButton->shakeOutOfBounds(pksm::ui::ShakeDirection::LEFT);
+    });
+    userIconButtonHandler.SetOnMoveUp([this]() { this->userIconButton->shakeOutOfBounds(pksm::ui::ShakeDirection::UP); }
+    );
 
     // Load initial saves
     this->LoadSaves();
@@ -234,7 +244,7 @@ void pksm::layout::TitleLoadScreen::MoveButtonSelectionUp() {
         this->FocusLoadButton();
     } else if (this->loadButton->IsFocused()) {
         LOG_DEBUG("Moving button selection up from Load Save to Wireless");
-        this->FocusWirelessButton();
+        this->loadButton->shakeOutOfBounds(pksm::ui::ShakeDirection::UP);
     }
 }
 
@@ -244,7 +254,17 @@ void pksm::layout::TitleLoadScreen::MoveButtonSelectionDown() {
         this->FocusWirelessButton();
     } else if (this->wirelessButton->IsFocused()) {
         LOG_DEBUG("Moving button selection down from Wireless to Load Save");
-        this->FocusLoadButton();
+        this->wirelessButton->shakeOutOfBounds(pksm::ui::ShakeDirection::DOWN);
+    }
+}
+
+void pksm::layout::TitleLoadScreen::MoveButtonSelectionRight() {
+    if (this->wirelessButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection right from Load Save to Wireless");
+        this->wirelessButton->shakeOutOfBounds(pksm::ui::ShakeDirection::RIGHT);
+    } else if (this->loadButton->IsFocused()) {
+        LOG_DEBUG("Moving button selection right from Load Save to Wireless");
+        this->loadButton->shakeOutOfBounds(pksm::ui::ShakeDirection::RIGHT);
     }
 }
 

@@ -76,7 +76,8 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
         GetHeight() - (config.paddingTop + config.sectionTitleSpacing),
         GRID_ITEMS_PER_ROW,
         installedGamesManager,
-        gameGridSelectionManager
+        gameGridSelectionManager,
+        std::map<ShakeDirection, bool>{{ShakeDirection::LEFT, false}, {ShakeDirection::RIGHT, true}}
     );
     container->Add(installedGames);
     installedGames->IFocusable::SetName("GameGrid Element");
@@ -127,9 +128,11 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     inputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
             LOG_DEBUG("Transitioning selection from installed games to game card");
-            selectionState = SelectionState::GameCard;
             gameCardImage->ISelectable::RequestFocus();
             HandleOnSelectionChanged();
+            selectionState = SelectionState::GameCard;
+        } else if (selectionState == SelectionState::GameCard) {
+            gameCardImage->shakeOutOfBounds(ShakeDirection::LEFT);
         }
     });
     inputHandler.SetOnMoveRight([this]() {

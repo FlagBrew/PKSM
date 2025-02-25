@@ -14,13 +14,10 @@ pksm::ui::FocusableMenu::FocusableMenu(
     const u32 items_to_show
 )
   : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show),
+    ShakeableWithOutline(pksm::ui::PulsingOutline::New(x, y, width, items_height * items_to_show)),
     focused(false),
     lastPosition(0),
     disabled(false) {
-    outline =
-        pksm::ui::PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255), 0, 4);
-    outline->SetVisible(false);
-
     // Set up input handler
     inputHandler.SetOnMoveUp([this]() { MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { MoveDown(); });
@@ -34,11 +31,11 @@ void pksm::ui::FocusableMenu::OnRender(pu::ui::render::Renderer::Ref& drawer, co
                                static_cast<size_t>(this->GetNumberOfItemsToShow())
                            )) *
         this->GetItemsHeight();
-    outline->SetHeight(actualHeight);
+    pulsingOutline->SetHeight(actualHeight);
 
     // Render the outline if focused
     if (focused) {
-        outline->OnRender(drawer, x, y);
+        pulsingOutline->OnRender(drawer, x, y);
     }
 }
 
@@ -95,7 +92,7 @@ void pksm::ui::FocusableMenu::SetFocused(bool focused) {
     }
     if (this->focused != focused) {
         this->focused = focused;
-        outline->SetVisible(focused);
+        pulsingOutline->SetVisible(focused);
 
         if (focused) {
             RestorePosition();

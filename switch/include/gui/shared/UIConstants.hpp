@@ -6,6 +6,7 @@ namespace pksm::ui::global {
 // Colors
 static constexpr pu::ui::Color BACKGROUND_BLUE = pu::ui::Color(10, 15, 75, 255);
 static constexpr pu::ui::Color TEXT_WHITE = pu::ui::Color(255, 255, 255, 255);
+static constexpr pu::ui::Color OUTLINE_COLOR = pu::ui::Color(0, 150, 255, 255);
 
 // Font Sizes - Custom
 static constexpr u32 FONT_SIZE_TITLE = 60;
