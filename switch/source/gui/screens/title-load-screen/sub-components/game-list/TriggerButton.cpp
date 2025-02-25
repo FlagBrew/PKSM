@@ -1,5 +1,7 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/TriggerButton.hpp"
 
+#include <SDL2/SDL.h>
+
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 
@@ -26,7 +28,10 @@ TriggerButton::TriggerButton(
     backgroundColor(backgroundColor),
     textColor(textColor),
     navigationText(navigationText),
-    navigationTextColor(navigationTextColor) {
+    navigationTextColor(navigationTextColor),
+    focused(false),
+    isPressed(false),
+    lastTouchTime(0) {
     outline = pksm::ui::PulsingOutline::New(
         x - TRIGGER_BUTTON_OUTLINE_PADDING,
         y - TRIGGER_BUTTON_OUTLINE_PADDING,
@@ -35,7 +40,6 @@ TriggerButton::TriggerButton(
         pu::ui::Color(0, 150, 255, 255),
         cornerRadius
     );
-    focused = false;
     outline->SetVisible(false);
 
     // Create text block for the trigger button glyph
@@ -146,10 +150,30 @@ void TriggerButton::OnInput(
 ) {
     if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight())) {
         LOG_DEBUG("Trigger button touched");
-        if (!focused && onTouchSelectCallback)
-            onTouchSelectCallback();
-        else if (focused && onTouchNavigationCallback)
-            onTouchNavigationCallback();
+
+        // Get current time for debouncing
+        u64 currentTime = SDL_GetTicks64();
+
+        // Only process touch if we're not in a debounce period
+        if (currentTime - lastTouchTime >= TOUCH_DEBOUNCE_TIME) {
+            lastTouchTime = currentTime;
+
+            if (!isPressed) {
+                isPressed = true;
+
+                // If not focused, trigger select callback
+                if (!focused && onTouchSelectCallback) {
+                    onTouchSelectCallback();
+                }
+                // If already focused, trigger navigation callback
+                else if (focused && onTouchNavigationCallback) {
+                    onTouchNavigationCallback();
+                }
+            }
+        }
+    } else if (isPressed) {
+        // Touch released outside button
+        isPressed = false;
     }
 }
 

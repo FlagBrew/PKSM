@@ -177,6 +177,10 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         LOG_DEBUG("Left trigger button touched");
         FocusLeftTrigger();
     });
+    leftTrigger->SetOnTouchNavigation([this]() {
+        LOG_DEBUG("Left trigger button touched again");
+        SwitchToNextGameList(false);
+    });
 
     // Create right trigger button
     rightTrigger = ui::TriggerButton::New(
@@ -193,6 +197,10 @@ void pksm::ui::GameList::CreateTriggerButtons() {
     rightTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Right trigger button touched");
         FocusRightTrigger();
+    });
+    rightTrigger->SetOnTouchNavigation([this]() {
+        LOG_DEBUG("Right trigger button touched again");
+        SwitchToNextGameList(true);
     });
 }
 
