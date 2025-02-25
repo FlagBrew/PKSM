@@ -16,6 +16,7 @@ private:
     std::function<void()> onClickCallback;
     std::function<void()> onTouchSelectCallback;
     std::string helpText;  // Text to show for A button in help
+    bool disabled;  // Whether the button is disabled
 
     // UI Elements
     pu::ui::elm::Rectangle::Ref background;
@@ -63,6 +64,10 @@ public:
     void SetBackgroundColor(const pu::ui::Color& color);
     void SetOnClick(std::function<void()> callback);
     void SetOnTouchSelect(std::function<void()> callback);
+
+    // Disable/enable the button
+    void SetDisabled(bool disabled);
+    bool IsDisabled() const;
 
     // IHelpProvider implementation
     void SetHelpText(const std::string& text);

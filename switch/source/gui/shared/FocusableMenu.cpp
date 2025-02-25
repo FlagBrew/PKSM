@@ -13,7 +13,10 @@ pksm::ui::FocusableMenu::FocusableMenu(
     const pu::i32 items_height,
     const u32 items_to_show
 )
-  : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show), focused(false), lastPosition(0) {
+  : Menu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show),
+    focused(false),
+    lastPosition(0),
+    disabled(false) {
     outline =
         pksm::ui::PulsingOutline::New(x, y, width, items_height * items_to_show, pu::ui::Color(0, 150, 255, 255), 0, 4);
     outline->SetVisible(false);
@@ -45,6 +48,11 @@ void pksm::ui::FocusableMenu::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
+    // Don't process input if disabled
+    if (disabled) {
+        return;
+    }
+
     if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight())) {
         // Let the menu handle the touch input first
         Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
@@ -152,4 +160,13 @@ std::string pksm::ui::FocusableMenu::GetSelectedItemText() const {
         }
     }
     return "";
+}
+
+void pksm::ui::FocusableMenu::SetDisabled(bool disabled) {
+    LOG_DEBUG("FocusableMenu SetDisabled: " + std::to_string(disabled));
+    this->disabled = disabled;
+}
+
+bool pksm::ui::FocusableMenu::IsDisabled() const {
+    return disabled;
 }

@@ -24,6 +24,7 @@ UserIconButton::UserIconButton(
     y(y),
     diameter(diameter),
     focused(false),
+    disabled(false),
     accountManager(accountManager),
     maskedIconTexture(nullptr) {
     // Create username text element
@@ -88,6 +89,11 @@ void UserIconButton::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
+    // Don't process input if disabled
+    if (disabled) {
+        return;
+    }
+
     if (!touch_pos.IsEmpty()) {
         if (touch_pos.HitsRegion(x, y, diameter, diameter)) {
             if (onClickCallback) {
@@ -195,6 +201,15 @@ std::vector<pksm::ui::HelpItem> UserIconButton::GetHelpItems() const {
         return {};
     }
     return {{{pksm::ui::HelpButton::A}, "Change Player"}, {{pksm::ui::HelpButton::B}, "Back"}};
+}
+
+void UserIconButton::SetDisabled(bool disabled) {
+    LOG_DEBUG("UserIconButton SetDisabled: " + std::to_string(disabled));
+    this->disabled = disabled;
+}
+
+bool UserIconButton::IsDisabled() const {
+    return disabled;
 }
 
 }  // namespace pksm::ui

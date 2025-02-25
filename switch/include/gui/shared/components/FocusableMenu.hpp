@@ -14,6 +14,7 @@ private:
     int lastPosition;  // Stores position when unfocusing
     std::vector<std::string> currentDataSource;  // Owns the current data source
     pksm::input::DirectionalInputHandler inputHandler;  // Handles directional input
+    bool disabled;  // Whether the menu is disabled (ignores input)
 
 protected:
     std::function<void()> onTouchSelectCallback;
@@ -49,6 +50,10 @@ public:
 
     // Const-correct version of GetSelectedIndex
     pu::i32 GetSelectedIndex() const { return Menu::selected_item_idx; }
+
+    // Disable/enable the menu (affects input handling only)
+    void SetDisabled(bool disabled);
+    bool IsDisabled() const;
 
 private:
     // Position management methods

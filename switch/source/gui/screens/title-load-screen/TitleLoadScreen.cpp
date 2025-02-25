@@ -8,6 +8,8 @@
 #include "titles/Title.hpp"
 #include "utils/Logger.hpp"
 
+namespace pksm::layout {
+
 pksm::layout::TitleLoadScreen::TitleLoadScreen(
     ITitleDataProvider::Ref titleProvider,
     ISaveDataProvider::Ref saveProvider,
@@ -16,12 +18,10 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     std::function<void()> onHideOverlay,
     std::function<void()> onSaveLoaded
 )
-  : Layout::Layout(),
+  : BaseLayout(onShowOverlay, onHideOverlay),
     titleProvider(titleProvider),
     saveProvider(saveProvider),
     accountManager(accountManager),
-    onShowOverlay(onShowOverlay),
-    onHideOverlay(onHideOverlay),
     onSaveLoaded(onSaveLoaded) {
     LOG_DEBUG("Initializing TitleLoadScreen...");
 
@@ -138,11 +138,7 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     this->Add(this->wirelessButton);
 
     // Create help footer
-    this->helpFooter = pksm::ui::HelpFooter::New(0, GetHeight() - pksm::ui::HelpFooter::FOOTER_HEIGHT, GetWidth());
-    this->Add(this->helpFooter);
-
-    // Initialize help state
-    this->isHelpOverlayVisible = false;
+    InitializeHelpFooter();
 
     // Let container prepare elements
     this->PreRender();
@@ -277,22 +273,9 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
-    if (down & HidNpadButton_Minus) {
-        LOG_DEBUG("Minus button pressed");
-        if (isHelpOverlayVisible) {
-            HideHelpOverlay();
-        } else {
-            ShowHelpOverlay();
-        }
-        return;  // Don't process other input while toggling help
-    }
-
-    if (isHelpOverlayVisible) {
-        if (down & HidNpadButton_B) {
-            LOG_DEBUG("B button pressed while help overlay visible");
-            HideHelpOverlay();
-        }
-        return;  // Don't process other input while help is visible
+    // First handle help-related input
+    if (HandleHelpInput(down)) {
+        return;  // Input was handled by help system
     }
 
     if ((down & HidNpadButton_ZL)) {
@@ -356,14 +339,9 @@ void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
     }
 }
 
-void pksm::layout::TitleLoadScreen::HandleButtonInteraction(pksm::ui::FocusableButton::Ref& buttonToFocus) {
-    LOG_DEBUG("Handling button interaction, focusing " + buttonToFocus->GetContent());
-    buttonToFocus->RequestFocus();
-}
-
 void pksm::layout::TitleLoadScreen::OnLoadButtonClick() {
     LOG_DEBUG("Load button clicked");
-    HandleButtonInteraction(this->loadButton);
+    this->FocusLoadButton();
     if (onSaveLoaded) {
         onSaveLoaded();
     }
@@ -371,7 +349,7 @@ void pksm::layout::TitleLoadScreen::OnLoadButtonClick() {
 
 void pksm::layout::TitleLoadScreen::OnWirelessButtonClick() {
     LOG_DEBUG("Wireless button clicked");
-    HandleButtonInteraction(this->wirelessButton);
+    this->FocusWirelessButton();
 }
 
 void pksm::layout::TitleLoadScreen::OnSaveSelected() {
@@ -398,45 +376,42 @@ pu::i32 pksm::layout::TitleLoadScreen::GetBottomSectionY() const {
         SAVE_LIST_TOP_MARGIN;
 }
 
-void pksm::layout::TitleLoadScreen::UpdateHelpItems(pksm::ui::IHelpProvider::Ref helpItemProvider) {
-    if (helpFooter) {
-        helpFooter->SetHelpItems(helpItemProvider->GetHelpItems());
+std::vector<pksm::ui::HelpItem> pksm::layout::TitleLoadScreen::GetHelpOverlayItems() const {
+    std::vector<pksm::ui::HelpItem> helpItems = {
+        {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
+        {{{pksm::ui::HelpButton::B}}, "Back"}
+    };
+
+    if (gameList->IsGameListDependentOnUser()) {
+        helpItems.push_back({{{pksm::ui::HelpButton::ZL}}, "Change Player"});
     }
+
+    helpItems.insert(
+        helpItems.end(),
+        {{{{pksm::ui::HelpButton::L, pksm::ui::HelpButton::R}}, "Change Game List"},
+         {{{pksm::ui::HelpButton::AnalogStick, pksm::ui::HelpButton::DPad}}, "Navigate"},
+         {{{pksm::ui::HelpButton::Minus}}, "Close Help"}}
+    );
+
+    return helpItems;
 }
 
-void pksm::layout::TitleLoadScreen::ShowHelpOverlay() {
-    LOG_DEBUG("Showing help overlay");
-    if (!isHelpOverlayVisible) {
-        // Create and show overlay
-        auto overlay = pksm::ui::HelpOverlay::New(0, 0, GetWidth(), GetHeight());
-        std::vector<pksm::ui::HelpItem> helpItems = {
-            {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
-            {{{pksm::ui::HelpButton::B}}, "Back"}
-        };
-
-        if (gameList->IsGameListDependentOnUser()) {
-            helpItems.push_back({{{pksm::ui::HelpButton::ZL}}, "Change Player"});
-        }
-
-        helpItems.insert(
-            helpItems.end(),
-            {{{{pksm::ui::HelpButton::L, pksm::ui::HelpButton::R}}, "Change Game List"},
-             {{{pksm::ui::HelpButton::AnalogStick, pksm::ui::HelpButton::DPad}}, "Navigate"},
-             {{{pksm::ui::HelpButton::Minus}}, "Close Help"}}
-        );
-
-        overlay->SetHelpItems(helpItems);
-        onShowOverlay(overlay);
-        gameList->SetDisabled(true);
-        isHelpOverlayVisible = true;
-    }
+void pksm::layout::TitleLoadScreen::OnHelpOverlayShown() {
+    LOG_DEBUG("Help overlay shown, disabling UI elements");
+    gameList->SetDisabled(true);
+    saveList->SetDisabled(true);
+    loadButton->SetDisabled(true);
+    wirelessButton->SetDisabled(true);
+    userIconButton->SetDisabled(true);
 }
 
-void pksm::layout::TitleLoadScreen::HideHelpOverlay() {
-    LOG_DEBUG("Hiding help overlay");
-    if (isHelpOverlayVisible) {
-        onHideOverlay();
-        gameList->SetDisabled(false);
-        isHelpOverlayVisible = false;
-    }
+void pksm::layout::TitleLoadScreen::OnHelpOverlayHidden() {
+    LOG_DEBUG("Help overlay hidden, re-enabling UI elements");
+    gameList->SetDisabled(false);
+    saveList->SetDisabled(false);
+    loadButton->SetDisabled(false);
+    wirelessButton->SetDisabled(false);
+    userIconButton->SetDisabled(false);
 }
+
+}  // namespace pksm::layout

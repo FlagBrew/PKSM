@@ -10,7 +10,7 @@ MainMenu::MainMenu(
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
     std::function<void()> onHideOverlay
 )
-  : Layout(), onBack(onBack), onShowOverlay(onShowOverlay), onHideOverlay(onHideOverlay), isHelpOverlayVisible(false) {
+  : BaseLayout(onShowOverlay, onHideOverlay), onBack(onBack) {
     LOG_DEBUG("Initializing MainMenu...");
 
     this->SetBackgroundColor(bgColor);
@@ -41,14 +41,14 @@ MainMenu::MainMenu(
     menuGrid = pksm::ui::MenuButtonGrid::New(menuGridX, MENU_GRID_TOP_MARGIN, menuGridWidth);
     this->Add(menuGrid);
 
-    // Create help footer at the bottom of the screen
-    helpFooter = pksm::ui::HelpFooter::New(0, GetHeight() - pksm::ui::HelpFooter::FOOTER_HEIGHT, GetWidth());
-    this->Add(helpFooter);
+    // Initialize help footer
+    InitializeHelpFooter();
 
     // Set initial help items
     std::vector<pksm::ui::HelpItem> helpItems = {
         {{{pksm::ui::HelpButton::A}}, "Select"},
         {{{pksm::ui::HelpButton::B}}, "Back to Game Selection"},
+        {{{pksm::ui::HelpButton::Minus}}, "Help"}
     };
     helpFooter->SetHelpItems(helpItems);
 
@@ -63,67 +63,37 @@ MainMenu::MainMenu(
 MainMenu::~MainMenu() = default;
 
 void MainMenu::OnInput(u64 down, u64 up, u64 held) {
-    if (down & HidNpadButton_Minus) {
-        LOG_DEBUG("Minus button pressed");
-        if (isHelpOverlayVisible) {
-            EndOverlay();
-        } else {
-            StartOverlay();
-        }
-        return;  // Don't process other input while toggling help
+    // First handle help-related input
+    if (HandleHelpInput(down)) {
+        return;  // Input was handled by help system
     }
 
-    if (isHelpOverlayVisible) {
-        if (down & HidNpadButton_B) {
-            LOG_DEBUG("B button pressed while help overlay visible");
-            EndOverlay();
-        }
-        return;  // Don't process other input while help is visible
-    }
-
-    // Only process input if not in help overlay
-    if (!isHelpOverlayVisible) {
-        if (down & HidNpadButton_B) {
-            LOG_DEBUG("B button pressed, returning to game selection");
-            if (onBack) {
-                onBack();
-            }
+    // Only process other input if not in help overlay
+    if (down & HidNpadButton_B) {
+        LOG_DEBUG("B button pressed, returning to game selection");
+        if (onBack) {
+            onBack();
         }
     }
 }
 
-void MainMenu::UpdateHelpItems(pksm::ui::IHelpProvider::Ref helpItemProvider) {
-    if (helpFooter) {
-        helpFooter->SetHelpItems(helpItemProvider->GetHelpItems());
-    }
+std::vector<pksm::ui::HelpItem> MainMenu::GetHelpOverlayItems() const {
+    return {
+        {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
+        {{{pksm::ui::HelpButton::B}}, "Back to Game Selection"},
+        {{{pksm::ui::HelpButton::DPad}}, "Navigate"},
+        {{{pksm::ui::HelpButton::Minus}}, "Close Help"}
+    };
 }
 
-void MainMenu::StartOverlay() {
-    LOG_DEBUG("Starting help overlay");
-    if (!isHelpOverlayVisible) {
-        // Create and show overlay
-        auto overlay = pksm::ui::HelpOverlay::New(0, 0, GetWidth(), GetHeight());
-        std::vector<pksm::ui::HelpItem> helpItems = {
-            {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
-            {{{pksm::ui::HelpButton::B}}, "Back to Game Selection"},
-            {{{pksm::ui::HelpButton::DPad}}, "Navigate"},
-            {{{pksm::ui::HelpButton::Minus}}, "Close Help"}
-        };
-
-        overlay->SetHelpItems(helpItems);
-        onShowOverlay(overlay);
-        menuGrid->SetDisabled(true);  // Disable menu grid interaction
-        isHelpOverlayVisible = true;
-    }
+void MainMenu::OnHelpOverlayShown() {
+    LOG_DEBUG("Help overlay shown, disabling UI elements");
+    menuGrid->SetDisabled(true);
 }
 
-void MainMenu::EndOverlay() {
-    LOG_DEBUG("Ending help overlay");
-    if (isHelpOverlayVisible) {
-        onHideOverlay();
-        menuGrid->SetDisabled(false);  // Re-enable menu grid interaction
-        isHelpOverlayVisible = false;
-    }
+void MainMenu::OnHelpOverlayHidden() {
+    LOG_DEBUG("Help overlay hidden, re-enabling UI elements");
+    menuGrid->SetDisabled(false);
 }
 
 }  // namespace pksm::layout

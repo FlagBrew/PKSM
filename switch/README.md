@@ -58,6 +58,59 @@ TitleLoadScreen FocusManager
 └── UserIconButton
 ```
 
+### BaseLayout Pattern
+
+PKSM uses a `BaseLayout` class to centralize help functionality across screens, reducing code duplication and ensuring consistent user experience.
+
+#### Key Features
+
+- **Help Footer & Overlay**: Standardized help UI triggered by the Minus button
+- **Input Management**: Automatically handles help-related input and blocks other input when help is visible
+- **UI Element Disabling**: Provides hooks to disable/enable UI elements when help is shown/hidden
+
+#### Implementation Example
+
+```cpp
+// 1. Inherit from BaseLayout
+class MyScreen : public BaseLayout {
+public:
+    MyScreen(/* params */)
+      : BaseLayout(onShowOverlay, onHideOverlay) {
+        // Initialize components
+        InitializeHelpFooter();
+    }
+
+    // 2. Override these methods
+    std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override {
+        return {/* help items */};
+    }
+
+    void OnHelpOverlayShown() override {
+        // Disable interactive elements
+        myButton->SetDisabled(true);
+    }
+
+    void OnHelpOverlayHidden() override {
+        // Re-enable interactive elements
+        myButton->SetDisabled(false);
+    }
+
+    void OnInput(u64 down, u64 up, u64 held) {
+        // 3. Handle help input first
+        if (HandleHelpInput(down)) return;
+
+        // Handle other input
+    }
+};
+```
+
+#### Best Practices
+
+- Always disable interactive elements when help is shown to prevent unintended interactions
+- Call `HandleHelpInput(down)` first in your `OnInput` method
+- Update help items when focus changes with `UpdateHelpItems(component)`
+- Use consistent terminology in help text across screens
+
 ### Navigation Flow
 
 1. The application starts with the `TitleLoadScreen`
