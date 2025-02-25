@@ -16,7 +16,7 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     data::AccountManager& accountManager,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
     std::function<void()> onHideOverlay,
-    std::function<void()> onSaveLoaded
+    std::function<void(pksm::titles::Title::Ref, pksm::saves::Save::Ref)> onSaveLoaded
 )
   : BaseLayout(onShowOverlay, onHideOverlay),
     titleProvider(titleProvider),
@@ -217,6 +217,17 @@ pksm::titles::Title::Ref pksm::layout::TitleLoadScreen::GetSelectedTitle() const
     return this->gameList->GetSelectedTitle();
 }
 
+pksm::saves::Save::Ref pksm::layout::TitleLoadScreen::GetSelectedSave() const {
+    int selectedIndex = this->saveList->GetSelectedIndex();
+    if (selectedIndex >= 0) {
+        auto saves = saveProvider->GetSavesForTitle(GetSelectedTitle(), accountManager.GetCurrentAccount());
+        if (selectedIndex < static_cast<int>(saves.size())) {
+            return saves[selectedIndex];
+        }
+    }
+    return nullptr;
+}
+
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionUp() {
     if (this->wirelessButton->IsFocused()) {
         LOG_DEBUG("Moving button selection up from Wireless to Load Save");
@@ -343,7 +354,15 @@ void pksm::layout::TitleLoadScreen::OnLoadButtonClick() {
     LOG_DEBUG("Load button clicked");
     this->FocusLoadButton();
     if (onSaveLoaded) {
-        onSaveLoaded();
+        auto selectedTitle = GetSelectedTitle();
+        auto selectedSave = GetSelectedSave();
+
+        if (selectedTitle && selectedSave) {
+            LOG_DEBUG("Loading save: " + selectedSave->getName() + " for title: " + selectedTitle->getName());
+            onSaveLoaded(selectedTitle, selectedSave);
+        } else {
+            LOG_ERROR("Cannot load save: No title or save selected");
+        }
     }
 }
 

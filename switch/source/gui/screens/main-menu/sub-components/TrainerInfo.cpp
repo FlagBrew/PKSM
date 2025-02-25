@@ -27,7 +27,8 @@ TrainerInfo::TrainerInfo(
     nationalDexSeen(nationalDexSeen),
     nationalDexCaught(nationalDexCaught),
     completion(completion),
-    timePlayed(timePlayed) {
+    timePlayed(timePlayed),
+    generation(pksm::saves::Generation::TWO) {
     LOG_DEBUG("Initializing TrainerInfo component...");
 
     // Initialize container with temporary height, will be updated after layout
@@ -162,6 +163,9 @@ void TrainerInfo::UpdateTexts() {
     completionValue->SetText(std::to_string(static_cast<int>(completion * 100)) + "%");
     timePlayedValue->SetText(timePlayed);
     completionBar->SetProgress(completion * 100.0);
+
+    // Update generation value
+    generationValue->SetText(pksm::saves::SaveData::GenerationToString(generation));
 }
 
 void TrainerInfo::LayoutElements() {
@@ -327,7 +331,8 @@ void TrainerInfo::SetTrainerInfo(
     const u32 nationalDexSeen,
     const u32 nationalDexCaught,
     const float completion,
-    const std::string& timePlayed
+    const std::string& timePlayed,
+    const pksm::saves::Generation generation
 ) {
     this->otName = otName;
     this->badges = badges;
@@ -336,6 +341,7 @@ void TrainerInfo::SetTrainerInfo(
     this->nationalDexCaught = nationalDexCaught;
     this->completion = completion;
     this->timePlayed = timePlayed;
+    this->generation = generation;
 
     otLetterText->SetText(otName.substr(0, 1));
     trainerValue->SetText(otName);  // Update trainer name value
