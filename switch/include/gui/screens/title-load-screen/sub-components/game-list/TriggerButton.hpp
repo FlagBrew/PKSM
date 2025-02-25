@@ -72,6 +72,12 @@ private:
     bool focused;
     std::function<void()> onTouchSelectCallback;
     std::function<void()> onTouchNavigationCallback;
+    std::shared_ptr<input::FocusManager> focusManager;
+
+    // Debounce state
+    bool isPressed;
+    u64 lastTouchTime;
+    static constexpr u64 TOUCH_DEBOUNCE_TIME = 160;  // About 10 frames at 60fps
 
     static constexpr u32 TRIGGER_BUTTON_GLYPH_Y_OFFSET = -7;
     static constexpr u32 TRIGGER_BUTTON_OUTLINE_PADDING = 15;
