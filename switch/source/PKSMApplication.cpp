@@ -140,6 +140,20 @@ void PKSMApplication::ShowTitleLoadScreen() {
     this->LoadLayout(this->titleLoadScreen);
 }
 
+void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
+    LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
+
+    // Load the mock save data based on the title and save name
+    if (saveDataAccessor->loadMockSave(title, save->getName())) {
+        LOG_DEBUG("Successfully loaded mock save data");
+
+        // Now that the save is loaded, show the main menu
+        this->ShowMainMenu();
+    } else {
+        LOG_ERROR("Failed to load mock save data");
+    }
+}
+
 void PKSMApplication::OnLoad() {
     try {
         LOG_DEBUG("Loading title screen...");
@@ -157,13 +171,15 @@ void PKSMApplication::OnLoad() {
         LOG_DEBUG("Creating data providers...");
         titleProvider = std::make_shared<MockTitleDataProvider>(accountManager.GetCurrentAccount());
         saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
+        saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
 
         // Create main menu with back callback and overlay handlers
         LOG_DEBUG("Creating main menu...");
         mainMenu = pksm::layout::MainMenu::New(
             [this]() { this->ShowTitleLoadScreen(); },
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); }
+            [this]() { this->EndOverlay(); },
+            saveDataAccessor  // Pass the save data accessor to the main menu
         );
 
         // Create title load screen
@@ -174,7 +190,7 @@ void PKSMApplication::OnLoad() {
             accountManager,
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
-            [this]() { this->ShowMainMenu(); }
+            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { this->OnSaveSelected(title, save); }
         );
 
         // Start with title load screen

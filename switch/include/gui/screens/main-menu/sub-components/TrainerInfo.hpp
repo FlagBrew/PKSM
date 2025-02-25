@@ -1,7 +1,9 @@
 #pragma once
 
 #include <pu/Plutonium>
+#include <switch.h>
 
+#include "data/saves/SaveData.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
 
 namespace pksm::ui {
@@ -50,6 +52,7 @@ private:
     u32 nationalDexCaught;
     float completion;
     std::string timePlayed;
+    pksm::saves::Generation generation;
 
     // UI Elements
     pu::ui::Container::Ref container;
@@ -109,7 +112,8 @@ public:
         const u32 nationalDexSeen,
         const u32 nationalDexCaught,
         const float completion,
-        const std::string& timePlayed
+        const std::string& timePlayed,
+        const pksm::saves::Generation generation = pksm::saves::Generation::TWO
     );
 };
 

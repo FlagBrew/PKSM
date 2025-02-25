@@ -3,6 +3,7 @@
 #include <functional>
 #include <pu/Plutonium>
 
+#include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "gui/screens/main-menu/sub-components/TrainerInfo.hpp"
 #include "gui/screens/main-menu/sub-components/menu-grid/MenuButtonGrid.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
@@ -19,7 +20,8 @@ public:
     MainMenu(
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
-        std::function<void()> onHideOverlay
+        std::function<void()> onHideOverlay,
+        ISaveDataAccessor::Ref saveDataAccessor
     );
     PU_SMART_CTOR(MainMenu)
     ~MainMenu();
@@ -30,6 +32,7 @@ private:
     std::function<void()> onBack;
     pksm::ui::TrainerInfo::Ref trainerInfo;
     pksm::ui::MenuButtonGrid::Ref menuGrid;
+    ISaveDataAccessor::Ref saveDataAccessor;
 
     // Layout constants
     static constexpr pu::i32 TRAINER_INFO_SIDE_MARGIN = 40;  // Margin from screen edges
@@ -39,6 +42,7 @@ private:
     static constexpr pu::i32 MENU_GRID_MARGIN = 32;  // Margin between TrainerInfo and MenuButtonGrid
 
     void OnInput(u64 down, u64 up, u64 held);
+    void UpdateTrainerInfo();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

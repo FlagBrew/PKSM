@@ -9,6 +9,7 @@
 #include "data/AccountManager.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/providers/interfaces/ITitleDataProvider.hpp"
+#include "data/saves/Save.hpp"
 #include "data/titles/Title.hpp"
 #include "gui/screens/title-load-screen/sub-components/SaveList.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameList.hpp"
@@ -75,7 +76,7 @@ private:
     ITitleDataProvider::Ref titleProvider;
     ISaveDataProvider::Ref saveProvider;
     data::AccountManager& accountManager;
-    std::function<void()> onSaveLoaded;
+    std::function<void(pksm::titles::Title::Ref, pksm::saves::Save::Ref)> onSaveLoaded;
 
     // Event handlers
     void OnSaveSelected();
@@ -89,6 +90,7 @@ private:
     // Helper methods
     void LoadSaves();
     pksm::titles::Title::Ref GetSelectedTitle() const;
+    pksm::saves::Save::Ref GetSelectedSave() const;
     pu::i32 GetBottomSectionY() const;  // Helper to calculate Y position for save list and buttons
 
     // Navigation helpers
@@ -113,7 +115,7 @@ public:
         data::AccountManager& accountManager,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
-        std::function<void()> onSaveLoaded
+        std::function<void(pksm::titles::Title::Ref, pksm::saves::Save::Ref)> onSaveLoaded
     );
     PU_SMART_CTOR(TitleLoadScreen)
 };
