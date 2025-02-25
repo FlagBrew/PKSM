@@ -16,6 +16,7 @@ pksm::ui::FocusableButton::FocusableButton(
     focusedColor(focusedColor),
     onClickCallback(nullptr),
     onTouchSelectCallback(nullptr),
+    disabled(false),
     x(x),
     y(y),
     width(w),
@@ -67,6 +68,11 @@ void pksm::ui::FocusableButton::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
+    // Don't process input if disabled
+    if (disabled) {
+        return;
+    }
+
     if (!touch_pos.IsEmpty()) {
         if (touch_pos.HitsRegion(x, y, width, height)) {
             if (!isPressed) {
@@ -148,4 +154,13 @@ std::vector<pksm::ui::HelpItem> pksm::ui::FocusableButton::GetHelpItems() const 
         {{pksm::ui::HelpButton::A}, helpText.empty() ? GetContent() : helpText},
         {{pksm::ui::HelpButton::B}, "Back"}
     };
+}
+
+void pksm::ui::FocusableButton::SetDisabled(bool disabled) {
+    LOG_DEBUG("FocusableButton SetDisabled: " + std::to_string(disabled));
+    this->disabled = disabled;
+}
+
+bool pksm::ui::FocusableButton::IsDisabled() const {
+    return disabled;
 }
