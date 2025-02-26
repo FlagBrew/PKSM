@@ -239,7 +239,13 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
 
 std::optional<int> GroupCloudAccess::nextPage()
 {
-    next->available.wait(false);
+    // next->available.wait(false);
+    while (!next->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -267,7 +273,13 @@ std::optional<int> GroupCloudAccess::nextPage()
 
 std::optional<int> GroupCloudAccess::prevPage()
 {
-    prev->available.wait(false);
+    // prev->available.wait(false);
+    while (!prev->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
