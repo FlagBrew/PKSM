@@ -63,7 +63,6 @@
     "LOADER_CRITICAL_ERROR": "Impossible error has happened!",
     "NEED_ONE_POKEMON": "You must have at least one Pokémon",
     "NOT_A_BUG": "이것은 버그가 아닙니다.",
-    "NOT_PATRON": "Invalid Patron code!",
     "NO_DUPES": "Duplicates not allowed.",
     "NO_PARTY_EMPTY": "파티에는 최소 1마리의 포켓몬이 있어야 합니다!",
     "NO_TRANSFER_PATH": "No way to transfer between generations.",

@@ -3,7 +3,6 @@
     "UPDATE_FOUND_BACKUP": "Update found! Backing up ExtData...",
     "UPDATE_FOUND_DOWNLOAD": "更新发现！ 下载...",
     "UPDATE_INSTALLING": "安装更新...",
-    "UPDATE_MISSING": "Download server missing update files!",
     "UPDATE_SUCCESS_1": "更新成功下载!",
     "UPDATE_SUCCESS_2": "请重新打开应用程序!"
 }

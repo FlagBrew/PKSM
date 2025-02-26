@@ -63,7 +63,6 @@
     "LOADER_CRITICAL_ERROR": "致命的なエラーが発生しました!",
     "NEED_ONE_POKEMON": "少なくとも1つのポケモンは必要です",
     "NOT_A_BUG": "これはバッグの持ち物ではありません.",
-    "NOT_PATRON": "無効なPatronコードです!",
     "NO_DUPES": "重複はできません",
     "NO_PARTY_EMPTY": "パーティーをクリアできません!",
     "NO_TRANSFER_PATH": "世代間で転送できません",

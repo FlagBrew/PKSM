@@ -597,14 +597,6 @@ void ConfigScreen::initButtons()
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-    tabButtons[3].push_back(std::make_unique<ClickButton>(
-        247, 111, 15, 12,
-        [this]()
-        {
-            Configuration::getInstance().alphaChannel(!Configuration::getInstance().alphaChannel());
-            return true;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[4].push_back(std::make_unique<ClickButton>(
         247, 87, 15, 12,
         [this]()
@@ -802,10 +794,6 @@ void ConfigScreen::drawBottom() const
         {
             button->draw();
         }
-
-        Gui::text(Configuration::getInstance().alphaChannel() ? i18n::localize("YES")
-                                                              : i18n::localize("NO"),
-            270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
     else if (currentTab == 4)
     {
