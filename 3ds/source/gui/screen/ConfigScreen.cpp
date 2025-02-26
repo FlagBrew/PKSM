@@ -109,7 +109,7 @@ namespace
     void inputApiUrl()
     {
         SwkbdState state;
-        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 29);
+        swkbdInit(&state, SWKBD_TYPE_NORMAL, 3, 29);
         swkbdSetHintText(&state, i18n::localize("API_HINT").c_str());
         std::string apiUri = Configuration::getInstance().apiUrl();
         swkbdSetInitialText(&state, apiUri.c_str());
