@@ -3,7 +3,6 @@
     "UPDATE_FOUND_BACKUP": "Update found! Backing up ExtData...",
     "UPDATE_FOUND_DOWNLOAD": "Update gevonden! Downloaden...",
     "UPDATE_INSTALLING": "Update installeren...",
-    "UPDATE_MISSING": "Download server missing update files!",
     "UPDATE_SUCCESS_1": "Update met succes gedownload!",
     "UPDATE_SUCCESS_2": "Herstart de applicatie!"
 }

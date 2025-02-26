@@ -45,6 +45,5 @@
   "apiUrl": "",
   "useApiUrl": false,
   "patronCode": "",
-  "alphaChannel": false,
   "autoUpdate": true
 }

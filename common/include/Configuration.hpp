@@ -98,8 +98,6 @@ public:
 
     const std::string& patronCode(void) const;
 
-    bool alphaChannel(void) const;
-
     bool autoUpdate(void) const;
 
     void language(pksm::Language lang);
@@ -138,8 +136,6 @@ public:
     void useApiUrl(bool value);
 
     void patronCode(const std::string& value);
-
-    void alphaChannel(bool value);
 
     void autoUpdate(bool value);
 

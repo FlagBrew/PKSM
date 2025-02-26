@@ -205,87 +205,10 @@ namespace
         {
             return false;
         }
-        const std::string patronCode = Configuration::getInstance().patronCode();
-
-        if (Configuration::getInstance().alphaChannel() && !patronCode.empty()) {
-            Gui::warn("Sorry, patreon builds discontinued for now,");
-            Gui::warn("Auto update also turned off to avoid issues,");
-            Gui::warn("You can re-enable it in the settings.");
-            Configuration::getInstance().alphaChannel(false);
-            Configuration::getInstance().autoUpdate(false);
-            return false;
-        }
 
         execPath        = execPath.substr(execPath.find(':') + 1);
         std::string url = "", path = "", retString = "";
-        if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
-        {
-            struct curl_slist* headers = NULL;
-            headers = curl_slist_append(headers, ("patreon: " + patronCode).c_str());
-            if (auto fetch = Fetch::init(
-                    WEBSITE_URL "api/v2/patreon/update-check/PKSM", true, &retString, headers, ""))
-            {
-                moveIcon.clear();
-                Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-                auto res = Fetch::perform(fetch);
-                if (res.index() == 1)
-                {
-                    if (std::get<1>(res) != CURLE_OK)
-                    {
-                        Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-                    }
-                    else
-                    {
-                        long status_code;
-                        fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                        switch (status_code)
-                        {
-                            case 200:
-                            {
-                                nlohmann::json retJson =
-                                    nlohmann::json::parse(retString, nullptr, false);
-                                if (const std::string hash =
-                                        (retJson.is_object() && retJson.contains("hash"))
-                                            ? retJson["hash"].get<std::string>()
-                                            : GIT_REV;
-                                    hash.substr(0, 8) != GIT_REV)
-                                {
-                                    url = WEBSITE_URL "api/v2/patreon/update/" + patronCode +
-                                          "/PKSM/" + hash + "/";
-                                    if (execPath.empty())
-                                    {
-                                        url  += "cia";
-                                        path = "/3ds/PKSM/PKSM.cia";
-                                    }
-                                    else
-                                    {
-                                        url  += "3dsx";
-                                        path = execPath + ".new";
-                                    }
-                                }
-                                break;
-                            }
-                            case 204:
-                                Gui::warn(i18n::localize("UPDATE_MISSING"));
-                                break;
-                            case 401:
-                            case 403:
-                                Gui::warn(i18n::localize("NOT_PATRON") + '\n' +
-                                          i18n::localize("INCIDENT_LOGGED"));
-                                break;
-                            case 502:
-                                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                                break;
-                            default:
-                                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                                break;
-                        }
-                    }
-                }
-            }
-            curl_slist_free_all(headers);
-        }
-        else if (auto fetch =
+        if (auto fetch =
                      Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true,
                          &retString, nullptr, ""))
         {
