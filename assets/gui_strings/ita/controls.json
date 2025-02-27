@@ -1,5 +1,5 @@
 {
-    "ADD_SAVE": "Aggiungi Salvataggio",
+    "ADD_SAVE": "Aggiungi\nSalvataggio",
     "APP_LEGALIZE": "Legalizza con l'App GPSS",
     "APP_SCAN_QR": "Scansiona QR",
     "APP_USE_SOCKETS": "Legalizza via rete",
@@ -33,7 +33,7 @@
     "SCRIPTS_INST1": "Premi  per eseguire uno script o entrare in una cartella. Premi  per script universali.",
     "SCRIPTS_INST2": "Premi  per cambiare sorgente di script",
     "START_DELETE": "Premi START per cancellare",
-    "START_EXIT": "START: ESci",
+    "START_EXIT": "START: Esci",
     "START_EXTRA_FUNC": "START: Funzioni extra",
     "START_FILTER_LEGAL": "START: Mostra/Nascondi gruppi illegali",
     "START_SORT_FILTER": "START: Filtra/Ordina",

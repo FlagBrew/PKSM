@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "Passe Sprache an WK an",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Automatisch PKSM Updaten",
     "CONFIG_BACKUP_INJECTION": "Aktiviere Backup Injektion",

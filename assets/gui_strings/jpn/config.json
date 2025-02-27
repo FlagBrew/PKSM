@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "不思議なカードをゲームの言語にを合わせる",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "PKSMを自動アップデートする",
     "CONFIG_BACKUP_INJECTION": "バックアップインジェクションを有効にする",

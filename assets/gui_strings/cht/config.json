@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "设定卡片语言",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "自动更新PKSM",
     "CONFIG_BACKUP_INJECTION": "导入神秘卡片前备份",

@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "Adapter l. du jeu à la CM",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Mises à jour automatiques de PKSM",
     "CONFIG_BACKUP_INJECTION": "Activer l'injection de backups",

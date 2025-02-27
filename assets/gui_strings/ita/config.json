@@ -1,7 +1,7 @@
 {
     "ADAPT_LANGUAGE": "Adatta lingua al salvataggio",
-    "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_URL": "Local API URL",
+    "API_HINT": "Indirizzo API, deve terminare con /",
+    "API_URL": "Indirizzo locale API",
     "CONFIG_AUTO_UPDATE": "Aggiorna PKSM automaticamente",
     "CONFIG_BACKUP_INJECTION": "Abilita scrittura nei backup",
     "CONFIG_BACKUP_SAVE": "Auto-backup al caricamento",

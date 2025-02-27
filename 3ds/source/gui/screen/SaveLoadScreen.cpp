@@ -436,8 +436,8 @@ void SaveLoadScreen::drawBottom() const
 
     Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP);
-    Gui::text(i18n::localize("ADD_SAVE"), 248, 163, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
+    Gui::text(i18n::localize("ADD_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::CENTER);
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::TOP);
