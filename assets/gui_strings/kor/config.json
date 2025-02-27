@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "원더카드로 언어 맞추기",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Automatically Update PKSM",
     "CONFIG_BACKUP_INJECTION": "백업 파일 주입 활성화",

@@ -1,6 +1,6 @@
 {
     "ADAPT_LANGUAGE": "Aanpassen teel WC",
-    "API_HINT": "API Url, MUST END WITH SLASH",
+    "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "PKSM automatische updaten",
     "CONFIG_BACKUP_INJECTION": "Activeer back-up injectie",
