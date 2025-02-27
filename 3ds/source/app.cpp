@@ -463,50 +463,58 @@ namespace
 
     void iconThread()
     {
-        int x = 176, y = 96;
         u16 w, h;
-        bool up   = pksm::randomNumber(0, 1) ? true : false;
-        bool left = pksm::randomNumber(0, 1) ? true : false;
-        u8 yMag   = pksm::randomNumber(0, 1) + 1;
-        u8 xMag   = pksm::randomNumber(0, 1) + 1;
+        int xIcon = 176, yIcon = 96;
+        float time = 0.0f;
+        const float speed = 0.02f;
+        
         while (moveIcon.test_and_set())
         {
+            u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h);
+            
+            // Draw gradient pattern
+            for (int x = 0; x < 400; x += 2) {
+                float xRatio = (float)x / 400.0f;
+                float xWave = sin(xRatio * 6.0f + time) * 0.5f + 0.5f;
+                
+                for (int y = 0; y < 240; y += 2) {
+                    // if pixels are in the icon area, skip them
+                    if (x >= xIcon && x < xIcon + 48 && y >= yIcon && y < yIcon + 48) {
+                        continue;
+                    }
+
+                    float yRatio = (float)y / 240.0f;
+                    
+                    // Create smooth color transitions
+                    u8 r = (u8)(255 * (sin(time + xRatio * 3.14f) * 0.5f + 0.5f));
+                    u8 g = (u8)(255 * (cos(time * 0.7f + yRatio * 3.14f) * 0.5f + 0.5f));
+                    u8 b = (u8)(255 * xWave * (sin(xRatio * yRatio * 10.0f + time * 1.1f) * 0.5f + 0.5f));
+                    
+                    // Set 2x2 pixel blocks for better performance
+                    for (int dx = 0; dx < 2 && x+dx < 400; dx++) {
+                        for (int dy = 0; dy < 2 && y+dy < 240; dy++) {
+                            u8* pixel = fb + (x+dx) * 3 * 240 + (y+dy) * 3;
+                            pixel[0] = r;
+                            pixel[1] = g;
+                            pixel[2] = b;
+                        }
+                    }
+                }
+            }
+
             int xOff = 0;
-            std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
             for (const auto& line : bootSplash)
             {
                 std::copy(line.begin(), line.end(),
-                    gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
+                    gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (xIcon + xOff++) * 3 * 240 + yIcon * 3);
             }
-
-            if (up)
-            {
-                y -= yMag;
+            
+            // Update animation time
+            time += speed;
+            if (time >= 2 * 3.14159f) {
+                time -= 2 * 3.14159f;
             }
-            else
-            {
-                y += yMag;
-            }
-            if (y >= 240 - 48 || y <= 0)
-            {
-                yMag = pksm::randomNumber(0, 1) + 1;
-                up   = !up;
-            }
-
-            if (left)
-            {
-                x -= xMag;
-            }
-            else
-            {
-                x += xMag;
-            }
-            if (x >= 400 - 48 || x <= 0)
-            {
-                xMag = pksm::randomNumber(0, 1) + 1;
-                left = !left;
-            }
-
+            
             gfxFlushBuffers();
             gfxSwapBuffersGpu();
             gspWaitForVBlank();
