@@ -5,8 +5,6 @@
     "DOWNLOADING_FILE": "Téléchargement en cours {:s}...",
     "GPSS_DOWNLOAD": "Télécharger ce Pokémon depuis le GPSS?",
     "GPSS_DOWNLOAD_GROUP": "Télécharger me groupe du GPSS?",
-    "MYSTERY_GIFT_CHECK": "Recherche de mise à jour pour les Cadeaux Myst.",
-    "MYSTERY_GIFT_DOWNLOAD": "Téléchargement de la BDD Cadeaux Myst.: {:d} of {:d}",
     "PKM_LEGALIZED": "Votre Pokémon est maintenant légal!",
     "SHARE_CODE_ENTER_PROMPT": "Voulez-vous partager un code PKMN?",
     "SHARE_DOWNLOAD_CODE": "Votre code PKMN est",

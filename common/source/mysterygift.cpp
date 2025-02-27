@@ -48,13 +48,8 @@ void MysteryGift::init(pksm::Generation g)
 {
     mysteryGiftData.clear();
 
-    std::string sheetPath = "/3ds/PKSM/mysterygift/sheet" + (std::string)g + ".json.bz2";
-    std::string dataPath  = "/3ds/PKSM/mysterygift/data" + (std::string)g + ".bin.bz2";
-    if (!io::exists(sheetPath) || !io::exists(dataPath))
-    {
-        sheetPath = "romfs:/mg/sheet" + (std::string)g + ".json.bz2";
-        dataPath  = "romfs:/mg/data" + (std::string)g + ".bin.bz2";
-    }
+    std::string sheetPath = "romfs:/mg/sheet" + (std::string)g + ".json.bz2";
+    std::string dataPath  = "romfs:/mg/data" + (std::string)g + ".bin.bz2";
 
     FILE* f = fopen(sheetPath.c_str(), "rb");
     if (f != NULL)
