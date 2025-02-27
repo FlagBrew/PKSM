@@ -797,20 +797,11 @@ void CloudScreen::shareSend()
     const std::string pksm_version =
         "source: PKSM " +
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    std::string code = Configuration::getInstance().patronCode();
-    if (!code.empty())
-    {
-        code = "patreon: " + code;
-    }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, version.c_str());
-    if (!code.empty())
-    {
-        headers = curl_slist_append(headers, code.c_str());
-    }
-
+    
     std::string writeData = "";
     if (auto fetch =
             Fetch::init(websiteURL + "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))

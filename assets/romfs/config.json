@@ -44,6 +44,5 @@
   "showBackups": false,
   "apiUrl": "",
   "useApiUrl": false,
-  "patronCode": "",
   "autoUpdate": true
 }

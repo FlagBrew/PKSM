@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "Passe Sprache an WK an",
-    "ALPHA_UPDATES": "Benutze Alpha Builds",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Automatisch PKSM Updaten",
     "CONFIG_BACKUP_INJECTION": "Aktiviere Backup Injektion",
     "CONFIG_BACKUP_SAVE": "Autom. Backup beim Laden",
@@ -22,7 +20,6 @@
     "LANGUAGES": "Sprachen",
     "LATEST": "Neuste",
     "LEGALITY_ANY": "Irgendein",
-    "PATRON_CODE": "Patron Code",
     "SETTINGS": "Optionen",
     "SET_SAVE_INFO": "Spielstand-Info setzen",
     "TITLE_ID": "Titel ID",

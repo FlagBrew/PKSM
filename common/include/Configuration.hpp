@@ -96,8 +96,6 @@ public:
 
     bool useApiUrl(void) const;
 
-    const std::string& patronCode(void) const;
-
     bool autoUpdate(void) const;
 
     void language(pksm::Language lang);
@@ -134,8 +132,6 @@ public:
     void apiUrl(const std::string& value);
 
     void useApiUrl(bool value);
-
-    void patronCode(const std::string& value);
 
     void autoUpdate(bool value);
 
