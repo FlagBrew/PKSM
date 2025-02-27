@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "Aanpassen teel WC",
-    "ALPHA_UPDATES": "Gebruik Alfa-Structuren",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "PKSM automatische updaten",
     "CONFIG_BACKUP_INJECTION": "Activeer back-up injectie",
     "CONFIG_BACKUP_SAVE": "Automatische back-up bij het laden",
@@ -22,7 +20,6 @@
     "LANGUAGES": "Talen",
     "LATEST": "Latest",
     "LEGALITY_ANY": "Any",
-    "PATRON_CODE": "Patron Code",
     "SETTINGS": "Instellingen",
     "SET_SAVE_INFO": "Zet save info",
     "TITLE_ID": "Title ID",

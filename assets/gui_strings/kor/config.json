@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "원더카드로 언어 맞추기",
-    "ALPHA_UPDATES": "Use Alpha Builds",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Automatically Update PKSM",
     "CONFIG_BACKUP_INJECTION": "백업 파일 주입 활성화",
     "CONFIG_BACKUP_SAVE": "실행 시 자동으로 백업",
@@ -22,7 +20,6 @@
     "LANGUAGES": "언어",
     "LATEST": "Latest",
     "LEGALITY_ANY": "Any",
-    "PATRON_CODE": "Patron Code",
     "SETTINGS": "환경설정",
     "SET_SAVE_INFO": "Set save info",
     "TITLE_ID": "Title ID",

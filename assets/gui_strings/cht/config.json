@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "设定卡片语言",
-    "ALPHA_UPDATES": "使用Alpha构建",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "自动更新PKSM",
     "CONFIG_BACKUP_INJECTION": "导入神秘卡片前备份",
     "CONFIG_BACKUP_SAVE": "载入时自动备份",
@@ -22,7 +20,6 @@
     "LANGUAGES": "语言",
     "LATEST": "最新",
     "LEGALITY_ANY": "Any",
-    "PATRON_CODE": "赞助人代码",
     "SETTINGS": "设置",
     "SET_SAVE_INFO": "设置保存信息",
     "TITLE_ID": "Title ID",

@@ -73,39 +73,6 @@ namespace
         }
     }
 
-    void inputPatronCode()
-    {
-        SwkbdState state;
-        swkbdInit(&state, SWKBD_TYPE_QWERTY, 3, 22);
-        swkbdSetHintText(&state, i18n::localize("PATRON_CODE").c_str());
-        std::string patronCode = Configuration::getInstance().patronCode();
-        swkbdSetInitialText(&state, patronCode.c_str());
-        swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-        swkbdSetButton(
-            &state, SwkbdButton::SWKBD_BUTTON_MIDDLE, i18n::localize("QR_SCANNER").c_str(), false);
-        char input[45]  = {0};
-        SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-        input[44]       = '\0';
-        if (ret == SWKBD_BUTTON_MIDDLE)
-        {
-            std::string data = QRScanner<std::string>::scan();
-            if (data.length() == 22)
-            {
-                std::copy(data.begin(), data.end(), input);
-                input[22] = '\0';
-                ret       = SWKBD_BUTTON_CONFIRM;
-            }
-            else if (!data.empty())
-            {
-                Gui::warn(i18n::localize("QR_WRONG_FORMAT"));
-            }
-        }
-        if (ret == SWKBD_BUTTON_CONFIRM)
-        {
-            Configuration::getInstance().patronCode(input);
-        }
-    }
-
     void inputApiUrl()
     {
         SwkbdState state;
@@ -189,7 +156,7 @@ void ConfigScreen::initButtons()
         ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("DEFAULTS"), FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
     tabs.push_back(std::make_unique<ToggleButton>(
-        215, 2, 52, 17,
+        215, 2, 104, 17,
         [&]()
         {
             currentTab = 2;
@@ -197,16 +164,6 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_res_null_idx, i18n::localize("MISC"), FONT_SIZE_11, COLOR_WHITE,
         ui_sheet_emulated_button_tabs_3_unselected_idx, i18n::localize("MISC"), FONT_SIZE_11,
-        COLOR_BLACK, &tabs, false));
-    tabs.push_back(std::make_unique<ToggleButton>(
-        267, 2, 30, 17,
-        [&]()
-        {
-            currentTab = 4;
-            return false;
-        },
-        ui_sheet_res_null_idx, "API", FONT_SIZE_11, COLOR_WHITE,
-        ui_sheet_emulated_button_tabs_3_unselected_idx, "API", FONT_SIZE_11,
         COLOR_BLACK, &tabs, false));
     tabs[0]->setState(true);
 
@@ -513,7 +470,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 52, 15, 12,
+        247, 50, 15, 12,
         []()
         {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
@@ -521,7 +478,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 72, 15, 12,
+        247, 68, 15, 12,
         []()
         {
             Configuration::getInstance().writeFileSave(
@@ -530,7 +487,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 92, 15, 12,
+        247, 86, 15, 12,
         []()
         {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
@@ -538,7 +495,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 112, 15, 12,
+        247, 104, 15, 12,
         [this]()
         {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
@@ -547,7 +504,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 132, 15, 12,
+        247, 122, 15, 12,
         []()
         {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
@@ -555,7 +512,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 152, 15, 12,
+        247, 140, 15, 12,
         [this]()
         {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
@@ -564,7 +521,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 172, 15, 12,
+        247, 158, 15, 12,
         [this]()
         {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
@@ -572,7 +529,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 192, 15, 12,
+        247, 176, 15, 12,
         [this]()
         {
             Gui::setScreen(std::make_unique<ExtraSavesScreen>());
@@ -580,7 +537,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 212, 15, 12,
+        247, 194, 15, 12,
         [this]()
         {
             addOverlay<TitleIdOverlay>();
@@ -588,17 +545,8 @@ void ConfigScreen::initButtons()
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-
-    tabButtons[3].push_back(std::make_unique<ClickButton>(
-        247, 87, 15, 12,
-        [this]()
-        {
-            inputPatronCode();
-            return false;
-        },
-        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
-    tabButtons[4].push_back(std::make_unique<ClickButton>(
-        247, 87, 15, 12,
+    tabButtons[2].push_back(std::make_unique<ClickButton>(
+        247, 212, 15, 12,
         [this]()
         {
             inputApiUrl();
@@ -732,24 +680,25 @@ void ConfigScreen::drawBottom() const
     {
         Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 30, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 50, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 48, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 70, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 66, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 90, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 84, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 110, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 102, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 130, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 120, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 150, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 138, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 170, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 156, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("EXTRA_SAVES"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("EXTRA_SAVES"), 19, 174, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("TITLE_IDS"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("TITLE_IDS"), 19, 192, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("API_URL"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])
         {
@@ -758,58 +707,28 @@ void ConfigScreen::drawBottom() const
 
         Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES")
                                                             : i18n::localize("NO"),
-            270, 30, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 31, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES")
                                                               : i18n::localize("NO"),
-            270, 50, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 49, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES")
                                                                : i18n::localize("NO"),
-            270, 70, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 67, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 90, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 85, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES")
                                                             : i18n::localize("NO"),
-            270, 110, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 103, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 130, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 121, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 150, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 139, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES")
                                                             : i18n::localize("NO"),
-            270, 170, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-    }
-    else if (currentTab == 3)
-    {
-        Gui::text("Patrons", 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        Gui::text(i18n::localize("PATRON_CODE"), 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-        Gui::text(i18n::localize("ALPHA_UPDATES"), 19, 108, FONT_SIZE_14, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP);
-
-        for (const auto& button : tabButtons[currentTab])
-        {
-            button->draw();
-        }
-    }
-    else if (currentTab == 4)
-    {
-        Gui::text(i18n::localize("API_OPTIONS"), 160, 24, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
-
-        Gui::text(i18n::localize("API_URL"), 19, 84, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        // Gui::text("Enabled", 19, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-
-        for (const auto& button : tabButtons[currentTab])
-        {
-            button->draw();
-        }
-
-        // Gui::text(
-        //     Configuration::getInstance().useApiUrl() ? i18n::localize("YES") : i18n::localize("NO"),
-        //     270, 108, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 157, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 
@@ -832,84 +751,6 @@ void ConfigScreen::update(touchPosition* touch)
         back();
         return;
     }
-    else if (kDown & KEY_UP)
-    {
-        if (debugMenu[0])
-        {
-            debugMenu.set(1);
-        }
-        else if (!debugMenu[1])
-        {
-            debugMenu.set(0);
-        }
-        else
-        {
-            debugMenu.reset();
-        }
-    }
-    else if (kDown & KEY_DOWN)
-    {
-        if (debugMenu[2])
-        {
-            debugMenu.set(3);
-        }
-        else if (!debugMenu[3] && debugMenu[1])
-        {
-            debugMenu.set(2);
-        }
-        else
-        {
-            debugMenu.reset();
-        }
-    }
-    else if (kDown & KEY_LEFT)
-    {
-        if (debugMenu[5])
-        {
-            debugMenu.set(6);
-        }
-        else if (!debugMenu[5] && debugMenu[3])
-        {
-            debugMenu.set(4);
-        }
-        else
-        {
-            debugMenu.reset();
-        }
-    }
-    else if (kDown & KEY_RIGHT)
-    {
-        if (debugMenu[6])
-        {
-            debugMenu.set(7);
-        }
-        else if (!debugMenu[6] && debugMenu[4])
-        {
-            debugMenu.set(5);
-        }
-        else
-        {
-            debugMenu.reset();
-        }
-    }
-    else if (kDown & KEY_A)
-    {
-        if (debugMenu[7])
-        {
-            debugMenu.set(8);
-        }
-        else
-        {
-            debugMenu.reset();
-        }
-    }
-
-    if (debugMenu[8])
-    {
-        debugMenu.reset();
-        currentTab = 4;
-        return;
-    }
 
     for (auto& button : tabs)
     {
@@ -919,55 +760,6 @@ void ConfigScreen::update(touchPosition* touch)
     for (auto& button : tabButtons[currentTab])
     {
         button->update(touch);
-    }
-
-    if (hidKeysDown() & KEY_TOUCH)
-    {
-        if (touch->px > 0 && touch->px < 30 && touch->py > 0 && touch->py < 30)
-        {
-            patronMenu[0]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
-        }
-        else if (touch->px > 290 && touch->px < 320 && touch->py < 30 && touch->py > 0)
-        {
-            patronMenu[1]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
-        }
-        else if (touch->px > 0 && touch->px < 30 && touch->py > 210 && touch->py < 240)
-        {
-            patronMenu[2]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
-        }
-        else if (touch->px > 290 && touch->px < 320 && touch->py > 210 && touch->py < 240)
-        {
-            patronMenu[3]        = true;
-            countPatronMenuTimer = true;
-            patronMenuTimer      = 600;
-        }
-        if (patronMenu[0] && patronMenu[1] && patronMenu[2] && patronMenu[3])
-        {
-            currentTab      = 3;
-            patronMenuTimer = 0;
-        }
-    }
-
-    if (countPatronMenuTimer)
-    {
-        if (patronMenuTimer > 0)
-        {
-            patronMenuTimer--;
-        }
-        else
-        {
-            countPatronMenuTimer = false;
-            for (int i = 0; i < 8; i++)
-            {
-                patronMenu[i] = false;
-            }
-        }
     }
 }
 

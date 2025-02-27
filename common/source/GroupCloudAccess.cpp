@@ -413,7 +413,6 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
 
     std::string amount     = "count: " + std::to_string(sendMe.size());
-    std::string code       = Configuration::getInstance().patronCode();
     std::string generation = "generations: ";
     for (const auto& mon : sendMe)
     {
@@ -421,19 +420,11 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     }
     // Remove trailing comma
     generation.pop_back();
-    if (!code.empty())
-    {
-        code = "patreon: " + code;
-    }
 
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, amount.c_str());
     headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, generation.c_str());
-    if (!code.empty())
-    {
-        headers = curl_slist_append(headers, code.c_str());
-    }
 
     std::string writeData;
     if (auto fetch =

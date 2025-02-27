@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "Adaptar idioma a WC",
-    "ALPHA_UPDATES": "Utilice versiones Alfa",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Actualizar PKSM automáticamente",
     "CONFIG_BACKUP_INJECTION": "Habilitar «backup injection»",
     "CONFIG_BACKUP_SAVE": "Crear copia de seguridad automática",
@@ -22,7 +20,6 @@
     "LANGUAGES": "Idiomas",
     "LATEST": "Último",
     "LEGALITY_ANY": "Cualquiera",
-    "PATRON_CODE": "Código Patron",
     "SETTINGS": "Opciones",
     "SET_SAVE_INFO": "Establecer información de guardado",
     "TITLE_ID": "ID del título",

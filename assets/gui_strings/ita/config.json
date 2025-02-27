@@ -1,9 +1,7 @@
 {
     "ADAPT_LANGUAGE": "Adatta lingua al salvataggio",
-    "ALPHA_UPDATES": "Utilizza build alpha",
     "API_HINT": "API Url, MUST END WITH SLASH",
-    "API_OPTIONS": "API Options",
-    "API_URL": "Server URL",
+    "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "Aggiorna PKSM automaticamente",
     "CONFIG_BACKUP_INJECTION": "Abilita scrittura nei backup",
     "CONFIG_BACKUP_SAVE": "Auto-backup al caricamento",
@@ -22,7 +20,6 @@
     "LANGUAGES": "Lingue",
     "LATEST": "Ultimi",
     "LEGALITY_ANY": "Qualunque",
-    "PATRON_CODE": "Codice Patron",
     "SETTINGS": "Opzioni",
     "SET_SAVE_INFO": "Setta info salvataggio",
     "TITLE_ID": "Title ID",
