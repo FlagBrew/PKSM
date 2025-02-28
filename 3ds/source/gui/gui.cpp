@@ -965,26 +965,11 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    std::vector<u8> loadData;
-    FILE* file = fopen("romfs:/gfx/ui_sheet.t3x.bz2", "rb");
-    int error  = BZ2::decompress(file, loadData);
-    fclose(file);
-    if (error != BZ_OK)
-    {
-        return error;
-    }
-    spritesheet_ui    = C2D_SpriteSheetLoadFromMem(loadData.data(), loadData.size());
+    spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
-    file  = fopen("romfs:/gfx/pksm.bcfnt.bz2", "rb");
-    error = BZ2::decompress(file, loadData);
-    fclose(file);
-    if (error != BZ_OK)
-    {
-        return error;
-    }
-    fonts.emplace_back(C2D_FontLoadFromMem(loadData.data(), loadData.size()));
+    fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_USA));
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_KOR));
     fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_CHN));

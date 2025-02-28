@@ -219,7 +219,7 @@ endif
 export T3XFILES		:=	$(GFXFILES:.t3s=.t3x)
 export ROMFS_FONTFILES	:=	$(patsubst %.ttf, $(GFXBUILD)/%.bcfnt, $(FONTFILES))
 
-export ROMFS_GFXFILES	:=	$(addprefix $(ROMFS)/gfx/,$(addsuffix .bz2, $(notdir $(T3XFILES) $(ROMFS_FONTFILES))))
+export ROMFS_GFXFILES	:=	$(addprefix $(ROMFS)/gfx/,$(notdir $(T3XFILES) $(ROMFS_FONTFILES)))
 
 export OFILES_SOURCES 	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
@@ -322,7 +322,7 @@ clean:
 	@rm -fr $(OUT_DEBUG)
 	@rm -fr $(BUILD_DEBUG)
 	@rm -fr $(GFXBUILD)
-	@rm -fr $(ROMFS)/gfx/*.bz2
+	@rm -fr $(ROMFS)/gfx/*
 #---------------------------------------------------------------------------------
 clean-deps:
 	@echo clean-deps ...
@@ -395,10 +395,10 @@ $(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s | directories
 	@tex3ds -i $< -H $(BUILD)/$*.h -d $(DEPSDIR)/$*.d -o $@
 
 #---------------------------------------------------------------------------------
-$(ROMFS)/gfx/%.bz2 : $(GFXBUILD)/% | directories
+$(ROMFS)/gfx/% : $(GFXBUILD)/% | directories
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
-	@bzip2 -kf --best $< -c > $@
+	@cp $< $@
 
 else
 
