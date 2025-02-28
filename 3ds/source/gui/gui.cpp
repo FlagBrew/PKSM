@@ -996,9 +996,6 @@ namespace {
             CFG_REGION_KOR,
             CFG_REGION_USA
         };
-
-        // remove the current region
-        regionsToLoad.erase(std::remove(regionsToLoad.begin(), regionsToLoad.end(), currentRegion), regionsToLoad.end());
         
         for (auto region : regionsToLoad) {
             if (region != currentRegion) {
