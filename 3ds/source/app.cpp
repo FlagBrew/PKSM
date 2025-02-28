@@ -52,6 +52,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <chrono>
 
 namespace
 {
@@ -564,6 +565,8 @@ namespace
 
 Result App::init(const std::string& execPath)
 {
+    auto start = std::chrono::high_resolution_clock::now();
+
     Result res;
 
     hidInit();
@@ -631,7 +634,7 @@ Result App::init(const std::string& execPath)
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
 
-    // link3dsStdio();
+    link3dsStdio();
 
     if (R_FAILED(res = downloadAdditionalAssets()))
     {
@@ -689,6 +692,8 @@ Result App::init(const std::string& execPath)
     // uncomment when needing to debug with GDB
     // consoleDebugInit(debugDevice_SVC);
 
+    auto end = std::chrono::high_resolution_clock::now();
+    printf("Startup completed in: %sus\n", std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()).c_str());
     return 0;
 }
 
