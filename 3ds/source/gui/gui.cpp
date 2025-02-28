@@ -1010,6 +1010,14 @@ namespace {
             }
         }
         
+        // Create a new TextBuffer with all fonts
+        {
+            std::lock_guard<std::mutex> lock(fontMutex);
+            TextParse::TextBuf* oldBuffer = textBuffer;
+            textBuffer = new TextParse::TextBuf(8192, fonts);
+            delete oldBuffer;
+        }
+        
         fontsLoaded = true;
     }
 }
