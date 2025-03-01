@@ -25,7 +25,6 @@
  */
 
 #include "gui.hpp"
-#include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "DecisionScreen.hpp"
 #include "MessageScreen.hpp"
@@ -37,6 +36,29 @@
 #include <stack>
 #include <thread>
 #include <atomic>
+
+static CFG_Region getRegionFromLanguage() {
+    u8 language;
+    CFGU_GetSystemLanguage(&language);
+    CFG_Region region = CFG_REGION_USA;
+    
+    // Map language setting to appropriate region for font loading
+    switch (language) {
+        case CFG_LANGUAGE_ZH:
+            region = CFG_REGION_CHN;
+            break;
+        case CFG_LANGUAGE_TW:
+            region = CFG_REGION_TWN;
+            break;
+        case CFG_LANGUAGE_KO:
+            region = CFG_REGION_KOR;
+            break;
+        default:
+            region = CFG_REGION_USA;
+            break;
+    }
+    return region;
+}
 
 namespace
 {
@@ -51,6 +73,10 @@ namespace
     TextParse::ScreenText topText;
     TextParse::ScreenText bottomText;
     TextParse::ScreenText* currentText = nullptr;
+
+    std::atomic<bool> fontsLoaded{false};
+    std::thread fontLoaderThread;
+    std::mutex fontMutex;
 
     std::vector<C2D_Font> fonts;
 
@@ -553,6 +579,32 @@ namespace
                     spritesheet_types, types_spritesheet_en_00_idx + size_t(type));
         }
     }
+
+    void loadRemainingFonts()
+    {
+        // Don't load the already loaded region
+        CFG_Region currentRegion = getRegionFromLanguage();
+        
+        std::vector<CFG_Region> regionsToLoad = {
+            CFG_REGION_USA,
+            CFG_REGION_TWN, 
+            CFG_REGION_CHN,
+            CFG_REGION_KOR
+        };
+        
+        for (auto region : regionsToLoad) {
+            if (region != currentRegion) {
+                C2D_Font font = C2D_FontLoadSystem(region);
+                if (font) {
+                    std::lock_guard<std::mutex> lock(fontMutex);
+                    fonts.emplace_back(font);
+                    textBuffer->addFont(font);
+                }
+            }
+        }
+        
+        fontsLoaded = true;
+    }
 }
 
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
@@ -824,6 +876,8 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
+
+    std::lock_guard<std::mutex> lock(fontMutex);
     textMode            = true;
     const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
     y                   -= sizeY * 6;
@@ -957,61 +1011,6 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
     }
 }
 
-static CFG_Region getRegionFromLanguage() {
-    u8 language;
-    CFGU_GetSystemLanguage(&language);
-    CFG_Region region = CFG_REGION_USA;
-    
-    // Map language setting to appropriate region for font loading
-    switch (language) {
-        case CFG_LANGUAGE_ZH:
-            region = CFG_REGION_CHN;
-            break;
-        case CFG_LANGUAGE_TW:
-            region = CFG_REGION_TWN;
-            break;
-        case CFG_LANGUAGE_KO:
-            region = CFG_REGION_KOR;
-            break;
-        default:
-            region = CFG_REGION_USA;
-            break;
-    }
-    return region;
-}
-
-namespace {
-    std::atomic<bool> fontsLoaded{false};
-    std::thread fontLoaderThread;
-    std::mutex fontMutex;
-    
-    void loadRemainingFonts()
-    {
-        // Don't load the already loaded region
-        CFG_Region currentRegion = getRegionFromLanguage();
-        
-        std::vector<CFG_Region> regionsToLoad = {
-            CFG_REGION_TWN, 
-            CFG_REGION_CHN,
-            CFG_REGION_KOR,
-            CFG_REGION_USA
-        };
-        
-        for (auto region : regionsToLoad) {
-            if (region != currentRegion) {
-                C2D_Font font = C2D_FontLoadSystem(region);
-                if (font) {
-                    std::lock_guard<std::mutex> lock(fontMutex);
-                    fonts.emplace_back(font);
-                    textBuffer->addFont(font);
-                }
-            }
-        }
-        
-        fontsLoaded = true;
-    }
-}
-
 Result Gui::init(void)
 {
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
@@ -1026,6 +1025,7 @@ Result Gui::init(void)
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
+    std::lock_guard<std::mutex> lock(fontMutex);
     fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
 
     CFG_Region region = getRegionFromLanguage();
@@ -1141,9 +1141,11 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
+    std::lock_guard<std::mutex> lock(fontMutex);
     if (textBuffer)
     {
         delete textBuffer;
+        textBuffer = nullptr;
     }
     for (const auto& font : fonts)
     {
@@ -1152,6 +1154,8 @@ void Gui::exit(void)
             C2D_FontFree(font);
         }
     }
+    fonts.clear();
+
     C2D_Fini();
     C3D_Fini();
     Sound::exit();
