@@ -465,9 +465,28 @@ namespace
     void iconThread()
     {
         u16 w, h;
-        int xIcon = 176, yIcon = 96;
+        int xIcon = 176, yIcon = 96, margin = 4, selector = 2;
         float time = 0.0f;
-        const float speed = 0.02f;
+        const float speed = 0.025f;
+        
+        // Add particles for visual interest
+        constexpr int NUM_PARTICLES = 40;
+        struct Particle {
+            float x, y;
+            float speed;
+            float size;
+            float alpha;
+        };
+        Particle particles[NUM_PARTICLES];
+        
+        // Initialize particles
+        for (int i = 0; i < NUM_PARTICLES; i++) {
+            particles[i].x = rand() % 400;
+            particles[i].y = rand() % 240;
+            particles[i].speed = 0.2f + (rand() % 30) / 100.0f;
+            particles[i].size = 1 + (rand() % 3);
+            particles[i].alpha = 0.3f + (rand() % 70) / 100.0f;
+        }
         
         while (moveIcon.test_and_set())
         {
@@ -479,8 +498,45 @@ namespace
                 float xWave = sin(xRatio * 6.0f + time) * 0.5f + 0.5f;
                 
                 for (int y = 0; y < 240; y += 2) {
-                    // if pixels are in the icon area, skip them
-                    if (x >= xIcon && x < xIcon + 48 && y >= yIcon && y < yIcon + 48) {
+                    // Skip pixels in the icon area
+                    if (x >= xIcon && x < xIcon + 48 && 
+                        y >= yIcon && y < yIcon + 48) {
+                        continue;
+                    }
+
+                    bool glow = true;
+                    if ((x >= xIcon - margin && x < xIcon + 48 + margin && 
+                         y >= yIcon - margin && y < yIcon + 48 + margin)) {
+                        if ((x >= xIcon - selector && x < xIcon + 48 + selector && 
+                             y >= yIcon - selector && y < yIcon + 48 + selector)) {
+                            glow = false;
+                        }
+
+                        u8 r, g, b;
+
+                        if (glow) {
+                            float highlight_multiplier = fmax(0.0, fabs(fmod(time, 1.0) - 0.5) / 0.5);
+                            r = COLOR_SELECTOR.r;
+                            g = COLOR_SELECTOR.g;
+                            b = COLOR_SELECTOR.b;
+                            PKSM_Color color = PKSM_Color(r + (255 - r) * highlight_multiplier,
+                                          g + (255 - g) * highlight_multiplier, b + (255 - b) * highlight_multiplier, 255);
+                            r = color.r;
+                            g = color.g;
+                            b = color.b;
+                        } else {
+                            r = g = b = 0;
+                        }
+
+                        // Set 2x2 pixel blocks for better performance
+                        for (int dx = 0; dx < 2 && x+dx < 400; dx++) {
+                            for (int dy = 0; dy < 2 && y+dy < 240; dy++) {
+                                u8* pixel = fb + (x+dx) * 3 * 240 + (y+dy) * 3;
+                                pixel[0] = r;
+                                pixel[1] = g;
+                                pixel[2] = b;
+                            }
+                        }
                         continue;
                     }
 
@@ -489,7 +545,7 @@ namespace
                     // Create smooth color transitions
                     u8 r = (u8)(255 * (sin(time + xRatio * 3.14f) * 0.5f + 0.5f));
                     u8 g = (u8)(255 * (cos(time * 0.7f + yRatio * 3.14f) * 0.5f + 0.5f));
-                    u8 b = (u8)(255 * xWave * (sin(xRatio * yRatio * 10.0f + time * 1.1f) * 0.5f + 0.5f));
+                    u8 b = (u8)(255 * (xWave * (sin(xRatio * yRatio * 10.0f + time * 1.1f) * 0.5f + 0.5f)));
                     
                     // Set 2x2 pixel blocks for better performance
                     for (int dx = 0; dx < 2 && x+dx < 400; dx++) {
@@ -502,7 +558,35 @@ namespace
                     }
                 }
             }
-
+            
+            // Draw particles
+            for (int i = 0; i < NUM_PARTICLES; i++) {
+                // Update particle position
+                particles[i].y -= particles[i].speed;
+                if (particles[i].y < 0) {
+                    particles[i].y = 240;
+                    particles[i].x = rand() % 400;
+                }
+                
+                // Skip particles in icon area
+                if (particles[i].x >= xIcon - margin && particles[i].x < xIcon + 48 + margin &&
+                    particles[i].y >= yIcon - margin && particles[i].y < yIcon + 48 + margin) {
+                    continue;
+                }
+                
+                // Draw particle with alpha blending
+                int size = particles[i].size;
+                int alpha = (int)(particles[i].alpha * 255);
+                for (int px = 0; px < size && (int)particles[i].x + px < 400; px++) {
+                    for (int py = 0; py < size && (int)particles[i].y + py < 240; py++) {
+                        u8* p = fb + ((int)particles[i].x + px) * 3 * 240 + ((int)particles[i].y + py) * 3;
+                        p[0] = (p[0] * (255 - alpha) + 255 * alpha) / 255;
+                        p[1] = (p[1] * (255 - alpha) + 255 * alpha) / 255;
+                        p[2] = (p[2] * (255 - alpha) + 255 * alpha) / 255;
+                    }
+                }
+            }
+            
             int xOff = 0;
             for (const auto& line : bootSplash)
             {
@@ -510,11 +594,7 @@ namespace
                     gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (xIcon + xOff++) * 3 * 240 + yIcon * 3);
             }
             
-            // Update animation time
             time += speed;
-            if (time >= 2 * 3.14159f) {
-                time -= 2 * 3.14159f;
-            }
             
             gfxFlushBuffers();
             gfxSwapBuffersGpu();
@@ -568,6 +648,8 @@ Result App::init(const std::string& execPath)
     // auto start = std::chrono::high_resolution_clock::now();
 
     Result res;
+
+    srand(time(NULL));
 
     hidInit();
     gfxInitDefault();
