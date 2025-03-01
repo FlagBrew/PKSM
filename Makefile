@@ -3,8 +3,8 @@ export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager
 export PKSM_AUTHOR		:=	FlagBrew
 
 export VERSION_MAJOR	:=	10
-export VERSION_MINOR	:=	1
-export VERSION_MICRO	:=	4
+export VERSION_MINOR	:=	2
+export VERSION_MICRO	:=	0
 GIT_REV					:=	$(shell git rev-parse --short HEAD)
 OLD_INFO				:=	$(shell if [ -e appinfo.hash ]; then cat appinfo.hash; fi)
 NOW_INFO				:=	$(PKSM_TITLE) $(PKSM_DESCRIPTION) $(PKSM_AUTHOR) $(VERSION_MAJOR) $(VERSION_MINOR) $(VERSION_MICRO) $(GIT_REV)
