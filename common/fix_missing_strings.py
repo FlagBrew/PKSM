@@ -4,7 +4,7 @@ import codecs
 
 gui_en = {}
 
-with open("../assets/romfs/i18n/en/gui.json", "r") as f:
+with open("../assets/romfs/i18n/eng/gui.json", "r") as f:
     gui_en = json.load(f)
 
 for root, _, files in os.walk('../assets/romfs/i18n'):
