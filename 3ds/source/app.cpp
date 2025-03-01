@@ -465,7 +465,7 @@ namespace
     void iconThread()
     {
         u16 w, h;
-        int xIcon = 176, yIcon = 96, margin = 4, selector = 2;
+        int xIcon = 176, yIcon = 96, splashIconMargin = 4, glowWidth = 2;
         float time = 0.0f;
         const float speed = 0.025f;
         
@@ -504,16 +504,15 @@ namespace
                         continue;
                     }
 
-                    bool glow = true;
-                    if ((x >= xIcon - margin && x < xIcon + 48 + margin && 
-                         y >= yIcon - margin && y < yIcon + 48 + margin)) {
-                        if ((x >= xIcon - selector && x < xIcon + 48 + selector && 
-                             y >= yIcon - selector && y < yIcon + 48 + selector)) {
-                            glow = false;
+                    bool glow = false;
+                    if ((x >= xIcon - splashIconMargin && x < xIcon + 48 + splashIconMargin && 
+                         y >= yIcon - splashIconMargin && y < yIcon + 48 + splashIconMargin)) {
+                        if ((x >= xIcon - glowWidth && x < xIcon + 48 + glowWidth && 
+                             y >= yIcon - glowWidth && y < yIcon + 48 + glowWidth)) {
+                            glow = true;
                         }
 
                         u8 r, g, b;
-
                         if (glow) {
                             float highlight_multiplier = fmax(0.0, fabs(fmod(time, 1.0) - 0.5) / 0.5);
                             r = COLOR_SELECTOR.r;
@@ -569,8 +568,8 @@ namespace
                 }
                 
                 // Skip particles in icon area
-                if (particles[i].x >= xIcon - margin && particles[i].x < xIcon + 48 + margin &&
-                    particles[i].y >= yIcon - margin && particles[i].y < yIcon + 48 + margin) {
+                if (particles[i].x >= xIcon - splashIconMargin && particles[i].x < xIcon + 48 + splashIconMargin &&
+                    particles[i].y >= yIcon - splashIconMargin && particles[i].y < yIcon + 48 + splashIconMargin) {
                     continue;
                 }
                 
