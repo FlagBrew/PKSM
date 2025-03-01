@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ bool receiveSaveFromBridge(void)
     {
         size_t torecv = size - total > chunk ? chunk : size - total;
         n             = recv(fdconn, &data[total], torecv, 0);
-        total         += n;
+        total        += n;
         if (n <= 0)
         {
             break;

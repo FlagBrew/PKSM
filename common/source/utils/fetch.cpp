@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -187,9 +187,9 @@ void Fetch::multiMainThread()
         {
             // Find the done handle
             __lock_acquire(fetchesMutex);
-            auto it = std::find_if(fetches.begin(), fetches.end(),
-                [&msg](const MultiFetchRecord& record)
-                { return record.fetch->curl.get() == msg->easy_handle; });
+            auto it =
+                std::find_if(fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record)
+                    { return record.fetch->curl.get() == msg->easy_handle; });
             // And delete it
             if (it != fetches.end())
             {

@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -537,7 +537,7 @@ void TitleLoader::backupSave(const std::string& id)
     path += std::format("/{0:d}-{1:d}-{2:d}_{3:d}-{4:d}-{5:d}/", now.year(), now.month(), now.day(),
         now.hour(), now.minute(), now.second());
     mkdir(path.c_str(), 777);
-    path      += idToSaveName(id);
+    path     += idToSaveName(id);
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {

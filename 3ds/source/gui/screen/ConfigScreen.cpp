@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -698,7 +698,8 @@ void ConfigScreen::drawBottom() const
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
         Gui::text(i18n::localize("TITLE_IDS"), 19, 192, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("API_URL"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(i18n::localize("API_URL"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+            TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])
         {

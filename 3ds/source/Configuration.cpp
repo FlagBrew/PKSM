@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ Configuration::Configuration()
             {
                 // (*mJson)["patronCode"]   = "";
                 // (*mJson)["alphaChannel"] = false;
-                (*mJson)["autoUpdate"]   = true;
+                (*mJson)["autoUpdate"] = true;
             }
             if ((*mJson)["version"].get<int>() < 9)
             {

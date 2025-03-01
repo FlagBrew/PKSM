@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ CloudScreen::CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     clickButtons[30] = std::make_unique<ClickButton>(
         25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK);
-    
+
     websiteURL = Configuration::getInstance().apiUrl();
 }
 
@@ -801,7 +801,7 @@ void CloudScreen::shareSend()
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, version.c_str());
-    
+
     std::string writeData = "";
     if (auto fetch =
             Fetch::init(websiteURL + "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))

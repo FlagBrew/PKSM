@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -158,41 +158,33 @@ private:
     template <typename... Args>
     static constexpr auto create_ref_tuple(std::tuple<Args...>& t) noexcept
     {
-        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>)
-        {
+        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>) {
             return std::tuple<Args&...>(std::get<Indices>(t)...);
-        }
-        (std::index_sequence_for<Args...>{});
+        }(std::index_sequence_for<Args...>{});
     }
 
     template <typename... Args>
     static constexpr auto create_ref_tuple(const std::tuple<Args...>& t) noexcept
     {
-        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>)
-        {
+        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>) {
             return std::tuple<const Args&...>(std::get<Indices>(t)...);
-        }
-        (std::index_sequence_for<Args...>{});
+        }(std::index_sequence_for<Args...>{});
     }
 
     template <typename... Args>
     static constexpr auto create_ref_tuple(std::tuple<Args...>&& t) noexcept
     {
-        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>)
-        {
+        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>) {
             return std::tuple<Args&&...>(std::get<Indices>(t)...);
-        }
-        (std::index_sequence_for<Args...>{});
+        }(std::index_sequence_for<Args...>{});
     }
 
     template <typename... Args>
     static constexpr auto create_ref_tuple(const std::tuple<Args...>&& t) noexcept
     {
-        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>)
-        {
+        return [&]<std::size_t... Indices>(std::index_sequence<Indices...>) {
             return std::tuple<const Args&&...>(std::get<Indices>(t)...);
-        }
-        (std::index_sequence_for<Args...>{});
+        }(std::index_sequence_for<Args...>{});
     }
 
 public:

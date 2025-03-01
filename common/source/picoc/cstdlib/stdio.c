@@ -126,7 +126,7 @@ void StdioFprintfWord(StdOutStream* Stream, const char* Format, unsigned int Val
     }
     else
     {
-        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount         = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -194,7 +194,7 @@ void StdioFprintfLong(StdOutStream* Stream, const char* Format, uint64_t Value)
     }
     else
     {
-        int CCount        = sprintf(Stream->StrOutPtr, PlatformFormat, Value);
+        int CCount         = sprintf(Stream->StrOutPtr, PlatformFormat, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -220,7 +220,7 @@ void StdioFprintfFP(StdOutStream* Stream, const char* Format, double Value)
     }
     else
     {
-        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount         = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }
@@ -246,7 +246,7 @@ void StdioFprintfPointer(StdOutStream* Stream, const char* Format, void* Value)
     }
     else
     {
-        int CCount        = sprintf(Stream->StrOutPtr, Format, Value);
+        int CCount         = sprintf(Stream->StrOutPtr, Format, Value);
         Stream->CharCount += CCount;
         Stream->StrOutPtr += CCount;
     }

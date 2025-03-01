@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,17 +33,19 @@
 #include "sound.hpp"
 #include "TextParse.hpp"
 #include "utils/format.hpp"
+#include <atomic>
 #include <stack>
 #include <thread>
-#include <atomic>
 
-static CFG_Region getRegionFromLanguage() {
+static CFG_Region getRegionFromLanguage()
+{
     u8 language;
     CFGU_GetSystemLanguage(&language);
     CFG_Region region = CFG_REGION_USA;
-    
+
     // Map language setting to appropriate region for font loading
-    switch (language) {
+    switch (language)
+    {
         case CFG_LANGUAGE_ZH:
             region = CFG_REGION_CHN;
             break;
@@ -172,7 +174,7 @@ namespace
 
 // Creates a form array with proper storage duration
 #define FA(...)                                                                                    \
-    []<std::array Values = {__VA_ARGS__}>() consteval                                              \
+    []<std::array Values = { __VA_ARGS__ }>() consteval                                            \
         ->std::span<const typename decltype(Values)::value_type>                                   \
     {                                                                                              \
         return Values;                                                                             \
@@ -584,25 +586,24 @@ namespace
     {
         // Don't load the already loaded region
         CFG_Region currentRegion = getRegionFromLanguage();
-        
+
         std::vector<CFG_Region> regionsToLoad = {
-            CFG_REGION_USA,
-            CFG_REGION_TWN, 
-            CFG_REGION_CHN,
-            CFG_REGION_KOR
-        };
-        
-        for (auto region : regionsToLoad) {
-            if (region != currentRegion) {
+            CFG_REGION_USA, CFG_REGION_TWN, CFG_REGION_CHN, CFG_REGION_KOR};
+
+        for (auto region : regionsToLoad)
+        {
+            if (region != currentRegion)
+            {
                 C2D_Font font = C2D_FontLoadSystem(region);
-                if (font) {
+                if (font)
+                {
                     std::lock_guard<std::mutex> lock(fontMutex);
                     fonts.emplace_back(font);
                     textBuffer->addFont(font);
                 }
             }
         }
-        
+
         fontsLoaded = true;
     }
 }
@@ -880,7 +881,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     std::lock_guard<std::mutex> lock(fontMutex);
     textMode            = true;
     const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y                   -= sizeY * 6;
+    y                  -= sizeY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -1030,7 +1031,7 @@ Result Gui::init(void)
 
     CFG_Region region = getRegionFromLanguage();
     fonts.emplace_back(C2D_FontLoadSystem(region));
-    
+
     textBuffer = new TextParse::TextBuf(8192, fonts);
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
@@ -1413,7 +1414,7 @@ void Gui::sprite(int key, int x, int y)
         /* RIGHT */
         x += 119;
         Gui::drawSolidRect(x, y, 263, rep + 10, PKSM_Color(26, 35, 126, 255));
-        x      += 263;
+        x     += 263;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
@@ -1661,7 +1662,7 @@ void Gui::sprite(int key, int x, int y)
         x += 5;
         Gui::drawSolidRect(x, y, 382, rep + 10, PKSM_Color(26, 35, 126, 255));
         /* RIGHT */
-        x      += 382;
+        x     += 382;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
