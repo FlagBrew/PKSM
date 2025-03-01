@@ -94,8 +94,6 @@ public:
 
     const std::string& apiUrl(void) const;
 
-    bool useApiUrl(void) const;
-
     bool autoUpdate(void) const;
 
     void language(pksm::Language lang);
@@ -130,8 +128,6 @@ public:
     void showBackups(bool value);
 
     void apiUrl(const std::string& value);
-
-    void useApiUrl(bool value);
 
     void autoUpdate(bool value);
 

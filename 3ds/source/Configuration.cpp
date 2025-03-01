@@ -210,8 +210,8 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() < 10)
             {
                 mJson->erase("legalEndpoint");
-                (*mJson)["apiUrl"]    = "";
-                (*mJson)["useApiUrl"] = false;
+                (*mJson)["apiUrl"] = "";
+                // (*mJson)["useApiUrl"] = false;
             }
             if ((*mJson)["version"].get<int>() < 11)
             {
@@ -278,7 +278,6 @@ Configuration::Configuration()
             !(mJson->contains("randomMusic") && (*mJson)["randomMusic"].is_boolean()) ||
             !(mJson->contains("showBackups") && (*mJson)["showBackups"].is_boolean()) ||
             !(mJson->contains("apiUrl") && (*mJson)["apiUrl"].is_string()) ||
-            !(mJson->contains("useApiUrl") && (*mJson)["useApiUrl"].is_boolean()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
             !(mJson->contains("titles") && (*mJson)["titles"].is_object()) ||
             !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
@@ -474,11 +473,6 @@ const std::string& Configuration::apiUrl(void) const
     return (*mJson)["apiUrl"].get_ref<std::string&>();
 }
 
-bool Configuration::useApiUrl(void) const
-{
-    return (*mJson)["useApiUrl"];
-}
-
 bool Configuration::autoUpdate(void) const
 {
     return (*mJson)["autoUpdate"];
@@ -562,11 +556,6 @@ void Configuration::showBackups(bool value)
 void Configuration::apiUrl(const std::string& value)
 {
     (*mJson)["apiUrl"] = value;
-}
-
-void Configuration::useApiUrl(bool value)
-{
-    (*mJson)["useApiUrl"] = value;
 }
 
 void Configuration::autoUpdate(bool value)

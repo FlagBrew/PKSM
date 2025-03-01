@@ -43,6 +43,5 @@
   "randomMusic": false,
   "showBackups": false,
   "apiUrl": "",
-  "useApiUrl": false,
   "autoUpdate": true
 }
