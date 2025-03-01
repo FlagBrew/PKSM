@@ -58,7 +58,6 @@
     "SEARCH": "Search",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "기술/비전 머신",
-    "TMS": "기술머신",
     "TOTAL": "총합",
     "TRAINER_NAME": "Trainer Name: {:s}",
     "TREASURES": "Treasures",
@@ -71,6 +70,5 @@
     "VIEW": "뷰",
     "WC_NUM": "Wonder Cards: {:d}",
     "YES": "예",
-    "YOUR_OT_NAME": "당신의 어버이 이름",
     "ZCRYSTALS": "Z-크리스탈"
 }

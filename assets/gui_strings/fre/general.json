@@ -58,7 +58,6 @@
     "SEARCH": "Rechercher",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "CT/CS",
-    "TMS": "CTs",
     "TOTAL": "TOTAL",
     "TRAINER_NAME": "Nom du Dresseur: {:s}",
     "TREASURES": "Trésors",
@@ -71,6 +70,5 @@
     "VIEW": "Voir",
     "WC_NUM": "Cartes Miracle: {:d}",
     "YES": "Oui",
-    "YOUR_OT_NAME": "Nom de votre DO",
     "ZCRYSTALS": "Cristaux Z"
 }

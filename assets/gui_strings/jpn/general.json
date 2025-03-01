@@ -58,7 +58,6 @@
     "SEARCH": "検索",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "技マシン",
-    "TMS": "技マシン",
     "TOTAL": "合計",
     "TRAINER_NAME": "トレーナー名: {:s}",
     "TREASURES": "宝",
@@ -71,6 +70,5 @@
     "VIEW": "見る",
     "WC_NUM": "不思議なカード: {:d}",
     "YES": "はい",
-    "YOUR_OT_NAME": "あなたのトレーナー名",
     "ZCRYSTALS": "Zクリスタル"
 }
