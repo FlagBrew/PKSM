@@ -73,7 +73,8 @@ endif
 
 docs:
 	@mkdir -p $(OUTDIR)
-	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
+	@gwtc -o $(OUTDIR) -n "$(PKSM_TITLE) Manual - v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
+	@sed -i 's|\(<img[^>]*src="\)\(\./screenshots\)|\1https://raw.githubusercontent.com/wiki/FlagBrew/PKSM/screenshots|g' $(OUTDIR)/*.html
 
 clean:
 	@rm -f appinfo.hash
