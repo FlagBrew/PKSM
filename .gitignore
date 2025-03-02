@@ -31,3 +31,12 @@ common/generate_categories_for_other_languages.py
 switch_compile_commands.json
 .clangd
 out
+
+# Switch-specific ignores
+switch/build/
+switch/*.elf
+switch/*.nacp
+switch/*.nro
+switch/*.map
+switch/romfs/gfx/mock/
+PKSM.lst
