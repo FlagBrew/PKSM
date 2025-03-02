@@ -58,7 +58,6 @@
     "SEARCH": "Zoeken",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "TMs/HMs",
-    "TMS": "TMs",
     "TOTAL": "TOTAAL",
     "TRAINER_NAME": "Trainer Naam: {:s}",
     "TREASURES": "Treasures",
@@ -71,6 +70,5 @@
     "VIEW": "Weergeven",
     "WC_NUM": "Wonder Cards: {:d}",
     "YES": "Ja",
-    "YOUR_OT_NAME": "Uw OT naam",
     "ZCRYSTALS": "Z-Crystals"
 }

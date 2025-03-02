@@ -58,7 +58,6 @@
     "SEARCH": "搜索",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "招式学习器/秘传学习器",
-    "TMS": "招式学习器",
     "TOTAL": "总合",
     "TRAINER_NAME": "训练者叫: {:s}",
     "TREASURES": "Treasures",
@@ -71,6 +70,5 @@
     "VIEW": "浏览",
     "WC_NUM": "Wonder Cards: {:d}",
     "YES": "是",
-    "YOUR_OT_NAME": "你的初训家名称",
     "ZCRYSTALS": "Ｚ纯晶"
 }

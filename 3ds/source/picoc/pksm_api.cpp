@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62, FM1337
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62, FM1337
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -594,7 +594,7 @@ void net_tcp_receiver(
     *bytesReceived = 0;
     while (*bytesReceived < size)
     {
-        int n          = recv(fdconn, buffer + *bytesReceived, size, 0);
+        int n           = recv(fdconn, buffer + *bytesReceived, size, 0);
         *bytesReceived += n;
         if (n <= 0)
         {

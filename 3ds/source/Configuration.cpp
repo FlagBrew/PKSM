@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -172,9 +172,9 @@ Configuration::Configuration()
             }
             if ((*mJson)["version"].get<int>() < 8)
             {
-                (*mJson)["patronCode"]   = "";
-                (*mJson)["alphaChannel"] = false;
-                (*mJson)["autoUpdate"]   = true;
+                // (*mJson)["patronCode"]   = "";
+                // (*mJson)["alphaChannel"] = false;
+                (*mJson)["autoUpdate"] = true;
             }
             if ((*mJson)["version"].get<int>() < 9)
             {
@@ -210,8 +210,8 @@ Configuration::Configuration()
             if ((*mJson)["version"].get<int>() < 10)
             {
                 mJson->erase("legalEndpoint");
-                (*mJson)["apiUrl"]    = "";
-                (*mJson)["useApiUrl"] = false;
+                (*mJson)["apiUrl"] = "";
+                // (*mJson)["useApiUrl"] = false;
             }
             if ((*mJson)["version"].get<int>() < 11)
             {
@@ -278,9 +278,6 @@ Configuration::Configuration()
             !(mJson->contains("randomMusic") && (*mJson)["randomMusic"].is_boolean()) ||
             !(mJson->contains("showBackups") && (*mJson)["showBackups"].is_boolean()) ||
             !(mJson->contains("apiUrl") && (*mJson)["apiUrl"].is_string()) ||
-            !(mJson->contains("useApiUrl") && (*mJson)["useApiUrl"].is_boolean()) ||
-            !(mJson->contains("patronCode") && (*mJson)["patronCode"].is_string()) ||
-            !(mJson->contains("alphaChannel") && (*mJson)["alphaChannel"].is_boolean()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
             !(mJson->contains("titles") && (*mJson)["titles"].is_object()) ||
             !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
@@ -476,21 +473,6 @@ const std::string& Configuration::apiUrl(void) const
     return (*mJson)["apiUrl"].get_ref<std::string&>();
 }
 
-bool Configuration::useApiUrl(void) const
-{
-    return (*mJson)["useApiUrl"];
-}
-
-const std::string& Configuration::patronCode(void) const
-{
-    return (*mJson)["patronCode"].get_ref<std::string&>();
-}
-
-bool Configuration::alphaChannel(void) const
-{
-    return (*mJson)["alphaChannel"];
-}
-
 bool Configuration::autoUpdate(void) const
 {
     return (*mJson)["autoUpdate"];
@@ -574,21 +556,6 @@ void Configuration::showBackups(bool value)
 void Configuration::apiUrl(const std::string& value)
 {
     (*mJson)["apiUrl"] = value;
-}
-
-void Configuration::useApiUrl(bool value)
-{
-    (*mJson)["useApiUrl"] = value;
-}
-
-void Configuration::patronCode(const std::string& value)
-{
-    (*mJson)["patronCode"] = value;
-}
-
-void Configuration::alphaChannel(bool value)
-{
-    (*mJson)["alphaChannel"] = value;
 }
 
 void Configuration::autoUpdate(bool value)

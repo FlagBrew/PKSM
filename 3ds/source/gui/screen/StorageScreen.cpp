@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -207,11 +207,12 @@ StorageScreen::StorageScreen()
         3, 211, 28, 28,
         [this]()
         {
-            if (Configuration::getInstance().apiUrl() == "") {
+            if (Configuration::getInstance().apiUrl() == "")
+            {
                 Gui::warn(i18n::localize("API_URL_REQUIRED"));
-                return false;    
+                return false;
             }
-            
+
             Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;
@@ -235,8 +236,7 @@ StorageScreen::StorageScreen()
         for (u8 column = 0; column < (maxPkmInBox / 5); column++)
         {
             clickButtons[row * (maxPkmInBox / 5) + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30,
-                [this, row, column, maxPkmInBox]()
+                x, y, 34, 30, [this, row, column, maxPkmInBox]()
                 { return this->clickBottomIndex(row * (maxPkmInBox / 5) + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
             x += 34;
@@ -992,9 +992,9 @@ bool StorageScreen::showViewer()
     {
         justSwitched = true;
         overlay      = std::make_unique<StorageViewOverlay>(*this, infoMon, moveMon, partyNum,
-            selectDimensions, currentlySelecting,
-            std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1},
-            pickupMode != PickupMode::SWAP);
+                 selectDimensions, currentlySelecting,
+                 std::pair<int, int>{storageChosen ? storageBox : -1, cursorIndex - 1},
+                 pickupMode != PickupMode::SWAP);
     }
     return true;
 }

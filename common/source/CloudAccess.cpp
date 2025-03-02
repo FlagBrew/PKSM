@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ namespace
 }
 
 CloudAccess::Page::~Page() {}
-
 
 void CloudAccess::downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
     bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE)
@@ -189,7 +188,7 @@ nlohmann::json CloudAccess::grabPage(int num)
 
     auto fetch = Fetch::init(url, true, &retData, headers, postData);
     fetch->setopt(CURLOPT_TIMEOUT, 10L);
-    auto res   = Fetch::perform(fetch);
+    auto res = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 
     if (res.index() == 0)
@@ -246,7 +245,9 @@ std::pair<std::string, std::string> CloudAccess::makeURL(int num, SortType type,
     post_data.push_back({"sort_field", sortTypeToString(type)});
     post_data.push_back({"sort_direction", !ascend});
 
-    return {Configuration::getInstance().apiUrl() + "api/v2/gpss/search/pokemon?page=" + std::to_string(num), post_data.dump()};
+    return {Configuration::getInstance().apiUrl() +
+                "api/v2/gpss/search/pokemon?page=" + std::to_string(num),
+        post_data.dump()};
 }
 
 std::unique_ptr<pksm::PKX> CloudAccess::pkm(size_t slot) const
@@ -283,10 +284,10 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
     {
         auto ret = pkm(slot);
 
-        if (auto fetch =
-                Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/pokemon/" +
-                                (*current->data)["pokemon"][slot]["code"].get<std::string>(),
-                    true, nullptr, nullptr, ""))
+        if (auto fetch = Fetch::init(
+                Configuration::getInstance().apiUrl() + "api/v2/gpss/download/pokemon/" +
+                    (*current->data)["pokemon"][slot]["code"].get<std::string>(),
+                true, nullptr, nullptr, ""))
         {
             Fetch::performAsync(fetch);
         }
@@ -298,7 +299,13 @@ std::unique_ptr<pksm::PKX> CloudAccess::fetchPkm(size_t slot) const
 
 std::optional<int> CloudAccess::nextPage()
 {
-    next->available.wait(false);
+    // next->available.wait(false);
+    while (!next->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -326,7 +333,13 @@ std::optional<int> CloudAccess::nextPage()
 
 std::optional<int> CloudAccess::prevPage()
 {
-    prev->available.wait(false);
+    // prev->available.wait(false);
+    while (!prev->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
@@ -359,23 +372,15 @@ long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
     const std::string pksm_version =
         "source: PKSM " +
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    std::string code = Configuration::getInstance().patronCode();
-    if (!code.empty())
-    {
-        code = "patreon: " + code;
-    }
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
     headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, version.c_str());
-    if (!code.empty())
-    {
-        headers = curl_slist_append(headers, code.c_str());
-    }
 
     std::string writeData = "";
     if (auto fetch =
-            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))
+            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/pokemon", true,
+                &writeData, headers, ""))
     {
         auto mimeThing       = fetch->mimeInit();
         curl_mimepart* field = curl_mime_addpart(mimeThing.get());

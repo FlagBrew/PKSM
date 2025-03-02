@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ namespace TextParse
             for (auto& glyph : word.first)
             {
                 glyph.xPos += lineWidths.back();
-                glyph.line = lines();
+                glyph.line  = lines();
             }
             lineWidths[lines() - 1] += word.second.front();
         }

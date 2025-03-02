@@ -5,8 +5,6 @@
     "DOWNLOADING_FILE": "Scarico {:s}...",
     "GPSS_DOWNLOAD": "Scaricare questo Pokémon dal GPSS?",
     "GPSS_DOWNLOAD_GROUP": "Scaricare questo gruppo dal GPSS?",
-    "MYSTERY_GIFT_CHECK": "Verifico aggiornamenti ai Doni Segreti...",
-    "MYSTERY_GIFT_DOWNLOAD": "Scarico database Doni Segreti: {:d} of {:d}",
     "PKM_LEGALIZED": "Adesso il tuo Pokémon è legale!",
     "SHARE_CODE_ENTER_PROMPT": "Vuoi inserire un codice di condivisione?",
     "SHARE_DOWNLOAD_CODE": "Il tuo codice di download è ",

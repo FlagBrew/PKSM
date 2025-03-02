@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -48,13 +48,8 @@ void MysteryGift::init(pksm::Generation g)
 {
     mysteryGiftData.clear();
 
-    std::string sheetPath = "/3ds/PKSM/mysterygift/sheet" + (std::string)g + ".json.bz2";
-    std::string dataPath  = "/3ds/PKSM/mysterygift/data" + (std::string)g + ".bin.bz2";
-    if (!io::exists(sheetPath) || !io::exists(dataPath))
-    {
-        sheetPath = "romfs:/mg/sheet" + (std::string)g + ".json.bz2";
-        dataPath  = "romfs:/mg/data" + (std::string)g + ".bin.bz2";
-    }
+    std::string sheetPath = "romfs:/mg/sheet" + (std::string)g + ".json.bz2";
+    std::string dataPath  = "romfs:/mg/data" + (std::string)g + ".bin.bz2";
 
     FILE* f = fopen(sheetPath.c_str(), "rb");
     if (f != NULL)

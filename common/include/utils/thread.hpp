@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -66,7 +66,8 @@ namespace Threads
             using tuple_type =
                 alignsort_tuple<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...>;
             return {std::invoke(
-                        []<std::size_t... Indices>(std::index_sequence<Indices...>) {
+                        []<std::size_t... Indices>(std::index_sequence<Indices...>)
+                        {
                             return +[](void* argsRaw)
                             {
                                 std::unique_ptr<tuple_type> args = std::unique_ptr<tuple_type>(
@@ -150,9 +151,9 @@ namespace Threads
     template <typename EPFunc, typename... Args>
     bool create(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
-                         std::forward<decltype(args)>(args)...);
-                 }
+            internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                std::forward<decltype(args)>(args)...);
+        }
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
@@ -162,9 +163,9 @@ namespace Threads
     template <typename EPFunc, typename... Args>
     bool create(EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
-                         std::forward<decltype(args)>(args)...);
-                 }
+            internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                std::forward<decltype(args)>(args)...);
+        }
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
@@ -174,9 +175,9 @@ namespace Threads
     template <typename EPFunc, typename... Args>
     void executeTask(EPFunc&& entrypoint, Args&&... args)
         requires requires {
-                     internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
-                         std::forward<decltype(args)>(args)...);
-                 }
+            internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                std::forward<decltype(args)>(args)...);
+        }
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
@@ -188,8 +189,7 @@ namespace Threads
         internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
         requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     {
-        return create(
-            stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
+        return create(stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
     }
 
     template <auto MP>

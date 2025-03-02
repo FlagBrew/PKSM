@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62, Allen Lydiard
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ std::shared_ptr<Fetch> Fetch::init(const std::string& url, bool ssl, std::string
             fetch->setopt(CURLOPT_COPYPOSTFIELDS, postdata.data());
         }
         fetch->setopt(CURLOPT_NOPROGRESS, 1L);
-        fetch->setopt(CURLOPT_USERAGENT, "PKSM-curl/7.69.1");
+        fetch->setopt(CURLOPT_USERAGENT, "PKSM-curl/8.4.0");
         fetch->setopt(CURLOPT_FOLLOWLOCATION, 1L);
         fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 300L);
         fetch->setopt(CURLOPT_LOW_SPEED_TIME, 10L);
@@ -187,9 +187,9 @@ void Fetch::multiMainThread()
         {
             // Find the done handle
             __lock_acquire(fetchesMutex);
-            auto it = std::find_if(fetches.begin(), fetches.end(),
-                [&msg](const MultiFetchRecord& record)
-                { return record.fetch->curl.get() == msg->easy_handle; });
+            auto it =
+                std::find_if(fetches.begin(), fetches.end(), [&msg](const MultiFetchRecord& record)
+                    { return record.fetch->curl.get() == msg->easy_handle; });
             // And delete it
             if (it != fetches.end())
             {
@@ -209,7 +209,7 @@ void Fetch::multiMainThread()
         // Terrible things have happened, but I don't know what to do
     }
 
-    multiThreadInfo = true;
+    // multiThreadInfo = true;
 }
 
 Result Fetch::initMulti()
@@ -232,7 +232,7 @@ void Fetch::exitMulti()
     multiThreadInfo = false; // Stop multi thread
     if (multiInitialized)
     {
-        multiThreadInfo.wait(false); // Wait for it to be done
+        // multiThreadInfo.wait(false);
         // And finally clean up
         __lock_acquire(fetchesMutex);
         __lock_acquire(multiHandleMutex);
@@ -305,19 +305,24 @@ std::variant<CURLMcode, CURLcode> Fetch::perform(std::shared_ptr<Fetch> fetch)
     if (multiInitialized)
     {
         CURLcode cres;
-        std::atomic_flag wait;
+        std::atomic<bool> finished{false};
+
         CURLMcode mRes = performAsync(fetch,
-            [&cres, &wait](CURLcode code, std::shared_ptr<Fetch>)
+            [&cres, &finished](CURLcode code, std::shared_ptr<Fetch>)
             {
                 cres = code;
-                wait.test_and_set();
+                finished.store(true, std::memory_order_relaxed);
             });
         if (mRes != CURLM_OK)
         {
             return mRes;
         }
 
-        wait.wait(false);
+        while (!finished.load(std::memory_order_relaxed))
+        {
+            static constexpr timespec sleepTime = {0, 1000000};
+            nanosleep(&sleepTime, nullptr);
+        }
 
         return cres;
     }

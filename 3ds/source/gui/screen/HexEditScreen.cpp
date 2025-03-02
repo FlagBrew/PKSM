@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -473,7 +473,7 @@ bool HexEditScreen::editNumber(bool high, bool up)
     if (high)
     {
         u8 original = *chosen >> 4;
-        *chosen     &= 0x0F;
+        *chosen    &= 0x0F;
         if (up)
         {
             (*chosen) |= (original + 1) << 4;
@@ -1892,9 +1892,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                             break;
                         }
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen67ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -1986,9 +1985,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 6; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(marks[j])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                     }
@@ -2004,9 +2002,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 8; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen5ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -2089,9 +2086,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 6; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(marks[j])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                     }
@@ -2107,9 +2103,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 8; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen4ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -2143,9 +2138,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 5; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             (i18n::localize("SHINY_LEAF") + ' ') + (char)('A' + j), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                     }
@@ -2196,9 +2190,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 3; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -2213,9 +2206,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 6; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(marks[j])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                     }
@@ -2243,9 +2235,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 7; j < 8; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + (j - 7) * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + (j - 7) * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -2259,9 +2250,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 8; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(gen3ToggleTexts[currRibbon])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                         currRibbon++;
@@ -2367,9 +2357,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                     for (int j = 0; j < 6; j++)
                     {
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::localize(std::string(hyperVals[j])), true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);
                     }
@@ -2392,9 +2381,8 @@ HexEditScreen::HexEditScreen(pksm::PKX& pkm) : pkm(pkm), hid(240, 16)
                         }
                         // TR00 is item 1130
                         buttons[i].push_back(std::make_unique<HexEditButton>(
-                            30, 90 + j * 16, 13, 13,
-                            [this, i, j]() { return this->toggleBit(i, j); },
-                            ui_sheet_emulated_toggle_green_idx,
+                            30, 90 + j * 16, 13, 13, [this, i, j]()
+                            { return this->toggleBit(i, j); }, ui_sheet_emulated_toggle_green_idx,
                             i18n::item(Configuration::getInstance().language(), 1130 + currRibbon),
                             true, j));
                         buttons[i].back()->setToggled((pkm.rawData()[i] >> j) & 0x1);

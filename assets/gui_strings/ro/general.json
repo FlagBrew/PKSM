@@ -58,7 +58,6 @@
     "SEARCH": "Caută",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "TM-uri/HM-uri",
-    "TMS": "TM-uri",
     "TOTAL": "TOTAL",
     "TRAINER_NAME": "Nume Trainer: {:s}",
     "TREASURES": "Comori",
@@ -71,6 +70,5 @@
     "VIEW": "Vezi",
     "WC_NUM": "Wonder Card-uri: {:d}",
     "YES": "Da",
-    "YOUR_OT_NAME": "Numele tău de OT",
     "ZCRYSTALS": "Cristale Z"
 }

@@ -58,7 +58,6 @@
     "SEARCH": "Suche",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "TMs/VMs",
-    "TMS": "TMs",
     "TOTAL": "INSGESAMT",
     "TRAINER_NAME": "Trainer Name: {:s}",
     "TREASURES": "Schätze",
@@ -71,6 +70,5 @@
     "VIEW": "Anzeigen",
     "WC_NUM": "Wunderkarten: {:d}",
     "YES": "Ja",
-    "YOUR_OT_NAME": "Dein OT Name",
     "ZCRYSTALS": "Z-Kristalle"
 }

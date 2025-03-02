@@ -58,7 +58,6 @@
     "SEARCH": "Buscar",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "MTs/MOs",
-    "TMS": "MTs",
     "TOTAL": "TOTAL",
     "TRAINER_NAME": "Nombre del entrenador: {:s}",
     "TREASURES": "Tesoros",
@@ -71,6 +70,5 @@
     "VIEW": "Ver",
     "WC_NUM": "Wonder Cards: {:d}",
     "YES": "Sí",
-    "YOUR_OT_NAME": "Tu nombre de EO",
     "ZCRYSTALS": "Cristales Z"
 }

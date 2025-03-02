@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -714,7 +714,8 @@ void MiscEditScreen::validate()
 
     std::string url = Configuration::getInstance().apiUrl();
 
-    if (url == "") {
+    if (url == "")
+    {
         Gui::warn(i18n::localize("API_URL_REQUIRED"));
         curl_slist_free_all(headers);
         return;
@@ -730,8 +731,9 @@ void MiscEditScreen::validate()
         curl_mime_data(field, (char*)pkm.rawData().data(), pkm.getLength());
         curl_mime_filename(field, "pkmn");
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        // Incase you forgot to start the server or entered the wrong IP, it'll timeout after 10 seconds
-        fetch->setopt(CURLOPT_TIMEOUT, 10L); 
+        // Incase you forgot to start the server or entered the wrong IP, it'll timeout after 10
+        // seconds
+        fetch->setopt(CURLOPT_TIMEOUT, 10L);
 
         auto res = Fetch::perform(fetch);
         if (res.index() == 0)

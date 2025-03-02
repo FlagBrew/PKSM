@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -52,6 +52,8 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <sys/stat.h>
+
+// #include <chrono>
 
 namespace
 {
@@ -205,89 +207,11 @@ namespace
         {
             return false;
         }
-        const std::string patronCode = Configuration::getInstance().patronCode();
-
-        if (Configuration::getInstance().alphaChannel() && !patronCode.empty()) {
-            Gui::warn("Sorry, patreon builds discontinued for now,");
-            Gui::warn("Auto update also turned off to avoid issues,");
-            Gui::warn("You can re-enable it in the settings.");
-            Configuration::getInstance().alphaChannel(false);
-            Configuration::getInstance().autoUpdate(false);
-            return false;
-        }
 
         execPath        = execPath.substr(execPath.find(':') + 1);
         std::string url = "", path = "", retString = "";
-        if (Configuration::getInstance().alphaChannel() && !patronCode.empty())
-        {
-            struct curl_slist* headers = NULL;
-            headers = curl_slist_append(headers, ("patreon: " + patronCode).c_str());
-            if (auto fetch = Fetch::init(
-                    WEBSITE_URL "api/v2/patreon/update-check/PKSM", true, &retString, headers, ""))
-            {
-                moveIcon.clear();
-                Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
-                auto res = Fetch::perform(fetch);
-                if (res.index() == 1)
-                {
-                    if (std::get<1>(res) != CURLE_OK)
-                    {
-                        Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-                    }
-                    else
-                    {
-                        long status_code;
-                        fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                        switch (status_code)
-                        {
-                            case 200:
-                            {
-                                nlohmann::json retJson =
-                                    nlohmann::json::parse(retString, nullptr, false);
-                                if (const std::string hash =
-                                        (retJson.is_object() && retJson.contains("hash"))
-                                            ? retJson["hash"].get<std::string>()
-                                            : GIT_REV;
-                                    hash.substr(0, 8) != GIT_REV)
-                                {
-                                    url = WEBSITE_URL "api/v2/patreon/update/" + patronCode +
-                                          "/PKSM/" + hash + "/";
-                                    if (execPath.empty())
-                                    {
-                                        url  += "cia";
-                                        path = "/3ds/PKSM/PKSM.cia";
-                                    }
-                                    else
-                                    {
-                                        url  += "3dsx";
-                                        path = execPath + ".new";
-                                    }
-                                }
-                                break;
-                            }
-                            case 204:
-                                Gui::warn(i18n::localize("UPDATE_MISSING"));
-                                break;
-                            case 401:
-                            case 403:
-                                Gui::warn(i18n::localize("NOT_PATRON") + '\n' +
-                                          i18n::localize("INCIDENT_LOGGED"));
-                                break;
-                            case 502:
-                                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                                break;
-                            default:
-                                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                                break;
-                        }
-                    }
-                }
-            }
-            curl_slist_free_all(headers);
-        }
-        else if (auto fetch =
-                     Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest", true,
-                         &retString, nullptr, ""))
+        if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest",
+                true, &retString, nullptr, ""))
         {
             moveIcon.clear();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
@@ -332,12 +256,12 @@ namespace
                                           newVersion + "/PKSM";
                                     if (execPath != "")
                                     {
-                                        url  += ".3dsx";
+                                        url += ".3dsx";
                                         path = execPath + ".new";
                                     }
                                     else
                                     {
-                                        url  += ".cia";
+                                        url += ".cia";
                                         path = "/3ds/PKSM/PKSM.cia";
                                     }
                                 }
@@ -540,49 +464,164 @@ namespace
 
     void iconThread()
     {
-        int x = 176, y = 96;
         u16 w, h;
-        bool up   = pksm::randomNumber(0, 1) ? true : false;
-        bool left = pksm::randomNumber(0, 1) ? true : false;
-        u8 yMag   = pksm::randomNumber(0, 1) + 1;
-        u8 xMag   = pksm::randomNumber(0, 1) + 1;
+        int xIcon = 176, yIcon = 96, splashIconMargin = 4, glowWidth = 2;
+        float time        = 0.0f;
+        const float speed = 0.025f;
+
+        // Add particles for visual interest
+        constexpr int NUM_PARTICLES = 40;
+
+        struct Particle
+        {
+            float x, y;
+            float speed;
+            float size;
+            float alpha;
+        };
+
+        Particle particles[NUM_PARTICLES];
+
+        // Initialize particles
+        for (int i = 0; i < NUM_PARTICLES; i++)
+        {
+            particles[i].x     = rand() % 400;
+            particles[i].y     = rand() % 240;
+            particles[i].speed = 0.2f + (rand() % 30) / 100.0f;
+            particles[i].size  = 1 + (rand() % 3);
+            particles[i].alpha = 0.3f + (rand() % 70) / 100.0f;
+        }
+
         while (moveIcon.test_and_set())
         {
+            u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h);
+
+            // Draw gradient pattern
+            for (int x = 0; x < 400; x += 2)
+            {
+                float xRatio = (float)x / 400.0f;
+                float xWave  = sin(xRatio * 6.0f + time) * 0.5f + 0.5f;
+
+                for (int y = 0; y < 240; y += 2)
+                {
+                    // Skip pixels in the icon area
+                    if (x >= xIcon && x < xIcon + 48 && y >= yIcon && y < yIcon + 48)
+                    {
+                        continue;
+                    }
+
+                    bool glow = false;
+                    if ((x >= xIcon - splashIconMargin && x < xIcon + 48 + splashIconMargin &&
+                            y >= yIcon - splashIconMargin && y < yIcon + 48 + splashIconMargin))
+                    {
+                        if ((x >= xIcon - glowWidth && x < xIcon + 48 + glowWidth &&
+                                y >= yIcon - glowWidth && y < yIcon + 48 + glowWidth))
+                        {
+                            glow = true;
+                        }
+
+                        u8 r, g, b;
+                        if (glow)
+                        {
+                            float highlight_multiplier =
+                                fmax(0.0, fabs(fmod(time, 1.0) - 0.5) / 0.5);
+                            r                = COLOR_SELECTOR.r;
+                            g                = COLOR_SELECTOR.g;
+                            b                = COLOR_SELECTOR.b;
+                            PKSM_Color color = PKSM_Color(r + (255 - r) * highlight_multiplier,
+                                g + (255 - g) * highlight_multiplier,
+                                b + (255 - b) * highlight_multiplier, 255);
+                            r                = color.r;
+                            g                = color.g;
+                            b                = color.b;
+                        }
+                        else
+                        {
+                            r = g = b = 0;
+                        }
+
+                        // Set 2x2 pixel blocks for better performance
+                        for (int dx = 0; dx < 2 && x + dx < 400; dx++)
+                        {
+                            for (int dy = 0; dy < 2 && y + dy < 240; dy++)
+                            {
+                                u8* pixel = fb + (x + dx) * 3 * 240 + (y + dy) * 3;
+                                pixel[0]  = r;
+                                pixel[1]  = g;
+                                pixel[2]  = b;
+                            }
+                        }
+                        continue;
+                    }
+
+                    float yRatio = (float)y / 240.0f;
+
+                    // Create smooth color transitions
+                    u8 r = (u8)(255 * (sin(time + xRatio * 3.14f) * 0.5f + 0.5f));
+                    u8 g = (u8)(255 * (cos(time * 0.7f + yRatio * 3.14f) * 0.5f + 0.5f));
+                    u8 b =
+                        (u8)(255 *
+                             (xWave * (sin(xRatio * yRatio * 10.0f + time * 1.1f) * 0.5f + 0.5f)));
+
+                    // Set 2x2 pixel blocks for better performance
+                    for (int dx = 0; dx < 2 && x + dx < 400; dx++)
+                    {
+                        for (int dy = 0; dy < 2 && y + dy < 240; dy++)
+                        {
+                            u8* pixel = fb + (x + dx) * 3 * 240 + (y + dy) * 3;
+                            pixel[0]  = r;
+                            pixel[1]  = g;
+                            pixel[2]  = b;
+                        }
+                    }
+                }
+            }
+
+            // Draw particles
+            for (int i = 0; i < NUM_PARTICLES; i++)
+            {
+                // Update particle position
+                particles[i].y -= particles[i].speed;
+                if (particles[i].y < 0)
+                {
+                    particles[i].y = 240;
+                    particles[i].x = rand() % 400;
+                }
+
+                // Skip particles in icon area
+                if (particles[i].x >= xIcon - splashIconMargin &&
+                    particles[i].x < xIcon + 48 + splashIconMargin &&
+                    particles[i].y >= yIcon - splashIconMargin &&
+                    particles[i].y < yIcon + 48 + splashIconMargin)
+                {
+                    continue;
+                }
+
+                // Draw particle with alpha blending
+                int size  = particles[i].size;
+                int alpha = (int)(particles[i].alpha * 255);
+                for (int px = 0; px < size && (int)particles[i].x + px < 400; px++)
+                {
+                    for (int py = 0; py < size && (int)particles[i].y + py < 240; py++)
+                    {
+                        u8* p = fb + ((int)particles[i].x + px) * 3 * 240 +
+                                ((int)particles[i].y + py) * 3;
+                        p[0] = (p[0] * (255 - alpha) + 255 * alpha) / 255;
+                        p[1] = (p[1] * (255 - alpha) + 255 * alpha) / 255;
+                        p[2] = (p[2] * (255 - alpha) + 255 * alpha) / 255;
+                    }
+                }
+            }
+
             int xOff = 0;
-            std::fill_n(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h), 240 * 400 * 3, 0);
             for (const auto& line : bootSplash)
             {
                 std::copy(line.begin(), line.end(),
-                    gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (x + xOff++) * 3 * 240 + y * 3);
+                    gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h) + (xIcon + xOff++) * 3 * 240 +
+                        yIcon * 3);
             }
 
-            if (up)
-            {
-                y -= yMag;
-            }
-            else
-            {
-                y += yMag;
-            }
-            if (y >= 240 - 48 || y <= 0)
-            {
-                yMag = pksm::randomNumber(0, 1) + 1;
-                up   = !up;
-            }
-
-            if (left)
-            {
-                x -= xMag;
-            }
-            else
-            {
-                x += xMag;
-            }
-            if (x >= 400 - 48 || x <= 0)
-            {
-                xMag = pksm::randomNumber(0, 1) + 1;
-                left = !left;
-            }
+            time += speed;
 
             gfxFlushBuffers();
             gfxSwapBuffersGpu();
@@ -629,237 +668,15 @@ namespace
         }
         return -1;
     }
-
-    // Also checks modified time. If the checksum file is newer than the file, recalculate and write
-    // checksum If checksum file doesn't exist, calculate and write checksum
-    decltype(pksm::crypto::sha256({})) readGiftChecksum(const std::string& fileName)
-    {
-        struct
-        {
-            bool exists;
-            u64 mtime;
-        } fileInfo, checksumFileInfo;
-        struct stat mystat;
-
-        const std::string path         = "/3ds/PKSM/mysterygift/" + fileName;
-        const std::string checksumPath = path + ".sha";
-        const std::string romfsPath    = "romfs:/mg/" + fileName;
-        decltype(pksm::crypto::sha256({})) ret;
-
-        fileInfo.exists = (stat(path.c_str(), &mystat) == 0);
-        archive_getmtime(path.c_str(), &fileInfo.mtime);
-        checksumFileInfo.exists = (stat(checksumPath.c_str(), &mystat) == 0);
-        archive_getmtime(checksumPath.c_str(), &checksumFileInfo.mtime);
-
-        // Either both exist and file was modified before checksum file, or checksum file exists and
-        // file doesn't
-        if (checksumFileInfo.exists &&
-            (!fileInfo.exists || (fileInfo.exists && fileInfo.mtime <= checksumFileInfo.mtime)))
-        {
-            FILE* correctSum = fopen(checksumPath.c_str(), "rb");
-            if (correctSum)
-            {
-                fread(ret.data(), 1, 32, correctSum);
-                fclose(correctSum);
-                return ret;
-            }
-        }
-
-        FILE* file = fopen(romfsPath.c_str(), "rb");
-        if (file)
-        {
-            fseek(file, 0, SEEK_END);
-            size_t size = ftell(file);
-            rewind(file);
-            std::unique_ptr<u8[]> data = std::unique_ptr<u8[]>(new u8[size]);
-            fread(data.get(), 1, size, file);
-            fclose(file);
-
-            ret = pksm::crypto::sha256({data.get(), size});
-
-            file = fopen(checksumPath.c_str(), "wb");
-            if (file)
-            {
-                fwrite(ret.data(), 1, ret.size(), file);
-                fclose(file);
-            }
-        }
-
-        return ret;
-    }
-
-    void updateGifts(void)
-    {
-        u32 status;
-        ACU_GetWifiStatus(&status);
-        if (status == 0)
-        {
-            return;
-        }
-
-        u8 today = Date::today().day();
-
-        FILE* timestamp = fopen("/3ds/PKSM/mgTimeCheck", "rb");
-        if (timestamp)
-        {
-            u8 day = 0;
-            fread(&day, 1, 1, timestamp);
-            fclose(timestamp);
-
-            if (day == today)
-            {
-                return;
-            }
-        }
-
-        timestamp = fopen("/3ds/PKSM/mgTimeCheck", "wb");
-        if (timestamp)
-        {
-            fwrite(&today, 1, 1, timestamp);
-            fclose(timestamp);
-        }
-
-        struct giftCurlData
-        {
-            giftCurlData(FILE* file, const std::string& fileName)
-                : fileName(fileName), file(file), response(0), prevDownload(0), addedToTotal(false)
-            {
-            }
-
-            std::string fileName;
-            FILE* file;
-            pksm::crypto::SHA256 shaContext;
-            long response;
-            u32 prevDownload;
-            bool addedToTotal;
-        };
-
-        curl_write_callback giftWriteFunc = [](char* data, size_t size, size_t nitems, void* out)
-        {
-            giftCurlData* writeMe = (giftCurlData*)out;
-
-            if (data)
-            {
-                writeMe->shaContext.update({(u8*)data, size * nitems});
-
-                return fwrite(data, size, nitems, writeMe->file);
-            }
-            else
-            {
-                return size * nitems;
-            }
-        };
-
-        static constexpr std::array<pksm::Generation, 4> mgGens = {pksm::Generation::FOUR,
-            pksm::Generation::FIVE, pksm::Generation::SIX, pksm::Generation::SEVEN};
-
-        std::atomic<size_t> filesDone = 0;
-        size_t filesToDownload        = 0;
-        std::vector<giftCurlData> curlVars;
-        curlVars.reserve(mgGens.size() * 2);
-
-        Gui::waitFrame(i18n::localize("MYSTERY_GIFT_CHECK"));
-
-        for (const auto& gen : mgGens)
-        {
-            for (const std::string& fileName :
-                {"sheet" + (std::string)gen + ".json.bz2", "data" + (std::string)gen + ".bin.bz2"})
-            {
-                decltype(pksm::crypto::sha256({})) checksum = readGiftChecksum(fileName);
-
-                std::vector<u8> recvChecksum;
-                if (auto fetch = Fetch::init(
-                        CDN_URL "assets/gifts/" + fileName + ".sha", true, nullptr, nullptr, ""))
-                {
-                    fetch->setopt(
-                        CURLOPT_WRITEFUNCTION, (curl_write_callback)[](char* buffer, size_t size,
-                                                   size_t items, void* userThing) {
-                            std::vector<u8>* recv = (std::vector<u8>*)userThing;
-                            recv->insert(recv->end(), (u8*)buffer, (u8*)buffer + size * items);
-                            return size * items;
-                        });
-                    fetch->setopt(CURLOPT_WRITEDATA, &recvChecksum);
-
-                    Fetch::perform(fetch);
-
-                    long response;
-
-                    fetch->getinfo(CURLINFO_RESPONSE_CODE, &response);
-                    if (response == 200)
-                    {
-                        if (memcmp(recvChecksum.data(), checksum.data(),
-                                std::min(checksum.size(), recvChecksum.size())))
-                        {
-                            if ((fetch = Fetch::init(CDN_URL "assets/gifts/" + fileName, true,
-                                     nullptr, nullptr, "")))
-                            {
-                                std::string outPath = "/3ds/PKSM/mysterygift/" + fileName;
-                                FILE* outFile       = fopen(outPath.c_str(), "wb");
-
-                                if (outFile)
-                                {
-                                    curlVars.emplace_back(outFile, outPath);
-                                    fetch->setopt(CURLOPT_WRITEFUNCTION, giftWriteFunc);
-                                    fetch->setopt(CURLOPT_WRITEDATA, &curlVars.back());
-
-                                    if (Fetch::performAsync(fetch,
-                                            [progress = curlVars.end() - 1, &filesDone](
-                                                CURLcode code, std::shared_ptr<Fetch> fetch)
-                                            {
-                                                filesDone++;
-                                                fclose(progress->file);
-                                                fetch->getinfo(
-                                                    CURLINFO_RESPONSE_CODE, &progress->response);
-                                            }) != CURLM_OK)
-                                    {
-                                        filesDone++;
-                                        fclose(outFile);
-                                    }
-                                    else
-                                    {
-                                        filesToDownload++;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        while (filesDone != filesToDownload)
-        {
-            Gui::waitFrame(pksm::format(
-                i18n::localize("MYSTERY_GIFT_DOWNLOAD"), (size_t)filesDone, filesToDownload));
-            svcSleepThread(50'000'000);
-        }
-
-        for (auto& info : curlVars)
-        {
-            std::string shaFile = info.fileName + ".sha";
-            if (info.response != 200)
-            {
-                remove(info.fileName.c_str());
-                remove(shaFile.c_str());
-            }
-            else
-            {
-                decltype(pksm::crypto::sha256({})) checksum = info.shaContext.finish();
-
-                FILE* f = fopen(shaFile.c_str(), "wb");
-                if (f)
-                {
-                    fwrite(checksum.data(), 1, checksum.size(), f);
-                    fclose(f);
-                }
-            }
-        }
-    }
 }
 
 Result App::init(const std::string& execPath)
 {
+    // auto start = std::chrono::high_resolution_clock::now();
+
     Result res;
+
+    srand(time(NULL));
 
     hidInit();
     gfxInitDefault();
@@ -918,13 +735,15 @@ Result App::init(const std::string& execPath)
 
     if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
     {
-        return consoleDisplayError("cURL init falied", (Result)code);
+        return consoleDisplayError("cURL init failed", (Result)code);
     }
 
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
+
+    // link3dsStdio();
 
     if (R_FAILED(res = downloadAdditionalAssets()))
     {
@@ -962,11 +781,6 @@ Result App::init(const std::string& execPath)
         return rebootToPKSM(execPath);
     }
 
-    if (Configuration::getInstance().autoUpdate())
-    {
-        updateGifts();
-    }
-
     if (R_FAILED(res = Banks::init()))
     {
         return consoleDisplayError("Banks::init failed.", res);
@@ -987,6 +801,10 @@ Result App::init(const std::string& execPath)
     // uncomment when needing to debug with GDB
     // consoleDebugInit(debugDevice_SVC);
 
+    // auto end = std::chrono::high_resolution_clock::now();
+    // printf("Startup completed in: %sus\n",
+    // std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(end -
+    // start).count()).c_str());
     return 0;
 }
 

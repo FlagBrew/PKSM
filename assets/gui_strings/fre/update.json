@@ -3,7 +3,6 @@
     "UPDATE_FOUND_BACKUP": "MAJ trouvée! Sauvegarde de l'ExtData",
     "UPDATE_FOUND_DOWNLOAD": "MAJ trouvée! Téléchargement en cours...",
     "UPDATE_INSTALLING": "Installation de la mise à jour...",
-    "UPDATE_MISSING": "Fichiers de MAJ manquants sur le serveur!",
     "UPDATE_SUCCESS_1": "MAJ téléchargée correctement!",
     "UPDATE_SUCCESS_2": "Veuillez redémarrer PKSM!"
 }

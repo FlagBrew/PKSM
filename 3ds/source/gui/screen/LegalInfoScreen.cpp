@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -107,12 +107,12 @@ void LegalInfoScreen::attemptLegalization()
 
     std::string url = Configuration::getInstance().apiUrl();
 
-    if (url == "") {
+    if (url == "")
+    {
         Gui::warn(i18n::localize("API_URL_REQUIRED"));
         curl_slist_free_all(headers);
         return;
     }
-                
 
     std::string writeData;
     if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))
@@ -127,7 +127,7 @@ void LegalInfoScreen::attemptLegalization()
         // Either way after 120 seconds it will timeout if it didn't get a response.
         // It's higher than the previous check, but if you forgot to start the server
         // you couldn't get to this point as it would timeout on the legality check after 5 seconds.
-        fetch->setopt(CURLOPT_TIMEOUT, 120L); 
+        fetch->setopt(CURLOPT_TIMEOUT, 120L);
 
         auto res = Fetch::perform(fetch);
         curl_slist_free_all(headers);

@@ -58,7 +58,6 @@
     "SEARCH": "Cerca",
     "SWITCH_CONSOLE": "Switch",
     "TMHM": "MTs/MNs",
-    "TMS": "MTs",
     "TOTAL": "TOTALE",
     "TRAINER_NAME": "Nome Allenatore: {:s}",
     "TREASURES": "Treasures",
@@ -71,6 +70,5 @@
     "VIEW": "Dettagli",
     "WC_NUM": "Dono Segreto: {:d}",
     "YES": "Si",
-    "YOUR_OT_NAME": "Il tuo nome allenatore",
     "ZCRYSTALS": "Cristalli Z"
 }

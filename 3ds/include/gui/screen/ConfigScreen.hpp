@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -45,18 +45,14 @@ public:
 
 private:
     std::vector<std::unique_ptr<ToggleButton>> tabs;
-    std::array<std::vector<std::unique_ptr<Button>>, 5> tabButtons;
-    std::bitset<4> patronMenu;
-    std::bitset<9> debugMenu;
+    std::array<std::vector<std::unique_ptr<Button>>, 3> tabButtons;
     void back(void);
     void initButtons(void);
-    int patronMenuTimer;
-    int currentTab            = 0;
-    bool countPatronMenuTimer = false;
-    bool justSwitched         = true;
-    bool showBackupsChanged   = false;
-    bool useExtDataChanged    = false;
-    bool titleIdsChanged      = false;
+    int currentTab          = 0;
+    bool justSwitched       = true;
+    bool showBackupsChanged = false;
+    bool useExtDataChanged  = false;
+    bool titleIdsChanged    = false;
 };
 
 #endif

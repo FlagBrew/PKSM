@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -94,12 +94,6 @@ public:
 
     const std::string& apiUrl(void) const;
 
-    bool useApiUrl(void) const;
-
-    const std::string& patronCode(void) const;
-
-    bool alphaChannel(void) const;
-
     bool autoUpdate(void) const;
 
     void language(pksm::Language lang);
@@ -134,12 +128,6 @@ public:
     void showBackups(bool value);
 
     void apiUrl(const std::string& value);
-
-    void useApiUrl(bool value);
-
-    void patronCode(const std::string& value);
-
-    void alphaChannel(bool value);
 
     void autoUpdate(bool value);
 

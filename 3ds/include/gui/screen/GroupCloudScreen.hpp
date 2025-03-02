@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -70,10 +70,10 @@ private:
     std::vector<std::pair<int, int>> toSend;
     std::shared_ptr<pksm::PKFilter> filter;
     GroupCloudAccess access;
-    int cursorIndex   = 0;
-    int storageBox    = 0;
-    bool justSwitched = true;
-    bool cloudChosen  = false;
+    int cursorIndex        = 0;
+    int storageBox         = 0;
+    bool justSwitched      = true;
+    bool cloudChosen       = false;
     std::string websiteURL = "";
 };
 

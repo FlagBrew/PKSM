@@ -43,8 +43,5 @@
   "randomMusic": false,
   "showBackups": false,
   "apiUrl": "",
-  "useApiUrl": false,
-  "patronCode": "",
-  "alphaChannel": false,
   "autoUpdate": true
 }

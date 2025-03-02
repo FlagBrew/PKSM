@@ -173,8 +173,8 @@ struct LibraryFunction StdlibFunctions[] = {
     {StdlibExit,    "void exit(int);"                 },
     {StdlibGetenv,  "char *getenv(char *);"           },
     {StdlibSystem,  "int system(char *);"             },
- /*    {StdlibBsearch, "void *bsearch(void *,void *,int,int,int (*)());"}, */
-  /*    {StdlibQsort, "void *qsort(void *,int,int,int (*)());"}, */
+    /*    {StdlibBsearch, "void *bsearch(void *,void *,int,int,int (*)());"}, */
+    /*    {StdlibQsort, "void *qsort(void *,int,int,int (*)());"}, */
     {StdlibAbs,     "int abs(int);"                   },
     {StdlibLabs,    "int labs(int);"                  },
 #if 0

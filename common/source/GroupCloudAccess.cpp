@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ nlohmann::json GroupCloudAccess::grabPage(int num)
     const auto [url, postData] = GroupCloudAccess::makeURL(num, legal, low, high, LGPE);
     auto fetch                 = Fetch::init(url, true, &retData, headers, postData);
     fetch->setopt(CURLOPT_TIMEOUT, 10L);
-    auto res                   = Fetch::perform(fetch);
+    auto res = Fetch::perform(fetch);
     curl_slist_free_all(headers);
 
     if (res.index() == 0)
@@ -234,12 +234,20 @@ std::pair<std::string, std::string> GroupCloudAccess::makeURL(
     post_data.push_back({"sort_field", "latest"});
     post_data.push_back({"sort_direction", false});
 
-    return {Configuration::getInstance().apiUrl() + "api/v2/gpss/search/bundles?page=" + std::to_string(num), post_data.dump()};
+    return {Configuration::getInstance().apiUrl() +
+                "api/v2/gpss/search/bundles?page=" + std::to_string(num),
+        post_data.dump()};
 }
 
 std::optional<int> GroupCloudAccess::nextPage()
 {
-    next->available.wait(false);
+    // next->available.wait(false);
+    while (!next->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!next->data || next->data->is_discarded())
     {
         isGood = false;
@@ -267,7 +275,13 @@ std::optional<int> GroupCloudAccess::nextPage()
 
 std::optional<int> GroupCloudAccess::prevPage()
 {
-    prev->available.wait(false);
+    // prev->available.wait(false);
+    while (!prev->available.load())
+    {
+        static constexpr timespec sleepTime = {0, 1000000}; // 1 ms
+        nanosleep(&sleepTime, nullptr);
+    }
+
     if (!prev->data || prev->data->is_discarded())
     {
         isGood = false;
@@ -342,7 +356,8 @@ std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t 
         {
             auto ret = pkm(groupIndex, pokeIndex);
 
-            if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/pokemon/" +
+            if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() +
+                                             "api/v2/gpss/download/pokemon/" +
                                              group["download_codes"][pokeIndex].get<std::string>(),
                     true, nullptr, nullptr, ""))
             {
@@ -381,7 +396,8 @@ std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::fetchGroup(size_t grou
             // incremented
             ret.emplace_back(pkm(groupIndex, i));
         }
-        if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/download/bundles/" +
+        if (auto fetch = Fetch::init(Configuration::getInstance().apiUrl() +
+                                         "api/v2/gpss/download/bundles/" +
                                          group["download_code"].get<std::string>(),
                 true, nullptr, nullptr, ""))
         {
@@ -401,7 +417,6 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
 
     std::string amount     = "count: " + std::to_string(sendMe.size());
-    std::string code       = Configuration::getInstance().patronCode();
     std::string generation = "generations: ";
     for (const auto& mon : sendMe)
     {
@@ -409,23 +424,16 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     }
     // Remove trailing comma
     generation.pop_back();
-    if (!code.empty())
-    {
-        code = "patreon: " + code;
-    }
 
     struct curl_slist* headers = NULL;
     headers                    = curl_slist_append(headers, amount.c_str());
     headers                    = curl_slist_append(headers, pksm_version.c_str());
     headers                    = curl_slist_append(headers, generation.c_str());
-    if (!code.empty())
-    {
-        headers = curl_slist_append(headers, code.c_str());
-    }
 
     std::string writeData;
     if (auto fetch =
-            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/bundle", true, &writeData, headers, ""))
+            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/bundle", true,
+                &writeData, headers, ""))
     {
         auto mimeThing = fetch->mimeInit();
         for (size_t i = 0; i < sendMe.size(); i++)

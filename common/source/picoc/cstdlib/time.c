@@ -111,7 +111,7 @@ struct LibraryFunction StdTimeFunctions[] = {
 #ifndef WIN32
     {StdStrptime,  "char *strptime(char *, char *, struct tm *);"   },
     {StdGmtime_r,  "struct tm *gmtime_r(int *, struct tm *);"       },
- // {StdTimegm, "int timegm(struct tm *);"},
+// {StdTimegm, "int timegm(struct tm *);"},
 #endif
     {NULL,         NULL                                             }
 };

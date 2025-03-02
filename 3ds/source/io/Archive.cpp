@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -616,7 +616,7 @@ Result Archive::init(const std::string& execPath)
     mkdir("/3ds/PKSM/dumps", 777);
     mkdir("/3ds/PKSM/banks", 777);
     mkdir("/3ds/PKSM/songs", 777);
-    mkdir("/3ds/PKSM/mysterygift", 777);
+
     Archive::data().createDir(fsMakePath(PATH_UTF16, u"/banks"), 0);
     Archive::sd().deleteDir(u"/3ds/PKSM/additionalassets");
 

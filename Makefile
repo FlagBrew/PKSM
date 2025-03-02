@@ -3,8 +3,8 @@ export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager
 export PKSM_AUTHOR		:=	FlagBrew
 
 export VERSION_MAJOR	:=	10
-export VERSION_MINOR	:=	1
-export VERSION_MICRO	:=	3
+export VERSION_MINOR	:=	2
+export VERSION_MICRO	:=	0
 GIT_REV					:=	$(shell git rev-parse --short HEAD)
 OLD_INFO				:=	$(shell if [ -e appinfo.hash ]; then cat appinfo.hash; fi)
 NOW_INFO				:=	$(PKSM_TITLE) $(PKSM_DESCRIPTION) $(PKSM_AUTHOR) $(VERSION_MAJOR) $(VERSION_MINOR) $(VERSION_MICRO) $(GIT_REV)
@@ -79,7 +79,8 @@ switch-debug: revision
 
 docs:
 	@mkdir -p $(OUTDIR)
-	@gwtc -o $(OUTDIR) -n "$(APP_TITLE) Manual" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
+	@gwtc -o $(OUTDIR) -n "$(PKSM_TITLE) Manual - v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
+	@sed -i 's|\(<img[^>]*src="\)\(\./screenshots\)|\1https://raw.githubusercontent.com/wiki/FlagBrew/PKSM/screenshots|g' $(OUTDIR)/*.html
 
 clean:
 	@rm -f appinfo.hash

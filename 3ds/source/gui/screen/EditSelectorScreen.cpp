@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -233,8 +233,7 @@ EditSelectorScreen::EditSelectorScreen()
                 x += 34;
             }
             pkmButtons[row * (maxPkmInBox / 5) + column] = std::make_unique<ClickButton>(
-                x, y, 34, 30,
-                [this, row, column, maxPkmInBox]()
+                x, y, 34, 30, [this, row, column, maxPkmInBox]()
                 { return this->clickIndex(row * (maxPkmInBox / 5) + column + 1); },
                 ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK);
         }

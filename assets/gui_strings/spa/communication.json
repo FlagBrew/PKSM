@@ -5,8 +5,6 @@
     "DOWNLOADING_FILE": "Descargando {:s}...",
     "GPSS_DOWNLOAD": "¿Descargar este Pokémon de la GPSS?",
     "GPSS_DOWNLOAD_GROUP": "¿Descargar este grupo de la GPPSS?",
-    "MYSTERY_GIFT_CHECK": "Buscando base de datos de regalo misterioso actualizada...",
-    "MYSTERY_GIFT_DOWNLOAD": "Descargando base de datos de regalo misterioso: {:d} of {:d}",
     "PKM_LEGALIZED": "¡Tu Pokémon ahora es legal!",
     "SHARE_CODE_ENTER_PROMPT": "¿Desea ingresar un código de compartir?",
     "SHARE_DOWNLOAD_CODE": "Su código es",

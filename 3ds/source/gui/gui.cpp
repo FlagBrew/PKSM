@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
  */
 
 #include "gui.hpp"
-#include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "DecisionScreen.hpp"
 #include "MessageScreen.hpp"
@@ -34,7 +33,34 @@
 #include "sound.hpp"
 #include "TextParse.hpp"
 #include "utils/format.hpp"
+#include <atomic>
 #include <stack>
+#include <thread>
+
+static CFG_Region getRegionFromLanguage()
+{
+    u8 language;
+    CFGU_GetSystemLanguage(&language);
+    CFG_Region region = CFG_REGION_USA;
+
+    // Map language setting to appropriate region for font loading
+    switch (language)
+    {
+        case CFG_LANGUAGE_ZH:
+            region = CFG_REGION_CHN;
+            break;
+        case CFG_LANGUAGE_TW:
+            region = CFG_REGION_TWN;
+            break;
+        case CFG_LANGUAGE_KO:
+            region = CFG_REGION_KOR;
+            break;
+        default:
+            region = CFG_REGION_USA;
+            break;
+    }
+    return region;
+}
 
 namespace
 {
@@ -49,6 +75,10 @@ namespace
     TextParse::ScreenText topText;
     TextParse::ScreenText bottomText;
     TextParse::ScreenText* currentText = nullptr;
+
+    std::atomic<bool> fontsLoaded{false};
+    std::thread fontLoaderThread;
+    std::mutex fontMutex;
 
     std::vector<C2D_Font> fonts;
 
@@ -144,7 +174,7 @@ namespace
 
 // Creates a form array with proper storage duration
 #define FA(...)                                                                                    \
-    []<std::array Values = {__VA_ARGS__}>() consteval                                              \
+    []<std::array Values = { __VA_ARGS__ }>() consteval                                            \
         ->std::span<const typename decltype(Values)::value_type>                                   \
     {                                                                                              \
         return Values;                                                                             \
@@ -551,6 +581,31 @@ namespace
                     spritesheet_types, types_spritesheet_en_00_idx + size_t(type));
         }
     }
+
+    void loadRemainingFonts()
+    {
+        // Don't load the already loaded region
+        CFG_Region currentRegion = getRegionFromLanguage();
+
+        std::vector<CFG_Region> regionsToLoad = {
+            CFG_REGION_USA, CFG_REGION_TWN, CFG_REGION_CHN, CFG_REGION_KOR};
+
+        for (auto region : regionsToLoad)
+        {
+            if (region != currentRegion)
+            {
+                C2D_Font font = C2D_FontLoadSystem(region);
+                if (font)
+                {
+                    std::lock_guard<std::mutex> lock(fontMutex);
+                    fonts.emplace_back(font);
+                    textBuffer->addFont(font);
+                }
+            }
+        }
+
+        fontsLoaded = true;
+    }
 }
 
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
@@ -822,9 +877,11 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
     FontSize sizeY, PKSM_Color color, TextPosX positionX, TextPosY positionY)
 {
     static_assert(std::is_same<FontSize, float>::value);
+
+    std::lock_guard<std::mutex> lock(fontMutex);
     textMode            = true;
     const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
-    y                   -= sizeY * 6;
+    y                  -= sizeY * 6;
     switch (positionY)
     {
         case TextPosY::TOP:
@@ -965,30 +1022,15 @@ Result Gui::init(void)
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    std::vector<u8> loadData;
-    FILE* file = fopen("romfs:/gfx/ui_sheet.t3x.bz2", "rb");
-    int error  = BZ2::decompress(file, loadData);
-    fclose(file);
-    if (error != BZ_OK)
-    {
-        return error;
-    }
-    spritesheet_ui    = C2D_SpriteSheetLoadFromMem(loadData.data(), loadData.size());
+    spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
 
-    file  = fopen("romfs:/gfx/pksm.bcfnt.bz2", "rb");
-    error = BZ2::decompress(file, loadData);
-    fclose(file);
-    if (error != BZ_OK)
-    {
-        return error;
-    }
-    fonts.emplace_back(C2D_FontLoadFromMem(loadData.data(), loadData.size()));
-    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_USA));
-    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_KOR));
-    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_CHN));
-    fonts.emplace_back(C2D_FontLoadSystem(CFG_REGION_TWN));
+    std::lock_guard<std::mutex> lock(fontMutex);
+    fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
+
+    CFG_Region region = getRegionFromLanguage();
+    fonts.emplace_back(C2D_FontLoadSystem(region));
 
     textBuffer = new TextParse::TextBuf(8192, fonts);
 
@@ -996,6 +1038,8 @@ Result Gui::init(void)
 
     hidSetRepeatParameters(10, 10);
 
+    fontLoaderThread = std::thread(loadRemainingFonts);
+    fontLoaderThread.detach(); // Let it run in background
     return 0;
 }
 
@@ -1098,9 +1142,11 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
+    std::lock_guard<std::mutex> lock(fontMutex);
     if (textBuffer)
     {
         delete textBuffer;
+        textBuffer = nullptr;
     }
     for (const auto& font : fonts)
     {
@@ -1109,6 +1155,8 @@ void Gui::exit(void)
             C2D_FontFree(font);
         }
     }
+    fonts.clear();
+
     C2D_Fini();
     C3D_Fini();
     Sound::exit();
@@ -1366,7 +1414,7 @@ void Gui::sprite(int key, int x, int y)
         /* RIGHT */
         x += 119;
         Gui::drawSolidRect(x, y, 263, rep + 10, PKSM_Color(26, 35, 126, 255));
-        x      += 263;
+        x     += 263;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
@@ -1614,7 +1662,7 @@ void Gui::sprite(int key, int x, int y)
         x += 5;
         Gui::drawSolidRect(x, y, 382, rep + 10, PKSM_Color(26, 35, 126, 255));
         /* RIGHT */
-        x      += 382;
+        x     += 382;
         sprite = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_gameselector_bg_left_idx);
         // Top side
         tex = _select_box(sprite, 0, 0, 0, off);
