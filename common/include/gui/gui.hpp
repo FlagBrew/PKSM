@@ -44,6 +44,13 @@
 
 class Species;
 
+enum ScreenTarget
+{
+    TOP_BOTTOM,
+    TOP,
+    BOTTOM
+};
+
 namespace Gui
 {
     Result init(void);
@@ -115,7 +122,7 @@ namespace Gui
     bool showChoiceMessage(const std::string& message, int timer = 0);
     void showRestoreProgress(u32 partial, u32 total);
     void showDownloadProgress(const std::string& path, u32 partial, u32 total);
-    void waitFrame(const std::string& message);
+    void waitFrame(const std::string& message, ScreenTarget target = ScreenTarget::TOP_BOTTOM);
     void warn(const std::string& message, std::optional<pksm::Language> forceLang = std::nullopt);
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);

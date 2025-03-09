@@ -62,6 +62,7 @@ namespace
     std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
     std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
     std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
+    PrintConsole bottomScreen;
 
     struct asset
     {
@@ -214,7 +215,7 @@ namespace
                 true, &retString, nullptr, ""))
         {
             moveIcon.clear();
-            Gui::waitFrame(i18n::localize("UPDATE_CHECKING"));
+            Gui::waitFrame(i18n::localize("UPDATE_CHECKING"), ScreenTarget::TOP);
             auto res = Fetch::perform(fetch);
             if (res.index() == 1)
             {
@@ -280,10 +281,10 @@ namespace
         }
         if (!url.empty())
         {
-            Gui::waitFrame(i18n::localize("UPDATE_FOUND_BACKUP"));
+            Gui::waitFrame(i18n::localize("UPDATE_FOUND_BACKUP"), ScreenTarget::TOP);
             backupExtData();
             backupBanks();
-            Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"));
+            Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"), ScreenTarget::TOP);
             std::string fileName = path.substr(path.find_last_of('/') + 1);
             Result res           = Fetch::download(
                 url, path, "",
@@ -301,7 +302,7 @@ namespace
                 return false;
             }
 
-            Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"));
+            Gui::waitFrame(i18n::localize("UPDATE_INSTALLING"), ScreenTarget::TOP);
             if (execPath != "")
             {
                 // Stop using the 3DSX
@@ -668,6 +669,11 @@ namespace
         }
         return -1;
     }
+
+    void printLogToScreen(const std::string& text) {
+        consoleSelect(&bottomScreen);
+        printf("%s\n", text.c_str());
+    }
 }
 
 Result App::init(const std::string& execPath)
@@ -680,6 +686,8 @@ Result App::init(const std::string& execPath)
 
     hidInit();
     gfxInitDefault();
+    consoleInit(GFX_BOTTOM, &bottomScreen);
+
     Threads::init(0, 2);
 
     moveIcon.test_and_set();
@@ -691,57 +699,78 @@ Result App::init(const std::string& execPath)
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
     }
+    printLogToScreen("Rosalina sysmodule has been found.");
+
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
+    printLogToScreen("App CPU time limit has been set.");
 
     if (R_FAILED(res = cfguInit()))
     {
         return consoleDisplayError("cfguInit failed.", res);
     }
+    printLogToScreen("cfgu has been initialized.");
+
     if (R_FAILED(res = romfsInit()))
     {
         return consoleDisplayError("romfsInit failed.", res);
     }
+    printLogToScreen("romfs has been initialized.");
+
     if (R_FAILED(res = Archive::init(execPath)))
     {
         return consoleDisplayError("Archive::init failed.", res);
     }
+    printLogToScreen("Archive has been initialized.");
+
     if (R_FAILED(res = pxiDevInit()))
     {
         return consoleDisplayError("pxiDevInit failed.", res);
     }
+    printLogToScreen("pxiDev has been initialized.");
+
     if (R_FAILED(res = amInit()))
     {
         return consoleDisplayError("amInit failed.", res);
     }
+    printLogToScreen("am has been initialized.");
+
     if (R_FAILED(res = acInit()))
     {
         return consoleDisplayError("acInit failed.", res);
     }
+    printLogToScreen("ac has been initialized.");
+
     if (R_FAILED(res = nsInit()))
     {
         return consoleDisplayError("nsInit failed.", res);
     }
+    printLogToScreen("ns has been initialized.");
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
     {
         return consoleDisplayError("Failed to create socket buffer.", -1);
     }
+    printLogToScreen("Socket buffer has been created.");
+
     if (socInit(socketBuffer, SOC_BUFFERSIZE))
     {
         return consoleDisplayError("socInit failed.", -1);
     }
+    printLogToScreen("soc has been initialized.");
 
     if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
     {
         return consoleDisplayError("cURL init failed", (Result)code);
     }
+    printLogToScreen("cURL has been initialized.");
 
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
+    printLogToScreen("Network connection has been initialized.");
 
     // link3dsStdio();
 
@@ -751,6 +780,13 @@ Result App::init(const std::string& execPath)
                                    "connected to the internet and on the lastest version.",
             res);
     }
+    printLogToScreen("Additional assets have been downloaded.");
+
+    gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
+    gfxSetDoubleBuffering(GFX_BOTTOM, true);
+    gfxSwapBuffersGpu();
+    gspWaitForVBlank();
+
     if (R_FAILED(res = Gui::init()))
     {
         return consoleDisplayError("Gui::init failed.", res);
