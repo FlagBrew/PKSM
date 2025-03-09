@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -86,13 +86,13 @@ void BagItemOverlay::update(touchPosition* touch)
             items.emplace_back(validItems[0]);
         }
         
-        for (size_t i = 1; i < validItems.size(); i++)
+        for (auto& it : validItems)
         {
-            std::string itemName = validItems[i].first->substr(0, searchString.size());
-            StringUtils::toLower(itemName);
-            if (itemName == searchString)
+            std::string lowerName = *it.first;
+            StringUtils::toLower(lowerName);
+            if (lowerName.find(searchString) != std::string::npos)
             {
-                items.emplace_back(validItems[i]);
+                items.emplace_back(it);
             }
         }
         oldSearchString = searchString;
