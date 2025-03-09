@@ -82,7 +82,10 @@ void BagItemOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        items.emplace_back(validItems[0]);
+        if (!validItems.empty()) {
+            items.emplace_back(validItems[0]);
+        }
+        
         for (size_t i = 1; i < validItems.size(); i++)
         {
             std::string itemName = validItems[i].first->substr(0, searchString.size());
@@ -160,15 +163,16 @@ void BagItemOverlay::update(touchPosition* touch)
 void BagItemOverlay::searchBar()
 {
     SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
+    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 24);
     swkbdSetHintText(&state, i18n::localize("ITEM").c_str());
-    swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
+    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
     char input[25]  = {0};
     SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
     input[24]       = '\0';
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
-        searchString = input;
-        StringUtils::toLower(searchString);
+        std::string tempString(input);
+        StringUtils::toLower(tempString);
+        searchString = tempString;
     }
 }
