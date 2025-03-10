@@ -782,11 +782,6 @@ Result App::init(const std::string& execPath)
     }
     printLogToScreen("Additional assets have been downloaded.");
 
-    gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
-    gfxSetDoubleBuffering(GFX_BOTTOM, true);
-    gfxSwapBuffersGpu();
-    gspWaitForVBlank();
-
     if (R_FAILED(res = Gui::init()))
     {
         return consoleDisplayError("Gui::init failed.", res);
@@ -795,8 +790,10 @@ Result App::init(const std::string& execPath)
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     moveIcon.clear();
     i18n::init(Configuration::getInstance().language());
+    printLogToScreen("i18n has been initialized.");
 
     PkmUtils::initDefaults();
+    printLogToScreen("PkmUtils has been initialized.");
 
     if (!assetsMatch())
     {
@@ -811,6 +808,7 @@ Result App::init(const std::string& execPath)
             return rebootToPKSM(execPath);
         }
     }
+    printLogToScreen("Additional assets are correct.");
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -821,17 +819,30 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Banks::init failed.", res);
     }
+    printLogToScreen("Banks have been initialized.");
 
     TitleLoader::init();
+    printLogToScreen("TitleLoader has been initialized.");
 
     Threads::executeTask(TitleLoader::scanTitles);
+    printLogToScreen("Title scanning has been started.");
+
     TitleLoader::scanSaves();
+    printLogToScreen("Save scanning has been started.");
 
     doCartScan.test_and_set();
     Threads::create(cartScan);
+    printLogToScreen("Cart scanning has been started.");
 
     continueI18N.test_and_set();
     Threads::executeTask(i18nThread);
+    printLogToScreen("i18n has been started.");
+
+    // reinitialize bottom screen
+    gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
+    gfxSetDoubleBuffering(GFX_BOTTOM, true);
+    gfxSwapBuffersGpu();
+    gspWaitForVBlank();
 
     Gui::setScreen(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
