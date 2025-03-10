@@ -95,7 +95,7 @@ void Bank::load(int maxBoxes)
         auto in       = ARCHIVE.file(BANK(paths), FS_OPEN_READ);
         if (in)
         {
-            Gui::waitFrame(i18n::localize("BANK_LOAD"));
+            Gui::waitFrame(i18n::localize("BANK_LOAD"), ScreenTarget::TOP);
             u32 size = in->size();
             in->read((char*)&header, sizeof(BankHeader::MAGIC) + sizeof(BankHeader::version));
             if (memcmp(header.MAGIC, BANK_MAGIC.data(), 8))
@@ -163,7 +163,7 @@ void Bank::load(int maxBoxes)
                 {
                     Gui::warn(
                         i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
-                    Gui::waitFrame(i18n::localize("BANK_CREATE"));
+                    Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
                     in->close();
                     createBank(maxBoxes);
                     needSave = true;
@@ -173,7 +173,7 @@ void Bank::load(int maxBoxes)
         }
         else
         {
-            Gui::waitFrame(i18n::localize("BANK_CREATE"));
+            Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
             createBank(maxBoxes);
             needSave = true;
             create   = true;
@@ -422,7 +422,7 @@ void Bank::pkm(const pksm::PKX& pkm, int box, int slot)
 
 bool Bank::backup() const
 {
-    Gui::waitFrame(i18n::localize("BANK_BACKUP"));
+    Gui::waitFrame(i18n::localize("BANK_BACKUP"), ScreenTarget::TOP);
     auto paths = this->paths();
     Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(),
         "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
@@ -495,7 +495,7 @@ bool Bank::hasChanged() const
 
 void Bank::convertFromBankBin()
 {
-    Gui::waitFrame(i18n::localize("BANK_CONVERT"));
+    Gui::waitFrame(i18n::localize("BANK_CONVERT"), ScreenTarget::TOP);
     auto inStream   = Archive::sd().file("/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
     Result inResult = Archive::sd().result();
     Archive::sd().createFile("/3ds/PKSM/backups/bank.bin", 0, 1);

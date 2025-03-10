@@ -2021,7 +2021,7 @@ bool Gui::showChoiceMessage(const std::string& message, int timer)
     return runScreen(screen);
 }
 
-void Gui::waitFrame(const std::string& message)
+void Gui::waitFrame(const std::string& message, ScreenTarget targetScreen)
 {
     if (inFrame)
     {
@@ -2030,27 +2030,33 @@ void Gui::waitFrame(const std::string& message)
     }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-    Gui::clearScreen(GFX_TOP);
-    Gui::clearScreen(GFX_BOTTOM);
 
-    target(GFX_TOP);
-    sprite(ui_sheet_part_info_top_idx, 0, 0);
+    if (targetScreen == ScreenTarget::TOP || targetScreen == ScreenTarget::TOP_BOTTOM)
+    {
+        Gui::clearScreen(GFX_TOP);
+        target(GFX_TOP);
+        sprite(ui_sheet_part_info_top_idx, 0, 0);
 
-    auto parsed   = parseText(message, FONT_SIZE_15);
-    float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
+        auto parsed   = parseText(message, FONT_SIZE_15);
+        float lineMod = fontGetInfo(nullptr)->lineFeed * FONT_SIZE_15;
 
-    text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15,
-        PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
+        text(parsed, 200, 110, FONT_SIZE_15, FONT_SIZE_15,
+            PKSM_Color(255, 255, 255, transparencyWaver()), TextPosX::CENTER, TextPosY::CENTER);
 
-    float continueY = 110 + (lineMod / 2) * parsed->lines();
+        float continueY = 110 + (lineMod / 2) * parsed->lines();
 
-    text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE,
-        TextPosX::CENTER, TextPosY::TOP);
+        text(i18n::localize("PLEASE_WAIT"), 200, continueY + 3, FONT_SIZE_11, COLOR_WHITE,
+            TextPosX::CENTER, TextPosY::TOP);
 
-    flushText();
+        flushText();
+    }
 
-    target(GFX_BOTTOM);
-    sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+    if (targetScreen == ScreenTarget::BOTTOM || targetScreen == ScreenTarget::TOP_BOTTOM)
+    {
+        Gui::clearScreen(GFX_BOTTOM);
+        target(GFX_BOTTOM);
+        sprite(ui_sheet_part_info_bottom_idx, 0, 0);
+    }
 
     C3D_FrameEnd(0);
     Gui::frameClean();
