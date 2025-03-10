@@ -450,7 +450,7 @@ void TitleLoader::scanTitles(void)
 
 void TitleLoader::scanSaves(void)
 {
-    Gui::waitFrame(i18n::localize("SCAN_SAVES"));
+    Gui::waitFrame(i18n::localize("SCAN_SAVES"), ScreenTarget::TOP);
     auto scan = [](auto& tids)
     {
         for (const auto& tid : tids)
@@ -530,7 +530,7 @@ void TitleLoader::backupSave(const std::string& id)
     {
         return;
     }
-    Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"));
+    Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"), ScreenTarget::TOP);
     DateTime now     = DateTime::now();
     std::string path = std::format("/3ds/PKSM/backups/{0:s}", id);
     mkdir(path.c_str(), 777);
