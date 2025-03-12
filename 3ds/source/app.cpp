@@ -44,6 +44,7 @@
 #include "TitleLoadScreen.hpp"
 #include "utils/crypto.hpp"
 #include "utils/format.hpp"
+#include "utils/logging.hpp"
 #include "website.h"
 #include <3ds.h>
 #include <array>
@@ -62,7 +63,6 @@ namespace
     std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
     std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
     std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
-    PrintConsole bottomScreen;
 
     struct asset
     {
@@ -669,11 +669,6 @@ namespace
         }
         return -1;
     }
-
-    void printLogToScreen(const std::string& text) {
-        consoleSelect(&bottomScreen);
-        printf("%s\n", text.c_str());
-    }
 }
 
 Result App::init(const std::string& execPath)
@@ -686,7 +681,7 @@ Result App::init(const std::string& execPath)
 
     hidInit();
     gfxInitDefault();
-    consoleInit(GFX_BOTTOM, &bottomScreen);
+    Logging::init();
 
     Threads::init(0, 2);
 
@@ -699,78 +694,78 @@ Result App::init(const std::string& execPath)
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
     }
-    printLogToScreen("Rosalina sysmodule has been found.");
+    Logging::printLog("Rosalina ok...");
 
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
-    printLogToScreen("App CPU time limit has been set.");
+    Logging::printLog("App CPU time limit ok...");
 
     if (R_FAILED(res = cfguInit()))
     {
         return consoleDisplayError("cfguInit failed.", res);
     }
-    printLogToScreen("cfgu has been initialized.");
+    Logging::printLog("cfgu init ok...");
 
     if (R_FAILED(res = romfsInit()))
     {
         return consoleDisplayError("romfsInit failed.", res);
     }
-    printLogToScreen("romfs has been initialized.");
+    Logging::printLog("romfs init ok...");
 
     if (R_FAILED(res = Archive::init(execPath)))
     {
         return consoleDisplayError("Archive::init failed.", res);
     }
-    printLogToScreen("Archive has been initialized.");
+    Logging::printLog("Archive init ok...");
 
     if (R_FAILED(res = pxiDevInit()))
     {
         return consoleDisplayError("pxiDevInit failed.", res);
     }
-    printLogToScreen("pxiDev has been initialized.");
+    Logging::printLog("pxiDev init ok...");
 
     if (R_FAILED(res = amInit()))
     {
         return consoleDisplayError("amInit failed.", res);
     }
-    printLogToScreen("am has been initialized.");
+    Logging::printLog("am init ok...");
 
     if (R_FAILED(res = acInit()))
     {
         return consoleDisplayError("acInit failed.", res);
     }
-    printLogToScreen("ac has been initialized.");
+    Logging::printLog("ac init ok...");
 
     if (R_FAILED(res = nsInit()))
     {
         return consoleDisplayError("nsInit failed.", res);
     }
-    printLogToScreen("ns has been initialized.");
+    Logging::printLog("ns init ok...");
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
     {
         return consoleDisplayError("Failed to create socket buffer.", -1);
     }
-    printLogToScreen("Socket buffer has been created.");
+    Logging::printLog("Socket buffer init ok...");
 
     if (socInit(socketBuffer, SOC_BUFFERSIZE))
     {
         return consoleDisplayError("socInit failed.", -1);
     }
-    printLogToScreen("soc has been initialized.");
+    Logging::printLog("soc init ok...");
 
     if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
     {
         return consoleDisplayError("cURL init failed", (Result)code);
     }
-    printLogToScreen("cURL has been initialized.");
+    Logging::printLog("cURL init ok...");
 
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
-    printLogToScreen("Network connection has been initialized.");
+    Logging::printLog("Network connection init ok...");
 
     // link3dsStdio();
 
@@ -780,7 +775,7 @@ Result App::init(const std::string& execPath)
                                    "connected to the internet and on the lastest version.",
             res);
     }
-    printLogToScreen("Additional assets have been downloaded.");
+    Logging::printLog("Additional assets download ok...");
 
     if (R_FAILED(res = Gui::init()))
     {
@@ -790,10 +785,10 @@ Result App::init(const std::string& execPath)
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     moveIcon.clear();
     i18n::init(Configuration::getInstance().language());
-    printLogToScreen("i18n has been initialized.");
+    Logging::printLog("i18n init ok...");
 
     PkmUtils::initDefaults();
-    printLogToScreen("PkmUtils has been initialized.");
+    Logging::printLog("PkmUtils init ok...");
 
     if (!assetsMatch())
     {
@@ -808,7 +803,7 @@ Result App::init(const std::string& execPath)
             return rebootToPKSM(execPath);
         }
     }
-    printLogToScreen("Additional assets are correct.");
+    Logging::printLog("Additional assets match ok...");
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -819,24 +814,24 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Banks::init failed.", res);
     }
-    printLogToScreen("Banks have been initialized.");
+    Logging::printLog("Banks init ok...");
 
     TitleLoader::init();
-    printLogToScreen("TitleLoader has been initialized.");
+    Logging::printLog("TitleLoader init ok...");
 
     Threads::executeTask(TitleLoader::scanTitles);
-    printLogToScreen("Title scanning has been started.");
+    Logging::printLog("Title scanning thread started...");
 
     TitleLoader::scanSaves();
-    printLogToScreen("Save scanning has been started.");
+    Logging::printLog("Save scanning thread started...");
 
     doCartScan.test_and_set();
     Threads::create(cartScan);
-    printLogToScreen("Cart scanning has been started.");
+    Logging::printLog("Cart scanning thread started...");
 
     continueI18N.test_and_set();
     Threads::executeTask(i18nThread);
-    printLogToScreen("i18n has been started.");
+    Logging::printLog("i18n thread started...");
 
     // reinitialize bottom screen
     gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
