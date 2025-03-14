@@ -694,78 +694,78 @@ Result App::init(const std::string& execPath)
             "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
             res);
     }
-    Logging::printLog("Rosalina ok...");
+    Logging::printLog("rosalina", "ok");
 
     APT_GetAppCpuTimeLimit(&old_time_limit);
     APT_SetAppCpuTimeLimit(30);
-    Logging::printLog("App CPU time limit ok...");
+    Logging::printLog("cpu", "time limit ok");
 
     if (R_FAILED(res = cfguInit()))
     {
         return consoleDisplayError("cfguInit failed.", res);
     }
-    Logging::printLog("cfgu init ok...");
+    Logging::printLog("cfgu", "init ok");
 
     if (R_FAILED(res = romfsInit()))
     {
         return consoleDisplayError("romfsInit failed.", res);
     }
-    Logging::printLog("romfs init ok...");
+    Logging::printLog("romfs", "init ok");
 
     if (R_FAILED(res = Archive::init(execPath)))
     {
         return consoleDisplayError("Archive::init failed.", res);
     }
-    Logging::printLog("Archive init ok...");
+    Logging::printLog("Archive", "init ok");
 
     if (R_FAILED(res = pxiDevInit()))
     {
         return consoleDisplayError("pxiDevInit failed.", res);
     }
-    Logging::printLog("pxiDev init ok...");
+    Logging::printLog("pxiDev", "init ok");
 
     if (R_FAILED(res = amInit()))
     {
         return consoleDisplayError("amInit failed.", res);
     }
-    Logging::printLog("am init ok...");
+    Logging::printLog("am", "init ok");
 
     if (R_FAILED(res = acInit()))
     {
         return consoleDisplayError("acInit failed.", res);
     }
-    Logging::printLog("ac init ok...");
+    Logging::printLog("ac", "init ok");
 
     if (R_FAILED(res = nsInit()))
     {
         return consoleDisplayError("nsInit failed.", res);
     }
-    Logging::printLog("ns init ok...");
+    Logging::printLog("ns", "init ok");
 
     u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
     if (socketBuffer == NULL)
     {
         return consoleDisplayError("Failed to create socket buffer.", -1);
     }
-    Logging::printLog("Socket buffer init ok...");
+    Logging::printLog("socket buffer", "init ok");
 
     if (socInit(socketBuffer, SOC_BUFFERSIZE))
     {
         return consoleDisplayError("socInit failed.", -1);
     }
-    Logging::printLog("soc init ok...");
+    Logging::printLog("soc", "init ok");
 
     if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
     {
         return consoleDisplayError("cURL init failed", (Result)code);
     }
-    Logging::printLog("cURL init ok...");
+    Logging::printLog("cURL", "init ok");
 
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
-    Logging::printLog("Network connection init ok...");
+    Logging::printLog("network", "init ok");
 
     // link3dsStdio();
 
@@ -775,7 +775,7 @@ Result App::init(const std::string& execPath)
                                    "connected to the internet and on the lastest version.",
             res);
     }
-    Logging::printLog("Additional assets download ok...");
+    Logging::printLog("gui", "assets download ok");
 
     if (R_FAILED(res = Gui::init()))
     {
@@ -785,14 +785,14 @@ Result App::init(const std::string& execPath)
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     moveIcon.clear();
     i18n::init(Configuration::getInstance().language());
-    Logging::printLog("i18n init ok...");
+    Logging::printLog("i18n", "init ok");
 
     PkmUtils::initDefaults();
-    Logging::printLog("PkmUtils init ok...");
+    Logging::printLog("pkm", "init ok");
 
     if (!assetsMatch())
     {
-        Gui::warn("Additional assets are not correct.\nPress A to start PKSM update...");
+        Gui::warn("Additional assets are not correct.\nPress A to start PKSM update");
         if (!update(execPath))
         {
             Gui::warn("PKSM update failed.\nTry downloading assets manually before restarting.");
@@ -803,7 +803,7 @@ Result App::init(const std::string& execPath)
             return rebootToPKSM(execPath);
         }
     }
-    Logging::printLog("Additional assets match ok...");
+    Logging::printLog("gui", "assets match");
 
     if (Configuration::getInstance().autoUpdate() && update(execPath))
     {
@@ -814,24 +814,24 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Banks::init failed.", res);
     }
-    Logging::printLog("Banks init ok...");
+    Logging::printLog("banks", "init ok");
 
     TitleLoader::init();
-    Logging::printLog("TitleLoader init ok...");
+    Logging::printLog("title", "init ok");
 
     Threads::executeTask(TitleLoader::scanTitles);
-    Logging::printLog("Title scanning thread started...");
+    Logging::printLog("title", "scan started");
 
     TitleLoader::scanSaves();
-    Logging::printLog("Save scanning thread started...");
+    Logging::printLog("save", "scan started");
 
     doCartScan.test_and_set();
     Threads::create(cartScan);
-    Logging::printLog("Cart scanning thread started...");
+    Logging::printLog("cart", "scan started");
 
     continueI18N.test_and_set();
     Threads::executeTask(i18nThread);
-    Logging::printLog("i18n thread started...");
+    Logging::printLog("i18n", "thread started");
 
     // reinitialize bottom screen
     gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
