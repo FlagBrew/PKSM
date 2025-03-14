@@ -27,12 +27,13 @@
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
 
-#include <string>
 #include <cstdio>
+#include <string>
 
-namespace Logging {
+namespace Logging
+{
     void init(void);
-    void printLog(const std::string& text);
+    void printLog(const std::string& category, const std::string& message);
 }
 
 #endif

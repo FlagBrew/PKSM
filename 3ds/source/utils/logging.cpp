@@ -25,22 +25,49 @@
  */
 
 #include "logging.hpp"
+#include "font.h"
 
 #if defined(__3DS__)
 #include <3ds.h>
 #endif
 
+#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include "revision.h"
+
 namespace {
     PrintConsole bottomScreen;
+    std::chrono::steady_clock::time_point startTime;
 }
 
 void Logging::init()
 {
     consoleInit(GFX_BOTTOM, &bottomScreen);
+
+    ConsoleFont font;
+    font.gfx         = (u8*)console_font_8x8;
+    font.asciiOffset = 0;
+    font.numChars    = 255;
+  
+    consoleSetFont(&bottomScreen, &font);
+    
+    startTime = std::chrono::steady_clock::now();
+
+    printLog("PKSM", std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV).c_str());
 }
 
-void Logging::printLog(const std::string& text)
+void Logging::printLog(const std::string& category, const std::string& message)
 {
+    std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed = currentTime - startTime;
+    double seconds = elapsed.count();
+
+    std::ostringstream oss;
+    oss << "[" << std::setw(3) << std::setfill(' ') << (int)seconds << "." 
+        << std::setfill('0') << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
+    std::string formattedText = oss.str() + " " + category + ": " + message;
+    
     consoleSelect(&bottomScreen);
-    printf("%s\n", text.c_str());
+    printf("%s\n", formattedText.c_str());
 }

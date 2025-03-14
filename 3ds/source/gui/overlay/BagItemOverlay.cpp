@@ -82,10 +82,11 @@ void BagItemOverlay::update(touchPosition* touch)
     if (!searchString.empty() && searchString != oldSearchString)
     {
         items.clear();
-        if (!validItems.empty()) {
+        if (!validItems.empty())
+        {
             items.emplace_back(validItems[0]);
         }
-        
+
         for (auto& it : validItems)
         {
             std::string lowerName = *it.first;
