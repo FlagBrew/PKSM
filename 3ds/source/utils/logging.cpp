@@ -37,24 +37,35 @@
 #include "revision.h"
 
 namespace {
-    PrintConsole bottomScreen;
+    PrintConsole headerConsole;  // Fixed header console
+    PrintConsole logConsole;     // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
 }
 
 void Logging::init()
 {
-    consoleInit(GFX_BOTTOM, &bottomScreen);
+    consoleInit(GFX_BOTTOM, &headerConsole);
+    consoleInit(GFX_BOTTOM, &logConsole);
+    
+    // Configure header console to use just the top line
+    consoleSetWindow(&headerConsole, 0, 0, 40, 1);
+    
+    // Configure log console to use the remaining space
+    consoleSetWindow(&logConsole, 0, 1, 40, 29);
 
     ConsoleFont font;
     font.gfx         = (u8*)console_font_8x8;
     font.asciiOffset = 0;
     font.numChars    = 255;
-  
-    consoleSetFont(&bottomScreen, &font);
+
+    consoleSetFont(&headerConsole, &font);
+    consoleSetFont(&logConsole, &font);
     
     startTime = std::chrono::steady_clock::now();
 
-    printLog("PKSM", std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV).c_str());
+    std::string versionInfo = std::format("PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    consoleSelect(&headerConsole);
+    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET, 40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
 }
 
 void Logging::printLog(const std::string& category, const std::string& message)
@@ -68,6 +79,6 @@ void Logging::printLog(const std::string& category, const std::string& message)
         << std::setfill('0') << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
     std::string formattedText = oss.str() + " " + category + ": " + message;
     
-    consoleSelect(&bottomScreen);
+    consoleSelect(&logConsole);
     printf("%s\n", formattedText.c_str());
 }
