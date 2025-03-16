@@ -717,7 +717,7 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Archive::init failed.", res);
     }
-    Logging::startupLog("Archive", "init ok");
+    Logging::startupLog("archive", "init ok");
 
     if (R_FAILED(res = pxiDevInit()))
     {
