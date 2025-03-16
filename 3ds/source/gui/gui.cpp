@@ -33,6 +33,7 @@
 #include "sound.hpp"
 #include "TextParse.hpp"
 #include "utils/format.hpp"
+#include "utils/logging.hpp"
 #include <atomic>
 #include <stack>
 #include <thread>
@@ -600,6 +601,7 @@ namespace
                     std::lock_guard<std::mutex> lock(fontMutex);
                     fonts.emplace_back(font);
                     textBuffer->addFont(font);
+                    Logging::info("Loaded font for region " + std::to_string(region));
                 }
             }
         }
@@ -1025,12 +1027,15 @@ Result Gui::init(void)
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
+    Logging::info("Loaded spritesheets");
 
     std::lock_guard<std::mutex> lock(fontMutex);
     fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
+    Logging::info("Loaded pksm.bcfnt font");
 
     CFG_Region region = getRegionFromLanguage();
     fonts.emplace_back(C2D_FontLoadSystem(region));
+    Logging::info("Loaded main font for region " + std::to_string(region));
 
     textBuffer = new TextParse::TextBuf(8192, fonts);
 
