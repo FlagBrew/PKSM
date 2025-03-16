@@ -34,6 +34,10 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include "thread.hpp"
+extern "C" {
+#include "mongoose.h"
+}
 #include "revision.h"
 
 namespace {
@@ -41,6 +45,35 @@ namespace {
     PrintConsole headerConsole;  // Fixed header console
     PrintConsole logConsole;     // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
+
+    struct mg_mgr mgr;
+    struct mg_connection *nc;
+    static const char *s_http_port = "8000";
+    std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
+    
+    static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+        if (ev == MG_EV_HTTP_REQUEST) {
+            struct http_message *hm = (struct http_message *) ev_data;
+            
+            if (mg_vcmp(&hm->uri, "/logs") == 0) {
+                // Serve logs at /logs endpoint
+                mg_printf(nc, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
+                            "Content-Length: %d\r\n\r\n%s",
+                            (int) applicationLogs.length(), applicationLogs.c_str());
+            } else {
+                // Serve 404 for all other endpoints
+                mg_printf(nc, "%s", "HTTP/1.1 404 Not Found\r\n"
+                            "Content-Length: 0\r\n\r\n");
+            }
+            nc->flags |= MG_F_SEND_AND_CLOSE;
+        }
+    }
+    
+    static void networkLoop() {
+        while (serverRunning.test_and_set()) {
+            mg_mgr_poll(&mgr, 100);
+        }
+    }
 }
 
 void Logging::init()
@@ -68,6 +101,26 @@ void Logging::init()
     consoleSelect(&headerConsole);
     printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET, 40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
     info(versionInfo);
+}
+
+void Logging::initNetwork() {
+    mg_mgr_init(&mgr, NULL);
+    nc = mg_bind(&mgr, s_http_port, ev_handler);
+    if (nc) {
+        mg_set_protocol_http_websocket(nc);
+        serverRunning.test_and_set();
+        Threads::create(networkLoop);
+        startupLog("log", "listening on :8000/logs");
+    } else {
+        startupLog("log", "failed to bind to :8000 with code " + std::to_string(errno));
+    }
+}
+
+void Logging::exitNetwork()
+{
+    serverRunning.clear();
+    mg_mgr_free(&mgr);
+    trace("HTTP log server stopped");
 }
 
 void Logging::startupLog(const std::string& category, const std::string& message)

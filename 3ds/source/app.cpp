@@ -767,6 +767,8 @@ Result App::init(const std::string& execPath)
     }
     Logging::startupLog("network", "init ok");
 
+    Logging::initNetwork();
+
     // link3dsStdio();
 
     if (R_FAILED(res = downloadAdditionalAssets()))
@@ -859,6 +861,7 @@ Result App::exit(void)
     Gui::exit();
     Fetch::exitMulti();
     curl_global_cleanup();
+    Logging::exitNetwork();
     socExit();
     nsExit();
     acExit();
