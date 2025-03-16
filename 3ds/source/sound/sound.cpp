@@ -31,6 +31,7 @@
 #include "random.hpp"
 #include "STDirectory.hpp"
 #include "thread.hpp"
+#include "utils/logging.hpp"
 #include <3ds.h>
 #include <array>
 #include <atomic>
@@ -63,6 +64,7 @@ namespace
             return;
         }
 
+        // FIXME: there's a nasty deadlock somewhere in here
         LightEvent_Signal(&frameEvent);
     }
 
@@ -199,11 +201,6 @@ namespace
 
 Result Sound::init()
 {
-    if (!Decoder::init())
-    {
-        return -1;
-    }
-    LightEvent_Init(&frameEvent, RESET_ONESHOT);
     STDirectory dir("/3ds/PKSM/songs");
     if (dir.good())
     {
@@ -214,22 +211,46 @@ Result Sound::init()
                 auto decoder = Decoder::get("/3ds/PKSM/songs/" + dir.item(i));
                 if (decoder && decoder->good())
                 {
-                    bgm.emplace_back("/3ds/PKSM/songs/" + dir.item(i));
+                    bgm.push_back("/3ds/PKSM/songs/" + dir.item(i));
                 }
             }
         }
     }
+
+    if (bgm.empty())
+    {
+        Logging::startupLog("sound", "no bgm found. skipping");
+        return 0;
+    }
+    else
+    {
+        Logging::startupLog("sound", "loaded " + std::to_string(bgm.size()) + " songs");
+    }
+
+    if (!Decoder::init())
+    {
+        return -1;
+    }
+    Logging::startupLog("decoder", "init ok");
+
+    LightEvent_Init(&frameEvent, RESET_ONESHOT);
+    Logging::startupLog("sound", "frameEvent init ok");
+
     Result res = ndspInit();
     ndspSetCallback(ndspFrameCallback, nullptr);
     if (R_FAILED(res))
     {
         return res;
     }
+    Logging::startupLog("sound", "ndsp init ok");
+
     bufferMem = (s16*)linearAlloc(BUFFER_SIZE * BUFFERS_PER_CHANNEL * NUM_CHANNELS);
     if (!bufferMem)
     {
         return -1;
     }
+    Logging::startupLog("sound", "bufferMem alloc ok");
+
     for (size_t buffer = 0; buffer < NUM_CHANNELS * BUFFERS_PER_CHANNEL; buffer++)
     {
         buffers[buffer].data_pcm16 = bufferMem + buffer * BUFFER_SIZE / sizeof(s16);
@@ -237,6 +258,8 @@ Result Sound::init()
         buffers[buffer].nsamples   = 0;
     }
     ndspSetOutputMode(NDSP_OUTPUT_STEREO);
+    Logging::startupLog("sound", "init ok");
+
     return 0;
 }
 
@@ -255,7 +278,10 @@ void Sound::registerEffect(const std::string& effectName, const std::string& fil
 void Sound::exit()
 {
     stop();
-    linearFree(bufferMem);
+    if (bufferMem != nullptr)
+    {
+        linearFree(bufferMem);
+    }
     ndspExit();
     Decoder::exit();
 }
