@@ -784,6 +784,7 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Gui::init failed.", res);
     }
+    Logging::startupLog("gui", "init ok");
 
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
     moveIcon.clear();
