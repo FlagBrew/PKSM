@@ -24,33 +24,29 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef LOGGING_HPP
-#define LOGGING_HPP
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
-#include <cstdio>
+#include <functional>
 #include <string>
 
-enum class LogLevel
+namespace Server
 {
-    TRACE,
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR
-};
+    struct HttpResponse
+    {
+        int statusCode;
+        std::string contentType;
+        std::string body;
+    };
 
-namespace Logging
-{
+    using HttpHandler =
+        std::function<HttpResponse(const std::string& path, const std::string& requestData)>;
+
     void init(void);
+    void exit(void);
 
-    void log(LogLevel level, const std::string& message);
-    void trace(const std::string& message);
-    void debug(const std::string& message);
-    void info(const std::string& message);
-    void warning(const std::string& message);
-    void error(const std::string& message);
-
-    void startupLog(const std::string& category, const std::string& message);
+    void registerHandler(const std::string& path, HttpHandler handler);
+    void unregisterHandler(const std::string& path);
 }
 
 #endif

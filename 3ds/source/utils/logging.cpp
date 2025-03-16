@@ -31,14 +31,18 @@
 #include <3ds.h>
 #endif
 
+#include "revision.h"
+#include "server.hpp"
 #include <chrono>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
-#include "revision.h"
 
-namespace {
-    PrintConsole headerConsole;  // Fixed header console
-    PrintConsole logConsole;     // Scrolling log console
+namespace
+{
+    std::string applicationLogs;
+    PrintConsole headerConsole; // Fixed header console
+    PrintConsole logConsole;    // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
 }
 
@@ -46,10 +50,10 @@ void Logging::init()
 {
     consoleInit(GFX_BOTTOM, &headerConsole);
     consoleInit(GFX_BOTTOM, &logConsole);
-    
+
     // Configure header console to use just the top line
     consoleSetWindow(&headerConsole, 0, 0, 40, 1);
-    
+
     // Configure log console to use the remaining space
     consoleSetWindow(&logConsole, 0, 1, 40, 29);
 
@@ -60,25 +64,91 @@ void Logging::init()
 
     consoleSetFont(&headerConsole, &font);
     consoleSetFont(&logConsole, &font);
-    
+
     startTime = std::chrono::steady_clock::now();
 
-    std::string versionInfo = std::format("PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    std::string versionInfo = std::format(
+        "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     consoleSelect(&headerConsole);
-    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET, 40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
+    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
+        40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
+    info(versionInfo);
+
+    Server::registerHandler("/logs",
+        [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
+        { return {200, "text/plain", applicationLogs}; });
 }
 
-void Logging::printLog(const std::string& category, const std::string& message)
+void Logging::startupLog(const std::string& category, const std::string& message)
 {
     std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed = currentTime - startTime;
-    double seconds = elapsed.count();
+    std::chrono::duration<double> elapsed             = currentTime - startTime;
+    double seconds                                    = elapsed.count();
 
     std::ostringstream oss;
-    oss << "[" << std::setw(3) << std::setfill(' ') << (int)seconds << "." 
-        << std::setfill('0') << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
+    oss << "[" << std::setw(3) << std::setfill(' ') << (int)seconds << "." << std::setfill('0')
+        << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
     std::string formattedText = oss.str() + " " + category + ": " + message;
-    
+    info(category + ": " + message);
+
     consoleSelect(&logConsole);
     printf("%s\n", formattedText.c_str());
+}
+
+void Logging::info(const std::string& message)
+{
+    log(LogLevel::INFO, message);
+}
+
+void Logging::warning(const std::string& message)
+{
+    log(LogLevel::WARNING, message);
+}
+
+void Logging::error(const std::string& message)
+{
+    log(LogLevel::ERROR, message);
+}
+
+void Logging::debug(const std::string& message)
+{
+    log(LogLevel::DEBUG, message);
+}
+
+void Logging::trace(const std::string& message)
+{
+    log(LogLevel::TRACE, message);
+}
+
+void Logging::log(LogLevel level, const std::string& message)
+{
+    std::stringstream ss;
+    auto now        = std::chrono::system_clock::now();
+    auto now_time_t = std::chrono::system_clock::to_time_t(now);
+    auto now_ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+    ss << std::put_time(std::localtime(&now_time_t), "[%Y-%m-%d %H:%M:%S");
+    ss << "." << std::setfill('0') << std::setw(3) << now_ms.count() << "] ";
+
+    switch (level)
+    {
+        case LogLevel::TRACE:
+            ss << " TRACE - ";
+            break;
+        case LogLevel::DEBUG:
+            ss << " DEBUG - ";
+            break;
+        case LogLevel::INFO:
+            ss << "  INFO - ";
+            break;
+        case LogLevel::WARNING:
+            ss << "WARNING - ";
+            break;
+        case LogLevel::ERROR:
+            ss << " ERROR - ";
+            break;
+    }
+
+    applicationLogs += ss.str() + message + "\n";
 }
