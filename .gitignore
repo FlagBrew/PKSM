@@ -31,3 +31,4 @@ common/generate_categories_for_other_languages.py
 switch_compile_commands.json
 .clangd
 out
+.idea
