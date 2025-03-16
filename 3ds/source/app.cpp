@@ -45,6 +45,7 @@
 #include "utils/crypto.hpp"
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
+#include "utils/server.hpp"
 #include "website.h"
 #include <3ds.h>
 #include <array>
@@ -767,7 +768,7 @@ Result App::init(const std::string& execPath)
     }
     Logging::startupLog("network", "init ok");
 
-    Logging::initNetwork();
+    Server::init();
 
     // link3dsStdio();
 
@@ -861,7 +862,7 @@ Result App::exit(void)
     Gui::exit();
     Fetch::exitMulti();
     curl_global_cleanup();
-    Logging::exitNetwork();
+    Server::exit();
     socExit();
     nsExit();
     acExit();

@@ -31,98 +31,28 @@
 #include <3ds.h>
 #endif
 
-#include <cstring>
+#include "revision.h"
 #include <chrono>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
-#include "thread.hpp"
-#include "revision.h"
 
-// Socket headers
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-namespace {
+namespace
+{
     std::string applicationLogs;
-    PrintConsole headerConsole;  // Fixed header console
-    PrintConsole logConsole;     // Scrolling log console
+    PrintConsole headerConsole; // Fixed header console
+    PrintConsole logConsole;    // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
-
-    // Socket server variables
-    static const int SERVER_PORT = 8000;
-    std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
-    s32 serverSocket = -1;
-    
-    #define SOC_ALIGN       0x1000
-    #define SOC_BUFFERSIZE  0x100000
-    static u32* SOC_buffer = NULL;
-    
-    static void handleHttpRequest(s32 clientSocket) {
-        char buffer[1024] = {0};
-        recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-        
-        // Simple HTTP request parsing
-        if (strstr(buffer, "GET /logs HTTP") != nullptr) {
-            // Serve logs at /logs endpoint
-            std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
-                            "Content-Length: " + std::to_string(applicationLogs.length()) + 
-                            "\r\n\r\n";
-            
-            // Send header and logs
-            send(clientSocket, header.c_str(), header.length(), 0);
-            send(clientSocket, applicationLogs.c_str(), applicationLogs.length(), 0);
-        } else {
-            // 404 for all other endpoints
-            std::string response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-            send(clientSocket, response.c_str(), response.length(), 0);
-        }
-    }
-    
-    static void networkLoop() {
-        struct sockaddr_in clientAddr;
-        u32 clientLen = sizeof(clientAddr);
-        
-        // Set server socket to non-blocking
-        fcntl(serverSocket, F_SETFL, fcntl(serverSocket, F_GETFL, 0) | O_NONBLOCK);
-        
-        while (serverRunning.test_and_set()) {
-            // Accept connection (non-blocking)
-            s32 clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
-            
-            if (clientSocket >= 0) {
-                // Set client socket to blocking for simpler sending
-                fcntl(clientSocket, F_SETFL, fcntl(clientSocket, F_GETFL, 0) & ~O_NONBLOCK);
-                
-                // Handle the request
-                handleHttpRequest(clientSocket);
-                
-                // Close the connection
-                close(clientSocket);
-            } else if (errno != EAGAIN) {
-                // Log error if it's not just "no connection available"
-                char errMsg[64];
-                snprintf(errMsg, sizeof(errMsg), "Socket accept error: %d", errno);
-                consoleSelect(&logConsole);
-                printf("%s\n", errMsg);
-            }
-            
-            // Prevent 100% CPU usage
-            svcSleepThread(100000000); // 100ms
-        }
-    }
 }
 
 void Logging::init()
 {
     consoleInit(GFX_BOTTOM, &headerConsole);
     consoleInit(GFX_BOTTOM, &logConsole);
-    
+
     // Configure header console to use just the top line
     consoleSetWindow(&headerConsole, 0, 0, 40, 1);
-    
+
     // Configure log console to use the remaining space
     consoleSetWindow(&logConsole, 0, 1, 40, 29);
 
@@ -133,98 +63,29 @@ void Logging::init()
 
     consoleSetFont(&headerConsole, &font);
     consoleSetFont(&logConsole, &font);
-    
+
     startTime = std::chrono::steady_clock::now();
 
-    std::string versionInfo = std::format("PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    std::string versionInfo = std::format(
+        "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     consoleSelect(&headerConsole);
-    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET, 40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
+    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
+        40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
     info(versionInfo);
-}
-
-void Logging::initNetwork() {
-    // Create socket
-    serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-    if (serverSocket < 0) {
-        startupLog("log", "Failed to create socket with error: " + std::to_string(errno));
-        socExit();
-        free(SOC_buffer);
-        SOC_buffer = NULL;
-        return;
-    }
-    
-    // Set up server address
-    struct sockaddr_in serverAddr;
-    memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(SERVER_PORT);
-    serverAddr.sin_addr.s_addr = gethostid(); // Use the device's IP
-    
-    // Bind socket
-    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0) {
-        startupLog("log", "Failed to bind to port " + std::to_string(SERVER_PORT) + 
-                        " with error: " + std::to_string(errno));
-        close(serverSocket);
-        serverSocket = -1;
-        socExit();
-        free(SOC_buffer);
-        SOC_buffer = NULL;
-        return;
-    }
-    
-    // Start listening
-    if (listen(serverSocket, 5) != 0) {
-        startupLog("log", "Failed to listen on socket with error: " + std::to_string(errno));
-        close(serverSocket);
-        serverSocket = -1;
-        socExit();
-        free(SOC_buffer);
-        SOC_buffer = NULL;
-        return;
-    }
-    
-    // Convert IP to string for log message
-    char ipStr[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &(serverAddr.sin_addr), ipStr, INET_ADDRSTRLEN);
-    
-    // Start server thread
-    serverRunning.test_and_set();
-    Threads::create(networkLoop);
-    startupLog("log", std::string("Listening on http://") + ipStr + ":" + 
-            std::to_string(SERVER_PORT) + "/logs");
-}
-
-void Logging::exitNetwork()
-{
-    serverRunning.clear();
-    
-    if (serverSocket >= 0) {
-        close(serverSocket);
-        serverSocket = -1;
-    }
-    
-    socExit();
-    
-    if (SOC_buffer) {
-        free(SOC_buffer);
-        SOC_buffer = NULL;
-    }
-    
-    trace("HTTP log server stopped");
 }
 
 void Logging::startupLog(const std::string& category, const std::string& message)
 {
     std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed = currentTime - startTime;
-    double seconds = elapsed.count();
+    std::chrono::duration<double> elapsed             = currentTime - startTime;
+    double seconds                                    = elapsed.count();
 
     std::ostringstream oss;
-    oss << "[" << std::setw(3) << std::setfill(' ') << (int)seconds << "." 
-        << std::setfill('0') << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
+    oss << "[" << std::setw(3) << std::setfill(' ') << (int)seconds << "." << std::setfill('0')
+        << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
     std::string formattedText = oss.str() + " " + category + ": " + message;
     info(category + ": " + message);
-    
+
     consoleSelect(&logConsole);
     printf("%s\n", formattedText.c_str());
 }
@@ -257,11 +118,11 @@ void Logging::trace(const std::string& message)
 void Logging::log(LogLevel level, const std::string& message)
 {
     std::stringstream ss;
-    auto now = std::chrono::system_clock::now();
+    auto now        = std::chrono::system_clock::now();
     auto now_time_t = std::chrono::system_clock::to_time_t(now);
-    auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        now.time_since_epoch()) % 1000;
-    
+    auto now_ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
     ss << std::put_time(std::localtime(&now_time_t), "[%Y-%m-%d %H:%M:%S");
     ss << "." << std::setfill('0') << std::setw(3) << now_ms.count() << "] ";
 
@@ -285,4 +146,9 @@ void Logging::log(LogLevel level, const std::string& message)
     }
 
     applicationLogs += ss.str() + message + "\n";
+}
+
+std::string Logging::getLogs()
+{
+    return applicationLogs;
 }

@@ -42,9 +42,7 @@ enum class LogLevel
 namespace Logging
 {
     void init(void);
-    void initNetwork(void);
-    void exitNetwork(void);
-    
+
     void log(LogLevel level, const std::string& message);
     void trace(const std::string& message);
     void debug(const std::string& message);
@@ -53,6 +51,8 @@ namespace Logging
     void error(const std::string& message);
 
     void startupLog(const std::string& category, const std::string& message);
+
+    std::string getLogs(void);
 }
 
 #endif
