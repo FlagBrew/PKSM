@@ -32,7 +32,6 @@
 #include <map>
 #include <string>
 
-// Socket headers
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -41,7 +40,6 @@
 
 namespace
 {
-    // Socket server variables
     static const int SERVER_PORT   = 8000;
     std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
     s32 serverSocket               = -1;
@@ -101,18 +99,13 @@ namespace
 
         while (serverRunning.test_and_set())
         {
-            // Accept connection (non-blocking)
             s32 clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
 
             if (clientSocket >= 0)
             {
                 // Set client socket to blocking for simpler sending
                 fcntl(clientSocket, F_SETFL, fcntl(clientSocket, F_GETFL, 0) & ~O_NONBLOCK);
-
-                // Handle the request
                 handleHttpRequest(clientSocket);
-
-                // Close the connection
                 close(clientSocket);
             }
             else if (errno != EAGAIN)
@@ -140,7 +133,6 @@ void Server::unregisterHandler(const std::string& path)
 
 void Server::init()
 {
-    // Create socket
     serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (serverSocket < 0)
     {
@@ -148,14 +140,12 @@ void Server::init()
         return;
     }
 
-    // Set up server address
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family      = AF_INET;
     serverAddr.sin_port        = htons(SERVER_PORT);
-    serverAddr.sin_addr.s_addr = gethostid(); // Use the device's IP
+    serverAddr.sin_addr.s_addr = gethostid();
 
-    // Bind socket
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0)
     {
         Logging::startupLog("log", "Failed to bind to port " + std::to_string(SERVER_PORT) +
@@ -165,7 +155,6 @@ void Server::init()
         return;
     }
 
-    // Start listening
     if (listen(serverSocket, 5) != 0)
     {
         Logging::startupLog(
@@ -175,11 +164,9 @@ void Server::init()
         return;
     }
 
-    // Convert IP to string for log message
     char ipStr[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(serverAddr.sin_addr), ipStr, INET_ADDRSTRLEN);
 
-    // Start server thread
     serverRunning.test_and_set();
     Threads::create(networkLoop);
     Logging::startupLog("log",
