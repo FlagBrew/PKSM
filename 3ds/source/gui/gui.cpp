@@ -1019,6 +1019,8 @@ Result Gui::init(void)
     C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
+    Logging::startupLog("gui", "C2D initialized");
+
     Sound::init();
 
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
@@ -1027,15 +1029,15 @@ Result Gui::init(void)
     spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
-    Logging::info("Loaded spritesheets");
+    Logging::startupLog("gui", "spritesheets loaded");
 
     std::lock_guard<std::mutex> lock(fontMutex);
     fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
-    Logging::info("Loaded pksm.bcfnt font");
+    Logging::startupLog("gui", "Loaded pksm.bcfnt font");
 
     CFG_Region region = getRegionFromLanguage();
     fonts.emplace_back(C2D_FontLoadSystem(region));
-    Logging::info("Loaded main font for region " + std::to_string(region));
+    Logging::startupLog("gui", "Loaded main font for region " + std::to_string(region));
 
     textBuffer = new TextParse::TextBuf(8192, fonts);
 
