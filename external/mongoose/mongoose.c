@@ -1218,7 +1218,7 @@ void cs_md5_update(cs_md5_ctx *ctx, const unsigned char *buf, size_t len) {
   memcpy(ctx->in, buf, len);
 }
 
-void cs_md5_final(unsigned char digest[16], cs_md5_ctx *ctx) {
+void cs_md5_final(unsigned char /*digest[16]*/ *digest, cs_md5_ctx *ctx) {
   unsigned count;
   unsigned char *p;
   uint32_t *a;
