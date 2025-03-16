@@ -31,14 +31,19 @@
 #include <3ds.h>
 #endif
 
+#include <cstring>
 #include <chrono>
 #include <iomanip>
 #include <sstream>
 #include "thread.hpp"
-extern "C" {
-#include "mongoose.h"
-}
 #include "revision.h"
+
+// Socket headers
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 namespace {
     std::string applicationLogs;
@@ -46,32 +51,66 @@ namespace {
     PrintConsole logConsole;     // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
 
-    struct mg_mgr mgr;
-    struct mg_connection *nc;
-    static const char *s_http_port = "8000";
+    // Socket server variables
+    static const int SERVER_PORT = 8000;
     std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
+    s32 serverSocket = -1;
     
-    static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
-        if (ev == MG_EV_HTTP_REQUEST) {
-            struct http_message *hm = (struct http_message *) ev_data;
+    #define SOC_ALIGN       0x1000
+    #define SOC_BUFFERSIZE  0x100000
+    static u32* SOC_buffer = NULL;
+    
+    static void handleHttpRequest(s32 clientSocket) {
+        char buffer[1024] = {0};
+        recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+        
+        // Simple HTTP request parsing
+        if (strstr(buffer, "GET /logs HTTP") != nullptr) {
+            // Serve logs at /logs endpoint
+            std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
+                            "Content-Length: " + std::to_string(applicationLogs.length()) + 
+                            "\r\n\r\n";
             
-            if (mg_vcmp(&hm->uri, "/logs") == 0) {
-                // Serve logs at /logs endpoint
-                mg_printf(nc, "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
-                            "Content-Length: %d\r\n\r\n%s",
-                            (int) applicationLogs.length(), applicationLogs.c_str());
-            } else {
-                // Serve 404 for all other endpoints
-                mg_printf(nc, "%s", "HTTP/1.1 404 Not Found\r\n"
-                            "Content-Length: 0\r\n\r\n");
-            }
-            nc->flags |= MG_F_SEND_AND_CLOSE;
+            // Send header and logs
+            send(clientSocket, header.c_str(), header.length(), 0);
+            send(clientSocket, applicationLogs.c_str(), applicationLogs.length(), 0);
+        } else {
+            // 404 for all other endpoints
+            std::string response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+            send(clientSocket, response.c_str(), response.length(), 0);
         }
     }
     
     static void networkLoop() {
+        struct sockaddr_in clientAddr;
+        u32 clientLen = sizeof(clientAddr);
+        
+        // Set server socket to non-blocking
+        fcntl(serverSocket, F_SETFL, fcntl(serverSocket, F_GETFL, 0) | O_NONBLOCK);
+        
         while (serverRunning.test_and_set()) {
-            mg_mgr_poll(&mgr, 100);
+            // Accept connection (non-blocking)
+            s32 clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
+            
+            if (clientSocket >= 0) {
+                // Set client socket to blocking for simpler sending
+                fcntl(clientSocket, F_SETFL, fcntl(clientSocket, F_GETFL, 0) & ~O_NONBLOCK);
+                
+                // Handle the request
+                handleHttpRequest(clientSocket);
+                
+                // Close the connection
+                close(clientSocket);
+            } else if (errno != EAGAIN) {
+                // Log error if it's not just "no connection available"
+                char errMsg[64];
+                snprintf(errMsg, sizeof(errMsg), "Socket accept error: %d", errno);
+                consoleSelect(&logConsole);
+                printf("%s\n", errMsg);
+            }
+            
+            // Prevent 100% CPU usage
+            svcSleepThread(100000000); // 100ms
         }
     }
 }
@@ -104,22 +143,73 @@ void Logging::init()
 }
 
 void Logging::initNetwork() {
-    mg_mgr_init(&mgr, NULL);
-    nc = mg_bind(&mgr, s_http_port, ev_handler);
-    if (nc) {
-        mg_set_protocol_http_websocket(nc);
-        serverRunning.test_and_set();
-        Threads::create(networkLoop);
-        startupLog("log", "listening on :8000/logs");
-    } else {
-        startupLog("log", "failed to bind to :8000 with code " + std::to_string(errno));
+    // Create socket
+    serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+    if (serverSocket < 0) {
+        startupLog("log", "Failed to create socket with error: " + std::to_string(errno));
+        socExit();
+        free(SOC_buffer);
+        SOC_buffer = NULL;
+        return;
     }
+    
+    // Set up server address
+    struct sockaddr_in serverAddr;
+    memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(SERVER_PORT);
+    serverAddr.sin_addr.s_addr = gethostid(); // Use the device's IP
+    
+    // Bind socket
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0) {
+        startupLog("log", "Failed to bind to port " + std::to_string(SERVER_PORT) + 
+                        " with error: " + std::to_string(errno));
+        close(serverSocket);
+        serverSocket = -1;
+        socExit();
+        free(SOC_buffer);
+        SOC_buffer = NULL;
+        return;
+    }
+    
+    // Start listening
+    if (listen(serverSocket, 5) != 0) {
+        startupLog("log", "Failed to listen on socket with error: " + std::to_string(errno));
+        close(serverSocket);
+        serverSocket = -1;
+        socExit();
+        free(SOC_buffer);
+        SOC_buffer = NULL;
+        return;
+    }
+    
+    // Convert IP to string for log message
+    char ipStr[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(serverAddr.sin_addr), ipStr, INET_ADDRSTRLEN);
+    
+    // Start server thread
+    serverRunning.test_and_set();
+    Threads::create(networkLoop);
+    startupLog("log", std::string("Listening on http://") + ipStr + ":" + 
+            std::to_string(SERVER_PORT) + "/logs");
 }
 
 void Logging::exitNetwork()
 {
     serverRunning.clear();
-    mg_mgr_free(&mgr);
+    
+    if (serverSocket >= 0) {
+        close(serverSocket);
+        serverSocket = -1;
+    }
+    
+    socExit();
+    
+    if (SOC_buffer) {
+        free(SOC_buffer);
+        SOC_buffer = NULL;
+    }
+    
     trace("HTTP log server stopped");
 }
 

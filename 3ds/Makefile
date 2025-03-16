@@ -85,8 +85,7 @@ SOURCES			:=	$(FORMATSOURCES) \
 					../core/source/utils \
 					../core/source/wcx \
 					../external/picoc/source/interpreter \
-					../external/qrgen \
-					../external/mongoose
+					../external/qrgen
 
 DATA			:=	data
 FORMATINCLUDES	:=	../common/include \
@@ -117,8 +116,7 @@ INCLUDES		:=	$(FORMATINCLUDES) \
 					../external \
 					../external/fmt \
 					../external/picoc/include \
-					../external/qrgen \
-					../external/mongoose
+					../external/qrgen
 
 GRAPHICS		:=	../assets/gfx/ui
 ROMFS			:=	../assets/romfs
@@ -158,7 +156,6 @@ CFLAGS	:=	-g -Wall -Wextra -Werror -Wno-psabi -mword-relocations \
 			-DFMT_HEADER_ONLY \
 			-DJSON_HAS_FILESYSTEM=0 \
 			-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0 \
-			-DCS_PLATFORM=CS_P_CUSTOM \
 			`arm-none-eabi-pkg-config libmpg123 --cflags` \
 			`curl-config --cflags` \
 			$(OPTIMIZE) $(RELEASE_FLAGS)
