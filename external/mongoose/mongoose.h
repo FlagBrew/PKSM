@@ -3920,7 +3920,6 @@ struct mg_connection {
 
   sock_t sock; /* Socket to the remote peer */
   int err;
-  union socket_address sa; /* Remote peer address */
   size_t recv_mbuf_limit;  /* Max size of recv buffer */
   struct mbuf recv_mbuf;   /* Received data */
   struct mbuf send_mbuf;   /* Data scheduled for sending */
@@ -3946,6 +3945,7 @@ struct mg_connection {
   void *mgr_data; /* Implementation-specific event manager's data. */
   struct mg_iface *iface;
   unsigned long flags;
+  union socket_address sa; /* Remote peer address */
 /* Flags set by Mongoose */
 #define MG_F_LISTENING (1 << 0)          /* This connection is listening */
 #define MG_F_UDP (1 << 1)                /* This connection is UDP */
