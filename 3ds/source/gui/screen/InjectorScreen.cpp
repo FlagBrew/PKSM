@@ -313,6 +313,9 @@ void InjectorScreen::drawTop() const
         {
             if (wondercard->species() == pksm::Species::Manaphy && wondercard->egg())
             {
+                Gui::manaphyEgg(272, 44, 1.5f, COLOR_GREY_BLEND, 1.5f);
+                Gui::manaphyEgg(268, 40, 1.5f);
+
                 Gui::pkm(pksm::Species::Manaphy, -1, wondercard->generation(), wondercard->gender(),
                     276, 49, 2.0f, COLOR_GREY_BLEND, 1.0f);
                 Gui::pkm(pksm::Species::Manaphy, -1, wondercard->generation(), wondercard->gender(),
@@ -320,6 +323,18 @@ void InjectorScreen::drawTop() const
             }
             else
             {
+                if (wondercard->egg())
+                {
+                    Gui::egg(272, 44, 1.5f, COLOR_GREY_BLEND, 1.5f);
+                    Gui::egg(268, 40, 1.5f);
+                }
+
+                if (wondercard->shiny())
+                {
+                    Gui::shinyStar(272, 44, 1.5f, COLOR_GREY_BLEND, 1.5f);
+                    Gui::shinyStar(268, 40, 1.5f);
+                }
+
                 Gui::pkm(wondercard->species(), wondercard->alternativeForm(),
                     wondercard->generation(), wondercard->gender(), 276, 49, 2.0f, COLOR_GREY_BLEND,
                     1.0f);

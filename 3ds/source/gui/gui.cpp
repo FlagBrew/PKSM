@@ -2243,3 +2243,27 @@ void Gui::drawSelector(float x, float y)
 
     timer += .025f;
 }
+
+void Gui::shinyStar(int x, int y, float scale, PKSM_Color color, float blend)
+{
+    C2D_ImageTint tint;
+    C2D_PlainImageTint(&tint, colorToFormat(color), blend);
+    Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_icon_shiny_idx), x, y, &tint,
+        scale, scale);
+}
+
+void Gui::egg(int x, int y, float scale, PKSM_Color color, float blend)
+{
+    C2D_ImageTint tint;
+    C2D_PlainImageTint(&tint, colorToFormat(color), blend);
+    Gui::drawImageAt(
+        C2D_SpriteSheetGetImage(spritesheet_pkm, pkm_spritesheet_0_idx), x, y, &tint, scale, scale);
+}
+
+void Gui::manaphyEgg(int x, int y, float scale, PKSM_Color color, float blend)
+{
+    C2D_ImageTint tint;
+    C2D_PlainImageTint(&tint, colorToFormat(color), blend);
+    Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_types, types_spritesheet_490_e_idx), x, y,
+        &tint, scale, scale);
+}

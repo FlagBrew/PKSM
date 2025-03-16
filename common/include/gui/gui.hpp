@@ -79,6 +79,11 @@ namespace Gui
         float blend = 0.0f);
     void pkm(pksm::Species species, int form, pksm::Generation generation, pksm::Gender gender,
         int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
+    void shinyStar(
+        int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
+    void egg(int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
+    void manaphyEgg(
+        int x, int y, float scale = 1.0f, PKSM_Color color = COLOR_BLACK, float blend = 0.0f);
 
     int pointerBob();
 #if defined(__3DS__)
