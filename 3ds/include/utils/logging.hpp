@@ -30,10 +30,27 @@
 #include <cstdio>
 #include <string>
 
+enum class LogLevel
+{
+    TRACE,
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR
+};
+
 namespace Logging
 {
     void init(void);
-    void printLog(const std::string& category, const std::string& message);
+    
+    void log(LogLevel level, const std::string& message);
+    void trace(const std::string& message);
+    void debug(const std::string& message);
+    void info(const std::string& message);
+    void warning(const std::string& message);
+    void error(const std::string& message);
+
+    void startupLog(const std::string& category, const std::string& message);
 }
 
 #endif
