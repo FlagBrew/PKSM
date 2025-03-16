@@ -12,7 +12,7 @@
     "CONFIG_USE_EXTDATA": "使用扩展数据",
     "DELETE_EXTRASAVE_ENTRY": "删除保存：",
     "EXTRA_SAVES": "额外保存",
-    "EXTRASAVES_CONFIGURE_INSTRUCTIONS": "配置您的额外保存。按B退出。",
+    "EXTRASAVES_CONFIGURE_INSTRUCTIONS": "配置您的额外保存。按\uE001退出。",
     "FILE_CONFIRM_CHOICE": "选择此文件？",
     "FILTER_OPTIONS": "过滤选项",
     "GROUP_CHOICE_INSTR": "选择一个保存组进行配置。",
