@@ -29,6 +29,8 @@
 #include "thread.hpp"
 #include <3ds.h>
 #include <cstring>
+#include <map>
+#include <string>
 
 // Socket headers
 #include <arpa/inet.h>
@@ -44,27 +46,46 @@ namespace
     std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
     s32 serverSocket               = -1;
 
+    std::map<std::string, Server::HttpHandler> handlers;
+
+    std::string extractPath(const std::string& request)
+    {
+        size_t pathStart = request.find(" ") + 1;
+        if (pathStart != std::string::npos)
+        {
+            size_t pathEnd = request.find(" ", pathStart);
+            if (pathEnd != std::string::npos)
+            {
+                return request.substr(pathStart, pathEnd - pathStart);
+            }
+        }
+        return "";
+    }
+
     static void handleHttpRequest(s32 clientSocket)
     {
         char buffer[1024] = {0};
         recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-
-        // Simple HTTP request parsing
-        if (strstr(buffer, "GET /logs HTTP") != nullptr)
+        std::string request(buffer);
+        std::string path = extractPath(request);
+        auto it          = handlers.find(path);
+        if (it != handlers.end())
         {
-            std::string applicationLogs = Logging::getLogs();
-            // Serve logs at /logs endpoint
-            std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
-                                 "Content-Length: " +
-                                 std::to_string(applicationLogs.length()) + "\r\n\r\n";
+            Server::HttpResponse response = it->second(path, request);
+            std::string header            = "HTTP/1.1 " + std::to_string(response.statusCode);
+            header                       += (response.statusCode == 200
+                                                 ? " OK"
+                                                 : (response.statusCode == 404 ? " Not Found" : " Error"));
+            header                       += "\r\nContent-Type: " + response.contentType;
+            header += "\r\nContent-Length: " + std::to_string(response.body.length());
+            header += "\r\n\r\n";
 
-            // Send header and logs
             send(clientSocket, header.c_str(), header.length(), 0);
-            send(clientSocket, applicationLogs.c_str(), applicationLogs.length(), 0);
+            send(clientSocket, response.body.c_str(), response.body.length(), 0);
         }
         else
         {
-            // 404 for all other endpoints
+            // 404 for unregistered endpoints
             std::string response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
             send(clientSocket, response.c_str(), response.length(), 0);
         }
@@ -103,6 +124,18 @@ namespace
             svcSleepThread(100000000); // 100ms
         }
     }
+}
+
+void Server::registerHandler(const std::string& path, Server::HttpHandler handler)
+{
+    handlers[path] = handler;
+    Logging::info("Registered HTTP handler for path: " + path);
+}
+
+void Server::unregisterHandler(const std::string& path)
+{
+    handlers.erase(path);
+    Logging::info("Unregistered HTTP handler for path: " + path);
 }
 
 void Server::init()
@@ -150,7 +183,7 @@ void Server::init()
     serverRunning.test_and_set();
     Threads::create(networkLoop);
     Logging::startupLog("log",
-        std::string("Listening on http://") + ipStr + ":" + std::to_string(SERVER_PORT) + "/logs");
+        std::string("HTTP server started on http://") + ipStr + ":" + std::to_string(SERVER_PORT));
 }
 
 void Server::exit()
@@ -163,5 +196,7 @@ void Server::exit()
         serverSocket = -1;
     }
 
-    Logging::trace("HTTP log server stopped");
+    handlers.clear();
+
+    Logging::trace("HTTP server stopped");
 }

@@ -32,6 +32,7 @@
 #endif
 
 #include "revision.h"
+#include "server.hpp"
 #include <chrono>
 #include <cstring>
 #include <iomanip>
@@ -72,6 +73,10 @@ void Logging::init()
     printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
         40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
     info(versionInfo);
+
+    Server::registerHandler("/logs",
+        [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
+        { return {200, "text/plain", applicationLogs}; });
 }
 
 void Logging::startupLog(const std::string& category, const std::string& message)
@@ -146,9 +151,4 @@ void Logging::log(LogLevel level, const std::string& message)
     }
 
     applicationLogs += ss.str() + message + "\n";
-}
-
-std::string Logging::getLogs()
-{
-    return applicationLogs;
 }

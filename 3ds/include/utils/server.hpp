@@ -27,10 +27,26 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <functional>
+#include <string>
+
 namespace Server
 {
+    struct HttpResponse
+    {
+        int statusCode;
+        std::string contentType;
+        std::string body;
+    };
+
+    using HttpHandler =
+        std::function<HttpResponse(const std::string& path, const std::string& requestData)>;
+
     void init(void);
     void exit(void);
+
+    void registerHandler(const std::string& path, HttpHandler handler);
+    void unregisterHandler(const std::string& path);
 }
 
 #endif

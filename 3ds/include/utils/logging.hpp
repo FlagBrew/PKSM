@@ -51,8 +51,6 @@ namespace Logging
     void error(const std::string& message);
 
     void startupLog(const std::string& category, const std::string& message);
-
-    std::string getLogs(void);
 }
 
 #endif
