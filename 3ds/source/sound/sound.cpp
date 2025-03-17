@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ Result Sound::init()
 
     if (bgm.empty())
     {
-        Logging::startupLog("sound", "no bgm found. skipping");
+        Logging::startupLog("sound", "no bgm found");
         return 0;
     }
     else
