@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: "Clone"
-        run: git clone --recurse-submodules -j8 https://github.com/FlagBrew/PKSM.git /PKSM
+        run: git clone --recurse-submodules -j8 https://github.com/rcyggdra/PKSM.git /PKSM
       - name: "Build"
         working-directory: "/PKSM"
         run: |
