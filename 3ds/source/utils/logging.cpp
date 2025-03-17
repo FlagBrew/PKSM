@@ -159,7 +159,7 @@ void Logging::info(const std::string& message)
 
 void Logging::warning(const std::string& message)
 {
-    log(LogLevel::WARNING, message);
+    log(LogLevel::WARN, message);
 }
 
 void Logging::error(const std::string& message)
@@ -186,7 +186,7 @@ void Logging::log(LogLevel level, const std::string& message)
         std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
 
     ss << std::put_time(std::localtime(&now_time_t), "[%Y-%m-%d %H:%M:%S");
-    ss << "." << std::setfill('0') << std::setw(3) << now_ms.count() << "] ";
+    ss << "." << std::setfill('0') << std::setw(3) << now_ms.count() << "]";
 
     switch (level)
     {
@@ -199,8 +199,8 @@ void Logging::log(LogLevel level, const std::string& message)
         case LogLevel::INFO:
             ss << "  INFO - ";
             break;
-        case LogLevel::WARNING:
-            ss << "WARNING - ";
+        case LogLevel::WARN:
+            ss << "  WARN - ";
             break;
         case LogLevel::ERROR:
             ss << " ERROR - ";
@@ -217,7 +217,7 @@ void Logging::log(LogLevel level, const std::string& message)
     if (logFile != nullptr)
     {
         if (logBuffer.size() >= LOG_BUFFER_SIZE || level == LogLevel::ERROR ||
-            level == LogLevel::WARNING)
+            level == LogLevel::WARN)
         {
             flushLogBuffer();
         }
