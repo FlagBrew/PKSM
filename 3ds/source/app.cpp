@@ -719,6 +719,8 @@ Result App::init(const std::string& execPath)
     }
     Logging::startupLog("archive", "init ok");
 
+    Logging::initFileLogging();
+
     if (R_FAILED(res = pxiDevInit()))
     {
         return consoleDisplayError("pxiDevInit failed.", res);
@@ -872,6 +874,7 @@ Result App::exit(void)
     i18n::exit();
     amExit();
     pxiDevExit();
+    Logging::exit();
     Archive::exit();
     romfsExit();
     cfguExit();

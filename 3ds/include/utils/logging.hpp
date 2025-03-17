@@ -42,6 +42,8 @@ enum class LogLevel
 namespace Logging
 {
     void init(void);
+    void initFileLogging(void);
+    void exit(void);
 
     void log(LogLevel level, const std::string& message);
     void trace(const std::string& message);

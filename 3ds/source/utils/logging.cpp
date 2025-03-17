@@ -36,6 +36,7 @@
 #include <chrono>
 #include <cstring>
 #include <iomanip>
+#include <mutex>
 #include <sstream>
 
 namespace
@@ -44,6 +45,32 @@ namespace
     PrintConsole headerConsole; // Fixed header console
     PrintConsole logConsole;    // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
+
+#if defined(__3DS__)
+    const std::string logFilePath = "sdmc:/3ds/PKSM/pksm.log";
+#elif defined(__SWITCH__)
+    const std::string logFilePath = "/switch/PKSM/pksm.log";
+#else
+    const std::string logFilePath = "pksm.log";
+#endif
+
+    std::mutex logMutex;
+    constexpr size_t LOG_BUFFER_SIZE = 8192;
+    std::string logBuffer;
+    FILE* logFile = nullptr;
+
+    void flushLogBuffer()
+    {
+        if (logBuffer.empty())
+        {
+            return;
+        }
+
+        if (logFile != NULL)
+        {
+            fprintf(logFile, logBuffer.c_str());
+        }
+    }
 }
 
 void Logging::init()
@@ -67,6 +94,8 @@ void Logging::init()
 
     startTime = std::chrono::steady_clock::now();
 
+    logBuffer.reserve(LOG_BUFFER_SIZE);
+
     std::string versionInfo = std::format(
         "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
     consoleSelect(&headerConsole);
@@ -74,9 +103,37 @@ void Logging::init()
         40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
     info(versionInfo);
 
-    Server::registerHandler("/logs",
+    Server::registerHandler("/logs/memory",
         [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
         { return {200, "text/plain", applicationLogs}; });
+
+    Server::registerHandler("/logs/file",
+        [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
+        {
+            std::lock_guard<std::mutex> lock(logMutex);
+            flushLogBuffer();
+            if (logFile != nullptr)
+            {
+                fclose(logFile);
+            }
+            logFile = fopen(logFilePath.c_str(), "r");
+            if (logFile == nullptr)
+            {
+                return {404, "text/plain", "Log file not found"};
+            }
+
+            fseek(logFile, 0, SEEK_END);
+            long fileSize = ftell(logFile);
+            fseek(logFile, 0, SEEK_SET);
+
+            std::string logData;
+            logData.resize(fileSize);
+            fread(logData.data(), 1, fileSize, logFile);
+            fclose(logFile);
+            logFile = fopen(logFilePath.c_str(), "a");
+
+            return {200, "text/plain", logData};
+        });
 }
 
 void Logging::startupLog(const std::string& category, const std::string& message)
@@ -150,5 +207,34 @@ void Logging::log(LogLevel level, const std::string& message)
             break;
     }
 
-    applicationLogs += ss.str() + message + "\n";
+    std::string logEntry = ss.str() + message + "\n";
+
+    std::lock_guard<std::mutex> lock(logMutex);
+    applicationLogs += logEntry;
+    logBuffer       += logEntry;
+
+    // Flush if buffer is getting full or for important messages
+    if (logFile != nullptr)
+    {
+        if (logBuffer.size() >= LOG_BUFFER_SIZE || level == LogLevel::ERROR ||
+            level == LogLevel::WARNING)
+        {
+            flushLogBuffer();
+        }
+    }
+}
+
+void Logging::initFileLogging()
+{
+    logFile = fopen(logFilePath.c_str(), "a");
+}
+
+void Logging::exit()
+{
+    std::lock_guard<std::mutex> lock(logMutex);
+    flushLogBuffer();
+    if (logFile != nullptr)
+    {
+        fclose(logFile);
+    }
 }
