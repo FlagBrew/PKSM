@@ -112,25 +112,21 @@ void Logging::init()
         {
             std::lock_guard<std::mutex> lock(logMutex);
             flushLogBuffer();
-            if (logFile != nullptr)
-            {
-                fclose(logFile);
-            }
-            logFile = fopen(logFilePath.c_str(), "r");
-            if (logFile == nullptr)
+
+            FILE* readFile = fopen(logFilePath.c_str(), "r");
+            if (readFile == nullptr)
             {
                 return {404, "text/plain", "Log file not found"};
             }
 
-            fseek(logFile, 0, SEEK_END);
-            long fileSize = ftell(logFile);
-            fseek(logFile, 0, SEEK_SET);
+            fseek(readFile, 0, SEEK_END);
+            long fileSize = ftell(readFile);
+            fseek(readFile, 0, SEEK_SET);
 
             std::string logData;
             logData.resize(fileSize);
-            fread(logData.data(), 1, fileSize, logFile);
-            fclose(logFile);
-            logFile = fopen(logFilePath.c_str(), "a");
+            fread(logData.data(), 1, fileSize, readFile);
+            fclose(readFile);
 
             return {200, "text/plain", logData};
         });
