@@ -27,6 +27,7 @@
 #include "Title.hpp"
 #include "Archive.hpp"
 #include "smdh.hpp"
+#include "utils/logging.hpp"
 #include <format>
 
 // Allocate once because threading shenanigans
@@ -52,6 +53,7 @@ namespace
 
     void loadDSIcon(bannerData* iconData)
     {
+        Logging::debug("Title::loadDSIcon - Loading DS icon");
         static constexpr int WIDTH_POW2  = 32;
         static constexpr int HEIGHT_POW2 = 32;
         if (!dsIcon.tex)
@@ -86,10 +88,12 @@ namespace
                 output[dst] = color;
             }
         }
+        Logging::debug("Title::loadDSIcon - DS icon loaded successfully");
     }
 
     C2D_Image loadTextureIcon(smdh_s* smdh)
     {
+        Logging::debug("Title::loadTextureIcon - Loading texture icon");
         C3D_Tex* tex                              = new C3D_Tex;
         static constexpr Tex3DS_SubTexture subt3x = {48, 48, 0.0f, 48 / 64.0f, 48 / 64.0f, 0.0f};
         C3D_TexInit(tex, 64, 64, GPU_RGB565);
@@ -105,6 +109,7 @@ namespace
             dest += 64 * 8;
         }
 
+        Logging::debug("Title::loadTextureIcon - Texture icon loaded successfully");
         return C2D_Image{tex, &subt3x};
     }
 }
@@ -120,6 +125,7 @@ Title::~Title(void)
 
 bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 {
+    Logging::info("Title::load - Loading title ID: {:016X}, media type: {}, card type: {}", id, (int)media, (int)card);
     bool loadTitle = false;
     mGba           = false;
     mGb            = false;
@@ -129,41 +135,50 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 
     if (mCard == CARD_CTR)
     {
+        Logging::debug("Title::load - Loading CTR card title");
         smdh_s* smdh = loadSMDH(lowId(), highId(), mMedia);
         if (smdh == NULL)
         {
+            Logging::error("Title::load - Failed to load SMDH for title ID: {:016X}", id);
             return false;
         }
 
         mName   = StringUtils::UTF16toUTF8((char16_t*)smdh->applicationTitles[1].shortDescription);
         mPrefix = std::format("0x{:05X}", lowId() >> 8);
+        Logging::debug("Title::load - Loaded title name: {}, prefix: {}", mName, mPrefix);
 
         Archive archive = Archive::save(mMedia, lowId(), highId(), false);
         if (R_SUCCEEDED(archive.result()))
         {
+            Logging::debug("Title::load - Successfully opened save archive");
             loadTitle                 = true;
             mIcon                     = loadTextureIcon(smdh);
             std::unique_ptr<File> out = archive.file(u"/main", FS_OPEN_READ);
             if (!out)
             {
+                Logging::debug("Title::load - No /main file found, checking for /sav.dat");
                 out = archive.file(u"/sav.dat", FS_OPEN_READ);
                 if (out)
                 {
+                    Logging::debug("Title::load - Found /sav.dat, marking as GB title");
                     mGb = true;
                     out->close();
                 }
             }
             else
             {
+                Logging::debug("Title::load - Found /main file");
                 out->close();
             }
         }
         // Is it a GBA save? GBA saves are not in the normal archive format
         else
         {
+            Logging::debug("Title::load - Regular save archive not found, checking for GBA save");
             archive = Archive::saveAndContents(mMedia, lowId(), highId(), true);
             if (R_SUCCEEDED(archive.result()))
             {
+                Logging::debug("Title::load - Found saveAndContents archive");
                 static constexpr u32 pathData[5] = {
                     1,   // Save data
                     1,   // TMD content index
@@ -174,22 +189,33 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
                     archive.file(FS_Path{PATH_BINARY, sizeof(pathData), pathData}, FS_OPEN_READ);
                 if (out)
                 {
+                    Logging::debug("Title::load - Successfully opened GBA save file");
                     mGba      = true;
                     loadTitle = true;
                     mIcon     = loadTextureIcon(smdh);
                     out->close();
                 }
+                else
+                {
+                    Logging::warning("Title::load - Failed to open GBA save file, archive result: {}", archive.result());
+                }
                 archive.close();
+            }
+            else
+            {
+                Logging::warning("Title::load - Failed to open saveAndContents archive: {}", archive.result());
             }
         }
         delete smdh;
     }
     else
     {
+        Logging::debug("Title::load - Loading DS card title");
         u8* headerData = new u8[0x3B4];
         Result res     = FSUSER_GetLegacyRomHeader(mMedia, 0LL, headerData);
         if (R_FAILED(res))
         {
+            Logging::error("Title::load - Failed to get legacy ROM header: {}", res);
             delete[] headerData;
             return false;
         }
@@ -203,10 +229,14 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         mPrefix      = _gameCode;
 
         bool infrared = headerData[12] == 'I';
+        Logging::debug("Title::load - DS card title: {}, game code: {}, infrared: {}", _cardTitle, _gameCode, infrared);
 
         delete[] headerData;
         bannerData* banner = new bannerData;
-        FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
+        res = FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
+        if (R_FAILED(res)) {
+            Logging::warning("Title::load - Failed to get legacy banner data: {}", res);
+        }
         loadDSIcon(banner);
         mIcon = dsIcon;
         delete banner;
@@ -214,13 +244,16 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         res = SPIGetCardType(&mCardType, infrared);
         if (R_FAILED(res))
         {
+            Logging::error("Title::load - Failed to get SPI card type: {}", res);
             return false;
         }
+        Logging::debug("Title::load - SPI card type: {}", (int)mCardType);
 
         mName     = std::string(_cardTitle);
         loadTitle = true;
     }
 
+    Logging::info("Title::load - Title loaded successfully: {}, loadTitle: {}", mName, loadTitle);
     return loadTitle;
 }
 
