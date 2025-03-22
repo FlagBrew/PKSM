@@ -237,17 +237,13 @@ void InjectSelectorScreen::update(touchPosition* touch)
             }
         }
     }
-    catch (const std::exception& e) {
-        Logging::error(std::format("Error in InjectSelectorScreen::update: {}", e.what()));
-        Gui::error("An error occurred in the Wonder Card screen:\n" + std::string(e.what()));
-    }
     catch (const std::bad_alloc& e) {
         Logging::error(std::format("Memory allocation failed in InjectSelectorScreen::update: {}", e.what()));
-        Gui::error("Memory allocation failed in Wonder Card screen.\nThis could be due to running out of memory.");
+        Gui::error("Memory allocation failed in Wonder Card screen.\nThis could be due to running out of memory.", -1);
     }
     catch (...) {
         Logging::error("Unknown error in InjectSelectorScreen::update");
-        Gui::error("An unknown error occurred in the Wonder Card screen");
+        Gui::error("An unknown error occurred in the Wonder Card screen", -1);
     }
 }
 
