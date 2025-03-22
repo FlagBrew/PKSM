@@ -27,7 +27,9 @@
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
 
+#include "utils/formatters.hpp"
 #include <cstdio>
+#include <format>
 #include <string>
 
 enum class LogLevel
@@ -52,7 +54,43 @@ namespace Logging
     void warning(const std::string& message);
     void error(const std::string& message);
 
+    template <typename... Args>
+    void trace(std::format_string<Args...> fmt, Args&&... args)
+    {
+        trace(std::format(fmt, std::forward<Args>(args)...));
+    }
+
+    template <typename... Args>
+    void debug(std::format_string<Args...> fmt, Args&&... args)
+    {
+        debug(std::format(fmt, std::forward<Args>(args)...));
+    }
+
+    template <typename... Args>
+    void info(std::format_string<Args...> fmt, Args&&... args)
+    {
+        info(std::format(fmt, std::forward<Args>(args)...));
+    }
+
+    template <typename... Args>
+    void warning(std::format_string<Args...> fmt, Args&&... args)
+    {
+        warning(std::format(fmt, std::forward<Args>(args)...));
+    }
+
+    template <typename... Args>
+    void error(std::format_string<Args...> fmt, Args&&... args)
+    {
+        error(std::format(fmt, std::forward<Args>(args)...));
+    }
+
     void startupLog(const std::string& category, const std::string& message);
+
+    template <typename... Args>
+    void startupLog(const std::string& category, std::format_string<Args...> fmt, Args&&... args)
+    {
+        startupLog(category, std::format(fmt, std::forward<Args>(args)...));
+    }
 }
 
 #endif

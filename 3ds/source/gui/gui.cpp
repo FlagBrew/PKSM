@@ -601,7 +601,7 @@ namespace
                     std::lock_guard<std::mutex> lock(fontMutex);
                     fonts.emplace_back(font);
                     textBuffer->addFont(font);
-                    Logging::info("Loaded font for region " + std::to_string(region));
+                    Logging::info("Loaded font for region {}", region);
                 }
             }
         }
@@ -1033,11 +1033,11 @@ Result Gui::init(void)
 
     std::lock_guard<std::mutex> lock(fontMutex);
     fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
-    Logging::startupLog("gui", "Loaded pksm.bcfnt font");
+    Logging::startupLog("gui", "pksm.bcfnt loaded");
 
     CFG_Region region = getRegionFromLanguage();
     fonts.emplace_back(C2D_FontLoadSystem(region));
-    Logging::startupLog("gui", "Loaded main font for region " + std::to_string(region));
+    Logging::startupLog("gui", "loaded main font for region {}", region);
 
     textBuffer = new TextParse::TextBuf(8192, fonts);
 

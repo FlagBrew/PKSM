@@ -122,13 +122,13 @@ namespace
 void Server::registerHandler(const std::string& path, Server::HttpHandler handler)
 {
     handlers[path] = handler;
-    Logging::info("Registered HTTP handler for path: " + path);
+    Logging::info("Registered HTTP handler for path {}", path);
 }
 
 void Server::unregisterHandler(const std::string& path)
 {
     handlers.erase(path);
-    Logging::info("Unregistered HTTP handler for path: " + path);
+    Logging::info("Unregistered HTTP handler for path {}", path);
 }
 
 void Server::init()
@@ -136,7 +136,8 @@ void Server::init()
     serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (serverSocket < 0)
     {
-        Logging::startupLog("log", "Failed to create socket with error: " + std::to_string(errno));
+        Logging::startupLog(
+            "log", "Failed to create socket with error {}: {}", errno, strerror(errno));
         return;
     }
 
@@ -148,8 +149,7 @@ void Server::init()
 
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0)
     {
-        Logging::startupLog("log", "Failed to bind to port " + std::to_string(SERVER_PORT) +
-                                       " with error: " + std::to_string(errno));
+        Logging::startupLog("log", "Failed to bind to port {} with error {}", SERVER_PORT, errno);
         close(serverSocket);
         serverSocket = -1;
         return;
@@ -158,7 +158,7 @@ void Server::init()
     if (listen(serverSocket, 5) != 0)
     {
         Logging::startupLog(
-            "log", "Failed to listen on socket with error: " + std::to_string(errno));
+            "log", "Failed to listen on socket with error {}: {}", errno, strerror(errno));
         close(serverSocket);
         serverSocket = -1;
         return;
@@ -169,8 +169,7 @@ void Server::init()
 
     serverRunning.test_and_set();
     Threads::create(networkLoop);
-    Logging::startupLog("log",
-        std::string("HTTP server started on http://") + ipStr + ":" + std::to_string(SERVER_PORT));
+    Logging::startupLog("log", "HTTP server started on http://{}:{}", ipStr, SERVER_PORT);
 }
 
 void Server::exit()

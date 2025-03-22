@@ -750,7 +750,7 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("Failed to create socket buffer.", -1);
     }
-    Logging::startupLog("socket buffer", "init ok");
+    Logging::startupLog("net", "socket buffer init ok");
 
     if (socInit(socketBuffer, SOC_BUFFERSIZE))
     {
@@ -762,13 +762,13 @@ Result App::init(const std::string& execPath)
     {
         return consoleDisplayError("cURL init failed", (Result)code);
     }
-    Logging::startupLog("cURL", "init ok");
+    Logging::startupLog("net", "cURL init ok");
 
     if (R_FAILED(Fetch::initMulti()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
-    Logging::startupLog("network", "init ok");
+    Logging::startupLog("net", "parallel init ok");
 
     Server::init();
 
@@ -858,6 +858,7 @@ Result App::init(const std::string& execPath)
 
 Result App::exit(void)
 {
+    Logging::info("Exiting PKSM");
     moveIcon.clear();
     continueI18N.clear();
     svcCloseHandle(hbldrHandle);

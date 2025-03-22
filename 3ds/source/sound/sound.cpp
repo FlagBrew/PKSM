@@ -224,14 +224,14 @@ Result Sound::init()
     }
     else
     {
-        Logging::startupLog("sound", "loaded " + std::to_string(bgm.size()) + " songs");
+        Logging::startupLog("sound", "loaded {} songs", bgm.size());
     }
 
     if (!Decoder::init())
     {
         return -1;
     }
-    Logging::startupLog("decoder", "init ok");
+    Logging::startupLog("sound", "decoder init ok");
 
     LightEvent_Init(&frameEvent, RESET_ONESHOT);
     Logging::startupLog("sound", "frameEvent init ok");
