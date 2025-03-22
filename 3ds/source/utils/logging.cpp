@@ -45,14 +45,7 @@ namespace
     PrintConsole headerConsole; // Fixed header console
     PrintConsole logConsole;    // Scrolling log console
     std::chrono::steady_clock::time_point startTime;
-
-#if defined(__3DS__)
-    const std::string logFilePath = "sdmc:/3ds/PKSM/pksm.log";
-#elif defined(__SWITCH__)
-    const std::string logFilePath = "/switch/PKSM/pksm.log";
-#else
-    const std::string logFilePath = "pksm.log";
-#endif
+    std::string logFilePath;
 
     std::mutex logMutex;
     constexpr size_t LOG_BUFFER_SIZE = 8192;
@@ -76,6 +69,8 @@ namespace
 
 void Logging::init()
 {
+    startTime = std::chrono::steady_clock::now();
+
     consoleInit(GFX_BOTTOM, &headerConsole);
     consoleInit(GFX_BOTTOM, &logConsole);
 
@@ -93,7 +88,21 @@ void Logging::init()
     consoleSetFont(&headerConsole, &font);
     consoleSetFont(&logConsole, &font);
 
-    startTime = std::chrono::steady_clock::now();
+    // Get current date for log filename
+    auto now = std::chrono::system_clock::now();
+    auto now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_time_t);
+    
+    char dateBuf[9];
+    std::strftime(dateBuf, sizeof(dateBuf), "%Y%m%d", now_tm);
+    
+#if defined(__3DS__)
+    logFilePath = std::string("sdmc:/3ds/PKSM/logs/pksm_") + dateBuf + ".log";
+#elif defined(__SWITCH__)
+    logFilePath = std::string("/switch/PKSM/logs/pksm_") + dateBuf + ".log";
+#else
+    logFilePath = std::string("pksm_") + dateBuf + ".log";
+#endif
 
     logBuffer.reserve(LOG_BUFFER_SIZE);
 
