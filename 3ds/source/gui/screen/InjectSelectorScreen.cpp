@@ -31,6 +31,7 @@
 #include "i18n_ext.hpp"
 #include "InjectorScreen.hpp"
 #include "loader.hpp"
+#include "logging.hpp"
 #include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
 #include "QRScanner.hpp"
@@ -39,7 +40,6 @@
 #include "wcx/PGT.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
-#include "logging.hpp"
 #include <format>
 #include <sys/stat.h>
 
@@ -56,31 +56,32 @@ InjectSelectorScreen::InjectSelectorScreen()
       dumpHid(40, 8)
 {
     Logging::info("Initializing InjectSelectorScreen");
-    
-    try {
+
+    try
+    {
         MysteryGift::init(TitleLoader::save->generation());
         wondercards = MysteryGift::wondercards();
-        
+
         size_t currentCards = TitleLoader::save->currentGiftAmount();
         Logging::debug(std::format("Current gift amount: {}", currentCards));
-        
+
         gifts.clear(); // Clear the vector before adding items
         gifts.reserve(currentCards);
-        
+
         for (size_t i = 0; i < currentCards; i++)
         {
             auto gift = TitleLoader::save->mysteryGift(i);
             if (gift->pokemon())
             {
-                gifts.emplace_back(
-                    gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+                gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(),
+                    gift->gender());
             }
             else
             {
                 gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
             }
         }
-        
+
         // QR
         instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
         instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
@@ -100,17 +101,19 @@ InjectSelectorScreen::InjectSelectorScreen()
                     return this->toggleFilter(std::string(langs[i]));
                 },
                 ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14,
-                COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt,
-                COLOR_BLACK, &langFilters, true));
+                COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt,
+                std::nullopt, COLOR_BLACK, &langFilters, true));
             langFilters.back()->setState(false);
         }
-        
+
         Logging::info("InjectSelectorScreen initialized successfully");
-    } 
-    catch (const std::exception& e) {
+    }
+    catch (const std::exception& e)
+    {
         Logging::error(std::format("Error in InjectSelectorScreen constructor: {}", e.what()));
     }
-    catch (...) {
+    catch (...)
+    {
         Logging::error("Unknown error in InjectSelectorScreen constructor");
     }
 }
@@ -124,34 +127,35 @@ void InjectSelectorScreen::update(touchPosition* touch)
 {
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
-    
-    try {
+
+    try
+    {
         if (updateGifts)
         {
             size_t currentCards = TitleLoader::save->currentGiftAmount();
-            
+
             // Clear the vector before repopulating it
             gifts.clear();
             gifts.reserve(currentCards);
-            
+
             for (size_t i = 0; i < currentCards; i++)
             {
                 auto gift = TitleLoader::save->mysteryGift(i);
                 if (gift->pokemon())
                 {
-                    gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(),
-                        gift->gender());
+                    gifts.emplace_back(gift->title(), "", int(gift->species()),
+                        gift->alternativeForm(), gift->gender());
                 }
                 else
                 {
                     gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
                 }
             }
-            
+
             Logging::debug(std::format("Updated gifts list with {} items", gifts.size()));
-            updateGifts = false;  // Reset the flag after processing
+            updateGifts = false; // Reset the flag after processing
         }
-        
+
         if (!dump)
         {
             hid.update(wondercards.size());
@@ -178,8 +182,8 @@ void InjectSelectorScreen::update(touchPosition* touch)
                     }
                 }
                 if (allReleased ||
-                    Gui::showChoiceMessage(
-                        "Not all of these wonder card(s) are released.\nContinue to injection screen?"))
+                    Gui::showChoiceMessage("Not all of these wonder card(s) are "
+                                           "released.\nContinue to injection screen?"))
                 {
                     Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
                     updateGifts = true;
@@ -237,11 +241,16 @@ void InjectSelectorScreen::update(touchPosition* touch)
             }
         }
     }
-    catch (const std::bad_alloc& e) {
-        Logging::error(std::format("Memory allocation failed in InjectSelectorScreen::update: {}", e.what()));
-        Gui::error("Memory allocation failed in Wonder Card screen.\nThis could be due to running out of memory.", -1);
+    catch (const std::bad_alloc& e)
+    {
+        Logging::error(
+            std::format("Memory allocation failed in InjectSelectorScreen::update: {}", e.what()));
+        Gui::error("Memory allocation failed in Wonder Card screen.\nThis could be due to running "
+                   "out of memory.",
+            -1);
     }
-    catch (...) {
+    catch (...)
+    {
         Logging::error("Unknown error in InjectSelectorScreen::update");
         Gui::error("An unknown error occurred in the Wonder Card screen", -1);
     }
@@ -294,7 +303,8 @@ void InjectSelectorScreen::drawTop() const
 {
     if (!dump)
     {
-        try {
+        try
+        {
             Gui::backgroundTop(true);
 
             Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14,
@@ -309,7 +319,7 @@ void InjectSelectorScreen::drawTop() const
                     if (i == 0)
                     {
                         Gui::sprite(i == hid.index() ? ui_sheet_eventmenu_bar_selected_idx
-                                                    : ui_sheet_eventmenu_bar_unselected_idx,
+                                                     : ui_sheet_eventmenu_bar_unselected_idx,
                             x, y);
                     }
                     else if (i == 8)
@@ -324,7 +334,7 @@ void InjectSelectorScreen::drawTop() const
                     {
                         Gui::drawSolidRect(x, y, 178, 34,
                             i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
-                                            : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                                             : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                     }
                 }
                 else
@@ -341,16 +351,17 @@ void InjectSelectorScreen::drawTop() const
                     }
                     else if (i == 9)
                     {
-                        Gui::sprite(i == hid.index()
-                                        ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
-                                        : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
+                        Gui::sprite(
+                            i == hid.index()
+                                ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
+                                : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
                             x, y);
                     }
                     else
                     {
                         Gui::drawSolidRect(x, y, 178, 34,
                             i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
-                                            : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                                             : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
                     }
                 }
             }
@@ -364,7 +375,8 @@ void InjectSelectorScreen::drawTop() const
                 else
                 {
                     MysteryGift::giftData data;
-                    const std::string& lang = i18n::langString(Configuration::getInstance().language());
+                    const std::string& lang =
+                        i18n::langString(Configuration::getInstance().language());
                     if (wondercards[i].find(lang) != wondercards[i].end())
                     {
                         data = MysteryGift::wondercardInfo(wondercards[i][lang]);
@@ -385,21 +397,24 @@ void InjectSelectorScreen::drawTop() const
                             TitleLoader::save->generation(), data.gender, x, y);
                     }
                     PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
-                                                                : PKSM_Color(26, 35, 126, 255);
-                    TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL
-                                                                : TextWidthAction::SQUISH_OR_SLICE;
+                                                                  : PKSM_Color(26, 35, 126, 255);
+                    TextWidthAction action = i == hid.fullIndex()
+                                               ? TextWidthAction::SQUISH_OR_SCROLL
+                                               : TextWidthAction::SQUISH_OR_SLICE;
                     Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER,
                         TextPosY::CENTER, action, 138.0f);
                 }
             }
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e)
+        {
             Logging::error(std::format("Error in InjectSelectorScreen::drawTop: {}", e.what()));
         }
     }
     else
     {
-        try {
+        try
+        {
             Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
             auto saveGeneration = TitleLoader::save->generation();
             for (size_t i = 0; i < 40; i++)
@@ -437,8 +452,10 @@ void InjectSelectorScreen::drawTop() const
                 }
             }
         }
-        catch (const std::exception& e) {
-            Logging::error(std::format("Error in InjectSelectorScreen::drawTop (dump mode): {}", e.what()));
+        catch (const std::exception& e)
+        {
+            Logging::error(
+                std::format("Error in InjectSelectorScreen::drawTop (dump mode): {}", e.what()));
         }
     }
 }
@@ -475,14 +492,15 @@ bool InjectSelectorScreen::doQR()
         updateGifts = true;
         return true;
     }
-    
+
     Logging::debug("QR scan failed or cancelled");
     return false;
 }
 
 void InjectSelectorScreen::dumpCard(void) const
 {
-    try {
+    try
+    {
         Logging::debug(std::format("Dumping card at index {}", dumpHid.fullIndex()));
         auto wc      = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
         DateTime now = DateTime::now();
@@ -504,14 +522,16 @@ void InjectSelectorScreen::dumpCard(void) const
             Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         Logging::error(std::format("Error in InjectSelectorScreen::dumpCard: {}", e.what()));
     }
 }
 
 bool InjectSelectorScreen::toggleFilter(const std::string& lang)
 {
-    try {
+    try
+    {
         Logging::debug(std::format("Toggling language filter: {}", lang));
         if (langFilter != lang)
         {
@@ -524,7 +544,8 @@ bool InjectSelectorScreen::toggleFilter(const std::string& lang)
                 }
             }
             langFilter = lang;
-            Logging::debug(std::format("Filter set to {}, {} cards remaining", lang, wondercards.size()));
+            Logging::debug(
+                std::format("Filter set to {}, {} cards remaining", lang, wondercards.size()));
         }
         else
         {
@@ -534,8 +555,10 @@ bool InjectSelectorScreen::toggleFilter(const std::string& lang)
         }
         return false;
     }
-    catch (const std::exception& e) {
-        Logging::error(std::format("Error in InjectSelectorScreen::toggleFilter(string): {}", e.what()));
+    catch (const std::exception& e)
+    {
+        Logging::error(
+            std::format("Error in InjectSelectorScreen::toggleFilter(string): {}", e.what()));
         return false;
     }
 }

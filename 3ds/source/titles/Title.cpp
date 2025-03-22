@@ -125,7 +125,8 @@ Title::~Title(void)
 
 bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
 {
-    Logging::info("Title::load - Loading title ID: {:016X}, media type: {}, card type: {}", id, (int)media, (int)card);
+    Logging::info("Title::load - Loading title ID: {:016X}, media type: {}, card type: {}", id,
+        (int)media, (int)card);
     bool loadTitle = false;
     mGba           = false;
     mGb            = false;
@@ -197,13 +198,16 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
                 }
                 else
                 {
-                    Logging::warning("Title::load - Failed to open GBA save file, archive result: {}", archive.result());
+                    Logging::warning(
+                        "Title::load - Failed to open GBA save file, archive result: {}",
+                        archive.result());
                 }
                 archive.close();
             }
             else
             {
-                Logging::warning("Title::load - Failed to open saveAndContents archive: {}", archive.result());
+                Logging::warning(
+                    "Title::load - Failed to open saveAndContents archive: {}", archive.result());
             }
         }
         delete smdh;
@@ -229,12 +233,14 @@ bool Title::load(u64 id, FS_MediaType media, FS_CardType card)
         mPrefix      = _gameCode;
 
         bool infrared = headerData[12] == 'I';
-        Logging::debug("Title::load - DS card title: {}, game code: {}, infrared: {}", _cardTitle, _gameCode, infrared);
+        Logging::debug("Title::load - DS card title: {}, game code: {}, infrared: {}", _cardTitle,
+            _gameCode, infrared);
 
         delete[] headerData;
         bannerData* banner = new bannerData;
-        res = FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
-        if (R_FAILED(res)) {
+        res                = FSUSER_GetLegacyBannerData(mMedia, 0LL, (u8*)banner);
+        if (R_FAILED(res))
+        {
             Logging::warning("Title::load - Failed to get legacy banner data: {}", res);
         }
         loadDSIcon(banner);
