@@ -140,6 +140,11 @@ void PKSMApplication::ShowTitleLoadScreen() {
     this->LoadLayout(this->titleLoadScreen);
 }
 
+void PKSMApplication::ShowStorageScreen() {
+    LOG_DEBUG("Switching to storage screen");
+    this->LoadLayout(this->storageScreen);
+}
+
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
 
@@ -173,13 +178,33 @@ void PKSMApplication::OnLoad() {
         saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
         saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
 
+        // Create navigation callbacks for menu buttons
+        LOG_DEBUG("Creating navigation callbacks...");
+        std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks = {
+            {pksm::ui::MenuButtonType::Storage, [this]() { this->ShowStorageScreen(); }},
+            {pksm::ui::MenuButtonType::Editor, [this]() { LOG_DEBUG("Editor button pressed (not implemented)"); }},
+            {pksm::ui::MenuButtonType::Events, [this]() { LOG_DEBUG("Events button pressed (not implemented)"); }},
+            {pksm::ui::MenuButtonType::Bag, [this]() { LOG_DEBUG("Bag button pressed (not implemented)"); }},
+            {pksm::ui::MenuButtonType::Scripts, [this]() { LOG_DEBUG("Scripts button pressed (not implemented)"); }},
+            {pksm::ui::MenuButtonType::Settings, [this]() { LOG_DEBUG("Settings button pressed (not implemented)"); }}
+        };
+
+        // Create storage screen
+        LOG_DEBUG("Creating storage screen...");
+        storageScreen = pksm::layout::StorageScreen::New(
+            [this]() { this->ShowMainMenu(); },  // Back handler goes to main menu
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); }
+        );
+
         // Create main menu with back callback and overlay handlers
         LOG_DEBUG("Creating main menu...");
         mainMenu = pksm::layout::MainMenu::New(
             [this]() { this->ShowTitleLoadScreen(); },
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
-            saveDataAccessor  // Pass the save data accessor to the main menu
+            saveDataAccessor,  // Pass the save data accessor to the main menu
+            navigationCallbacks  // Pass navigation callbacks to the main menu
         );
 
         // Create title load screen

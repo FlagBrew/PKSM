@@ -42,13 +42,13 @@ MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 w
 
 void MenuButtonGrid::InitializeButtons() {
     // Create buttons with icons and labels
-    const std::vector<std::pair<std::string, std::string>> buttonData = {
-        {"Storage", "icon_storage"},
-        {"Editor", "icon_editor"},
-        {"Events", "icon_events"},
-        {"Bag", "icon_bag"},
-        {"Scripts", "icon_scripts"},
-        {"Settings", "icon_settings"}
+    const std::vector<std::pair<MenuButtonType, std::pair<std::string, std::string>>> buttonData = {
+        {MenuButtonType::Storage, {"Storage", "icon_storage"}},
+        {MenuButtonType::Editor, {"Editor", "icon_editor"}},
+        {MenuButtonType::Events, {"Events", "icon_events"}},
+        {MenuButtonType::Bag, {"Bag", "icon_bag"}},
+        {MenuButtonType::Scripts, {"Scripts", "icon_scripts"}},
+        {MenuButtonType::Settings, {"Settings", "icon_settings"}}
     };
 
     // Calculate total rows needed
@@ -67,18 +67,72 @@ void MenuButtonGrid::InitializeButtons() {
         const pu::i32 buttonX = x + GRID_PADDING + (col * (buttonSize + BUTTON_SPACING));
         const pu::i32 buttonY = startY + (row * (buttonSize + BUTTON_SPACING));
 
-        auto button =
-            MenuButton::New(buttonX, buttonY, buttonSize, buttonSize, buttonData[i].first, buttonData[i].second);
-        button->IFocusable::SetName("MenuButton Element: " + buttonData[i].first);
+        auto button = MenuButton::New(
+            buttonX,
+            buttonY,
+            buttonSize,
+            buttonSize,
+            buttonData[i].second.first,
+            buttonData[i].second.second
+        );
+        button->IFocusable::SetName("MenuButton Element: " + buttonData[i].second.first);
+
+        // Store the button type
+        MenuButtonType buttonType = buttonData[i].first;
 
         // Set up touch handling for this button
         const size_t index = i;  // Store index for lambda capture
-        button->SetOnClick([this, index]() { SetSelectedIndex(index); });
+        button->SetOnClick([this, index, buttonType]() {
+            SetSelectedIndex(index);
+
+            // Execute the callback if registered
+            if (buttonCallbacks.count(buttonType) > 0) {
+                buttonCallbacks[buttonType]();
+            }
+        });
 
         focusManager->RegisterFocusable(button);
         buttons.push_back(button);
         container->Add(button);  // Add to container
     }
+}
+
+void MenuButtonGrid::RegisterButtonCallback(MenuButtonType type, MenuButtonCallback callback) {
+    buttonCallbacks[type] = callback;
+}
+
+bool MenuButtonGrid::HandleSelectInput(const u64 keys_down) {
+    if (disabled) {
+        return false;
+    }
+
+    if (keys_down & HidNpadButton_A) {
+        if (selectedIndex < buttons.size()) {
+            // Find the corresponding button type for the selected index
+            const std::vector<MenuButtonType> buttonTypes = {
+                MenuButtonType::Storage,
+                MenuButtonType::Editor,
+                MenuButtonType::Events,
+                MenuButtonType::Bag,
+                MenuButtonType::Scripts,
+                MenuButtonType::Settings
+            };
+
+            // Ensure we have a valid index
+            if (selectedIndex < buttonTypes.size()) {
+                MenuButtonType selectedType = buttonTypes[selectedIndex];
+
+                // Execute the callback if registered
+                if (buttonCallbacks.count(selectedType) > 0) {
+                    LOG_DEBUG("Executing callback for button: " + std::to_string(static_cast<int>(selectedType)));
+                    buttonCallbacks[selectedType]();
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 void MenuButtonGrid::SetSelectedIndex(size_t index) {
@@ -152,6 +206,11 @@ void MenuButtonGrid::OnInput(
     const pu::ui::TouchPoint touch_pos
 ) {
     if (!disabled) {
+        // Handle A button selection
+        if (HandleSelectInput(keys_down)) {
+            return;
+        }
+
         // Handle directional input
         inputHandler.HandleInput(keys_down, keys_held);
 

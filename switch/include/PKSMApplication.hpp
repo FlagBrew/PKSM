@@ -9,6 +9,7 @@
 #include "data/providers/mock/MockSaveDataProvider.hpp"
 #include "data/providers/mock/MockTitleDataProvider.hpp"
 #include "gui/screens/main-menu/MainMenu.hpp"
+#include "gui/screens/storage-screen/StorageScreen.hpp"
 #include "gui/screens/title-load-screen/TitleLoadScreen.hpp"
 
 namespace pksm {
@@ -18,6 +19,7 @@ private:
     // Screens
     pksm::layout::MainMenu::Ref mainMenu;
     pksm::layout::TitleLoadScreen::Ref titleLoadScreen;
+    pksm::layout::StorageScreen::Ref storageScreen;
 
     // Data providers and managers
     pksm::data::AccountManager accountManager;
@@ -40,6 +42,7 @@ private:
     // Navigation methods
     void ShowMainMenu();
     void ShowTitleLoadScreen();
+    void ShowStorageScreen();
 
     // Save handling
     void OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save);

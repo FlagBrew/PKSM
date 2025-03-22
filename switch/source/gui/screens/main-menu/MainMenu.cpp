@@ -9,9 +9,13 @@ MainMenu::MainMenu(
     std::function<void()> onBack,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
     std::function<void()> onHideOverlay,
-    ISaveDataAccessor::Ref saveDataAccessor
+    ISaveDataAccessor::Ref saveDataAccessor,
+    std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks
 )
-  : BaseLayout(onShowOverlay, onHideOverlay), onBack(onBack), saveDataAccessor(saveDataAccessor) {
+  : BaseLayout(onShowOverlay, onHideOverlay),
+    onBack(onBack),
+    saveDataAccessor(saveDataAccessor),
+    navigationCallbacks(navigationCallbacks) {
     LOG_DEBUG("Initializing MainMenu...");
 
     this->SetBackgroundColor(bgColor);
@@ -42,6 +46,9 @@ MainMenu::MainMenu(
     menuGrid = pksm::ui::MenuButtonGrid::New(menuGridX, MENU_GRID_TOP_MARGIN, menuGridWidth);
     this->Add(menuGrid);
 
+    // Register navigation callbacks for the menu buttons
+    RegisterNavigationCallbacks();
+
     // Initialize help footer
     InitializeHelpFooter();
 
@@ -69,6 +76,16 @@ MainMenu::MainMenu(
     UpdateTrainerInfo();
 
     LOG_DEBUG("MainMenu initialization complete");
+}
+
+void MainMenu::RegisterNavigationCallbacks() {
+    LOG_DEBUG("Registering navigation callbacks for menu buttons");
+
+    // Register each callback with the corresponding button type
+    for (const auto& [buttonType, callback] : navigationCallbacks) {
+        menuGrid->RegisterButtonCallback(buttonType, callback);
+        LOG_DEBUG("Registered callback for button type: " + std::to_string(static_cast<int>(buttonType)));
+    }
 }
 
 void MainMenu::UpdateTrainerInfo() {
