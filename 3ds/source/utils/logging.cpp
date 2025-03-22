@@ -65,10 +65,11 @@ namespace
         {
             return;
         }
-
         if (logFile != NULL)
         {
             fprintf(logFile, logBuffer.c_str());
+            fflush(logFile);
+            logBuffer.clear();
         }
     }
 }
