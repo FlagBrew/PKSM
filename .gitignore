@@ -40,4 +40,5 @@ switch/*.nacp
 switch/*.nro
 switch/*.map
 switch/romfs/gfx/mock/
+switch/romfs/gfx/pokesprites/
 PKSM.lst

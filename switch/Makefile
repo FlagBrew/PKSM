@@ -43,7 +43,7 @@ DEBUG ?= 0
 TARGET		:=	PKSM
 BUILD		:=	build
 SOURCES		:=	source
-INCLUDES	:=	include Plutonium/Plutonium/include/pu
+INCLUDES	:=	include Plutonium/Plutonium/include/pu ../external
 DATA		:=	data
 ROMFS		:=	romfs
 
