@@ -35,6 +35,7 @@
 #include "sav/Sav.hpp"
 #include "Title.hpp"
 #include "utils/crypto.hpp"
+#include "utils/logging.hpp"
 #include <3ds.h>
 #include <atomic>
 #include <format>
@@ -228,6 +229,7 @@ namespace
 
     std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
     {
+        Logging::debug("Scanning directory: {} for ID: {}", StringUtils::UTF16toUTF8(dir), StringUtils::UTF16toUTF8(id));
         if (directories.count(dir) == 0)
         {
             std::shared_ptr<Directory> d = Archive::sd().directory(dir);
@@ -237,6 +239,7 @@ namespace
             }
             else
             {
+                Logging::debug("Directory not loaded or doesn't exist: {}", StringUtils::UTF16toUTF8(dir));
                 return {};
             }
         }
@@ -252,6 +255,7 @@ namespace
                 }
                 else
                 {
+                    Logging::debug("Failed to reload directory: {}", StringUtils::UTF16toUTF8(dir));
                     return {};
                 }
             }
@@ -260,6 +264,7 @@ namespace
         auto& directory = directories[dir];
         if (directory->loaded())
         {
+            Logging::debug("Directory loaded with {} items", directory->count());
             for (size_t j = 0; j < directory->count(); j++)
             {
                 if (directory->folder(j))
@@ -280,6 +285,7 @@ namespace
                                         idToSaveName(id);
                                     if (io::exists(savePath))
                                     {
+                                        Logging::debug("Found save at: {}", savePath);
                                         ret.emplace_back(savePath);
                                     }
                                 }
@@ -289,6 +295,7 @@ namespace
                 }
             }
         }
+        Logging::debug("Found {} saves for ID: {}", ret.size(), StringUtils::UTF16toUTF8(id));
         return ret;
     }
 
@@ -345,13 +352,16 @@ namespace
 
 void TitleLoader::init(void)
 {
+    Logging::info("TitleLoader::init - Starting initialization");
     continueScan.test_and_set();
 
     reloadTitleIds();
+    Logging::info("TitleLoader::init - Initialization complete");
 }
 
 void TitleLoader::reloadTitleIds(void)
 {
+    Logging::info("TitleLoader::reloadTitleIds - Reloading title IDs");
     size_t vcIndex  = 0;
     size_t ctrIndex = 0;
     size_t nxIndex  = 0;
@@ -371,10 +381,13 @@ void TitleLoader::reloadTitleIds(void)
             nxTitleIds[nxIndex++] = strtoull(id.c_str(), nullptr, 16);
         }
     }
+    Logging::debug("TitleLoader::reloadTitleIds - Loaded {} VC titles, {} CTR titles, and {} NX titles", 
+                 vcIndex, ctrIndex, nxIndex);
 }
 
 void TitleLoader::scanTitles(void)
 {
+    Logging::info("TitleLoader::scanTitles - Starting title scanning");
     Result res = 0;
     u32 count  = 0;
 
@@ -384,26 +397,32 @@ void TitleLoader::scanTitles(void)
 
     if (continueScan.test())
     {
+        Logging::debug("TitleLoader::scanTitles - Scanning for game card");
         scanCard();
     }
     else
     {
+        Logging::debug("TitleLoader::scanTitles - Scan flag not set, skipping scan");
         return;
     }
 
     // get title count
+    Logging::debug("TitleLoader::scanTitles - Getting SD title count");
     res = AM_GetTitleCount(MEDIATYPE_SD, &count);
     if (R_FAILED(res) || !continueScan.test())
     {
+        Logging::error("TitleLoader::scanTitles - Failed to get title count: {}", res);
         return;
     }
 
     // get title list and check if a title matches the ids we want
+    Logging::debug("TitleLoader::scanTitles - Found {} titles on SD", count);
     std::vector<u64> ids(count);
     u64* p = ids.data();
     res    = AM_GetTitleList(NULL, MEDIATYPE_SD, count, p);
     if (R_FAILED(res) || !continueScan.test())
     {
+        Logging::error("TitleLoader::scanTitles - Failed to get title list: {}", res);
         return;
     }
 
@@ -413,15 +432,21 @@ void TitleLoader::scanTitles(void)
         {
             if (std::find(ids.begin(), ids.end(), id) != ids.end())
             {
+                Logging::debug("TitleLoader::scanTitles - Found CTR title: {:016X}", id);
                 auto title = std::make_shared<Title>();
                 if (title->load(id, MEDIATYPE_SD, CARD_CTR))
                 {
                     ctrTitles.lock()->emplace_back(std::move(title));
                 }
+                else
+                {
+                    Logging::warning("TitleLoader::scanTitles - Failed to load CTR title: {:016X}", id);
+                }
             }
         }
         else
         {
+            Logging::debug("TitleLoader::scanTitles - Scan interrupted during CTR title processing");
             return;
         }
     }
@@ -432,24 +457,33 @@ void TitleLoader::scanTitles(void)
         {
             if (std::find(ids.begin(), ids.end(), id) != ids.end())
             {
+                Logging::debug("TitleLoader::scanTitles - Found VC title: {:016X}", id);
                 auto title = std::make_shared<Title>();
                 if (title->load(id, MEDIATYPE_SD, CARD_CTR))
                 {
                     vcTitles.lock()->emplace_back(std::move(title));
                 }
+                else
+                {
+                    Logging::warning("TitleLoader::scanTitles - Failed to load VC title: {:016X}", id);
+                }
             }
         }
         else
         {
+            Logging::debug("TitleLoader::scanTitles - Scan interrupted during VC title processing");
             return;
         }
     }
 
+    Logging::info("TitleLoader::scanTitles - Title scanning complete - found {} CTR titles and {} VC titles", 
+                ctrTitles.lock()->size(), vcTitles.lock()->size());
     // Titles are already sorted by GameVersion
 }
 
 void TitleLoader::scanSaves(void)
 {
+    Logging::info("TitleLoader::scanSaves - Starting save scanning");
     Gui::waitFrame(i18n::localize("SCAN_SAVES"), ScreenTarget::TOP);
     auto scan = [](auto& tids)
     {
@@ -457,27 +491,36 @@ void TitleLoader::scanSaves(void)
         {
             if (!continueScan.test())
             {
+                Logging::debug("TitleLoader::scanSaves - Scan interrupted");
                 return;
             }
             std::string id                 = std::format("0x{:05X}", ((u32)tid) >> 8);
+            Logging::debug("TitleLoader::scanSaves - Scanning for title ID: {}", id);
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
             {
+                Logging::debug("TitleLoader::scanSaves - Including PKSM backups for ID: {}", id);
                 std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
                 saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
             }
             if (!continueScan.test())
             {
+                Logging::debug("TitleLoader::scanSaves - Scan interrupted after backup check");
                 return;
             }
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
             {
+                Logging::debug("TitleLoader::scanSaves - Adding {} extra saves for ID: {}", extraSaves.size(), id);
                 for (const auto& save : extraSaves)
                 {
                     if (io::exists(save))
                     {
                         saves.emplace_back(save);
+                    }
+                    else
+                    {
+                        Logging::warning("TitleLoader::scanSaves - Extra save doesn't exist: {}", save);
                     }
                 }
             }
@@ -487,6 +530,7 @@ void TitleLoader::scanSaves(void)
 
     {
         sdSaves.lock()->clear();
+        Logging::debug("TitleLoader::scanSaves - Cleared existing save cache");
     }
 
     scan(vcTitleIds);
@@ -499,9 +543,11 @@ void TitleLoader::scanSaves(void)
         {
             if (!continueScan.test())
             {
+                Logging::debug("TitleLoader::scanSaves - Scan interrupted during DS title processing");
                 return;
             }
-            std::string id                 = std::string(dsIds[game]) + langIds[lang];
+            std::string id = std::string(dsIds[game]) + langIds[lang];
+            Logging::debug("TitleLoader::scanSaves - Scanning for DS title ID: {}", id);
             std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
             if (Configuration::getInstance().showBackups())
             {
@@ -511,25 +557,33 @@ void TitleLoader::scanSaves(void)
             auto extraSaves = Configuration::getInstance().extraSaves(id);
             if (!extraSaves.empty())
             {
+                Logging::debug("TitleLoader::scanSaves - Adding {} extra saves for DS ID: {}", extraSaves.size(), id);
                 for (const auto& save : extraSaves)
                 {
                     if (io::exists(save))
                     {
                         saves.emplace_back(save);
                     }
+                    else
+                    {
+                        Logging::warning("TitleLoader::scanSaves - Extra save doesn't exist: {}", save);
+                    }
                 }
             }
             sdSaves.lock().get()[id] = std::move(saves);
         }
     }
+    Logging::info("TitleLoader::scanSaves - Save scanning complete");
 }
 
 void TitleLoader::backupSave(const std::string& id)
 {
     if (!save)
     {
+        Logging::warning("TitleLoader::backupSave - No save to backup");
         return;
     }
+    Logging::info("TitleLoader::backupSave - Backing up save for ID: {}", id);
     Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"), ScreenTarget::TOP);
     DateTime now     = DateTime::now();
     std::string path = std::format("/3ds/PKSM/backups/{0:s}", id);
@@ -541,6 +595,7 @@ void TitleLoader::backupSave(const std::string& id)
     FILE* out = fopen(path.c_str(), "wb");
     if (out)
     {
+        Logging::info("TitleLoader::backupSave - Writing backup to: {}", path);
         TitleLoader::save->finishEditing();
         fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), out);
         fclose(out);
@@ -552,27 +607,32 @@ void TitleLoader::backupSave(const std::string& id)
     }
     else
     {
+        Logging::error("TitleLoader::backupSave - Failed to open backup file: {}", path);
         Gui::warn(i18n::localize("BAD_OPEN_BACKUP"));
     }
 }
 
 bool TitleLoader::load(const std::shared_ptr<u8[]>& data, size_t size)
 {
+    Logging::info("TitleLoader::load - Loading save from memory, size: {}", size);
     save = pksm::Sav::getSave(data, size);
     return save != nullptr;
 }
 
 bool TitleLoader::load(const std::shared_ptr<Title>& title)
 {
+    Logging::info("TitleLoader::load - Loading save from title");
     saveIsFile  = false;
     loadedTitle = title;
     if (title->mediaType() == FS_MediaType::MEDIATYPE_SD ||
         title->cardType() == FS_CardType::CARD_CTR)
     {
+        Logging::debug("TitleLoader::load - Loading from SD or CTR title");
         Archive archive;
         std::unique_ptr<File> in;
         if (title->gba())
         {
+            Logging::debug("TitleLoader::load - Loading GBA save");
             archive =
                 Archive::saveAndContents(title->mediaType(), title->lowId(), title->highId(), true);
             static constexpr u32 pathData[5] = {
@@ -585,16 +645,19 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
         }
         else
         {
+            Logging::debug("TitleLoader::load - Loading standard save");
             archive = Archive::save(title->mediaType(), title->lowId(), title->highId(), false);
             in      = archive.file(title->gb() ? u"/sav.dat" : u"/main", FS_OPEN_READ);
         }
         if (in)
         {
+            Logging::debug("TitleLoader::load - Save file opened successfully");
             std::shared_ptr<u8[]> data;
             size_t size;
             // Have to get to the correct GBA save and sidestep the stupid size shit
             if (title->gba())
             {
+                Logging::debug("TitleLoader::load - Processing GBA save format");
                 static constexpr u8 ZEROS[0x20]   = {0};
                 static constexpr u8 FULL_FS[0x20] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -604,6 +667,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 // Save uninitialized; we'd get garbage that probably goes out of bounds
                 if (!memcmp(header1.get(), ZEROS, sizeof(ZEROS)))
                 {
+                    Logging::warning("TitleLoader::load - Uninitialized GBA save detected");
                     Gui::warn("Uninitialized save");
                     // Dummy data
                     data = std::shared_ptr<u8[]>(new u8[1]);
@@ -612,7 +676,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 // Save initialized only in bottom save. Only check it.
                 else if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                 {
-                    // Gui::warn("First save absent");
+                    Logging::debug("TitleLoader::load - First GBA save absent, looking for second save");
                     // If the first header is garbage FF, we have to search for the second. It can
                     // only be at one of these possible sizes + 0x200 (for the size of the first
                     // header)
@@ -632,6 +696,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         // If it's a header, we found it! Break.
                         if (R_SUCCEEDED(in->result()) && !memcmp(header1->magic, ".SAV", 4))
                         {
+                            Logging::info("TitleLoader::load - Found GBA save header at offset {}", size + sizeof(GbaHeader));
                             break;
                         }
                     }
@@ -645,12 +710,14 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
 
                         if (invalid)
                         {
+                            Logging::warning("TitleLoader::load - Invalid GBA save CMAC detected");
                             Gui::warn("Invalid single CMAC");
                             data = std::shared_ptr<u8[]>(new u8[1]);
                             size = 1;
                         }
                         else
                         {
+                            Logging::debug("TitleLoader::load - Valid GBA save CMAC, size: {}", header1->saveSize);
                             size = header1->saveSize;
                             data = std::shared_ptr<u8[]>(new u8[size]);
                             // Always 0x200 after the second header
@@ -663,6 +730,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                     // can't handle that
                     else
                     {
+                        Logging::error("TitleLoader::load - Failed to find second GBA save header");
                         data = std::shared_ptr<u8[]>(new u8[1]);
                         size = 1;
                     }
@@ -670,6 +738,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 // Both headers are initialized. Compare CMACs and such
                 else
                 {
+                    Logging::debug("TitleLoader::load - Both GBA save headers are initialized");
                     std::unique_ptr<GbaHeader> header2 = std::make_unique<GbaHeader>();
                     in->seek(header1->saveSize, SEEK_CUR);
                     in->read(header2.get(), sizeof(GbaHeader));
@@ -688,10 +757,11 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
 
                     if (firstInvalid)
                     {
-                        // Gui::warn("First CMAC is invalid");
+                        Logging::debug("TitleLoader::load - First GBA save CMAC is invalid");
                         // Both CMACs are invalid. Run and hide.
                         if (secondInvalid)
                         {
+                            Logging::warning("TitleLoader::load - Both GBA save CMACs are invalid");
                             Gui::warn("Both CMACs are invalid");
                             // Dummy data
                             data = std::shared_ptr<u8[]>(new u8[1]);
@@ -700,6 +770,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         // The second CMAC is the only valid one. Use it
                         else
                         {
+                            Logging::debug("TitleLoader::load - Using second GBA save (valid CMAC), size: {}", header2->saveSize);
                             size = header2->saveSize;
                             data = std::shared_ptr<u8[]>(new u8[size]);
                             // Always 0x200 after the second header
@@ -713,7 +784,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         // The first CMAC is the only valid one. Use it
                         if (secondInvalid)
                         {
-                            // Gui::warn("Second CMAC is invalid");
+                            Logging::debug("TitleLoader::load - Using first GBA save (valid CMAC), size: {}", header1->saveSize);
                             size = header1->saveSize;
                             data = std::shared_ptr<u8[]>(new u8[size]);
                             // Always 0x200 after the first header
@@ -728,6 +799,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                             // https://github.com/d0k3/GodMode9/issues/494
                             if (header2->savesMade == header1->savesMade + 1)
                             {
+                                Logging::debug("TitleLoader::load - Using second GBA save (newer), size: {}", header2->saveSize);
                                 size = header2->saveSize;
                                 data = std::shared_ptr<u8[]>(new u8[size]);
                                 // Always 0x200 after the second header
@@ -737,6 +809,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                             }
                             else
                             {
+                                Logging::debug("TitleLoader::load - Using first GBA save (newer), size: {}", header1->saveSize);
                                 size = header1->saveSize;
                                 data = std::shared_ptr<u8[]>(new u8[size]);
                                 // Always 0x200 after the first header
@@ -750,6 +823,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             }
             else
             {
+                Logging::debug("TitleLoader::load - Loading standard save file");
                 size = in->size();
                 data = std::shared_ptr<u8[]>(new u8[size]);
                 in->read(data.get(), size);
@@ -758,6 +832,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             save = pksm::Sav::getSave(data, size);
             if (save)
             {
+                Logging::info("TitleLoader::load - Save loaded successfully");
                 if (Configuration::getInstance().autoBackup())
                 {
                     backupSave(title->checkpointPrefix());
@@ -765,12 +840,14 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             }
             else
             {
+                Logging::error("TitleLoader::load - Invalid save file format");
                 Gui::error(i18n::localize("SAVE_INVALID"), -1);
             }
             return save != nullptr;
         }
         else
         {
+            Logging::error("TitleLoader::load - Failed to open save file, archive result: {}", archive.result());
             Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
             loadedTitle = nullptr;
             return false;
@@ -779,9 +856,11 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
     }
     else
     {
+        Logging::debug("TitleLoader::load - Loading from DS game card");
         u32 cap = SPIGetCapacity(title->SPICardType());
         if (cap != 524288)
         {
+            Logging::warning("TitleLoader::load - Unexpected DS save size: {} bytes", cap);
             Gui::warn(i18n::localize("WRONG_SIZE") + '\n' + i18n::localize("Please report"));
             return false;
         }
@@ -789,25 +868,44 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
         std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[cap]);
         u32 sectorSize             = (cap < 0x10000) ? cap : 0x10000;
 
+        Result res = 0;
         for (u32 i = 0; i < cap / sectorSize; ++i)
         {
-            SPIReadSaveData(
+            Logging::debug("TitleLoader::load - Reading DS save sector {} of {}", i+1, cap/sectorSize);
+            res = SPIReadSaveData(
                 title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
+            if (R_FAILED(res)) {
+                Logging::error("TitleLoader::load - Failed to read DS save sector {}: {}", i, res);
+                break;
+            }
+        }
+
+        if (R_FAILED(res)) {
+            Logging::error("TitleLoader::load - Failed to read DS save: {}", res);
+            return false;
         }
 
         save = pksm::Sav::getSave(data, cap);
+        if (!save) {
+            Logging::error("TitleLoader::load - Invalid DS save format");
+            return false;
+        }
+        
+        Logging::info("TitleLoader::load - DS save loaded successfully");
         if (Configuration::getInstance().autoBackup())
         {
             backupSave(title->checkpointPrefix());
         }
         return save != nullptr;
     }
+    Logging::error("TitleLoader::load - Critical error during load");
     Gui::warn(i18n::localize("LOADER_CRITICAL_ERROR"));
     return false;
 }
 
 bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& savePath)
 {
+    Logging::info("TitleLoader::load - Loading save from path: {}", savePath);
     saveIsFile   = true;
     saveFileName = savePath;
     loadedTitle  = title;
@@ -821,6 +919,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         rewind(in);
         if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
         {
+            Logging::error("TitleLoader::load - Save file too large: {} bytes", size);
             Gui::error(i18n::localize("WRONG_SIZE"), size);
             loadedTitle  = nullptr;
             saveFileName = "";
@@ -833,6 +932,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
     }
     else
     {
+        Logging::error("TitleLoader::load - Failed to open save file: {}, error: {}", savePath, errno);
         Gui::error(i18n::localize("BAD_OPEN_SAVE"), errno);
         loadedTitle  = nullptr;
         saveFileName = "";
@@ -841,11 +941,14 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
     save = pksm::Sav::getSave(saveData, size);
     if (!save)
     {
+        Logging::error("TitleLoader::load - Invalid save file format: {}", savePath);
         Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
         saveFileName = "";
         loadedTitle  = nullptr;
         return false;
     }
+    
+    Logging::info("TitleLoader::load - Save loaded successfully from file");
     if (Configuration::getInstance().autoBackup())
     {
         if (title)
@@ -862,6 +965,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
                 {
                     if (*j == savePath)
                     {
+                        Logging::debug("TitleLoader::load - Found save in cache, backing up with ID: {}", i->first);
                         backupSave(i->first);
                         done = true;
                         break;
@@ -878,10 +982,12 @@ void TitleLoader::saveToTitle(bool ask)
     Result res;
     if (loadedTitle)
     {
+        Logging::info("TitleLoader::saveToTitle - Saving to title");
         if (TitleLoader::cardTitle.load() == loadedTitle &&
             (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
                                             i18n::localize("SAVE_OVERWRITE_CARD"))))
         {
+            Logging::debug("TitleLoader::saveToTitle - Saving to game card");
             auto title = TitleLoader::cardTitle.load();
             if (title->cardType() == FS_CardType::CARD_CTR)
             {
@@ -892,9 +998,11 @@ void TitleLoader::saveToTitle(bool ask)
 
                 if (out)
                 {
+                    Logging::debug("TitleLoader::saveToTitle - Writing save to CTR card");
                     out->write(save->rawData().get(), save->getLength());
                     if (R_FAILED(res = archive.commit()))
                     {
+                        Logging::error("TitleLoader::saveToTitle - Failed to commit archive: {}", res);
                         out->close();
                         archive.close();
                         Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
@@ -902,14 +1010,17 @@ void TitleLoader::saveToTitle(bool ask)
                     }
                     out->close();
                     archive.close();
+                    Logging::info("TitleLoader::saveToTitle - Successfully saved to CTR card");
                 }
                 else
                 {
+                    Logging::error("TitleLoader::saveToTitle - Failed to open save file, archive result: {}", archive.result());
                     Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
                 }
             }
             else
             {
+                Logging::debug("TitleLoader::saveToTitle - Writing save to DS card");
                 res          = 0;
                 u32 pageSize = SPIGetPageSize(title->SPICardType());
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
@@ -918,14 +1029,19 @@ void TitleLoader::saveToTitle(bool ask)
                         &save->rawData()[pageSize * i], pageSize);
                     if (R_FAILED(res))
                     {
+                        Logging::error("TitleLoader::saveToTitle - Failed to write DS save page {}: {}", i, res);
                         break;
                     }
                     Gui::showRestoreProgress((pageSize * (i + 1)) / 1024, save->getLength() / 1024);
+                }
+                if (R_SUCCEEDED(res)) {
+                    Logging::info("TitleLoader::saveToTitle - Successfully saved to DS card");
                 }
             }
         }
         else
         {
+            Logging::debug("TitleLoader::saveToTitle - Saving to installed title");
             // Just a linear search because it's a maximum of twenty titles
             auto doSave = [&](const auto& titles)
             {
@@ -939,6 +1055,7 @@ void TitleLoader::saveToTitle(bool ask)
                         std::unique_ptr<File> out;
                         if (title->gba())
                         {
+                            Logging::debug("TitleLoader::saveToTitle - Saving to GBA title");
                             archive = Archive::saveAndContents(
                                 title->mediaType(), title->lowId(), title->highId(), true);
                             static constexpr u32 pathData[5] = {
@@ -952,6 +1069,7 @@ void TitleLoader::saveToTitle(bool ask)
                         }
                         else
                         {
+                            Logging::debug("TitleLoader::saveToTitle - Saving to standard title");
                             archive = Archive::save(
                                 title->mediaType(), title->lowId(), title->highId(), false);
                             out = archive.file(title->gb() ? u"/sav.dat" : u"/main", FS_OPEN_WRITE);
@@ -977,6 +1095,7 @@ void TitleLoader::saveToTitle(bool ask)
                                     // header and copy it to the top's. Then write data
                                     if (!memcmp(header1.get(), FULL_FS, sizeof(FULL_FS)))
                                     {
+                                        Logging::debug("TitleLoader::saveToTitle - Top GBA save uninitialized, finding bottom save");
                                         static constexpr u32 POSSIBLE_SAVE_SIZES[] = {
                                             0x400,   // 8kbit
                                             0x2000,  // 64kbit
@@ -995,6 +1114,7 @@ void TitleLoader::saveToTitle(bool ask)
                                             if (R_SUCCEEDED(out->result()) &&
                                                 !memcmp(header1->magic, ".SAV", 4))
                                             {
+                                                Logging::debug("TitleLoader::saveToTitle - Found GBA bottom save header at offset: {}", size + sizeof(GbaHeader));
                                                 break;
                                             }
                                         }
@@ -1023,6 +1143,7 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                             out->write(cmac.data(), cmac.size());
                                             out->close();
+                                            Logging::info("TitleLoader::saveToTitle - Successfully saved to top GBA save slot");
                                         }
                                     }
                                     // Otherwise, compare the top and bottom save counts. If we
@@ -1030,6 +1151,7 @@ void TitleLoader::saveToTitle(bool ask)
                                     // the bottom, save in the top
                                     else
                                     {
+                                        Logging::debug("TitleLoader::saveToTitle - Both GBA save slots present, choosing where to save");
                                         std::unique_ptr<GbaHeader> header2 =
                                             std::make_unique<GbaHeader>();
                                         out->seek(header1->saveSize, SEEK_CUR);
@@ -1051,6 +1173,7 @@ void TitleLoader::saveToTitle(bool ask)
 
                                         if (firstInvalid)
                                         {
+                                            Logging::debug("TitleLoader::saveToTitle - First GBA save slot CMAC invalid, saving to first slot");
                                             // Just save to the first with header2->savesMade+1 as
                                             // save number for simplicity; whether or not the second
                                             // save was valid to begin with is immaterial
@@ -1072,6 +1195,7 @@ void TitleLoader::saveToTitle(bool ask)
                                             out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                             out->write(cmac.data(), cmac.size());
                                             out->close();
+                                            Logging::info("TitleLoader::saveToTitle - Successfully saved to top GBA save slot");
                                         }
                                         else
                                         {
@@ -1080,6 +1204,7 @@ void TitleLoader::saveToTitle(bool ask)
                                             if (!secondInvalid &&
                                                 header2->savesMade == header1->savesMade + 1)
                                             {
+                                                Logging::debug("TitleLoader::saveToTitle - Second GBA save is newer, saving to top slot");
                                                 header1->savesMade = header2->savesMade + 1;
                                                 out->seek(0, SEEK_SET);
                                                 if (save->getLength() <=
@@ -1099,10 +1224,12 @@ void TitleLoader::saveToTitle(bool ask)
                                                 out->seek(offsetof(GbaHeader, cmac), SEEK_SET);
                                                 out->write(cmac.data(), cmac.size());
                                                 out->close();
+                                                Logging::info("TitleLoader::saveToTitle - Successfully saved to top GBA save slot");
                                             }
                                             // Otherwise, save over the second save
                                             else
                                             {
+                                                Logging::debug("TitleLoader::saveToTitle - First GBA save is newer, saving to bottom slot");
                                                 out->seek(sizeof(GbaHeader) + header1->saveSize,
                                                     SEEK_SET);
                                                 header2->savesMade = header1->savesMade + 1;
@@ -1126,21 +1253,25 @@ void TitleLoader::saveToTitle(bool ask)
                                                     SEEK_SET);
                                                 out->write(cmac.data(), cmac.size());
                                                 out->close();
+                                                Logging::info("TitleLoader::saveToTitle - Successfully saved to bottom GBA save slot");
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
+                                    Logging::warning("TitleLoader::saveToTitle - Uninitialized GBA save detected");
                                     Gui::warn(i18n::localize("UNINIT_GBA_SAVE"));
                                 }
                             }
                             else
                             {
+                                Logging::debug("TitleLoader::saveToTitle - Writing standard save file");
                                 out->write(save->rawData().get(), save->getLength());
                             }
                             if (!title->gba() && R_FAILED(res = archive.commit()))
                             {
+                                Logging::error("TitleLoader::saveToTitle - Failed to commit archive: {}", res);
                                 out->close();
                                 archive.close();
                                 Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
@@ -1148,9 +1279,11 @@ void TitleLoader::saveToTitle(bool ask)
                             }
                             out->close();
                             archive.close();
+                            Logging::info("TitleLoader::saveToTitle - Successfully saved to title");
                         }
                         else
                         {
+                            Logging::error("TitleLoader::saveToTitle - Failed to open save file, archive result: {}", archive.result());
                             Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
                         }
                         break; // There can only be one match
@@ -1167,6 +1300,7 @@ void TitleLoader::saveToTitle(bool ask)
         res = FSUSER_ControlSecureSave(SECURESAVE_ACTION_DELETE, &secureValue, 8, &out, 1);
         if (R_FAILED(res))
         {
+            Logging::error("TitleLoader::saveToTitle - Failed to control secure save: {}", res);
             Gui::error(i18n::localize("SECURE_VALUE_ERROR"), res);
         }
     }
@@ -1178,6 +1312,7 @@ u64 TitleLoader::setRebootToTitle()
     {
         if (loadedTitle->cardType() == FS_CardType::CARD_TWL)
         {
+            Logging::info("TitleLoader::setRebootToTitle - Setting reboot to TWL card");
             u64 tid = 0x0004800000000000;
             for (int i = 0; i < 4; i++)
             {
@@ -1187,6 +1322,7 @@ u64 TitleLoader::setRebootToTitle()
         }
         else
         {
+            Logging::info("TitleLoader::setRebootToTitle - Setting reboot to CTR title: {:016X}", loadedTitle->ID());
             aptSetChainloader(loadedTitle->ID(), loadedTitle->mediaType());
         }
     }
@@ -1200,14 +1336,21 @@ bool TitleLoader::titleIsRebootable()
 
 void TitleLoader::saveChanges()
 {
+    Logging::info("TitleLoader::saveChanges - Saving changes");
     save->finishEditing();
     if (saveIsFile)
     {
+        Logging::debug("TitleLoader::saveChanges - Saving to file: {}", saveFileName);
         FILE* out = fopen(saveFileName.c_str(), "wb");
         if (out)
         {
             fwrite(save->rawData().get(), 1, save->getLength(), out);
             fclose(out);
+            Logging::info("TitleLoader::saveChanges - Successfully saved to file");
+        }
+        else
+        {
+            Logging::error("TitleLoader::saveChanges - Failed to open save file: {}", saveFileName);
         }
         if (Configuration::getInstance().writeFileSave())
         {
@@ -1241,9 +1384,11 @@ void TitleLoader::exit()
 
 bool TitleLoader::scanCard()
 {
+    Logging::info("TitleLoader::scanCard - Scanning for game card");
     static bool isScanning = false;
     if (isScanning)
     {
+        Logging::debug("TitleLoader::scanCard - Already scanning, returning");
         return false;
     }
     else
@@ -1259,11 +1404,13 @@ bool TitleLoader::scanCard()
     res = FSUSER_GetCardType(&cardType);
     if (R_SUCCEEDED(res))
     {
+        Logging::debug("TitleLoader::scanCard - Found card of type: {}", (int)cardType);
         if (cardType == CARD_CTR)
         {
             res = AM_GetTitleCount(MEDIATYPE_GAME_CARD, &count);
             if (R_SUCCEEDED(res) && count > 0)
             {
+                Logging::debug("TitleLoader::scanCard - Found CTR game card with {} titles", count);
                 static constexpr std::array<u64, 8> originalIDs = {
                     0x0004000000055D00, // X
                     0x0004000000055E00, // Y
@@ -1281,11 +1428,26 @@ bool TitleLoader::scanCard()
                 if (R_SUCCEEDED(res) &&
                     std::find(originalIDs.begin(), originalIDs.end(), id) != originalIDs.end())
                 {
+                    Logging::info("TitleLoader::scanCard - Found supported 3DS Pokémon game: {:016X}", id);
                     auto title = std::make_shared<Title>();
                     if (title->load(id, MEDIATYPE_GAME_CARD, cardType))
                     {
                         cardTitle = std::move(title);
                     }
+                    else
+                    {
+                        Logging::warning("TitleLoader::scanCard - Failed to load title for CTR card: {:016X}", id);
+                    }
+                }
+                else
+                {
+                    Logging::debug("TitleLoader::scanCard - CTR game card title not in supported list: {:016X}", id);
+                }
+            }
+            else 
+            {
+                if (R_FAILED(res)) {
+                    Logging::error("TitleLoader::scanCard - Failed to get title count: {}", res);
                 }
             }
         }
@@ -1293,41 +1455,62 @@ bool TitleLoader::scanCard()
         {
             // ds game card, behave differently
             // load the save and check for known patterns
+            Logging::debug("TitleLoader::scanCard - Found DS game card");
             auto title = std::make_shared<Title>();
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
+                Logging::debug("TitleLoader::scanCard - Successfully loaded DS title info");
                 ret                            = true;
                 CardType spiCardType           = title->SPICardType();
                 u32 saveSize                   = SPIGetCapacity(spiCardType);
                 u32 sectorSize                 = (saveSize < 0x10000) ? saveSize : 0x10000;
                 std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
+                
+                Logging::debug("TitleLoader::scanCard - Reading DS save of size: {} bytes", saveSize);
                 for (u32 i = 0; i < saveSize / sectorSize; ++i)
                 {
                     res = SPIReadSaveData(
                         spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
                     if (R_FAILED(res))
                     {
+                        Logging::error("TitleLoader::scanCard - Failed to read DS save sector {}: {}", i, res);
                         break;
                     }
                 }
 
                 if (R_SUCCEEDED(res) && pksm::Sav::isValidDSSave(saveFile))
                 {
+                    Logging::info("TitleLoader::scanCard - Found valid DS Pokémon save");
                     cardTitle = std::move(title);
+                }
+                else 
+                {
+                    if (R_FAILED(res)) {
+                        Logging::error("TitleLoader::scanCard - Failed to read DS save: {}", res);
+                    } else {
+                        Logging::warning("TitleLoader::scanCard - DS save is not a valid Pokémon save");
+                    }
                 }
             }
             else
             {
                 if (title->checkpointPrefix() != "") // It only failed at SPIGetCardType
                 {
+                    Logging::debug("TitleLoader::scanCard - DS card title loaded but failed at SPIGetCardType");
                     ret = true;
                 }
                 // Otherwise keep trying
             }
         }
     }
+    else 
+    {
+        Logging::error("TitleLoader::scanCard - Failed to get card type: {}", res);
+    }
+    
     isScanning     = false;
     cartWasUpdated = true;
+    Logging::info("TitleLoader::scanCard - Card scanning completed, found valid card: {}", ret);
     return ret;
 }
 
