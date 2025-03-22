@@ -1,8 +1,8 @@
 {
-    "UPDATE_CHECKING": "检查更新",
-    "UPDATE_FOUND_BACKUP": "Update found! Backing up ExtData...",
-    "UPDATE_FOUND_DOWNLOAD": "更新发现！ 下载...",
-    "UPDATE_INSTALLING": "安装更新...",
-    "UPDATE_SUCCESS_1": "更新成功下载!",
-    "UPDATE_SUCCESS_2": "请重新打开应用程序!"
+    "UPDATE_CHECKING": "正在检查更新",
+    "UPDATE_FOUND_BACKUP": "发现更新！正在备份扩展数据...",
+    "UPDATE_FOUND_DOWNLOAD": "发现更新！正在下载...",
+    "UPDATE_INSTALLING": "正在安装更新...",
+    "UPDATE_SUCCESS_1": "更新已成功下载！",
+    "UPDATE_SUCCESS_2": "请重新启动应用程序！"
 }
