@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <pu/Plutonium>
 
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
@@ -21,7 +22,8 @@ public:
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
-        ISaveDataAccessor::Ref saveDataAccessor
+        ISaveDataAccessor::Ref saveDataAccessor,
+        std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks
     );
     PU_SMART_CTOR(MainMenu)
     ~MainMenu();
@@ -33,6 +35,7 @@ private:
     pksm::ui::TrainerInfo::Ref trainerInfo;
     pksm::ui::MenuButtonGrid::Ref menuGrid;
     ISaveDataAccessor::Ref saveDataAccessor;
+    std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks;
 
     // Layout constants
     static constexpr pu::i32 TRAINER_INFO_SIDE_MARGIN = 40;  // Margin from screen edges
@@ -43,6 +46,7 @@ private:
 
     void OnInput(u64 down, u64 up, u64 held);
     void UpdateTrainerInfo();
+    void RegisterNavigationCallbacks();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

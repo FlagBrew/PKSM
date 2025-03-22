@@ -1,6 +1,9 @@
 #pragma once
 
+#include <functional>
+#include <map>
 #include <pu/Plutonium>
+#include <vector>
 
 #include "gui/screens/main-menu/sub-components/menu-grid/MenuButton.hpp"
 #include "gui/shared/components/IShakeable.hpp"
@@ -8,6 +11,12 @@
 #include "input/visual-feedback/FocusManager.hpp"
 
 namespace pksm::ui {
+
+// Define menu button types
+enum class MenuButtonType { Storage, Editor, Events, Bag, Scripts, Settings };
+
+// Callback type for menu button actions
+using MenuButtonCallback = std::function<void()>;
 
 class MenuButtonGrid : public pu::ui::elm::Element {
 private:
@@ -34,6 +43,9 @@ private:
     input::FocusManager::Ref focusManager;
     pksm::input::DirectionalInputHandler inputHandler;
 
+    // Map of button types to callbacks
+    std::map<MenuButtonType, MenuButtonCallback> buttonCallbacks;
+
     // Helper methods
     void InitializeButtons();
 
@@ -59,8 +71,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // Disable/enable functionality
     void SetDisabled(bool disabled);
@@ -68,6 +80,12 @@ public:
     // Get the currently selected index
     size_t GetSelectedIndex() const { return selectedIndex; }
     void SetSelectedIndex(size_t index);
+
+    // Register callback for a specific button type
+    void RegisterButtonCallback(MenuButtonType type, MenuButtonCallback callback);
+
+    // Handle A button press on selected button
+    bool HandleSelectInput(const u64 keys_down);
 };
 
 }  // namespace pksm::ui
