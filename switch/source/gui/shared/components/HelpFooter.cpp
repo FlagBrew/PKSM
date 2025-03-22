@@ -124,6 +124,10 @@ std::string HelpFooter::GetButtonGlyph(HelpButton button) const {
             return "\uE110";
         case HelpButton::TouchScreen:
             return "\uE121";
+        case HelpButton::ChevronLeft:
+            return "\uE149";
+        case HelpButton::ChevronRight:
+            return "\uE14A";
         default:
             return "?";
     }

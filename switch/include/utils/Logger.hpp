@@ -3,7 +3,7 @@
 #include <string>
 #include <switch.h>
 
-namespace utils {
+namespace pksm::utils {
 
 class Logger {
 public:
@@ -33,7 +33,7 @@ private:
 #endif
 };
 
-}  // namespace utils
+}  // namespace pksm::utils
 
 #ifdef NDEBUG
 #define LOG_DEBUG(msg) ((void)0)

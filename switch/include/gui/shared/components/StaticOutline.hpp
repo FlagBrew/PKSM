@@ -39,8 +39,8 @@ public:
     u32 GetBorderWidth() const;
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override = 0;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     static constexpr u32 DEFAULT_BORDER_WIDTH = 8;
 };
@@ -57,6 +57,25 @@ public:
     PU_SMART_CTOR(CircularOutline)
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
+};
+
+class RectangularOutline : public StaticOutlineBase {
+public:
+    RectangularOutline(
+        const pu::i32 x,
+        const pu::i32 y,
+        const pu::i32 width,
+        const pu::i32 height,
+        const pu::ui::Color color,
+        const pu::i32 radius = 0,
+        const u32 borderWidth = DEFAULT_BORDER_WIDTH
+    );
+    PU_SMART_CTOR(RectangularOutline)
+
+    void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
+
+private:
+    pu::i32 radius;  // Corner radius (0 for sharp corners)
 };
 
 }  // namespace pksm::ui

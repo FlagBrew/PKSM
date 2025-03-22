@@ -7,7 +7,7 @@
 
 #ifndef NDEBUG
 
-namespace utils {
+namespace pksm::utils {
 
 bool Logger::initialized = false;
 bool Logger::socket_initialized = false;
@@ -149,6 +149,6 @@ void Logger::LogMemoryInfo() {
     Debug(ss.str());
 }
 
-}  // namespace utils
+}  // namespace pksm::utils
 
 #endif  // NDEBUG

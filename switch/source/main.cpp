@@ -12,12 +12,12 @@ int main(int argc, char* argv[]) {
         app->ShowWithFadeIn();
 
         // Cleanup
-        utils::Logger::Finalize();
+        pksm::utils::Logger::Finalize();
         return 0;
     } catch (const std::exception& e) {
         // Make sure we log any fatal errors
-        LOG_ERROR("Fatal error: " + std::string(e.what()));
-        utils::Logger::Finalize();
+        pksm::utils::Logger::Error("Fatal error: " + std::string(e.what()));
+        pksm::utils::Logger::Finalize();
         return 1;
     }
 }

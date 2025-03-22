@@ -23,7 +23,9 @@ enum class HelpButton {
     LeftAnalogStick,
     RightAnalogStick,
     DPad,
-    TouchScreen
+    TouchScreen,
+    ChevronLeft,
+    ChevronRight
 };
 
 // Struct to represent a help item (button + action description)
@@ -52,8 +54,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // Help item management
     void SetHelpItems(const std::vector<HelpItem>& items);

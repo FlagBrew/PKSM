@@ -79,3 +79,38 @@ void pksm::ui::CircularOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, 
         drawer->RenderCircle(color, centerX, centerY, baseRadius + i);
     }
 }
+
+// RectangularOutline implementation
+pksm::ui::RectangularOutline::RectangularOutline(
+    const pu::i32 x,
+    const pu::i32 y,
+    const pu::i32 width,
+    const pu::i32 height,
+    const pu::ui::Color color,
+    const pu::i32 radius,
+    const u32 borderWidth
+)
+  : StaticOutlineBase(x, y, width, height, color, borderWidth), radius(radius) {}
+
+void pksm::ui::RectangularOutline::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+    if (!visible)
+        return;
+
+    // Draw the outline by rendering rectangles with increasing size
+    for (u32 i = 0; i < borderWidth; i++) {
+        if (radius > 0) {
+            // Use rounded rectangle if radius is specified
+            drawer->RenderRoundedRectangle(
+                color,
+                x + i,
+                y + i,
+                width - (2 * i),
+                height - (2 * i),
+                radius > static_cast<pu::i32>(i) ? radius - static_cast<pu::i32>(i) : 0
+            );
+        } else {
+            // Use regular rectangle for sharp corners
+            drawer->RenderRectangle(color, x + i, y + i, width - (2 * i), height - (2 * i));
+        }
+    }
+}
