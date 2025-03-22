@@ -39,6 +39,7 @@
 #include "wcx/PGT.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
+#include "logging.hpp"
 #include <format>
 #include <sys/stat.h>
 
@@ -54,46 +55,63 @@ InjectSelectorScreen::InjectSelectorScreen()
       hid(10, 2),
       dumpHid(40, 8)
 {
-    MysteryGift::init(TitleLoader::save->generation());
-    wondercards = MysteryGift::wondercards();
-
-    size_t currentCards = TitleLoader::save->currentGiftAmount();
-    for (size_t i = 0; i < currentCards; i++)
-    {
-        auto gift = TitleLoader::save->mysteryGift(i);
-        if (gift->pokemon())
+    Logging::info("Initializing InjectSelectorScreen");
+    
+    try {
+        MysteryGift::init(TitleLoader::save->generation());
+        wondercards = MysteryGift::wondercards();
+        
+        size_t currentCards = TitleLoader::save->currentGiftAmount();
+        Logging::debug(std::format("Current gift amount: {}", currentCards));
+        
+        gifts.clear(); // Clear the vector before adding items
+        gifts.reserve(currentCards);
+        
+        for (size_t i = 0; i < currentCards; i++)
         {
-            gifts.emplace_back(
-                gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
-        }
-        else
-        {
-            gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
-        }
-    }
-
-    // QR
-    instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
-    instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
-    instructions.addBox(
-        false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
-    buttons.push_back(std::make_unique<Button>(
-        160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); },
-        ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
-    // Filter
-    for (int i = 0; i < 9; i++)
-    {
-        langFilters.push_back(std::make_unique<ToggleButton>(
-            268, 3 + i * 24, 38, 23,
-            [this, i]()
+            auto gift = TitleLoader::save->mysteryGift(i);
+            if (gift->pokemon())
             {
-                hid.select(0);
-                return this->toggleFilter(std::string(langs[i]));
-            },
-            ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14,
-            COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt,
-            COLOR_BLACK, &langFilters, true));
-        langFilters.back()->setState(false);
+                gifts.emplace_back(
+                    gift->title(), "", int(gift->species()), gift->alternativeForm(), gift->gender());
+            }
+            else
+            {
+                gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
+            }
+        }
+        
+        // QR
+        instructions.addCircle(false, 160, 195, 11, COLOR_GREY);
+        instructions.addLine(false, 160, 177, 160, 206, 4, COLOR_GREY);
+        instructions.addBox(
+            false, 160 - 100 / 2, 177 - 23, 100, 23, COLOR_GREY, i18n::localize("QR_SCANNER"));
+        buttons.push_back(std::make_unique<Button>(
+            160 - 70 / 2, 207 - 23, 70, 23, [this]() { return this->doQR(); },
+            ui_sheet_emulated_button_qr_idx, "", FONT_SIZE_14, COLOR_WHITE));
+        // Filter
+        for (int i = 0; i < 9; i++)
+        {
+            langFilters.push_back(std::make_unique<ToggleButton>(
+                268, 3 + i * 24, 38, 23,
+                [this, i]()
+                {
+                    hid.select(0);
+                    return this->toggleFilter(std::string(langs[i]));
+                },
+                ui_sheet_emulated_button_selected_blue_idx, std::string(langs[i]), FONT_SIZE_14,
+                COLOR_WHITE, ui_sheet_emulated_button_unselected_blue_idx, std::nullopt, std::nullopt,
+                COLOR_BLACK, &langFilters, true));
+            langFilters.back()->setState(false);
+        }
+        
+        Logging::info("InjectSelectorScreen initialized successfully");
+    } 
+    catch (const std::exception& e) {
+        Logging::error(std::format("Error in InjectSelectorScreen constructor: {}", e.what()));
+    }
+    catch (...) {
+        Logging::error("Unknown error in InjectSelectorScreen constructor");
     }
 }
 
@@ -106,106 +124,130 @@ void InjectSelectorScreen::update(touchPosition* touch)
 {
     u32 downKeys = hidKeysDown();
     u32 heldKeys = hidKeysHeld();
-    if (updateGifts)
-    {
-        size_t currentCards = TitleLoader::save->currentGiftAmount();
-        for (size_t i = 0; i < currentCards; i++)
+    
+    try {
+        if (updateGifts)
         {
-            auto gift = TitleLoader::save->mysteryGift(i);
-            if (gift->pokemon())
+            size_t currentCards = TitleLoader::save->currentGiftAmount();
+            
+            // Clear the vector before repopulating it
+            gifts.clear();
+            gifts.reserve(currentCards);
+            
+            for (size_t i = 0; i < currentCards; i++)
             {
-                gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(),
-                    gift->gender());
-            }
-            else
-            {
-                gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
-            }
-        }
-    }
-    if (!dump)
-    {
-        hid.update(wondercards.size());
-        if (downKeys & KEY_B)
-        {
-            Gui::screenBack();
-            return;
-        }
-        if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
-        {
-            doQR();
-            return;
-        }
-        if (downKeys & KEY_A)
-        {
-            bool allReleased = true;
-            for (const auto& card : wondercards[hid.fullIndex()])
-            {
-                MysteryGift::giftData info = MysteryGift::wondercardInfo(card.get<int>());
-                if (!info.released)
+                auto gift = TitleLoader::save->mysteryGift(i);
+                if (gift->pokemon())
                 {
-                    allReleased = false;
-                    break;
+                    gifts.emplace_back(gift->title(), "", int(gift->species()), gift->alternativeForm(),
+                        gift->gender());
+                }
+                else
+                {
+                    gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
                 }
             }
-            if (allReleased ||
-                Gui::showChoiceMessage(
-                    "Not all of these wonder card(s) are released.\nContinue to injection screen?"))
+            
+            Logging::debug(std::format("Updated gifts list with {} items", gifts.size()));
+            updateGifts = false;  // Reset the flag after processing
+        }
+        
+        if (!dump)
+        {
+            hid.update(wondercards.size());
+            if (downKeys & KEY_B)
             {
-                Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
-                updateGifts = true;
+                Gui::screenBack();
                 return;
             }
-        }
-        if (downKeys & KEY_X)
-        {
-            if (TitleLoader::save->generation() == pksm::Generation::LGPE)
+            if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
             {
-                Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
+                doQR();
+                return;
             }
-            else
+            if (downKeys & KEY_A)
             {
-                dump = true;
+                bool allReleased = true;
+                for (const auto& card : wondercards[hid.fullIndex()])
+                {
+                    MysteryGift::giftData info = MysteryGift::wondercardInfo(card.get<int>());
+                    if (!info.released)
+                    {
+                        allReleased = false;
+                        break;
+                    }
+                }
+                if (allReleased ||
+                    Gui::showChoiceMessage(
+                        "Not all of these wonder card(s) are released.\nContinue to injection screen?"))
+                {
+                    Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
+                    updateGifts = true;
+                    return;
+                }
             }
-            return;
-        }
+            if (downKeys & KEY_X)
+            {
+                if (TitleLoader::save->generation() == pksm::Generation::LGPE)
+                {
+                    Gui::warn(i18n::localize("WC_LGPE") + '\n' + i18n::localize("NOT_A_BUG"));
+                }
+                else
+                {
+                    dump = true;
+                }
+                return;
+            }
 
-        for (auto& button : buttons)
-        {
-            if (button->update(touch))
+            for (auto& button : buttons)
             {
-                return;
+                if (button->update(touch))
+                {
+                    return;
+                }
+            }
+
+            for (auto& button : langFilters)
+            {
+                if (button->update(touch))
+                {
+                    return;
+                }
+            }
+
+            for (auto& button : typeFilters)
+            {
+                if (button->update(touch))
+                {
+                    return;
+                }
             }
         }
-
-        for (auto& button : langFilters)
+        else
         {
-            if (button->update(touch))
+            dumpHid.update(std::max(TitleLoader::save->currentGiftAmount(), 1));
+            if (downKeys & KEY_A)
             {
-                return;
+                dumpCard();
+                dump = false;
             }
-        }
-
-        for (auto& button : typeFilters)
-        {
-            if (button->update(touch))
+            else if (downKeys & KEY_B)
             {
-                return;
+                dump = false;
             }
         }
     }
-    else
-    {
-        dumpHid.update(std::max(TitleLoader::save->currentGiftAmount(), 1));
-        if (downKeys & KEY_A)
-        {
-            dumpCard();
-            dump = false;
-        }
-        else if (downKeys & KEY_B)
-        {
-            dump = false;
-        }
+    catch (const std::exception& e) {
+        Logging::error(std::format("Error in InjectSelectorScreen::update: {}", e.what()));
+        Gui::error("An error occurred in the Wonder Card screen:\n" + std::string(e.what()));
+    }
+    catch (const std::bad_alloc& e) {
+        Logging::error(std::format("Memory allocation failed in InjectSelectorScreen::update: {}", e.what()));
+        Gui::error("Memory allocation failed in Wonder Card screen.\nThis could be due to running out of memory.");
+    }
+    catch (...) {
+        Logging::error("Unknown error in InjectSelectorScreen::update");
+        Gui::error("An unknown error occurred in the Wonder Card screen");
     }
 }
 
@@ -256,147 +298,158 @@ void InjectSelectorScreen::drawTop() const
 {
     if (!dump)
     {
-        Gui::backgroundTop(true);
+        try {
+            Gui::backgroundTop(true);
 
-        Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14,
-            PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
+            Gui::text(i18n::localize("EVENT_DATABASE"), 200, 4, FONT_SIZE_14,
+                PKSM_Color(140, 158, 255, 255), TextPosX::CENTER, TextPosY::TOP);
 
-        for (size_t i = 0; i < 10; i++)
-        {
-            if (i % 2 == 0)
+            for (size_t i = 0; i < 10; i++)
             {
-                int x = 20;
-                int y = 41 + (i / 2) * 37;
-                if (i == 0)
+                if (i % 2 == 0)
                 {
-                    Gui::sprite(i == hid.index() ? ui_sheet_eventmenu_bar_selected_idx
-                                                 : ui_sheet_eventmenu_bar_unselected_idx,
-                        x, y);
-                }
-                else if (i == 8)
-                {
-                    Gui::sprite(
-                        i == hid.index()
-                            ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx
-                            : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx,
-                        x, y);
+                    int x = 20;
+                    int y = 41 + (i / 2) * 37;
+                    if (i == 0)
+                    {
+                        Gui::sprite(i == hid.index() ? ui_sheet_eventmenu_bar_selected_idx
+                                                    : ui_sheet_eventmenu_bar_unselected_idx,
+                            x, y);
+                    }
+                    else if (i == 8)
+                    {
+                        Gui::sprite(
+                            i == hid.index()
+                                ? ui_sheet_emulated_eventmenu_bar_selected_flipped_vertical_idx
+                                : ui_sheet_emulated_eventmenu_bar_unselected_flipped_vertical_idx,
+                            x, y);
+                    }
+                    else
+                    {
+                        Gui::drawSolidRect(x, y, 178, 34,
+                            i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
+                                            : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    }
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34,
-                        i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
-                                         : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    int x = 201;
+                    int y = 41 + (i / 2) * 37;
+                    if (i == 1)
+                    {
+                        Gui::sprite(
+                            i == hid.index()
+                                ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx
+                                : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx,
+                            x, y);
+                    }
+                    else if (i == 9)
+                    {
+                        Gui::sprite(i == hid.index()
+                                        ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
+                                        : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
+                            x, y);
+                    }
+                    else
+                    {
+                        Gui::drawSolidRect(x, y, 178, 34,
+                            i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
+                                            : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    }
                 }
             }
-            else
+
+            for (size_t i = hid.page() * 10; i < (size_t)hid.page() * 10 + 10; i++)
             {
-                int x = 201;
-                int y = 41 + (i / 2) * 37;
-                if (i == 1)
+                if (i >= wondercards.size())
                 {
-                    Gui::sprite(
-                        i == hid.index()
-                            ? ui_sheet_emulated_eventmenu_bar_selected_flipped_horizontal_idx
-                            : ui_sheet_emulated_eventmenu_bar_unselected_flipped_horizontal_idx,
-                        x, y);
-                }
-                else if (i == 9)
-                {
-                    Gui::sprite(i == hid.index()
-                                    ? ui_sheet_emulated_eventmenu_bar_selected_flipped_both_idx
-                                    : ui_sheet_emulated_eventmenu_bar_unselected_flipped_both_idx,
-                        x, y);
+                    break;
                 }
                 else
                 {
-                    Gui::drawSolidRect(x, y, 178, 34,
-                        i == hid.index() ? PKSM_Color(0x3D, 0x5A, 0xFE, 0xFF)
-                                         : PKSM_Color(0x8C, 0x9E, 0xFF, 0xFF));
+                    MysteryGift::giftData data;
+                    const std::string& lang = i18n::langString(Configuration::getInstance().language());
+                    if (wondercards[i].find(lang) != wondercards[i].end())
+                    {
+                        data = MysteryGift::wondercardInfo(wondercards[i][lang]);
+                    }
+                    else
+                    {
+                        data = MysteryGift::wondercardInfo(*wondercards[i].begin());
+                    }
+                    int x = i % 2 == 0 ? 21 : 201;
+                    int y = 43 + ((i % 10) / 2) * 37;
+                    if (data.species == -1)
+                    {
+                        Gui::sprite(ui_sheet_icon_item_idx, x + 12, y + 9);
+                    }
+                    else
+                    {
+                        Gui::pkm(pksm::Species{u16(data.species)}, data.form,
+                            TitleLoader::save->generation(), data.gender, x, y);
+                    }
+                    PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
+                                                                : PKSM_Color(26, 35, 126, 255);
+                    TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL
+                                                                : TextWidthAction::SQUISH_OR_SLICE;
+                    Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER,
+                        TextPosY::CENTER, action, 138.0f);
                 }
             }
         }
-
-        for (size_t i = hid.page() * 10; i < (size_t)hid.page() * 10 + 10; i++)
-        {
-            if (i >= wondercards.size())
-            {
-                break;
-            }
-            else
-            {
-                MysteryGift::giftData data;
-                const std::string& lang = i18n::langString(Configuration::getInstance().language());
-                if (wondercards[i].find(lang) != wondercards[i].end())
-                {
-                    data = MysteryGift::wondercardInfo(wondercards[i][lang]);
-                }
-                else
-                {
-                    data = MysteryGift::wondercardInfo(*wondercards[i].begin());
-                }
-                int x = i % 2 == 0 ? 21 : 201;
-                int y = 43 + ((i % 10) / 2) * 37;
-                if (data.species == -1)
-                {
-                    Gui::sprite(ui_sheet_icon_item_idx, x + 12, y + 9);
-                }
-                else
-                {
-                    Gui::pkm(pksm::Species{u16(data.species)}, data.form,
-                        TitleLoader::save->generation(), data.gender, x, y);
-                }
-                PKSM_Color color       = i == hid.fullIndex() ? PKSM_Color(232, 234, 246, 255)
-                                                              : PKSM_Color(26, 35, 126, 255);
-                TextWidthAction action = i == hid.fullIndex() ? TextWidthAction::SQUISH_OR_SCROLL
-                                                              : TextWidthAction::SQUISH_OR_SLICE;
-                Gui::text(data.name, x + 103, y + 14, FONT_SIZE_11, color, TextPosX::CENTER,
-                    TextPosY::CENTER, action, 138.0f);
-            }
+        catch (const std::exception& e) {
+            Logging::error(std::format("Error in InjectSelectorScreen::drawTop: {}", e.what()));
         }
     }
     else
     {
-        Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
-        auto saveGeneration = TitleLoader::save->generation();
-        for (size_t i = 0; i < 40; i++)
-        {
-            int x        = i % 8;
-            int y        = i / 8;
-            size_t fullI = i + dumpHid.page() * 40;
-            if (fullI >= TitleLoader::save->maxWondercards())
+        try {
+            Gui::sprite(ui_sheet_part_mtx_5x8_idx, 0, 0);
+            auto saveGeneration = TitleLoader::save->generation();
+            for (size_t i = 0; i < 40; i++)
             {
-                break;
-            }
-            if (dumpHid.index() == i)
-            {
-                Gui::drawSolidRect(x * 50, y * 48, 49, 47, PKSM_Color(15, 22, 89, 255));
-            }
-            if (fullI < gifts.size())
-            {
-                if (gifts[fullI].species > -1)
+                int x        = i % 8;
+                int y        = i / 8;
+                size_t fullI = i + dumpHid.page() * 40;
+                if (fullI >= TitleLoader::save->maxWondercards())
                 {
-                    Gui::pkm(pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form,
-                        saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    break;
+                }
+                if (dumpHid.index() == i)
+                {
+                    Gui::drawSolidRect(x * 50, y * 48, 49, 47, PKSM_Color(15, 22, 89, 255));
+                }
+                if (fullI < gifts.size())
+                {
+                    if (gifts[fullI].species > -1)
+                    {
+                        Gui::pkm(pksm::Species{u16(gifts[fullI].species)}, gifts[fullI].form,
+                            saveGeneration, gifts[fullI].gender, x * 50 + 7, y * 48 + 2);
+                    }
+                    else
+                    {
+                        Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
+                    }
+
+                    Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
+                        COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
                 }
                 else
                 {
-                    Gui::sprite(ui_sheet_icon_item_idx, x * 50 + 20, y * 48 + 18);
+                    Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
+                        COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
                 }
-
-                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
-                    COLOR_WHITE, TextPosX::CENTER, TextPosY::TOP);
             }
-            else
-            {
-                Gui::text(std::to_string(fullI + 1), x * 50 + 25, y * 48 + 36, FONT_SIZE_9,
-                    COLOR_MASKBLACK, TextPosX::CENTER, TextPosY::TOP);
-            }
+        }
+        catch (const std::exception& e) {
+            Logging::error(std::format("Error in InjectSelectorScreen::drawTop (dump mode): {}", e.what()));
         }
     }
 }
 
 bool InjectSelectorScreen::doQR()
 {
+    Logging::debug("Starting QR scan");
     std::unique_ptr<pksm::WCX> wcx;
     switch (TitleLoader::save->generation())
     {
@@ -421,54 +474,74 @@ bool InjectSelectorScreen::doQR()
 
     if (wcx)
     {
+        Logging::info("QR scan successful, navigating to injector screen");
         Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
         updateGifts = true;
         return true;
     }
+    
+    Logging::debug("QR scan failed or cancelled");
     return false;
 }
 
 void InjectSelectorScreen::dumpCard(void) const
 {
-    auto wc      = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
-    DateTime now = DateTime::now();
-    std::string path =
-        std::format("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
-    mkdir(path.c_str(), 777);
-    path     += std::format("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}", now.hour(), now.minute(),
-            now.second(), wc->ID(), wc->title(), wc->extension().data());
-    FILE* out = fopen(path.c_str(), "wb");
-    if (out)
-    {
-        fwrite(wc->rawData(), 1, wc->size(), out);
-        fclose(out);
+    try {
+        Logging::debug(std::format("Dumping card at index {}", dumpHid.fullIndex()));
+        auto wc      = TitleLoader::save->mysteryGift(dumpHid.fullIndex());
+        DateTime now = DateTime::now();
+        std::string path =
+            std::format("/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
+        mkdir(path.c_str(), 777);
+        path     += std::format("/{0:d}-{1:d}-{2:d} - {3:d} - {4:s}{5:s}", now.hour(), now.minute(),
+                now.second(), wc->ID(), wc->title(), wc->extension().data());
+        FILE* out = fopen(path.c_str(), "wb");
+        if (out)
+        {
+            fwrite(wc->rawData(), 1, wc->size(), out);
+            fclose(out);
+            Logging::info(std::format("Card successfully dumped to {}", path));
+        }
+        else
+        {
+            Logging::error(std::format("Failed to open dump file: {}, errno: {}", path, errno));
+            Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
+        }
     }
-    else
-    {
-        Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
+    catch (const std::exception& e) {
+        Logging::error(std::format("Error in InjectSelectorScreen::dumpCard: {}", e.what()));
     }
 }
 
 bool InjectSelectorScreen::toggleFilter(const std::string& lang)
 {
-    if (langFilter != lang)
-    {
-        wondercards = MysteryGift::wondercards();
-        for (size_t i = wondercards.size(); i > 0; i--)
+    try {
+        Logging::debug(std::format("Toggling language filter: {}", lang));
+        if (langFilter != lang)
         {
-            if (!wondercards[i - 1].contains(lang))
+            wondercards = MysteryGift::wondercards();
+            for (size_t i = wondercards.size(); i > 0; i--)
             {
-                wondercards.erase(wondercards.begin() + i - 1);
+                if (!wondercards[i - 1].contains(lang))
+                {
+                    wondercards.erase(wondercards.begin() + i - 1);
+                }
             }
+            langFilter = lang;
+            Logging::debug(std::format("Filter set to {}, {} cards remaining", lang, wondercards.size()));
         }
-        langFilter = lang;
+        else
+        {
+            wondercards = MysteryGift::wondercards();
+            langFilter  = "";
+            Logging::debug(std::format("Filter cleared, {} cards available", wondercards.size()));
+        }
+        return false;
     }
-    else
-    {
-        wondercards = MysteryGift::wondercards();
-        langFilter  = "";
+    catch (const std::exception& e) {
+        Logging::error(std::format("Error in InjectSelectorScreen::toggleFilter(string): {}", e.what()));
+        return false;
     }
-    return false;
 }
 
 bool InjectSelectorScreen::toggleFilter(u8 type)
