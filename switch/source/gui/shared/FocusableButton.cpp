@@ -148,8 +148,8 @@ std::vector<pksm::ui::HelpItem> pksm::ui::FocusableButton::GetHelpItems() const 
         return {};
     }
     return {
-        {{pksm::ui::HelpButton::A}, helpText.empty() ? GetContent() : helpText},
-        {{pksm::ui::HelpButton::B}, "Back"}
+        {{pksm::ui::global::ButtonGlyph::A}, helpText.empty() ? GetContent() : helpText},
+        {{pksm::ui::global::ButtonGlyph::B}, "Back"}
     };
 }
 

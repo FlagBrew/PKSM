@@ -546,10 +546,10 @@ std::vector<pksm::ui::HelpItem> pksm::ui::GameList::GetHelpItems() const {
     }
 
     if (activeGameList->IsFocused()) {
-        std::vector<pksm::ui::HelpItem> items = {{{pksm::ui::HelpButton::A}, "Select"}};
+        std::vector<pksm::ui::HelpItem> items = {{{pksm::ui::global::ButtonGlyph::A}, "Select"}};
 
         if (IsGameListDependentOnUser()) {
-            items.push_back({{pksm::ui::HelpButton::ZL}, "Change Player"});
+            items.push_back({{pksm::ui::global::ButtonGlyph::ZL}, "Change Player"});
         }
 
         return items;

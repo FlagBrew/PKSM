@@ -57,7 +57,7 @@ std::vector<HelpItem> SaveList::GetHelpItems() const {
     if (!IsFocused()) {
         return {};
     }
-    return {{{pksm::ui::HelpButton::A}, "Select Save"}, {{pksm::ui::HelpButton::B}, "Back"}};
+    return {{{pksm::ui::global::ButtonGlyph::A}, "Select Save"}, {{pksm::ui::global::ButtonGlyph::B}, "Back"}};
 }
 
 }  // namespace pksm::ui

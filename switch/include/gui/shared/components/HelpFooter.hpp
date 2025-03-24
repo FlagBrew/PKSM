@@ -4,35 +4,10 @@
 #include <string>
 #include <vector>
 
+#include "gui/shared/UIConstants.hpp"
+#include "gui/shared/components/HelpItem.hpp"
+
 namespace pksm::ui {
-
-// Enum for all possible buttons that can be shown in help
-enum class HelpButton {
-    A,
-    B,
-    X,
-    Y,
-    L,
-    R,
-    ZL,
-    ZR,
-    Plus,
-    Minus,
-    Home,
-    AnalogStick,
-    LeftAnalogStick,
-    RightAnalogStick,
-    DPad,
-    TouchScreen,
-    ChevronLeft,
-    ChevronRight
-};
-
-// Struct to represent a help item (button + action description)
-struct HelpItem {
-    std::vector<HelpButton> buttons;  // Multiple buttons can be grouped (separated by /)
-    std::string actionDescription;
-};
 
 class HelpFooter : public pu::ui::elm::Element {
 public:
@@ -73,7 +48,6 @@ private:
     std::vector<pu::ui::elm::TextBlock::Ref> dynamicHelpTexts;
 
     // Helper methods
-    std::string GetButtonGlyph(HelpButton button) const;
     void UpdateDynamicHelpTexts();
     void PositionElements();
 };

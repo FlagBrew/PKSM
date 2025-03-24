@@ -2,6 +2,7 @@
 
 #include <pu/Plutonium>
 
+#include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
@@ -48,8 +49,8 @@ public:
     pu::i32 GetWidth() override { return width; }
     pu::i32 GetHeight() override { return height; }
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     std::vector<HelpItem> GetHelpItems() const override;
 

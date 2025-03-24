@@ -131,7 +131,6 @@ void pksm::ui::BoxGrid::SetBoxCount(size_t count) {
 
 void pksm::ui::BoxGrid::SetCurrentBox(int boxIndex) {
     if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size()) {
-        int previousBox = currentBox;
         currentBox = boxIndex;
 
         // Update the grid to display the new box
@@ -149,9 +148,6 @@ void pksm::ui::BoxGrid::SetCurrentBox(int boxIndex) {
 
         // Release sprites that aren't in the current box
         utils::PokemonSpriteManager::ReleaseUnusedSprites(activeKeys);
-
-        // Log the box change using both variables
-        LOG_DEBUG("Switched from box " + std::to_string(previousBox) + " to box " + std::to_string(currentBox));
     }
 }
 
