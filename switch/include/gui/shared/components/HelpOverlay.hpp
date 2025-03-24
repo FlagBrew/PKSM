@@ -2,7 +2,7 @@
 
 #include <pu/ui/ui_Overlay.hpp>
 
-#include "gui/shared/components/HelpFooter.hpp"
+#include "gui/shared/components/HelpItem.hpp"
 
 namespace pksm::ui {
 
@@ -23,7 +23,6 @@ public:
 
 private:
     void UpdateHelpTexts();
-    std::string GetButtonGlyph(HelpButton button) const;
 
     std::vector<HelpItem> helpItems;
     std::vector<pu::ui::elm::TextBlock::Ref> helpTexts;

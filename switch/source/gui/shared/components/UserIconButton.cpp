@@ -21,13 +21,15 @@ UserIconButton::UserIconButton(
     data::AccountManager& accountManager
 )
   : Element(),
-    ShakeableWithOutline(pksm::ui::CircularPulsingOutline::New(
-        x - OUTLINE_PADDING,
-        y - OUTLINE_PADDING,
-        diameter + (OUTLINE_PADDING * 2),
-        pksm::ui::global::OUTLINE_COLOR,
-        4
-    )),
+    ShakeableWithOutline(
+        pksm::ui::CircularPulsingOutline::New(
+            x - OUTLINE_PADDING,
+            y - OUTLINE_PADDING,
+            diameter + (OUTLINE_PADDING * 2),
+            pksm::ui::global::OUTLINE_COLOR,
+            4
+        )
+    ),
     x(x),
     y(y),
     diameter(diameter),
@@ -199,7 +201,7 @@ std::vector<pksm::ui::HelpItem> UserIconButton::GetHelpItems() const {
     if (!IsFocused()) {
         return {};
     }
-    return {{{pksm::ui::HelpButton::A}, "Change Player"}, {{pksm::ui::HelpButton::B}, "Back"}};
+    return {{{pksm::ui::global::ButtonGlyph::A}, "Change Player"}, {{pksm::ui::global::ButtonGlyph::B}, "Back"}};
 }
 
 void UserIconButton::SetDisabled(bool disabled) {

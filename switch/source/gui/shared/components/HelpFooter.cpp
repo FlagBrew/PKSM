@@ -18,7 +18,8 @@ HelpFooter::HelpFooter(const pu::i32 x, const pu::i32 y, const pu::i32 width) : 
     );
 
     // Create minus button text
-    minusButtonText = pu::ui::elm::TextBlock::New(x, y, GetButtonGlyph(HelpButton::Minus));
+    minusButtonText =
+        pu::ui::elm::TextBlock::New(x, y, pksm::ui::global::GetButtonGlyphString(pksm::ui::global::ButtonGlyph::Minus));
     minusButtonText->SetFont(pksm::ui::global::MakeSwitchButtonFontName(pksm::ui::global::FONT_SIZE_BUTTON));
     minusButtonText->SetColor(pksm::ui::global::TEXT_WHITE);
 
@@ -90,49 +91,6 @@ void HelpFooter::SetHelpItems(const std::vector<HelpItem>& items) {
     UpdateDynamicHelpTexts();
 }
 
-std::string HelpFooter::GetButtonGlyph(HelpButton button) const {
-    switch (button) {
-        case HelpButton::A:
-            return "\uE0E0";
-        case HelpButton::B:
-            return "\uE0E1";
-        case HelpButton::X:
-            return "\uE0E2";
-        case HelpButton::Y:
-            return "\uE0E3";
-        case HelpButton::L:
-            return "\uE0E4";
-        case HelpButton::R:
-            return "\uE0E5";
-        case HelpButton::ZL:
-            return "\uE0E6";
-        case HelpButton::ZR:
-            return "\uE0E7";
-        case HelpButton::Plus:
-            return "\uE0EF";
-        case HelpButton::Minus:
-            return "\uE0F0";
-        case HelpButton::Home:
-            return "\uE0F4";
-        case HelpButton::AnalogStick:
-            return "\uE100";
-        case HelpButton::LeftAnalogStick:
-            return "\uE101";
-        case HelpButton::RightAnalogStick:
-            return "\uE102";
-        case HelpButton::DPad:
-            return "\uE110";
-        case HelpButton::TouchScreen:
-            return "\uE121";
-        case HelpButton::ChevronLeft:
-            return "\uE149";
-        case HelpButton::ChevronRight:
-            return "\uE14A";
-        default:
-            return "?";
-    }
-}
-
 void HelpFooter::UpdateDynamicHelpTexts() {
     LOG_DEBUG("Updating dynamic help texts");
     dynamicHelpTexts.clear();
@@ -151,7 +109,7 @@ void HelpFooter::UpdateDynamicHelpTexts() {
             if (i > 0) {
                 buttonText += "/";
             }
-            buttonText += GetButtonGlyph(item.buttons[i]);
+            buttonText += pksm::ui::global::GetButtonGlyphString(item.buttons[i]);
         }
 
         // First create both text blocks to measure their widths

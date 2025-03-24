@@ -69,10 +69,10 @@ bool BaseLayout::HandleHelpInput(u64 down) {
 std::vector<pksm::ui::HelpItem> BaseLayout::GetHelpOverlayItems() const {
     // Default implementation with common help items
     return {
-        {{{pksm::ui::HelpButton::A}}, "Select"},
-        {{{pksm::ui::HelpButton::B}}, "Back"},
-        {{{pksm::ui::HelpButton::DPad}}, "Navigate"},
-        {{{pksm::ui::HelpButton::Minus}}, "Close Help"}
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate"},
+        {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
     };
 }
 

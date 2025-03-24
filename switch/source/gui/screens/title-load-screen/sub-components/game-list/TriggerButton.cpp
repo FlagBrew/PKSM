@@ -19,14 +19,16 @@ TriggerButton::TriggerButton(
     const pu::ui::Color& navigationTextColor
 )
   : Element(),
-    ShakeableWithOutline(pksm::ui::PulsingOutline::New(
-        x - TRIGGER_BUTTON_OUTLINE_PADDING,
-        y - TRIGGER_BUTTON_OUTLINE_PADDING,
-        width + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
-        height + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
-        pksm::ui::global::OUTLINE_COLOR,
-        cornerRadius
-    )),
+    ShakeableWithOutline(
+        pksm::ui::PulsingOutline::New(
+            x - TRIGGER_BUTTON_OUTLINE_PADDING,
+            y - TRIGGER_BUTTON_OUTLINE_PADDING,
+            width + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
+            height + (TRIGGER_BUTTON_OUTLINE_PADDING * 2),
+            pksm::ui::global::OUTLINE_COLOR,
+            cornerRadius
+        )
+    ),
     x(x),
     y(y),
     width(width),
@@ -54,10 +56,10 @@ TriggerButton::TriggerButton(
 
     switch (side) {
         case Side::Left:
-            textBlock->SetText("\ue0f6");
+            textBlock->SetText(pksm::ui::global::GetButtonGlyphString(pksm::ui::global::ButtonGlyph::TriggerLeft));
             break;
         case Side::Right:
-            textBlock->SetText("\ue0f7");
+            textBlock->SetText(pksm::ui::global::GetButtonGlyphString(pksm::ui::global::ButtonGlyph::TriggerRight));
             break;
     }
 
@@ -179,6 +181,9 @@ std::vector<pksm::ui::HelpItem> TriggerButton::GetHelpItems() const {
     if (!IsFocused()) {
         return {};
     }
-    return {{{pksm::ui::HelpButton::A}, "Go to " + navigationText + " games"}, {{pksm::ui::HelpButton::B}, "Back"}};
+    return {
+        {{pksm::ui::global::ButtonGlyph::A}, "Go to " + navigationText + " games"},
+        {{pksm::ui::global::ButtonGlyph::B}, "Back"}
+    };
 }
 }  // namespace pksm::ui

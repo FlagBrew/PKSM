@@ -30,10 +30,10 @@ StorageScreen::StorageScreen(
 
     // Set initial help items
     std::vector<pksm::ui::HelpItem> helpItems = {
-        {{{pksm::ui::HelpButton::A}}, "Select"},
-        {{{pksm::ui::HelpButton::B}}, "Back to Main Menu"},
-        {{{pksm::ui::HelpButton::L}, {pksm::ui::HelpButton::R}}, "Switch Box"},
-        {{{pksm::ui::HelpButton::DPad}}, "Navigate Box"},
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
+        {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
     };
     helpFooter->SetHelpItems(helpItems);
 
@@ -266,12 +266,12 @@ void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
 
 std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
     return {
-        {{{pksm::ui::HelpButton::A}}, "Select Pokémon"},
-        {{{pksm::ui::HelpButton::B}}, "Back to Main Menu"},
-        {{{pksm::ui::HelpButton::DPad}, {pksm::ui::HelpButton::AnalogStick}}, "Navigate Box"},
-        {{{pksm::ui::HelpButton::L}}, "Previous Box"},
-        {{{pksm::ui::HelpButton::R}}, "Next Box"},
-        {{{pksm::ui::HelpButton::Minus}}, "Close Help"}
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select Pokémon"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}, {pksm::ui::global::ButtonGlyph::AnalogStick}}, "Navigate Box"},
+        {{{pksm::ui::global::ButtonGlyph::L}}, "Previous Box"},
+        {{{pksm::ui::global::ButtonGlyph::R}}, "Next Box"},
+        {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
     };
 }
 
