@@ -32,7 +32,11 @@ pksm::ui::BoxItem::BoxItem(
     width(width),
     height(height),
     defaultBgColor(defaultBgColor),
-    selectedBgColor(selectedBgColor) {
+    selectedBgColor(selectedBgColor),
+    onTouchSelectCallback(nullptr),
+    onSelectCallback(nullptr),
+    touchHandler(),
+    buttonHandler() {
     // Create container with elements
     container = pu::ui::Container::New(0, 0, width, height);
     background = pu::ui::elm::Rectangle::New(0, 0, width, height, defaultBgColor);
@@ -55,6 +59,27 @@ pksm::ui::BoxItem::BoxItem(
         outlineColor,
         0,
         OUTLINE_BORDER_WIDTH
+    );
+
+    // Set up touch handler callbacks
+    touchHandler.SetOnTouchUpInside([this]() {
+        if (!focused && onTouchSelectCallback) {
+            onTouchSelectCallback();
+        } else if (focused && onSelectCallback) {
+            onSelectCallback();
+        }
+    });
+
+    // Register A button with the condition to only process when focused
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,
+        [this]() {
+            if (focused && onSelectCallback) {
+                onSelectCallback();
+            }
+        },
+        [this]() { return this->focused; }
     );
 
     // Set initial visibility
@@ -186,10 +211,6 @@ void pksm::ui::BoxItem::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu
     }
 }
 
-void pksm::ui::BoxItem::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
-}
-
 void pksm::ui::BoxItem::OnInput(
     const u64 keys_down,
     const u64 keys_up,
@@ -201,10 +222,9 @@ void pksm::ui::BoxItem::OnInput(
         element->OnInput(keys_down, keys_up, keys_held, touch_pos);
     }
 
-    // Handle touch selection
-    if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->x, this->y, this->width, this->height) && !focused &&
-        onTouchSelectCallback) {
-        LOG_DEBUG("BoxItem Tapped");
-        onTouchSelectCallback();
-    }
+    // Process touch input using TouchInputHandler
+    touchHandler.HandleInput(touch_pos, x, y, width, height);
+
+    // Process button inputs
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }

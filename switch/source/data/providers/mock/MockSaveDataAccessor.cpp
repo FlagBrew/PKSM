@@ -12,7 +12,7 @@ static const std::array<std::string, 10> TRAINER_NAMES =
 
 MockSaveDataAccessor::MockSaveDataAccessor()
   : currentSave(nullptr), hasChanges(false), rng(std::chrono::steady_clock::now().time_since_epoch().count()) {
-    LOG_DEBUG("Initializing MockSaveDataAccessor...");
+    pksm::utils::Logger::Debug("Initializing MockSaveDataAccessor...");
     initializeMockSaveGenerators();
 }
 
@@ -20,12 +20,8 @@ pksm::saves::SaveData::Ref MockSaveDataAccessor::getCurrentSaveData() const {
     return currentSave;
 }
 
-void MockSaveDataAccessor::setOnSaveDataChanged(std::function<void(pksm::saves::SaveData::Ref)> callback) {
-    onSaveDataChanged = callback;
-}
-
 bool MockSaveDataAccessor::saveChanges() {
-    LOG_DEBUG("Saving changes to mock save...");
+    pksm::utils::Logger::Debug("Saving changes to mock save...");
     hasChanges = false;
     return true;
 }
@@ -48,7 +44,7 @@ std::mt19937 MockSaveDataAccessor::createSeededRNG(u64 titleId, const std::strin
 }
 
 bool MockSaveDataAccessor::loadMockSave(const pksm::titles::Title::Ref& title, const std::string& saveName) {
-    LOG_DEBUG("Loading mock save for title: " + title->getName() + ", save: " + saveName);
+    pksm::utils::Logger::Debug("Loading mock save for title: " + title->getName() + ", save: " + saveName);
 
     u64 titleId = title->getTitleId();
 

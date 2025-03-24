@@ -17,21 +17,51 @@ pksm::ui::FocusableButton::FocusableButton(
     focusedColor(focusedColor),
     onClickCallback(nullptr),
     onTouchSelectCallback(nullptr),
+    onCancelCallback(nullptr),
     disabled(false),
     x(x),
     y(y),
     width(w),
     height(h),
-    isPressed(false) {
+    touchHandler(),
+    buttonHandler() {
     // Create background rectangle
     background = pu::ui::elm::Rectangle::New(x, y, w, h, normalColor);
 
     // Create text block
     text = pu::ui::elm::TextBlock::New(0, 0, content);  // Position will be centered in SetContent
-    text->SetColor(pu::ui::Color(255, 255, 255, 255));  // White text
+    text->SetColor(global::TEXT_WHITE);
 
     // Center the text
     SetContent(content);
+
+    // Setup touch handler callbacks
+    touchHandler.SetOnTouchUpInside([this]() {
+        if (!focused && onTouchSelectCallback) {
+            onTouchSelectCallback();
+        } else if (focused && onClickCallback) {
+            onClickCallback();
+        }
+    });
+
+    // Register A button with the condition to only process when focused
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,
+        [this]() {
+            if (onClickCallback) {
+                onClickCallback();
+            }
+        },
+        [this]() { return this->focused; }
+    );
+
+    // Register B button with callback
+    buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() {
+        if (focused && onCancelCallback) {
+            onCancelCallback();
+        }
+    });
 }
 
 pu::i32 pksm::ui::FocusableButton::GetX() {
@@ -70,27 +100,11 @@ void pksm::ui::FocusableButton::OnInput(
         return;
     }
 
-    if (!touch_pos.IsEmpty()) {
-        if (touch_pos.HitsRegion(x, y, width, height)) {
-            if (!isPressed) {
-                isPressed = true;
+    // Process touch using the touch handler with current bounds
+    touchHandler.HandleInput(touch_pos, x, y, width, height);
 
-                // If we're not focused, trigger touch select
-                if (!focused && onTouchSelectCallback) {
-                    onTouchSelectCallback();
-                    RequestFocus();
-                }
-            }
-        }
-    } else if (isPressed) {
-        // Touch released
-        isPressed = false;
-
-        // If touch was released while still over button, trigger click
-        if (onClickCallback) {
-            onClickCallback();
-        }
-    }
+    // Process button inputs
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }
 
 void pksm::ui::FocusableButton::SetFocused(bool focus) {
@@ -132,13 +146,6 @@ void pksm::ui::FocusableButton::SetBackgroundColor(const pu::ui::Color& color) {
     background->SetColor(color);
 }
 
-void pksm::ui::FocusableButton::SetOnClick(std::function<void()> callback) {
-    onClickCallback = callback;
-}
-
-void pksm::ui::FocusableButton::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
-}
 void pksm::ui::FocusableButton::SetHelpText(const std::string& text) {
     helpText = text;
 }

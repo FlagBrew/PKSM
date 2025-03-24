@@ -22,19 +22,6 @@ DirectionalInputHandler::DirectionalInputHandler() : analogHandler(AnalogStickHa
     });
 }
 
-void DirectionalInputHandler::SetOnMoveLeft(std::function<void()> callback) {
-    onMoveLeft = callback;
-}
-void DirectionalInputHandler::SetOnMoveRight(std::function<void()> callback) {
-    onMoveRight = callback;
-}
-void DirectionalInputHandler::SetOnMoveUp(std::function<void()> callback) {
-    onMoveUp = callback;
-}
-void DirectionalInputHandler::SetOnMoveDown(std::function<void()> callback) {
-    onMoveDown = callback;
-}
-
 bool DirectionalInputHandler::HandleInput(u64 down, u64 held) {
     // First check for d-pad input with timing
     if (dpadMoveStatus != DPadMoveStatus::None) {

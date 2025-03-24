@@ -4,6 +4,8 @@
 
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 #include "input/visual-feedback/interfaces/ISelectable.hpp"
 
@@ -15,6 +17,9 @@ private:
     pu::ui::elm::Rectangle::Ref overlay;
     pu::i32 outlinePadding;  // Padding between image and outline
     std::function<void()> onTouchSelectCallback;  // New callback for touch selection
+    std::function<void()> onSelectCallback;
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
 
 public:
     FocusableImage(
@@ -44,11 +49,11 @@ public:
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
 
-    // Touch selection callback
-    void SetOnTouchSelect(std::function<void()> callback);
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 
     // Override OnInput to handle touch
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 };
 }  // namespace pksm::ui

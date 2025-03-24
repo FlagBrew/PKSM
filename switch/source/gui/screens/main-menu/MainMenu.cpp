@@ -15,7 +15,8 @@ MainMenu::MainMenu(
   : BaseLayout(onShowOverlay, onHideOverlay),
     onBack(onBack),
     saveDataAccessor(saveDataAccessor),
-    navigationCallbacks(navigationCallbacks) {
+    navigationCallbacks(navigationCallbacks),
+    buttonHandler() {
     LOG_DEBUG("Initializing MainMenu...");
 
     this->SetBackgroundColor(bgColor);
@@ -59,6 +60,18 @@ MainMenu::MainMenu(
         {{{pksm::ui::global::ButtonGlyph::Minus}}, "Help"}
     };
     helpFooter->SetHelpItems(helpItems);
+
+    // Setup button handler
+    buttonHandler.RegisterButton(
+        HidNpadButton_B,
+        nullptr,  // No visual feedback needed
+        [this]() {
+            LOG_DEBUG("B button pressed, returning to game selection");
+            if (this->onBack) {
+                this->onBack();
+            }
+        }
+    );
 
     // Set up input handling
     this->SetOnInput(
@@ -121,13 +134,8 @@ void MainMenu::OnInput(u64 down, u64 up, u64 held) {
         return;  // Input was handled by help system
     }
 
-    // Only process other input if not in help overlay
-    if (down & HidNpadButton_B) {
-        LOG_DEBUG("B button pressed, returning to game selection");
-        if (onBack) {
-            onBack();
-        }
-    }
+    // Only process button input if not in help overlay
+    buttonHandler.HandleInput(down, up, held);
 }
 
 std::vector<pksm::ui::HelpItem> MainMenu::GetHelpOverlayItems() const {

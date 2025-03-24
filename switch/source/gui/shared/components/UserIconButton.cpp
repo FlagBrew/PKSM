@@ -36,14 +36,17 @@ UserIconButton::UserIconButton(
     focused(false),
     disabled(false),
     accountManager(accountManager),
-    maskedIconTexture(nullptr) {
+    maskedIconTexture(nullptr),
+    touchHandler(),
+    buttonHandler(),
+    onCancelCallback(nullptr) {
     // Create username text element
     usernameText = pu::ui::elm::TextBlock::New(
         x + diameter + 10,  // Initial position to the right of icon with padding
         y,  // Start at same y as icon
         accountManager.GetAccountUsername()
     );
-    usernameText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    usernameText->SetColor(global::TEXT_WHITE);
     usernameText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_ACCOUNT_NAME));
 
     // Create outline
@@ -51,10 +54,44 @@ UserIconButton::UserIconButton(
         x - OUTLINE_PADDING,
         y - OUTLINE_PADDING,
         diameter + (OUTLINE_PADDING * 2),
-        pu::ui::Color(70, 70, 70, 255),
+        USER_ICON_BUTTON_OUTLINE_COLOR,
         4
     );
     outline->SetVisible(true);
+
+    // Setup touch handler
+    touchHandler.SetOnTouchUpInside([this]() {
+        LOG_DEBUG("UserIconButton Touch Up Inside");
+        this->RequestFocus();
+        this->accountManager.ShowAccountSelector();
+    });
+
+    // Register A button (only when focused)
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,
+        [this]() { this->accountManager.ShowAccountSelector(); },
+        [this]() { return this->focused; }
+    );
+
+    // Register B button (only when focused)
+    buttonHandler.RegisterButton(
+        HidNpadButton_B,
+        nullptr,
+        [this]() {
+            if (onCancelCallback) {
+                onCancelCallback();
+            }
+        },
+        [this]() { return this->focused; }
+    );
+
+    // Register ZL button (works regardless of focus)
+    buttonHandler.RegisterButton(HidNpadButton_ZL, nullptr, [this]() {
+        LOG_DEBUG("ZL button pressed");
+        this->RequestFocus();
+        this->accountManager.ShowAccountSelector();
+    });
 
     // Update account info to initialize the UI
     UpdateAccountInfo();
@@ -90,19 +127,15 @@ void UserIconButton::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    // Don't process input if disabled
     if (disabled) {
         return;
     }
 
-    if (!touch_pos.IsEmpty()) {
-        if (touch_pos.HitsRegion(x, y, diameter, diameter)) {
-            if (onClickCallback) {
-                RequestFocus();
-                onClickCallback();
-            }
-        }
-    }
+    // Process touch using TouchInputHandler
+    touchHandler.HandleInput(touch_pos, x, y, diameter, diameter);
+
+    // Process all button inputs
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }
 
 void UserIconButton::SetFocused(bool focus) {
@@ -191,10 +224,6 @@ pu::i32 UserIconButton::GetWidth() {
 
 pu::i32 UserIconButton::GetHeight() {
     return diameter;  // Height is now just the icon diameter since text is beside it
-}
-
-void UserIconButton::SetOnClick(std::function<void()> callback) {
-    onClickCallback = callback;
 }
 
 std::vector<pksm::ui::HelpItem> UserIconButton::GetHelpItems() const {

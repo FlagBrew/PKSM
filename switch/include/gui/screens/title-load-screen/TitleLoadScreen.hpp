@@ -15,7 +15,6 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/GameList.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
 #include "gui/shared/components/FocusableButton.hpp"
-#include "gui/shared/components/FocusableImage.hpp"
 #include "gui/shared/components/UserIconButton.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
@@ -42,11 +41,8 @@ private:
     static constexpr u32 SAVE_LIST_TOP_MARGIN = 32;  // Space between game list and save list
     static constexpr u32 SAVE_LIST_WIDTH = 1240;
     static constexpr u32 SAVE_LIST_X = GAME_LIST_SIDE_MARGIN;
-    static constexpr u32 SAVE_ITEM_HEIGHT = 48;
-    static constexpr u32 SAVE_LIST_MAX_VISIBLE_ITEMS = 5;
-    static constexpr u32 SAVE_LIST_HEIGHT = SAVE_ITEM_HEIGHT * SAVE_LIST_MAX_VISIBLE_ITEMS;
     static constexpr u32 SAVE_LIST_BOTTOM_MARGIN = 96;  // Space between save list and bottom
-    static constexpr u32 SAVE_LIST_TOTAL_VERTICAL_SPACE = SAVE_LIST_TOP_MARGIN + SAVE_LIST_HEIGHT +
+    static constexpr u32 SAVE_LIST_TOTAL_VERTICAL_SPACE = SAVE_LIST_TOP_MARGIN + pksm::ui::SaveList::GetMaxHeight() +
         SAVE_LIST_BOTTOM_MARGIN;
 
     // Buttons
@@ -54,11 +50,15 @@ private:
     static constexpr u32 BUTTON_HEIGHT = 111;
     static constexpr u32 BUTTON_SPACING = 20;
 
+    // Colors
+    static constexpr pu::ui::Color SAVE_LIST_BACKGROUND_COLOR = pu::ui::Color(0, 0, 0, 200);
+    static constexpr pu::ui::Color SAVE_LIST_SELECTION_COLOR = pu::ui::Color(0, 150, 255, 255);
+
     // Input handling
-    pksm::input::DirectionalInputHandler buttonHandler;
-    pksm::input::DirectionalInputHandler saveListHandler;
-    pksm::input::DirectionalInputHandler gameListHandler;
-    pksm::input::DirectionalInputHandler userIconButtonHandler;
+    pksm::input::DirectionalInputHandler buttonDirectionalHandler;
+    pksm::input::DirectionalInputHandler saveListDirectionalHandler;
+    pksm::input::DirectionalInputHandler gameListDirectionalHandler;
+    pksm::input::DirectionalInputHandler userIconButtonDirectionalHandler;
 
     // Focus management
     pksm::input::FocusManager::Ref titleLoadFocusManager;

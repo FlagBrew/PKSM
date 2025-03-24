@@ -9,6 +9,7 @@
 #include "gui/shared/components/HelpFooter.hpp"
 #include "gui/shared/components/HelpOverlay.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
+#include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
@@ -44,6 +45,7 @@ private:
 
     // Input handlers
     pksm::input::DirectionalInputHandler boxGridHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
 
     void OnInput(u64 down, u64 up, u64 held);
     void InitializeBoxGrid();

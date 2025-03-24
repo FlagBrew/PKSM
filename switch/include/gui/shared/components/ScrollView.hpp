@@ -11,8 +11,8 @@ public:
 
     // Core Element overrides
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // IFocusable implementation
     void SetFocused(bool focused) override;
@@ -64,6 +64,7 @@ private:
     // Touch handling state
     bool isDragging;
     bool touchStartedOnChild;
+    int lastTouchedChildIndex;
     pu::i32 touchStartY;
     pu::i32 lastTouchY;
     pu::i32 scrollStartOffset;
@@ -75,7 +76,7 @@ private:
     u64 lastProgrammaticScrollTime;
 
     // Constants (preserved from GameGrid)
-    static constexpr pu::i32 DRAG_THRESHOLD = 5;
+    static constexpr pu::i32 DRAG_THRESHOLD = 15;
     static constexpr float SCROLL_FRICTION = 0.95f;
     static constexpr float MIN_SCROLL_VELOCITY = 0.1f;
     static constexpr u64 SCROLL_DEBOUNCE_TIME = 160;  // About 10 frames at 60fps

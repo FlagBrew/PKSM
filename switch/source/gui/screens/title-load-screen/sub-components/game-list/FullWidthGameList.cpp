@@ -19,12 +19,14 @@ FullWidthGameList::FullWidthGameList(
 )
   : IGameList(),
     focused(false),
-    onSelectionChangedCallback(nullptr),
     x(x),
     y(y),
     width(width),
     height(height),
-    config(config) {
+    config(config),
+    onSelectionChangedCallback(nullptr),
+    onTouchSelectCallback(nullptr),
+    onSelectCallback(nullptr) {
     LOG_DEBUG("Initializing FullWidthGameList component...");
 
     // Initialize selection managers
@@ -41,7 +43,7 @@ FullWidthGameList::FullWidthGameList(
 
     // Create section header
     titleText = pu::ui::elm::TextBlock::New(0, y + config.paddingTop, titleStr);
-    titleText->SetColor(pu::ui::Color(255, 255, 255, 255));
+    titleText->SetColor(global::TEXT_WHITE);
     titleText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
     container->Add(titleText);
 
@@ -73,13 +75,13 @@ FullWidthGameList::FullWidthGameList(
     // Set up grid callbacks
     gameGrid->SetOnSelectionChanged([this]() { HandleOnSelectionChanged(); });
     gameGrid->SetOnTouchSelect([this]() {
-        if (!focused) {
-            focused = true;
-            gameGrid->RequestFocus();
-            HandleOnSelectionChanged();
-            if (onTouchSelectCallback) {
-                onTouchSelectCallback();
-            }
+        if (onTouchSelectCallback) {
+            onTouchSelectCallback();
+        }
+    });
+    gameGrid->SetOnSelect([this]() {
+        if (onSelectCallback) {
+            onSelectCallback();
         }
     });
 
@@ -117,15 +119,7 @@ void FullWidthGameList::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    // Handle directional input only when focused
-    if (focused) {
-        gameGrid->OnInput(keys_down, keys_up, keys_held, touch_pos);
-    }
-
-    // Always handle touch input regardless of focus state
-    if (!touch_pos.IsEmpty()) {
-        gameGrid->OnInput(keys_down, keys_up, keys_held, touch_pos);
-    }
+    gameGrid->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
 
 void FullWidthGameList::SetFocused(bool focused) {
@@ -163,14 +157,6 @@ void FullWidthGameList::SetDataSource(const std::vector<titles::Title::Ref>& tit
 
 pksm::titles::Title::Ref FullWidthGameList::GetSelectedTitle() const {
     return gameGrid->GetSelectedTitle();
-}
-
-void FullWidthGameList::SetOnSelectionChanged(std::function<void()> callback) {
-    onSelectionChangedCallback = callback;
-}
-
-void FullWidthGameList::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
 }
 
 void FullWidthGameList::HandleOnSelectionChanged() {

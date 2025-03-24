@@ -47,8 +47,9 @@ private:
     static constexpr u32 TRIGGER_BUTTON_HEIGHT = 100;  // Height of L/R trigger buttons
     static constexpr u32 TRIGGER_HORIZONTAL_OFFSET = 16;  // Offset from component edges
     static constexpr u32 TRIGGER_VERTICAL_OFFSET = 28;  // Offset from component edges
-    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR = pu::ui::Color(135, 135, 135, 255);
-    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
+
+    // Game list colors
+    static constexpr pu::ui::Color GAME_LIST_BACKGROUND_COLOR = pu::ui::Color(40, 51, 135, 255);
 
     // State
     bool focused = false;
@@ -56,6 +57,7 @@ private:
     pu::ui::Color backgroundColor;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
+    std::function<void()> onSelectCallback;
     std::function<void()> onGameListChangedCallback;
     std::function<void()> onShouldUpdateHelpTextCallback;
 
@@ -79,7 +81,7 @@ private:
 
     // Core components
     pu::ui::Container::Ref container;
-    pksm::input::DirectionalInputHandler inputHandler;
+    pksm::input::DirectionalInputHandler directionalInputHandler;
 
     // UI Elements
     ui::TriggerButton::Ref leftTrigger;
@@ -96,8 +98,6 @@ private:
     void SetupGameListCallbacks(IGameList::Ref gameList);
     void UpdateGameListData();
     void CreateTriggerButtons();
-    void OnTriggerButtonPressed(ui::TriggerButton::Side side);
-    void OnTriggerButtonReleased(ui::TriggerButton::Side side);
     void UpdateConsoleGameListData();  // New helper method
 
 public:
@@ -118,11 +118,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
-
-    // Handle non-directional button presses
-    bool HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held);
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // IFocusable implementation
     void SetFocused(bool focused) override;
@@ -133,10 +130,11 @@ public:
     void SetBackgroundColor(const pu::ui::Color& color);
     titles::Title::Ref GetSelectedTitle() const;
     bool IsGameListDependentOnUser() const;
-    void SetOnSelectionChanged(std::function<void()> callback);
-    void SetOnTouchSelect(std::function<void()> callback);
-    void SetOnGameListChanged(std::function<void()> callback);
-    void SetOnShouldUpdateHelpText(std::function<void()> callback);
+    void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
+    void SetOnGameListChanged(std::function<void()> callback) { onGameListChangedCallback = callback; }
+    void SetOnShouldUpdateHelpText(std::function<void()> callback) { onShouldUpdateHelpTextCallback = callback; }
     void SetDisabled(bool disabled);
 
     // Focus management

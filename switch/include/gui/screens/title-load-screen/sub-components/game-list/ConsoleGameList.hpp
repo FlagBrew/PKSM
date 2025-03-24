@@ -35,8 +35,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // IFocusable interface
     void SetFocused(bool focused) override;
@@ -46,8 +46,10 @@ public:
     // IGameList interface
     void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
     titles::Title::Ref GetSelectedTitle() const override;
-    void SetOnSelectionChanged(std::function<void()> callback) override;
-    void SetOnTouchSelect(std::function<void()> callback) override;
+    void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
+
     bool ShouldResignUpFocus() const override {
         return selectionState == SelectionState::GameCard || installedGames->InOnTopRow();
     }
@@ -94,7 +96,7 @@ private:
 
     // Core components
     pu::ui::Container::Ref container;
-    pksm::input::DirectionalInputHandler inputHandler;
+    pksm::input::DirectionalInputHandler directionalInputHandler;
 
     // UI Elements
     pu::ui::elm::TextBlock::Ref cartridgeText;
@@ -108,7 +110,7 @@ private:
 
     // Callbacks
     std::function<void()> onTouchSelectCallback;
-
+    std::function<void()> onSelectCallback;
     // Console-specific layout constants
     static constexpr pu::i32 GAME_CARD_SIZE = 350;
     static constexpr pu::i32 SECTION_DIVIDER_WIDTH = 20;

@@ -79,14 +79,16 @@ void MenuButtonGrid::InitializeButtons() {
 
         // Store the button type
         MenuButtonType buttonType = buttonData[i].first;
-
-        // Set up touch handling for this button
         const size_t index = i;  // Store index for lambda capture
-        button->SetOnClick([this, index, buttonType]() {
-            SetSelectedIndex(index);
 
+        // Set up touch select handling (first tap - focus request)
+        button->SetOnTouchSelect([this, index]() { SetSelectedIndex(index); });
+
+        // Set up action handling (second tap or A button - execute action)
+        button->SetOnSelect([this, buttonType]() {
             // Execute the callback if registered
             if (buttonCallbacks.count(buttonType) > 0) {
+                LOG_DEBUG("Executing callback for button: " + std::to_string(static_cast<int>(buttonType)));
                 buttonCallbacks[buttonType]();
             }
         });
@@ -102,36 +104,7 @@ void MenuButtonGrid::RegisterButtonCallback(MenuButtonType type, MenuButtonCallb
 }
 
 bool MenuButtonGrid::HandleSelectInput(const u64 keys_down) {
-    if (disabled) {
-        return false;
-    }
-
-    if (keys_down & HidNpadButton_A) {
-        if (selectedIndex < buttons.size()) {
-            // Find the corresponding button type for the selected index
-            const std::vector<MenuButtonType> buttonTypes = {
-                MenuButtonType::Storage,
-                MenuButtonType::Editor,
-                MenuButtonType::Events,
-                MenuButtonType::Bag,
-                MenuButtonType::Scripts,
-                MenuButtonType::Settings
-            };
-
-            // Ensure we have a valid index
-            if (selectedIndex < buttonTypes.size()) {
-                MenuButtonType selectedType = buttonTypes[selectedIndex];
-
-                // Execute the callback if registered
-                if (buttonCallbacks.count(selectedType) > 0) {
-                    LOG_DEBUG("Executing callback for button: " + std::to_string(static_cast<int>(selectedType)));
-                    buttonCallbacks[selectedType]();
-                    return true;
-                }
-            }
-        }
-    }
-
+    // No longer needed as buttons now handle their own input via ButtonInputHandler
     return false;
 }
 
@@ -206,11 +179,6 @@ void MenuButtonGrid::OnInput(
     const pu::ui::TouchPoint touch_pos
 ) {
     if (!disabled) {
-        // Handle A button selection
-        if (HandleSelectInput(keys_down)) {
-            return;
-        }
-
         // Handle directional input
         inputHandler.HandleInput(keys_down, keys_held);
 

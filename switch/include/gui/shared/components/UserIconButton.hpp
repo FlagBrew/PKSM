@@ -10,6 +10,8 @@
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
@@ -28,18 +30,19 @@ public:
     ~UserIconButton();
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     void SetFocused(bool focus) override;
     bool IsFocused() const override;
-
-    void SetOnClick(std::function<void()> callback);
     void UpdateAccountInfo();
 
     // Disable/enable the button (affects input handling only)
     void SetDisabled(bool disabled);
     bool IsDisabled() const;
+
+    // Set callbacks
+    void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }
 
     pu::i32 GetX() override;
     pu::i32 GetY() override;
@@ -56,9 +59,13 @@ private:
     bool disabled;
     data::AccountManager& accountManager;
     SDL_Texture* maskedIconTexture;
-    std::function<void()> onClickCallback;
     pu::ui::elm::TextBlock::Ref usernameText;
     pksm::ui::StaticOutlineBase::Ref outline;
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
+    std::function<void()> onCancelCallback;
+
+    static constexpr pu::ui::Color USER_ICON_BUTTON_OUTLINE_COLOR = pu::ui::Color(70, 70, 70, 255);
 };
 
 }  // namespace pksm::ui

@@ -85,6 +85,11 @@ void pksm::ui::GameGrid::OnInput(
 
     // Let ScrollView handle all touch input
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
+
+    // Let the selected game handle its own non-touch input (since scrollview handles touch of its children)
+    if (touch_pos.IsEmpty()) {
+        gameImages[selectedIndex]->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
 }
 
 void pksm::ui::GameGrid::SetFocused(bool focused) {
@@ -92,7 +97,9 @@ void pksm::ui::GameGrid::SetFocused(bool focused) {
     if (this->focused != focused) {
         this->focused = focused;
         this->scrollView->SetFocused(focused);
-
+        if (!focused) {
+            inputHandler.ClearState();
+        }
         // When gaining focus, ensure the selected game is focused
         if (focused && selectedIndex < gameImages.size()) {
             gameImages[selectedIndex]->RequestFocus();
@@ -142,9 +149,13 @@ void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& ti
         const size_t index = i;  // Store index for lambda capture
         gameImage->SetOnTouchSelect([this, index]() {
             SetSelectedIndex(index);
-            if (!focused && onTouchSelectCallback) {
-                this->RequestFocus();
+            if (onTouchSelectCallback) {
                 onTouchSelectCallback();
+            }
+        });
+        gameImage->SetOnSelect([this, index]() {
+            if (onSelectCallback) {
+                onSelectCallback();
             }
         });
 
@@ -187,7 +198,7 @@ size_t pksm::ui::GameGrid::GetSelectedIndex() const {
 }
 
 void pksm::ui::GameGrid::MoveLeft() {
-    if (IsFirstInRow() && shouldConsiderSideOutOfBounds[ShakeDirection::LEFT]) {
+    if (IsFirstInRow()) {
         gameImages[selectedIndex]->shakeOutOfBounds(ShakeDirection::LEFT);
     } else {
         SetSelectedIndex(selectedIndex - 1);
@@ -226,14 +237,6 @@ bool pksm::ui::GameGrid::IsSelected() const {
 
 void pksm::ui::GameGrid::SetSelected(bool selected) {
     this->selected = selected;
-}
-
-void pksm::ui::GameGrid::SetOnSelectionChanged(std::function<void()> callback) {
-    onSelectionChangedCallback = callback;
-}
-
-void pksm::ui::GameGrid::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
 }
 
 void pksm::ui::GameGrid::HandleOnSelectionChanged() {

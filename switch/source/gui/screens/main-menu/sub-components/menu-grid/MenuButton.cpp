@@ -14,21 +14,25 @@ MenuButton::MenuButton(
     const std::string& iconName
 )
   : Element(),
-    ShakeableWithOutline(PulsingOutline::New(
-        x - OUTLINE_PADDING,
-        y - OUTLINE_PADDING,
-        width + (OUTLINE_PADDING * 2),
-        height + (OUTLINE_PADDING * 2),
-        pksm::ui::global::OUTLINE_COLOR,
-        CORNER_RADIUS
-    )),
+    ShakeableWithOutline(
+        PulsingOutline::New(
+            x - OUTLINE_PADDING,
+            y - OUTLINE_PADDING,
+            width + (OUTLINE_PADDING * 2),
+            height + (OUTLINE_PADDING * 2),
+            pksm::ui::global::OUTLINE_COLOR,
+            CORNER_RADIUS
+        )
+    ),
     x(x),
     y(y),
     width(width),
     height(height),
     focused(false),
     text(text),
-    iconName(iconName) {
+    iconName(iconName),
+    touchHandler(),
+    buttonHandler() {
     LOG_DEBUG("Initializing MenuButton...");
 
     // Load icon texture
@@ -52,6 +56,32 @@ MenuButton::MenuButton(
     const pu::i32 textY = y + ICON_SIZE + TEXT_MARGIN;
     textBlock->SetX(textX);
     textBlock->SetY(textY);
+
+    // Setup touch handler callbacks
+    touchHandler.SetOnTouchUpInside([this]() {
+        LOG_DEBUG("[MenuButton] Touch Up Inside");
+        if (!focused && onTouchSelectCallback) {
+            LOG_DEBUG("[MenuButton] Requesting focus");
+            onTouchSelectCallback();
+            RequestFocus();
+        } else if (focused && onSelectCallback) {
+            LOG_DEBUG("[MenuButton] Executing select callback");
+            onSelectCallback();
+        }
+    });
+
+    // Register A button with focus check
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,  // No press visual feedback needed
+        [this]() {
+            if (onSelectCallback) {
+                LOG_DEBUG("[MenuButton] A button pressed, executing select callback");
+                onSelectCallback();
+            }
+        },
+        [this]() { return this->focused; }  // Only process when focused
+    );
 
     LOG_DEBUG("MenuButton initialization complete");
 }
@@ -96,7 +126,7 @@ void MenuButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
     }
 
     // Draw text with adjusted opacity
-    const pu::ui::Color textColor = focused ? pu::ui::Color(255, 255, 255, 255) :  // Full opacity when focused
+    const pu::ui::Color textColor = focused ? ui::global::TEXT_WHITE :  // Full opacity when focused
         TEXT_COLOR;  // Default translucent color
     textBlock->SetColor(textColor);
 
@@ -117,11 +147,11 @@ void MenuButton::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight())) {
-        if (onClickCallback) {
-            onClickCallback();
-        }
-    }
+    // Process touch inputs using the touch handler
+    touchHandler.HandleInput(touch_pos, x, y, width, height);
+
+    // Process button inputs using the button handler
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }
 
 void MenuButton::SetFocused(bool focused) {
@@ -154,10 +184,6 @@ void MenuButton::SetY(const pu::i32 y) {
     // Update text position
     const pu::i32 textY = y + ICON_SIZE + TEXT_MARGIN;
     textBlock->SetY(textY);
-}
-
-void MenuButton::SetOnClick(std::function<void()> callback) {
-    onClickCallback = callback;
 }
 
 }  // namespace pksm::ui
