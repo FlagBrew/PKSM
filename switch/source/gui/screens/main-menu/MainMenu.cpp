@@ -54,9 +54,9 @@ MainMenu::MainMenu(
 
     // Set initial help items
     std::vector<pksm::ui::HelpItem> helpItems = {
-        {{{pksm::ui::HelpButton::A}}, "Select"},
-        {{{pksm::ui::HelpButton::B}}, "Back to Game Selection"},
-        {{{pksm::ui::HelpButton::Minus}}, "Help"}
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Game Selection"},
+        {{{pksm::ui::global::ButtonGlyph::Minus}}, "Help"}
     };
     helpFooter->SetHelpItems(helpItems);
 
@@ -132,10 +132,10 @@ void MainMenu::OnInput(u64 down, u64 up, u64 held) {
 
 std::vector<pksm::ui::HelpItem> MainMenu::GetHelpOverlayItems() const {
     return {
-        {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
-        {{{pksm::ui::HelpButton::B}}, "Back to Game Selection"},
-        {{{pksm::ui::HelpButton::DPad}}, "Navigate"},
-        {{{pksm::ui::HelpButton::Minus}}, "Close Help"}
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select Highlighted"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Game Selection"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate"},
+        {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
     };
 }
 

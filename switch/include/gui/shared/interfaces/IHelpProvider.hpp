@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/shared/components/HelpFooter.hpp"
+#include "gui/shared/components/HelpItem.hpp"
 
 namespace pksm::ui {
 

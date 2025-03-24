@@ -417,19 +417,19 @@ pu::i32 pksm::layout::TitleLoadScreen::GetBottomSectionY() const {
 
 std::vector<pksm::ui::HelpItem> pksm::layout::TitleLoadScreen::GetHelpOverlayItems() const {
     std::vector<pksm::ui::HelpItem> helpItems = {
-        {{{pksm::ui::HelpButton::A}}, "Select Highlighted"},
-        {{{pksm::ui::HelpButton::B}}, "Back"}
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Select Highlighted"},
+        {{{pksm::ui::global::ButtonGlyph::B}}, "Back"}
     };
 
     if (gameList->IsGameListDependentOnUser()) {
-        helpItems.push_back({{{pksm::ui::HelpButton::ZL}}, "Change Player"});
+        helpItems.push_back({{{pksm::ui::global::ButtonGlyph::ZL}}, "Change Player"});
     }
 
     helpItems.insert(
         helpItems.end(),
-        {{{{pksm::ui::HelpButton::L, pksm::ui::HelpButton::R}}, "Change Game List"},
-         {{{pksm::ui::HelpButton::AnalogStick, pksm::ui::HelpButton::DPad}}, "Navigate"},
-         {{{pksm::ui::HelpButton::Minus}}, "Close Help"}}
+        {{{{pksm::ui::global::ButtonGlyph::L, pksm::ui::global::ButtonGlyph::R}}, "Change Game List"},
+         {{{pksm::ui::global::ButtonGlyph::AnalogStick, pksm::ui::global::ButtonGlyph::DPad}}, "Navigate"},
+         {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}}
     );
 
     return helpItems;

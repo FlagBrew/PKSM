@@ -48,7 +48,7 @@ void HelpOverlay::UpdateHelpTexts() {
             if (i > 0) {
                 buttonText += "/";
             }
-            buttonText += GetButtonGlyph(item.buttons[i]);
+            buttonText += pksm::ui::global::GetButtonGlyphString(item.buttons[i]);
         }
 
         // Create button glyph text block
@@ -75,45 +75,6 @@ void HelpOverlay::UpdateHelpTexts() {
         // Store references
         helpTexts.push_back(buttonTextBlock);
         helpTexts.push_back(actionTextBlock);
-    }
-}
-
-std::string HelpOverlay::GetButtonGlyph(HelpButton button) const {
-    switch (button) {
-        case HelpButton::A:
-            return "\uE0E0";
-        case HelpButton::B:
-            return "\uE0E1";
-        case HelpButton::X:
-            return "\uE0E2";
-        case HelpButton::Y:
-            return "\uE0E3";
-        case HelpButton::L:
-            return "\uE0E4";
-        case HelpButton::R:
-            return "\uE0E5";
-        case HelpButton::ZL:
-            return "\uE0E6";
-        case HelpButton::ZR:
-            return "\uE0E7";
-        case HelpButton::Plus:
-            return "\uE0EF";
-        case HelpButton::Minus:
-            return "\uE0F0";
-        case HelpButton::Home:
-            return "\uE0F4";
-        case HelpButton::AnalogStick:
-            return "\uE100";
-        case HelpButton::LeftAnalogStick:
-            return "\uE101";
-        case HelpButton::RightAnalogStick:
-            return "\uE102";
-        case HelpButton::DPad:
-            return "\uE110";
-        case HelpButton::TouchScreen:
-            return "\uE121";
-        default:
-            return "?";
     }
 }
 
