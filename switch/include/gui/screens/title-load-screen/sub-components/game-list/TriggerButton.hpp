@@ -6,6 +6,8 @@
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
@@ -24,7 +26,7 @@ public:
         const pu::i32 height,
         const pu::i32 cornerRadius,
         const Side side,
-        const pu::ui::Color& backgroundColor = pu::ui::Color(70, 70, 70, 255),
+        const pu::ui::Color& backgroundColor = TRIGGER_BUTTON_COLOR,
         const pu::ui::Color& textColor = pu::ui::Color(255, 255, 255, 255),
         const std::string& navigationText = "",
         const pu::ui::Color& navigationTextColor = pu::ui::Color(255, 255, 255, 255)
@@ -38,8 +40,8 @@ public:
     void SetNavigationTextColor(const pu::ui::Color& color);
 
     // Touch selection callback
-    void SetOnTouchSelect(std::function<void()> callback);
-    void SetOnTouchNavigation(std::function<void()> callback);
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 
     bool IsFocused() const override;
 
@@ -60,6 +62,9 @@ private:
     // IFocusable implementation
     void SetFocused(bool focus) override;
 
+    void OnTriggerButtonPressed();
+    void OnTriggerButtonReleased();
+
     pu::i32 x;
     pu::i32 y;
     pu::i32 width;
@@ -75,16 +80,15 @@ private:
     pu::i32 outlinePadding;
     bool focused;
     std::function<void()> onTouchSelectCallback;
-    std::function<void()> onTouchNavigationCallback;
+    std::function<void()> onSelectCallback;
     std::shared_ptr<input::FocusManager> focusManager;
-
-    // Debounce state
-    bool isPressed;
-    u64 lastTouchTime;
-    static constexpr u64 TOUCH_DEBOUNCE_TIME = 160;  // About 10 frames at 60fps
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
 
     static constexpr u32 TRIGGER_BUTTON_GLYPH_Y_OFFSET = -7;
     static constexpr u32 TRIGGER_BUTTON_OUTLINE_PADDING = 15;
     static constexpr u32 NAVIGATION_TEXT_PADDING = 16;  // Padding between button and navigation text
+    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR = pu::ui::Color(135, 135, 135, 255);
+    static constexpr pu::ui::Color TRIGGER_BUTTON_COLOR_PRESSED = pu::ui::Color(70, 70, 70, 255);
 };
 }  // namespace pksm::ui

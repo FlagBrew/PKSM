@@ -40,8 +40,8 @@ TriggerButton::TriggerButton(
     navigationText(navigationText),
     navigationTextColor(navigationTextColor),
     focused(false),
-    isPressed(false),
-    lastTouchTime(0) {
+    touchHandler(),
+    buttonHandler() {
     // Create text block for the trigger button glyph
     textBlock = pu::ui::elm::TextBlock::New(x, y + TRIGGER_BUTTON_GLYPH_Y_OFFSET, "");
     textBlock->SetColor(textColor);
@@ -57,14 +57,44 @@ TriggerButton::TriggerButton(
     switch (side) {
         case Side::Left:
             textBlock->SetText(pksm::ui::global::GetButtonGlyphString(pksm::ui::global::ButtonGlyph::TriggerLeft));
+            // Register L button callbacks - always process regardless of focus
+            buttonHandler.RegisterButton(
+                HidNpadButton_L,
+                [this]() { OnTriggerButtonPressed(); },
+                [this]() { OnTriggerButtonReleased(); }
+            );
             break;
         case Side::Right:
             textBlock->SetText(pksm::ui::global::GetButtonGlyphString(pksm::ui::global::ButtonGlyph::TriggerRight));
+            // Register R button callbacks - always process regardless of focus
+            buttonHandler.RegisterButton(
+                HidNpadButton_R,
+                [this]() { OnTriggerButtonPressed(); },
+                [this]() { OnTriggerButtonReleased(); }
+            );
             break;
     }
 
+    // Register A button - only process when focused
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        [this]() { OnTriggerButtonPressed(); },
+        [this]() { OnTriggerButtonReleased(); },
+        [this]() { return this->focused; }  // Only process when focused
+    );
+
     // Position text and create initial texture
     UpdateTextPosition();
+
+    // Setup touch handler callbacks
+    touchHandler.SetOnTouchUpInside([this]() {
+        LOG_DEBUG("TriggerButton Touch Up Inside");
+        if (!focused && onTouchSelectCallback) {
+            onTouchSelectCallback();
+        } else if (focused && onSelectCallback) {
+            onSelectCallback();
+        }
+    });
 }
 
 void TriggerButton::SetBackgroundColor(const pu::ui::Color& color) {
@@ -134,47 +164,17 @@ bool TriggerButton::IsFocused() const {
     return focused;
 }
 
-void TriggerButton::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
-}
-
-void TriggerButton::SetOnTouchNavigation(std::function<void()> callback) {
-    onTouchNavigationCallback = callback;
-}
-
 void TriggerButton::OnInput(
     const u64 keys_down,
     const u64 keys_up,
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight())) {
-        LOG_DEBUG("Trigger button touched");
+    // Handle touch using our touch handler with current bounds
+    touchHandler.HandleInput(touch_pos, x, y, width, height);
 
-        // Get current time for debouncing
-        u64 currentTime = SDL_GetTicks64();
-
-        // Only process touch if we're not in a debounce period
-        if (currentTime - lastTouchTime >= TOUCH_DEBOUNCE_TIME) {
-            lastTouchTime = currentTime;
-
-            if (!isPressed) {
-                isPressed = true;
-
-                // If not focused, trigger select callback
-                if (!focused && onTouchSelectCallback) {
-                    onTouchSelectCallback();
-                }
-                // If already focused, trigger navigation callback
-                else if (focused && onTouchNavigationCallback) {
-                    onTouchNavigationCallback();
-                }
-            }
-        }
-    } else if (isPressed) {
-        // Touch released outside button
-        isPressed = false;
-    }
+    // Process all button inputs
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }
 
 std::vector<pksm::ui::HelpItem> TriggerButton::GetHelpItems() const {
@@ -186,4 +186,16 @@ std::vector<pksm::ui::HelpItem> TriggerButton::GetHelpItems() const {
         {{pksm::ui::global::ButtonGlyph::B}, "Back"}
     };
 }
+
+void pksm::ui::TriggerButton::OnTriggerButtonPressed() {
+    this->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
+}
+
+void pksm::ui::TriggerButton::OnTriggerButtonReleased() {
+    this->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
+    if (onSelectCallback) {
+        onSelectCallback();
+    }
+}
+
 }  // namespace pksm::ui

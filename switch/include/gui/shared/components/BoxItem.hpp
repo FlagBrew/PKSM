@@ -4,7 +4,8 @@
 
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
-#include "gui/shared/components/StaticOutline.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 #include "input/visual-feedback/interfaces/ISelectable.hpp"
 
@@ -24,9 +25,16 @@ private:
     pu::i32 height;
     pu::ui::Color defaultBgColor;
     pu::ui::Color selectedBgColor;
-    std::function<void()> onTouchSelectCallback;  // Callback for touch selection
     static constexpr u32 OUTLINE_BORDER_WIDTH = 5;
     pu::ui::Color outlineColor = pu::ui::Color(70, 70, 70, 188);
+
+    // Callbacks
+    std::function<void()> onTouchSelectCallback;
+    std::function<void()> onSelectCallback;
+
+    // Input handlers
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
 
 public:
     BoxItem(
@@ -65,11 +73,12 @@ public:
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
 
-    // Touch selection callback
-    void SetOnTouchSelect(std::function<void()> callback);
-
     // Override OnInput to handle touch
     void
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
+
+    // Callback setters
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 };
 }  // namespace pksm::ui

@@ -28,10 +28,10 @@ public:
     DirectionalInputHandler();
 
     // Set movement callbacks - these will be called for both d-pad and analog stick
-    void SetOnMoveLeft(std::function<void()> callback);
-    void SetOnMoveRight(std::function<void()> callback);
-    void SetOnMoveUp(std::function<void()> callback);
-    void SetOnMoveDown(std::function<void()> callback);
+    void SetOnMoveLeft(std::function<void()> callback) { onMoveLeft = callback; }
+    void SetOnMoveRight(std::function<void()> callback) { onMoveRight = callback; }
+    void SetOnMoveUp(std::function<void()> callback) { onMoveUp = callback; }
+    void SetOnMoveDown(std::function<void()> callback) { onMoveDown = callback; }
 
     // Handle input - returns true if input was handled
     bool HandleInput(u64 down, u64 held);

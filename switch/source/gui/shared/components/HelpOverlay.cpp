@@ -6,7 +6,7 @@
 namespace pksm::ui {
 
 HelpOverlay::HelpOverlay(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::i32 height)
-  : pu::ui::Overlay(x, y, width, height, pu::ui::Color(0, 0, 0, 210)) {
+  : pu::ui::Overlay(x, y, width, height, HELP_OVERLAY_BACKGROUND_COLOR) {
     LOG_DEBUG("Initializing HelpOverlay...");
     this->SetRadius(0);
     this->SetMaxFadeAlpha(210);

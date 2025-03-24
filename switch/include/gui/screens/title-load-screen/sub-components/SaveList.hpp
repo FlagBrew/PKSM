@@ -11,20 +11,25 @@ namespace pksm::ui {
 
 class SaveList : public FocusableMenu, public IHelpProvider {
 private:
+    // Constants for SaveList configuration
+    static constexpr pu::i32 SAVE_ITEM_HEIGHT = 48;
+    static constexpr u32 SAVE_LIST_MAX_VISIBLE_ITEMS = 5;
+    static constexpr pu::ui::Color SAVE_LIST_BACKGROUND_COLOR = pu::ui::Color(0, 0, 0, 200);
+    static constexpr pu::ui::Color SAVE_LIST_SELECTION_COLOR = pu::ui::Color(0, 150, 255, 255);
+    static constexpr pu::i32 SCROLLBAR_WIDTH = 16;
+
     std::vector<saves::Save::Ref> saves;  // Store actual save objects
     std::function<void()> onSelectionChangedCallback;
 
 public:
-    SaveList(
-        const pu::i32 x,
-        const pu::i32 y,
-        const pu::i32 width,
-        const pu::ui::Color items_clr,
-        const pu::ui::Color items_focus_clr,
-        const pu::i32 items_height,
-        const u32 items_to_show
-    );
+    SaveList(const pu::i32 x, const pu::i32 y, const pu::i32 width);
     PU_SMART_CTOR(SaveList)
+
+    // Get component height
+    pu::i32 GetHeight() const;
+
+    // Get maximum height needed for the save list
+    static constexpr pu::i32 GetMaxHeight() { return SAVE_ITEM_HEIGHT * SAVE_LIST_MAX_VISIBLE_ITEMS; }
 
     // Set save data
     void SetDataSource(const std::vector<saves::Save::Ref>& saves);

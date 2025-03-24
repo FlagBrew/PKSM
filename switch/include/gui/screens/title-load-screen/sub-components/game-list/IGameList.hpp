@@ -22,8 +22,12 @@ public:
     virtual pu::i32 GetWidth() override = 0;
     virtual pu::i32 GetHeight() override = 0;
     virtual void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override = 0;
-    virtual void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override = 0;
+    virtual void OnInput(
+        const u64 keys_down,
+        const u64 keys_up,
+        const u64 keys_held,
+        const pu::ui::TouchPoint touch_pos
+    ) override = 0;
 
     // IFocusable interface
     virtual void SetFocused(bool focused) override = 0;
@@ -35,6 +39,7 @@ public:
     virtual titles::Title::Ref GetSelectedTitle() const = 0;
     virtual void SetOnSelectionChanged(std::function<void()> callback) = 0;
     virtual void SetOnTouchSelect(std::function<void()> callback) = 0;
+    virtual void SetOnSelect(std::function<void()> callback) = 0;
     virtual bool ShouldResignUpFocus() const = 0;
     virtual bool ShouldResignDownFocus() const = 0;
     virtual float GetSelectionHorizontalPosition() const = 0;

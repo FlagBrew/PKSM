@@ -15,6 +15,7 @@ pksm::ui::ScrollView::ScrollView(const pu::i32 x, const pu::i32 y, const pu::i32
     animationStartTime(0),
     isDragging(false),
     touchStartedOnChild(false),
+    lastTouchedChildIndex(-1),
     touchStartY(0),
     lastTouchY(0),
     scrollStartOffset(0),
@@ -88,6 +89,7 @@ std::vector<pu::ui::elm::Element::Ref>& pksm::ui::ScrollView::GetElements() {
 
 void pksm::ui::ScrollView::Clear() {
     container->Clear();
+    lastTouchedChildIndex = -1;
 }
 
 void pksm::ui::ScrollView::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -189,6 +191,8 @@ void pksm::ui::ScrollView::OnInput(
         pu::ui::TouchPoint adjusted_pos = touch_pos;
         adjusted_pos.y += scrollOffset;
 
+        // Loop through all children to check for hits
+        int childIndex = 0;
         for (auto& child : GetElements()) {
             if (adjusted_pos.HitsRegion(child->GetX(), child->GetY(), child->GetWidth(), child->GetHeight())) {
                 // Check if the touch point is within the visible area
@@ -197,6 +201,7 @@ void pksm::ui::ScrollView::OnInput(
                 }
 
                 hitChild = true;
+                lastTouchedChildIndex = childIndex;
 
                 if (focused) {
                     // Don't start dragging if we're in the debounce period
@@ -211,16 +216,36 @@ void pksm::ui::ScrollView::OnInput(
                             isDragging = true;
                             hasMomentum = false;
                             scrollVelocity = 0.0f;
-                        } else if (touch_pos.y == touchStartY) {  // Clean tap
+                        } else if (std::abs(touch_pos.y - touchStartY) <=
+                                   DRAG_THRESHOLD) {  // Clean tap (within threshold)
                             child->OnInput(keys_down, keys_up, keys_held, adjusted_pos);
                         }
                     }
                 } else {
                     // When not focused, just forward touches to children
                     child->OnInput(keys_down, keys_up, keys_held, adjusted_pos);
+
+                    // Also update touch tracking for unfocused state
+                    if (touchStartY == 0) {  // New touch
+                        touchStartY = touch_pos.y;
+                        lastTouchY = touch_pos.y;
+                        touchStartedOnChild = true;
+                    }
                 }
                 break;
             }
+            childIndex++;
+        }
+
+        // Forward touch events to last touched child even when touch is outside its bounds
+        // This allows TouchInputHandler to detect "touch moved outside" condition
+        if (!hitChild && touchStartedOnChild && !isDragging && lastTouchedChildIndex >= 0 &&
+            lastTouchedChildIndex < static_cast<int>(GetElements().size())) {
+            auto& child = GetElements()[lastTouchedChildIndex];
+            // Forward the touch but with adjusted y coordinate for the child's coordinate system
+            pu::ui::TouchPoint adjusted_touch = touch_pos;
+            adjusted_touch.y += scrollOffset;
+            child->OnInput(keys_down, keys_up, keys_held, adjusted_touch);
         }
 
         if (focused && !isScrollingProgrammatically) {  // Only handle scrollview area drags when
@@ -256,6 +281,15 @@ void pksm::ui::ScrollView::OnInput(
         }
     } else {
         // Touch released
+        // Forward the touch release to the last touched child if we haven't started dragging
+        if (touchStartedOnChild && !isDragging && lastTouchedChildIndex >= 0 &&
+            lastTouchedChildIndex < static_cast<int>(GetElements().size())) {
+            auto& child = GetElements()[lastTouchedChildIndex];
+            // Create empty touch point with same coordinate system as when touch started
+            pu::ui::TouchPoint empty_touch;
+            child->OnInput(keys_down, keys_up, keys_held, empty_touch);
+        }
+
         if (isDragging) {
             isDragging = false;
             // Start momentum if we have enough velocity
@@ -263,9 +297,11 @@ void pksm::ui::ScrollView::OnInput(
                 hasMomentum = true;
             }
         }
+
         // Reset touch tracking
         touchStartY = 0;
         touchStartedOnChild = false;
+        lastTouchedChildIndex = -1;
     }
 }
 
