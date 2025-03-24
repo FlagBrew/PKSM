@@ -26,7 +26,7 @@ pksm::ui::GameList::GameList(
 )
   : Element(),
     focused(false),
-    backgroundColor(pu::ui::Color(40, 51, 135, 255)),
+    backgroundColor(GAME_LIST_BACKGROUND_COLOR),
     onSelectionChangedCallback(nullptr),
     x(x),
     y(y),
@@ -122,7 +122,7 @@ pksm::ui::GameList::GameList(
     SetupGameListCallbacks(activeGameList);
 
     // Set up input handler
-    inputHandler.SetOnMoveUp([this]() {
+    directionalInputHandler.SetOnMoveUp([this]() {
         if (activeGameList->IsFocused() && activeGameList->ShouldResignUpFocus()) {
             // Use the horizontal position to determine which trigger is closer
             float position = activeGameList->GetSelectionHorizontalPosition();
@@ -134,7 +134,7 @@ pksm::ui::GameList::GameList(
         }
     });
 
-    inputHandler.SetOnMoveRight([this]() {
+    directionalInputHandler.SetOnMoveRight([this]() {
         if (leftTrigger->IsFocused()) {
             FocusRightTrigger();
         } else if (rightTrigger->IsFocused()) {
@@ -142,7 +142,7 @@ pksm::ui::GameList::GameList(
         }
     });
 
-    inputHandler.SetOnMoveLeft([this]() {
+    directionalInputHandler.SetOnMoveLeft([this]() {
         if (rightTrigger->IsFocused()) {
             FocusLeftTrigger();
         } else if (leftTrigger->IsFocused()) {
@@ -150,7 +150,7 @@ pksm::ui::GameList::GameList(
         }
     });
 
-    inputHandler.SetOnMoveDown([this]() {
+    directionalInputHandler.SetOnMoveDown([this]() {
         if (rightTrigger->IsFocused() || leftTrigger->IsFocused()) {
             FocusActiveGameList();
         }
@@ -172,8 +172,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_WIDTH,
         TRIGGER_BUTTON_HEIGHT,
         CORNER_RADIUS,
-        ui::TriggerButton::Side::Left,
-        TRIGGER_BUTTON_COLOR
+        ui::TriggerButton::Side::Left
     );
     leftTrigger->SetName("LeftTrigger Button Element");
     leftTrigger->SetNavigationText("Custom");
@@ -181,7 +180,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         LOG_DEBUG("Left trigger button touched");
         FocusLeftTrigger();
     });
-    leftTrigger->SetOnTouchNavigation([this]() {
+    leftTrigger->SetOnSelect([this]() {
         LOG_DEBUG("Left trigger button touched again");
         SwitchToNextGameList(false);
     });
@@ -193,8 +192,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         TRIGGER_BUTTON_WIDTH,
         TRIGGER_BUTTON_HEIGHT,
         CORNER_RADIUS,
-        ui::TriggerButton::Side::Right,
-        TRIGGER_BUTTON_COLOR
+        ui::TriggerButton::Side::Right
     );
     rightTrigger->SetName("RightTrigger Button Element");
     rightTrigger->SetNavigationText("Console");
@@ -202,7 +200,7 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         LOG_DEBUG("Right trigger button touched");
         FocusRightTrigger();
     });
-    rightTrigger->SetOnTouchNavigation([this]() {
+    rightTrigger->SetOnSelect([this]() {
         LOG_DEBUG("Right trigger button touched again");
         SwitchToNextGameList(true);
     });
@@ -243,26 +241,10 @@ void pksm::ui::GameList::OnInput(
     }
 
     if (focused) {
-        inputHandler.HandleInput(keys_down, keys_held);
-    }
-    // Handle trigger button states
-    if (keys_down & HidNpadButton_L) {
-        OnTriggerButtonPressed(ui::TriggerButton::Side::Left);
+        directionalInputHandler.HandleInput(keys_down, keys_held);
     }
 
-    if (keys_up & HidNpadButton_L) {
-        OnTriggerButtonReleased(ui::TriggerButton::Side::Left);
-    }
-
-    if (keys_down & HidNpadButton_R) {
-        OnTriggerButtonPressed(ui::TriggerButton::Side::Right);
-    }
-
-    if (keys_up & HidNpadButton_R) {
-        OnTriggerButtonReleased(ui::TriggerButton::Side::Right);
-    }
-
-    // Forward input to console game list
+    // Forward input to children
     activeGameList->OnInput(keys_down, keys_up, keys_held, touch_pos);
     leftTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
     rightTrigger->OnInput(keys_down, keys_up, keys_held, touch_pos);
@@ -273,7 +255,7 @@ void pksm::ui::GameList::SetFocused(bool focused) {
         LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
         if (!focused) {
-            inputHandler.ClearState();
+            directionalInputHandler.ClearState();
         }
         // Only request focus if the triggers are not focused
         if (focused && (!leftTrigger->IsFocused() && !rightTrigger->IsFocused())) {
@@ -291,22 +273,6 @@ void pksm::ui::GameList::SetBackgroundColor(const pu::ui::Color& color) {
     if (background) {
         background->SetBackgroundColor(color);
     }
-}
-
-pksm::titles::Title::Ref pksm::ui::GameList::GetSelectedTitle() const {
-    return activeGameList->GetSelectedTitle();
-}
-
-void pksm::ui::GameList::SetOnSelectionChanged(std::function<void()> callback) {
-    onSelectionChangedCallback = callback;
-}
-
-void pksm::ui::GameList::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
-}
-
-void pksm::ui::GameList::SetOnGameListChanged(std::function<void()> callback) {
-    onGameListChangedCallback = callback;
 }
 
 bool pksm::ui::GameList::ShouldResignDownFocus() const {
@@ -331,34 +297,6 @@ void pksm::ui::GameList::SetFocusManager(std::shared_ptr<input::FocusManager> ma
 
     manager->RegisterFocusable(leftTrigger);
     manager->RegisterFocusable(rightTrigger);
-}
-
-void pksm::ui::GameList::OnTriggerButtonPressed(ui::TriggerButton::Side side) {
-    switch (side) {
-        case ui::TriggerButton::Side::Left:
-            leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
-            LOG_DEBUG("Left trigger button pressed");
-            break;
-        case ui::TriggerButton::Side::Right:
-            rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR_PRESSED);
-            LOG_DEBUG("Right trigger button pressed");
-            break;
-    }
-}
-
-void pksm::ui::GameList::OnTriggerButtonReleased(ui::TriggerButton::Side side) {
-    switch (side) {
-        case ui::TriggerButton::Side::Left:
-            leftTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
-            LOG_DEBUG("Left trigger button released");
-            SwitchToNextGameList(false);  // Move backwards
-            break;
-        case ui::TriggerButton::Side::Right:
-            rightTrigger->SetBackgroundColor(TRIGGER_BUTTON_COLOR);
-            LOG_DEBUG("Right trigger button released");
-            SwitchToNextGameList(true);  // Move forwards
-            break;
-    }
 }
 
 void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
@@ -407,6 +345,12 @@ void pksm::ui::GameList::SetupGameListCallbacks(IGameList::Ref gameList) {
     gameList->SetOnTouchSelect([this]() {
         if (onTouchSelectCallback) {
             onTouchSelectCallback();
+        }
+    });
+
+    gameList->SetOnSelect([this]() {
+        if (onSelectCallback) {
+            onSelectCallback();
         }
     });
 }
@@ -471,41 +415,6 @@ void pksm::ui::GameList::OnAccountChanged(const AccountUid& newUserId) {
     FocusActiveGameList();
 }
 
-bool pksm::ui::GameList::HandleNonDirectionalInput(const u64 keys_down, const u64 keys_up, const u64 keys_held) {
-    if (leftTrigger->IsFocused()) {
-        if (keys_down & HidNpadButton_A) {
-            LOG_DEBUG("`A` button pressed on left trigger");
-            OnTriggerButtonPressed(ui::TriggerButton::Side::Left);
-            return true;
-        }
-        if (keys_up & HidNpadButton_A) {
-            LOG_DEBUG("`A` button released on left trigger");
-            OnTriggerButtonReleased(ui::TriggerButton::Side::Left);
-            return true;
-        }
-    }
-    if (rightTrigger->IsFocused()) {
-        if (keys_down & HidNpadButton_A) {
-            LOG_DEBUG("`A` button pressed on right trigger");
-            OnTriggerButtonPressed(ui::TriggerButton::Side::Right);
-            return true;
-        }
-        if (keys_up & HidNpadButton_A) {
-            LOG_DEBUG("`A` button released on right trigger");
-            OnTriggerButtonReleased(ui::TriggerButton::Side::Right);
-            return true;
-        }
-    }
-    if (keys_down & HidNpadButton_B) {
-        if (leftTrigger->IsFocused() || rightTrigger->IsFocused()) {
-            FocusActiveGameList();
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void pksm::ui::GameList::FocusLeftTrigger() {
     leftTrigger->RequestFocus();
     if (onShouldUpdateHelpTextCallback) {
@@ -531,8 +440,8 @@ bool pksm::ui::GameList::IsGameListDependentOnUser() const {
     return activeGameListType == GameListType::Console;
 }
 
-void pksm::ui::GameList::SetOnShouldUpdateHelpText(std::function<void()> callback) {
-    onShouldUpdateHelpTextCallback = callback;
+pksm::titles::Title::Ref pksm::ui::GameList::GetSelectedTitle() const {
+    return activeGameList->GetSelectedTitle();
 }
 
 std::vector<pksm::ui::HelpItem> pksm::ui::GameList::GetHelpItems() const {

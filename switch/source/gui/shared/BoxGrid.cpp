@@ -34,6 +34,12 @@ pksm::ui::BoxGrid::BoxGrid(
     inputHandler.SetOnMoveUp([this]() { MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { MoveDown(); });
 
+    // Set up button handler for L/R buttons
+    buttonHandler
+        .RegisterButton(HidNpadButton_L, nullptr, [this]() { PreviousBox(); }, [this]() { return this->focused; });
+
+    buttonHandler.RegisterButton(HidNpadButton_R, nullptr, [this]() { NextBox(); }, [this]() { return this->focused; });
+
     // Initialize focus manager
     focusManager = input::FocusManager::New("BoxGrid");
     selectionManager = input::SelectionManager::New("BoxGrid");
@@ -95,6 +101,9 @@ void pksm::ui::BoxGrid::OnInput(
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
+
+        // Handle button input (L/R)
+        buttonHandler.HandleInput(keys_down, keys_up, keys_held);
     }
 
     // Pass input to all items
@@ -104,15 +113,7 @@ void pksm::ui::BoxGrid::OnInput(
 }
 
 bool pksm::ui::BoxGrid::HandleSelectInput(const u64 keys_down) {
-    // Check for A button press
-    if (keys_down & HidNpadButton_A) {
-        // Perform selection action if needed
-        if (onSelectionChangedCallback) {
-            onSelectionChangedCallback(currentBox, selectedIndex);
-        }
-        return true;
-    }
-    return false;
+    return false;  // No longer needed as button handling is done directly by BoxItem
 }
 
 // Box Data Methods
@@ -242,6 +243,13 @@ void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
             }
         });
 
+        // Set up selection callback
+        boxItem->SetOnSelect([this, index]() {
+            if (onSelectionChangedCallback) {
+                onSelectionChangedCallback(currentBox, static_cast<int>(index));
+            }
+        });
+
         // Register with focus and selection managers
         focusManager->RegisterFocusable(boxItem);
         selectionManager->RegisterSelectable(boxItem);
@@ -357,5 +365,19 @@ void pksm::ui::BoxGrid::EstablishOwningRelationship() {
         selectionManager->SetOwningSelectable(std::static_pointer_cast<ISelectable>(shared_from_this()));
         // Register self with parent selection manager
         parentSelectionManager->RegisterSelectable(std::static_pointer_cast<ISelectable>(shared_from_this()));
+    }
+}
+
+// Add new box navigation methods
+void pksm::ui::BoxGrid::NextBox() {
+    int nextBox = currentBox + 1;
+    if (static_cast<size_t>(nextBox) < boxes.size()) {
+        SetCurrentBox(nextBox);
+    }
+}
+
+void pksm::ui::BoxGrid::PreviousBox() {
+    if (currentBox > 0) {
+        SetCurrentBox(currentBox - 1);
     }
 }

@@ -30,7 +30,7 @@ private:
     std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
-
+    std::function<void()> onSelectCallback;
     // Position tracking
     pu::i32 x;  // Component's x position
     pu::i32 y;  // Component's y position
@@ -72,8 +72,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // Public interface
     void SetFocused(bool focused) override;
@@ -84,8 +84,9 @@ public:
     titles::Title::Ref GetSelectedTitle() const;
     size_t GetSelectedIndex() const;
     void SetSelectedIndex(size_t index);
-    void SetOnSelectionChanged(std::function<void()> callback);
-    void SetOnTouchSelect(std::function<void()> callback);
+    void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 
     // Movement methods
     void MoveUp();

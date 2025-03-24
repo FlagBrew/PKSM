@@ -4,6 +4,8 @@
 
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 #include "utils/SDLHelper.hpp"
 
@@ -37,7 +39,12 @@ private:
     // UI Elements
     pu::sdl2::TextureHandle::Ref icon;
     pu::ui::elm::TextBlock::Ref textBlock;
-    std::function<void()> onClickCallback;
+
+    // Input handlers and callbacks
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
+    std::function<void()> onTouchSelectCallback;
+    std::function<void()> onSelectCallback;
 
 public:
     MenuButton(
@@ -56,8 +63,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // Position setters
     void SetX(const pu::i32 x);
@@ -67,8 +74,9 @@ public:
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
 
-    // Button functionality
-    void SetOnClick(std::function<void()> callback);
+    // Button callbacks
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 };
 
 }  // namespace pksm::ui

@@ -21,6 +21,30 @@ pksm::ui::FocusableMenu::FocusableMenu(
     // Set up input handler
     inputHandler.SetOnMoveUp([this]() { MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { MoveDown(); });
+
+    // Register A button (selection)
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,
+        [this]() {
+            if (onSelectCallback) {
+                onSelectCallback();
+            }
+        },
+        [this]() { return this->focused; }
+    );
+
+    // Register B button (cancel)
+    buttonHandler.RegisterButton(
+        HidNpadButton_B,
+        nullptr,
+        [this]() {
+            if (onCancelCallback) {
+                onCancelCallback();
+            }
+        },
+        [this]() { return this->focused; }
+    );
 }
 
 void pksm::ui::FocusableMenu::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -59,16 +83,16 @@ void pksm::ui::FocusableMenu::OnInput(
             onTouchSelectCallback();
         }
     } else if (focused) {
-        if (inputHandler.HandleInput(keys_down, keys_held)) {
-            return;  // Input was handled by directional handler
-        }
-
+        inputHandler.HandleInput(keys_down, keys_held);
         Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
+
+        // Handle button inputs
+        buttonHandler.HandleInput(keys_down, keys_up, keys_held);
     }
 }
 
 void pksm::ui::FocusableMenu::MoveUp() {
-    if (this->GetSelectedIndex() > 0) {
+    if (!ShouldResignUpFocus()) {
         this->SetSelectedIndex(this->GetSelectedIndex() - 1);
     }
 }
@@ -77,8 +101,7 @@ void pksm::ui::FocusableMenu::MoveDown() {
     if (!this->GetItems().empty()) {
         size_t nextIndex = this->GetSelectedIndex() + 1;
         if (nextIndex >= this->GetItems().size()) {
-            // Wrap around to top
-            nextIndex = 0;
+            nextIndex = 0;  // Wrap around to top
         }
         this->SetSelectedIndex(nextIndex);
     }
@@ -133,7 +156,7 @@ void pksm::ui::FocusableMenu::SetDataSource(const std::vector<std::string>& item
         this->ClearItems();
         for (const auto& item : currentDataSource) {
             auto menuItem = pu::ui::elm::MenuItem::New(item);
-            menuItem->SetColor(pu::ui::Color(255, 255, 255, 255));
+            menuItem->SetColor(global::TEXT_WHITE);
             this->AddItem(menuItem);
         }
 
@@ -144,10 +167,6 @@ void pksm::ui::FocusableMenu::SetDataSource(const std::vector<std::string>& item
 
 const std::vector<std::string>& pksm::ui::FocusableMenu::GetDataSource() const {
     return currentDataSource;
-}
-
-void pksm::ui::FocusableMenu::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
 }
 
 std::string pksm::ui::FocusableMenu::GetSelectedItemText() const {

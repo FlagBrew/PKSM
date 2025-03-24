@@ -37,8 +37,8 @@ public:
     pu::i32 GetHeight() override;
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
@@ -46,8 +46,9 @@ public:
 
     void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
     titles::Title::Ref GetSelectedTitle() const override;
-    void SetOnSelectionChanged(std::function<void()> callback) override;
-    void SetOnTouchSelect(std::function<void()> callback) override;
+    void SetOnSelectionChanged(std::function<void()> callback) override { onSelectionChangedCallback = callback; }
+    void SetOnTouchSelect(std::function<void()> callback) override { onTouchSelectCallback = callback; }
+    void SetOnSelect(std::function<void()> callback) override { onSelectCallback = callback; }
 
     bool ShouldResignUpFocus() const override { return gameGrid->InOnTopRow(); }
     bool ShouldResignDownFocus() const override { return gameGrid->IsOnBottomRow(); }
@@ -67,7 +68,6 @@ protected:
 
     // State
     bool focused = false;
-    std::function<void()> onSelectionChangedCallback;
 
     // Position tracking
     pu::i32 x;
@@ -90,7 +90,9 @@ protected:
     std::vector<titles::Title::Ref> titles;
 
     // Callbacks
+    std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
+    std::function<void()> onSelectCallback;
 
     // Focus management
     input::FocusManager::Ref gameGridManager;

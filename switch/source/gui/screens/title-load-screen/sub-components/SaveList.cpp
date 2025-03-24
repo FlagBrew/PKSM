@@ -4,17 +4,25 @@
 
 namespace pksm::ui {
 
-SaveList::SaveList(
-    const pu::i32 x,
-    const pu::i32 y,
-    const pu::i32 width,
-    const pu::ui::Color items_clr,
-    const pu::ui::Color items_focus_clr,
-    const pu::i32 items_height,
-    const u32 items_to_show
-)
-  : FocusableMenu(x, y, width, items_clr, items_focus_clr, items_height, items_to_show) {
+SaveList::SaveList(const pu::i32 x, const pu::i32 y, const pu::i32 width)
+  : FocusableMenu(
+        x,
+        y,
+        width,
+        SAVE_LIST_BACKGROUND_COLOR,
+        SAVE_LIST_SELECTION_COLOR,
+        SAVE_ITEM_HEIGHT,
+        SAVE_LIST_MAX_VISIBLE_ITEMS
+    ) {
     LOG_DEBUG("Initializing SaveList");
+
+    // Configure scrollbar
+    SetScrollbarColor(SAVE_LIST_SELECTION_COLOR);
+    SetScrollbarWidth(SCROLLBAR_WIDTH);
+}
+
+pu::i32 SaveList::GetHeight() const {
+    return GetMaxHeight();
 }
 
 void SaveList::SetDataSource(const std::vector<saves::Save::Ref>& saves) {

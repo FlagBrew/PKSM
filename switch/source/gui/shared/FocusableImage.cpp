@@ -13,10 +13,35 @@ pksm::ui::FocusableImage::FocusableImage(
     ShakeableWithOutline(pksm::ui::PulsingOutline::New(x - outlinePadding, y - outlinePadding, 0, 0)),
     focused(false),
     selected(false),
-    outlinePadding(outlinePadding) {
+    outlinePadding(outlinePadding),
+    touchHandler(),
+    buttonHandler() {
     // Create an overlay rectangle with the same dimensions
     overlay = pu::ui::elm::Rectangle::New(x, y, 0, 0, pu::ui::Color(0, 0, 0, unfocusedAlpha));
-    // Outline is already created in the ShakeableWithOutline constructor
+
+    // Setup touch handler callbacks
+    touchHandler.SetOnTouchUpInside([this]() {
+        LOG_DEBUG("[FocusableImage] Touch Up Inside");
+        if (!focused && onTouchSelectCallback) {
+            LOG_DEBUG("[FocusableImage] Requesting focus");
+            onTouchSelectCallback();
+            RequestFocus();
+        } else if (focused && onSelectCallback) {
+            onSelectCallback();
+        }
+    });
+
+    // Register A button with focus check via condition
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,  // No press visual feedback needed
+        [this]() {
+            if (onSelectCallback) {
+                onSelectCallback();
+            }
+        },
+        [this]() { return this->focused; }  // Only process when focused
+    );
 }
 
 void pksm::ui::FocusableImage::SetWidth(const pu::i32 width) {
@@ -45,7 +70,6 @@ void pksm::ui::FocusableImage::SetY(const pu::i32 y) {
 
 void pksm::ui::FocusableImage::SetOutlinePadding(const pu::i32 padding) {
     outlinePadding = padding;
-    // Update outline position and size
     pulsingOutline->SetX(GetX() - padding);
     pulsingOutline->SetY(GetY() - padding);
     pulsingOutline->SetWidth(GetWidth() + (padding * 2));
@@ -96,10 +120,6 @@ void pksm::ui::FocusableImage::OnRender(pu::ui::render::Renderer::Ref& drawer, c
     }
 }
 
-void pksm::ui::FocusableImage::SetOnTouchSelect(std::function<void()> callback) {
-    onTouchSelectCallback = callback;
-}
-
 void pksm::ui::FocusableImage::OnInput(
     const u64 keys_down,
     const u64 keys_up,
@@ -109,10 +129,9 @@ void pksm::ui::FocusableImage::OnInput(
     // Let the base image handle its normal touch behavior first
     Image::OnInput(keys_down, keys_up, keys_held, touch_pos);
 
-    // If the image was touched and we're not focused, notify about touch selection
-    if (!touch_pos.IsEmpty() && touch_pos.HitsRegion(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight()) &&
-        !focused && onTouchSelectCallback) {
-        LOG_DEBUG("FocusableImage Tapped");
-        onTouchSelectCallback();
-    }
+    // Pass current bounds and touch point to the handler
+    touchHandler.HandleInput(touch_pos, GetX(), GetY(), GetWidth(), GetHeight());
+
+    // Process button inputs
+    buttonHandler.HandleInput(keys_down, keys_up, keys_held);
 }

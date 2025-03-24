@@ -12,6 +12,7 @@
 #include "gui/shared/components/HelpFooter.hpp"
 #include "gui/shared/components/HelpOverlay.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
+#include "input/ButtonInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 
 namespace pksm::layout {
@@ -36,6 +37,7 @@ private:
     pksm::ui::MenuButtonGrid::Ref menuGrid;
     ISaveDataAccessor::Ref saveDataAccessor;
     std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks;
+    pksm::input::ButtonInputHandler buttonHandler;
 
     // Layout constants
     static constexpr pu::i32 TRAINER_INFO_SIDE_MARGIN = 40;  // Margin from screen edges

@@ -2,9 +2,12 @@
 
 #include <pu/Plutonium>
 
+#include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
+#include "input/ButtonInputHandler.hpp"
+#include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
 
 namespace pksm::ui {
@@ -19,9 +22,9 @@ private:
     pksm::ui::PulsingOutline::Ref outline;
     std::function<void()> onClickCallback;
     std::function<void()> onTouchSelectCallback;
+    std::function<void()> onCancelCallback;
     std::string helpText;  // Text to show for A button in help
     bool disabled;  // Whether the button is disabled
-
     // UI Elements
     pu::ui::elm::Rectangle::Ref background;
     pu::ui::elm::TextBlock::Ref text;
@@ -32,8 +35,9 @@ private:
     pu::i32 width;
     pu::i32 height;
 
-    // Touch state
-    bool isPressed;
+    // Input handlers
+    pksm::input::TouchInputHandler touchHandler;
+    pksm::input::ButtonInputHandler buttonHandler;
 
 public:
     FocusableButton(
@@ -53,8 +57,8 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
-    void OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos)
-        override;
+    void
+    OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // IFocusable implementation
     void SetFocused(bool focus) override;
@@ -66,8 +70,9 @@ public:
     void SetContentFont(const std::string& font);
     void SetContentColor(const pu::ui::Color& color);
     void SetBackgroundColor(const pu::ui::Color& color);
-    void SetOnClick(std::function<void()> callback);
-    void SetOnTouchSelect(std::function<void()> callback);
+    void SetOnClick(std::function<void()> callback) { onClickCallback = callback; }
+    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
+    void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }
 
     // Disable/enable the button
     void SetDisabled(bool disabled);

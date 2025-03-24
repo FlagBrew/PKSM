@@ -28,6 +28,14 @@ StorageScreen::StorageScreen(
     // Initialize help footer
     InitializeHelpFooter();
 
+    // Set up button input handler for Back button
+    buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() {
+        LOG_DEBUG("B button pressed, returning to main menu");
+        if (this->onBack) {
+            this->onBack();
+        }
+    });
+
     // Set initial help items
     std::vector<pksm::ui::HelpItem> helpItems = {
         {{{pksm::ui::global::ButtonGlyph::A}}, "Select"},
@@ -89,7 +97,7 @@ void StorageScreen::InitializeBoxGrid() {
     );
 
     // Set up BoxGrid
-    boxGrid->SetName("BoxGrid Element");
+    boxGrid->IFocusable::SetName("BoxGrid Element");  // Specify which SetName we're calling
 
     // First add the grid to the layout
     this->Add(boxGrid);
@@ -234,34 +242,8 @@ void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
         return;  // Input was handled by help system
     }
 
-    // Only process other input if not in help overlay
-    if (down & HidNpadButton_B) {
-        LOG_DEBUG("B button pressed, returning to main menu");
-        if (onBack) {
-            onBack();
-        }
-    } else if (down & HidNpadButton_A) {
-        // Handle A button for BoxGrid selection
-        boxGrid->HandleSelectInput(down);
-    } else if (down & HidNpadButton_R) {
-        // Next box
-        int currentBox = boxGrid->GetCurrentBox();
-        if (currentBox < 0) {
-            boxGrid->SetCurrentBox(0);
-        } else {
-            boxGrid->SetCurrentBox(currentBox + 1);
-        }
-    } else if (down & HidNpadButton_L) {
-        // Previous box
-        int currentBox = boxGrid->GetCurrentBox();
-        if (currentBox > 0) {
-            boxGrid->SetCurrentBox(currentBox - 1);
-        }
-    } else {
-        // Pass through input to BoxGrid
-        pu::ui::TouchPoint touch;
-        boxGrid->OnInput(down, up, held, touch);
-    }
+    // Process button inputs
+    buttonHandler.HandleInput(down, up, held);
 }
 
 std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {

@@ -9,6 +9,7 @@
 #include "gui/shared/components/BoxPokemonData.hpp"
 #include "gui/shared/components/IShakeable.hpp"
 #include "gui/shared/components/SpriteImage.hpp"
+#include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
@@ -47,6 +48,7 @@ private:
     input::FocusManager::Ref focusManager;
     input::SelectionManager::Ref selectionManager;
     pksm::input::DirectionalInputHandler inputHandler;
+    input::ButtonInputHandler buttonHandler;
 
     // Event callbacks
     std::function<void(int, int)> onSelectionChangedCallback;
@@ -57,6 +59,8 @@ private:
     void MoveRight();
     void MoveUp();
     void MoveDown();
+    void NextBox();
+    void PreviousBox();
 
     // Grid state queries
     bool IsFirstInRow(size_t index) const { return index % itemsPerRow == 0; }
