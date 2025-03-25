@@ -12,27 +12,22 @@ pksm::ui::BoxGrid::BoxGrid(
     const pu::i32 numberOfRows,
     const pu::i32 itemsPerRow
 )
-  : Element(),
-    ISelectable(),
+  : ISelectable(),
+    IGrid(itemsPerRow, {}),
     x(x),
     y(y),
     itemSize(itemSize),
     numberOfRows(numberOfRows),
-    itemsPerRow(itemsPerRow),
     focused(false),
     selected(false) {
-    // Calculate the height based on the fixed number of rows
-    width = (itemSize * itemsPerRow) + (GRID_SPACING * (itemsPerRow - 1));
-    height = (itemSize * numberOfRows) + (GRID_SPACING * (numberOfRows - 1));
-
-    // Initialize container
-    container = pu::ui::Container::New(x, y, width, height);
+    // Initialize container with calculated width/height
+    container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
     // Set up input handler
-    inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
-    inputHandler.SetOnMoveRight([this]() { MoveRight(); });
-    inputHandler.SetOnMoveUp([this]() { MoveUp(); });
-    inputHandler.SetOnMoveDown([this]() { MoveDown(); });
+    inputHandler.SetOnMoveLeft([this]() { IGrid::MoveLeft(); });
+    inputHandler.SetOnMoveRight([this]() { IGrid::MoveRight(); });
+    inputHandler.SetOnMoveUp([this]() { IGrid::MoveUp(); });
+    inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
 
     // Set up button handler for L/R buttons
     buttonHandler
@@ -64,14 +59,6 @@ pu::i32 pksm::ui::BoxGrid::GetX() {
 
 pu::i32 pksm::ui::BoxGrid::GetY() {
     return y;
-}
-
-pu::i32 pksm::ui::BoxGrid::GetWidth() {
-    return width;
-}
-
-pu::i32 pksm::ui::BoxGrid::GetHeight() {
-    return height;
 }
 
 void pksm::ui::BoxGrid::SetDisabled(bool disabled) {
@@ -208,20 +195,12 @@ void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
         return;
     }
 
-    // Calculate item spacing
-    pu::i32 horizontalSpacing = GRID_SPACING;
-    pu::i32 verticalSpacing = GRID_SPACING;
-
     // Create box items for the current box
     size_t numSlots = boxes[currentBox].size();
 
     for (size_t i = 0; i < numSlots; i++) {
-        // Calculate grid position
-        size_t row = i / static_cast<size_t>(itemsPerRow);
-        size_t col = i % static_cast<size_t>(itemsPerRow);
-
-        pu::i32 itemX = x + (static_cast<pu::i32>(col) * (itemSize + horizontalSpacing));
-        pu::i32 itemY = y + (static_cast<pu::i32>(row) * (itemSize + verticalSpacing));
+        // Calculate position using IGrid's helper method
+        auto position = CalculateItemPosition(i);
 
         // Get the Pokémon data
         BoxPokemonData& pokemonData = boxes[currentBox][i];
@@ -230,7 +209,7 @@ void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
         pu::sdl2::TextureHandle::Ref textureHandle = pokemonData.getSprite();
 
         // Create a BoxItem for this slot
-        auto boxItem = BoxItem::New(itemX, itemY, itemSize, itemSize, textureHandle);
+        auto boxItem = BoxItem::New(position.first, position.second, itemSize, itemSize, textureHandle);
         boxItem->IFocusable::SetName("BoxItem Element: Slot " + std::to_string(i));
         boxItem->ISelectable::SetName("BoxItem Element: Slot " + std::to_string(i));
 
@@ -284,30 +263,6 @@ void pksm::ui::BoxGrid::SetSelectedIndex(size_t index) {
         if (onSelectionChangedCallback) {
             onSelectionChangedCallback(currentBox, static_cast<int>(selectedIndex));
         }
-    }
-}
-
-void pksm::ui::BoxGrid::MoveLeft() {
-    if (!IsFirstInRow(selectedIndex)) {
-        SetSelectedIndex(selectedIndex - 1);
-    }
-}
-
-void pksm::ui::BoxGrid::MoveRight() {
-    if (!IsLastInRow(selectedIndex) && selectedIndex < items.size() - 1) {
-        SetSelectedIndex(selectedIndex + 1);
-    }
-}
-
-void pksm::ui::BoxGrid::MoveUp() {
-    if (!IsInFirstRow(selectedIndex)) {
-        SetSelectedIndex(selectedIndex - static_cast<size_t>(itemsPerRow));
-    }
-}
-
-void pksm::ui::BoxGrid::MoveDown() {
-    if (!IsInLastRow(selectedIndex) && selectedIndex + static_cast<size_t>(itemsPerRow) < items.size()) {
-        SetSelectedIndex(selectedIndex + static_cast<size_t>(itemsPerRow));
     }
 }
 
