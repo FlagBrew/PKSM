@@ -20,7 +20,9 @@ public:
             pksm::ui::global::FONT_SIZE_TITLE,
             pksm::ui::global::FONT_SIZE_HEADER,
             pksm::ui::global::FONT_SIZE_BUTTON,
+            pksm::ui::global::FONT_SIZE_BOX_BUTTON,
             pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION,
+            pksm::ui::global::FONT_SIZE_BOX_SPACES_BUTTON,
             pksm::ui::global::FONT_SIZE_ACCOUNT_NAME,
             pksm::ui::global::FONT_SIZE_TRAINER_INFO_STATS
         };
@@ -38,7 +40,9 @@ public:
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TITLE);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_HEADER);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_BUTTON);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_BOX_BUTTON);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION);
+        renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_BOX_SPACES_BUTTON);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_ACCOUNT_NAME);
         renderer_opts.AddExtraDefaultFontSize(pksm::ui::global::FONT_SIZE_TRAINER_INFO_STATS);
     }

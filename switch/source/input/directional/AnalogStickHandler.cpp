@@ -1,5 +1,7 @@
 #include "input/directional/AnalogStickHandler.hpp"
 
+#include "input/directional/InputDebounceManager.hpp"
+
 bool pksm::input::AnalogStickHandler::HandleInput(u64 held) {
     // Check if we're waiting for movement
     if (moveStatus != MoveStatus::None) {
@@ -33,34 +35,39 @@ bool pksm::input::AnalogStickHandler::HandleInput(u64 held) {
                     break;
             }
 
+            // Update global input timestamp for debouncing across all handlers
+            InputDebounceManager::RegisterInputProcessed();
+
             // Reset state to allow next movement
             moveStatus = MoveStatus::None;
             return true;
         }
         return true;  // Input is being handled, even if we're still waiting
     }
-    // Start new movement if not already waiting
-    else if (held & (HidNpadButton_StickLLeft | HidNpadButton_StickRLeft)) {
-        moveStatus = MoveStatus::WaitingLeft;
-        moveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (held & (HidNpadButton_StickLRight | HidNpadButton_StickRRight)) {
-        moveStatus = MoveStatus::WaitingRight;
-        moveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (held & (HidNpadButton_StickLUp | HidNpadButton_StickRUp)) {
-        moveStatus = MoveStatus::WaitingUp;
-        moveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (held & (HidNpadButton_StickLDown | HidNpadButton_StickRDown)) {
-        moveStatus = MoveStatus::WaitingDown;
-        moveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else {
-        // Clear state if no relevant input is detected
-        moveStatus = MoveStatus::None;
+    // Check if enough time has passed since last input from any handler
+    else if (InputDebounceManager::CanProcessInput(moveWaitTimeMs)) {
+        // Start new movement if not already waiting
+        if (held & (HidNpadButton_StickLLeft | HidNpadButton_StickRLeft)) {
+            moveStatus = MoveStatus::WaitingLeft;
+            moveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (held & (HidNpadButton_StickLRight | HidNpadButton_StickRRight)) {
+            moveStatus = MoveStatus::WaitingRight;
+            moveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (held & (HidNpadButton_StickLUp | HidNpadButton_StickRUp)) {
+            moveStatus = MoveStatus::WaitingUp;
+            moveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (held & (HidNpadButton_StickLDown | HidNpadButton_StickRDown)) {
+            moveStatus = MoveStatus::WaitingDown;
+            moveStartTime = std::chrono::steady_clock::now();
+            return true;
+        }
     }
 
+    // Clear state if no relevant input is detected
+    moveStatus = MoveStatus::None;
     return false;
 }
 

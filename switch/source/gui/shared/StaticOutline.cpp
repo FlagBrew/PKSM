@@ -47,6 +47,12 @@ void pksm::ui::StaticOutlineBase::SetBorderWidth(const u32 width) {
 u32 pksm::ui::StaticOutlineBase::GetBorderWidth() const {
     return borderWidth;
 }
+void pksm::ui::StaticOutlineBase::SetColor(const pu::ui::Color color) {
+    this->color = color;
+}
+pu::ui::Color pksm::ui::StaticOutlineBase::GetColor() const {
+    return color;
+}
 
 void pksm::ui::StaticOutlineBase::OnInput(
     const u64 keys_down,

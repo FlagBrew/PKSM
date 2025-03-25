@@ -28,7 +28,7 @@ StorageScreen::StorageScreen(
     InitializeFocusManagement();
 
     // Initialize BoxGrid
-    InitializeBoxGrid();
+    InitializePokemonBox();
 
     // Initialize help footer
     InitializeHelpFooter();
@@ -65,64 +65,51 @@ void StorageScreen::InitializeFocusManagement() {
     // Initialize focus managers
     storageScreenFocusManager = pksm::input::FocusManager::New("StorageScreen Manager");
     storageScreenFocusManager->SetActive(true);  // since this is the root manager
-    boxGridFocusManager = pksm::input::FocusManager::New("BoxGrid Manager");
+    pokemonBoxFocusManager = pksm::input::FocusManager::New("PokemonBox Manager");
 
     // Initialize selection managers
     storageScreenSelectionManager = pksm::input::SelectionManager::New("StorageScreen Manager");
     storageScreenSelectionManager->SetActive(true);  // since this is the root manager
-    boxGridSelectionManager = pksm::input::SelectionManager::New("BoxGrid Manager");
+    pokemonBoxSelectionManager = pksm::input::SelectionManager::New("PokemonBox Manager");
 
-    // Set up focus manager hierarchy
-    storageScreenFocusManager->RegisterChildManager(boxGridFocusManager);
-
-    // Set up selection manager hierarchy
-    storageScreenSelectionManager->RegisterChildManager(boxGridSelectionManager);
+    storageScreenFocusManager->RegisterChildManager(pokemonBoxFocusManager);
+    storageScreenSelectionManager->RegisterChildManager(pokemonBoxSelectionManager);
 
     // Set up directional input handlers
-    boxGridHandler.SetOnMoveUp([this]() {
+    pokemonBoxDirectionalHandler.SetOnMoveUp([this]() {
         // Handle up navigation from box grid if needed
-    });
-
-    boxGridHandler.SetOnMoveDown([this]() {
-        // Handle down navigation from box grid if needed
     });
 
     LOG_DEBUG("Focus and selection management initialization complete");
 }
 
-void StorageScreen::InitializeBoxGrid() {
-    LOG_DEBUG("Initializing BoxGrid...");
+void StorageScreen::InitializePokemonBox() {
+    LOG_DEBUG("Initializing PokemonBox...");
 
-    // Create the BoxGrid with default rows/columns
-    boxGrid = pksm::ui::BoxGrid::New(
+    // Create the PokemonBox with the same parameters as we would BoxGrid
+    pokemonBox = pksm::ui::PokemonBox::New(
         BOX_GRID_SIDE_MARGIN,
         BOX_GRID_TOP_MARGIN,
         BOX_ITEM_SIZE,
-        boxGridFocusManager,
-        boxGridSelectionManager
+        pokemonBoxFocusManager,
+        pokemonBoxSelectionManager
     );
-
-    // Set up BoxGrid
-    boxGrid->IFocusable::SetName("BoxGrid Element");  // Specify which SetName we're calling
-
-    // First add the grid to the layout
-    this->Add(boxGrid);
-
-    // THEN establish the owning relationship
-    boxGrid->EstablishOwningRelationship();
+    this->Add(pokemonBox);
+    pokemonBox->SetName("PokemonBox Element");
+    pokemonBox->EstablishOwningRelationship();
 
     // Load box data for the current save
     LoadBoxData();
 
     // Set up selection changed callback
-    boxGrid->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
+    pokemonBox->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
         LOG_DEBUG("Box selection changed: Box " + std::to_string(boxIndex) + ", Slot " + std::to_string(slotIndex));
     });
 
     // Set initial focus
-    boxGrid->RequestFocus();
+    pokemonBox->RequestFocus();
 
-    LOG_DEBUG("BoxGrid initialization complete");
+    LOG_DEBUG("PokemonBox initialization complete");
 }
 
 void StorageScreen::LoadBoxData() {
@@ -132,9 +119,9 @@ void StorageScreen::LoadBoxData() {
     if (!currentSave) {
         LOG_DEBUG("No save data available, using fallback box data");
         // Set a default box count if no save data available
-        boxGrid->SetBoxCount(1);
+        pokemonBox->SetBoxCount(1);
         // Start at box 0
-        boxGrid->SetCurrentBox(0);
+        pokemonBox->SetCurrentBox(0);
         LOG_DEBUG("Fallback box data loaded");
         return;
     }
@@ -142,17 +129,16 @@ void StorageScreen::LoadBoxData() {
     // Get box count from the provider
     size_t boxCount = boxDataProvider->GetBoxCount(currentSave);
     LOG_DEBUG("Setting box count to " + std::to_string(boxCount));
-    boxGrid->SetBoxCount(boxCount);
+    pokemonBox->SetBoxCount(boxCount);
 
     // Load all boxes at once to ensure the box data provider knows about them
-    // The BoxGrid component will handle which ones to actually render
     for (size_t i = 0; i < boxCount; ++i) {
         auto boxData = boxDataProvider->GetBoxData(currentSave, i);
-        boxGrid->SetBoxData(i, boxData);
+        pokemonBox->SetBoxData(i, boxData);
     }
 
     // Start at box 0
-    boxGrid->SetCurrentBox(0);
+    pokemonBox->SetCurrentBox(0);
 
     LOG_DEBUG("Box data loaded successfully");
 }
@@ -166,6 +152,7 @@ void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
     }
 
     // Process button inputs
+    pokemonBoxDirectionalHandler.HandleInput(down, held);
     buttonHandler.HandleInput(down, up, held);
 }
 
@@ -182,12 +169,12 @@ std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
 
 void StorageScreen::OnHelpOverlayShown() {
     LOG_DEBUG("Help overlay shown, disabling UI elements");
-    boxGrid->SetDisabled(true);
+    pokemonBox->SetDisabled(true);
 }
 
 void StorageScreen::OnHelpOverlayHidden() {
     LOG_DEBUG("Help overlay hidden, re-enabling UI elements");
-    boxGrid->SetDisabled(false);
+    pokemonBox->SetDisabled(false);
 }
 
 }  // namespace pksm::layout

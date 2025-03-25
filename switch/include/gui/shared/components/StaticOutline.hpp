@@ -37,6 +37,8 @@ public:
     bool IsVisible() const;
     void SetBorderWidth(const u32 width);
     u32 GetBorderWidth() const;
+    void SetColor(const pu::ui::Color color);
+    pu::ui::Color GetColor() const;
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override = 0;
     void

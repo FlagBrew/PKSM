@@ -15,15 +15,11 @@ public:
     virtual size_t GetBoxCount(const pksm::saves::SaveData::Ref& saveData) const = 0;
 
     // Get the data for a specific box
-    virtual std::vector<pksm::ui::BoxPokemonData>
-    GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const = 0;
+    virtual pksm::ui::BoxData GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const = 0;
 
     // Set data for a specific box (returns success/failure)
-    virtual bool SetBoxData(
-        const pksm::saves::SaveData::Ref& saveData,
-        int boxIndex,
-        const std::vector<pksm::ui::BoxPokemonData>& boxData
-    ) = 0;
+    virtual bool
+    SetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const pksm::ui::BoxData& boxData) = 0;
 
     // Set data for a specific Pokémon in a box (returns success/failure)
     virtual bool SetPokemonData(

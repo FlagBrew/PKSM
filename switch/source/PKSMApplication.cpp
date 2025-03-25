@@ -84,10 +84,22 @@ void PKSMApplication::RegisterAdditionalFonts() {
     }
 }
 
-PKSMApplication::PKSMApplication(pu::ui::render::Renderer::Ref renderer)
-  : pu::ui::Application(renderer), accountManager() {
+PKSMApplication::PKSMApplication(
+    pu::ui::render::Renderer::Ref renderer,
+    std::unique_ptr<data::AccountManager> accountManager,
+    ITitleDataProvider::Ref titleProvider,
+    ISaveDataProvider::Ref saveProvider,
+    ISaveDataAccessor::Ref saveDataAccessor,
+    IBoxDataProvider::Ref boxDataProvider
+)
+  : pu::ui::Application(renderer),
+    accountManager(std::move(accountManager)),
+    titleProvider(std::move(titleProvider)),
+    saveProvider(std::move(saveProvider)),
+    saveDataAccessor(std::move(saveDataAccessor)),
+    boxDataProvider(std::move(boxDataProvider)) {
     // Add render callback to process account updates
-    AddRenderCallback([this]() { accountManager.ProcessPendingUpdates(); });
+    AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
 }
 
 PKSMApplication::Ref PKSMApplication::Initialize() {
@@ -124,9 +136,32 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
             appletSetGamePlayRecordingState(true);
         }
 
+        // Initialize account manager and data providers
+        LOG_DEBUG("Initializing account manager and data providers...");
+        auto accountManager = std::make_unique<data::AccountManager>();
+        Result res = accountManager->Initialize();
+        if (R_FAILED(res)) {
+            LOG_ERROR("Failed to initialize account manager");
+            throw std::runtime_error("Account manager initialization failed");
+        }
+
+        LOG_DEBUG("Creating data providers...");
+        auto titleProvider = std::make_shared<MockTitleDataProvider>(accountManager->GetCurrentAccount());
+        auto saveProvider = std::make_shared<MockSaveDataProvider>(accountManager->GetCurrentAccount());
+        auto saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
+        auto boxDataProvider = std::make_shared<MockBoxDataProvider>();
+        LOG_MEMORY();  // Memory after data provider initialization
+
         // Create and prepare application
         LOG_DEBUG("Creating application...");
-        auto app = PKSMApplication::New(renderer);
+        auto app = PKSMApplication::New(
+            renderer,
+            std::move(accountManager),
+            titleProvider,
+            saveProvider,
+            saveDataAccessor,
+            boxDataProvider
+        );
 
         LOG_DEBUG("Preparing application...");
         app->Prepare();
@@ -173,21 +208,18 @@ void PKSMApplication::OnLoad() {
         LOG_DEBUG("Loading title screen...");
         LOG_MEMORY();
 
-        // Initialize account manager
-        LOG_DEBUG("Initializing account manager...");
-        Result res = accountManager.Initialize();
-        if (R_FAILED(res)) {
-            LOG_ERROR("Failed to initialize account manager");
-            throw std::runtime_error("Account manager initialization failed");
-        }
+        // Create title load screen
+        LOG_DEBUG("Creating title load screen...");
+        titleLoadScreen = pksm::layout::TitleLoadScreen::New(
+            titleProvider,
+            saveProvider,
+            *accountManager,
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); },
+            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { this->OnSaveSelected(title, save); }
+        );
 
-        // Create data providers with initial account
-        LOG_DEBUG("Creating data providers...");
-        titleProvider = std::make_shared<MockTitleDataProvider>(accountManager.GetCurrentAccount());
-        saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
-        saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
-        boxDataProvider = std::make_shared<MockBoxDataProvider>();
-
+        // Create main menu with back callback and overlay handlers
         // Create navigation callbacks for menu buttons
         LOG_DEBUG("Creating navigation callbacks...");
         std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks = {
@@ -198,6 +230,15 @@ void PKSMApplication::OnLoad() {
             {pksm::ui::MenuButtonType::Scripts, [this]() { LOG_DEBUG("Scripts button pressed (not implemented)"); }},
             {pksm::ui::MenuButtonType::Settings, [this]() { LOG_DEBUG("Settings button pressed (not implemented)"); }}
         };
+
+        LOG_DEBUG("Creating main menu...");
+        mainMenu = pksm::layout::MainMenu::New(
+            [this]() { this->ShowTitleLoadScreen(); },
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); },
+            saveDataAccessor,  // Pass the save data accessor to the main menu
+            navigationCallbacks  // Pass navigation callbacks to the main menu
+        );
 
         // Create storage screen
         LOG_DEBUG("Creating storage screen...");
@@ -226,27 +267,6 @@ void PKSMApplication::OnLoad() {
                 storageScreen->LoadBoxData();
             }
         });
-
-        // Create main menu with back callback and overlay handlers
-        LOG_DEBUG("Creating main menu...");
-        mainMenu = pksm::layout::MainMenu::New(
-            [this]() { this->ShowTitleLoadScreen(); },
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            saveDataAccessor,  // Pass the save data accessor to the main menu
-            navigationCallbacks  // Pass navigation callbacks to the main menu
-        );
-
-        // Create title load screen
-        LOG_DEBUG("Creating title load screen...");
-        titleLoadScreen = pksm::layout::TitleLoadScreen::New(
-            titleProvider,
-            saveProvider,
-            accountManager,
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { this->OnSaveSelected(title, save); }
-        );
 
         // Start with title load screen
         LOG_DEBUG("Loading initial screen...");

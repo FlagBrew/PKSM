@@ -13,9 +13,10 @@ static constexpr pu::ui::Color OUTLINE_COLOR = pu::ui::Color(0, 150, 255, 255);
 static constexpr u32 FONT_SIZE_TITLE = 60;
 static constexpr u32 FONT_SIZE_HEADER = 40;
 static constexpr u32 FONT_SIZE_BUTTON = 40;
+static constexpr u32 FONT_SIZE_BOX_BUTTON = 42;
 static constexpr u32 FONT_SIZE_ACCOUNT_NAME = 28;
 static constexpr u32 FONT_SIZE_TRIGGER_BUTTON_NAVIGATION = 32;
-static constexpr u32 FONT_SIZE_BUTTON_GLYPH_Y_OFFSET = -4;
+static constexpr u32 FONT_SIZE_BOX_SPACES_BUTTON = 32;
 static constexpr u32 FONT_SIZE_TRAINER_INFO_STATS = 36;
 
 // Font Names
