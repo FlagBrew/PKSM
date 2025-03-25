@@ -10,9 +10,14 @@ namespace pksm::layout {
 StorageScreen::StorageScreen(
     std::function<void()> onBack,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
-    std::function<void()> onHideOverlay
+    std::function<void()> onHideOverlay,
+    ISaveDataAccessor::Ref saveDataAccessor,
+    IBoxDataProvider::Ref boxDataProvider
 )
-  : BaseLayout(onShowOverlay, onHideOverlay), onBack(onBack) {
+  : BaseLayout(onShowOverlay, onHideOverlay),
+    onBack(onBack),
+    saveDataAccessor(saveDataAccessor),
+    boxDataProvider(boxDataProvider) {
     LOG_DEBUG("Initializing StorageScreen...");
 
     this->SetBackgroundColor(bgColor);
@@ -51,6 +56,7 @@ StorageScreen::StorageScreen(
     );
 
     LOG_DEBUG("StorageScreen initialization complete");
+    PreRender();
 }
 
 void StorageScreen::InitializeFocusManagement() {
@@ -105,8 +111,8 @@ void StorageScreen::InitializeBoxGrid() {
     // THEN establish the owning relationship
     boxGrid->EstablishOwningRelationship();
 
-    // Load mock Pokémon data
-    LoadMockPokemonData();
+    // Load box data for the current save
+    LoadBoxData();
 
     // Set up selection changed callback
     boxGrid->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
@@ -119,119 +125,36 @@ void StorageScreen::InitializeBoxGrid() {
     LOG_DEBUG("BoxGrid initialization complete");
 }
 
-void StorageScreen::LoadMockPokemonData() {
-    LOG_DEBUG("Loading mock Pokémon data...");
+void StorageScreen::LoadBoxData() {
+    LOG_DEBUG("Loading box data from provider...");
 
-    // Set up boxes - creating 30 boxes for stress testing
-    boxGrid->SetBoxCount(30);
-
-    // Create first two boxes with specific Pokemon arrangements
-    std::vector<pksm::ui::BoxPokemonData> box1Data;
-
-    // Box 1: Original starters and their evolutions
-    box1Data.push_back(pksm::ui::BoxPokemonData(1, 0, false));  // Bulbasaur
-    box1Data.push_back(pksm::ui::BoxPokemonData(2, 0, false));  // Ivysaur
-    box1Data.push_back(pksm::ui::BoxPokemonData(3, 0, false));  // Venusaur
-    box1Data.push_back(pksm::ui::BoxPokemonData(3, 0, true));  // Shiny Venusaur
-    box1Data.push_back(pksm::ui::BoxPokemonData(3, 1, false));  // Gigantamax Venusaur (using form 1)
-    box1Data.push_back(pksm::ui::BoxPokemonData(3, 2, false));  // Mega Venusaur (using form 2)
-
-    box1Data.push_back(pksm::ui::BoxPokemonData(4, 0, false));  // Charmander
-    box1Data.push_back(pksm::ui::BoxPokemonData(5, 0, false));  // Charmeleon
-    box1Data.push_back(pksm::ui::BoxPokemonData(6, 0, false));  // Charizard
-    box1Data.push_back(pksm::ui::BoxPokemonData(6, 0, true));  // Shiny Charizard
-    box1Data.push_back(pksm::ui::BoxPokemonData(6, 1, false));  // Gigantamax Charizard (using form 1)
-    box1Data.push_back(pksm::ui::BoxPokemonData());  // Empty slot
-
-    box1Data.push_back(pksm::ui::BoxPokemonData(7, 0, false));  // Squirtle
-    box1Data.push_back(pksm::ui::BoxPokemonData(8, 0, false));  // Wartortle
-    box1Data.push_back(pksm::ui::BoxPokemonData(9, 0, false));  // Blastoise
-    box1Data.push_back(pksm::ui::BoxPokemonData(9, 0, true));  // Shiny Blastoise
-    box1Data.push_back(pksm::ui::BoxPokemonData(9, 1, false));  // Gigantamax Blastoise (using form 1)
-    box1Data.push_back(pksm::ui::BoxPokemonData(9, 2, false));  // Mega Blastoise (using form 2)
-
-    box1Data.push_back(pksm::ui::BoxPokemonData(10, 0, false));  // Caterpie
-    box1Data.push_back(pksm::ui::BoxPokemonData(10, 0, true));  // Shiny Caterpie
-    box1Data.push_back(pksm::ui::BoxPokemonData(11, 0, false));  // Metapod
-    box1Data.push_back(pksm::ui::BoxPokemonData(11, 0, true));  // Shiny Metapod
-    box1Data.push_back(pksm::ui::BoxPokemonData(12, 0, false));  // Butterfree
-    box1Data.push_back(pksm::ui::BoxPokemonData(12, 0, true));  // Shiny Butterfree
-
-    box1Data.push_back(pksm::ui::BoxPokemonData(3, 0, true));  // Shiny Venusaur
-    box1Data.push_back(pksm::ui::BoxPokemonData(6, 0, true));  // Shiny Charizard
-    box1Data.push_back(pksm::ui::BoxPokemonData());  // Empty slot
-    box1Data.push_back(pksm::ui::BoxPokemonData(9, 0, true));  // Shiny Blastoise
-    box1Data.push_back(pksm::ui::BoxPokemonData(7, 0, true));  // Shiny Squirtle
-
-    // Add some empty slots to fill the box
-    for (size_t i = box1Data.size(); i < 30; i++) {
-        box1Data.push_back(pksm::ui::BoxPokemonData());
+    auto currentSave = saveDataAccessor->getCurrentSaveData();
+    if (!currentSave) {
+        LOG_DEBUG("No save data available, using fallback box data");
+        // Set a default box count if no save data available
+        boxGrid->SetBoxCount(1);
+        // Start at box 0
+        boxGrid->SetCurrentBox(0);
+        LOG_DEBUG("Fallback box data loaded");
+        return;
     }
 
-    // Box 2: Alternating patterns
-    std::vector<pksm::ui::BoxPokemonData> box2Data;
+    // Get box count from the provider
+    size_t boxCount = boxDataProvider->GetBoxCount(currentSave);
+    LOG_DEBUG("Setting box count to " + std::to_string(boxCount));
+    boxGrid->SetBoxCount(boxCount);
 
-    for (int i = 0; i < 6; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData(12, 0, i % 2 == 0));  // Alternating normal/shiny Butterfree
+    // Load all boxes at once to ensure the box data provider knows about them
+    // The BoxGrid component will handle which ones to actually render
+    for (size_t i = 0; i < boxCount; ++i) {
+        auto boxData = boxDataProvider->GetBoxData(currentSave, i);
+        boxGrid->SetBoxData(i, boxData);
     }
-
-    for (int i = 0; i < 6; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData(9, 0, i % 2 == 0));  // Alternating normal/shiny Blastoise
-    }
-
-    for (int i = 0; i < 6; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData(6, 0, i % 2 == 0));  // Alternating normal/shiny Charizard
-    }
-
-    for (int i = 0; i < 6; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData(3, 0, i % 2 == 0));  // Alternating normal/shiny Venusaur
-    }
-
-    for (int i = 0; i < 6; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData(10, 0, i % 2 == 0));  // Alternating normal/shiny Caterpie
-    }
-
-    // Fill remaining slots in box 2
-    for (size_t i = box2Data.size(); i < 30; i++) {
-        box2Data.push_back(pksm::ui::BoxPokemonData());
-    }
-
-    // Generate 28 more boxes with randomized Pokemon
-    std::srand(std::time(nullptr));  // Seed the random number generator
-
-    // Create boxes 3-30 with randomized content
-    for (int boxIdx = 2; boxIdx < 30; boxIdx++) {
-        std::vector<pksm::ui::BoxPokemonData> boxData;
-
-        // Fill each box with 30 slots
-        for (int slot = 0; slot < 30; slot++) {
-            // 35% chance of empty slot
-            if (std::rand() % 100 < 20) {
-                boxData.push_back(pksm::ui::BoxPokemonData());
-            } else {
-                // Random species (1-151 for Gen 1 Pokémon)
-                u16 species = 1 + (std::rand() % 1025);
-
-                // Random shiny (10% chance)
-                bool shiny = (std::rand() % 100 < 10);
-
-                // Using form 0 as requested to avoid issues with missing forms
-                boxData.push_back(pksm::ui::BoxPokemonData(species, 0, shiny));
-            }
-        }
-
-        // Load the random box data
-        boxGrid->SetBoxData(boxIdx, boxData);
-    }
-
-    // Load the first two boxes with predetermined data
-    boxGrid->SetBoxData(0, box1Data);
-    boxGrid->SetBoxData(1, box2Data);
 
     // Start at box 0
     boxGrid->SetCurrentBox(0);
 
-    LOG_DEBUG("Mock Pokémon data loaded successfully with 30 boxes");
+    LOG_DEBUG("Box data loaded successfully");
 }
 
 StorageScreen::~StorageScreen() = default;

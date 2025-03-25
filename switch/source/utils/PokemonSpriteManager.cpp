@@ -38,14 +38,6 @@ pu::sdl2::TextureHandle::Ref PokemonSpriteManager::GetPokemonSprite(u16 species,
         return nullptr;
     }
 
-    // Lazy initialization if not already initialized
-    if (!initialized) {
-        if (!Initialize("romfs:/gfx/pokesprites/pokesprite.json")) {
-            LOG_ERROR("Failed to initialize Pokemon sprite manager during lazy initialization");
-            return nullptr;
-        }
-    }
-
     // Generate the key for this Pokemon
     std::string key = GenerateKey(species, form, shiny);
 

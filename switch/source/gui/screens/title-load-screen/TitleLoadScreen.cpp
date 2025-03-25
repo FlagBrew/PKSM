@@ -102,7 +102,6 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
         "Load Save"
     );
     this->loadButton->SetName("LoadSaveButton Element");
-    this->loadButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::FocusLoadButton, this));
     this->loadButton->SetOnClick(std::bind(&TitleLoadScreen::OnLoadButtonClick, this));
     this->loadButton->SetOnCancel(std::bind(&TitleLoadScreen::FocusSaveList, this));
     this->loadButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
@@ -118,7 +117,6 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
         "Wireless"
     );
     this->wirelessButton->SetName("WirelessButton Element");
-    this->wirelessButton->SetOnTouchSelect(std::bind(&TitleLoadScreen::FocusWirelessButton, this));
     this->wirelessButton->SetOnClick(std::bind(&TitleLoadScreen::OnWirelessButtonClick, this));
     this->wirelessButton->SetOnCancel(std::bind(&TitleLoadScreen::FocusSaveList, this));
     this->wirelessButton->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_BUTTON));
