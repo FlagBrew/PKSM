@@ -9,11 +9,12 @@ pksm::ui::BoxGrid::BoxGrid(
     const pu::i32 itemSize,
     input::FocusManager::Ref parentFocusManager,
     input::SelectionManager::Ref parentSelectionManager,
+    const std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds,
     const pu::i32 numberOfRows,
     const pu::i32 itemsPerRow
 )
   : ISelectable(),
-    IGrid(itemsPerRow, {}),
+    IGrid(itemsPerRow, shouldConsiderSideOutOfBounds),
     x(x),
     y(y),
     itemSize(itemSize),
@@ -29,12 +30,6 @@ pksm::ui::BoxGrid::BoxGrid(
     inputHandler.SetOnMoveUp([this]() { IGrid::MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
 
-    // Set up button handler for L/R buttons
-    buttonHandler
-        .RegisterButton(HidNpadButton_L, nullptr, [this]() { PreviousBox(); }, [this]() { return this->focused; });
-
-    buttonHandler.RegisterButton(HidNpadButton_R, nullptr, [this]() { NextBox(); }, [this]() { return this->focused; });
-
     // Initialize focus manager
     focusManager = input::FocusManager::New("BoxGrid");
     selectionManager = input::SelectionManager::New("BoxGrid");
@@ -43,13 +38,16 @@ pksm::ui::BoxGrid::BoxGrid(
     IFocusable::SetName("BoxGrid Element");
     ISelectable::SetName("BoxGrid Element");
 
+    // Initialize with empty box data
+    size_t slotsPerBox = static_cast<size_t>(itemsPerRow) * static_cast<size_t>(numberOfRows);
+    currentBoxData.resize(slotsPerBox);
+
+    // Set up grid with empty data
+    UpdateGridFromBoxData();
+
     // Store the parent managers
     IFocusable::SetFocusManager(parentFocusManager);
     ISelectable::SetSelectionManager(parentSelectionManager);
-
-    // Initialize with one empty box
-    SetBoxCount(1);
-
     LOG_DEBUG("BoxGrid component initialization complete");
 }
 
@@ -59,10 +57,6 @@ pu::i32 pksm::ui::BoxGrid::GetX() {
 
 pu::i32 pksm::ui::BoxGrid::GetY() {
     return y;
-}
-
-void pksm::ui::BoxGrid::SetDisabled(bool disabled) {
-    this->disabled = disabled;
 }
 
 void pksm::ui::BoxGrid::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -80,17 +74,9 @@ void pksm::ui::BoxGrid::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    // Skip input handling if disabled
-    if (disabled) {
-        return;
-    }
-
     // Handle directional input only when focused
     if (focused) {
         inputHandler.HandleInput(keys_down, keys_held);
-
-        // Handle button input (L/R)
-        buttonHandler.HandleInput(keys_down, keys_up, keys_held);
     }
 
     // Pass input to all items
@@ -99,53 +85,12 @@ void pksm::ui::BoxGrid::OnInput(
     }
 }
 
-bool pksm::ui::BoxGrid::HandleSelectInput(const u64 keys_down) {
-    return false;  // No longer needed as button handling is done directly by BoxItem
-}
+void pksm::ui::BoxGrid::SetPokemonData(int slotIndex, const BoxPokemonData& data) {
+    if (slotIndex >= 0 && static_cast<size_t>(slotIndex) < currentBoxData.size()) {
+        currentBoxData[slotIndex] = data;
 
-// Box Data Methods
-void pksm::ui::BoxGrid::SetBoxCount(size_t count) {
-    // Resize the boxes vector to hold the requested number of boxes
-    if (boxes.size() != count) {
-        boxes.resize(count);
-
-        // Initialize each box with empty Pokémon data
-        for (auto& box : boxes) {
-            // Each box has itemsPerRow * numberOfRows slots
-            box.resize(static_cast<size_t>(itemsPerRow) * static_cast<size_t>(numberOfRows), BoxPokemonData());
-        }
-    }
-}
-
-void pksm::ui::BoxGrid::SetCurrentBox(int boxIndex) {
-    if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size()) {
-        currentBox = boxIndex;
-
-        // Update the grid to display the new box
-        UpdateGridFromCurrentBox();
-
-        // Build a list of active sprites to keep in memory
-        std::set<std::string> activeKeys;
-        for (const auto& pokemonData : boxes[currentBox]) {
-            if (!pokemonData.isEmpty()) {
-                activeKeys.insert(
-                    utils::PokemonSpriteManager::GenerateKey(pokemonData.species, pokemonData.form, pokemonData.shiny)
-                );
-            }
-        }
-
-        // Release sprites that aren't in the current box
-        utils::PokemonSpriteManager::ReleaseUnusedSprites(activeKeys);
-    }
-}
-
-void pksm::ui::BoxGrid::SetPokemonData(int boxIndex, int slotIndex, const BoxPokemonData& data) {
-    if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size() && slotIndex >= 0 &&
-        static_cast<size_t>(slotIndex) < boxes[boxIndex].size()) {
-        boxes[boxIndex][slotIndex] = data;
-
-        // If this is the current box, update the displayed item
-        if (boxIndex == currentBox && static_cast<size_t>(slotIndex) < items.size()) {
+        // Update the displayed item if it exists
+        if (static_cast<size_t>(slotIndex) < items.size()) {
             // Get the sprite for this Pokémon
             pu::sdl2::TextureHandle::Ref texture = data.getSprite();
             items[slotIndex]->SetImage(texture);
@@ -153,57 +98,49 @@ void pksm::ui::BoxGrid::SetPokemonData(int boxIndex, int slotIndex, const BoxPok
     }
 }
 
-void pksm::ui::BoxGrid::SetBoxData(int boxIndex, const std::vector<BoxPokemonData>& boxData) {
-    if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size()) {
-        // Copy data, making sure we don't exceed the box size
-        size_t copySize = std::min(boxData.size(), boxes[boxIndex].size());
-        for (size_t i = 0; i < copySize; i++) {
-            boxes[boxIndex][i] = boxData[i];
-        }
+void pksm::ui::BoxGrid::SetBoxData(const BoxData& boxData) {
+    // Make a copy of the input box data
+    currentBoxData = boxData;
 
-        // Fill remaining slots with empty data if needed
-        for (size_t i = copySize; i < boxes[boxIndex].size(); i++) {
-            boxes[boxIndex][i] = BoxPokemonData();
-        }
-
-        // If this is the current box, update the grid
-        if (boxIndex == currentBox) {
-            UpdateGridFromCurrentBox();
-        }
+    // If pokemon vector sizes don't match, resize to our standard size
+    size_t expectedSize = static_cast<size_t>(itemsPerRow) * static_cast<size_t>(numberOfRows);
+    if (currentBoxData.size() != expectedSize) {
+        currentBoxData.resize(expectedSize);
     }
+
+    // Update the grid with the new data
+    UpdateGridFromBoxData();
 }
 
-pksm::ui::BoxPokemonData pksm::ui::BoxGrid::GetPokemonData(int boxIndex, int slotIndex) const {
-    if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size() && slotIndex >= 0 &&
-        static_cast<size_t>(slotIndex) < boxes[boxIndex].size()) {
-        return boxes[boxIndex][slotIndex];
+pksm::ui::BoxPokemonData pksm::ui::BoxGrid::GetPokemonData(int slotIndex) const {
+    if (slotIndex >= 0 && static_cast<size_t>(slotIndex) < currentBoxData.size()) {
+        return currentBoxData[slotIndex];
     }
     return BoxPokemonData();  // Return empty data for invalid indices
 }
 
-void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
+void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
     // Clear existing items and unregister them from focus/selection managers
     for (auto& item : items) {
-        focusManager->UnregisterFocusable(item);
-        selectionManager->UnregisterSelectable(item);
+        if (auto fm = this->focusManager.lock()) {
+            fm->UnregisterFocusable(item);
+        }
+        if (auto sm = this->selectionManager.lock()) {
+            sm->UnregisterSelectable(item);
+        }
     }
     items.clear();
     container->Clear();
 
-    // Make sure the current box is valid
-    if (currentBox < 0 || static_cast<size_t>(currentBox) >= boxes.size()) {
-        return;
-    }
-
     // Create box items for the current box
-    size_t numSlots = boxes[currentBox].size();
+    size_t numSlots = currentBoxData.size();
 
     for (size_t i = 0; i < numSlots; i++) {
         // Calculate position using IGrid's helper method
         auto position = CalculateItemPosition(i);
 
         // Get the Pokémon data
-        BoxPokemonData& pokemonData = boxes[currentBox][i];
+        BoxPokemonData& pokemonData = currentBoxData[i];
 
         // Get the texture handle for this Pokémon
         pu::sdl2::TextureHandle::Ref textureHandle = pokemonData.getSprite();
@@ -218,20 +155,24 @@ void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
         boxItem->SetOnTouchSelect([this, index]() {
             SetSelectedIndex(index);
             if (onSelectionChangedCallback) {
-                onSelectionChangedCallback(currentBox, static_cast<int>(index));
+                onSelectionChangedCallback(static_cast<int>(index));
             }
         });
 
         // Set up selection callback
         boxItem->SetOnSelect([this, index]() {
             if (onSelectionChangedCallback) {
-                onSelectionChangedCallback(currentBox, static_cast<int>(index));
+                onSelectionChangedCallback(static_cast<int>(index));
             }
         });
 
         // Register with focus and selection managers
-        focusManager->RegisterFocusable(boxItem);
-        selectionManager->RegisterSelectable(boxItem);
+        if (auto fm = this->focusManager.lock()) {
+            fm->RegisterFocusable(boxItem);
+        }
+        if (auto sm = this->selectionManager.lock()) {
+            sm->RegisterSelectable(boxItem);
+        }
 
         // Add to our containers
         items.push_back(boxItem);
@@ -251,6 +192,7 @@ void pksm::ui::BoxGrid::UpdateGridFromCurrentBox() {
 }
 
 void pksm::ui::BoxGrid::SetSelectedIndex(size_t index) {
+    LOG_DEBUG("[BoxGrid] Setting selected index: " + std::to_string(index));
     if (index < items.size() && selectedIndex != index) {
         selectedIndex = index;
 
@@ -261,7 +203,7 @@ void pksm::ui::BoxGrid::SetSelectedIndex(size_t index) {
 
         // Notify about selection change
         if (onSelectionChangedCallback) {
-            onSelectionChangedCallback(currentBox, static_cast<int>(selectedIndex));
+            onSelectionChangedCallback(static_cast<int>(selectedIndex));
         }
     }
 }
@@ -274,6 +216,7 @@ void pksm::ui::BoxGrid::SetFocused(bool focused) {
 
         // When gaining focus, focus the selected box item
         if (focused && !items.empty() && selectedIndex < items.size()) {
+            LOG_DEBUG("[BoxGrid] Focusing item: " + std::to_string(selectedIndex));
             items[selectedIndex]->RequestFocus();
         }
     }
@@ -292,47 +235,9 @@ bool pksm::ui::BoxGrid::IsSelected() const {
     return selected;
 }
 
-// Additional focus/selection methods
-void pksm::ui::BoxGrid::RequestFocus() {
-    LOG_DEBUG("[BoxGrid] Requesting focus");
-    if (auto manager = IFocusable::focusManager.lock()) {
-        manager->HandleFocusRequest(shared_from_this());
-    }
-}
-
 void pksm::ui::BoxGrid::EstablishOwningRelationship() {
     LOG_DEBUG("[BoxGrid] Establishing owning relationship");
 
-    // First establish selectable relationship
+    IFocusable::EstablishOwningRelationship();
     ISelectable::EstablishOwningRelationship();
-
-    // Now safely set up the focus manager child relationship
-    if (auto parentFocusManager = IFocusable::focusManager.lock()) {
-        parentFocusManager->RegisterChildManager(focusManager);
-        focusManager->SetOwningFocusable(std::static_pointer_cast<IFocusable>(shared_from_this()));
-        // Register self with parent focus manager
-        parentFocusManager->RegisterFocusable(std::static_pointer_cast<IFocusable>(shared_from_this()));
-    }
-
-    // Set up the selection manager child relationship
-    if (auto parentSelectionManager = ISelectable::selectionManager.lock()) {
-        parentSelectionManager->RegisterChildManager(selectionManager);
-        selectionManager->SetOwningSelectable(std::static_pointer_cast<ISelectable>(shared_from_this()));
-        // Register self with parent selection manager
-        parentSelectionManager->RegisterSelectable(std::static_pointer_cast<ISelectable>(shared_from_this()));
-    }
-}
-
-// Add new box navigation methods
-void pksm::ui::BoxGrid::NextBox() {
-    int nextBox = currentBox + 1;
-    if (static_cast<size_t>(nextBox) < boxes.size()) {
-        SetCurrentBox(nextBox);
-    }
-}
-
-void pksm::ui::BoxGrid::PreviousBox() {
-    if (currentBox > 0) {
-        SetCurrentBox(currentBox - 1);
-    }
 }

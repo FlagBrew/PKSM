@@ -1,5 +1,7 @@
 #include "input/directional/DirectionalInputHandler.hpp"
 
+#include "input/directional/InputDebounceManager.hpp"
+
 namespace pksm::input {
 
 DirectionalInputHandler::DirectionalInputHandler() : analogHandler(AnalogStickHandler::New()) {
@@ -56,29 +58,35 @@ bool DirectionalInputHandler::HandleInput(u64 down, u64 held) {
                     break;
             }
 
+            // Update global input timestamp for debouncing across all handlers
+            InputDebounceManager::RegisterInputProcessed();
+
             // Reset state to allow next movement
             dpadMoveStatus = DPadMoveStatus::None;
             return true;
         }
         return true;  // Input is being handled, even if we're still waiting
     }
-    // Start new d-pad movement if not already waiting
-    else if (down & HidNpadButton_Left) {
-        dpadMoveStatus = DPadMoveStatus::WaitingLeft;
-        dpadMoveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (down & HidNpadButton_Right) {
-        dpadMoveStatus = DPadMoveStatus::WaitingRight;
-        dpadMoveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (down & HidNpadButton_Up) {
-        dpadMoveStatus = DPadMoveStatus::WaitingUp;
-        dpadMoveStartTime = std::chrono::steady_clock::now();
-        return true;
-    } else if (down & HidNpadButton_Down) {
-        dpadMoveStatus = DPadMoveStatus::WaitingDown;
-        dpadMoveStartTime = std::chrono::steady_clock::now();
-        return true;
+    // Check if enough time has passed since last input from any handler
+    else if (InputDebounceManager::CanProcessInput(DPAD_MOVE_WAIT_TIME_MS)) {
+        // Start new d-pad movement if not already waiting
+        if (down & HidNpadButton_Left) {
+            dpadMoveStatus = DPadMoveStatus::WaitingLeft;
+            dpadMoveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (down & HidNpadButton_Right) {
+            dpadMoveStatus = DPadMoveStatus::WaitingRight;
+            dpadMoveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (down & HidNpadButton_Up) {
+            dpadMoveStatus = DPadMoveStatus::WaitingUp;
+            dpadMoveStartTime = std::chrono::steady_clock::now();
+            return true;
+        } else if (down & HidNpadButton_Down) {
+            dpadMoveStatus = DPadMoveStatus::WaitingDown;
+            dpadMoveStartTime = std::chrono::steady_clock::now();
+            return true;
+        }
     } else {
         // Clear state if no relevant input is detected
         dpadMoveStatus = DPadMoveStatus::None;

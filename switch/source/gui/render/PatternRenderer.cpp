@@ -167,7 +167,7 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
 
     // Draw the repeating pattern
     if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), patternTexture) < 0) {
-        LOG_ERROR("Failed to set render target for pattern");
+        LOG_ERROR("Failed to set render target for pattern: " + std::string(SDL_GetError()));
         SDL_DestroyTexture(patternTexture);
         return nullptr;
     }
@@ -235,7 +235,7 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
 
     // Set render target to final texture
     if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), finalTexture) < 0) {
-        LOG_ERROR("Failed to set render target for final texture");
+        LOG_ERROR("Failed to set render target for final texture: " + std::string(SDL_GetError()));
         SDL_DestroyTexture(patternTexture);
         SDL_DestroyTexture(finalTexture);
         return nullptr;
@@ -295,15 +295,15 @@ SDL_Texture* PatternRenderer::CreateDiagonalLinePattern(
         }
     }
 
-    // Clean up pattern texture
-    SDL_DestroyTexture(patternTexture);
-
     // Reset render target
-    if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), nullptr) < 0) {
-        LOG_ERROR("Failed to reset render target");
+    if (SDL_SetRenderTarget(pu::ui::render::GetMainRenderer(), NULL) < 0) {
+        LOG_ERROR("Failed to reset render target: " + std::string(SDL_GetError()));
         SDL_DestroyTexture(finalTexture);
         return nullptr;
     }
+
+    // Clean up pattern texture
+    SDL_DestroyTexture(patternTexture);
 
     LOG_DEBUG("Pattern texture creation complete");
     return finalTexture;

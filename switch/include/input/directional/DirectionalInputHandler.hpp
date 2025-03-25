@@ -22,7 +22,7 @@ private:
 
     DPadMoveStatus dpadMoveStatus = DPadMoveStatus::None;
     std::chrono::time_point<std::chrono::steady_clock> dpadMoveStartTime;
-    static constexpr s64 DPAD_MOVE_WAIT_TIME_MS = 150;  // Same as analog stick default
+    static constexpr s64 DPAD_MOVE_WAIT_TIME_MS = 80;  // Same as analog stick default
 
 public:
     DirectionalInputHandler();

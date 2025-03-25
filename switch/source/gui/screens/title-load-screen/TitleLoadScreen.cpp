@@ -66,7 +66,6 @@ pksm::layout::TitleLoadScreen::TitleLoadScreen(
     );
     this->gameList->SetName("GameList Element");
     this->gameList->EstablishOwningRelationship();
-    this->gameList->RequestFocus();
     this->gameList->SetOnSelectionChanged(std::bind(&TitleLoadScreen::LoadSaves, this));
     this->gameList->SetOnTouchSelect(std::bind(&TitleLoadScreen::OnGameTouchSelect, this));
     this->gameList->SetOnSelect(std::bind(&TitleLoadScreen::FocusSaveList, this));

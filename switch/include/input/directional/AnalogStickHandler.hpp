@@ -6,7 +6,7 @@
 namespace pksm::input {
 class AnalogStickHandler {
 private:
-    static constexpr s64 DEFAULT_MOVE_WAIT_TIME_MS = 200;
+    static constexpr s64 DEFAULT_MOVE_WAIT_TIME_MS = 80;
 
     enum class MoveStatus { None, WaitingLeft, WaitingRight, WaitingUp, WaitingDown };
 

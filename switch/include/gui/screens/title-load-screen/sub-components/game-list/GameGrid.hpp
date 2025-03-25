@@ -26,7 +26,6 @@ private:
     // State
     bool focused = false;
     bool selected = false;  // Whether any item in the grid is selected
-    std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds;
     std::function<void()> onSelectionChangedCallback;
     std::function<void()> onTouchSelectCallback;
     std::function<void()> onSelectCallback;
