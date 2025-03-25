@@ -1,6 +1,8 @@
 #pragma once
 
 #include <pu/Plutonium>
+#include <string>
+#include <vector>
 
 #include "utils/PokemonSpriteManager.hpp"
 
@@ -28,6 +30,28 @@ struct BoxPokemonData {
         // Get the sprite from the sprite manager
         return utils::PokemonSpriteManager::GetPokemonSprite(species, form, shiny);
     }
+};
+
+// Structure to encapsulate box data
+struct BoxData {
+    std::vector<BoxPokemonData> pokemon;  // The Pokémon in the box
+    std::string name;  // Name of the box
+
+    // Constructor
+    BoxData(const std::string& name = "Box") : name(name) {}
+
+    // Resize the box to hold a specific number of Pokémon
+    void resize(size_t size, const BoxPokemonData& defaultData = BoxPokemonData()) {
+        pokemon.resize(size, defaultData);
+    }
+
+    // Get the size of the box
+    size_t size() const { return pokemon.size(); }
+
+    // Access operators
+    BoxPokemonData& operator[](size_t index) { return pokemon[index]; }
+
+    const BoxPokemonData& operator[](size_t index) const { return pokemon[index]; }
 };
 
 }  // namespace pksm::ui

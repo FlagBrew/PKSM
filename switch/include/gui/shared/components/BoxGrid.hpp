@@ -10,7 +10,6 @@
 #include "gui/shared/components/IGrid.hpp"
 #include "gui/shared/components/IShakeable.hpp"
 #include "gui/shared/components/SpriteImage.hpp"
-#include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
@@ -19,9 +18,6 @@ namespace pksm::ui {
 
 class BoxGrid : public ISelectable, public IGrid {
 private:
-    // Layout constants
-    static constexpr pu::i32 DEFAULT_ITEMS_PER_ROW = 6;  // Default number of items per row
-    static constexpr pu::i32 DEFAULT_NUMBER_OF_ROWS = 5;  // Default number of rows
     static constexpr pu::i32 GRID_SPACING = 8;  // Spacing between grid items
 
     // Position and size
@@ -31,29 +27,20 @@ private:
     pu::i32 numberOfRows;
 
     // State
-    bool disabled = false;
     bool focused = false;
     bool selected = false;
 
-    // Data source
-    std::vector<std::vector<BoxPokemonData>> boxes;
-    int currentBox = 0;
+    // Current box data
+    BoxData currentBoxData;
 
     // Components
     pu::ui::Container::Ref container;
     std::vector<BoxItem::Ref> items;
-    input::FocusManager::Ref focusManager;
-    input::SelectionManager::Ref selectionManager;
     pksm::input::DirectionalInputHandler inputHandler;
-    input::ButtonInputHandler buttonHandler;
 
     // Event callbacks
-    std::function<void(int, int)> onSelectionChangedCallback;
-    std::function<void(int, int)> onPokemonMovedCallback;
-
-    // Navigation methods
-    void NextBox();
-    void PreviousBox();
+    std::function<void(int)> onSelectionChangedCallback;
+    std::function<void(int)> onPokemonMovedCallback;
 
     // IGrid layout method implementations
     pu::i32 GetItemWidth() const override { return itemSize; }
@@ -68,8 +55,9 @@ public:
         const pu::i32 itemSize,
         input::FocusManager::Ref parentFocusManager,
         input::SelectionManager::Ref parentSelectionManager,
-        const pu::i32 numberOfRows = DEFAULT_NUMBER_OF_ROWS,
-        const pu::i32 itemsPerRow = DEFAULT_ITEMS_PER_ROW
+        const std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds,
+        const pu::i32 numberOfRows,
+        const pu::i32 itemsPerRow
     );
     PU_SMART_CTOR(BoxGrid)
 
@@ -101,33 +89,29 @@ public:
     void SetSelectedIndex(size_t index) override;
 
     // Additional focus/selection methods
-    void RequestFocus();
     void EstablishOwningRelationship();
 
-    // Disable/enable functionality
-    void SetDisabled(bool disabled);
-
-    // Box data methods
-    void SetBoxCount(size_t count);
-    void SetCurrentBox(int boxIndex);
-    int GetCurrentBox() const { return currentBox; }
-
     // Set the data for a specific Pokémon slot
-    void SetPokemonData(int boxIndex, int slotIndex, const BoxPokemonData& data);
-    // Set an entire box of data
-    void SetBoxData(int boxIndex, const std::vector<BoxPokemonData>& boxData);
-    // Get the Pokémon data at the specified box and slot
-    BoxPokemonData GetPokemonData(int boxIndex, int slotIndex) const;
+    void SetPokemonData(int slotIndex, const BoxPokemonData& data);
+
+    // Set the entire box data
+    void SetBoxData(const BoxData& boxData);
+
+    // Get the Pokémon data at the specified slot
+    BoxPokemonData GetPokemonData(int slotIndex) const;
 
     // Update the grid view with current box data
-    void UpdateGridFromCurrentBox();
+    void UpdateGridFromBoxData();
 
     // Event handlers
-    void SetOnSelectionChanged(std::function<void(int, int)> callback) { onSelectionChangedCallback = callback; }
-    void SetOnPokemonMoved(std::function<void(int, int)> callback) { onPokemonMovedCallback = callback; }
+    void SetOnSelectionChanged(std::function<void(int)> callback) { onSelectionChangedCallback = callback; }
+    void SetOnPokemonMoved(std::function<void(int)> callback) { onPokemonMovedCallback = callback; }
 
-    // Handle A button press on selected item
-    bool HandleSelectInput(const u64 keys_down);
+    // Get current selection
+    size_t GetSelectedIndex() const { return selectedIndex; }
+
+    bool ShouldResignUpFocus() const { return IsInFirstRow(selectedIndex); }
+    bool ShouldResignDownFocus() const { return IsInLastRow(selectedIndex); }
 };
 
 }  // namespace pksm::ui

@@ -20,7 +20,7 @@ private:
     pksm::layout::StorageScreen::Ref storageScreen;
 
     // Data providers and managers
-    pksm::data::AccountManager accountManager;
+    std::unique_ptr<pksm::data::AccountManager> accountManager;
     ITitleDataProvider::Ref titleProvider;
     ISaveDataProvider::Ref saveProvider;
     ISaveDataAccessor::Ref saveDataAccessor;
@@ -47,7 +47,14 @@ private:
     void OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save);
 
 public:
-    PKSMApplication(pu::ui::render::Renderer::Ref renderer);
+    PKSMApplication(
+        pu::ui::render::Renderer::Ref renderer,
+        std::unique_ptr<data::AccountManager> accountManager,
+        ITitleDataProvider::Ref titleProvider,
+        ISaveDataProvider::Ref saveProvider,
+        ISaveDataAccessor::Ref saveDataAccessor,
+        IBoxDataProvider::Ref boxDataProvider
+    );
     PU_SMART_CTOR(PKSMApplication)
 
     // Initialize the application with all necessary configuration

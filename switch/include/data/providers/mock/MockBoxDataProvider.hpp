@@ -14,7 +14,7 @@ class MockBoxDataProvider : public IBoxDataProvider {
 private:
     // Map to store box data for different save data
     // Key is a hash of save data info, value is the box data
-    mutable std::map<std::string, std::vector<std::vector<pksm::ui::BoxPokemonData>>> boxDataCache;
+    mutable std::map<std::string, std::vector<pksm::ui::BoxData>> boxDataCache;
 
     // Generate a hash key for a save data
     std::string GenerateSaveKey(const pksm::saves::SaveData::Ref& saveData) const;
@@ -23,8 +23,7 @@ private:
     std::mt19937 CreateSeededRNG(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const;
 
     // Generate mock data for a box
-    std::vector<pksm::ui::BoxPokemonData>
-    GenerateBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const;
+    pksm::ui::BoxData GenerateBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const;
 
 public:
     MockBoxDataProvider();
@@ -33,14 +32,9 @@ public:
     // IBoxDataProvider implementation
     size_t GetBoxCount(const pksm::saves::SaveData::Ref& saveData) const override;
 
-    std::vector<pksm::ui::BoxPokemonData>
-    GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const override;
+    pksm::ui::BoxData GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const override;
 
-    bool SetBoxData(
-        const pksm::saves::SaveData::Ref& saveData,
-        int boxIndex,
-        const std::vector<pksm::ui::BoxPokemonData>& boxData
-    ) override;
+    bool SetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const pksm::ui::BoxData& boxData) override;
 
     bool SetPokemonData(
         const pksm::saves::SaveData::Ref& saveData,

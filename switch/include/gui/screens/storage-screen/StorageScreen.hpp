@@ -10,6 +10,7 @@
 #include "gui/shared/components/BoxGrid.hpp"
 #include "gui/shared/components/HelpFooter.hpp"
 #include "gui/shared/components/HelpOverlay.hpp"
+#include "gui/shared/components/PokemonBox.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
@@ -37,27 +38,27 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(5, 171, 49, 255);
     std::function<void()> onBack;
-    pksm::ui::BoxGrid::Ref boxGrid;
+    pksm::ui::PokemonBox::Ref pokemonBox;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
 
     // Layout constants
     static constexpr pu::i32 BOX_GRID_SIDE_MARGIN = 80;  // Margin from left edge
     static constexpr pu::i32 BOX_GRID_TOP_MARGIN = 120;  // Margin from top
-    static constexpr pu::i32 BOX_ITEM_SIZE = 134;  // Size of each box item
+    static constexpr pu::i32 BOX_ITEM_SIZE = 124;  // Size of each box item
 
     // Focus and selection management
     pksm::input::FocusManager::Ref storageScreenFocusManager;
     pksm::input::SelectionManager::Ref storageScreenSelectionManager;
-    pksm::input::FocusManager::Ref boxGridFocusManager;
-    pksm::input::SelectionManager::Ref boxGridSelectionManager;
+    pksm::input::FocusManager::Ref pokemonBoxFocusManager;
+    pksm::input::SelectionManager::Ref pokemonBoxSelectionManager;
 
     // Input handlers
-    pksm::input::DirectionalInputHandler boxGridHandler;
+    pksm::input::DirectionalInputHandler pokemonBoxDirectionalHandler;
     pksm::input::ButtonInputHandler buttonHandler;
 
     void OnInput(u64 down, u64 up, u64 held);
-    void InitializeBoxGrid();
+    void InitializePokemonBox();
     void InitializeFocusManagement();
 
     // Override BaseLayout methods

@@ -102,8 +102,7 @@ size_t MockBoxDataProvider::GetBoxCount(const pksm::saves::SaveData::Ref& saveDa
     }
 }
 
-std::vector<pksm::ui::BoxPokemonData>
-MockBoxDataProvider::GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const {
+pksm::ui::BoxData MockBoxDataProvider::GetBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const {
     // Check if we have this save's boxes cached already
     std::string saveKey = GenerateSaveKey(saveData);
 
@@ -118,12 +117,12 @@ MockBoxDataProvider::GetBoxData(const pksm::saves::SaveData::Ref& saveData, int 
     }
 
     // Generate box data if it wasn't in the cache
-    std::vector<pksm::ui::BoxPokemonData> boxData = GenerateBoxData(saveData, boxIndex);
+    pksm::ui::BoxData boxData = GenerateBoxData(saveData, boxIndex);
 
     // Create or update the cache
     if (boxDataCache.find(saveKey) == boxDataCache.end()) {
         // Create a new entry
-        boxDataCache[saveKey] = std::vector<std::vector<pksm::ui::BoxPokemonData>>();
+        boxDataCache[saveKey] = std::vector<pksm::ui::BoxData>();
     }
 
     // Ensure we have enough space for this box
@@ -137,13 +136,49 @@ MockBoxDataProvider::GetBoxData(const pksm::saves::SaveData::Ref& saveData, int 
     return boxData;
 }
 
-std::vector<pksm::ui::BoxPokemonData>
-MockBoxDataProvider::GenerateBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const {
+pksm::ui::BoxData MockBoxDataProvider::GenerateBoxData(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const {
     // Box size is always 30 (6x5)
     const int SLOTS_PER_BOX = 30;
 
     // Create a seeded RNG for this box
     std::mt19937 seededRng = CreateSeededRNG(saveData, boxIndex);
+
+    // Generate box name - with 8% chance of custom name
+    std::string boxName;
+
+    // Distribution for determining if we use a custom name (8% chance)
+    std::uniform_int_distribution<int> customNameDist(1, 100);
+    // Distribution for selecting from our custom names
+    std::uniform_int_distribution<int> nameSelectionDist(0, 13);
+
+    // List of fun/plausible custom box names
+    const std::vector<std::string> customNames = {
+        "Favorites",
+        "Shinies",
+        "Breeding",
+        "Legendaries",
+        "Teams",
+        "Trade",
+        "Starters",
+        "Contest",
+        "Battlers",
+        "Rare Finds",
+        "Dreams",
+        "Mythicals",
+        "Ultra-Beasts",
+        "Marked shinies"
+    };
+
+    // 8% chance to use a custom name
+    if (customNameDist(seededRng) <= 8) {
+        boxName = customNames[nameSelectionDist(seededRng)];
+    } else {
+        // Default naming scheme
+        boxName = "Box " + std::to_string(boxIndex + 1);
+    }
+
+    // Create the BoxData with the generated name
+    pksm::ui::BoxData boxData(boxName);
 
     // Determine the generation for species range
     // Default max species based on generation
@@ -183,19 +218,19 @@ MockBoxDataProvider::GenerateBoxData(const pksm::saves::SaveData::Ref& saveData,
             maxSpecies = 1025;  // Default to all species
     }
 
-    // Create box data with randomized content
-    std::vector<pksm::ui::BoxPokemonData> boxData;
-
     // Distribution for generating random values
     std::uniform_int_distribution<int> emptyDist(1, 100);  // For determining if slot is empty
     std::uniform_int_distribution<u16> speciesDist(1, maxSpecies);  // Random species
     std::uniform_int_distribution<int> shinyDist(1, 100);  // For determining if Pokémon is shiny
 
-    // Fill each box with 30 slots
+    // Resize the box to hold the correct number of slots
+    boxData.resize(SLOTS_PER_BOX);
+
+    // Fill each box with Pokémon data
     for (int slot = 0; slot < SLOTS_PER_BOX; slot++) {
         // 20% chance of empty slot
         if (emptyDist(seededRng) <= 20) {
-            boxData.push_back(pksm::ui::BoxPokemonData());
+            boxData[slot] = pksm::ui::BoxPokemonData();
         } else {
             // Random species within the generation's range
             u16 species = speciesDist(seededRng);
@@ -204,7 +239,7 @@ MockBoxDataProvider::GenerateBoxData(const pksm::saves::SaveData::Ref& saveData,
             bool shiny = (shinyDist(seededRng) <= 10);
 
             // Use form 0 to avoid issues with missing forms
-            boxData.push_back(pksm::ui::BoxPokemonData(species, 0, shiny));
+            boxData[slot] = pksm::ui::BoxPokemonData(species, 0, shiny);
         }
     }
 
@@ -214,7 +249,7 @@ MockBoxDataProvider::GenerateBoxData(const pksm::saves::SaveData::Ref& saveData,
 bool MockBoxDataProvider::SetBoxData(
     const pksm::saves::SaveData::Ref& saveData,
     int boxIndex,
-    const std::vector<pksm::ui::BoxPokemonData>& boxData
+    const pksm::ui::BoxData& boxData
 ) {
     // Verify the save data is valid
     if (!saveData) {
@@ -227,7 +262,7 @@ bool MockBoxDataProvider::SetBoxData(
 
     // Create cache entry if it doesn't exist
     if (boxDataCache.find(saveKey) == boxDataCache.end()) {
-        boxDataCache[saveKey] = std::vector<std::vector<pksm::ui::BoxPokemonData>>(GetBoxCount(saveData));
+        boxDataCache[saveKey] = std::vector<pksm::ui::BoxData>(GetBoxCount(saveData));
     }
 
     // Verify box index is valid
@@ -254,7 +289,7 @@ bool MockBoxDataProvider::SetPokemonData(
     }
 
     // Get current box data (will generate it if not in cache)
-    std::vector<pksm::ui::BoxPokemonData> boxData = GetBoxData(saveData, boxIndex);
+    pksm::ui::BoxData boxData = GetBoxData(saveData, boxIndex);
 
     // Verify slot index is valid
     if (slotIndex < 0 || slotIndex >= static_cast<int>(boxData.size())) {
