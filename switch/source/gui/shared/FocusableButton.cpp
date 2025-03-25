@@ -16,7 +16,6 @@ pksm::ui::FocusableButton::FocusableButton(
     normalColor(normalColor),
     focusedColor(focusedColor),
     onClickCallback(nullptr),
-    onTouchSelectCallback(nullptr),
     onCancelCallback(nullptr),
     disabled(false),
     x(x),
@@ -37,8 +36,8 @@ pksm::ui::FocusableButton::FocusableButton(
 
     // Setup touch handler callbacks
     touchHandler.SetOnTouchUpInside([this]() {
-        if (!focused && onTouchSelectCallback) {
-            onTouchSelectCallback();
+        if (!focused) {
+            RequestFocus();
         } else if (focused && onClickCallback) {
             onClickCallback();
         }

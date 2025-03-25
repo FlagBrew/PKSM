@@ -29,6 +29,9 @@ public:
     PU_SMART_CTOR(MainMenu)
     ~MainMenu();
 
+    // Public method to update trainer info when save data changes
+    void UpdateTrainerInfo();
+
 private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(39, 66, 164, 255);
@@ -47,7 +50,6 @@ private:
     static constexpr pu::i32 MENU_GRID_MARGIN = 32;  // Margin between TrainerInfo and MenuButtonGrid
 
     void OnInput(u64 down, u64 up, u64 held);
-    void UpdateTrainerInfo();
     void RegisterNavigationCallbacks();
 
     // Override BaseLayout methods

@@ -65,6 +65,7 @@ pksm::ui::BoxItem::BoxItem(
     touchHandler.SetOnTouchUpInside([this]() {
         if (!focused && onTouchSelectCallback) {
             onTouchSelectCallback();
+            RequestFocus();
         } else if (focused && onSelectCallback) {
             onSelectCallback();
         }

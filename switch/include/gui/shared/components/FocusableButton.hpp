@@ -21,7 +21,6 @@ private:
     pu::ui::Color focusedColor;
     pksm::ui::PulsingOutline::Ref outline;
     std::function<void()> onClickCallback;
-    std::function<void()> onTouchSelectCallback;
     std::function<void()> onCancelCallback;
     std::string helpText;  // Text to show for A button in help
     bool disabled;  // Whether the button is disabled
@@ -71,7 +70,6 @@ public:
     void SetContentColor(const pu::ui::Color& color);
     void SetBackgroundColor(const pu::ui::Color& color);
     void SetOnClick(std::function<void()> callback) { onClickCallback = callback; }
-    void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
     void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }
 
     // Disable/enable the button

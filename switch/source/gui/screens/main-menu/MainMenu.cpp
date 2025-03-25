@@ -78,16 +78,6 @@ MainMenu::MainMenu(
         std::bind(&MainMenu::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
     );
 
-    // Set up save data change callback
-    saveDataAccessor->setOnSaveDataChanged([this](pksm::saves::SaveData::Ref saveData) {
-        LOG_DEBUG("Save data changed, updating trainer info");
-        menuGrid->SetSelectedIndex(0);
-        UpdateTrainerInfo();
-    });
-
-    // Update trainer info with current save data
-    UpdateTrainerInfo();
-
     LOG_DEBUG("MainMenu initialization complete");
 }
 
@@ -104,6 +94,7 @@ void MainMenu::RegisterNavigationCallbacks() {
 void MainMenu::UpdateTrainerInfo() {
     auto saveData = saveDataAccessor->getCurrentSaveData();
     if (saveData) {
+        menuGrid->SetSelectedIndex(0);
         LOG_DEBUG("Updating trainer info with save data");
 
         // Update trainer info with save data

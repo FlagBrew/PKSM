@@ -41,12 +41,10 @@ public:
 
     // ISaveDataAccessor interface implementation
     pksm::saves::SaveData::Ref getCurrentSaveData() const override;
+    bool loadSave(const pksm::titles::Title::Ref title, const std::string saveName) override;
     void setOnSaveDataChanged(std::function<void(pksm::saves::SaveData::Ref)> callback) override {
         onSaveDataChanged = callback;
     }
     bool saveChanges() override;
     bool hasUnsavedChanges() const override;
-
-    // Load a mock save for the given title and save name
-    bool loadMockSave(const pksm::titles::Title::Ref& title, const std::string& saveName);
 };
