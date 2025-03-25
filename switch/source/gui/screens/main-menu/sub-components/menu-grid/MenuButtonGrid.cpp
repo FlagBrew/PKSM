@@ -5,21 +5,21 @@
 namespace pksm::ui {
 
 MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 width)
-  : Element(), x(x), y(y), width(width), selectedIndex(0) {
+  : pu::ui::elm::Element(), IGrid(BUTTONS_PER_ROW, {}), x(x), y(y), width(width) {
     LOG_DEBUG("Initializing MenuButtonGrid...");
 
     // Initialize container
-    container = pu::ui::Container::New(x, y, width, 0);  // Height will be updated after initialization
+    container = pu::ui::Container::New(x, y, width, GetHeight());  // Use GetHeight() for height
 
     // Initialize focus manager
     focusManager = input::FocusManager::New("MenuButtonGrid Manager");
     focusManager->SetActive(true);  // since this is the root manager
 
     // Set up input handling
-    inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
-    inputHandler.SetOnMoveRight([this]() { MoveRight(); });
-    inputHandler.SetOnMoveUp([this]() { MoveUp(); });
-    inputHandler.SetOnMoveDown([this]() { MoveDown(); });
+    inputHandler.SetOnMoveLeft([this]() { IGrid::MoveLeft(); });
+    inputHandler.SetOnMoveRight([this]() { IGrid::MoveRight(); });
+    inputHandler.SetOnMoveUp([this]() { IGrid::MoveUp(); });
+    inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
 
     // Calculate button size based on available width
     const pu::i32 availableWidth = width - (GRID_PADDING * 2) - (BUTTON_SPACING * (BUTTONS_PER_ROW - 1));
@@ -28,7 +28,7 @@ MenuButtonGrid::MenuButtonGrid(const pu::i32 x, const pu::i32 y, const pu::i32 w
     InitializeButtons();
 
     // Update container height and prepare elements
-    container->SetHeight(height);
+    container->SetHeight(GetHeight());  // Use GetHeight() instead of height variable
     container->PreRender();
 
     // Set initial selection after buttons are created
@@ -51,25 +51,17 @@ void MenuButtonGrid::InitializeButtons() {
         {MenuButtonType::Settings, {"Settings", "icon_settings"}}
     };
 
-    // Calculate total rows needed
-    const size_t totalRows = (buttonData.size() + BUTTONS_PER_ROW - 1) / BUTTONS_PER_ROW;
-
-    // Calculate total height needed
-    height = (totalRows * buttonSize) + ((totalRows - 1) * BUTTON_SPACING) + (GRID_PADDING * 2);
-
-    // Calculate starting position to center the grid vertically
-    const pu::i32 startY = y + GRID_PADDING;
-
     for (size_t i = 0; i < buttonData.size(); i++) {
-        const size_t row = i / BUTTONS_PER_ROW;
-        const size_t col = i % BUTTONS_PER_ROW;
+        // Calculate position using IGrid's helper method
+        auto position = CalculateItemPosition(i);
 
-        const pu::i32 buttonX = x + GRID_PADDING + (col * (buttonSize + BUTTON_SPACING));
-        const pu::i32 buttonY = startY + (row * (buttonSize + BUTTON_SPACING));
+        // Apply padding offset
+        const pu::i32 buttonX = position.first - x + GRID_PADDING;  // Adjust for container position
+        const pu::i32 buttonY = position.second - y + GRID_PADDING;  // Adjust for container position
 
         auto button = MenuButton::New(
-            buttonX,
-            buttonY,
+            x + buttonX,
+            y + buttonY,
             buttonSize,
             buttonSize,
             buttonData[i].second.first,
@@ -117,52 +109,12 @@ void MenuButtonGrid::SetSelectedIndex(size_t index) {
     }
 }
 
-void MenuButtonGrid::MoveLeft() {
-    if (IsFirstInRow(selectedIndex)) {
-        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::LEFT);
-    } else {
-        SetSelectedIndex(selectedIndex - 1);
-    }
-}
-
-void MenuButtonGrid::MoveRight() {
-    if (IsLastInRow(selectedIndex)) {
-        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::RIGHT);
-    } else {
-        SetSelectedIndex(selectedIndex + 1);
-    }
-}
-
-void MenuButtonGrid::MoveUp() {
-    if (IsInFirstRow(selectedIndex)) {
-        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::UP);
-    } else {
-        SetSelectedIndex(selectedIndex - BUTTONS_PER_ROW);
-    }
-}
-
-void MenuButtonGrid::MoveDown() {
-    if (IsInLastRow(selectedIndex)) {
-        buttons[selectedIndex]->shakeOutOfBounds(ShakeDirection::DOWN);
-    } else if ((selectedIndex + BUTTONS_PER_ROW) < buttons.size()) {
-        SetSelectedIndex(selectedIndex + BUTTONS_PER_ROW);
-    }
-}
-
 pu::i32 MenuButtonGrid::GetX() {
     return x;
 }
 
 pu::i32 MenuButtonGrid::GetY() {
     return y;
-}
-
-pu::i32 MenuButtonGrid::GetWidth() {
-    return width;
-}
-
-pu::i32 MenuButtonGrid::GetHeight() {
-    return height;
 }
 
 void MenuButtonGrid::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {

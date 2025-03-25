@@ -14,12 +14,11 @@ pksm::ui::GameGrid::GameGrid(
     input::SelectionManager::Ref parentSelectionManager,
     const std::map<ShakeDirection, bool> shouldConsiderSideOutOfBounds
 )
-  : Element(),
-    selectedIndex(0),
-    itemsPerRow(itemsPerRow),
+  : pu::ui::elm::Element(),
+    ISelectable(),
+    IGrid(itemsPerRow, shouldConsiderSideOutOfBounds),
     focused(false),
     selected(false),
-    shouldConsiderSideOutOfBounds(shouldConsiderSideOutOfBounds),
     x(x),
     y(y),
     height(height) {
@@ -39,10 +38,10 @@ pksm::ui::GameGrid::GameGrid(
     container->PreRender();
 
     // Set up input handler
-    inputHandler.SetOnMoveLeft([this]() { MoveLeft(); });
-    inputHandler.SetOnMoveRight([this]() { MoveRight(); });
-    inputHandler.SetOnMoveUp([this]() { MoveUp(); });
-    inputHandler.SetOnMoveDown([this]() { MoveDown(); });
+    inputHandler.SetOnMoveLeft([this]() { IGrid::MoveLeft(); });
+    inputHandler.SetOnMoveRight([this]() { IGrid::MoveRight(); });
+    inputHandler.SetOnMoveUp([this]() { IGrid::MoveUp(); });
+    inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
 
     SetFocusManager(parentFocusManager);
     SetSelectionManager(parentSelectionManager);
@@ -50,22 +49,27 @@ pksm::ui::GameGrid::GameGrid(
     LOG_DEBUG("GameGrid component initialization complete");
 }
 
+void pksm::ui::GameGrid::SetSelectedIndex(size_t index) {
+    if (index >= 0 && index < gameImages.size() && selectedIndex != index) {
+        selectedIndex = index;
+        EnsureRowVisible(index / itemsPerRow);
+
+        // Request focus on the newly selected game
+        if (focused) {
+            gameImages[selectedIndex]->RequestFocus();
+        }
+
+        HandleOnSelectionChanged();
+    }
+}
+
+// Element implementation methods
 pu::i32 pksm::ui::GameGrid::GetX() {
     return x;
 }
 
 pu::i32 pksm::ui::GameGrid::GetY() {
     return y;
-}
-
-pu::i32 pksm::ui::GameGrid::GetWidth() {
-    // Width is the space needed for all items in a row
-    return GAME_SPACING * (itemsPerRow - 1) + INSTALLED_GAME_SIZE;
-}
-
-pu::i32 pksm::ui::GameGrid::GetHeight() {
-    // Use ScrollView's height if set
-    return height;
 }
 
 void pksm::ui::GameGrid::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -129,21 +133,15 @@ void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& ti
 
     // Create game images for all titles
     for (size_t i = 0; i < titles.size(); i++) {
-        // Calculate grid position
-        size_t row = i / itemsPerRow;  // Integer division for row number
-        size_t col = i % itemsPerRow;  // Modulo for column number
+        // Calculate position using IGrid's helper method
+        auto position = CalculateItemPosition(i);
 
-        auto gameImage = FocusableImage::New(
-            GetX() + (col * GAME_SPACING),
-            y + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)),
-            titles[i]->getIcon(),
-            94,
-            GAME_OUTLINE_PADDING
-        );
+        auto gameImage =
+            FocusableImage::New(position.first, position.second, titles[i]->getIcon(), 94, GAME_OUTLINE_PADDING);
         gameImage->IFocusable::SetName("GameImage Element with title: " + titles[i]->getName());
         gameImage->ISelectable::SetName("GameImage Element with title: " + titles[i]->getName());
-        gameImage->SetWidth(INSTALLED_GAME_SIZE);
-        gameImage->SetHeight(INSTALLED_GAME_SIZE);
+        gameImage->SetWidth(GetItemWidth());
+        gameImage->SetHeight(GetItemHeight());
 
         // Set up touch handling for this game
         const size_t index = i;  // Store index for lambda capture
@@ -197,40 +195,6 @@ size_t pksm::ui::GameGrid::GetSelectedIndex() const {
     return selectedIndex;
 }
 
-void pksm::ui::GameGrid::MoveLeft() {
-    if (IsFirstInRow()) {
-        gameImages[selectedIndex]->shakeOutOfBounds(ShakeDirection::LEFT);
-    } else {
-        SetSelectedIndex(selectedIndex - 1);
-    }
-}
-
-void pksm::ui::GameGrid::MoveRight() {
-    if (IsLastInRow() && shouldConsiderSideOutOfBounds[ShakeDirection::RIGHT]) {
-        gameImages[selectedIndex]->shakeOutOfBounds(ShakeDirection::RIGHT);
-    } else {
-        SetSelectedIndex(selectedIndex + 1);
-    }
-}
-
-void pksm::ui::GameGrid::MoveUp() {
-    if (InOnTopRow()) {
-        return;
-    } else {
-        SetSelectedIndex(selectedIndex - itemsPerRow);
-    }
-}
-
-void pksm::ui::GameGrid::MoveDown() {
-    if (IsOnBottomRow()) {
-        return;
-    } else if (selectedIndex + itemsPerRow < gameImages.size()) {
-        SetSelectedIndex(selectedIndex + itemsPerRow);
-    } else {
-        SetSelectedIndex(gameImages.size() - 1);
-    }
-}
-
 bool pksm::ui::GameGrid::IsSelected() const {
     return selected;
 }
@@ -245,26 +209,12 @@ void pksm::ui::GameGrid::HandleOnSelectionChanged() {
     }
 }
 
-void pksm::ui::GameGrid::SetSelectedIndex(size_t index) {
-    if (index >= 0 && index < gameImages.size() && selectedIndex != index) {
-        selectedIndex = index;
-        EnsureRowVisible(index / itemsPerRow);
-
-        // Request focus on the newly selected game
-        if (focused) {
-            gameImages[selectedIndex]->RequestFocus();
-        }
-
-        HandleOnSelectionChanged();
-    }
-}
-
 void pksm::ui::GameGrid::EnsureRowVisible(size_t row) {
     if (gameImages.empty())
         return;
 
     // Calculate row boundaries including outline padding
-    pu::i32 rowTop = 0 + (row * (INSTALLED_GAME_SIZE + ROW_SPACING)) - GAME_OUTLINE_PADDING;
+    pu::i32 rowTop = 0 + (row * (GetItemHeight() + GetVerticalSpacing())) - GAME_OUTLINE_PADDING;
 
     // Scroll to make the row visible
     scrollView->ScrollToOffset(rowTop, true);

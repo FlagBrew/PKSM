@@ -3,12 +3,10 @@
 #include <pu/Plutonium>
 
 #include "gui/shared/UIConstants.hpp"
+#include "gui/shared/components/ShakeDirection.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
 
 namespace pksm::ui {
-
-// Direction enum for shake animation
-enum class ShakeDirection { UP, DOWN, LEFT, RIGHT };
 
 // Simple struct to represent an offset in 2D space
 struct ShakeOffset {
