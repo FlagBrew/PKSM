@@ -25,6 +25,7 @@ protected:
 
 public:
     virtual ~ShakeableWithOutline() = default;
+    PU_SMART_CTOR(ShakeableWithOutline)
 
     /**
      * Implementation of IShakeable interface that delegates to the pulsing outline.

@@ -7,6 +7,7 @@
 
 #include "gui/shared/components/BoxItem.hpp"
 #include "gui/shared/components/BoxPokemonData.hpp"
+#include "gui/shared/components/IGrid.hpp"
 #include "gui/shared/components/IShakeable.hpp"
 #include "gui/shared/components/SpriteImage.hpp"
 #include "input/ButtonInputHandler.hpp"
@@ -16,7 +17,7 @@
 
 namespace pksm::ui {
 
-class BoxGrid : public pu::ui::elm::Element, public ISelectable {
+class BoxGrid : public ISelectable, public IGrid {
 private:
     // Layout constants
     static constexpr pu::i32 DEFAULT_ITEMS_PER_ROW = 6;  // Default number of items per row
@@ -26,14 +27,10 @@ private:
     // Position and size
     pu::i32 x;
     pu::i32 y;
-    pu::i32 width;
-    pu::i32 height;
     pu::i32 itemSize;
     pu::i32 numberOfRows;
-    pu::i32 itemsPerRow;
 
     // State
-    size_t selectedIndex = 0;
     bool disabled = false;
     bool focused = false;
     bool selected = false;
@@ -55,18 +52,14 @@ private:
     std::function<void(int, int)> onPokemonMovedCallback;
 
     // Navigation methods
-    void MoveLeft();
-    void MoveRight();
-    void MoveUp();
-    void MoveDown();
     void NextBox();
     void PreviousBox();
 
-    // Grid state queries
-    bool IsFirstInRow(size_t index) const { return index % itemsPerRow == 0; }
-    bool IsLastInRow(size_t index) const { return (index + 1) % itemsPerRow == 0 || index == items.size() - 1; }
-    bool IsInFirstRow(size_t index) const { return index < static_cast<size_t>(itemsPerRow); }
-    bool IsInLastRow(size_t index) const { return index >= (items.size() - static_cast<size_t>(itemsPerRow)); }
+    // IGrid layout method implementations
+    pu::i32 GetItemWidth() const override { return itemSize; }
+    pu::i32 GetItemHeight() const override { return itemSize; }
+    pu::i32 GetHorizontalSpacing() const override { return GRID_SPACING; }
+    pu::i32 GetVerticalSpacing() const override { return GRID_SPACING; }
 
 public:
     BoxGrid(
@@ -83,8 +76,8 @@ public:
     // Element implementation
     pu::i32 GetX() override;
     pu::i32 GetY() override;
-    pu::i32 GetWidth() override;
-    pu::i32 GetHeight() override;
+    pu::i32 GetWidth() override { return CalculateDefaultGridWidth(); }
+    pu::i32 GetHeight() override { return CalculateDefaultGridHeight(); }
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
     void
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
@@ -97,16 +90,22 @@ public:
     void SetSelected(bool selected) override;
     bool IsSelected() const override;
 
+    // IGrid implementations (required abstract methods only)
+    size_t GetItemCount() const override { return items.size(); }
+    ShakeableWithOutline::Ref GetItemAtIndex(size_t index) override {
+        if (index < items.size()) {
+            return items[index];
+        }
+        return nullptr;
+    }
+    void SetSelectedIndex(size_t index) override;
+
     // Additional focus/selection methods
     void RequestFocus();
     void EstablishOwningRelationship();
 
     // Disable/enable functionality
     void SetDisabled(bool disabled);
-
-    // Get the currently selected index
-    size_t GetSelectedIndex() const { return selectedIndex; }
-    void SetSelectedIndex(size_t index);
 
     // Box data methods
     void SetBoxCount(size_t count);
