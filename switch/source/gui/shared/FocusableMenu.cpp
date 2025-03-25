@@ -82,11 +82,10 @@ void pksm::ui::FocusableMenu::OnInput(
         if (!focused && onTouchSelectCallback) {
             onTouchSelectCallback();
         }
-    } else if (focused) {
-        inputHandler.HandleInput(keys_down, keys_held);
-        Menu::OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
 
-        // Handle button inputs
+    if (focused) {
+        inputHandler.HandleInput(keys_down, keys_held);
         buttonHandler.HandleInput(keys_down, keys_up, keys_held);
     }
 }

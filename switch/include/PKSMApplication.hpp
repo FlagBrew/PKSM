@@ -5,9 +5,7 @@
 #include <switch.h>
 
 #include "data/AccountManager.hpp"
-#include "data/providers/mock/MockSaveDataAccessor.hpp"
-#include "data/providers/mock/MockSaveDataProvider.hpp"
-#include "data/providers/mock/MockTitleDataProvider.hpp"
+#include "data/providers/interfaces/IBoxDataProvider.hpp"
 #include "gui/screens/main-menu/MainMenu.hpp"
 #include "gui/screens/storage-screen/StorageScreen.hpp"
 #include "gui/screens/title-load-screen/TitleLoadScreen.hpp"
@@ -25,7 +23,8 @@ private:
     pksm::data::AccountManager accountManager;
     ITitleDataProvider::Ref titleProvider;
     ISaveDataProvider::Ref saveProvider;
-    std::shared_ptr<MockSaveDataAccessor> saveDataAccessor;
+    ISaveDataAccessor::Ref saveDataAccessor;
+    IBoxDataProvider::Ref boxDataProvider;
 
     // Initialize renderer options with basic configuration
     static pu::ui::render::RendererInitOptions CreateRendererOptions();

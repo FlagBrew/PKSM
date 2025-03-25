@@ -2,9 +2,14 @@
 
 #include <sstream>
 
+#include "data/providers/mock/MockBoxDataProvider.hpp"
+#include "data/providers/mock/MockSaveDataAccessor.hpp"
+#include "data/providers/mock/MockSaveDataProvider.hpp"
+#include "data/providers/mock/MockTitleDataProvider.hpp"
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
+#include "utils/PokemonSpriteManager.hpp"
 
 namespace pksm {
 
@@ -107,6 +112,11 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         // Register additional fonts after romfs is mounted
         RegisterAdditionalFonts();
 
+        if (!utils::PokemonSpriteManager::Initialize("romfs:/gfx/pokesprites/pokesprite.json")) {
+            LOG_ERROR("Failed to initialize Pokemon sprite manager");
+            return nullptr;
+        }
+
         auto recordingInitResult = appletInitializeGamePlayRecording();
         if (R_FAILED(recordingInitResult)) {
             LOG_ERROR("Failed to initialize game play recording");
@@ -147,9 +157,8 @@ void PKSMApplication::ShowStorageScreen() {
 
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
-
     // Load the mock save data based on the title and save name
-    if (saveDataAccessor->loadMockSave(title, save->getName())) {
+    if (saveDataAccessor->loadSave(title, save->getName())) {
         LOG_DEBUG("Successfully loaded mock save data");
 
         // Now that the save is loaded, show the main menu
@@ -177,6 +186,7 @@ void PKSMApplication::OnLoad() {
         titleProvider = std::make_shared<MockTitleDataProvider>(accountManager.GetCurrentAccount());
         saveProvider = std::make_shared<MockSaveDataProvider>(accountManager.GetCurrentAccount());
         saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
+        boxDataProvider = std::make_shared<MockBoxDataProvider>();
 
         // Create navigation callbacks for menu buttons
         LOG_DEBUG("Creating navigation callbacks...");
@@ -194,8 +204,28 @@ void PKSMApplication::OnLoad() {
         storageScreen = pksm::layout::StorageScreen::New(
             [this]() { this->ShowMainMenu(); },  // Back handler goes to main menu
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); }
+            [this]() { this->EndOverlay(); },
+            saveDataAccessor,  // Pass the save data accessor
+            boxDataProvider  // Pass the box data provider
         );
+
+        // Register for save data changes in both MainMenu and StorageScreen
+        LOG_DEBUG("Setting up save data change callbacks...");
+        saveDataAccessor->setOnSaveDataChanged([this](pksm::saves::SaveData::Ref saveData) {
+            LOG_DEBUG("Save data changed, updating UI");
+
+            // Update main menu with new save data
+            if (mainMenu) {
+                LOG_DEBUG("Updating MainMenu with new save data");
+                mainMenu->UpdateTrainerInfo();
+            }
+
+            // Preload box data for storage screen
+            if (storageScreen && saveData) {
+                LOG_DEBUG("Preloading box data for StorageScreen");
+                storageScreen->LoadBoxData();
+            }
+        });
 
         // Create main menu with back callback and overlay handlers
         LOG_DEBUG("Creating main menu...");

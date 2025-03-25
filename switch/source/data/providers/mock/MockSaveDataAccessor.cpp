@@ -43,7 +43,7 @@ std::mt19937 MockSaveDataAccessor::createSeededRNG(u64 titleId, const std::strin
     return std::mt19937(seed);
 }
 
-bool MockSaveDataAccessor::loadMockSave(const pksm::titles::Title::Ref& title, const std::string& saveName) {
+bool MockSaveDataAccessor::loadSave(const pksm::titles::Title::Ref title, const std::string saveName) {
     pksm::utils::Logger::Debug("Loading mock save for title: " + title->getName() + ", save: " + saveName);
 
     u64 titleId = title->getTitleId();
