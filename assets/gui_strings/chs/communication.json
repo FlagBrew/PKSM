@@ -1,15 +1,15 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "您想要发送更改的文件",
-    "BRIDGE_SHOULD_SEND_2": "到原始客户端吗?",
-    "CLOUD_BOX": "Cloud {:d}",
-    "DOWNLOADING_FILE": "下载 {:s}...",
-    "GPSS_DOWNLOAD": "下载此GPSS Pokémon?",
-    "GPSS_DOWNLOAD_GROUP": "Download group from GPSS?",
-    "PKM_LEGALIZED": "Your Pokémon is now legal!",
-    "SHARE_CODE_ENTER_PROMPT": "您要输入共享代码吗？",
-    "SHARE_DOWNLOAD_CODE": "你的下载代码是",
-    "SHARE_SEND_CONFIRM": "分享这个 Pokémon?",
-    "UPLOAD_GROUP": "Upload group to GPSS?",
+    "BRIDGE_SHOULD_SEND_1": "您想要发送更改后的文件",
+    "BRIDGE_SHOULD_SEND_2": "到原始客户端吗？",
+    "CLOUD_BOX": "云盒子 {:d}",
+    "DOWNLOADING_FILE": "正在下载 {:s}...",
+    "GPSS_DOWNLOAD": "下载这个GPSS宝可梦吗？",
+    "GPSS_DOWNLOAD_GROUP": "从GPSS下载群组吗？",
+    "PKM_LEGALIZED": "您的宝可梦现在合法了！",
+    "SHARE_CODE_ENTER_PROMPT": "您想要输入一个分享代码吗？",
+    "SHARE_DOWNLOAD_CODE": "您的下载代码是",
+    "SHARE_SEND_CONFIRM": "分享这个宝可梦吗？",
+    "UPLOAD_GROUP": "上传群组到GPSS吗？",
     "WIRELESS_IP": "IP地址: {:s}",
-    "WIRELESS_WARNING": "这将锁定您的主机直到收到存档."
+    "WIRELESS_WARNING": "这将会锁定您的控制台，直到接收到一个保存。"
 }
