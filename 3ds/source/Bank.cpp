@@ -182,7 +182,7 @@ void Bank::load(int maxBoxes)
         auto json = ARCHIVE.file(JSON(paths), FS_OPEN_READ);
         if (json)
         {
-            size_t jsonSize = in->size();
+            size_t jsonSize = json->size();
             char* jsonData  = new char[jsonSize + 1];
             json->read(jsonData, jsonSize);
             json->close();
