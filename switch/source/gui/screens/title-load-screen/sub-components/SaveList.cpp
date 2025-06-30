@@ -1,0 +1,71 @@
+#include "gui/screens/title-load-screen/sub-components/SaveList.hpp"
+
+#include "utils/Logger.hpp"
+
+namespace pksm::ui {
+
+SaveList::SaveList(const pu::i32 x, const pu::i32 y, const pu::i32 width)
+  : FocusableMenu(
+        x,
+        y,
+        width,
+        SAVE_LIST_BACKGROUND_COLOR,
+        SAVE_LIST_SELECTION_COLOR,
+        SAVE_ITEM_HEIGHT,
+        SAVE_LIST_MAX_VISIBLE_ITEMS
+    ) {
+    LOG_DEBUG("Initializing SaveList");
+
+    // Configure scrollbar
+    SetScrollbarColor(SAVE_LIST_SELECTION_COLOR);
+    SetScrollbarWidth(SCROLLBAR_WIDTH);
+}
+
+pu::i32 SaveList::GetHeight() const {
+    return GetMaxHeight();
+}
+
+void SaveList::SetDataSource(const std::vector<saves::Save::Ref>& saves) {
+    LOG_DEBUG("Setting SaveList data source with " + std::to_string(saves.size()) + " saves");
+    this->saves = saves;
+
+    // Convert saves to display strings
+    std::vector<std::string> displayStrings;
+    for (const auto& save : saves) {
+        displayStrings.push_back(save->getName());
+    }
+
+    // Set display strings in base menu
+    FocusableMenu::SetDataSource(displayStrings);
+}
+
+saves::Save::Ref SaveList::GetSelectedSave() const {
+    pu::i32 selectedIndex = GetSelectedIndex();
+    if (selectedIndex >= 0 && static_cast<size_t>(selectedIndex) < saves.size()) {
+        return saves[selectedIndex];
+    }
+    return nullptr;
+}
+
+std::string SaveList::GetSelectedSaveText() const {
+    return GetSelectedItemText();
+}
+
+void SaveList::SetOnSelectionChanged(std::function<void()> callback) {
+    onSelectionChangedCallback = callback;
+    // Set base menu callback to trigger our callback
+    FocusableMenu::SetOnSelectionChanged([this]() {
+        if (onSelectionChangedCallback) {
+            onSelectionChangedCallback();
+        }
+    });
+}
+
+std::vector<HelpItem> SaveList::GetHelpItems() const {
+    if (!IsFocused()) {
+        return {};
+    }
+    return {{{pksm::ui::global::ButtonGlyph::A}, "Select Save"}, {{pksm::ui::global::ButtonGlyph::B}, "Back"}};
+}
+
+}  // namespace pksm::ui
