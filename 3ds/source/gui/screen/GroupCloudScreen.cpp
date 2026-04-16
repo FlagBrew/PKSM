@@ -46,12 +46,14 @@
 #include "utils/format.hpp"
 #include "website.h"
 #include <algorithm>
+#include <cstdlib>
 #include <format>
 #include <sys/stat.h>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
              i18n::localize("Y_GROUP_SINGLE") + '\n' + i18n::localize("START_FILTER_LEGAL") + '\n' +
+             "SELECT: " + i18n::localize("BOX_JUMP") + '\n' +
              i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
              i18n::localize("B_BACK")),
       filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
@@ -389,7 +391,29 @@ void GroupCloudScreen::update(touchPosition* touch)
         }
     }
     u32 kDown   = hidKeysDown();
+    u32 kUp     = hidKeysUp();
     u32 kRepeat = hidKeysDownRepeat();
+
+    if (pendingPageJump)
+    {
+        if (hidKeysHeld() & KEY_SELECT)
+        {
+            pendingPageJumpFrames++;
+            if (pendingPageJumpFrames >= 15)
+            {
+                pendingPageJump      = false;
+                pendingPageJumpFrames = 0;
+            }
+            return;
+        }
+
+        pendingPageJump      = false;
+        pendingPageJumpFrames = 0;
+        if ((kUp & KEY_SELECT) && jumpBoxTop())
+        {
+            return;
+        }
+    }
 
     if (kDown & KEY_B)
     {
@@ -448,6 +472,12 @@ void GroupCloudScreen::update(touchPosition* touch)
     else if (kDown & KEY_START)
     {
         access.filterLegal(!access.filterLegal());
+    }
+    else if (kDown & KEY_SELECT)
+    {
+        pendingPageJump      = true;
+        pendingPageJumpFrames = 1;
+        return;
     }
 
     if (kRepeat & KEY_LEFT)
@@ -542,14 +572,16 @@ void GroupCloudScreen::update(touchPosition* touch)
     }
     else if (kRepeat & KEY_ZR)
     {
-        if (nextBoxTop())
+        const int pageJump = Configuration::getInstance().cloudPageJump();
+        if ((pageJump <= 1 ? nextBoxTop() : jumpBoxTopBy(pageJump)))
         {
             return;
         }
     }
     else if (kRepeat & KEY_ZL)
     {
-        if (prevBoxTop())
+        const int pageJump = Configuration::getInstance().cloudPageJump();
+        if ((pageJump <= 1 ? prevBoxTop() : jumpBoxTopBy(-pageJump)))
         {
             return;
         }
@@ -694,6 +726,72 @@ bool GroupCloudScreen::nextBoxTop()
         Gui::screenBack();
         return true;
     }
+    return false;
+}
+
+bool GroupCloudScreen::jumpBoxTopBy(int delta)
+{
+    if (auto err = access.jumpPage(access.page() + delta))
+    {
+        if (*err != 0)
+        {
+            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+        }
+        else
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        }
+        Gui::screenBack();
+        return true;
+    }
+    return false;
+}
+
+bool GroupCloudScreen::jumpBoxTop()
+{
+    if (access.pages() <= 1)
+    {
+        cloudChosen = true;
+        return false;
+    }
+
+    SwkbdState state;
+    const std::string hint =
+        i18n::localize("BOX_JUMP") + " 1-" + std::to_string(access.pages());
+    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, std::to_string(access.pages()).size());
+    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
+    swkbdSetHintText(&state, hint.c_str());
+    swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
+
+    char input[12]  = {0};
+    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
+    if (ret != SWKBD_BUTTON_CONFIRM)
+    {
+        return false;
+    }
+
+    char* end = nullptr;
+    long page = std::strtol(input, &end, 10);
+    if (end == input || *end != '\0' || page <= 0)
+    {
+        return false;
+    }
+
+    if (auto err = access.jumpPage((int)page))
+    {
+        if (*err != 0)
+        {
+            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
+        }
+        else
+        {
+            Gui::warn(i18n::localize("OFFLINE_ERROR"));
+        }
+        Gui::screenBack();
+        return true;
+    }
+
+    cloudChosen = true;
     return false;
 }
 

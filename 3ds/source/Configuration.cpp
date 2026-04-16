@@ -260,6 +260,10 @@ Configuration::Configuration()
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SW)] = "0x800";
                 (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SH)] = "0x900";
             }
+            if ((*mJson)["version"].get<int>() < 13)
+            {
+                (*mJson)["cloudPageJump"] = 1;
+            }
 
             (*mJson)["version"] = CURRENT_VERSION;
             save();
@@ -279,6 +283,7 @@ Configuration::Configuration()
             !(mJson->contains("showBackups") && (*mJson)["showBackups"].is_boolean()) ||
             !(mJson->contains("apiUrl") && (*mJson)["apiUrl"].is_string()) ||
             !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
+            !(mJson->contains("cloudPageJump") && (*mJson)["cloudPageJump"].is_number_integer()) ||
             !(mJson->contains("titles") && (*mJson)["titles"].is_object()) ||
             !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
             !((*mJson)["defaults"]["date"].contains("day") && (*mJson)["defaults"]["date"]["day"].is_number_integer()) ||
@@ -334,6 +339,12 @@ Configuration::Configuration()
                     (*mJson)["language"]);
                 return;
             }
+        }
+
+        if ((*mJson)["cloudPageJump"].get<int>() < 1)
+        {
+            (*mJson)["cloudPageJump"] = 1;
+            save();
         }
     }
 }
@@ -478,6 +489,12 @@ bool Configuration::autoUpdate(void) const
     return (*mJson)["autoUpdate"];
 }
 
+int Configuration::cloudPageJump(void) const
+{
+    int value = (*mJson)["cloudPageJump"];
+    return value > 0 ? value : 1;
+}
+
 std::vector<std::string> Configuration::extraSaves(const std::string& id) const
 {
     if ((*mJson)["extraSaves"].count(id) > 0)
@@ -561,6 +578,11 @@ void Configuration::apiUrl(const std::string& value)
 void Configuration::autoUpdate(bool value)
 {
     (*mJson)["autoUpdate"] = value;
+}
+
+void Configuration::cloudPageJump(int value)
+{
+    (*mJson)["cloudPageJump"] = value > 0 ? value : 1;
 }
 
 void Configuration::extraSaves(const std::string& id, const std::vector<std::string>& value)

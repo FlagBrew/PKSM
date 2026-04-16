@@ -365,6 +365,36 @@ std::optional<int> CloudAccess::prevPage()
     return std::nullopt;
 }
 
+std::optional<int> CloudAccess::jumpPage(int page)
+{
+    if (!good())
+    {
+        return currentPageError();
+    }
+
+    if (page < 1)
+    {
+        page = 1;
+    }
+    else if (page > pages())
+    {
+        page = pages();
+    }
+
+    if (page == pageNumber)
+    {
+        return std::nullopt;
+    }
+
+    pageNumber = page;
+    refreshPages();
+    if (!good())
+    {
+        return currentPageError();
+    }
+    return std::nullopt;
+}
+
 long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 {
     long ret            = 0;

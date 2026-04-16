@@ -37,7 +37,7 @@
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 12;
+    static constexpr int CURRENT_VERSION = 13;
 
     static Configuration& getInstance(void)
     {
@@ -96,6 +96,8 @@ public:
 
     bool autoUpdate(void) const;
 
+    int cloudPageJump(void) const;
+
     void language(pksm::Language lang);
 
     void autoBackup(bool backup);
@@ -130,6 +132,8 @@ public:
     void apiUrl(const std::string& value);
 
     void autoUpdate(bool value);
+
+    void cloudPageJump(int value);
 
     void save(void);
 

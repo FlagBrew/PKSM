@@ -54,6 +54,8 @@ private:
     bool nextBox(bool forceBottom = false);
     bool prevBoxTop();
     bool nextBoxTop();
+    bool jumpBoxTopBy(int delta);
+    bool jumpBoxTop();
     bool clickBottomIndex(int index);
     // Clones from storage (bottom), clones and increments download counter (top), places in storage
     // (bottom), or uploads (top)
@@ -70,8 +72,10 @@ private:
     std::shared_ptr<pksm::PKFilter> filter;
     int cursorIndex        = 0;
     int storageBox         = 0;
+    int pendingPageJumpFrames = 0;
     bool justSwitched      = true;
     bool cloudChosen       = false;
+    bool pendingPageJump   = false;
     std::string websiteURL = "";
 };
 

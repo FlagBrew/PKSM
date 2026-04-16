@@ -307,6 +307,36 @@ std::optional<int> GroupCloudAccess::prevPage()
     return std::nullopt;
 }
 
+std::optional<int> GroupCloudAccess::jumpPage(int page)
+{
+    if (!good())
+    {
+        return currentPageError();
+    }
+
+    if (page < 1)
+    {
+        page = 1;
+    }
+    else if (page > pages())
+    {
+        page = pages();
+    }
+
+    if (page == pageNumber)
+    {
+        return std::nullopt;
+    }
+
+    pageNumber = page;
+    refreshPages();
+    if (!good())
+    {
+        return currentPageError();
+    }
+    return std::nullopt;
+}
+
 int GroupCloudAccess::pages() const
 {
     return (*current->data)["pages"].get<int>();
