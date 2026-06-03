@@ -93,8 +93,8 @@ namespace
     std::array<u64, 9> nxTitleIds  = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     constexpr std::array<pksm::GameVersion, 24> searchVersions = {pksm::GameVersion::RD,
         pksm::GameVersion::GN, pksm::GameVersion::BU, pksm::GameVersion::YW, pksm::GameVersion::GD,
-        pksm::GameVersion::SV, pksm::GameVersion::C, pksm::GameVersion::S, pksm::GameVersion::R,
-        pksm::GameVersion::E, pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::X,
+        pksm::GameVersion::SV, pksm::GameVersion::C, pksm::GameVersion::R, pksm::GameVersion::S,
+        pksm::GameVersion::FR, pksm::GameVersion::LG, pksm::GameVersion::E, pksm::GameVersion::X,
         pksm::GameVersion::Y, pksm::GameVersion::OR, pksm::GameVersion::AS, pksm::GameVersion::SN,
         pksm::GameVersion::MN, pksm::GameVersion::US, pksm::GameVersion::UM, pksm::GameVersion::GP,
         pksm::GameVersion::GE, pksm::GameVersion::SW, pksm::GameVersion::SH};
