@@ -202,7 +202,7 @@ void GroupCloudScreen::drawTop() const
     Gui::sprite(ui_sheet_bar_arc_top_green_idx, 0, 0);
 
     Gui::sprite(ui_sheet_textbox_pksm_idx, 261, 3);
-    Gui::text("GPSS", 394, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
+    Gui::text("GPSS - Bundles", 394, 7, FONT_SIZE_14, COLOR_WHITE, TextPosX::RIGHT, TextPosY::TOP);
 
     if (cloudChosen && infoMon)
     {
