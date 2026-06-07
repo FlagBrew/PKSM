@@ -614,6 +614,8 @@ void TitleLoader::backupSave(const std::string& id)
         TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
         {
+            // NOTE: this locks sdSaves, so callers must not already hold that
+            // lock (the mutex is non-recursive). See TitleLoader::load (#1529).
             sdSaves.lock().get()[id].emplace_back(path);
         }
     }
@@ -986,22 +988,31 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         }
         else
         {
-            bool done  = false;
-            auto saves = sdSaves.lock();
-            for (auto i = saves->begin(); !done && i != saves->end(); i++)
+            // Resolve the cached title ID under the lock, but release it before
+            // calling backupSave(): backupSave() re-acquires the sdSaves lock to
+            // register the new backup, and holding it here would self-deadlock
+            // the non-recursive mutex (freeze on "Backing up save...", #1529).
+            std::string backupId;
             {
-                for (auto j = i->second.begin(); j != i->second.end(); j++)
+                auto saves = sdSaves.lock();
+                for (auto i = saves->begin(); backupId.empty() && i != saves->end(); i++)
                 {
-                    if (*j == savePath)
+                    for (auto j = i->second.begin(); j != i->second.end(); j++)
                     {
-                        Logging::debug(
-                            "TitleLoader::load - Found save in cache, backing up with ID: {}",
-                            i->first);
-                        backupSave(i->first);
-                        done = true;
-                        break;
+                        if (*j == savePath)
+                        {
+                            Logging::debug(
+                                "TitleLoader::load - Found save in cache, backing up with ID: {}",
+                                i->first);
+                            backupId = i->first;
+                            break;
+                        }
                     }
                 }
+            }
+            if (!backupId.empty())
+            {
+                backupSave(backupId);
             }
         }
     }
