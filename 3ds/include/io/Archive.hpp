@@ -49,7 +49,10 @@ public:
     Archive(Archive&&);
     Archive& operator=(Archive&&);
 
-    static Result init(const std::string& execPath);
+    // confirmExtdataReset is invoked only if the existing PKSM ext data archive is found to be
+    // corrupt (opens, but its contents are unreadable). Returning true resets the archive,
+    // false aborts init. If null, a corrupt archive aborts init.
+    static Result init(const std::string& execPath, bool (*confirmExtdataReset)() = nullptr);
     static void exit(void);
 
     static Archive& sd(void);

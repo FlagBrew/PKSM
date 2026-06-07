@@ -43,6 +43,14 @@ namespace
     Archive sdArchive;
     Archive dataArchive;
 
+    // A healthy PKSM ext data archive lets us list its root. If the archive opens but its root
+    // cannot be read, it is corrupt (#1558) and must be recreated.
+    bool extdataReadable()
+    {
+        auto root = Archive::data().directory(fsMakePath(PATH_UTF16, u"/"));
+        return root && root->loaded();
+    }
+
     void moveOldBackups()
     {
         STDirectory d("/3ds/PKSM/backup");
@@ -537,7 +545,7 @@ Result Archive::deleteDir(const std::u16string& dir)
     }
 }
 
-Result Archive::init(const std::string& execPath)
+Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
 {
     Result res = 0;
     if (R_FAILED(res = svcControlService(SERVICEOP_STEAL_CLIENT_SESSION, &fspxiHandle, "PxiFS0")))
@@ -559,6 +567,42 @@ Result Archive::init(const std::string& execPath)
         }
 
         dataArchive = extdata(UNIQUE_ID, false);
+
+        if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
+            res != (long)0xC82044B9)
+        {
+            return res;
+        }
+    }
+    else if (!extdataReadable())
+    {
+        // The archive opened but its root contents are unreadable: it is corrupt (#1558).
+        // Recreating it from scratch is the only recovery (equivalent to manually deleting the
+        // ext data through FBI), so ask the user before destroying whatever it held.
+        if (confirmExtdataReset && !confirmExtdataReset())
+        {
+            // Abort init; surface the underlying FS error if the open itself failed.
+            return R_FAILED(data().result()) ? data().result() : (Result)-1;
+        }
+
+        if (R_FAILED(res = data().close()))
+        {
+            return res;
+        }
+        if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+        {
+            return res;
+        }
+        if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+        {
+            return res;
+        }
+
+        dataArchive = extdata(UNIQUE_ID, false);
+        if (R_FAILED(res = data().result()))
+        {
+            return res;
+        }
 
         if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
             res != (long)0xC82044B9)

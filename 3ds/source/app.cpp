@@ -61,9 +61,23 @@ namespace
 {
     u32 old_time_limit;
     Handle hbldrHandle;
-    std::atomic_flag moveIcon     = ATOMIC_FLAG_INIT;
-    std::atomic_flag doCartScan   = ATOMIC_FLAG_INIT;
-    std::atomic_flag continueI18N = ATOMIC_FLAG_INIT;
+    std::atomic_flag moveIcon         = ATOMIC_FLAG_INIT;
+    std::atomic_flag doCartScan       = ATOMIC_FLAG_INIT;
+    std::atomic_flag continueI18N     = ATOMIC_FLAG_INIT;
+    std::atomic<bool> iconThreadAlive = false;
+
+    // Signal the splash/icon thread to stop and block until it has actually
+    // finished its last framebuffer write and buffer swap. Drawing to the top
+    // screen (or touching the GPU) before the thread is gone races with it and
+    // corrupts the top screen.
+    void stopIconThread()
+    {
+        moveIcon.clear();
+        while (iconThreadAlive.load())
+        {
+            svcSleepThread(100'000); // 0.1 ms
+        }
+    }
 
     struct asset
     {
@@ -155,7 +169,7 @@ namespace
 
     Result consoleDisplayError(const std::string& message, Result res)
     {
-        moveIcon.clear();
+        stopIconThread();
         consoleInit(GFX_TOP, nullptr);
 
         std::format_to(Printerator{}, "\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m",
@@ -172,6 +186,39 @@ namespace
             hidScanInput();
         }
         return res;
+    }
+
+    // Shown when the PKSM ext data archive is corrupt (#1558). A resets and recreates it
+    // (losing any banks stored in ext data, which are already unreadable), START exits.
+    bool confirmExtdataReset()
+    {
+        stopIconThread();
+        consoleInit(GFX_TOP, nullptr);
+
+        std::format_to(Printerator{}, "\x1b[2;16H\x1b[34mPKSM v{:d}.{:d}.{:d}-{:s}\x1b[0m",
+            VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+        std::format_to(Printerator{}, "\x1b[5;1HPKSM ext data appears to be corrupted.");
+        std::format_to(
+            Printerator{}, "\x1b[8;1HPress \x1b[32mA\x1b[0m to reset it and continue.\x1b[0m");
+        std::format_to(Printerator{}, "\x1b[9;1HStorage banks kept in ext data will be lost.");
+        std::format_to(Printerator{}, "\x1b[29;16HPress \x1b[31mSTART\x1b[0m to exit.\x1b[0m");
+        gfxFlushBuffers();
+        gfxSwapBuffers();
+        gspWaitForVBlank();
+        while (aptMainLoop())
+        {
+            hidScanInput();
+            u32 down = hidKeysDown();
+            if (down & KEY_A)
+            {
+                return true;
+            }
+            if (down & KEY_START)
+            {
+                return false;
+            }
+        }
+        return false;
     }
 
     Result HBLDR_SetTarget(const char* path)
@@ -215,7 +262,7 @@ namespace
         if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest",
                 true, &retString, nullptr, ""))
         {
-            moveIcon.clear();
+            stopIconThread();
             Gui::waitFrame(i18n::localize("UPDATE_CHECKING"), ScreenTarget::TOP);
             auto res = Fetch::perform(fetch);
             if (res.index() == 1)
@@ -629,6 +676,8 @@ namespace
             gfxSwapBuffersGpu();
             gspWaitForVBlank();
         }
+
+        iconThreadAlive = false;
     }
 
     void i18nThread()
@@ -687,7 +736,11 @@ Result App::init(const std::string& execPath)
     Threads::init(0, 2);
 
     moveIcon.test_and_set();
-    Threads::create(iconThread);
+    iconThreadAlive = true;
+    if (!Threads::create(iconThread))
+    {
+        iconThreadAlive = false;
+    }
 
     // if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
     // {
@@ -713,7 +766,7 @@ Result App::init(const std::string& execPath)
     }
     Logging::startupLog("romfs", "init ok");
 
-    if (R_FAILED(res = Archive::init(execPath)))
+    if (R_FAILED(res = Archive::init(execPath, confirmExtdataReset)))
     {
         return consoleDisplayError("Archive::init failed.", res);
     }
@@ -789,7 +842,7 @@ Result App::init(const std::string& execPath)
     Logging::startupLog("gui", "init ok");
 
     i18n::addCallbacks(i18n::initGui, i18n::exitGui);
-    moveIcon.clear();
+    stopIconThread();
     i18n::init(Configuration::getInstance().language());
     Logging::startupLog("i18n", "init ok");
 
@@ -839,7 +892,10 @@ Result App::init(const std::string& execPath)
     Threads::executeTask(i18nThread);
     Logging::startupLog("i18n", "thread started");
 
-    // reinitialize bottom screen
+    // reinitialize both screens. The top screen format is restored explicitly because the
+    // ext data corruption prompt (confirmExtdataReset) may have switched it to console mode.
+    gfxSetScreenFormat(GFX_TOP, GSP_BGR8_OES);
+    gfxSetDoubleBuffering(GFX_TOP, true);
     gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
     gfxSetDoubleBuffering(GFX_BOTTOM, true);
     gfxSwapBuffersGpu();
