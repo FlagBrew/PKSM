@@ -1,7 +1,7 @@
 #include "interpreter.h"
 #include "pksm_api.h"
 
-void UnixSetupFunc() {}
+void UnixSetupFunc(Picoc* pc) { (void)pc; }
 
 // clang-format off
 /* list of all library functions and their prototypes */
