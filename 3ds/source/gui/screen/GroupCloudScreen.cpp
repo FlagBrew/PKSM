@@ -53,9 +53,8 @@
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
              i18n::localize("Y_GROUP_SINGLE") + '\n' + i18n::localize("START_FILTER_LEGAL") + '\n' +
-             "SELECT: " + i18n::localize("BOX_JUMP") + '\n' +
-             i18n::localize("L_BOX_PREV") + '\n' + i18n::localize("R_BOX_NEXT") + '\n' +
-             i18n::localize("B_BACK")),
+             "SELECT: " + i18n::localize("BOX_JUMP") + '\n' + i18n::localize("L_BOX_PREV") + '\n' +
+             i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
       filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
       storageBox(storageBox)
 {
@@ -401,13 +400,13 @@ void GroupCloudScreen::update(touchPosition* touch)
             pendingPageJumpFrames++;
             if (pendingPageJumpFrames >= 15)
             {
-                pendingPageJump      = false;
+                pendingPageJump       = false;
                 pendingPageJumpFrames = 0;
             }
             return;
         }
 
-        pendingPageJump      = false;
+        pendingPageJump       = false;
         pendingPageJumpFrames = 0;
         if ((kUp & KEY_SELECT) && jumpBoxTop())
         {
@@ -475,7 +474,7 @@ void GroupCloudScreen::update(touchPosition* touch)
     }
     else if (kDown & KEY_SELECT)
     {
-        pendingPageJump      = true;
+        pendingPageJump       = true;
         pendingPageJumpFrames = 1;
         return;
     }
@@ -756,8 +755,7 @@ bool GroupCloudScreen::jumpBoxTop()
     }
 
     SwkbdState state;
-    const std::string hint =
-        i18n::localize("BOX_JUMP") + " 1-" + std::to_string(access.pages());
+    const std::string hint = i18n::localize("BOX_JUMP") + " 1-" + std::to_string(access.pages());
     swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, std::to_string(access.pages()).size());
     swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
     swkbdSetHintText(&state, hint.c_str());

@@ -532,7 +532,8 @@ void ConfigScreen::initButtons()
         247, 160, 15, 12,
         []()
         {
-            inputNumber([](int value) { Configuration::getInstance().cloudPageJump(value); }, 4, 9999);
+            inputNumber(
+                [](int value) { Configuration::getInstance().cloudPageJump(value); }, 4, 9999);
             return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));

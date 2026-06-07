@@ -70,13 +70,13 @@ private:
     std::unique_ptr<pksm::PKX> moveMon;
     CloudAccess access;
     std::shared_ptr<pksm::PKFilter> filter;
-    int cursorIndex        = 0;
-    int storageBox         = 0;
+    int cursorIndex           = 0;
+    int storageBox            = 0;
     int pendingPageJumpFrames = 0;
-    bool justSwitched      = true;
-    bool cloudChosen       = false;
-    bool pendingPageJump   = false;
-    std::string websiteURL = "";
+    bool justSwitched         = true;
+    bool cloudChosen          = false;
+    bool pendingPageJump      = false;
+    std::string websiteURL    = "";
 };
 
 #endif

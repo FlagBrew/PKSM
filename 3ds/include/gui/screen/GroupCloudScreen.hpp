@@ -72,13 +72,13 @@ private:
     std::vector<std::pair<int, int>> toSend;
     std::shared_ptr<pksm::PKFilter> filter;
     GroupCloudAccess access;
-    int cursorIndex        = 0;
-    int storageBox         = 0;
+    int cursorIndex           = 0;
+    int storageBox            = 0;
     int pendingPageJumpFrames = 0;
-    bool justSwitched      = true;
-    bool cloudChosen       = false;
-    bool pendingPageJump   = false;
-    std::string websiteURL = "";
+    bool justSwitched         = true;
+    bool cloudChosen          = false;
+    bool pendingPageJump      = false;
+    std::string websiteURL    = "";
 };
 
 #endif
