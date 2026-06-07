@@ -116,7 +116,8 @@ void BagItemOverlay::update(touchPosition* touch)
             if (firstEmpty != slot)
             {
                 static pksm::Item4 emptyItem;
-                for (int i = slot; i < --firstEmpty; i++)
+                firstEmpty--;
+                for (int i = slot; i < firstEmpty; i++)
                 {
                     auto item = TitleLoader::save->item(pouch.first, i + 1);
                     TitleLoader::save->item(*item, pouch.first, i);
