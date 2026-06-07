@@ -81,18 +81,35 @@ You can get real-time support by joining FlagBrew's discord server:
 
 ## Building
 
-PKSM has the following dependencies:
+PKSM has the following dependencies: 
 
-- The latest version of libctru, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, 3ds-bzip2, 3ds-mpg123, 3dstools, and tex3ds with
-  their dependancies. All of these should be installed from [devKitPro
-  pacman](https://devkitpro.org/wiki/devkitPro_pacman).
-- rsync
-- Your system's pkg-config
+> libctru, citro3d, citro2d, 3ds-curl, 3ds-pkg-config, 3ds-bzip2, 3ds-mpg123, 3dstools, tex3ds and the devkitARM toolchain with their dependancies. 
+  
+All of these should be installed from [devKitPro pacman](https://devkitpro.org/wiki/devkitPro_pacman).
+
+  >
+  > | Package         | Tested version       |
+  > | --------------- | -------------------- |
+  > | devkitARM       | r67.1-1              |
+  > | devkitarm-gcc   | 15.2.0-7             |
+  > | devkitarm-rules | 1.6.0-4              |
+  > | libctru         | 2.7.0-1              |
+  > | citro3d         | 1.7.1-2              |
+  > | citro2d         | 1.7.0-1              |
+  > | 3ds-curl        | 8.4.0-1              |
+  > | 3ds-pkg-config  | 0.28-5               |
+  > | 3ds-bzip2       | 1.0.8-1              |
+  > | 3ds-mpg123      | 1.31.3-3             |
+  > | 3dstools        | 1.3.1-3              |
+  > | tex3ds          | 2.3.0-4              |
+
+- rsync (tested with 3.2.7)
+- Your system's pkg-config (tested with 1.8.1)
 - [3dstool](https://github.com/dnasdw/3dstool/releases),
   [bannertool](https://github.com/Steveice10/bannertool/releases) and
   [makerom](https://github.com/profi200/Project_CTR/releases), if you want to be
   able to compile a `.cia` build of PKSM.
-- The latest version of Python 3.x and the GitPython library.
+- Python 3.x (tested with 3.12) and the GitPython library.
 - node.js, [pandoc](https://pandoc.org/), [wkhtmltopdf](https://wkhtmltopdf.org)
   and
   [github-wikito-converter](https://www.npmjs.com/package/github-wikito-converter)
