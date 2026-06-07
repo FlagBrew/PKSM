@@ -25,7 +25,7 @@ def main():
     # chmod 755
     os.chmod(binary, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
 
-    os.system(execute + " ./EventsGallery")
+    os.system(execute + " ./EventsGallery ../../core/personals")
     
 if __name__ == "__main__":
     main()
