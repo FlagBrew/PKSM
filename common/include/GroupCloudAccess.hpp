@@ -52,6 +52,7 @@ public:
 
     std::optional<int> nextPage();
     std::optional<int> prevPage();
+    std::optional<int> jumpPage(int page);
 
     bool filterLegal() const { return legal; }
 

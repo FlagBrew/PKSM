@@ -53,6 +53,8 @@ private:
     bool nextBox(bool forceBottom = false);
     bool prevBoxTop();
     bool nextBoxTop();
+    bool jumpBoxTopBy(int delta);
+    bool jumpBoxTop();
     bool clickBottomIndex(int index);
 
     void pickup();
@@ -72,8 +74,10 @@ private:
     GroupCloudAccess access;
     int cursorIndex        = 0;
     int storageBox         = 0;
+    int pendingPageJumpFrames = 0;
     bool justSwitched      = true;
     bool cloudChosen       = false;
+    bool pendingPageJump   = false;
     std::string websiteURL = "";
 };
 

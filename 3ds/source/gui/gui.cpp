@@ -1068,6 +1068,7 @@ void Gui::frameClean()
 void Gui::mainLoop(void)
 {
     Sound::start();
+    int selectHelpFrames = 0;
     while (aptMainLoop() && !shouldExit)
     {
         hidScanInput();
@@ -1078,9 +1079,18 @@ void Gui::mainLoop(void)
 
         u32 kHeld = hidKeysHeld();
 
+        if (kHeld & KEY_SELECT)
+        {
+            selectHelpFrames++;
+        }
+        else
+        {
+            selectHelpFrames = 0;
+        }
+
         magicFun += M_TAU / 360;
 
-        if (kHeld & KEY_SELECT && !screens.top()->getInstructions().empty())
+        if (selectHelpFrames > 15 && !screens.top()->getInstructions().empty())
         {
             target(GFX_TOP);
             screens.top()->doTopDraw();

@@ -470,7 +470,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 50, 15, 12,
+        247, 48, 15, 12,
         []()
         {
             Configuration::getInstance().transferEdit(!Configuration::getInstance().transferEdit());
@@ -478,7 +478,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 68, 15, 12,
+        247, 64, 15, 12,
         []()
         {
             Configuration::getInstance().writeFileSave(
@@ -487,7 +487,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 86, 15, 12,
+        247, 80, 15, 12,
         []()
         {
             Configuration::getInstance().useSaveInfo(!Configuration::getInstance().useSaveInfo());
@@ -495,7 +495,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 104, 15, 12,
+        247, 96, 15, 12,
         [this]()
         {
             Configuration::getInstance().useExtData(!Configuration::getInstance().useExtData());
@@ -504,7 +504,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 122, 15, 12,
+        247, 112, 15, 12,
         []()
         {
             Configuration::getInstance().randomMusic(!Configuration::getInstance().randomMusic());
@@ -512,7 +512,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 140, 15, 12,
+        247, 128, 15, 12,
         [this]()
         {
             Configuration::getInstance().showBackups(!Configuration::getInstance().showBackups());
@@ -521,11 +521,19 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 158, 15, 12,
+        247, 144, 15, 12,
         [this]()
         {
             Configuration::getInstance().autoUpdate(!Configuration::getInstance().autoUpdate());
             return true;
+        },
+        ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
+    tabButtons[2].push_back(std::make_unique<ClickButton>(
+        247, 160, 15, 12,
+        []()
+        {
+            inputNumber([](int value) { Configuration::getInstance().cloudPageJump(value); }, 4, 9999);
+            return false;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
@@ -537,7 +545,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 194, 15, 12,
+        247, 192, 15, 12,
         [this]()
         {
             addOverlay<TitleIdOverlay>();
@@ -546,7 +554,7 @@ void ConfigScreen::initButtons()
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
     tabButtons[2].push_back(std::make_unique<ClickButton>(
-        247, 212, 15, 12,
+        247, 208, 15, 12,
         [this]()
         {
             inputApiUrl();
@@ -680,25 +688,27 @@ void ConfigScreen::drawBottom() const
     {
         Gui::text(i18n::localize("CONFIG_BACKUP_SAVE"), 19, 30, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 48, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_EDIT_TRANSFERS"), 19, 46, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 66, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_BACKUP_INJECTION"), 19, 62, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 84, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_SAVE_INFO"), 19, 78, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 102, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_USE_EXTDATA"), 19, 94, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 120, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_RANDOM_MUSIC"), 19, 110, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 138, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_SHOW_BACKUPS"), 19, 126, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 156, FONT_SIZE_12, COLOR_WHITE,
+        Gui::text(i18n::localize("CONFIG_AUTO_UPDATE"), 19, 142, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
+        Gui::text(i18n::localize("CONFIG_CLOUD_ZLZR_JUMP"), 19, 158, FONT_SIZE_12, COLOR_WHITE,
             TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
         Gui::text(i18n::localize("EXTRA_SAVES"), 19, 174, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("TITLE_IDS"), 19, 192, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("TITLE_IDS"), 19, 190, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP, TextWidthAction::SQUISH_OR_SCROLL, 223);
-        Gui::text(i18n::localize("API_URL"), 19, 210, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
+        Gui::text(i18n::localize("API_URL"), 19, 206, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])
@@ -711,25 +721,27 @@ void ConfigScreen::drawBottom() const
             270, 31, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES")
                                                               : i18n::localize("NO"),
-            270, 49, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 47, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES")
                                                                : i18n::localize("NO"),
-            270, 67, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 63, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 85, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 79, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES")
                                                             : i18n::localize("NO"),
-            270, 103, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 95, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 121, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 111, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES")
                                                              : i18n::localize("NO"),
-            270, 139, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 127, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES")
                                                             : i18n::localize("NO"),
-            270, 157, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+            270, 143, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(Configuration::getInstance().cloudPageJump()), 270, 159,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

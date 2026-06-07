@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "language": 2,
   "autoBackup": true,
   "transferEdit": true,
@@ -43,5 +43,6 @@
   "randomMusic": false,
   "showBackups": false,
   "apiUrl": "",
-  "autoUpdate": true
+  "autoUpdate": true,
+  "cloudPageJump": 1
 }

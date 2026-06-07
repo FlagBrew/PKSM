@@ -3,6 +3,7 @@
     "API_HINT": "API Url, MUST END WITH /",
     "API_URL": "Local API URL",
     "CONFIG_AUTO_UPDATE": "PKSM automatische updaten",
+    "CONFIG_CLOUD_ZLZR_JUMP": "Cloud ZL/ZR sprong",
     "CONFIG_BACKUP_INJECTION": "Activeer back-up injectie",
     "CONFIG_BACKUP_SAVE": "Automatische back-up bij het laden",
     "CONFIG_EDIT_TRANSFERS": "Bewerk tijdens overdracht",
