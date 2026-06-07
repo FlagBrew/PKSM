@@ -37,6 +37,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "revision.h"
+#include "utils/format.hpp"
 #include "website.h"
 #include <format>
 #include <unistd.h>
@@ -445,22 +446,34 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
             curl_mime_filename(field, fieldName.c_str());
         }
         fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        fetch->setopt(CURLOPT_TIMEOUT, 10L);
+        // The server runs a legality check on every mon in the bundle, which can
+        // keep the connection idle for a while. Give it a generous timeout and
+        // disable the low-speed abort that Fetch::init arms, otherwise curl tears
+        // the request down mid-processing (CURLE_OPERATION_TIMEDOUT, status 0).
+        fetch->setopt(CURLOPT_TIMEOUT, 60L);
+        fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 0L);
 
         auto res = Fetch::perform(fetch);
         if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
         {
             fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
-            nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-            Gui::warn(
-                i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
-            refreshPages();
-        }
-        else
-        {
-            nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-            Gui::warn(
-                retJson["type"].get<std::string>() + '\n' + retJson["error"].get<std::string>());
+            // Only the success responses carry a download code. Error statuses are
+            // reported by the caller based on the returned status code, so don't try
+            // to parse them here (the body may not even be JSON, which would crash).
+            if (ret == 200 || ret == 201)
+            {
+                nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
+                if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
+                {
+                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' +
+                              retJson["code"].get<std::string>());
+                    refreshPages();
+                }
+                else
+                {
+                    Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), ret));
+                }
+            }
         }
     }
     curl_slist_free_all(headers);
