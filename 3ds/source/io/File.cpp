@@ -62,26 +62,34 @@ u64 File::size(void) const
 
 u32 File::read(void* buf, u32 sz)
 {
-    u32 rd = 0;
-    switch (mHandle.index())
+    // FSFILE_Read/FSPXI_ReadFile may satisfy only part of the request in a single
+    // call (e.g. large saves or secure-save archives). Loop until the whole request
+    // is read so callers never end up with an uninitialized tail in their buffer.
+    u32 total = 0;
+    while (total < sz)
     {
-        case 0:
-            mResult = FSFILE_Read(std::get<0>(mHandle), &rd, mOffset, buf, sz);
-            break;
-        case 1:
-            mResult = FSPXI_ReadFile(fspxiHandle, std::get<1>(mHandle), &rd, mOffset, buf, sz);
-            break;
-    }
-
-    if (R_FAILED(mResult))
-    {
-        if (rd > sz)
+        u32 rd = 0;
+        switch (mHandle.index())
         {
-            rd = sz;
+            case 0:
+                mResult = FSFILE_Read(
+                    std::get<0>(mHandle), &rd, mOffset, static_cast<u8*>(buf) + total, sz - total);
+                break;
+            case 1:
+                mResult = FSPXI_ReadFile(fspxiHandle, std::get<1>(mHandle), &rd, mOffset,
+                    static_cast<u8*>(buf) + total, sz - total);
+                break;
         }
+
+        if (R_FAILED(mResult) || rd == 0)
+        {
+            // Either an error occurred or we hit EOF before fulfilling the request.
+            break;
+        }
+        mOffset += rd;
+        total   += rd;
     }
-    mOffset += rd;
-    return rd;
+    return total;
 }
 
 u32 File::write(const void* buf, u32 sz)
