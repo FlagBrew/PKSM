@@ -89,13 +89,13 @@ void Logging::init()
     consoleSetFont(&logConsole, &font);
 
     // Get current date for log filename
-    auto now = std::chrono::system_clock::now();
+    auto now        = std::chrono::system_clock::now();
     auto now_time_t = std::chrono::system_clock::to_time_t(now);
     std::tm* now_tm = std::localtime(&now_time_t);
-    
+
     char dateBuf[9];
     std::strftime(dateBuf, sizeof(dateBuf), "%Y%m%d", now_tm);
-    
+
 #if defined(__3DS__)
     logFilePath = std::string("sdmc:/3ds/PKSM/logs/pksm_") + dateBuf + ".log";
 #elif defined(__SWITCH__)
