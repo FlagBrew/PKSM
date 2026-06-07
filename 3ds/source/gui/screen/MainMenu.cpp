@@ -147,7 +147,7 @@ void MainMenu::makeButtons()
                 }
                 if (u64 tid = TitleLoader::setRebootToTitle())
                 {
-                    NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+                    NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid, 0);
                 }
                 Gui::exitMainLoop();
                 return true;
@@ -320,7 +320,7 @@ void MainMenu::update(touchPosition* touch)
         }
         if (u64 tid = TitleLoader::setRebootToTitle())
         {
-            NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid);
+            NS_RebootToTitle(MEDIATYPE_GAME_CARD, tid, 0);
         }
         Gui::exitMainLoop();
         return;
