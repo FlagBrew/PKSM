@@ -8,17 +8,23 @@ def main():
     if platform.system() == "Windows":
         binary = "gallerypack-windows.exe"
         execute = binary
+        # Windows 最后可用版本：1.2.0
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.2.0/{binary}"
     elif platform.system() == "Darwin":
         binary = "gallerypack-mac"
         execute = "./" + binary
+        # macOS 最后可用版本：1.1.1
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.1.1/{binary}"
     elif platform.system() == "Linux":
         binary = "gallerypack-linux"
         execute = "./" + binary
+        # Linux 仍使用最新版
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/{binary}"
     else:
         print("This system is not supported")
         return 1
 
-    with urllib.request.urlopen("https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/" + binary) as response, open(binary, 'wb') as out_file:
+    with urllib.request.urlopen( download_url ) as response, open(binary, 'wb') as out_file:
         data = response.read()
         out_file.write(data)
     
