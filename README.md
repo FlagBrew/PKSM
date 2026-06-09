@@ -27,7 +27,7 @@ edited Pokémon are in use.**
 ![](https://i.imgur.com/LKnAcHI.png) ![](https://i.imgur.com/NaWoUIa.png)
 ![](https://i.imgur.com/0VSTcgA.png) ![](https://i.imgur.com/0g7O9y7.png)
 
-## This project is a **CJK (Chinese, Japanese, Korean) UI optimized fork** of Markdown Editor.
+## This project is a **CJK (Chinese, Japanese, Korean) UI optimized fork** of PKSM.
 
 It systematically fixes and optimizes critical readability issues affecting CJK unified ideographs under the original project's default Latin typography system, specifically addressing overly small font sizes and insufficient line heights. All original features and usage workflows remain fully intact, while this version delivers a native typography experience aligned with East Asian reading conventions for Chinese, Japanese, and Korean text.
 
