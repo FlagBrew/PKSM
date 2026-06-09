@@ -1219,6 +1219,14 @@ void Gui::sprite(int key, int x, int y)
     {
         _draw_repeat(key, x, y, 20, 1);
     }
+        else if (key == ui_sheet_part_editor_15x2_idx)
+    {
+        _draw_repeat(key, x, y, 15, 1);
+    }
+        else if (key == ui_sheet_part_editor_10x2_idx)
+    {
+        _draw_repeat(key, x, y, 10, 1);
+    }
     else if (key == ui_sheet_part_info_bottom_idx || key == ui_sheet_part_info_top_idx)
     {
         C2D_Image sprite = C2D_SpriteSheetGetImage(spritesheet_ui, key);

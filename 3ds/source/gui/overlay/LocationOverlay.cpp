@@ -76,7 +76,7 @@ void LocationOverlay::drawTop() const
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
     Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
     Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 32, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     // Stupid non random-access iterators
     std::map<u16, std::string>::const_iterator locIt = locations.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)

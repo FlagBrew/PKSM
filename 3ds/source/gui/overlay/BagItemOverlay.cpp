@@ -46,7 +46,7 @@ void BagItemOverlay::drawTop() const
     int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
     Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 15, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
     Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
     Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
