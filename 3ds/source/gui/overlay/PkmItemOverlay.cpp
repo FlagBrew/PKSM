@@ -71,7 +71,7 @@ namespace
 PkmItemOverlay::PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
-      hid(40, 2)
+      hid(20, 2)
 {
     instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawItems =
@@ -162,14 +162,14 @@ void PkmItemOverlay::drawBottom() const
 
 void PkmItemOverlay::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
@@ -177,7 +177,7 @@ void PkmItemOverlay::drawTop() const
         {
             Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) +
                           " - " + items[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
         }
         else

@@ -48,7 +48,7 @@ public:
           validItems(items),
           items(items),
           pouch(pouch),
-          hid(40, 2),
+          hid(20, 2),
           origItem(selected),
           slot(slot),
           firstEmpty(firstEmpty)

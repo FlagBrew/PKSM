@@ -32,7 +32,7 @@
 #include <algorithm>
 
 VersionOverlay::VersionOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
-    : ReplaceableScreen(&screen), pkm(pkm), hid(40, 2)
+    : ReplaceableScreen(&screen), pkm(pkm), hid(15, 2)
 {
     const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
     for (size_t i = 0; i < gameStrings.size(); i++)
@@ -58,14 +58,14 @@ void VersionOverlay::drawBottom() const
 
 void VersionOverlay::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
@@ -73,7 +73,7 @@ void VersionOverlay::drawTop() const
         {
             Gui::text(std::to_string((int)games[hid.page() * hid.maxVisibleEntries() + i].first) +
                           " - " + games[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
         }
         else
