@@ -41,14 +41,14 @@ void BagItemOverlay::drawBottom() const
 
 void BagItemOverlay::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 15, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         if (i + hid.page() * hid.maxVisibleEntries() >= items.size())
@@ -57,7 +57,7 @@ void BagItemOverlay::drawTop() const
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x,
-            (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+            (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
     }
 }
