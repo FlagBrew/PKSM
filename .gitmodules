@@ -10,3 +10,6 @@
 [submodule "external/picoc"]
 	path = external/picoc
 	url = https://github.com/FlagBrew/picoc
+[submodule "external/EventsGalleryPacker/EventsGallery"]
+	path = external/EventsGalleryPacker/EventsGallery
+	url = https://github.com/projectpokemon/EventsGallery.git
