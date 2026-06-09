@@ -9,17 +9,17 @@ def main():
         binary = "gallerypack-windows.exe"
         execute = binary
         # Windows 最后可用版本：1.2.0
-        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.2.0/{binary}"
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.2.0/gallerypack-windows.exe"
     elif platform.system() == "Darwin":
         binary = "gallerypack-mac"
         execute = "./" + binary
         # macOS 最后可用版本：1.1.1
-        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.1.1/{binary}"
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/download/1.1.1/gallerypack-mac"
     elif platform.system() == "Linux":
         binary = "gallerypack-linux"
         execute = "./" + binary
         # Linux 仍使用最新版
-        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/{binary}"
+        download_url = f"https://github.com/FlagBrew/EventsGalleryPacker/releases/latest/download/gallerypack-linux"
     else:
         print("This system is not supported")
         return 1
