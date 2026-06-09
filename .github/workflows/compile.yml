@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: seien210/pksm-cjk:latest
+      options: --user root
+
+    steps:
+      - name: "Clone"
+        run: git clone --recurse-submodules -j8 https://github.com/seien210300928/PKSM-CJK-Readability.git /PKSM
+      - name: "Build"
+        working-directory: "/PKSM"
+        run: |
+          make
+          zip -r PKSM.zip 3ds/out/PKSM_CJK_Typography.cia 3ds/out/PKSM_CJK_Typography.3dsx 3ds/out/PKSM_CJK_Typography.elf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PKSM-Build
+          path: /PKSM/PKSM.zip
