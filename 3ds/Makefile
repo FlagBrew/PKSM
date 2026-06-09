@@ -129,8 +129,8 @@ BANNER_AUDIO	:=	../assets/audio.wav
 BANNER_IMAGE	:=	../assets/banner.png
 RSF_PATH		:=	../assets/app.rsf
 LOGO			:=
-UNIQUE_ID		:=	0xEC100
-PRODUCT_CODE	:=	CTR-HB-PKSM
+UNIQUE_ID		:=	0xEC1C0
+PRODUCT_CODE	:=	CTR-HB-PKSM-CJK
 ICON_FLAGS		:=	nosavebackups,visible
 
 #---------------------------------------------------------------------------------
