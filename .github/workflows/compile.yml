@@ -20,8 +20,10 @@ jobs:
         working-directory: "/PKSM"
         run: |
           make
-          zip -r PKSM.zip 3ds/out/PKSM_CJK_Typography.cia 3ds/out/PKSM_CJK_Typography.3dsx 3ds/out/PKSM_CJK_Typography.elf
       - uses: actions/upload-artifact@v6
         with:
           name: PKSM-Build
-          path: /PKSM/PKSM.zip
+          path: |
+            /PKSM/3ds/out/PKSM_CJK_Typography.cia
+            /PKSM/3ds/out/PKSM_CJK_Typography.3dsx
+            /PKSM/3ds/out/PKSM_CJK_Typography.elf
