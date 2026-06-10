@@ -850,9 +850,19 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             {
                 Logging::debug("TitleLoader::load - Loading standard save file");
                 size = in->size();
-                data = std::shared_ptr<u8[]>(new u8[size]);
-                in->read(data.get(), size);
+                // Value-initialize so an incomplete read can never leave garbage in the
+                // buffer (which previously corrupted bag item lists non-deterministically).
+                data            = std::shared_ptr<u8[]>(new u8[size]());
+                size_t readSize = in->read(data.get(), size);
                 in->close();
+                if (readSize != size)
+                {
+                    Logging::error(
+                        "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
+                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), readSize);
+                    loadedTitle = nullptr;
+                    return false;
+                }
             }
             save = pksm::Sav::getSave(data, size);
             if (save)
@@ -956,9 +966,19 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
             fclose(in);
             return false;
         }
-        saveData = std::shared_ptr<u8[]>(new u8[size]);
-        fread(saveData.get(), 1, size, in);
+        // Value-initialize so an incomplete read can never leave garbage in the buffer.
+        saveData        = std::shared_ptr<u8[]>(new u8[size]());
+        size_t readSize = fread(saveData.get(), 1, size, in);
         fclose(in);
+        if (readSize != size)
+        {
+            Logging::error(
+                "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
+            Gui::error(i18n::localize("WRONG_SIZE"), readSize);
+            loadedTitle  = nullptr;
+            saveFileName = "";
+            return false;
+        }
     }
     else
     {
