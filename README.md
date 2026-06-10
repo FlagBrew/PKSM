@@ -90,8 +90,8 @@ All of these should be installed from [devKitPro pacman](https://devkitpro.org/w
   >
   > | Package         | Tested version       |
   > | --------------- | -------------------- |
-  > | devkitARM       | r67.1-1              |
-  > | devkitarm-gcc   | 15.2.0-7             |
+  > | devkitARM       | r68.1                |
+  > | devkitarm-gcc   | 16.1.0-1             |
   > | devkitarm-rules | 1.6.0-4              |
   > | libctru         | 2.7.0-1              |
   > | citro3d         | 1.7.1-2              |
