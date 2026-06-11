@@ -38,7 +38,7 @@ class BoxOverlay : public ReplaceableScreen
 public:
     BoxOverlay(ReplaceableScreen& screen, std::vector<std::string>&& boxes, int& current)
         : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-          hid(40, 2),
+          hid(20, 2),
           strings(boxes),
           out(current)
     {

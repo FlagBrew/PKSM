@@ -47,15 +47,16 @@
 namespace
 {
     // TODO: change these to use i18n
-    constexpr std::array<std::string_view, 14> credits = {"GitHub: github.com/FlagBrew/PKSM",
-        "Credits:", "piepie62 and Admiral-Fish for their dedication",
+    constexpr std::array<std::string_view, 14> credits = {"GitHub: seien210300928/PKSM-CJK-Readability",
+        "github.com/FlagBrew/PKSM Credits:", "piepie62 and Admiral-Fish for their dedication",
         "dsoldier for the gorgeous graphic work", "SpiredMoth, trainboy2019 and all the scripters",
         "The whole FlagBrew team for collaborating with us",
         "Kaphotics and SciresM for PKHeX documentation",
         "fincs and WinterMute for citro2d and devkitARM",
         "kamronbatman and ProjectPokemon for EventsGallery", "All of the translators",
         "Subject21_J and all the submitters for PKSM's icon",
-        "Allen (FMCore/FM1337/Sigkill) for the GPSS/Local GPSS", "Bernardo for creating PKSM"};
+        "Allen (FMCore/FM1337/Sigkill) for the GPSS/Local GPSS",
+        "Bernardo for creating PKSM. Seien_MtF for creating these fork"};
 
     void inputNumber(std::function<void(int)> callback, int digits, int maxValue)
     {

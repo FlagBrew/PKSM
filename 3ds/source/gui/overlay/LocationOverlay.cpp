@@ -35,7 +35,7 @@
 LocationOverlay::LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
       pkm(pkm),
-      hid(40, 2),
+      hid(20, 2),
       validLocations(i18n::rawLocations(
           Configuration::getInstance().language(), (pksm::Generation)pkm.version())),
       locations(validLocations),
@@ -69,14 +69,14 @@ void LocationOverlay::drawBottom() const
 
 void LocationOverlay::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     // Stupid non random-access iterators
     std::map<u16, std::string>::const_iterator locIt = locations.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
@@ -89,7 +89,7 @@ void LocationOverlay::drawTop() const
         if (hid.page() * hid.maxVisibleEntries() + i < locations.size())
         {
             Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x,
-                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+                (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
                 TextPosY::TOP);
             ++locIt;
         }

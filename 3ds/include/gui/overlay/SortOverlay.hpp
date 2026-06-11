@@ -39,7 +39,7 @@ class SortOverlay : public ReplaceableScreen
 public:
     SortOverlay(ReplaceableScreen& screen, SortScreen::SortType& type)
         : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-          hid(40, 2),
+          hid(20, 2),
           out(type)
     {
         hid.update(vals.size());

@@ -1,6 +1,6 @@
-export PKSM_TITLE		:= 	PKSM
-export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager
-export PKSM_AUTHOR		:=	FlagBrew
+export PKSM_TITLE		:= 	PKSM CJK Typography
+export PKSM_DESCRIPTION	:=	Gen I to Gen VIII save manager.
+export PKSM_AUTHOR		:=	FlagBrew, Seien_MtF(Typography)
 
 export VERSION_MAJOR	:=	10
 export VERSION_MINOR	:=	3

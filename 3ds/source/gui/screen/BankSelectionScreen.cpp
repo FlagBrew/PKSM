@@ -33,7 +33,7 @@
 #include <algorithm>
 
 BankSelectionScreen::BankSelectionScreen(int& storageBox)
-    : hid(40, 2), strings(Banks::bankNames()), storageBox(storageBox)
+    : hid(15, 2), strings(Banks::bankNames()), storageBox(storageBox)
 {
     int newBankNum = 0;
     while (std::find_if(strings.begin(), strings.end(),
@@ -59,24 +59,24 @@ void BankSelectionScreen::drawBottom() const
 
 void BankSelectionScreen::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
     {
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 204;
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
             Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x,
-                (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE, TextPosX::LEFT,
+                (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
                 TextPosY::TOP);
             Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second),
-                x + 192, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+                x + 192, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
                 TextPosX::RIGHT, TextPosY::TOP);
         }
         else
