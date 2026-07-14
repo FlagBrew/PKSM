@@ -108,6 +108,7 @@ std::string base64_encode(std::span<const u8> data)
 
     for (size_t i = 0, j = 0; i < data.size(); j += 4)
     {
+        (void)j;
         uint32_t octet_a = i < data.size() ? (unsigned char)data[i++] : 0;
         uint32_t octet_b = i < data.size() ? (unsigned char)data[i++] : 0;
         uint32_t octet_c = i < data.size() ? (unsigned char)data[i++] : 0;

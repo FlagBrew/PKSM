@@ -35,6 +35,7 @@
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
 #include <atomic>
+#include <mutex>
 #include <stack>
 #include <thread>
 

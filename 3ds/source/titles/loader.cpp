@@ -614,6 +614,8 @@ void TitleLoader::backupSave(const std::string& id)
         TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
         {
+            // NOTE: this locks sdSaves, so callers must not already hold that
+            // lock (the mutex is non-recursive). See TitleLoader::load (#1529).
             sdSaves.lock().get()[id].emplace_back(path);
         }
     }
@@ -848,9 +850,19 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             {
                 Logging::debug("TitleLoader::load - Loading standard save file");
                 size = in->size();
-                data = std::shared_ptr<u8[]>(new u8[size]);
-                in->read(data.get(), size);
+                // Value-initialize so an incomplete read can never leave garbage in the
+                // buffer (which previously corrupted bag item lists non-deterministically).
+                data            = std::shared_ptr<u8[]>(new u8[size]());
+                size_t readSize = in->read(data.get(), size);
                 in->close();
+                if (readSize != size)
+                {
+                    Logging::error(
+                        "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
+                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), readSize);
+                    loadedTitle = nullptr;
+                    return false;
+                }
             }
             save = pksm::Sav::getSave(data, size);
             if (save)
@@ -954,9 +966,19 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
             fclose(in);
             return false;
         }
-        saveData = std::shared_ptr<u8[]>(new u8[size]);
-        fread(saveData.get(), 1, size, in);
+        // Value-initialize so an incomplete read can never leave garbage in the buffer.
+        saveData        = std::shared_ptr<u8[]>(new u8[size]());
+        size_t readSize = fread(saveData.get(), 1, size, in);
         fclose(in);
+        if (readSize != size)
+        {
+            Logging::error(
+                "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
+            Gui::error(i18n::localize("WRONG_SIZE"), readSize);
+            loadedTitle  = nullptr;
+            saveFileName = "";
+            return false;
+        }
     }
     else
     {
@@ -986,22 +1008,31 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         }
         else
         {
-            bool done  = false;
-            auto saves = sdSaves.lock();
-            for (auto i = saves->begin(); !done && i != saves->end(); i++)
+            // Resolve the cached title ID under the lock, but release it before
+            // calling backupSave(): backupSave() re-acquires the sdSaves lock to
+            // register the new backup, and holding it here would self-deadlock
+            // the non-recursive mutex (freeze on "Backing up save...", #1529).
+            std::string backupId;
             {
-                for (auto j = i->second.begin(); j != i->second.end(); j++)
+                auto saves = sdSaves.lock();
+                for (auto i = saves->begin(); backupId.empty() && i != saves->end(); i++)
                 {
-                    if (*j == savePath)
+                    for (auto j = i->second.begin(); j != i->second.end(); j++)
                     {
-                        Logging::debug(
-                            "TitleLoader::load - Found save in cache, backing up with ID: {}",
-                            i->first);
-                        backupSave(i->first);
-                        done = true;
-                        break;
+                        if (*j == savePath)
+                        {
+                            Logging::debug(
+                                "TitleLoader::load - Found save in cache, backing up with ID: {}",
+                                i->first);
+                            backupId = i->first;
+                            break;
+                        }
                     }
                 }
+            }
+            if (!backupId.empty())
+            {
+                backupSave(backupId);
             }
         }
     }
