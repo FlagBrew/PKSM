@@ -14,6 +14,13 @@ public:
         auto image = pu::ui::render::LoadImage(iconPath);
         iconTexture = pu::sdl2::TextureHandle::New(image);
     }
+
+    // New constructor that accepts a texture directly
+    Title(const std::string& name, SDL_Texture* texture, u64 titleId) : name(name), titleId(titleId) {
+        // Use the provided texture directly
+        iconTexture = pu::sdl2::TextureHandle::New(texture);
+    }
+
     PU_SMART_CTOR(Title)
 
     // Getters
