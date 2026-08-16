@@ -26,4 +26,11 @@ public:
         const std::string& saveName,
         const AccountUid* userId = nullptr
     ) = 0;
+
+    // Whether a console save container for this title/user holds actual save
+    // data. Containers are created the moment a profile launches a game, so an
+    // existing-but-empty container must not count as a loadable save.
+    virtual bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {
+        return true;
+    }
 };

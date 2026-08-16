@@ -49,6 +49,8 @@ public:
         const AccountUid* userId = nullptr
     ) override;
 
+    bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const override;
+
     // Load save from different sources
     bool LoadConsoleSave(const pksm::titles::Title::Ref& title, const AccountUid& userId);
     bool LoadCheckpointSave(const pksm::titles::Title::Ref& title, const std::string& saveName);
