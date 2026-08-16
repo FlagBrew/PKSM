@@ -41,6 +41,8 @@ switch/*.nro
 switch/*.map
 switch/romfs/gfx/mock/
 switch/romfs/gfx/pokesprites/
+# Generated at build time from core/personals by switch/Makefile
+switch/romfs/personal/
 # Generated at build time from switch/PKSM.jpg
 switch/romfs/gfx/fallback_title_icon.jpg
 PKSM.lst

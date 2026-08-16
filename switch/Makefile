@@ -54,6 +54,28 @@ FIND_INCLUDES	:=	$(shell find $(CURDIR)/$(INCLUDES) -type d 2>/dev/null)
 # Add parent Plutonium include directory for <pu/...> includes
 FIND_INCLUDES	+=	Plutonium/Plutonium/include
 
+# PKSM-Core (shared save/pkm library, also used by the 3DS app)
+CORE_SOURCES	:=	../core/source \
+					../core/source/i18n \
+					../core/source/personal \
+					../core/source/pkx \
+					../core/source/sav \
+					../core/source/utils \
+					../core/source/wcx \
+					../core/memecrypto
+
+CORE_INCLUDES	:=	../core/include \
+					../core/include/enums \
+					../core/include/personal \
+					../core/include/pkx \
+					../core/include/sav \
+					../core/include/utils \
+					../core/include/wcx \
+					../core/memecrypto
+
+FIND_SOURCES	+=	$(CORE_SOURCES)
+FIND_INCLUDES	+=	$(CORE_INCLUDES)
+
 # Strip CURDIR from the found paths
 FIND_SOURCES	:=	$(patsubst $(CURDIR)/%,%,$(FIND_SOURCES))
 FIND_INCLUDES	:=	$(patsubst $(CURDIR)/%,%,$(FIND_INCLUDES))
@@ -91,7 +113,7 @@ endif
 
 CFLAGS	+=	-DPKSM_MAJOR=$(VER_MAJOR) -DPKSM_MINOR=$(VER_MINOR) -DPKSM_MICRO=$(VER_MICRO) -DPKSM_VERSION=\"$(APP_VERSION)\"
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fexceptions -std=gnu++17
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fexceptions -std=gnu++20
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
@@ -199,9 +221,15 @@ all: $(BUILD)
 debug:
 	@$(MAKE) DEBUG=1
 
-$(BUILD): $(ROMFS)/gfx/fallback_title_icon.jpg
+$(BUILD): $(ROMFS)/personal $(ROMFS)/gfx/fallback_title_icon.jpg
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+# Personal data files from PKSM-Core, loaded at runtime by core's personal.cpp
+$(ROMFS)/personal: $(wildcard ../core/personals/*)
+	@rm -rf $(ROMFS)/personal
+	@mkdir -p $(ROMFS)/personal
+	@cp ../core/personals/* $(ROMFS)/personal/
 
 # Placeholder title icon (the app icon) for titles whose icon can't be fetched
 $(ROMFS)/gfx/fallback_title_icon.jpg: PKSM.jpg

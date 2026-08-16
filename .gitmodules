@@ -6,7 +6,8 @@
 	url = https://github.com/FlagBrew/PKSM.wiki.git
 [submodule "core"]
 	path = core
-	url = https://github.com/FlagBrew/PKSM-Core
+	# Temporarily points at the gen9-support fork; revert to FlagBrew/PKSM-Core once upstreamed
+	url = https://github.com/Omar-Kay/PKSM-Core.git
 [submodule "external/picoc"]
 	path = external/picoc
 	url = https://github.com/FlagBrew/picoc
