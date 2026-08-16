@@ -363,16 +363,9 @@ void pksm::ui::GameList::UpdateGameListData() {
 
         switch (info.type) {
             case GameListType::Console: {
-                std::vector<titles::Title::Ref> consoleTitles;
-                // Add game card title if present
-                auto gameCardTitle = titleProvider->GetGameCardTitle();
-                if (gameCardTitle) {
-                    consoleTitles.push_back(gameCardTitle);
-                }
-                // Add installed titles for current user
-                auto installedTitles = titleProvider->GetInstalledTitles(currentUserId);
-                consoleTitles.insert(consoleTitles.end(), installedTitles.begin(), installedTitles.end());
-                list->SetDataSource(consoleTitles);
+                auto consoleList = std::static_pointer_cast<ConsoleGameList>(list);
+                consoleList->SetGameCardTitle(titleProvider->GetGameCardTitle());
+                consoleList->SetDataSource(titleProvider->GetInstalledTitles(currentUserId));
                 break;
             }
             case GameListType::Custom:
@@ -390,19 +383,9 @@ void pksm::ui::GameList::UpdateConsoleGameListData() {
     for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
         const auto& info = NAVIGATION_ORDER[i];
         if (info.type == GameListType::Console) {
-            auto& list = gameLists[i];
-            std::vector<titles::Title::Ref> consoleTitles;
-
-            // Add game card title if present
-            auto gameCardTitle = titleProvider->GetGameCardTitle();
-            if (gameCardTitle) {
-                consoleTitles.push_back(gameCardTitle);
-            }
-
-            // Add installed titles for current user
-            auto installedTitles = titleProvider->GetInstalledTitles(currentUserId);
-            consoleTitles.insert(consoleTitles.end(), installedTitles.begin(), installedTitles.end());
-            list->SetDataSource(consoleTitles);
+            auto consoleList = std::static_pointer_cast<ConsoleGameList>(gameLists[i]);
+            consoleList->SetGameCardTitle(titleProvider->GetGameCardTitle());
+            consoleList->SetDataSource(titleProvider->GetInstalledTitles(currentUserId));
             onSelectionChangedCallback();
             break;
         }

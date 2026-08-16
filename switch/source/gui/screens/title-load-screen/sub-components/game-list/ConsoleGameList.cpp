@@ -99,42 +99,43 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     this->gameCardX = gameCardX;
     this->installedStartX = installedStartX;
 
-    // Create the game card image component (initially without an image)
-    gameCardImage = FocusableImage::New(
+    // Cartridge slot component: frame + icon-through-window + its own
+    // texture-level dimming and (eventually) empty state
+    gameCardSlot = GameCardSlot::New(
         gameCardX,
         cartridgeText->GetY() + config.sectionTitleSpacing,
-        nullptr,  // No initial image
-        94,
+        GAME_CARD_SIZE,
         config.gameOutlinePadding
     );
-    gameCardImage->ISelectable::SetName("GameCard Image Element");
-    gameCardImage->SetWidth(GAME_CARD_SIZE);
-    gameCardImage->SetHeight(GAME_CARD_SIZE);
-    gameCardImage->SetOnTouchSelect([this]() {
-        LOG_DEBUG("[ConsoleGameList] Touch select on game card image");
+    gameCardSlot->SetTitle(nullptr);
+    gameCardSlot->SetOnTouchSelect([this]() {
+        LOG_DEBUG("[ConsoleGameList] Touch select on game card slot");
         selectionState = SelectionState::GameCard;
         HandleOnSelectionChanged();
         if (onTouchSelectCallback) {
             onTouchSelectCallback();
         }
     });
-    gameCardImage->SetOnSelect([this]() {
+    gameCardSlot->SetOnSelect([this]() {
         if (onSelectCallback) {
             onSelectCallback();
         }
     });
-    container->Add(gameCardImage);
-    consoleGameListSelectionManager->RegisterSelectable(gameCardImage);
+    container->Add(gameCardSlot);
+    consoleGameListSelectionManager->RegisterSelectable(gameCardSlot);
 
     // Set up input handler for transitions between game card and grid
     directionalInputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
-            LOG_DEBUG("[ConsoleGameList] Transitioning selection from installed games to game card");
-            selectionState = SelectionState::GameCard;
-            gameCardImage->RequestFocus();
-            HandleOnSelectionChanged();
+            if (gameCardSlot->GetTitle()) {
+                LOG_DEBUG("[ConsoleGameList] Transitioning selection from installed games to game card");
+                selectionState = SelectionState::GameCard;
+                gameCardSlot->RequestFocus();
+                HandleOnSelectionChanged();
+            }
+            // Empty slot: stay in the grid (no shake target to the left)
         } else if (selectionState == SelectionState::GameCard) {
-            gameCardImage->shakeOutOfBounds(ShakeDirection::LEFT);
+            gameCardSlot->shakeOutOfBounds(ShakeDirection::LEFT);
         }
     });
     directionalInputHandler.SetOnMoveRight([this]() {
@@ -200,7 +201,7 @@ void pksm::ui::ConsoleGameList::OnInput(
     if (focused) {
         directionalInputHandler.HandleInput(keys_down, keys_held);
     }
-    gameCardImage->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    gameCardSlot->OnInput(keys_down, keys_up, keys_held, touch_pos);
     installedGames->OnInput(keys_down, keys_up, keys_held, touch_pos);
 }
 
@@ -214,9 +215,9 @@ void pksm::ui::ConsoleGameList::SetFocused(bool focused) {
         // Update visual state only, don't request focus
         if (focused) {
             // Just update the visual state of the appropriate section
-            if (selectionState == SelectionState::GameCard) {
+            if (selectionState == SelectionState::GameCard && gameCardSlot->GetTitle()) {
                 LOG_DEBUG("[ConsoleGameList] Requesting focus on game card image");
-                gameCardImage->ISelectable::RequestFocus();
+                gameCardSlot->ISelectable::RequestFocus();
             } else {
                 LOG_DEBUG("[ConsoleGameList] Requesting focus on installed games");
                 installedGames->RequestFocus();
@@ -236,47 +237,39 @@ void pksm::ui::ConsoleGameList::SetFocusManager(std::shared_ptr<input::FocusMana
     // When we get a focus manager, register our child managers
     if (manager) {
         manager->RegisterChildManager(installedGamesManager);
-        manager->RegisterFocusable(gameCardImage);
+        manager->RegisterFocusable(gameCardSlot);
+    }
+}
+
+void pksm::ui::ConsoleGameList::SetGameCardTitle(titles::Title::Ref title) {
+    LOG_DEBUG(
+        title ? "[ConsoleGameList] Game card set: " + title->getName() : "[ConsoleGameList] Game card slot empty"
+    );
+    gameCardSlot->SetTitle(title);
+
+    // The empty slot is not selectable
+    if (!title && selectionState == SelectionState::GameCard) {
+        selectionState = SelectionState::InstalledGame;
     }
 }
 
 void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
-    LOG_DEBUG("[ConsoleGameList] Setting data source with " + std::to_string(titles.size()) + " titles");
+    LOG_DEBUG("[ConsoleGameList] Setting data source with " + std::to_string(titles.size()) + " installed titles");
     LOG_MEMORY();  // Memory check when loading new titles
 
-    // Store titles
+    // These are installed titles only; the game card arrives separately
+    // via SetGameCardTitle
     this->titles = titles;
-
-    // Update game card image if available
-    if (!titles.empty()) {
-        LOG_DEBUG("[ConsoleGameList] Setting game card image for first title");
-        gameCardImage->ISelectable::SetName(gameCardImage->ISelectable::GetName() + " " + titles[0]->getName());
-        gameCardImage->SetImage(titles[0]->getIcon());
-        gameCardImage->SetWidth(GAME_CARD_SIZE);
-        gameCardImage->SetHeight(GAME_CARD_SIZE);
-    } else {
-        LOG_DEBUG("[ConsoleGameList] No titles available, clearing game card image");
-        gameCardImage->SetImage(nullptr);
-    }
-
-    // Set up installed games grid with remaining titles
-    std::vector<titles::Title::Ref> installedTitles;
-    if (titles.size() > 1) {
-        LOG_DEBUG(
-            "[ConsoleGameList] Setting up installed games grid with " + std::to_string(titles.size() - 1) + " titles"
-        );
-        installedTitles.assign(titles.begin() + 1, titles.end());
-    }
-    installedGames->SetDataSource(installedTitles);
+    installedGames->SetDataSource(titles);
     installedGames->SetSelectedIndex(0);
-    selectionState = SelectionState::GameCard;
+    selectionState = gameCardSlot->GetTitle() ? SelectionState::GameCard : SelectionState::InstalledGame;
 }
 
 pksm::titles::Title::Ref pksm::ui::ConsoleGameList::GetSelectedTitle() const {
     LOG_DEBUG("[ConsoleGameList] Getting selected title");
     if (selectionState == SelectionState::GameCard) {
         LOG_DEBUG("[ConsoleGameList] Returning game card title");
-        return !titles.empty() ? titles[0] : nullptr;
+        return gameCardSlot->GetTitle();
     } else {
         LOG_DEBUG("[ConsoleGameList] Returning installed title");
         return installedGames->GetSelectedTitle();
