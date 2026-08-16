@@ -1,66 +1,188 @@
 #include "utils/Logger.hpp"
 
+#include <chrono>
+#include <condition_variable>
 #include <cstdio>
 #include <ctime>
+#include <filesystem>
+#include <fstream>
 #include <iomanip>
+#include <mutex>
 #include <sstream>
-
-#ifndef NDEBUG
+#include <switch.h>
+#include <thread>
+#include <vector>
 
 namespace pksm::utils {
 
-bool Logger::initialized = false;
-bool Logger::socket_initialized = false;
-bool Logger::console_initialized = false;
+int Logger::OUTPUT_TO_FILE = 1;
+int Logger::ADVANCED_LOGGING = 0;
+
+namespace {
+
+constexpr const char* LOG_DIR = "sdmc:/switch/PKSM";
+constexpr const char* LOG_FILE = "sdmc:/switch/PKSM/pksm.log";
+constexpr const char* LOG_FILE_OLD = "sdmc:/switch/PKSM/pksm.log.old";
+
+// All logger state is TU-local: the header stays a pure API surface.
+// g_log_mutex guards every flag and buffer below, and serializes console
+// writes so concurrent LOG_* calls can't interleave.
+std::mutex g_log_mutex;
+std::condition_variable g_log_cv;
+std::vector<std::string> g_pending_lines;
+std::thread g_flush_thread;
+bool g_initialized = false;
+bool g_socket_initialized = false;
+bool g_console_initialized = false;
+bool g_flush_thread_running = false;
+bool g_flush_thread_stop = false;
+bool g_log_file_rotated = false;
+
+void FlushPendingToFileLocked(std::vector<std::string>& out) {
+    if (g_pending_lines.empty()) {
+        return;
+    }
+    out.swap(g_pending_lines);
+}
+
+void FlushLinesToFile(const std::vector<std::string>& lines) {
+    if (lines.empty()) {
+        return;
+    }
+
+    try {
+        std::filesystem::create_directories(LOG_DIR);
+        std::ofstream out(LOG_FILE, std::ios::out | std::ios::app);
+        if (!out.good()) {
+            return;
+        }
+
+        for (const auto& line : lines) {
+            out.write(line.data(), static_cast<std::streamsize>(line.size()));
+        }
+        out.flush();
+    } catch (...) {
+        // ignore file logging failures
+    }
+}
+
+void FlushThreadMain() {
+    std::unique_lock<std::mutex> lk(g_log_mutex);
+    while (!g_flush_thread_stop) {
+        g_log_cv.wait_for(lk, std::chrono::seconds(3));
+
+        std::vector<std::string> local;
+        FlushPendingToFileLocked(local);
+
+        lk.unlock();
+        FlushLinesToFile(local);
+        lk.lock();
+    }
+
+    std::vector<std::string> local;
+    FlushPendingToFileLocked(local);
+    lk.unlock();
+    FlushLinesToFile(local);
+}
+
+// Caller must hold g_log_mutex.
+void EnsureFlushThreadStartedLocked() {
+    if (g_flush_thread_running) {
+        return;
+    }
+
+    try {
+        std::filesystem::create_directories(LOG_DIR);
+        if (!g_log_file_rotated) {
+            // Keep the previous run's log so a crash log survives one
+            // relaunch: users can reopen the app and still send it.
+            std::error_code ec;
+            std::filesystem::remove(LOG_FILE_OLD, ec);
+            if (std::filesystem::exists(LOG_FILE, ec)) {
+                std::filesystem::rename(LOG_FILE, LOG_FILE_OLD, ec);
+            }
+            std::ofstream out(LOG_FILE, std::ios::out | std::ios::trunc);
+            g_log_file_rotated = true;
+        }
+    } catch (...) {
+        // ignore file logging failures
+    }
+
+    g_flush_thread_stop = false;
+    g_flush_thread_running = true;
+    // The new thread blocks on g_log_mutex until our caller releases it.
+    g_flush_thread = std::thread(FlushThreadMain);
+}
+
+void StopFlushThread() {
+    {
+        std::lock_guard<std::mutex> lg(g_log_mutex);
+        if (!g_flush_thread_running) {
+            return;
+        }
+        g_flush_thread_stop = true;
+    }
+    g_log_cv.notify_all();
+    if (g_flush_thread.joinable()) {
+        g_flush_thread.join();
+    }
+    std::lock_guard<std::mutex> lg(g_log_mutex);
+    g_flush_thread_running = false;
+}
+
+}  // namespace
 
 void Logger::Initialize() {
-    if (!initialized) {
-        // Initialize socket for nxlink first
-        Result rc = socketInitializeDefault();
-        socket_initialized = R_SUCCEEDED(rc);
+    std::lock_guard<std::mutex> lg(g_log_mutex);
+    if (g_initialized) {
+        return;
+    }
 
-        if (socket_initialized) {
-            // Try to redirect output to nxlink
-            console_initialized = nxlinkStdio() > 0;
-            if (!console_initialized) {
-                // If nxlink redirection fails, try console
-                consoleInit(NULL);
-                console_initialized = true;
-            }
-        } else {
-            // If socket fails, fallback to console
-            consoleInit(NULL);
-            console_initialized = true;
+#ifndef NDEBUG
+    // Initialize socket for nxlink first
+    Result rc = socketInitializeDefault();
+    g_socket_initialized = R_SUCCEEDED(rc);
+
+    // Enable console logging only when nxlink redirection succeeds.
+    // Avoid consoleInit(NULL) fallback since it conflicts with SDL/Plutonium
+    // and causes black screens/crashes when launching normally.
+    g_console_initialized = false;
+    if (g_socket_initialized) {
+        g_console_initialized = nxlinkStdio() > 0;
+        if (!g_console_initialized) {
+            socketExit();
+            g_socket_initialized = false;
         }
+    }
 
-        initialized = true;
+    if (g_console_initialized) {
+        setvbuf(stdout, NULL, _IONBF, 0);
+    }
+#endif
 
-        // Log initialization status
-        if (socket_initialized) {
-            LOG_INFO("Socket initialized successfully");
-            if (console_initialized) {
-                LOG_INFO("Console output redirected to nxlink");
-            } else {
-                LOG_WARNING("Failed to redirect console to nxlink");
-            }
-        } else {
-            LOG_WARNING("Socket initialization failed, using console output");
-        }
+    g_initialized = true;
+
+    if (OUTPUT_TO_FILE != 0) {
+        EnsureFlushThreadStartedLocked();
     }
 }
 
 void Logger::Finalize() {
-    if (initialized) {
-        if (socket_initialized) {
-            socketExit();
-            socket_initialized = false;
-        }
-        if (console_initialized) {
-            consoleExit(NULL);
-            console_initialized = false;
-        }
-        initialized = false;
+    StopFlushThread();
+
+    std::lock_guard<std::mutex> lg(g_log_mutex);
+    if (!g_initialized) {
+        return;
     }
+
+#ifndef NDEBUG
+    if (g_socket_initialized) {
+        socketExit();
+    }
+#endif
+    g_socket_initialized = false;
+    g_console_initialized = false;
+    g_initialized = false;
 }
 
 void Logger::Debug(const std::string& message) {
@@ -80,16 +202,15 @@ void Logger::Error(const std::string& message) {
 }
 
 void Logger::Log(Level level, const std::string& message) {
-    if (!initialized || (!socket_initialized && !console_initialized)) {
-        return;
-    }
+    Initialize();
 
-    // Get current time
+    // Get current time (localtime_r: Log may run on multiple threads)
     auto now = std::time(nullptr);
-    auto tm = std::localtime(&now);
+    struct tm tm_buf;
+    localtime_r(&now, &tm_buf);
 
     std::stringstream ss;
-    ss << "[" << std::put_time(tm, "%H:%M:%S") << "] ";
+    ss << "[" << std::put_time(&tm_buf, "%H:%M:%S") << "] ";
 
     // Add log level
     switch (level) {
@@ -107,21 +228,33 @@ void Logger::Log(Level level, const std::string& message) {
             break;
     }
 
-    ss << message << std::endl;
-    printf("%s", ss.str().c_str());
-    fflush(stdout);
+    ss << message << "\n";
+    const std::string line = ss.str();
 
-    // Give a small delay after each log to ensure it's flushed
-    if (socket_initialized) {
-        svcSleepThread(1'000'000);  // 1ms delay
+    std::lock_guard<std::mutex> lg(g_log_mutex);
+
+#ifndef NDEBUG
+    if (g_console_initialized) {
+        printf("%s", line.c_str());
+        fflush(stdout);
+
+        // Give a small delay after each log to ensure it's flushed
+        if (g_socket_initialized) {
+            svcSleepThread(1'000'000);  // 1ms delay
+        }
+    }
+#endif
+
+    if (OUTPUT_TO_FILE != 0) {
+        EnsureFlushThreadStartedLocked();
+        g_pending_lines.push_back(line);
+        if (g_pending_lines.size() >= 128) {
+            g_log_cv.notify_all();
+        }
     }
 }
 
 void Logger::LogMemoryInfo() {
-    if (!initialized) {
-        return;
-    }
-
     u64 total = 0;
     u64 used = 0;
 
@@ -150,5 +283,3 @@ void Logger::LogMemoryInfo() {
 }
 
 }  // namespace pksm::utils
-
-#endif  // NDEBUG
