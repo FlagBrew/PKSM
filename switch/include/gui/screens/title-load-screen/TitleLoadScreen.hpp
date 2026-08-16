@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <pu/Plutonium>
@@ -83,6 +84,10 @@ private:
     void OnLoadButtonClick();
     void OnWirelessButtonClick();
     void OnInput(u64 down, u64 up, u64 held);
+
+    // Periodic game-card hotplug probe
+    static constexpr auto GAME_CARD_POLL_INTERVAL = std::chrono::seconds(2);
+    std::chrono::steady_clock::time_point lastGameCardPoll{};
     void OnGameTouchSelect();
     void OnSaveListTouchSelect();
     void OnGameListChanged();

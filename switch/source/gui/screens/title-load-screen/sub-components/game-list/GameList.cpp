@@ -1,5 +1,6 @@
 #include "gui/screens/title-load-screen/sub-components/game-list/GameList.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -364,8 +365,22 @@ void pksm::ui::GameList::UpdateGameListData() {
         switch (info.type) {
             case GameListType::Console: {
                 auto consoleList = std::static_pointer_cast<ConsoleGameList>(list);
-                consoleList->SetGameCardTitle(titleProvider->GetGameCardTitle());
-                consoleList->SetDataSource(titleProvider->GetInstalledTitles(currentUserId));
+                auto card = titleProvider->GetGameCardTitle();
+                auto installed = titleProvider->GetInstalledTitles(currentUserId);
+                if (card) {
+                    // The cart's own account save also appears in the
+                    // installed scan - don't show the game twice
+                    installed.erase(
+                        std::remove_if(
+                            installed.begin(),
+                            installed.end(),
+                            [&](const titles::Title::Ref& t) { return t->getTitleId() == card->getTitleId(); }
+                        ),
+                        installed.end()
+                    );
+                }
+                consoleList->SetGameCardTitle(card);
+                consoleList->SetDataSource(installed);
                 break;
             }
             case GameListType::Custom:
@@ -384,9 +399,23 @@ void pksm::ui::GameList::UpdateConsoleGameListData() {
         const auto& info = NAVIGATION_ORDER[i];
         if (info.type == GameListType::Console) {
             auto consoleList = std::static_pointer_cast<ConsoleGameList>(gameLists[i]);
-            consoleList->SetGameCardTitle(titleProvider->GetGameCardTitle());
-            consoleList->SetDataSource(titleProvider->GetInstalledTitles(currentUserId));
-            onSelectionChangedCallback();
+            auto card = titleProvider->GetGameCardTitle();
+            auto installed = titleProvider->GetInstalledTitles(currentUserId);
+            if (card) {
+                installed.erase(
+                    std::remove_if(
+                        installed.begin(),
+                        installed.end(),
+                        [&](const titles::Title::Ref& t) { return t->getTitleId() == card->getTitleId(); }
+                    ),
+                    installed.end()
+                );
+            }
+            consoleList->SetGameCardTitle(card);
+            consoleList->SetDataSource(installed);
+            if (onSelectionChangedCallback) {
+                onSelectionChangedCallback();
+            }
             break;
         }
     }

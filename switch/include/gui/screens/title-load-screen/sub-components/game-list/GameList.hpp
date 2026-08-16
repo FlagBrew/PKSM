@@ -98,7 +98,13 @@ private:
     void SetupGameListCallbacks(IGameList::Ref gameList);
     void UpdateGameListData();
     void CreateTriggerButtons();
-    void UpdateConsoleGameListData();  // New helper method
+
+public:
+    // Rebuilds the console list from the title provider (game card +
+    // installed titles); also used by the game-card hotplug poll
+    void UpdateConsoleGameListData();
+
+private:
 
 public:
     GameList(

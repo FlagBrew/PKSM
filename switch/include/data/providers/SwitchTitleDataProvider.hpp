@@ -28,6 +28,10 @@ private:
     // Whether nsInitialize succeeded (held for the provider's lifetime)
     bool nsAvailable = false;
 
+    // Application id of the currently probed game card (0 = none); lets
+    // RefreshGameCardTitle detect hotplug without rebuilding textures
+    u64 currentCardId = 0;
+
     // Helper methods
     SDL_Texture* LoadTitleIcon(NsApplicationControlData* nsacd, size_t iconSize) const;
     bool IsPokemonTitle(u64 titleId) const;
@@ -45,7 +49,7 @@ public:
     std::vector<pksm::titles::Title::Ref> GetCustomTitles() const override;
 
     // Update methods to refresh data
-    void RefreshGameCardTitle();
+    bool RefreshGameCardTitle() override;
     void RefreshInstalledTitles(const AccountUid& userId) const;
     void RefreshEmulatorTitles();
 };

@@ -247,9 +247,15 @@ void pksm::ui::ConsoleGameList::SetGameCardTitle(titles::Title::Ref title) {
     );
     gameCardSlot->SetTitle(title);
 
-    // The empty slot is not selectable
+    // If the selected cart was removed, selection migrates to wherever it
+    // would naturally be without a cart: the installed grid. Inserting a
+    // cart never steals an existing selection.
     if (!title && selectionState == SelectionState::GameCard) {
         selectionState = SelectionState::InstalledGame;
+        if (focused) {
+            installedGames->RequestFocus();
+        }
+        HandleOnSelectionChanged();
     }
 }
 
@@ -257,12 +263,31 @@ void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::R
     LOG_DEBUG("[ConsoleGameList] Setting data source with " + std::to_string(titles.size()) + " installed titles");
     LOG_MEMORY();  // Memory check when loading new titles
 
+    // Preserve the current grid selection by title identity across data
+    // refreshes (hotplug, profile change) instead of resetting to slot 0
+    titles::Title::Ref prevSelected =
+        (selectionState == SelectionState::InstalledGame) ? installedGames->GetSelectedTitle() : nullptr;
+
     // These are installed titles only; the game card arrives separately
     // via SetGameCardTitle
     this->titles = titles;
     installedGames->SetDataSource(titles);
-    installedGames->SetSelectedIndex(0);
-    selectionState = gameCardSlot->GetTitle() ? SelectionState::GameCard : SelectionState::InstalledGame;
+
+    size_t restoredIndex = 0;
+    if (prevSelected) {
+        for (size_t i = 0; i < titles.size(); i++) {
+            if (titles[i]->getTitleId() == prevSelected->getTitleId()) {
+                restoredIndex = i;
+                break;
+            }
+        }
+    }
+    installedGames->SetSelectedIndex(restoredIndex);
+
+    // Only correct the selection state if it became invalid
+    if (selectionState == SelectionState::GameCard && !gameCardSlot->GetTitle()) {
+        selectionState = SelectionState::InstalledGame;
+    }
 }
 
 pksm::titles::Title::Ref pksm::ui::ConsoleGameList::GetSelectedTitle() const {

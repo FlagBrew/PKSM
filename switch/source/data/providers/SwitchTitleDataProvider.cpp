@@ -127,40 +127,31 @@ std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetCustomTitles()
     return customTitleProvider->GetCustomTitles();
 }
 
-void SwitchTitleDataProvider::RefreshGameCardTitle() {
-    // Clear existing game card title
+bool SwitchTitleDataProvider::RefreshGameCardTitle() {
+    if (!nsAvailable) {
+        return false;
+    }
+
+    // Lightweight probe first: this runs on a poll, so only rebuild the
+    // title (metadata fetch + texture upload) when the card actually changed
+    u64 titleId = 0;
+    bool inserted = false;
+    if (R_SUCCEEDED(nsIsGameCardInserted(&inserted)) && inserted) {
+        s32 totalApplications = 0;
+        if (R_FAILED(nsListApplicationIdOnGameCard(&titleId, 1, &totalApplications)) || totalApplications == 0) {
+            titleId = 0;
+        }
+    }
+
+    if (titleId == currentCardId) {
+        return false;
+    }
+    currentCardId = titleId;
     gameCardTitle = nullptr;
 
-    if (!nsAvailable) {
-        LOG_WARNING("NS service unavailable, skipping game card detection");
-        return;
-    }
-
-    // Check if a game card is inserted
-    bool inserted;
-    Result res = nsIsGameCardInserted(&inserted);
-    if (R_FAILED(res) || !inserted) {
+    if (titleId == 0) {
         LOG_INFO("No game card inserted");
-        return;
-    }
-
-    // Get game card control data
-    NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
-    if (!nsacd) {
-        LOG_ERROR("Failed to allocate memory for control data");
-        return;
-    }
-
-    memset(nsacd, 0, sizeof(NsApplicationControlData));
-
-    // Get the application ID of the game card
-    u64 titleId = 0;
-    s32 totalApplications = 0;
-    res = nsListApplicationIdOnGameCard(&titleId, 1, &totalApplications);
-    if (R_FAILED(res) || totalApplications == 0) {
-        LOG_ERROR("Failed to get game card application ID");
-        free(nsacd);
-        return;
+        return true;
     }
 
     // Check if this is a Pokémon game
@@ -168,11 +159,21 @@ void SwitchTitleDataProvider::RefreshGameCardTitle() {
         std::stringstream ss;
         ss << "Game card is not a Pokémon game (Title ID: 0x" << std::hex << titleId << ")";
         LOG_INFO(ss.str());
-        free(nsacd);
-        return;
+        return true;
     }
 
-    // Get control data for the game card
+    // Get game card control data
+    NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
+    if (!nsacd) {
+        LOG_ERROR("Failed to allocate memory for control data");
+        return true;
+    }
+
+    memset(nsacd, 0, sizeof(NsApplicationControlData));
+    Result res;
+
+    // Get control data for the game card; fall back to the known name and
+    // default icon on failure rather than dropping the card
     size_t outsize = 0;
     res = nsGetApplicationControlData(
         NsApplicationControlSource_Storage,
@@ -181,41 +182,27 @@ void SwitchTitleDataProvider::RefreshGameCardTitle() {
         sizeof(NsApplicationControlData),
         &outsize
     );
-    if (R_FAILED(res) || outsize < sizeof(nsacd->nacp)) {
-        LOG_ERROR("Failed to get game card control data");
-        free(nsacd);
-        return;
-    }
-
-    // Get language entry
+    NsApplicationControlData* controlData = nullptr;
     NacpLanguageEntry* languageEntry = nullptr;
-    res = nacpGetLanguageEntry(&nsacd->nacp, &languageEntry);
-    if (R_FAILED(res) || !languageEntry) {
-        LOG_ERROR("Failed to get language entry");
-        free(nsacd);
-        return;
+    if (R_SUCCEEDED(res) && outsize >= sizeof(nsacd->nacp)) {
+        controlData = nsacd;
+        if (R_FAILED(nacpGetLanguageEntry(&nsacd->nacp, &languageEntry))) {
+            languageEntry = nullptr;
+        }
+    } else {
+        LOG_WARNING("No control data for game card, using fallbacks");
     }
 
-    // Get title name
     std::string titleName = GetTitleName(titleId, languageEntry);
-
-    // Load icon
-    SDL_Texture* iconTexture = LoadTitleIcon(nsacd, outsize - sizeof(nsacd->nacp));
-    if (!iconTexture) {
-        LOG_ERROR("Failed to load game card icon texture");
-        free(nsacd);
-        return;
-    }
-
-    // Create title object using the texture directly
+    SDL_Texture* iconTexture = LoadTitleIcon(controlData, controlData ? outsize - sizeof(nsacd->nacp) : 0);
     gameCardTitle = std::make_shared<pksm::titles::Title>(titleName, iconTexture, titleId);
 
-    // Clean up
     free(nsacd);
 
     std::stringstream ss;
     ss << "Game card title loaded: " << titleName << " (0x" << std::hex << titleId << ")";
     LOG_INFO(ss.str());
+    return true;
 }
 
 void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) const {
