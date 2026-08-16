@@ -10,11 +10,7 @@
 
 // Helper to check if a title ID belongs to a Pokémon game
 bool SwitchTitleDataProvider::IsPokemonTitle(u64 titleId) const {
-    // Disable filtering for debugging
-    return true;
-/*
-    return std::find(knownTitile.begin(), pokemonTitleIds.end(), titleId) != pokemonTitleIds.end();
-    */
+    return knownTitleNames.find(titleId) != knownTitleNames.end();
 }
 
 // Get a readable name for a title
@@ -39,51 +35,64 @@ std::string SwitchTitleDataProvider::GetTitleName(u64 titleId, NacpLanguageEntry
 SDL_Texture* SwitchTitleDataProvider::LoadTitleIcon(NsApplicationControlData* nsacd, size_t iconSize) const {
     if (!nsacd || iconSize == 0) {
         // Return a default icon texture
-        return pu::ui::render::LoadImage("romfs:/gfx/default_icon.png");
+        return pu::ui::render::LoadImage(FALLBACK_TITLE_ICON_PATH);
     }
 
-    // Create a temporary file to store the icon
-    std::string tempPath = "sdmc:/temp_icon.jpg";
-    FILE* iconFile = fopen(tempPath.c_str(), "wb");
-    if (!iconFile) {
-        LOG_ERROR("Failed to create temporary file for icon");
-        return pu::ui::render::LoadImage("romfs:/gfx/default_icon.png");
+    // Decode the JPEG directly from memory (no SD round-trip)
+    SDL_Surface* surface = IMG_Load_RW(SDL_RWFromMem(nsacd->icon, iconSize), 1);
+    if (!surface) {
+        LOG_ERROR("Failed to decode title icon, using default");
+        return pu::ui::render::LoadImage(FALLBACK_TITLE_ICON_PATH);
     }
 
-    // Write icon data to temporary file
-    fwrite(nsacd->icon, 1, iconSize, iconFile);
-    fclose(iconFile);
-
-    // Load the icon
-    SDL_Texture* texture = pu::ui::render::LoadImage(tempPath);
-
-    // Delete the temporary file
-    remove(tempPath.c_str());
+    SDL_Texture* texture = pu::ui::render::ConvertToTexture(surface);
+    if (!texture) {
+        LOG_ERROR("Failed to convert title icon to texture, using default");
+        return pu::ui::render::LoadImage(FALLBACK_TITLE_ICON_PATH);
+    }
 
     return texture;
 }
 
-SwitchTitleDataProvider::SwitchTitleDataProvider()
-  : gameCardTitle(nullptr), customTitleProvider(CustomTitleProvider::New()) {
-    // Initialize known title names
+SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveDataProvider)
+  : saveDataProvider(std::move(saveDataProvider)),
+    gameCardTitle(nullptr),
+    customTitleProvider(CustomTitleProvider::New()) {
+    // Known Pokémon titles; doubles as the IsPokemonTitle filter list
     knownTitleNames = {
-        {0x0100000011D90000, "Pokémon Sword"},
-        {0x01000A0011D8E000, "Pokémon Shield"},
-        {0x0100ABF008968000, "Pokémon: Let's Go, Pikachu!"},
-        {0x010003F003A34000, "Pokémon: Let's Go, Eevee!"},
-        {0x0100000011D92000, "Pokémon Brilliant Diamond"},
-        {0x010018E011D94000, "Pokémon Shining Pearl"},
+        {0x010003F003A34000, "Pokémon: Let's Go, Pikachu!"},
+        {0x0100187003A36000, "Pokémon: Let's Go, Eevee!"},
+        {0x0100ABF008968000, "Pokémon Sword"},
+        {0x01008DB008C2C000, "Pokémon Shield"},
+        {0x0100000011D90000, "Pokémon Brilliant Diamond"},
+        {0x010018E011D92000, "Pokémon Shining Pearl"},
         {0x01001F5010DFA000, "Pokémon Legends: Arceus"},
         {0x0100A3D008C5C000, "Pokémon Scarlet"},
-        {0x01008F6008C5E000, "Pokémon Violet"}
+        {0x01008F6008C5E000, "Pokémon Violet"},
+        {0x0100F43008C44000, "Pokémon Legends: Z-A"}
     };
 
     // Initialize emulator titles (these would typically be loaded from a config file)
     // For now, we'll keep them empty - they'll need to be discovered through a different mechanism
     emulatorTitles = {};
 
+    // Bring up ns once for the provider's lifetime (icons + game card metadata)
+    Result rc = nsInitialize();
+    nsAvailable = R_SUCCEEDED(rc);
+    if (!nsAvailable) {
+        std::stringstream ss;
+        ss << "Failed to initialize NS service: 0x" << std::hex << rc;
+        LOG_ERROR(ss.str());
+    }
+
     // Refresh game card and installed titles
     RefreshGameCardTitle();
+}
+
+SwitchTitleDataProvider::~SwitchTitleDataProvider() {
+    if (nsAvailable) {
+        nsExit();
+    }
 }
 
 pksm::titles::Title::Ref SwitchTitleDataProvider::GetGameCardTitle() const {
@@ -122,12 +131,9 @@ void SwitchTitleDataProvider::RefreshGameCardTitle() {
     // Clear existing game card title
     gameCardTitle = nullptr;
 
-    Result rc = nsInitialize();
-    if (R_FAILED(rc)) {
-        LOG_ERROR("Failed to initialize NS service: 0x" + std::to_string(rc));
-        // Consider how to handle this failure - maybe throw an exception or set a flag
-    } else {
-        LOG_INFO("NS service initialized successfully");
+    if (!nsAvailable) {
+        LOG_WARNING("NS service unavailable, skipping game card detection");
+        return;
     }
 
     // Check if a game card is inserted
@@ -251,43 +257,52 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
             info.uid.uid[1] == userId.uid[1]) {
             u64 titleId = info.application_id;
 
-            // Check if this is a Pokémon title
+            // Check if this is a Pokémon title with an actual save
             if (IsPokemonTitle(titleId)) {
-                // Get application control data
+                if (!saveDataProvider->HasConsoleSaveData(titleId, userId)) {
+                    std::stringstream ss;
+                    ss << "Skipping title 0x" << std::hex << titleId << ": empty save container";
+                    LOG_INFO(ss.str());
+                    continue;
+                }
+                // Get application control data; fall back to known name +
+                // default icon if metadata is unavailable, rather than
+                // silently dropping the title
                 size_t outsize = 0;
+                NsApplicationControlData* controlData = nullptr;
+                NacpLanguageEntry* languageEntry = nullptr;
                 memset(nsacd, 0, sizeof(NsApplicationControlData));
 
-                res = nsGetApplicationControlData(
-                    NsApplicationControlSource_Storage,
-                    titleId,
-                    nsacd,
-                    sizeof(NsApplicationControlData),
-                    &outsize
-                );
-                if (R_SUCCEEDED(res) && outsize >= sizeof(nsacd->nacp)) {
-                    // Get language entry
-                    NacpLanguageEntry* languageEntry = nullptr;
-                    res = nacpGetLanguageEntry(&nsacd->nacp, &languageEntry);
-
-                    if (R_SUCCEEDED(res) && languageEntry) {
-                        // Get title name
-                        std::string titleName = GetTitleName(titleId, languageEntry);
-
-                        // Load icon texture
-                        SDL_Texture* iconTexture = LoadTitleIcon(nsacd, outsize - sizeof(nsacd->nacp));
-                        if (iconTexture) {
-                            // Create title object using the texture directly
-                            auto title = std::make_shared<pksm::titles::Title>(titleName, iconTexture, titleId);
-                            userTitles.push_back(title);
-
-                            std::stringstream ss;
-                            ss << "Installed title found: " << titleName << " (0x" << std::hex << titleId << ")";
-                            LOG_INFO(ss.str());
-                        } else {
-                            LOG_ERROR("Failed to load icon texture for installed title");
+                if (nsAvailable) {
+                    res = nsGetApplicationControlData(
+                        NsApplicationControlSource_Storage,
+                        titleId,
+                        nsacd,
+                        sizeof(NsApplicationControlData),
+                        &outsize
+                    );
+                    if (R_SUCCEEDED(res) && outsize >= sizeof(nsacd->nacp)) {
+                        controlData = nsacd;
+                        if (R_FAILED(nacpGetLanguageEntry(&nsacd->nacp, &languageEntry))) {
+                            languageEntry = nullptr;
                         }
+                    } else {
+                        std::stringstream ss;
+                        ss << "No control data for title 0x" << std::hex << titleId << " (rc 0x" << res
+                           << "), using fallbacks";
+                        LOG_WARNING(ss.str());
                     }
                 }
+
+                std::string titleName = GetTitleName(titleId, languageEntry);
+                SDL_Texture* iconTexture =
+                    LoadTitleIcon(controlData, controlData ? outsize - sizeof(nsacd->nacp) : 0);
+                auto title = std::make_shared<pksm::titles::Title>(titleName, iconTexture, titleId);
+                userTitles.push_back(title);
+
+                std::stringstream ss;
+                ss << "Installed title found: " << titleName << " (0x" << std::hex << titleId << ")";
+                LOG_INFO(ss.str());
             }
         }
     }

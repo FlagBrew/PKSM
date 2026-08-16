@@ -141,13 +141,16 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto accountManager = std::make_unique<data::AccountManager>();
         Result res = accountManager->Initialize();
         if (R_FAILED(res)) {
-            LOG_ERROR("Failed to initialize account manager");
-            throw std::runtime_error("Account manager initialization failed");
+            // Not fatal: the app still works for emulator/backup saves;
+            // console-save listing just comes up empty without an account
+            std::stringstream ss;
+            ss << "Failed to initialize account manager: 0x" << std::hex << res;
+            LOG_ERROR(ss.str());
         }
 
         LOG_DEBUG("Creating data providers...");
-        auto titleProvider = SwitchTitleDataProvider::New();
         auto saveProvider = SwitchSaveDataProvider::New();
+        auto titleProvider = SwitchTitleDataProvider::New(saveProvider);
         auto saveDataAccessor = std::make_shared<MockSaveDataAccessor>();  // still mock: accessor absorption comes later
         auto boxDataProvider = std::make_shared<MockBoxDataProvider>();
         LOG_MEMORY();  // Memory after data provider initialization

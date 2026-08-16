@@ -1,6 +1,7 @@
 #include "data/providers/SwitchSaveDataProvider.hpp"
 
 #include <cstring>
+#include <dirent.h>
 #include <filesystem>
 #include <fstream>
 #include <regex>
@@ -14,7 +15,7 @@
 std::string SwitchSaveDataProvider::GetSaveTitleName(const std::string& name) const {
     // Replace characters that aren't valid in filenames
     std::string safeName = name;
-    std::regex invalidChars("[\\\\/:*?\"<>|]");
+    static const std::regex invalidChars("[\\\\/:*?\"<>|]");
     safeName = std::regex_replace(safeName, invalidChars, "_");
     return safeName;
 }
@@ -24,14 +25,17 @@ SwitchSaveDataProvider::SwitchSaveDataProvider() {
 }
 
 Result SwitchSaveDataProvider::MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const {
+    // Defensively clear any leftover mount under the same device name
+    fsdevUnmountDevice("save");
+
     // Open save data filesystem
     Result res = fsOpen_SaveData(fs, titleId, userId);
     if (R_SUCCEEDED(res)) {
-        // Mount the filesystem to "save"
+        // Mount the filesystem to "save". fsdev closes fs itself on failure
+        // (see libnx fs_dev.h) - do NOT fsFsClose here.
         int mountResult = fsdevMountDevice("save", *fs);
         if (mountResult == -1) {
-            LOG_ERROR("Failed to mount save filesystem");
-            fsFsClose(fs);
+            LOG_ERROR("Failed to mount save filesystem device");
             return MAKERESULT(Module_Libnx, LibnxError_IoError);
         }
     } else {
@@ -47,42 +51,99 @@ void SwitchSaveDataProvider::UnmountSaveData() const {
     fsdevUnmountDevice("save");
 }
 
-void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const {
-    LOG_INFO("RefreshConsoleSaves" + title->getName());
+bool SwitchSaveDataProvider::HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {
+    // A save container is created the moment a profile launches a game, even
+    // if nothing was ever saved. Peek inside at the raw fs level (no fsdev
+    // mount needed) so such empty containers don't count as save data.
+    FsFileSystem fs;
+    if (R_FAILED(fsOpen_SaveData(&fs, titleId, userId))) {
+        return false;
+    }
 
+    bool hasContent = false;
+    FsDir dir;
+    if (R_SUCCEEDED(fsFsOpenDirectory(&fs, "/", FsDirOpenMode_ReadDirs | FsDirOpenMode_ReadFiles, &dir))) {
+        FsDirectoryEntry entry;
+        s64 count = 0;
+        hasContent = R_SUCCEEDED(fsDirRead(&dir, &count, 1, &entry)) && count > 0;
+        fsDirClose(&dir);
+    }
+    fsFsClose(&fs);
+    return hasContent;
+}
+
+namespace {
+
+// List the mounted save's root. Returns entry names (bounded), empty if none.
+// A save container can exist but be empty when a profile launched the game
+// without ever playing - such containers must not surface as loadable saves.
+std::vector<std::string> ListMountedSaveRoot() {
+    std::vector<std::string> names;
+    DIR* dir = opendir("save:/");
+    if (dir) {
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != nullptr && names.size() < 16) {
+            names.emplace_back(entry->d_name);
+        }
+        closedir(dir);
+    }
+    return names;
+}
+
+std::string JoinNames(const std::vector<std::string>& names) {
+    std::string joined;
+    for (const auto& n : names) {
+        if (!joined.empty()) {
+            joined += ", ";
+        }
+        joined += n;
+    }
+    return joined.empty() ? "(empty)" : joined;
+}
+
+}  // namespace
+
+void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const {
     if (!title) {
         return;
     }
+    LOG_INFO("RefreshConsoleSaves: " + title->getName());
 
     // Clear current saves for this title and user
     u64 titleId = title->getTitleId();
     consoleSaveCache[titleId][userId].consoleSaves.clear();
+
+    // The emptiness policy lives in HasConsoleSaveData; don't bother
+    // mounting a container that holds no save data
+    if (!HasConsoleSaveData(titleId, userId)) {
+        std::stringstream ss;
+        ss << "Empty save container for title " << std::hex << titleId << ", ignoring";
+        LOG_INFO(ss.str());
+        consoleSaveCache[titleId][userId].isLoaded = true;
+        return;
+    }
 
     // Attempt to mount the save data
     FsFileSystem fs;
     Result res = MountSaveData(&fs, titleId, userId);
 
     if (R_SUCCEEDED(res)) {
-        // Create a save entry for the console save
-        std::string saveName = "Console Save";
-        std::string savePath = "save:/";
-        auto save = pksm::saves::Save::New(saveName, savePath);
-        consoleSaveCache[titleId][userId].consoleSaves.push_back(save);
-
-        // Mark as loaded
-        consoleSaveCache[titleId][userId].isLoaded = true;
-
-        // Unmount when done
+        auto rootEntries = ListMountedSaveRoot();
         UnmountSaveData();
 
+        auto save = pksm::saves::Save::New("Console Save", "save:/");
+        consoleSaveCache[titleId][userId].consoleSaves.push_back(save);
         std::stringstream ss;
-        ss << "Found console save for title " << std::hex << titleId << ", user " << std::hex << userId.uid[0];
+        ss << "Found console save for title " << std::hex << titleId << " [" << JoinNames(rootEntries) << "]";
         LOG_INFO(ss.str());
     } else {
         std::stringstream ss;
         ss << "No console save found for title " << std::hex << titleId << ", user " << std::hex << userId.uid[0];
         LOG_INFO(ss.str());
     }
+
+    // The cache entry is now current either way (possibly with zero saves)
+    consoleSaveCache[titleId][userId].isLoaded = true;
 }
 
 void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const {
@@ -97,22 +158,25 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
     char titleIdStr[20];
     snprintf(titleIdStr, sizeof(titleIdStr), "0x%016lX", titleId);
 
-    // Look for a directory with the title ID
+    // Checkpoint names its per-title folder with its own title string
+    // ("0x<ID> <name>"), which won't always match how we render the name.
+    // Scan the saves dir and substring-match the 16-hex ID instead.
     std::string basePath = CHECKPOINT_BASE_PATH;
     std::string titlePath;
+    const std::string idHex = titleIdStr + 2;  // skip "0x"
 
-    // Format 1: ID with name
-    std::string safeName = GetSaveTitleName(title->getName());
-    std::string path1 = basePath + titleIdStr + " " + safeName;
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator(basePath)) {
+            if (entry.is_directory() && entry.path().filename().string().find(idHex) != std::string::npos) {
+                titlePath = entry.path().string();
+                break;
+            }
+        }
+    } catch (const std::exception&) {
+        // No Checkpoint directory at all - fall through to the empty case
+    }
 
-    // Format 2: just ID
-    std::string path2 = basePath + titleIdStr;
-
-    if (std::filesystem::exists(path1)) {
-        titlePath = path1;
-    } else if (std::filesystem::exists(path2)) {
-        titlePath = path2;
-    } else {
+    if (titlePath.empty()) {
         std::stringstream ss;
         ss << "No Checkpoint saves found for title " << titleIdStr;
         LOG_INFO(ss.str());
@@ -174,14 +238,26 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     const pksm::titles::Title::Ref& title,
     const std::optional<AccountUid>& currentUser
 ) const {
-    // Refresh the saves data for this title and user
-    RefreshSaves(title, currentUser);
-
     if (!title) {
         return {};
     }
 
     u64 titleId = title->getTitleId();
+
+    // Console saves: refresh only on cache miss (a refresh mounts the save
+    // FS, too heavy for every selection change). Checkpoint saves: always
+    // rescan - it's a cheap directory read, and backups can be created
+    // mid-session.
+    bool consoleCached = true;
+    if (currentUser) {
+        auto titleIt = consoleSaveCache.find(titleId);
+        consoleCached = titleIt != consoleSaveCache.end() &&
+            titleIt->second.count(*currentUser) > 0 && titleIt->second.at(*currentUser).isLoaded;
+    }
+    if (!consoleCached && currentUser) {
+        RefreshConsoleSaves(title, *currentUser);
+    }
+    RefreshCheckpointSaves(title);
     std::vector<pksm::saves::Save::Ref> result;
 
     // Add console saves if a user is specified
@@ -225,37 +301,40 @@ bool SwitchSaveDataProvider::LoadConsoleSave(const pksm::titles::Title::Ref& tit
     ss << "Loading console save for title " << std::hex << titleId << ", user " << std::hex << userId.uid[0];
     LOG_INFO(ss.str());
 
-    // Mount the save filesystem
+    // Open the save filesystem, list its root at the raw fs level BEFORE
+    // mounting (save FS handles are exclusive, so this must share the one
+    // handle), then mount that same handle to devoptab
+    fsdevUnmountDevice("save");
     FsFileSystem fs;
-    Result res = MountSaveData(&fs, titleId, userId);
-
+    Result res = fsOpen_SaveData(&fs, titleId, userId);
     if (R_FAILED(res)) {
         std::stringstream ss;
-        ss << "Failed to mount save filesystem: 0x" << std::hex << res;
+        ss << "Failed to open save data filesystem: 0x" << std::hex << res;
         LOG_ERROR(ss.str());
         return false;
     }
 
-    // At this point, the save is mounted at "save:/"
-    // We can now access it through standard file operations
+    if (fsdevMountDevice("save", fs) == -1) {
+        // fsdev closes fs itself on failure - do not fsFsClose here
+        LOG_ERROR("Failed to mount save filesystem device");
+        return false;
+    }
 
-    // Check if the save file exists
-    std::string savePath = "save:/main";
-    if (!std::filesystem::exists(savePath)) {
-        std::stringstream ss;
-        ss << "Save file not found at " << savePath;
-        LOG_ERROR(ss.str());
+    // Save file names vary per game (main, savedata.bin, ...), so until the
+    // real save accessor takes over, "loadable" means the container has
+    // content. The listing doubles as the support-log breadcrumb.
+    auto rootEntries = ListMountedSaveRoot();
+    if (rootEntries.empty()) {
+        LOG_ERROR("Save load failed for " + title->getName() + "; save root: (empty)");
         UnmountSaveData();
         return false;
     }
 
-    // Here you would typically load the save data into memory
-    // For demonstration, we'll just check that we can access it
+    LOG_INFO("Console save mounted for " + title->getName() + "; save root: " + JoinNames(rootEntries));
 
-    LOG_INFO("Successfully mounted console save");
-
-    // Keep the save mounted for further operations
-    // The save will be accessible at "save:/" in the filesystem
+    // Unmount until the (still-mock) save accessor takes ownership of real
+    // reads - leaving "save" mounted poisons every later mount attempt.
+    UnmountSaveData();
 
     return true;
 }

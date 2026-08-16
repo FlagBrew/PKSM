@@ -199,9 +199,14 @@ all: $(BUILD)
 debug:
 	@$(MAKE) DEBUG=1
 
-$(BUILD):
+$(BUILD): $(ROMFS)/gfx/fallback_title_icon.jpg
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+# Placeholder title icon (the app icon) for titles whose icon can't be fetched
+$(ROMFS)/gfx/fallback_title_icon.jpg: PKSM.jpg
+	@mkdir -p $(ROMFS)/gfx
+	@cp PKSM.jpg $@
 
 #---------------------------------------------------------------------------------
 clean:

@@ -43,7 +43,16 @@ AccountManager::~AccountManager() {
 }
 
 Result AccountManager::Initialize() {
+    // Administrator (acc:su) works under hbloader's ACL; fall back for
+    // launch contexts with a tighter ACL. Application (acc:u0) is last -
+    // it needs real application info that homebrew NROs lack (0x2c7c).
     Result res = accountInitialize(AccountServiceType_Administrator);
+    if (R_FAILED(res)) {
+        res = accountInitialize(AccountServiceType_System);
+    }
+    if (R_FAILED(res)) {
+        res = accountInitialize(AccountServiceType_Application);
+    }
     if (R_SUCCEEDED(res)) {
         // Get initial account if available
         s32 accountCount;
