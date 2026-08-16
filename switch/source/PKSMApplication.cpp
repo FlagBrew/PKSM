@@ -2,10 +2,10 @@
 
 #include <sstream>
 
+#include "data/providers/SwitchSaveDataProvider.hpp"
+#include "data/providers/SwitchTitleDataProvider.hpp"
 #include "data/providers/mock/MockBoxDataProvider.hpp"
 #include "data/providers/mock/MockSaveDataAccessor.hpp"
-#include "data/providers/mock/MockSaveDataProvider.hpp"
-#include "data/providers/mock/MockTitleDataProvider.hpp"
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
@@ -146,9 +146,9 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         }
 
         LOG_DEBUG("Creating data providers...");
-        auto titleProvider = std::make_shared<MockTitleDataProvider>(accountManager->GetCurrentAccount());
-        auto saveProvider = std::make_shared<MockSaveDataProvider>(accountManager->GetCurrentAccount());
-        auto saveDataAccessor = std::make_shared<MockSaveDataAccessor>();
+        auto titleProvider = SwitchTitleDataProvider::New();
+        auto saveProvider = SwitchSaveDataProvider::New();
+        auto saveDataAccessor = std::make_shared<MockSaveDataAccessor>();  // still mock: accessor absorption comes later
         auto boxDataProvider = std::make_shared<MockBoxDataProvider>();
         LOG_MEMORY();  // Memory after data provider initialization
 
@@ -192,14 +192,20 @@ void PKSMApplication::ShowStorageScreen() {
 
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
-    // Load the mock save data based on the title and save name
-    if (saveDataAccessor->loadSave(title, save->getName())) {
-        LOG_DEBUG("Successfully loaded mock save data");
+
+    // Load the actual save data based on the title and save name
+    auto userId = accountManager->GetCurrentAccount();
+    bool loadSuccess = saveProvider->LoadSave(title, save->getName(), &userId);
+
+    if (loadSuccess) {
+        LOG_DEBUG("Successfully loaded save data");
 
         // Now that the save is loaded, show the main menu
         this->ShowMainMenu();
     } else {
-        LOG_ERROR("Failed to load mock save data");
+        LOG_ERROR("Failed to load save data");
+        // Handle error - for now, we'll still show the main menu
+        this->ShowMainMenu();
     }
 }
 

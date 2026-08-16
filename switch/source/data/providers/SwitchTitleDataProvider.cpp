@@ -1,0 +1,320 @@
+#include "data/providers/SwitchTitleDataProvider.hpp"
+
+#include <algorithm>
+#include <cstring>
+#include <memory>
+#include <sstream>
+#include <switch.h>
+
+#include "utils/Logger.hpp"
+
+// Helper to check if a title ID belongs to a Pokémon game
+bool SwitchTitleDataProvider::IsPokemonTitle(u64 titleId) const {
+    // Disable filtering for debugging
+    return true;
+/*
+    return std::find(knownTitile.begin(), pokemonTitleIds.end(), titleId) != pokemonTitleIds.end();
+    */
+}
+
+// Get a readable name for a title
+std::string SwitchTitleDataProvider::GetTitleName(u64 titleId, NacpLanguageEntry* languageEntry) const {
+    if (languageEntry && strlen(languageEntry->name) > 0) {
+        return std::string(languageEntry->name);
+    }
+
+    // Check if we have a known name for this title
+    auto it = knownTitleNames.find(titleId);
+    if (it != knownTitleNames.end()) {
+        return it->second;
+    }
+
+    // Fallback to title ID as hex
+    char buffer[32];
+    snprintf(buffer, sizeof(buffer), "0x%016lX", titleId);
+    return std::string(buffer);
+}
+
+// Load title icon into a texture
+SDL_Texture* SwitchTitleDataProvider::LoadTitleIcon(NsApplicationControlData* nsacd, size_t iconSize) const {
+    if (!nsacd || iconSize == 0) {
+        // Return a default icon texture
+        return pu::ui::render::LoadImage("romfs:/gfx/default_icon.png");
+    }
+
+    // Create a temporary file to store the icon
+    std::string tempPath = "sdmc:/temp_icon.jpg";
+    FILE* iconFile = fopen(tempPath.c_str(), "wb");
+    if (!iconFile) {
+        LOG_ERROR("Failed to create temporary file for icon");
+        return pu::ui::render::LoadImage("romfs:/gfx/default_icon.png");
+    }
+
+    // Write icon data to temporary file
+    fwrite(nsacd->icon, 1, iconSize, iconFile);
+    fclose(iconFile);
+
+    // Load the icon
+    SDL_Texture* texture = pu::ui::render::LoadImage(tempPath);
+
+    // Delete the temporary file
+    remove(tempPath.c_str());
+
+    return texture;
+}
+
+SwitchTitleDataProvider::SwitchTitleDataProvider()
+  : gameCardTitle(nullptr), customTitleProvider(CustomTitleProvider::New()) {
+    // Initialize known title names
+    knownTitleNames = {
+        {0x0100000011D90000, "Pokémon Sword"},
+        {0x01000A0011D8E000, "Pokémon Shield"},
+        {0x0100ABF008968000, "Pokémon: Let's Go, Pikachu!"},
+        {0x010003F003A34000, "Pokémon: Let's Go, Eevee!"},
+        {0x0100000011D92000, "Pokémon Brilliant Diamond"},
+        {0x010018E011D94000, "Pokémon Shining Pearl"},
+        {0x01001F5010DFA000, "Pokémon Legends: Arceus"},
+        {0x0100A3D008C5C000, "Pokémon Scarlet"},
+        {0x01008F6008C5E000, "Pokémon Violet"}
+    };
+
+    // Initialize emulator titles (these would typically be loaded from a config file)
+    // For now, we'll keep them empty - they'll need to be discovered through a different mechanism
+    emulatorTitles = {};
+
+    // Refresh game card and installed titles
+    RefreshGameCardTitle();
+}
+
+pksm::titles::Title::Ref SwitchTitleDataProvider::GetGameCardTitle() const {
+    return gameCardTitle;
+}
+
+std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetInstalledTitles(const AccountUid& userId) const {
+    auto it = installedTitleCache.find(userId);
+    if (it != installedTitleCache.end()) {
+        return it->second;
+    }
+
+    // Not in cache, so refresh
+    LOG_INFO("Titles not in cache, refreshing for user");
+    RefreshInstalledTitles(userId);
+
+    // Now check cache again
+    it = installedTitleCache.find(userId);
+    if (it != installedTitleCache.end()) {
+        return it->second;
+    }
+
+    // Return empty vector if not found
+    return {};
+}
+
+std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetEmulatorTitles() const {
+    return emulatorTitles;
+}
+
+std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetCustomTitles() const {
+    return customTitleProvider->GetCustomTitles();
+}
+
+void SwitchTitleDataProvider::RefreshGameCardTitle() {
+    // Clear existing game card title
+    gameCardTitle = nullptr;
+
+    Result rc = nsInitialize();
+    if (R_FAILED(rc)) {
+        LOG_ERROR("Failed to initialize NS service: 0x" + std::to_string(rc));
+        // Consider how to handle this failure - maybe throw an exception or set a flag
+    } else {
+        LOG_INFO("NS service initialized successfully");
+    }
+
+    // Check if a game card is inserted
+    bool inserted;
+    Result res = nsIsGameCardInserted(&inserted);
+    if (R_FAILED(res) || !inserted) {
+        LOG_INFO("No game card inserted");
+        return;
+    }
+
+    // Get game card control data
+    NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
+    if (!nsacd) {
+        LOG_ERROR("Failed to allocate memory for control data");
+        return;
+    }
+
+    memset(nsacd, 0, sizeof(NsApplicationControlData));
+
+    // Get the application ID of the game card
+    u64 titleId = 0;
+    s32 totalApplications = 0;
+    res = nsListApplicationIdOnGameCard(&titleId, 1, &totalApplications);
+    if (R_FAILED(res) || totalApplications == 0) {
+        LOG_ERROR("Failed to get game card application ID");
+        free(nsacd);
+        return;
+    }
+
+    // Check if this is a Pokémon game
+    if (!IsPokemonTitle(titleId)) {
+        std::stringstream ss;
+        ss << "Game card is not a Pokémon game (Title ID: 0x" << std::hex << titleId << ")";
+        LOG_INFO(ss.str());
+        free(nsacd);
+        return;
+    }
+
+    // Get control data for the game card
+    size_t outsize = 0;
+    res = nsGetApplicationControlData(
+        NsApplicationControlSource_Storage,
+        titleId,
+        nsacd,
+        sizeof(NsApplicationControlData),
+        &outsize
+    );
+    if (R_FAILED(res) || outsize < sizeof(nsacd->nacp)) {
+        LOG_ERROR("Failed to get game card control data");
+        free(nsacd);
+        return;
+    }
+
+    // Get language entry
+    NacpLanguageEntry* languageEntry = nullptr;
+    res = nacpGetLanguageEntry(&nsacd->nacp, &languageEntry);
+    if (R_FAILED(res) || !languageEntry) {
+        LOG_ERROR("Failed to get language entry");
+        free(nsacd);
+        return;
+    }
+
+    // Get title name
+    std::string titleName = GetTitleName(titleId, languageEntry);
+
+    // Load icon
+    SDL_Texture* iconTexture = LoadTitleIcon(nsacd, outsize - sizeof(nsacd->nacp));
+    if (!iconTexture) {
+        LOG_ERROR("Failed to load game card icon texture");
+        free(nsacd);
+        return;
+    }
+
+    // Create title object using the texture directly
+    gameCardTitle = std::make_shared<pksm::titles::Title>(titleName, iconTexture, titleId);
+
+    // Clean up
+    free(nsacd);
+
+    std::stringstream ss;
+    ss << "Game card title loaded: " << titleName << " (0x" << std::hex << titleId << ")";
+    LOG_INFO(ss.str());
+}
+
+void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) const {
+    // Clear existing titles for this user
+    installedTitleCache.erase(userId);
+    std::vector<pksm::titles::Title::Ref> userTitles;
+
+    LOG_INFO("REFRESH TITLES");
+
+    // Open save data info reader
+    FsSaveDataInfoReader reader;
+    Result res = fsOpenSaveDataInfoReader(&reader, FsSaveDataSpaceId_User);
+    if (R_FAILED(res)) {
+        LOG_ERROR("Failed to open save data info reader");
+        return;
+    }
+
+    // Read save data info
+    FsSaveDataInfo info;
+    s64 total = 0;
+
+    // Allocate memory for application control data
+    NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
+    if (!nsacd) {
+        LOG_ERROR("Failed to allocate memory for application control data");
+        fsSaveDataInfoReaderClose(&reader);
+        return;
+    }
+
+    // Read save data info entries
+    while (true) {
+        res = fsSaveDataInfoReaderRead(&reader, &info, 1, &total);
+        if (R_FAILED(res) || total == 0) {
+            break;
+        }
+
+        // Check if this is account-specific save data
+        if (info.save_data_type == FsSaveDataType_Account && info.uid.uid[0] == userId.uid[0] &&
+            info.uid.uid[1] == userId.uid[1]) {
+            u64 titleId = info.application_id;
+
+            // Check if this is a Pokémon title
+            if (IsPokemonTitle(titleId)) {
+                // Get application control data
+                size_t outsize = 0;
+                memset(nsacd, 0, sizeof(NsApplicationControlData));
+
+                res = nsGetApplicationControlData(
+                    NsApplicationControlSource_Storage,
+                    titleId,
+                    nsacd,
+                    sizeof(NsApplicationControlData),
+                    &outsize
+                );
+                if (R_SUCCEEDED(res) && outsize >= sizeof(nsacd->nacp)) {
+                    // Get language entry
+                    NacpLanguageEntry* languageEntry = nullptr;
+                    res = nacpGetLanguageEntry(&nsacd->nacp, &languageEntry);
+
+                    if (R_SUCCEEDED(res) && languageEntry) {
+                        // Get title name
+                        std::string titleName = GetTitleName(titleId, languageEntry);
+
+                        // Load icon texture
+                        SDL_Texture* iconTexture = LoadTitleIcon(nsacd, outsize - sizeof(nsacd->nacp));
+                        if (iconTexture) {
+                            // Create title object using the texture directly
+                            auto title = std::make_shared<pksm::titles::Title>(titleName, iconTexture, titleId);
+                            userTitles.push_back(title);
+
+                            std::stringstream ss;
+                            ss << "Installed title found: " << titleName << " (0x" << std::hex << titleId << ")";
+                            LOG_INFO(ss.str());
+                        } else {
+                            LOG_ERROR("Failed to load icon texture for installed title");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Cache the results
+    installedTitleCache[userId] = userTitles;
+
+    // Clean up
+    free(nsacd);
+    fsSaveDataInfoReaderClose(&reader);
+
+    std::stringstream ss;
+    ss << "Found " << userTitles.size() << " installed Pokémon titles for user";
+    LOG_INFO(ss.str());
+}
+
+void SwitchTitleDataProvider::RefreshEmulatorTitles() {
+    // For now, we'll need to implement this differently
+    // Emulator titles would need to be discovered through a directory scan
+    // This would typically look at known emulator save directories
+
+    // For example, we could scan directories like:
+    // - /switch/retroarch/saves
+    // - /switch/desmume
+    // - /switch/melonds
+    // etc.
+
+    // For now, we'll leave this empty as it requires knowledge of specific emulator paths
+    emulatorTitles = {};
+}
