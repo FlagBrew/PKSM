@@ -54,12 +54,23 @@ Result AccountManager::Initialize() {
         res = accountInitialize(AccountServiceType_Application);
     }
     if (R_SUCCEEDED(res)) {
-        // Get initial account if available
-        s32 accountCount;
-        AccountUid accounts[ACC_USER_LIST_SIZE];
-        res = accountListAllUsers(accounts, ACC_USER_LIST_SIZE, &accountCount);
-        if (R_SUCCEEDED(res) && accountCount > 0) {
-            currentAccount = accounts[0];
+        // Prefer the profile the user actually launched with (title
+        // takeover), then the last-opened profile, then the first listed
+        AccountUid uid = {};
+        if (R_FAILED(accountGetPreselectedUser(&uid)) || !accountUidIsValid(&uid)) {
+            uid = {};
+            if (R_FAILED(accountGetLastOpenedUser(&uid)) || !accountUidIsValid(&uid)) {
+                uid = {};
+                s32 accountCount;
+                AccountUid accounts[ACC_USER_LIST_SIZE];
+                if (R_SUCCEEDED(accountListAllUsers(accounts, ACC_USER_LIST_SIZE, &accountCount)) &&
+                    accountCount > 0) {
+                    uid = accounts[0];
+                }
+            }
+        }
+        if (accountUidIsValid(&uid)) {
+            currentAccount = uid;
             LoadCurrentAccountIcon();
         }
     }

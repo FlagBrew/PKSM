@@ -203,6 +203,16 @@ void pksm::layout::TitleLoadScreen::LoadSaves() {
         auto saves = saveProvider->GetSavesForTitle(title, accountManager.GetCurrentAccount());
         LOG_DEBUG("Found " + std::to_string(saves.size()) + " saves for title");
         this->saveList->SetDataSource(saves);
+
+        // Nothing to load without a save
+        this->loadButton->SetDisabled(saves.empty());
+    } else {
+        // No selection (e.g. cart removed with no installed games): the
+        // save area must follow, not keep the previous title's saves
+        LOG_DEBUG("No title selected, clearing save list");
+        this->headerText->SetText("");
+        this->saveList->SetDataSource({});
+        this->loadButton->SetDisabled(true);
     }
 }
 
@@ -287,6 +297,17 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
+    // Poll the game card slot every 2 seconds; the provider only does real
+    // work when the card changed
+    auto now = std::chrono::steady_clock::now();
+    if (now - lastGameCardPoll >= GAME_CARD_POLL_INTERVAL) {
+        lastGameCardPoll = now;
+        if (titleProvider->RefreshGameCardTitle()) {
+            LOG_INFO("Game card hotplug detected, refreshing console list");
+            gameList->UpdateConsoleGameListData();
+        }
+    }
+
     if (HandleHelpInput(down)) {
         return;  // Input was handled by help system
     }
