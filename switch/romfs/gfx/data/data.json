@@ -1,0 +1,149 @@
+{
+  "emulator_games": [
+    {
+      "name": "Pokémon Red",
+      "title_id": "0000000000000001",
+      "icon_path": "romfs:/gfx/data/game_icons/red_icon.jpg"
+    },
+    {
+      "name": "Pokémon Green",
+      "title_id": "0000000000000002",
+      "icon_path": "romfs:/gfx/data/game_icons/green_icon.jpg"
+    },
+    {
+      "name": "Pokémon Blue",
+      "title_id": "0000000000000003",
+      "icon_path": "romfs:/gfx/data/game_icons/blue_icon.jpg"
+    },
+    {
+      "name": "Pokémon Yellow",
+      "title_id": "0000000000000004",
+      "icon_path": "romfs:/gfx/data/game_icons/yellow_icon.jpg"
+    },
+    {
+      "name": "Pokémon Gold",
+      "title_id": "0000000000000005",
+      "icon_path": "romfs:/gfx/data/game_icons/gold_icon.jpg"
+    },
+    {
+      "name": "Pokémon Silver",
+      "title_id": "0000000000000006",
+      "icon_path": "romfs:/gfx/data/game_icons/silver_icon.jpg"
+    },
+    {
+      "name": "Pokémon Crystal",
+      "title_id": "0000000000000007",
+      "icon_path": "romfs:/gfx/data/game_icons/crystal_icon.jpg"
+    },
+    {
+      "name": "Pokémon Ruby",
+      "title_id": "0000000000000008",
+      "icon_path": "romfs:/gfx/data/game_icons/ruby_icon.jpg"
+    },
+    {
+      "name": "Pokémon Sapphire",
+      "title_id": "0000000000000009",
+      "icon_path": "romfs:/gfx/data/game_icons/sapphire_icon.jpg"
+    },
+    {
+      "name": "Pokémon Emerald",
+      "title_id": "0000000000000010",
+      "icon_path": "romfs:/gfx/data/game_icons/emerald_icon.jpg"
+    },
+    {
+      "name": "Pokémon FireRed",
+      "title_id": "0000000000000011",
+      "icon_path": "romfs:/gfx/data/game_icons/firered_icon.jpg"
+    },
+    {
+      "name": "Pokémon LeafGreen",
+      "title_id": "0000000000000012",
+      "icon_path": "romfs:/gfx/data/game_icons/leafgreen_icon.jpg"
+    },
+    {
+      "name": "Pokémon Diamond",
+      "title_id": "0000000000000013",
+      "icon_path": "romfs:/gfx/data/game_icons/diamond_icon.jpg"
+    },
+    {
+      "name": "Pokémon Pearl",
+      "title_id": "0000000000000014",
+      "icon_path": "romfs:/gfx/data/game_icons/pearl_icon.jpg"
+    },
+    {
+      "name": "Pokémon Platinum",
+      "title_id": "0000000000000015",
+      "icon_path": "romfs:/gfx/data/game_icons/platinum_icon.jpg"
+    },
+    {
+      "name": "Pokémon HeartGold",
+      "title_id": "0000000000000016",
+      "icon_path": "romfs:/gfx/data/game_icons/heartgold_icon.jpg"
+    },
+    {
+      "name": "Pokémon SoulSilver",
+      "title_id": "0000000000000017",
+      "icon_path": "romfs:/gfx/data/game_icons/soulsilver_icon.jpg"
+    },
+    {
+      "name": "Pokémon Black",
+      "title_id": "0000000000000018",
+      "icon_path": "romfs:/gfx/data/game_icons/black_icon.jpg"
+    },
+    {
+      "name": "Pokémon White",
+      "title_id": "0000000000000019",
+      "icon_path": "romfs:/gfx/data/game_icons/white_icon.jpg"
+    },
+    {
+      "name": "Pokémon Black 2",
+      "title_id": "0000000000000020",
+      "icon_path": "romfs:/gfx/data/game_icons/black_2_icon.jpg"
+    },
+    {
+      "name": "Pokémon White 2",
+      "title_id": "0000000000000021",
+      "icon_path": "romfs:/gfx/data/game_icons/white_2_icon.jpg"
+    },
+    {
+      "name": "Pokémon X",
+      "title_id": "0000000000000022",
+      "icon_path": "romfs:/gfx/data/game_icons/x_icon.jpg"
+    },
+    {
+      "name": "Pokémon Y",
+      "title_id": "0000000000000023",
+      "icon_path": "romfs:/gfx/data/game_icons/y_icon.jpg"
+    },
+    {
+      "name": "Pokémon Omega Ruby",
+      "title_id": "0000000000000024",
+      "icon_path": "romfs:/gfx/data/game_icons/omega_ruby_icon.jpg"
+    },
+    {
+      "name": "Pokémon Alpha Sapphire",
+      "title_id": "0000000000000025",
+      "icon_path": "romfs:/gfx/data/game_icons/alpha_sapphire_icon.jpg"
+    },
+    {
+      "name": "Pokémon Sun",
+      "title_id": "0000000000000026",
+      "icon_path": "romfs:/gfx/data/game_icons/sun_icon.jpg"
+    },
+    {
+      "name": "Pokémon Moon",
+      "title_id": "0000000000000027",
+      "icon_path": "romfs:/gfx/data/game_icons/moon_icon.jpg"
+    },
+    {
+      "name": "Pokémon Ultra Sun",
+      "title_id": "0000000000000028",
+      "icon_path": "romfs:/gfx/data/game_icons/ultra_sun_icon.jpg"
+    },
+    {
+      "name": "Pokémon Ultra Moon",
+      "title_id": "0000000000000029",
+      "icon_path": "romfs:/gfx/data/game_icons/ultra_moon_icon.jpg"
+    }
+  ]
+}

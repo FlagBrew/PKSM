@@ -98,6 +98,7 @@ private:
     void SetupGameListCallbacks(IGameList::Ref gameList);
     void UpdateGameListData();
     void CreateTriggerButtons();
+    void UpdateTriggerButtonLabels();
 
 public:
     // Rebuilds the console list from the title provider (game card +
