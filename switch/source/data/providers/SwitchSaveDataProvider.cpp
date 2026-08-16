@@ -8,7 +8,9 @@
 #include <sstream>
 #include <switch.h>
 
+#include "data/emulator/EmulatorSaveConfig.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
+#include "data/saves/SaveValidator.hpp"
 #include "utils/Logger.hpp"
 
 // Utility to get a safe title name for filesystem operations
@@ -21,7 +23,9 @@ std::string SwitchSaveDataProvider::GetSaveTitleName(const std::string& name) co
 }
 
 SwitchSaveDataProvider::SwitchSaveDataProvider() {
-    // Initialize empty state
+    emulatorCatalog = pksm::data::emulator::EmulatorGameCatalog::BuildIndexByTitleId(
+        pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson()
+    );
 }
 
 Result SwitchSaveDataProvider::MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const {
@@ -102,6 +106,67 @@ std::string JoinNames(const std::vector<std::string>& names) {
 }
 
 }  // namespace
+
+bool SwitchSaveDataProvider::ValidateWithCore(const std::string& path) const {
+    std::error_code ec;
+    const auto mtime = std::filesystem::last_write_time(std::filesystem::path(path), ec);
+    const auto size = ec ? 0 : std::filesystem::file_size(std::filesystem::path(path), ec);
+    if (ec) {
+        return false;
+    }
+
+    auto it = validationCache.find(path);
+    if (it != validationCache.end() && it->second.mtime == mtime && it->second.size == size) {
+        return it->second.valid;
+    }
+
+    const auto summary = pksm::saves::SaveValidator::Validate(path);
+    if (summary) {
+        LOG_INFO("Validated save " + path + ": " + summary->Describe());
+    } else {
+        LOG_INFO("Rejected save candidate " + path + ": core cannot parse it");
+    }
+
+    validationCache[path] = {mtime, size, summary.has_value()};
+    return summary.has_value();
+}
+
+std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u64 titleId) const {
+    std::vector<pksm::saves::Save::Ref> saves;
+
+    auto catalogIt = emulatorCatalog.find(titleId);
+    if (catalogIt == emulatorCatalog.end()) {
+        return saves;
+    }
+
+    // The config file is tiny and hand-editable, so reload it on every
+    // listing to pick up changes without a restart
+    const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+
+    for (const auto& path : paths) {
+        std::error_code ec;
+        if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
+            continue;
+        }
+        if (!ValidateWithCore(path)) {
+            continue;
+        }
+
+        // Name saves by filename; qualify with the parent directory when two
+        // candidates share one
+        std::string name = std::filesystem::path(path).filename().string();
+        for (const auto& existing : saves) {
+            if (existing->getName() == name) {
+                name += " (" + std::filesystem::path(path).parent_path().filename().string() + ")";
+                break;
+            }
+        }
+        saves.push_back(pksm::saves::Save::New(name, path));
+    }
+
+    return saves;
+}
 
 void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const {
     if (!title) {
@@ -221,6 +286,12 @@ void SwitchSaveDataProvider::RefreshSaves(
 
     u64 titleId = title->getTitleId();
 
+    // Emulator titles have no console/Checkpoint saves to refresh; their
+    // listing is rebuilt (and revalidated on change) in GetSavesForTitle
+    if (IsEmulatorTitle(titleId)) {
+        return;
+    }
+
     // If a user ID is provided, refresh console saves
     if (userId) {
         RefreshConsoleSaves(title, *userId);
@@ -243,6 +314,12 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     }
 
     u64 titleId = title->getTitleId();
+
+    // Catalog (emulator) games never have console/Checkpoint saves; their
+    // files live at arbitrary sdmc paths and are core-validated instead
+    if (IsEmulatorTitle(titleId)) {
+        return ListEmulatorSaves(titleId);
+    }
 
     // Console saves: refresh only on cache miss (a refresh mounts the save
     // FS, too heavy for every selection change). Checkpoint saves: always
@@ -414,6 +491,25 @@ bool SwitchSaveDataProvider::LoadSave(
     const AccountUid* userId
 ) {
     if (!title) {
+        return false;
+    }
+
+    // Emulator saves: re-resolve the name to its path and parse it with
+    // core as proof of loadability. Holding on to the parsed Sav comes with
+    // the save-data accessor absorption.
+    if (IsEmulatorTitle(title->getTitleId())) {
+        for (const auto& save : ListEmulatorSaves(title->getTitleId())) {
+            if (save->getName() == saveName) {
+                const auto summary = pksm::saves::SaveValidator::Validate(save->getPath());
+                if (summary) {
+                    LOG_INFO("Loaded emulator save " + save->getPath() + ": " + summary->Describe());
+                    return true;
+                }
+                LOG_ERROR("Emulator save no longer parses: " + save->getPath());
+                return false;
+            }
+        }
+        LOG_ERROR("Emulator save not found: " + saveName);
         return false;
     }
 

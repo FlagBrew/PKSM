@@ -1,10 +1,13 @@
 #pragma once
 
+#include <cstdint>
+#include <filesystem>
 #include <map>
 #include <optional>
 #include <unordered_map>
 #include <vector>
 
+#include "data/emulator/EmulatorGameCatalog.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/saves/Save.hpp"
 #include "utils/AccountUtil.hpp"
@@ -24,9 +27,23 @@ private:
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> checkpointSaveCache;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> customSaveCache;
 
+    // Catalog of non-installed games (loaded once; romfs is immutable)
+    std::unordered_map<u64, pksm::data::emulator::EmulatorGameEntry> emulatorCatalog;
+
+    // Core-validation results per file, invalidated when the file changes
+    struct ValidatedFile {
+        std::filesystem::file_time_type mtime;
+        std::uintmax_t size = 0;
+        bool valid = false;
+    };
+    mutable std::unordered_map<std::string, ValidatedFile> validationCache;
+
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
     void RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const;
+    bool IsEmulatorTitle(u64 titleId) const { return emulatorCatalog.count(titleId) > 0; }
+    std::vector<pksm::saves::Save::Ref> ListEmulatorSaves(u64 titleId) const;
+    bool ValidateWithCore(const std::string& path) const;
     std::string GetSaveTitleName(const std::string& name) const;
 
     // Filesystem mounting helpers

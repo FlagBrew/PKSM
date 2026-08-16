@@ -2,10 +2,13 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
 #include <memory>
 #include <sstream>
 #include <switch.h>
 
+#include "data/emulator/EmulatorGameCatalog.hpp"
+#include "data/emulator/EmulatorSaveConfig.hpp"
 #include "utils/Logger.hpp"
 
 // Helper to check if a title ID belongs to a Pokémon game
@@ -72,9 +75,8 @@ SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveData
         {0x0100F43008C44000, "Pokémon Legends: Z-A"}
     };
 
-    // Initialize emulator titles (these would typically be loaded from a config file)
-    // For now, we'll keep them empty - they'll need to be discovered through a different mechanism
-    emulatorTitles = {};
+    // Emulator titles come from the bundled catalog + the user's save config
+    RefreshEmulatorTitles();
 
     // Bring up ns once for the provider's lifetime (icons + game card metadata)
     Result rc = nsInitialize();
@@ -307,16 +309,27 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
 }
 
 void SwitchTitleDataProvider::RefreshEmulatorTitles() {
-    // For now, we'll need to implement this differently
-    // Emulator titles would need to be discovered through a directory scan
-    // This would typically look at known emulator save directories
+    emulatorTitles.clear();
 
-    // For example, we could scan directories like:
-    // - /switch/retroarch/saves
-    // - /switch/desmume
-    // - /switch/melonds
-    // etc.
+    // A catalog game is shown when any of its candidate save paths exists;
+    // whether a file is actually a parseable save is decided by the save
+    // layer when its saves are listed
+    auto pathExists = [](const std::string& path) {
+        std::error_code ec;
+        return std::filesystem::exists(std::filesystem::path(path), ec) && !ec;
+    };
 
-    // For now, we'll leave this empty as it requires knowledge of specific emulator paths
-    emulatorTitles = {};
+    const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
+    const auto saveCfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+
+    for (const auto& game : games) {
+        const auto candidates = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(game, saveCfg);
+        if (std::any_of(candidates.begin(), candidates.end(), pathExists)) {
+            emulatorTitles.push_back(pksm::titles::Title::New(game.name, game.iconPath, game.titleId));
+        }
+    }
+
+    std::stringstream ss;
+    ss << "Found " << emulatorTitles.size() << " emulator titles with save candidates";
+    LOG_INFO(ss.str());
 }

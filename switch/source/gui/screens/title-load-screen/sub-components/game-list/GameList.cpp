@@ -176,7 +176,6 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         ui::TriggerButton::Side::Left
     );
     leftTrigger->SetName("LeftTrigger Button Element");
-    leftTrigger->SetNavigationText("Custom");
     leftTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Left trigger button touched");
         FocusLeftTrigger();
@@ -196,7 +195,6 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         ui::TriggerButton::Side::Right
     );
     rightTrigger->SetName("RightTrigger Button Element");
-    rightTrigger->SetNavigationText("Console");
     rightTrigger->SetOnTouchSelect([this]() {
         LOG_DEBUG("Right trigger button touched");
         FocusRightTrigger();
@@ -205,6 +203,17 @@ void pksm::ui::GameList::CreateTriggerButtons() {
         LOG_DEBUG("Right trigger button touched again");
         SwitchToNextGameList(true);
     });
+
+    UpdateTriggerButtonLabels();
+}
+
+void pksm::ui::GameList::UpdateTriggerButtonLabels() {
+    // Each trigger is labeled with the list it navigates to
+    size_t prevIndex = (currentGameListIndex == 0) ? NAVIGATION_ORDER.size() - 1 : currentGameListIndex - 1;
+    size_t nextIndex = (currentGameListIndex + 1) % NAVIGATION_ORDER.size();
+
+    leftTrigger->SetNavigationText(NAVIGATION_ORDER[prevIndex].navigationTitle);
+    rightTrigger->SetNavigationText(NAVIGATION_ORDER[nextIndex].navigationTitle);
 }
 
 pu::i32 pksm::ui::GameList::GetX() {
@@ -320,12 +329,7 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
     activeGameList->SetVisible(true);
     FocusActiveGameList();
 
-    // Update trigger button text
-    size_t prevIndex = (currentGameListIndex == 0) ? NAVIGATION_ORDER.size() - 1 : currentGameListIndex - 1;
-    nextIndex = (currentGameListIndex + 1) % NAVIGATION_ORDER.size();
-
-    leftTrigger->SetNavigationText(NAVIGATION_ORDER[prevIndex].navigationTitle);
-    rightTrigger->SetNavigationText(NAVIGATION_ORDER[nextIndex].navigationTitle);
+    UpdateTriggerButtonLabels();
 
     if (onGameListChangedCallback) {
         onGameListChangedCallback();

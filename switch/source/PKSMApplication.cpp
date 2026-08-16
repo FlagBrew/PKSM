@@ -7,8 +7,6 @@
 #include "data/providers/mock/MockBoxDataProvider.hpp"
 #include "data/providers/mock/MockSaveDataAccessor.hpp"
 #include "gui/shared/FontManager.hpp"
-#include "personal/personal.hpp"
-#include "pkx/PK9.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PokemonSpriteManager.hpp"
@@ -125,14 +123,6 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         // Register additional fonts after romfs is mounted
         RegisterAdditionalFonts();
-
-        // PKSM-Core smoke test: constructs a blank Gen 9 pkm and reads the SV personal
-        // table from romfs (romfs:/personal/personal9). Remove once real core usage lands.
-        {
-            auto pk9 = PKX::getPKM<Generation::NINE>(nullptr, PK9::BOX_LENGTH);
-            LOG_INFO("PKSM-Core OK: blank PK9 created, Sprigatito base HP = " +
-                     std::to_string(PersonalSV::baseHP(u16(Species::Sprigatito))));
-        }
 
         if (!utils::PokemonSpriteManager::Initialize("romfs:/gfx/pokesprites/pokesprite.json")) {
             LOG_ERROR("Failed to initialize Pokemon sprite manager");
