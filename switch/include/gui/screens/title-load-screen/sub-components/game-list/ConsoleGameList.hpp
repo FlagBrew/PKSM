@@ -5,10 +5,10 @@
 #include <pu/Plutonium>
 #include <vector>
 
+#include "gui/screens/title-load-screen/sub-components/game-list/GameCardSlot.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameGrid.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/IGameList.hpp"
-#include "gui/shared/components/FocusableImage.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
@@ -45,6 +45,8 @@ public:
 
     // IGameList interface
     void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
+    // Sets the game card slot's title (nullptr -> empty, unselectable slot)
+    void SetGameCardTitle(titles::Title::Ref title);
     titles::Title::Ref GetSelectedTitle() const override;
     void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }
     void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
@@ -102,7 +104,7 @@ private:
     pu::ui::elm::TextBlock::Ref cartridgeText;
     pu::ui::elm::TextBlock::Ref installedText;
     pu::ui::elm::Rectangle::Ref divider;
-    FocusableImage::Ref gameCardImage;
+    GameCardSlot::Ref gameCardSlot;
     GameGrid::Ref installedGames;
 
     // Data
@@ -112,7 +114,7 @@ private:
     std::function<void()> onTouchSelectCallback;
     std::function<void()> onSelectCallback;
     // Console-specific layout constants
-    static constexpr pu::i32 GAME_CARD_SIZE = 350;
+    static constexpr pu::i32 GAME_CARD_SIZE = 418;
     static constexpr pu::i32 SECTION_DIVIDER_WIDTH = 20;
     static constexpr pu::i32 SECTION_DIVIDER_PADDING_LEFT = 80;
     static constexpr pu::i32 SECTION_DIVIDER_PADDING_RIGHT = 88;
