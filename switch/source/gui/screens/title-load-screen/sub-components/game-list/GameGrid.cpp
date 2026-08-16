@@ -91,7 +91,7 @@ void pksm::ui::GameGrid::OnInput(
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
 
     // Let the selected game handle its own non-touch input (since scrollview handles touch of its children)
-    if (touch_pos.IsEmpty()) {
+    if (touch_pos.IsEmpty() && selectedIndex < gameImages.size()) {
         gameImages[selectedIndex]->OnInput(keys_down, keys_up, keys_held, touch_pos);
     }
 }
@@ -118,6 +118,12 @@ bool pksm::ui::GameGrid::IsFocused() const {
 void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& titles) {
     // Store titles
     this->titles = titles;
+
+    // A stale index from a longer previous list must not outlive the data;
+    // clamp to the end so the selection stays close to where it was
+    if (selectedIndex >= titles.size()) {
+        selectedIndex = titles.empty() ? 0 : titles.size() - 1;
+    }
 
     // Clear existing images and unregister them from focus manager
     for (auto& image : gameImages) {
