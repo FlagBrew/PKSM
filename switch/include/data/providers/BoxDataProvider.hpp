@@ -4,6 +4,7 @@
 
 #include "data/providers/SaveDataAccessor.hpp"
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
+#include "data/providers/interfaces/IBoxNameEditor.hpp"
 #include "data/providers/interfaces/IStorageHand.hpp"
 #include "pkx/PKX.hpp"
 
@@ -11,7 +12,7 @@
 // stay in memory until the accessor's saveChanges writes them back.
 // Display box 0 presents the party as a box; the save's own boxes follow,
 // shifted up by one.
-class BoxDataProvider : public IBoxDataProvider, public IStorageHand {
+class BoxDataProvider : public IBoxDataProvider, public IStorageHand, public IBoxNameEditor {
 private:
     SaveDataAccessor::Ref saveDataAccessor;
 
@@ -85,4 +86,9 @@ public:
     pksm::ui::BoxPokemonData GetHeldPokemon() const override { return heldVisual; }
     int GetHeldOriginBox() const override { return heldOriginBox; }
     bool IsHeldPokemonClone() const override { return heldPkm != nullptr && heldIsClone; }
+
+    // IBoxNameEditor implementation
+    bool CanRenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const override;
+    size_t GetBoxNameMaxLength(const pksm::saves::SaveData::Ref& saveData) const override;
+    bool RenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const std::string& name) override;
 };

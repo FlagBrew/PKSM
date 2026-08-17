@@ -4,6 +4,7 @@
 #include <pu/Plutonium>
 
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
+#include "data/providers/interfaces/IBoxNameEditor.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "data/providers/interfaces/IStorageHand.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
@@ -32,7 +33,8 @@ public:
             requestConfirmation,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBoxDataProvider::Ref boxDataProvider,
-        IStorageHand::Ref storageHand
+        IStorageHand::Ref storageHand,
+        IBoxNameEditor::Ref boxNameEditor
     );
     PU_SMART_CTOR(StorageScreen)
     ~StorageScreen();
@@ -52,6 +54,7 @@ private:
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
     IStorageHand::Ref storageHand;
+    IBoxNameEditor::Ref boxNameEditor;
 
     // Floating sprite of the picked-up Pokémon
     pksm::ui::SpriteImage::Ref heldSprite;
@@ -83,6 +86,7 @@ private:
     void InitializePokemonBox();
     void InitializeFocusManagement();
     void HandleSlotActivated(int boxIndex, int slotIndex);
+    void HandleBoxNameActivated(int boxIndex);
     void HandleBackButton();
     void HandleCloneButton();
     void HandleReleaseButton();

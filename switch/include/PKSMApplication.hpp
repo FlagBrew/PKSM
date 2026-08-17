@@ -7,6 +7,7 @@
 
 #include "data/AccountManager.hpp"
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
+#include "data/providers/interfaces/IBoxNameEditor.hpp"
 #include "data/providers/interfaces/IStorageHand.hpp"
 #include "gui/screens/main-menu/MainMenu.hpp"
 #include "gui/screens/storage-screen/StorageScreen.hpp"
@@ -28,6 +29,7 @@ private:
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
     IStorageHand::Ref storageHand;
+    IBoxNameEditor::Ref boxNameEditor;
 
     // Initialize renderer options with basic configuration
     static pu::ui::render::RendererInitOptions CreateRendererOptions();
@@ -64,7 +66,8 @@ public:
         ISaveDataProvider::Ref saveProvider,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBoxDataProvider::Ref boxDataProvider,
-        IStorageHand::Ref storageHand
+        IStorageHand::Ref storageHand,
+        IBoxNameEditor::Ref boxNameEditor
     );
     PU_SMART_CTOR(PKSMApplication)
 

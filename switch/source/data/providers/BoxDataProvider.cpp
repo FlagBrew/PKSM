@@ -5,6 +5,7 @@
 #include <string>
 
 #include "data/saves/BoxListRefs.hpp"
+#include "data/saves/BoxNameRules.hpp"
 #include "data/summary/SummaryBuilder.hpp"
 #include "utils/Logger.hpp"
 
@@ -25,6 +26,17 @@ bool SaveUsesTwentySlotBoxes(const ::pksm::Sav& sav) {
 
 int ToGridSlot(int saveSlot) {
     return (saveSlot / 4) * 6 + 1 + (saveSlot % 4);
+}
+
+// Stored box names may be NUL-padded; strip that before display or judging
+// blankness. A blank name (empty or whitespace-only) has no visible content.
+std::string VisibleName(std::string name) {
+    name.erase(std::remove(name.begin(), name.end(), '\0'), name.end());
+    return name;
+}
+
+bool IsBlankName(const std::string& name) {
+    return std::all_of(name.begin(), name.end(), [](unsigned char c) { return std::isspace(c) != 0; });
 }
 
 pksm::ui::BoxPokemonData VisualFromPkx(const ::pksm::PKX& pk) {
@@ -188,12 +200,8 @@ pksm::ui::BoxData BoxDataProvider::GetBoxData(const pksm::saves::SaveData::Ref& 
 
     try {
         // Some saves have no box names by design (e.g. LGPE)
-        std::string name = sav->boxName(static_cast<u8>(box));
-        name.erase(std::remove(name.begin(), name.end(), '\0'), name.end());
-        const bool blank = std::all_of(name.begin(), name.end(), [](unsigned char c) {
-            return std::isspace(c) != 0;
-        });
-        if (!name.empty() && !blank) {
+        const std::string name = VisibleName(sav->boxName(static_cast<u8>(box)));
+        if (!IsBlankName(name)) {
             boxData.name = name;
         }
 
@@ -456,4 +464,43 @@ bool BoxDataProvider::CanReleaseHeldPokemon(const pksm::saves::SaveData::Ref& sa
         return false;
     }
     return heldIsClone || LivePartyCount(*sav) > 0;
+}
+
+bool BoxDataProvider::CanRenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const {
+    auto* sav = CurrentSav(saveData);
+    if (!sav || IsPartyBox(boxIndex)) {
+        return false;
+    }
+    const int box = boxIndex - 1;
+    if (box < 0 || box >= sav->maxBoxes()) {
+        return false;
+    }
+    return pksm::saves::BoxNameRulesFor(*sav).renamable;
+}
+
+size_t BoxDataProvider::GetBoxNameMaxLength(const pksm::saves::SaveData::Ref& saveData) const {
+    auto* sav = CurrentSav(saveData);
+    return sav ? pksm::saves::BoxNameRulesFor(*sav).maxLength : 0;
+}
+
+bool BoxDataProvider::RenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const std::string& name) {
+    if (!CanRenameBox(saveData, boxIndex) || IsBlankName(name)) {
+        return false;
+    }
+    auto* sav = CurrentSav(saveData);
+    const u8 box = static_cast<u8>(boxIndex - 1);
+    const std::string oldName = sav->boxName(box);
+    sav->boxName(box, name);
+    const std::string storedName = sav->boxName(box);
+    // The setter owns the encoding: it truncates to the field and stops at
+    // characters the generation's character set lacks. A name that stored as
+    // nothing keeps the old one.
+    if (IsBlankName(VisibleName(storedName))) {
+        sav->boxName(box, oldName);
+        return false;
+    }
+    if (storedName != oldName) {
+        saveDataAccessor->markDirty();
+    }
+    return true;
 }

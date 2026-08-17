@@ -92,7 +92,8 @@ PKSMApplication::PKSMApplication(
     ISaveDataProvider::Ref saveProvider,
     ISaveDataAccessor::Ref saveDataAccessor,
     IBoxDataProvider::Ref boxDataProvider,
-    IStorageHand::Ref storageHand
+    IStorageHand::Ref storageHand,
+    IBoxNameEditor::Ref boxNameEditor
 )
   : pu::ui::Application(renderer),
     accountManager(std::move(accountManager)),
@@ -100,7 +101,8 @@ PKSMApplication::PKSMApplication(
     saveProvider(std::move(saveProvider)),
     saveDataAccessor(std::move(saveDataAccessor)),
     boxDataProvider(std::move(boxDataProvider)),
-    storageHand(std::move(storageHand)) {
+    storageHand(std::move(storageHand)),
+    boxNameEditor(std::move(boxNameEditor)) {
     // Add render callback to process account updates
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
@@ -162,14 +164,15 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         // Create and prepare application
         LOG_DEBUG("Creating application...");
-        // The box provider doubles as the storage hand: one object owns both
-        // the read model and the single editing hand over the same Sav
+        // The box provider doubles as the storage hand and box-name editor:
+        // one object owns the read model and every edit over the same Sav
         auto app = PKSMApplication::New(
             renderer,
             std::move(accountManager),
             titleProvider,
             saveProvider,
             saveDataAccessor,
+            boxDataProvider,
             boxDataProvider,
             boxDataProvider
         );
@@ -287,7 +290,8 @@ void PKSMApplication::ShowStorageScreen() {
             },
             saveDataAccessor,
             boxDataProvider,
-            storageHand
+            storageHand,
+            boxNameEditor
         );
         storageScreen->LoadBoxData();
     }

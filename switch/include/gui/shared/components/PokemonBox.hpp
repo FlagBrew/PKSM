@@ -73,6 +73,7 @@ private:
     // Event callbacks
     std::function<void(int, int)> onSelectionChangedCallback;  // (boxIndex, slotIndex)
     std::function<void(int, int)> onSlotActivatedCallback;  // (boxIndex, slotIndex)
+    std::function<void(int)> onBoxNameActivatedCallback;  // (boxIndex)
     std::function<void()> onFocusZoneChangedCallback;
 
     // Focus zone at the last input pass (grid / header pill / footer button),
@@ -148,6 +149,8 @@ public:
     // Pokemon data management
     void SetPokemonData(int boxIndex, int slotIndex, const BoxPokemonData& data);
     void SetBoxData(int boxIndex, const BoxData& boxData);
+    // Name-only update: refreshes the pill without rebuilding the grid
+    void SetBoxName(int boxIndex, const std::string& name);
     BoxPokemonData GetPokemonData(int boxIndex, int slotIndex) const;
 
     // Current selection
@@ -159,6 +162,10 @@ public:
     // Whether focus is on the slot grid itself, not the header pill or the
     // footer button; slot verbs only apply there
     bool IsGridFocused() const { return boxGrid->IsFocused(); }
+
+    // Whether focus is on the box-name pill, where its A verb (rename)
+    // applies
+    bool IsBoxNameFocused() const { return boxNamePill->IsFocused(); }
 
     // IHelpProvider implementation: the box's own verbs; the owning screen
     // contributes the slot and hand verbs it handles itself
@@ -174,6 +181,7 @@ public:
     // Event handlers
     void SetOnSelectionChanged(std::function<void(int, int)> callback) { onSelectionChangedCallback = callback; }
     void SetOnSlotActivated(std::function<void(int, int)> callback) { onSlotActivatedCallback = callback; }
+    void SetOnBoxNameActivated(std::function<void(int)> callback) { onBoxNameActivatedCallback = callback; }
     void SetOnFocusZoneChanged(std::function<void()> callback) { onFocusZoneChangedCallback = callback; }
 
     // Appearance configuration

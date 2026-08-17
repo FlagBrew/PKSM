@@ -9,7 +9,8 @@
 
 // Read model of a save's storage as display boxes: box 0 is the party
 // (six usable slots, the rest unusable), higher boxes are the save's own
-// boxes shifted by one. Editing goes through IStorageHand.
+// boxes shifted by one. Editing goes through IStorageHand, box renames
+// through IBoxNameEditor.
 class IBoxDataProvider {
 public:
     PU_SMART_CTOR(IBoxDataProvider)
