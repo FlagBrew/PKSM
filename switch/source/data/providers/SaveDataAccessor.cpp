@@ -5,6 +5,7 @@
 #include "enums/GameVersion.hpp"
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
+#include "sav/SavLGPE.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
@@ -132,7 +133,8 @@ pksm::saves::GameVersion ToAppGameVersion(pksm::GameVersion version) {
 
 }  // namespace
 
-SaveDataAccessor::SaveDataAccessor(ISaveDataProvider::Ref saveProvider) : saveProvider(std::move(saveProvider)) {}
+SaveDataAccessor::SaveDataAccessor(ISaveDataProvider::Ref saveProvider, ISaveDataWriter::Ref saveWriter)
+  : saveProvider(std::move(saveProvider)), saveWriter(std::move(saveWriter)) {}
 
 pksm::saves::SaveData::Ref SaveDataAccessor::getCurrentSaveData() const {
     return currentSave;
@@ -170,6 +172,8 @@ bool SaveDataAccessor::loadSave(
     if (!loaded) {
         sav.reset();
         savePath.clear();
+        saveTitle = nullptr;
+        hasSaveUserId = false;
         currentSave = nullptr;
         hasChanges = false;
         if (onSaveDataChanged) {
@@ -180,6 +184,11 @@ bool SaveDataAccessor::loadSave(
 
     sav = std::move(loaded->sav);
     savePath = loaded->path;
+    saveTitle = title;
+    hasSaveUserId = userId != nullptr;
+    if (userId) {
+        saveUserId = *userId;
+    }
     currentSave = BuildSaveData(saveName);
     hasChanges = false;
 
@@ -197,9 +206,45 @@ bool SaveDataAccessor::saveChanges() {
         return true;
     }
 
-    // Nothing sets hasChanges yet; write-back lands with the editing absorption
-    LOG_ERROR("Save write-back is not implemented yet (" + savePath + ")");
-    return false;
+    if (sav->generation() == pksm::Generation::LGPE) {
+        // LGPE stores its boxes as one contiguous list; mirror the 3DS app's
+        // storage-exit bookkeeping (3ds StorageScreen.cpp) before the bytes
+        // leave memory: compact the list, then recount its length
+        auto* lgpe = static_cast<::pksm::SavLGPE*>(sav.get());
+        lgpe->compressBox();
+        u16 occupiedSlots = 0;
+        for (int i = 0; i < sav->maxSlot(); i++) {
+            // 30 slots per LGPE box view; box/slot pairs keep both args in u8
+            auto pk = sav->pkm(static_cast<u8>(i / 30), static_cast<u8>(i % 30));
+            if (pk && pk->isEncrypted()) {
+                pk->decrypt();
+            }
+            if (!pk || static_cast<u16>(pk->species()) == 0) {
+                break;
+            }
+            occupiedSlots++;
+        }
+        lgpe->boxedPkm(occupiedSlots);
+    }
+
+    sav->finishEditing();
+    const bool written = saveWriter->WriteSave(
+        saveTitle,
+        savePath,
+        hasSaveUserId ? &saveUserId : nullptr,
+        sav->rawData().get(),
+        sav->getEntireLengthIncludingFooter()
+    );
+    sav->beginEditing();
+
+    if (!written) {
+        LOG_ERROR("Failed to write save file " + savePath);
+        return false;
+    }
+
+    hasChanges = false;
+    LOG_INFO("Saved changes to " + savePath);
+    return true;
 }
 
 bool SaveDataAccessor::hasUnsavedChanges() const {

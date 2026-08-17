@@ -1,5 +1,7 @@
 #include "data/providers/SwitchSaveDataProvider.hpp"
 
+#include "data/saves/ConsoleSaveMount.hpp"
+
 #include <algorithm>
 #include <cstring>
 #include <dirent.h>
@@ -30,30 +32,11 @@ SwitchSaveDataProvider::SwitchSaveDataProvider() {
 }
 
 Result SwitchSaveDataProvider::MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const {
-    // Defensively clear any leftover mount under the same device name
-    fsdevUnmountDevice("save");
-
-    // Open save data filesystem
-    Result res = fsOpen_SaveData(fs, titleId, userId);
-    if (R_SUCCEEDED(res)) {
-        // Mount the filesystem to "save". fsdev closes fs itself on failure
-        // (see libnx fs_dev.h) - do NOT fsFsClose here.
-        int mountResult = fsdevMountDevice("save", *fs);
-        if (mountResult == -1) {
-            LOG_ERROR("Failed to mount save filesystem device");
-            return MAKERESULT(Module_Libnx, LibnxError_IoError);
-        }
-    } else {
-        std::stringstream ss;
-        ss << "Failed to open save data filesystem: 0x" << std::hex << res;
-        LOG_ERROR(ss.str());
-    }
-
-    return res;
+    return pksm::saves::MountConsoleSave(fs, titleId, userId);
 }
 
 void SwitchSaveDataProvider::UnmountSaveData() const {
-    fsdevUnmountDevice("save");
+    pksm::saves::UnmountConsoleSave();
 }
 
 bool SwitchSaveDataProvider::HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {

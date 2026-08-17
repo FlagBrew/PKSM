@@ -71,6 +71,7 @@ private:
 
     // Event callbacks
     std::function<void(int, int)> onSelectionChangedCallback;  // (boxIndex, slotIndex)
+    std::function<void(int, int)> onSlotActivatedCallback;  // (boxIndex, slotIndex)
 
     // Cached frame texture with cutout
     SDL_Texture* maskTexture = nullptr;
@@ -144,12 +145,18 @@ public:
 
     // Current selection
     int GetSelectedSlot() const;
+    void SetSelectedSlot(int slotIndex);
+
+    // Screen position of the selected slot, for anchoring the held sprite
+    pu::i32 GetSelectedItemX();
+    pu::i32 GetSelectedItemY();
 
     // Enable/disable
     void SetDisabled(bool disabled);
 
     // Event handlers
     void SetOnSelectionChanged(std::function<void(int, int)> callback) { onSelectionChangedCallback = callback; }
+    void SetOnSlotActivated(std::function<void(int, int)> callback) { onSlotActivatedCallback = callback; }
 
     // Appearance configuration
     void SetColors(const pu::ui::Color& frameColor, const pu::ui::Color& borderColor);

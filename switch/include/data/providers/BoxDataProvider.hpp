@@ -4,15 +4,32 @@
 
 #include "data/providers/SaveDataAccessor.hpp"
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
+#include "pkx/PKX.hpp"
 
-// Reads box contents from the accessor's single owned Sav; read-only until
-// the box editing work lands.
+// Reads and edits box contents on the accessor's single owned Sav. Mutations
+// stay in memory until the accessor's saveChanges writes them back.
 class BoxDataProvider : public IBoxDataProvider {
 private:
     SaveDataAccessor::Ref saveDataAccessor;
 
+    // The Pokémon currently in hand during pick/place, with its origin so a
+    // cancel can put it back
+    std::unique_ptr<::pksm::PKX> heldPkm;
+    pksm::ui::BoxPokemonData heldVisual;
+    int heldOriginBox = -1;
+    int heldOriginSlot = -1;
+    bool heldSwapped = false;
+    // External reference into the box list attached to the held Pokémon
+    // (pksm::saves::ListRefAt token, -1 if none); moved to wherever the
+    // hand finally empties
+    int heldListRef = -1;
+
     // Non-null only when `saveData` is the save the accessor currently owns
     ::pksm::Sav* CurrentSav(const pksm::saves::SaveData::Ref& saveData) const;
+
+    // Save-file slot for a grid slot; -1 for the padding columns of 20-slot
+    // saves and for slots past the save's last box entry
+    int GridToSaveSlot(const ::pksm::Sav& sav, int boxIndex, int gridSlot) const;
 
 public:
     explicit BoxDataProvider(SaveDataAccessor::Ref saveDataAccessor);
@@ -29,4 +46,10 @@ public:
         int slotIndex,
         const pksm::ui::BoxPokemonData& pokemonData
     ) override;
+    bool PickUpPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
+    bool PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
+    bool CancelHold(const pksm::saves::SaveData::Ref& saveData) override;
+    bool HasHeldPokemon() const override { return heldPkm != nullptr; }
+    pksm::ui::BoxPokemonData GetHeldPokemon() const override { return heldVisual; }
+    int GetHeldOriginBox() const override { return heldOriginBox; }
 };

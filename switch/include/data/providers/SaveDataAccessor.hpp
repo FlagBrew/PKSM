@@ -6,6 +6,7 @@
 
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
+#include "data/providers/interfaces/ISaveDataWriter.hpp"
 #include "data/saves/SaveData.hpp"
 #include "data/titles/Title.hpp"
 
@@ -16,10 +17,15 @@
 class SaveDataAccessor : public ISaveDataAccessor {
 private:
     ISaveDataProvider::Ref saveProvider;
+    ISaveDataWriter::Ref saveWriter;
 
-    // The one live save and where it came from
+    // The one live save and where it came from; title and user are kept so a
+    // console save (unmounted after loading) can be remounted for write-back
     std::unique_ptr<::pksm::Sav> sav;
     std::string savePath;
+    pksm::titles::Title::Ref saveTitle;
+    AccountUid saveUserId{};
+    bool hasSaveUserId = false;
 
     // UI-facing summary of `sav`
     pksm::saves::SaveData::Ref currentSave;
@@ -30,11 +36,14 @@ private:
     pksm::saves::SaveData::Ref BuildSaveData(const std::string& name) const;
 
 public:
-    explicit SaveDataAccessor(ISaveDataProvider::Ref saveProvider);
+    SaveDataAccessor(ISaveDataProvider::Ref saveProvider, ISaveDataWriter::Ref saveWriter);
     PU_SMART_CTOR(SaveDataAccessor)
 
     // Borrowed view of the live save; ownership stays here
     ::pksm::Sav* currentSav() const { return sav.get(); }
+
+    // Editors call this after mutating the Sav so saveChanges knows there is work
+    void markDirty() { hasChanges = true; }
 
     // ISaveDataAccessor interface implementation
     pksm::saves::SaveData::Ref getCurrentSaveData() const override;
