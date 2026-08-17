@@ -19,6 +19,7 @@ private:
     pu::ui::elm::Rectangle::Ref background;
     pu::ui::elm::Image::Ref image;
     pu::ui::elm::Image::Ref genderIcon;
+    pu::ui::elm::Image::Ref partyBadge;
     pu::ui::elm::Rectangle::Ref unusableShade;
     pksm::ui::RectangularOutline::Ref outline;
     pu::i32 outlinePadding;  // Padding between box and outline
@@ -68,6 +69,9 @@ public:
 
     // Gender badge in the slot's top-right corner; hidden for empty slots
     void SetGender(pksm::Gender gender, bool visible);
+
+    // Party number badge in the slot's bottom-right corner; 0 hides it
+    void SetPartyNumber(u8 partyNumber);
 
     // Darkens the slot to mark it as having no backing storage in the save
     void SetUnusable(bool unusable);

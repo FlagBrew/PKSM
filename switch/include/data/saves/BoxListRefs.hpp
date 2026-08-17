@@ -23,6 +23,11 @@ void MoveListRef(::pksm::Sav& sav, int token, int listIndex);
 // (e.g. released), so the referrer is repaired rather than retargeted
 void ClearListRef(::pksm::Sav& sav, int token);
 
+// Drop a token without repairing the referrer's order: for mid-carry
+// detachment, when the entry re-enters the party by other means and the
+// repair is deferred until the hand empties
+void DetachListRef(::pksm::Sav& sav, int token);
+
 // Drop every reference naming the entry at listIndex, for when that entry is
 // removed in place without ever being picked up
 void ClearListRefsAt(::pksm::Sav& sav, int listIndex);

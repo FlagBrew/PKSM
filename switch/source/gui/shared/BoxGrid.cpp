@@ -95,6 +95,7 @@ void pksm::ui::BoxGrid::SetPokemonData(int slotIndex, const BoxPokemonData& data
             pu::sdl2::TextureHandle::Ref texture = data.getSprite();
             items[slotIndex]->SetImage(texture);
             items[slotIndex]->SetGender(data.gender, !data.isEmpty());
+            items[slotIndex]->SetPartyNumber(data.partyNumber);
             items[slotIndex]->SetUnusable(data.unusable);
         }
     }
@@ -150,6 +151,7 @@ void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
         // Create a BoxItem for this slot
         auto boxItem = BoxItem::New(position.first, position.second, itemSize, itemSize, textureHandle);
         boxItem->SetGender(pokemonData.gender, !pokemonData.isEmpty());
+        boxItem->SetPartyNumber(pokemonData.partyNumber);
         boxItem->SetUnusable(pokemonData.unusable);
         boxItem->IFocusable::SetName("BoxItem Element: Slot " + std::to_string(i));
         boxItem->ISelectable::SetName("BoxItem Element: Slot " + std::to_string(i));

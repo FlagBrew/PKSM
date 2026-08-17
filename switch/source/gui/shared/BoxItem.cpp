@@ -1,12 +1,15 @@
 #include "gui/shared/components/BoxItem.hpp"
 
 #include "gui/shared/components/GenderIcon.hpp"
+#include "gui/shared/components/PartyBadgeIcon.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
 
 constexpr pu::i32 GENDER_ICON_SIZE = 26;
 constexpr pu::i32 GENDER_ICON_MARGIN = 5;
+constexpr pu::i32 PARTY_BADGE_SIZE = 30;
+constexpr pu::i32 PARTY_BADGE_MARGIN = 5;
 
 }  // namespace
 
@@ -62,6 +65,15 @@ pksm::ui::BoxItem::BoxItem(
     this->genderIcon = pu::ui::elm::Image::New(width - GENDER_ICON_SIZE - GENDER_ICON_MARGIN, GENDER_ICON_MARGIN, nullptr);
     this->genderIcon->SetVisible(false);
     container->Add(this->genderIcon);
+
+    // Party number badge, bottom-right of the slot
+    this->partyBadge = pu::ui::elm::Image::New(
+        width - PARTY_BADGE_SIZE - PARTY_BADGE_MARGIN,
+        height - PARTY_BADGE_SIZE - PARTY_BADGE_MARGIN,
+        nullptr
+    );
+    this->partyBadge->SetVisible(false);
+    container->Add(this->partyBadge);
 
     // Drawn over everything else when the slot has no backing storage
     unusableShade = pu::ui::elm::Rectangle::New(0, 0, width, height, pu::ui::Color(0, 0, 0, 110));
@@ -203,6 +215,21 @@ void pksm::ui::BoxItem::SetGender(pksm::Gender gender, bool visible) {
     genderIcon->SetWidth(GENDER_ICON_SIZE);
     genderIcon->SetHeight(GENDER_ICON_SIZE);
     genderIcon->SetVisible(true);
+}
+
+void pksm::ui::BoxItem::SetPartyNumber(u8 partyNumber) {
+    auto texture = partyNumber > 0 ? GetPartyBadgeTexture(partyNumber) : nullptr;
+    if (!texture) {
+        partyBadge->SetVisible(false);
+        partyBadge->SetImage(nullptr);
+        return;
+    }
+    // SetImage resets the element to the texture's natural size, so the
+    // display size is re-applied after it (same dance as the gender badge)
+    partyBadge->SetImage(texture);
+    partyBadge->SetWidth(PARTY_BADGE_SIZE);
+    partyBadge->SetHeight(PARTY_BADGE_SIZE);
+    partyBadge->SetVisible(true);
 }
 
 void pksm::ui::BoxItem::SetUnusable(bool unusable) {

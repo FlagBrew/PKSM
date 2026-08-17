@@ -5,6 +5,7 @@
 
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
+#include "data/providers/interfaces/IStorageHand.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
 #include "gui/shared/components/BoxGrid.hpp"
@@ -30,7 +31,8 @@ public:
         std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
             requestConfirmation,
         ISaveDataAccessor::Ref saveDataAccessor,
-        IBoxDataProvider::Ref boxDataProvider
+        IBoxDataProvider::Ref boxDataProvider,
+        IStorageHand::Ref storageHand
     );
     PU_SMART_CTOR(StorageScreen)
     ~StorageScreen();
@@ -49,6 +51,7 @@ private:
     pksm::ui::PokemonBox::Ref pokemonBox;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
+    IStorageHand::Ref storageHand;
 
     // Floating sprite of the picked-up Pokémon
     pksm::ui::SpriteImage::Ref heldSprite;
@@ -56,6 +59,10 @@ private:
     // Summary overlay for the selected Pokémon, created on first use
     pksm::ui::PokemonSummaryOverlay::Ref summaryOverlay;
     bool isSummaryVisible = false;
+
+    // Box currently on screen, to detect box switches in the selection
+    // callback; the entered box is then re-read from the provider
+    int lastDisplayedBox = 0;
 
     // Layout constants
     static constexpr pu::i32 BOX_GRID_SIDE_MARGIN = 80;  // Margin from left edge
@@ -82,6 +89,7 @@ private:
     void HandleSummaryButton();
     void HideSummary();
     void RefreshBox(int boxIndex);
+    void RefreshAffectedSlots();
     void UpdateHeldVisual();
     void UpdateHelpItems();
 

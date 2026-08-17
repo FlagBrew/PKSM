@@ -41,9 +41,15 @@ void ClearListRef(::pksm::Sav& sav, int token) {
     if (token < 0) {
         return;
     }
-    auto& lgpe = static_cast<::pksm::SavLGPE&>(sav);
-    lgpe.partyBoxSlot(static_cast<u8>(token), LGPE_EMPTY_PARTY_SLOT);
-    lgpe.fixParty();
+    DetachListRef(sav, token);
+    static_cast<::pksm::SavLGPE&>(sav).fixParty();
+}
+
+void DetachListRef(::pksm::Sav& sav, int token) {
+    if (token < 0) {
+        return;
+    }
+    static_cast<::pksm::SavLGPE&>(sav).partyBoxSlot(static_cast<u8>(token), LGPE_EMPTY_PARTY_SLOT);
 }
 
 void ClearListRefsAt(::pksm::Sav& sav, int listIndex) {
