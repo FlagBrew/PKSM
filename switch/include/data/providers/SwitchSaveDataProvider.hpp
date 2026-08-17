@@ -49,7 +49,6 @@ private:
     bool IsEmulatorTitle(u64 titleId) const { return emulatorCatalog.count(titleId) > 0; }
     std::vector<pksm::saves::Save::Ref> ListEmulatorSaves(u64 titleId) const;
     bool ValidateWithCore(const std::string& path) const;
-    std::string GetSaveTitleName(const std::string& name) const;
 
     // Filesystem mounting helpers
     Result MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const;

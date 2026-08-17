@@ -1,29 +1,18 @@
 #include "data/providers/SwitchSaveDataProvider.hpp"
 
-#include "data/saves/ConsoleSaveMount.hpp"
-
 #include <algorithm>
 #include <cstring>
 #include <dirent.h>
 #include <filesystem>
-#include <fstream>
-#include <regex>
 #include <sstream>
 #include <switch.h>
 
 #include "data/emulator/EmulatorSaveConfig.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
+#include "data/saves/ConsoleSaveMount.hpp"
+#include "data/saves/SafeNames.hpp"
 #include "data/saves/SaveValidator.hpp"
 #include "utils/Logger.hpp"
-
-// Utility to get a safe title name for filesystem operations
-std::string SwitchSaveDataProvider::GetSaveTitleName(const std::string& name) const {
-    // Replace characters that aren't valid in filenames
-    std::string safeName = name;
-    static const std::regex invalidChars("[\\\\/:*?\"<>|]");
-    safeName = std::regex_replace(safeName, invalidChars, "_");
-    return safeName;
-}
 
 SwitchSaveDataProvider::SwitchSaveDataProvider() {
     emulatorCatalog = pksm::data::emulator::EmulatorGameCatalog::BuildIndexByTitleId(
@@ -87,55 +76,6 @@ std::string JoinNames(const std::vector<std::string>& names) {
         joined += n;
     }
     return joined.empty() ? "(empty)" : joined;
-}
-
-// The folder name JKSV uses for a title: a port of JKSV's util::safeString.
-// Codepoints JKSV forbids in FAT names become spaces, e is substituted for
-// e-acute, and any other non-ASCII codepoint makes JKSV fall back to naming
-// the folder with the title ID instead - signalled here by an empty return.
-std::string JKSVSafeName(const std::string& name) {
-    static constexpr u32 verboten[] =
-        {',', '/', '\\', '<', '>', ':', '"', '|', '?', '*', 0x2122 /*TM*/, 0xA9 /*(c)*/, 0xAE /*(r)*/};
-
-    std::string ret;
-    for (size_t i = 0; i < name.size();) {
-        const u8 lead = static_cast<u8>(name[i]);
-        size_t len = 1;
-        u32 codepoint = lead;
-        if (lead >= 0xF0) {
-            len = 4;
-        } else if (lead >= 0xE0) {
-            len = 3;
-        } else if (lead >= 0xC0) {
-            len = 2;
-        }
-        if (len > 1) {
-            if (i + len > name.size()) {
-                return "";
-            }
-            codepoint = lead & (0x7F >> len);
-            for (size_t j = 1; j < len; j++) {
-                codepoint = (codepoint << 6) | (static_cast<u8>(name[i + j]) & 0x3F);
-            }
-        }
-        i += len;
-
-        if (codepoint == 0xE9) {
-            codepoint = 'e';
-        }
-        if (std::find(std::begin(verboten), std::end(verboten), codepoint) != std::end(verboten)) {
-            ret += ' ';
-        } else if (codepoint <= 30 || codepoint >= 127) {
-            return "";
-        } else {
-            ret += static_cast<char>(codepoint);
-        }
-    }
-
-    while (!ret.empty() && (ret.back() == ' ' || ret.back() == '.')) {
-        ret.pop_back();
-    }
-    return ret;
 }
 
 // Try candidate files in order and load the first one core parses. Known
@@ -378,7 +318,7 @@ void SwitchSaveDataProvider::RefreshJKSVSaves(const pksm::titles::Title::Ref& ti
     // title ID when the name has no ASCII representation
     char titleIdStr[17];
     snprintf(titleIdStr, sizeof(titleIdStr), "%016lX", titleId);
-    const std::string safeName = JKSVSafeName(title->getName());
+    const std::string safeName = pksm::saves::JKSVSafeName(title->getName());
 
     std::string titlePath;
     for (const auto& dirName : {safeName, std::string(titleIdStr)}) {
