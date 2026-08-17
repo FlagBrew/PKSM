@@ -115,6 +115,19 @@ PokemonBox::PokemonBox(
         }
     );
 
+    // A activates the focused box-name pill; the owning screen decides what
+    // (if anything) that offers for the current box
+    buttonHandler.RegisterButton(
+        HidNpadButton_A,
+        nullptr,
+        [this]() {
+            if (onBoxNameActivatedCallback) {
+                onBoxNameActivatedCallback(currentBox);
+            }
+        },
+        [this]() { return boxNamePill->IsFocused(); }
+    );
+
     // Connect the BoxGrid's selection changed callback
     boxGrid->SetOnSelectionChanged([this](int slotIndex) {
         if (onSelectionChangedCallback) {
@@ -580,6 +593,15 @@ void PokemonBox::SetBoxData(int boxIndex, const BoxData& boxData) {
         // If this is the current box, update the grid and box name
         if (boxIndex == currentBox) {
             boxGrid->SetBoxData(boxData);
+            UpdateBoxNameText();
+        }
+    }
+}
+
+void PokemonBox::SetBoxName(int boxIndex, const std::string& name) {
+    if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size()) {
+        boxes[boxIndex].name = name;
+        if (boxIndex == currentBox) {
             UpdateBoxNameText();
         }
     }

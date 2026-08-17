@@ -4,6 +4,7 @@
 
 #include "gui/screens/main-menu/sub-components/menu-grid/MenuButtonGrid.hpp"
 #include "utils/Logger.hpp"
+#include "utils/SoftwareKeyboard.hpp"
 
 namespace pksm::layout {
 
@@ -15,14 +16,16 @@ StorageScreen::StorageScreen(
         requestConfirmation,
     ISaveDataAccessor::Ref saveDataAccessor,
     IBoxDataProvider::Ref boxDataProvider,
-    IStorageHand::Ref storageHand
+    IStorageHand::Ref storageHand,
+    IBoxNameEditor::Ref boxNameEditor
 )
   : BaseLayout(onShowOverlay, onHideOverlay),
     onBack(onBack),
     requestConfirmation(requestConfirmation),
     saveDataAccessor(saveDataAccessor),
     boxDataProvider(boxDataProvider),
-    storageHand(storageHand) {
+    storageHand(storageHand),
+    boxNameEditor(boxNameEditor) {
     LOG_DEBUG("Initializing StorageScreen...");
 
     this->SetBackgroundColor(bgColor);
@@ -132,6 +135,8 @@ void StorageScreen::InitializePokemonBox() {
         HandleSlotActivated(boxIndex, slotIndex);
     });
 
+    pokemonBox->SetOnBoxNameActivated([this](int boxIndex) { HandleBoxNameActivated(boxIndex); });
+
     // The slot and hand verbs only apply while the grid itself is focused
     pokemonBox->SetOnFocusZoneChanged([this]() { UpdateHelpItems(); });
 
@@ -166,6 +171,25 @@ void StorageScreen::HandleSlotActivated(int boxIndex, int slotIndex) {
             RefreshAffectedSlots();
             UpdateHeldVisual();
         }
+    }
+}
+
+void StorageScreen::HandleBoxNameActivated(int boxIndex) {
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData || !boxNameEditor->CanRenameBox(saveData, boxIndex)) {
+        return;
+    }
+    const std::string currentName = boxDataProvider->GetBoxData(saveData, boxIndex).name;
+    const auto entered =
+        pksm::utils::ShowKeyboard("Box Name", currentName, boxNameEditor->GetBoxNameMaxLength(saveData));
+    if (!entered) {
+        return;
+    }
+    if (boxNameEditor->RenameBox(saveData, boxIndex, *entered)) {
+        LOG_DEBUG("Renamed box " + std::to_string(boxIndex));
+        // Re-read the name the save actually stored (its encoding may have
+        // truncated or transliterated the input)
+        pokemonBox->SetBoxName(boxIndex, boxDataProvider->GetBoxData(saveData, boxIndex).name);
     }
 }
 
@@ -362,10 +386,14 @@ void StorageScreen::UpdateHelpItems() {
         helpItems.push_back({{{pksm::ui::global::ButtonGlyph::B}}, "Back"});
     } else {
         // No slot verbs apply here (header pill, Box Spaces button, empty or
-        // unusable slot)
-        helpItems = {
-            {{{pksm::ui::global::ButtonGlyph::B}}, held ? (clone ? "Discard Copy" : "Put Back") : "Back"},
-        };
+        // unusable slot); the pill offers Rename where the save supports it
+        if (pokemonBox->IsBoxNameFocused() &&
+            boxNameEditor->CanRenameBox(saveData, pokemonBox->GetCurrentBox())) {
+            helpItems.push_back({{{pksm::ui::global::ButtonGlyph::A}}, "Rename"});
+        }
+        helpItems.push_back(
+            {{{pksm::ui::global::ButtonGlyph::B}}, held ? (clone ? "Discard Copy" : "Put Back") : "Back"}
+        );
     }
     for (const auto& item : pokemonBox->GetHelpItems()) {
         helpItems.push_back(item);
@@ -451,10 +479,14 @@ std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
         items.push_back({{{pksm::ui::global::ButtonGlyph::Plus}}, "View Summary"});
         items.push_back({{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"});
     } else {
-        items = {
+        if (pokemonBox->IsBoxNameFocused() &&
+            boxNameEditor->CanRenameBox(saveData, pokemonBox->GetCurrentBox())) {
+            items.push_back({{{pksm::ui::global::ButtonGlyph::A}}, "Rename Box"});
+        }
+        items.push_back(
             {{{pksm::ui::global::ButtonGlyph::B}},
-             held ? (clone ? "Discard the Copy" : "Put Back") : "Back to Main Menu"},
-        };
+             held ? (clone ? "Discard the Copy" : "Put Back") : "Back to Main Menu"}
+        );
     }
     for (const auto& item : pokemonBox->GetHelpItems()) {
         items.push_back(item);
