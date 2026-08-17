@@ -19,6 +19,8 @@ struct BoxPokemonData {
     // Slot has no backing storage in the save (20-slot padding columns,
     // slots past a partial last box); rendered disabled, nothing drops there
     bool unusable = false;
+    // 1-based party membership badge; 0 for non-members
+    u8 partyNumber = 0;
 
     // Constructor for easy creation
     BoxPokemonData(
