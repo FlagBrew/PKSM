@@ -2,6 +2,47 @@
 
 #include "utils/Logger.hpp"
 
+namespace {
+
+constexpr pu::i32 GENDER_ICON_SIZE = 26;
+constexpr pu::i32 GENDER_ICON_MARGIN = 5;
+
+constexpr const char* ICON_GENDER_MALE = "romfs:/gfx/ui/icon_gender_male.png";
+constexpr const char* ICON_GENDER_FEMALE = "romfs:/gfx/ui/icon_gender_female.png";
+constexpr const char* ICON_GENDER_NEUTRAL = "romfs:/gfx/ui/icon_gender_neutral.png";
+
+// The three badge textures are tiny and shared by every BoxItem, so they are
+// loaded once and kept for the lifetime of the app
+pu::sdl2::TextureHandle::Ref GetGenderIconTexture(const pksm::Gender gender) {
+    static pu::sdl2::TextureHandle::Ref male;
+    static pu::sdl2::TextureHandle::Ref female;
+    static pu::sdl2::TextureHandle::Ref neutral;
+
+    const auto loadOnce = [](pu::sdl2::TextureHandle::Ref& slot, const char* path) {
+        if (slot) {
+            return;
+        }
+        pu::sdl2::Texture tex = pu::ui::render::LoadImage(path);
+        if (tex) {
+            slot = pu::sdl2::TextureHandle::New(tex);
+        }
+    };
+
+    loadOnce(male, ICON_GENDER_MALE);
+    loadOnce(female, ICON_GENDER_FEMALE);
+    loadOnce(neutral, ICON_GENDER_NEUTRAL);
+
+    if (gender == pksm::Gender{pksm::Gender::Male}) {
+        return male;
+    }
+    if (gender == pksm::Gender{pksm::Gender::Female}) {
+        return female;
+    }
+    return neutral;
+}
+
+}  // namespace
+
 pksm::ui::BoxItem::BoxItem(
     const pu::i32 x,
     const pu::i32 y,
@@ -49,6 +90,16 @@ pksm::ui::BoxItem::BoxItem(
     // Add elements to container
     container->Add(background);
     container->Add(this->image);
+
+    // Gender badge, top-right of the slot (container-relative coordinates)
+    this->genderIcon = pu::ui::elm::Image::New(width - GENDER_ICON_SIZE - GENDER_ICON_MARGIN, GENDER_ICON_MARGIN, nullptr);
+    this->genderIcon->SetVisible(false);
+    container->Add(this->genderIcon);
+
+    // Drawn over everything else when the slot has no backing storage
+    unusableShade = pu::ui::elm::Rectangle::New(0, 0, width, height, pu::ui::Color(0, 0, 0, 110));
+    unusableShade->SetVisible(false);
+    container->Add(unusableShade);
 
     // Create the regular outline
     outline = pksm::ui::RectangularOutline::New(
@@ -172,6 +223,25 @@ pu::ui::elm::Image::Ref pksm::ui::BoxItem::GetImage() {
     return image;
 }
 
+void pksm::ui::BoxItem::SetGender(pksm::Gender gender, bool visible) {
+    if (!visible) {
+        genderIcon->SetVisible(false);
+        genderIcon->SetImage(nullptr);
+        return;
+    }
+    // SetImage resets the element to the texture's natural size (the badge
+    // art is only 12px), so the display size is re-applied after it - the
+    // same dance SetImage above does for the sprite
+    genderIcon->SetImage(GetGenderIconTexture(gender));
+    genderIcon->SetWidth(GENDER_ICON_SIZE);
+    genderIcon->SetHeight(GENDER_ICON_SIZE);
+    genderIcon->SetVisible(true);
+}
+
+void pksm::ui::BoxItem::SetUnusable(bool unusable) {
+    unusableShade->SetVisible(unusable);
+}
+
 void pksm::ui::BoxItem::SetSelected(bool select) {
     this->selected = select;
     background->SetColor(select ? selectedBgColor : defaultBgColor);
@@ -206,9 +276,12 @@ void pksm::ui::BoxItem::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu
         outline->OnRender(drawer, x - outlinePadding, y - outlinePadding);
     }
 
-    // Draw container elements
+    // Draw container elements, honoring visibility the way Plutonium's own
+    // render loop does - OnRender alone draws regardless of SetVisible
     for (auto& element : container->GetElements()) {
-        element->OnRender(drawer, x + element->GetX(), y + element->GetY());
+        if (element->IsVisible()) {
+            element->OnRender(drawer, x + element->GetX(), y + element->GetY());
+        }
     }
 }
 

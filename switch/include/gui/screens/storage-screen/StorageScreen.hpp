@@ -26,6 +26,8 @@ public:
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
+        std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
+            requestConfirmation,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBoxDataProvider::Ref boxDataProvider
     );
@@ -39,6 +41,10 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(5, 171, 49, 255);
     std::function<void()> onBack;
+    // Blocking yes/no prompt shown by the application (Plutonium dialogs are
+    // application-level); returns whether the user confirmed
+    std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
+        requestConfirmation;
     pksm::ui::PokemonBox::Ref pokemonBox;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
@@ -66,6 +72,8 @@ private:
     void InitializeFocusManagement();
     void HandleSlotActivated(int boxIndex, int slotIndex);
     void HandleBackButton();
+    void HandleCloneButton();
+    void HandleReleaseButton();
     void RefreshBox(int boxIndex);
     void UpdateHeldVisual();
     void UpdateHelpItems();

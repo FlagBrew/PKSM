@@ -19,4 +19,17 @@ int ListRefAt(::pksm::Sav& sav, int listIndex, int excludeToken = -1);
 // Point a previously taken reference token at the entry's new list index
 void MoveListRef(::pksm::Sav& sav, int token, int listIndex);
 
+// Drop a previously taken reference token: its entry left the save entirely
+// (e.g. released), so the referrer is repaired rather than retargeted
+void ClearListRef(::pksm::Sav& sav, int token);
+
+// Drop every reference naming the entry at listIndex, for when that entry is
+// removed in place without ever being picked up
+void ClearListRefsAt(::pksm::Sav& sav, int listIndex);
+
+// List bookkeeping owed right before the save's bytes leave memory:
+// compact the list and recount its length (the 3DS app's storage-exit
+// routine). No-op for saves without a box list.
+void FinalizeBoxList(::pksm::Sav& sav);
+
 }  // namespace pksm::saves

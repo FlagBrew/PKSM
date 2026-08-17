@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "enums/Gender.hpp"
 #include "utils/PokemonSpriteManager.hpp"
 
 namespace pksm::ui {
@@ -14,9 +15,19 @@ struct BoxPokemonData {
     u16 species;  // Pokémon species ID
     u8 form;  // Form number (0 for normal form)
     bool shiny;  // Whether the Pokémon is shiny
+    pksm::Gender gender;  // Pokémon gender
+    // Slot has no backing storage in the save (20-slot padding columns,
+    // slots past a partial last box); rendered disabled, nothing drops there
+    bool unusable = false;
 
     // Constructor for easy creation
-    BoxPokemonData(u16 species = 0, u8 form = 0, bool shiny = false) : species(species), form(form), shiny(shiny) {}
+    BoxPokemonData(
+        u16 species = 0,
+        u8 form = 0,
+        bool shiny = false,
+        pksm::Gender gender = pksm::Gender{pksm::Gender::Genderless}
+    )
+      : species(species), form(form), shiny(shiny), gender(gender) {}
 
     // Helper to determine if this is an empty slot
     bool isEmpty() const { return species == 0; }
