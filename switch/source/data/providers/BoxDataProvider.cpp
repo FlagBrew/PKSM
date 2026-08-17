@@ -5,6 +5,7 @@
 #include <string>
 
 #include "data/saves/BoxListRefs.hpp"
+#include "data/summary/SummaryBuilder.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
@@ -257,6 +258,20 @@ bool BoxDataProvider::PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveDat
         heldListRef = -1;
     }
     return true;
+}
+
+std::optional<pksm::summary::SummaryData>
+BoxDataProvider::GetPokemonSummary(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) const {
+    auto* sav = CurrentSav(saveData);
+    if (!sav) {
+        return std::nullopt;
+    }
+    int saveSlot = -1;
+    const auto pk = OccupantAt(*sav, boxIndex, slotIndex, saveSlot);
+    if (!pk) {
+        return std::nullopt;
+    }
+    return pksm::summary::BuildSummary(*pk);
 }
 
 bool BoxDataProvider::CancelHold(const pksm::saves::SaveData::Ref& saveData) {

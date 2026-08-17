@@ -1,45 +1,12 @@
 #include "gui/shared/components/BoxItem.hpp"
 
+#include "gui/shared/components/GenderIcon.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
 
 constexpr pu::i32 GENDER_ICON_SIZE = 26;
 constexpr pu::i32 GENDER_ICON_MARGIN = 5;
-
-constexpr const char* ICON_GENDER_MALE = "romfs:/gfx/ui/icon_gender_male.png";
-constexpr const char* ICON_GENDER_FEMALE = "romfs:/gfx/ui/icon_gender_female.png";
-constexpr const char* ICON_GENDER_NEUTRAL = "romfs:/gfx/ui/icon_gender_neutral.png";
-
-// The three badge textures are tiny and shared by every BoxItem, so they are
-// loaded once and kept for the lifetime of the app
-pu::sdl2::TextureHandle::Ref GetGenderIconTexture(const pksm::Gender gender) {
-    static pu::sdl2::TextureHandle::Ref male;
-    static pu::sdl2::TextureHandle::Ref female;
-    static pu::sdl2::TextureHandle::Ref neutral;
-
-    const auto loadOnce = [](pu::sdl2::TextureHandle::Ref& slot, const char* path) {
-        if (slot) {
-            return;
-        }
-        pu::sdl2::Texture tex = pu::ui::render::LoadImage(path);
-        if (tex) {
-            slot = pu::sdl2::TextureHandle::New(tex);
-        }
-    };
-
-    loadOnce(male, ICON_GENDER_MALE);
-    loadOnce(female, ICON_GENDER_FEMALE);
-    loadOnce(neutral, ICON_GENDER_NEUTRAL);
-
-    if (gender == pksm::Gender{pksm::Gender::Male}) {
-        return male;
-    }
-    if (gender == pksm::Gender{pksm::Gender::Female}) {
-        return female;
-    }
-    return neutral;
-}
 
 }  // namespace
 

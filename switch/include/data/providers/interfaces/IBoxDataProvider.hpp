@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "data/saves/SaveData.hpp"
+#include "data/summary/SummaryData.hpp"
 #include "gui/shared/components/BoxPokemonData.hpp"
 
 class IBoxDataProvider {
@@ -57,4 +58,9 @@ public:
 
     // Whether the hand holds a copy whose original is still in its slot
     virtual bool IsHeldPokemonClone() const = 0;
+
+    // Display model of the slot's Pokémon for the summary view; empty for
+    // empty and out-of-range slots
+    virtual std::optional<pksm::summary::SummaryData>
+    GetPokemonSummary(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) const = 0;
 };
