@@ -70,21 +70,38 @@ std::string ConfigValue(const std::string& configPath, const std::string& key) {
     return "";
 }
 
+// RetroArch writes SD-relative ("/retroarch/...") and app-relative
+// (":/savefiles") directory values; give them their device back
+std::string NormalizeConfiguredPath(const std::string& path) {
+    if (path.rfind(":/", 0) == 0) {
+        return "sdmc:/retroarch" + path.substr(1);
+    }
+    if (!path.empty() && path.front() == '/') {
+        return "sdmc:" + path;
+    }
+    return path;
+}
+
 std::vector<std::string> CollectScanRoots() {
-    std::vector<std::string> roots = {RETROARCH_SAVE_ROOT, ROM_TREE_ROOT};
+    // Configured directories are small and explicit user intent; scan them
+    // before the ROM tree so a large library cannot starve them of the
+    // directory budget
+    std::vector<std::string> roots = {RETROARCH_SAVE_ROOT};
 
     // An explicit RetroArch save directory only applies when saves are not
     // redirected into the content dir (the ROM tree covers that mode)
     const std::string savefileDir = ConfigValue(RETROARCH_CFG, "savefile_directory");
     const bool inContentDir = ConfigValue(RETROARCH_CFG, "savefiles_in_content_dir") == "true";
     if (!savefileDir.empty() && savefileDir != "default" && !inContentDir) {
-        roots.push_back(savefileDir);
+        roots.push_back(NormalizeConfiguredPath(savefileDir));
     }
 
     const std::string mgbaDir = ConfigValue(MGBA_CONFIG, "savegamePath");
     if (!mgbaDir.empty()) {
-        roots.push_back(mgbaDir);
+        roots.push_back(NormalizeConfiguredPath(mgbaDir));
     }
+
+    roots.push_back(ROM_TREE_ROOT);
     return roots;
 }
 
@@ -132,6 +149,9 @@ std::vector<FoundFile> ScanForSaveFiles(const std::vector<std::string>& roots) {
             }
             found.push_back({entry.path().string(), mtime});
         }
+    }
+    if (dirBudget <= 0) {
+        LOG_INFO("Save discovery stopped early: directory budget exhausted, some locations were not scanned");
     }
     return found;
 }
