@@ -37,4 +37,9 @@ public:
     virtual bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {
         return true;
     }
+
+    // Whether any save candidate exists for a catalog (emulator) game, so
+    // the title layer can decide which games earn a tile without owning
+    // save-location knowledge
+    virtual bool HasEmulatorSaveCandidates(u64 titleId) const { return false; }
 };

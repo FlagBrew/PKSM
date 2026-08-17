@@ -3,107 +3,211 @@
     {
       "name": "Pokémon Red",
       "title_id": "0000000000000001",
-      "icon_path": "romfs:/gfx/data/game_icons/red_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/red_icon.jpg",
+      "save_family": "rby",
+      "keywords": [
+        "red"
+      ]
     },
     {
       "name": "Pokémon Green",
       "title_id": "0000000000000002",
-      "icon_path": "romfs:/gfx/data/game_icons/green_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/green_icon.jpg",
+      "save_family": "rby",
+      "keywords": [
+        "green"
+      ]
     },
     {
       "name": "Pokémon Blue",
       "title_id": "0000000000000003",
-      "icon_path": "romfs:/gfx/data/game_icons/blue_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/blue_icon.jpg",
+      "save_family": "rby",
+      "keywords": [
+        "blue"
+      ]
     },
     {
       "name": "Pokémon Yellow",
       "title_id": "0000000000000004",
-      "icon_path": "romfs:/gfx/data/game_icons/yellow_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/yellow_icon.jpg",
+      "save_family": "rby",
+      "keywords": [
+        "yellow"
+      ]
     },
     {
       "name": "Pokémon Gold",
       "title_id": "0000000000000005",
-      "icon_path": "romfs:/gfx/data/game_icons/gold_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/gold_icon.jpg",
+      "save_family": "gs",
+      "keywords": [
+        "gold"
+      ]
     },
     {
       "name": "Pokémon Silver",
       "title_id": "0000000000000006",
-      "icon_path": "romfs:/gfx/data/game_icons/silver_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/silver_icon.jpg",
+      "save_family": "gs",
+      "keywords": [
+        "silver"
+      ]
     },
     {
       "name": "Pokémon Crystal",
       "title_id": "0000000000000007",
-      "icon_path": "romfs:/gfx/data/game_icons/crystal_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/crystal_icon.jpg",
+      "save_family": "c",
+      "keywords": [
+        "crystal"
+      ]
     },
     {
       "name": "Pokémon Ruby",
       "title_id": "0000000000000008",
-      "icon_path": "romfs:/gfx/data/game_icons/ruby_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/ruby_icon.jpg",
+      "save_family": "rs",
+      "keywords": [
+        "ruby",
+        "axve"
+      ]
     },
     {
       "name": "Pokémon Sapphire",
       "title_id": "0000000000000009",
-      "icon_path": "romfs:/gfx/data/game_icons/sapphire_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/sapphire_icon.jpg",
+      "save_family": "rs",
+      "keywords": [
+        "sapphire",
+        "sapp",
+        "axpe"
+      ]
     },
     {
       "name": "Pokémon Emerald",
       "title_id": "0000000000000010",
-      "icon_path": "romfs:/gfx/data/game_icons/emerald_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/emerald_icon.jpg",
+      "save_family": "e",
+      "keywords": [
+        "emerald",
+        "emer",
+        "bpee"
+      ]
     },
     {
       "name": "Pokémon FireRed",
       "title_id": "0000000000000011",
-      "icon_path": "romfs:/gfx/data/game_icons/firered_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/firered_icon.jpg",
+      "save_family": "frlg",
+      "keywords": [
+        "firered",
+        "fire red",
+        "fire_red",
+        "bpre"
+      ]
     },
     {
       "name": "Pokémon LeafGreen",
       "title_id": "0000000000000012",
-      "icon_path": "romfs:/gfx/data/game_icons/leafgreen_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/leafgreen_icon.jpg",
+      "save_family": "frlg",
+      "keywords": [
+        "leafgreen",
+        "leaf green",
+        "leaf_green",
+        "bpge"
+      ]
     },
     {
       "name": "Pokémon Diamond",
       "title_id": "0000000000000013",
-      "icon_path": "romfs:/gfx/data/game_icons/diamond_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/diamond_icon.jpg",
+      "save_family": "dp",
+      "keywords": [
+        "diamond"
+      ]
     },
     {
       "name": "Pokémon Pearl",
       "title_id": "0000000000000014",
-      "icon_path": "romfs:/gfx/data/game_icons/pearl_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/pearl_icon.jpg",
+      "save_family": "dp",
+      "keywords": [
+        "pearl"
+      ]
     },
     {
       "name": "Pokémon Platinum",
       "title_id": "0000000000000015",
-      "icon_path": "romfs:/gfx/data/game_icons/platinum_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/platinum_icon.jpg",
+      "save_family": "pt",
+      "keywords": [
+        "platinum",
+        "plat"
+      ]
     },
     {
       "name": "Pokémon HeartGold",
       "title_id": "0000000000000016",
-      "icon_path": "romfs:/gfx/data/game_icons/heartgold_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/heartgold_icon.jpg",
+      "save_family": "hgss",
+      "keywords": [
+        "heartgold",
+        "heart gold",
+        "heart_gold"
+      ]
     },
     {
       "name": "Pokémon SoulSilver",
       "title_id": "0000000000000017",
-      "icon_path": "romfs:/gfx/data/game_icons/soulsilver_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/soulsilver_icon.jpg",
+      "save_family": "hgss",
+      "keywords": [
+        "soulsilver",
+        "soul silver",
+        "soul_silver"
+      ]
     },
     {
       "name": "Pokémon Black",
       "title_id": "0000000000000018",
-      "icon_path": "romfs:/gfx/data/game_icons/black_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/black_icon.jpg",
+      "save_family": "b",
+      "keywords": [
+        "black"
+      ]
     },
     {
       "name": "Pokémon White",
       "title_id": "0000000000000019",
-      "icon_path": "romfs:/gfx/data/game_icons/white_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/white_icon.jpg",
+      "save_family": "w",
+      "keywords": [
+        "white"
+      ]
     },
     {
       "name": "Pokémon Black 2",
       "title_id": "0000000000000020",
-      "icon_path": "romfs:/gfx/data/game_icons/black_2_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/black_2_icon.jpg",
+      "save_family": "b2",
+      "keywords": [
+        "black 2",
+        "black2",
+        "black_2"
+      ]
     },
     {
       "name": "Pokémon White 2",
       "title_id": "0000000000000021",
-      "icon_path": "romfs:/gfx/data/game_icons/white_2_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/white_2_icon.jpg",
+      "save_family": "w2",
+      "keywords": [
+        "white 2",
+        "white2",
+        "white_2"
+      ]
     },
     {
       "name": "Pokémon X",

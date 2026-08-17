@@ -75,6 +75,18 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::
             }
         }
 
+        if (eg.contains("save_family") && eg["save_family"].is_string()) {
+            entry.saveFamily = eg["save_family"].get<std::string>();
+        }
+
+        if (eg.contains("keywords") && eg["keywords"].is_array()) {
+            for (const auto& k : eg["keywords"]) {
+                if (k.is_string()) {
+                    entry.keywords.push_back(k.get<std::string>());
+                }
+            }
+        }
+
         if (eg.contains("extra_saves") && eg["extra_saves"].is_array()) {
             for (const auto& slot : eg["extra_saves"]) {
                 if (!slot.is_object()) {
