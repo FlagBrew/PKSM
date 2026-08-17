@@ -51,7 +51,8 @@ enum class GameVersion {
     SP,
     PLA,
     SL,
-    VL
+    VL,
+    ZA
 };
 
 class SaveData {
@@ -70,6 +71,7 @@ public:
         u8 badges,
         u16 dexSeen,
         u16 dexCaught,
+        u16 dexTotal,
         u16 wonderCards,
         u16 playedHours,
         u8 playedMinutes,
@@ -87,6 +89,7 @@ public:
     u8 getBadges() const { return badges; }
     u16 getDexSeen() const { return dexSeen; }
     u16 getDexCaught() const { return dexCaught; }
+    u16 getDexTotal() const { return dexTotal; }
     u16 getWonderCards() const { return wonderCards; }
     u16 getPlayedHours() const { return playedHours; }
     u8 getPlayedMinutes() const { return playedMinutes; }
@@ -112,6 +115,7 @@ private:
     u8 badges;
     u16 dexSeen;
     u16 dexCaught;
+    u16 dexTotal;
     u16 wonderCards;
     u16 playedHours;
     u8 playedMinutes;

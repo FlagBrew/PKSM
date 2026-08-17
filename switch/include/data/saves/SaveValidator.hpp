@@ -1,8 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <string>
 #include <switch/types.h>
+
+#include "sav/Sav.hpp"
 
 namespace pksm::saves {
 
@@ -21,6 +24,13 @@ public:
 
         std::string Describe() const;
     };
+
+    // Parses the file with core. The returned Sav owns a full in-memory copy
+    // of the file, so the source may disappear (e.g. be unmounted) afterwards.
+    static std::unique_ptr<::pksm::Sav> Load(const std::string& path);
+
+    // Trainer info read out of a parsed save, for logging and validation
+    static Summary Summarize(const ::pksm::Sav& sav);
 
     // Returns trainer info when core can parse the file, nullopt otherwise.
     static std::optional<Summary> Validate(const std::string& path);

@@ -60,7 +60,7 @@ public:
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const override;
 
-    bool LoadSave(
+    std::optional<pksm::saves::LoadedSave> LoadSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
         const AccountUid* userId = nullptr
@@ -69,9 +69,18 @@ public:
     bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const override;
 
     // Load save from different sources
-    bool LoadConsoleSave(const pksm::titles::Title::Ref& title, const AccountUid& userId);
-    bool LoadCheckpointSave(const pksm::titles::Title::Ref& title, const std::string& saveName);
-    bool LoadCustomSave(const pksm::titles::Title::Ref& title, const std::string& saveName);
+    std::optional<pksm::saves::LoadedSave> LoadConsoleSave(
+        const pksm::titles::Title::Ref& title,
+        const AccountUid& userId
+    );
+    std::optional<pksm::saves::LoadedSave> LoadCheckpointSave(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName
+    );
+    std::optional<pksm::saves::LoadedSave> LoadCustomSave(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName
+    );
 
     // Refresh methods
     void

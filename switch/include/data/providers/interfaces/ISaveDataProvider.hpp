@@ -6,6 +6,7 @@
 #include <switch.h>
 #include <vector>
 
+#include "data/saves/LoadedSave.hpp"
 #include "data/saves/Save.hpp"
 #include "data/titles/Title.hpp"
 
@@ -20,8 +21,11 @@ public:
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const = 0;
 
-    // Load a specific save file, with optional user ID for installed titles
-    virtual bool LoadSave(
+    // Load a specific save, with optional user ID for installed titles.
+    // Resolves the name to its source (emulator file, console container,
+    // Checkpoint backup), parses it with core, and hands the Sav over -
+    // ownership of the loaded save lives in the save data accessor.
+    virtual std::optional<pksm::saves::LoadedSave> LoadSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
         const AccountUid* userId = nullptr
