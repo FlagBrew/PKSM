@@ -367,9 +367,12 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     return result;
 }
 
-bool SwitchSaveDataProvider::LoadConsoleSave(const pksm::titles::Title::Ref& title, const AccountUid& userId) {
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadConsoleSave(
+    const pksm::titles::Title::Ref& title,
+    const AccountUid& userId
+) {
     if (!title) {
-        return false;
+        return std::nullopt;
     }
 
     u64 titleId = title->getTitleId();
@@ -378,9 +381,6 @@ bool SwitchSaveDataProvider::LoadConsoleSave(const pksm::titles::Title::Ref& tit
     ss << "Loading console save for title " << std::hex << titleId << ", user " << std::hex << userId.uid[0];
     LOG_INFO(ss.str());
 
-    // Open the save filesystem, list its root at the raw fs level BEFORE
-    // mounting (save FS handles are exclusive, so this must share the one
-    // handle), then mount that same handle to devoptab
     fsdevUnmountDevice("save");
     FsFileSystem fs;
     Result res = fsOpen_SaveData(&fs, titleId, userId);
@@ -388,37 +388,56 @@ bool SwitchSaveDataProvider::LoadConsoleSave(const pksm::titles::Title::Ref& tit
         std::stringstream ss;
         ss << "Failed to open save data filesystem: 0x" << std::hex << res;
         LOG_ERROR(ss.str());
-        return false;
+        return std::nullopt;
     }
 
     if (fsdevMountDevice("save", fs) == -1) {
         // fsdev closes fs itself on failure - do not fsFsClose here
         LOG_ERROR("Failed to mount save filesystem device");
-        return false;
+        return std::nullopt;
     }
 
-    // Save file names vary per game (main, savedata.bin, ...), so until the
-    // real save accessor takes over, "loadable" means the container has
-    // content. The listing doubles as the support-log breadcrumb.
+    // Save file names vary per game (main, savedata.bin, ...), so probe every
+    // file in the container root and let core decide which one is the save
     auto rootEntries = ListMountedSaveRoot();
-    if (rootEntries.empty()) {
-        LOG_ERROR("Save load failed for " + title->getName() + "; save root: (empty)");
-        UnmountSaveData();
-        return false;
+    std::optional<pksm::saves::LoadedSave> loaded;
+    for (const auto& entry : rootEntries) {
+        const std::string path = "save:/" + entry;
+        std::error_code ec;
+        if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
+            continue;
+        }
+        auto sav = pksm::saves::SaveValidator::Load(path);
+        if (sav) {
+            LOG_INFO(
+                "Loaded console save " + path + " for " + title->getName() + ": " +
+                pksm::saves::SaveValidator::Summarize(*sav).Describe()
+            );
+            loaded = pksm::saves::LoadedSave{std::move(sav), path};
+            break;
+        }
     }
 
-    LOG_INFO("Console save mounted for " + title->getName() + "; save root: " + JoinNames(rootEntries));
-
-    // Unmount until the (still-mock) save accessor takes ownership of real
-    // reads - leaving "save" mounted poisons every later mount attempt.
+    // The Sav holds a full in-memory copy, so unmount immediately - leaving
+    // "save" mounted poisons every later mount attempt. Write-back will
+    // remount when it lands.
     UnmountSaveData();
 
-    return true;
+    if (!loaded) {
+        LOG_ERROR(
+            "No file in the save container parses as a save for " + title->getName() +
+            "; save root: " + JoinNames(rootEntries)
+        );
+    }
+    return loaded;
 }
 
-bool SwitchSaveDataProvider::LoadCheckpointSave(const pksm::titles::Title::Ref& title, const std::string& saveName) {
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCheckpointSave(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName
+) {
     if (!title) {
-        return false;
+        return std::nullopt;
     }
 
     u64 titleId = title->getTitleId();
@@ -433,43 +452,48 @@ bool SwitchSaveDataProvider::LoadCheckpointSave(const pksm::titles::Title::Ref& 
         ss.str("");
         ss << "No Checkpoint saves found for title " << std::hex << titleId;
         LOG_ERROR(ss.str());
-        return false;
+        return std::nullopt;
     }
 
     // Find the save with the matching name
     for (const auto& save : titleIt->second) {
         if (save->getName() == saveName) {
-            std::string savePath = save->getPath();
+            const std::string& savePath = save->getPath();
 
-            // Here you would typically load the save data from the checkpoint directory
-            // For demonstration, we'll just check that we can access the directory
-
-            if (!std::filesystem::exists(savePath)) {
-                ss.str("");
-                ss << "Save directory not found at " << savePath;
-                LOG_ERROR(ss.str());
-                return false;
+            // A Checkpoint backup is a directory; probe its files and let
+            // core decide which one is the save
+            std::error_code ec;
+            for (const auto& entry : std::filesystem::directory_iterator(savePath, ec)) {
+                if (!entry.is_regular_file(ec) || ec) {
+                    continue;
+                }
+                auto sav = pksm::saves::SaveValidator::Load(entry.path().string());
+                if (sav) {
+                    LOG_INFO(
+                        "Loaded Checkpoint save " + entry.path().string() + ": " +
+                        pksm::saves::SaveValidator::Summarize(*sav).Describe()
+                    );
+                    return pksm::saves::LoadedSave{std::move(sav), entry.path().string()};
+                }
             }
 
-            ss.str("");
-            ss << "Found Checkpoint save at " << savePath;
-            LOG_INFO(ss.str());
-
-            // Now we would handle loading this save into the appropriate format
-
-            return true;
+            LOG_ERROR("No file in Checkpoint backup " + savePath + " parses as a save");
+            return std::nullopt;
         }
     }
 
     ss.str("");
     ss << "Checkpoint save " << saveName << " not found for title " << std::hex << titleId;
     LOG_ERROR(ss.str());
-    return false;
+    return std::nullopt;
 }
 
-bool SwitchSaveDataProvider::LoadCustomSave(const pksm::titles::Title::Ref& title, const std::string& saveName) {
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCustomSave(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName
+) {
     if (!title) {
-        return false;
+        return std::nullopt;
     }
 
     u64 titleId = title->getTitleId();
@@ -482,35 +506,36 @@ bool SwitchSaveDataProvider::LoadCustomSave(const pksm::titles::Title::Ref& titl
     // This could be for saves located in specific known locations outside
     // of the standard console or Checkpoint directories
 
-    return false;  // Not implemented yet
+    return std::nullopt;  // Not implemented yet
 }
 
-bool SwitchSaveDataProvider::LoadSave(
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName,
     const AccountUid* userId
 ) {
     if (!title) {
-        return false;
+        return std::nullopt;
     }
 
-    // Emulator saves: re-resolve the name to its path and parse it with
-    // core as proof of loadability. Holding on to the parsed Sav comes with
-    // the save-data accessor absorption.
+    // Emulator saves: re-resolve the name to its path and parse it with core
     if (IsEmulatorTitle(title->getTitleId())) {
         for (const auto& save : ListEmulatorSaves(title->getTitleId())) {
             if (save->getName() == saveName) {
-                const auto summary = pksm::saves::SaveValidator::Validate(save->getPath());
-                if (summary) {
-                    LOG_INFO("Loaded emulator save " + save->getPath() + ": " + summary->Describe());
-                    return true;
+                auto sav = pksm::saves::SaveValidator::Load(save->getPath());
+                if (sav) {
+                    LOG_INFO(
+                        "Loaded emulator save " + save->getPath() + ": " +
+                        pksm::saves::SaveValidator::Summarize(*sav).Describe()
+                    );
+                    return pksm::saves::LoadedSave{std::move(sav), save->getPath()};
                 }
                 LOG_ERROR("Emulator save no longer parses: " + save->getPath());
-                return false;
+                return std::nullopt;
             }
         }
         LOG_ERROR("Emulator save not found: " + saveName);
-        return false;
+        return std::nullopt;
     }
 
     // Handle console save (which requires a user ID)
@@ -519,17 +544,17 @@ bool SwitchSaveDataProvider::LoadSave(
     }
 
     // Try to load from Checkpoint saves
-    if (LoadCheckpointSave(title, saveName)) {
-        return true;
+    if (auto loaded = LoadCheckpointSave(title, saveName)) {
+        return loaded;
     }
 
     // Try to load from custom saves
-    if (LoadCustomSave(title, saveName)) {
-        return true;
+    if (auto loaded = LoadCustomSave(title, saveName)) {
+        return loaded;
     }
 
     std::stringstream ss;
     ss << "Unable to load save " << saveName << " for title " << std::hex << title->getTitleId();
     LOG_ERROR(ss.str());
-    return false;
+    return std::nullopt;
 }

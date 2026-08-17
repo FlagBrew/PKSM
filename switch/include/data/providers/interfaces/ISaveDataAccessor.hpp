@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <switch.h>
 
 #include "data/saves/SaveData.hpp"
 #include "data/titles/Title.hpp"
@@ -16,8 +17,12 @@ public:
     // Get the current save data
     virtual pksm::saves::SaveData::Ref getCurrentSaveData() const = 0;
 
-    // Load a save data from a title and save name
-    virtual bool loadSave(const pksm::titles::Title::Ref title, const std::string saveName) = 0;
+    // Load a save from a title and save name, with the user ID console saves need
+    virtual bool loadSave(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName,
+        const AccountUid* userId = nullptr
+    ) = 0;
 
     // Set a callback for when the save data changes
     virtual void setOnSaveDataChanged(std::function<void(pksm::saves::SaveData::Ref)> callback) = 0;

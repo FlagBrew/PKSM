@@ -17,6 +17,7 @@ SaveData::SaveData(
     u8 badges,
     u16 dexSeen,
     u16 dexCaught,
+    u16 dexTotal,
     u16 wonderCards,
     u16 playedHours,
     u8 playedMinutes,
@@ -32,30 +33,28 @@ SaveData::SaveData(
     badges(badges),
     dexSeen(dexSeen),
     dexCaught(dexCaught),
+    dexTotal(dexTotal),
     wonderCards(wonderCards),
     playedHours(playedHours),
     playedMinutes(playedMinutes),
     playedSeconds(playedSeconds) {}
 
 std::string SaveData::getPlayedTimeString() const {
-    // Ensure hours don't exceed 300
-    u16 displayHours = std::min(playedHours, static_cast<u16>(300));
-
     std::stringstream ss;
     // Don't use leading zeros for hours
-    ss << displayHours << ":" << std::setfill('0') << std::setw(2) << static_cast<int>(playedMinutes) << ":"
+    ss << playedHours << ":" << std::setfill('0') << std::setw(2) << static_cast<int>(playedMinutes) << ":"
        << std::setfill('0') << std::setw(2) << static_cast<int>(playedSeconds);
     return ss.str();
 }
 
 float SaveData::getDexCompletionPercentage() const {
-    if (dexSeen == 0) {
+    if (dexTotal == 0) {
         return 0.0f;
     }
 
-    // Ensure dexCaught is not greater than dexSeen for percentage calculation
-    u16 adjustedCaught = std::min(dexCaught, dexSeen);
-    return (static_cast<float>(adjustedCaught) / static_cast<float>(dexSeen)) * 100.0f;
+    // Completion is caught out of the game's whole dex, not out of seen
+    u16 adjustedCaught = std::min(dexCaught, dexTotal);
+    return (static_cast<float>(adjustedCaught) / static_cast<float>(dexTotal)) * 100.0f;
 }
 
 std::string SaveData::GenerationToString(Generation gen) {
