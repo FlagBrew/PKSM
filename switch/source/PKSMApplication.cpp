@@ -5,7 +5,7 @@
 #include "data/providers/SaveDataAccessor.hpp"
 #include "data/providers/SwitchSaveDataProvider.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
-#include "data/providers/mock/MockBoxDataProvider.hpp"
+#include "data/providers/BoxDataProvider.hpp"
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
@@ -152,7 +152,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto saveProvider = SwitchSaveDataProvider::New();
         auto titleProvider = SwitchTitleDataProvider::New(saveProvider);
         auto saveDataAccessor = SaveDataAccessor::New(saveProvider);
-        auto boxDataProvider = std::make_shared<MockBoxDataProvider>();
+        auto boxDataProvider = BoxDataProvider::New(saveDataAccessor);
         LOG_MEMORY();  // Memory after data provider initialization
 
         // Create and prepare application
@@ -196,16 +196,14 @@ void PKSMApplication::ShowStorageScreen() {
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
 
-    // The accessor sources the save through the provider, takes ownership of
-    // the parsed Sav, and notifies the UI through its change callback
+    // The main menu is only entered with a loaded save; a failed load stays
+    // on the title screen, whose next listing drops the bad candidate
     auto userId = accountManager->GetCurrentAccount();
     if (saveDataAccessor->loadSave(title, save->getName(), &userId)) {
-        LOG_DEBUG("Successfully loaded save data");
+        this->ShowMainMenu();
     } else {
         LOG_ERROR("Failed to load save data");
-        // Handle error - for now, we'll still show the main menu
     }
-    this->ShowMainMenu();
 }
 
 void PKSMApplication::OnLoad() {
