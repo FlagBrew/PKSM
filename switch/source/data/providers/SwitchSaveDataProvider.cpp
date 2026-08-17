@@ -1,5 +1,6 @@
 #include "data/providers/SwitchSaveDataProvider.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <dirent.h>
 #include <filesystem>
@@ -103,6 +104,112 @@ std::string JoinNames(const std::vector<std::string>& names) {
         joined += n;
     }
     return joined.empty() ? "(empty)" : joined;
+}
+
+// The folder name JKSV uses for a title: a port of JKSV's util::safeString.
+// Codepoints JKSV forbids in FAT names become spaces, e is substituted for
+// e-acute, and any other non-ASCII codepoint makes JKSV fall back to naming
+// the folder with the title ID instead - signalled here by an empty return.
+std::string JKSVSafeName(const std::string& name) {
+    static constexpr u32 verboten[] =
+        {',', '/', '\\', '<', '>', ':', '"', '|', '?', '*', 0x2122 /*TM*/, 0xA9 /*(c)*/, 0xAE /*(r)*/};
+
+    std::string ret;
+    for (size_t i = 0; i < name.size();) {
+        const u8 lead = static_cast<u8>(name[i]);
+        size_t len = 1;
+        u32 codepoint = lead;
+        if (lead >= 0xF0) {
+            len = 4;
+        } else if (lead >= 0xE0) {
+            len = 3;
+        } else if (lead >= 0xC0) {
+            len = 2;
+        }
+        if (len > 1) {
+            if (i + len > name.size()) {
+                return "";
+            }
+            codepoint = lead & (0x7F >> len);
+            for (size_t j = 1; j < len; j++) {
+                codepoint = (codepoint << 6) | (static_cast<u8>(name[i + j]) & 0x3F);
+            }
+        }
+        i += len;
+
+        if (codepoint == 0xE9) {
+            codepoint = 'e';
+        }
+        if (std::find(std::begin(verboten), std::end(verboten), codepoint) != std::end(verboten)) {
+            ret += ' ';
+        } else if (codepoint <= 30 || codepoint >= 127) {
+            return "";
+        } else {
+            ret += static_cast<char>(codepoint);
+        }
+    }
+
+    while (!ret.empty() && (ret.back() == ' ' || ret.back() == '.')) {
+        ret.pop_back();
+    }
+    return ret;
+}
+
+// Try candidate files in order and load the first one core parses. Known
+// live-save names are tried first; a container may also hold the game's own
+// rolling copy (SWSH's "backup"), which should only win when nothing else
+// parses.
+std::optional<pksm::saves::LoadedSave> ProbeSaveFiles(
+    std::vector<std::string> paths,
+    const std::string& logContext
+) {
+    const auto rank = [](const std::string& path) {
+        const std::string name = std::filesystem::path(path).filename().string();
+        if (name == "main") {
+            return 0;
+        }
+        if (name == "savedata.bin") {
+            return 1;
+        }
+        return name.find("backup") != std::string::npos ? 3 : 2;
+    };
+    std::stable_sort(paths.begin(), paths.end(), [&rank](const std::string& a, const std::string& b) {
+        return rank(a) < rank(b);
+    });
+
+    for (const auto& path : paths) {
+        std::error_code ec;
+        if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
+            continue;
+        }
+        auto sav = pksm::saves::SaveValidator::Load(path);
+        if (sav) {
+            LOG_INFO(
+                "Loaded " + logContext + " " + path + ": " +
+                pksm::saves::SaveValidator::Summarize(*sav).Describe()
+            );
+            return pksm::saves::LoadedSave{std::move(sav), path};
+        }
+    }
+    return std::nullopt;
+}
+
+// A backup (Checkpoint, JKSV) is a directory; probe its files and let core
+// decide which one is the save
+std::optional<pksm::saves::LoadedSave> LoadBackupDirectory(
+    const std::string& dirPath,
+    const std::string& logContext
+) {
+    std::vector<std::string> candidates;
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator(dirPath, ec)) {
+        candidates.push_back(entry.path().string());
+    }
+    if (auto loaded = ProbeSaveFiles(candidates, logContext)) {
+        return loaded;
+    }
+    LOG_ERROR("No file in backup " + dirPath + " parses as a save");
+    return std::nullopt;
 }
 
 }  // namespace
@@ -276,6 +383,55 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
     checkpointSaveCache[titleId] = saves;
 }
 
+void SwitchSaveDataProvider::RefreshJKSVSaves(const pksm::titles::Title::Ref& title) const {
+    if (!title) {
+        return;
+    }
+
+    u64 titleId = title->getTitleId();
+    std::vector<pksm::saves::Save::Ref> saves;
+
+    // JKSV names a game's folder after its sanitized title, or after the
+    // title ID when the name has no ASCII representation
+    char titleIdStr[17];
+    snprintf(titleIdStr, sizeof(titleIdStr), "%016lX", titleId);
+    const std::string safeName = JKSVSafeName(title->getName());
+
+    std::string titlePath;
+    for (const auto& dirName : {safeName, std::string(titleIdStr)}) {
+        std::error_code ec;
+        if (!dirName.empty() && std::filesystem::is_directory(JKSV_BASE_PATH + dirName, ec) && !ec) {
+            titlePath = JKSV_BASE_PATH + dirName;
+            break;
+        }
+    }
+
+    if (titlePath.empty()) {
+        jksvSaveCache[titleId] = saves;
+        return;
+    }
+
+    // Zip backups are not supported yet; list directory backups only
+    try {
+        for (const auto& entry : std::filesystem::directory_iterator(titlePath)) {
+            if (entry.is_directory()) {
+                std::string saveName = "[JKSV] " + entry.path().filename().string();
+                saves.push_back(pksm::saves::Save::New(saveName, entry.path().string()));
+
+                std::stringstream ss;
+                ss << "Found JKSV backup: " << saveName << " at " << entry.path().string();
+                LOG_INFO(ss.str());
+            }
+        }
+    } catch (const std::exception& e) {
+        std::stringstream ss;
+        ss << "Error scanning JKSV backups: " << e.what();
+        LOG_ERROR(ss.str());
+    }
+
+    jksvSaveCache[titleId] = saves;
+}
+
 void SwitchSaveDataProvider::RefreshSaves(
     const pksm::titles::Title::Ref& title,
     const std::optional<AccountUid>& userId
@@ -297,8 +453,9 @@ void SwitchSaveDataProvider::RefreshSaves(
         RefreshConsoleSaves(title, *userId);
     }
 
-    // Refresh Checkpoint saves (these are independent of the user)
+    // Refresh Checkpoint and JKSV backups (these are independent of the user)
     RefreshCheckpointSaves(title);
+    RefreshJKSVSaves(title);
 
     std::stringstream ss;
     ss << "Refreshed saves for title " << std::hex << titleId;
@@ -322,9 +479,9 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     }
 
     // Console saves: refresh only on cache miss (a refresh mounts the save
-    // FS, too heavy for every selection change). Checkpoint saves: always
-    // rescan - it's a cheap directory read, and backups can be created
-    // mid-session.
+    // FS, too heavy for every selection change). Checkpoint/JKSV backups:
+    // always rescan - it's a cheap directory read, and backups can be
+    // created mid-session.
     bool consoleCached = true;
     if (currentUser) {
         auto titleIt = consoleSaveCache.find(titleId);
@@ -335,6 +492,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
         RefreshConsoleSaves(title, *currentUser);
     }
     RefreshCheckpointSaves(title);
+    RefreshJKSVSaves(title);
     std::vector<pksm::saves::Save::Ref> result;
 
     // Add console saves if a user is specified
@@ -356,6 +514,12 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
 
     if (checkpointIt != checkpointSaveCache.end()) {
         result.insert(result.end(), checkpointIt->second.begin(), checkpointIt->second.end());
+    }
+
+    // Add JKSV backups
+    auto jksvIt = jksvSaveCache.find(titleId);
+    if (jksvIt != jksvSaveCache.end()) {
+        result.insert(result.end(), jksvIt->second.begin(), jksvIt->second.end());
     }
 
     // Add custom saves
@@ -400,23 +564,11 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadConsoleSave(
     // Save file names vary per game (main, savedata.bin, ...), so probe every
     // file in the container root and let core decide which one is the save
     auto rootEntries = ListMountedSaveRoot();
-    std::optional<pksm::saves::LoadedSave> loaded;
+    std::vector<std::string> candidates;
     for (const auto& entry : rootEntries) {
-        const std::string path = "save:/" + entry;
-        std::error_code ec;
-        if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
-            continue;
-        }
-        auto sav = pksm::saves::SaveValidator::Load(path);
-        if (sav) {
-            LOG_INFO(
-                "Loaded console save " + path + " for " + title->getName() + ": " +
-                pksm::saves::SaveValidator::Summarize(*sav).Describe()
-            );
-            loaded = pksm::saves::LoadedSave{std::move(sav), path};
-            break;
-        }
+        candidates.push_back("save:/" + entry);
     }
+    auto loaded = ProbeSaveFiles(candidates, "console save for " + title->getName());
 
     // The Sav holds a full in-memory copy, so unmount immediately - leaving
     // "save" mounted poisons every later mount attempt. Write-back will
@@ -442,49 +594,47 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCheckpointSav
 
     u64 titleId = title->getTitleId();
 
-    std::stringstream ss;
-    ss << "Loading Checkpoint save " << saveName << " for title " << std::hex << titleId;
-    LOG_INFO(ss.str());
-
-    // Check if we have this title in our cache
+    // A miss here is normal - LoadSave tries each save source in turn, so
+    // only a claimed-but-failed load (in LoadBackupDirectory) is an error
     auto titleIt = checkpointSaveCache.find(titleId);
     if (titleIt == checkpointSaveCache.end()) {
-        ss.str("");
-        ss << "No Checkpoint saves found for title " << std::hex << titleId;
-        LOG_ERROR(ss.str());
         return std::nullopt;
     }
 
     // Find the save with the matching name
     for (const auto& save : titleIt->second) {
         if (save->getName() == saveName) {
-            const std::string& savePath = save->getPath();
-
-            // A Checkpoint backup is a directory; probe its files and let
-            // core decide which one is the save
-            std::error_code ec;
-            for (const auto& entry : std::filesystem::directory_iterator(savePath, ec)) {
-                if (!entry.is_regular_file(ec) || ec) {
-                    continue;
-                }
-                auto sav = pksm::saves::SaveValidator::Load(entry.path().string());
-                if (sav) {
-                    LOG_INFO(
-                        "Loaded Checkpoint save " + entry.path().string() + ": " +
-                        pksm::saves::SaveValidator::Summarize(*sav).Describe()
-                    );
-                    return pksm::saves::LoadedSave{std::move(sav), entry.path().string()};
-                }
-            }
-
-            LOG_ERROR("No file in Checkpoint backup " + savePath + " parses as a save");
-            return std::nullopt;
+            std::stringstream ss;
+            ss << "Loading Checkpoint save " << saveName << " for title " << std::hex << titleId;
+            LOG_INFO(ss.str());
+            return LoadBackupDirectory(save->getPath(), "Checkpoint save");
         }
     }
 
-    ss.str("");
-    ss << "Checkpoint save " << saveName << " not found for title " << std::hex << titleId;
-    LOG_ERROR(ss.str());
+    return std::nullopt;
+}
+
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadJKSVSave(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName
+) {
+    if (!title) {
+        return std::nullopt;
+    }
+
+    u64 titleId = title->getTitleId();
+
+    auto titleIt = jksvSaveCache.find(titleId);
+    if (titleIt == jksvSaveCache.end()) {
+        return std::nullopt;
+    }
+
+    for (const auto& save : titleIt->second) {
+        if (save->getName() == saveName) {
+            return LoadBackupDirectory(save->getPath(), "JKSV save");
+        }
+    }
+
     return std::nullopt;
 }
 
@@ -545,6 +695,11 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
 
     // Try to load from Checkpoint saves
     if (auto loaded = LoadCheckpointSave(title, saveName)) {
+        return loaded;
+    }
+
+    // Try to load from JKSV backups
+    if (auto loaded = LoadJKSVSave(title, saveName)) {
         return loaded;
     }
 

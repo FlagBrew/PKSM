@@ -17,6 +17,9 @@ private:
     // Path where Checkpoint stores saves
     static constexpr const char* CHECKPOINT_BASE_PATH = "sdmc:/switch/Checkpoint/saves/";
 
+    // Path where JKSV stores backups
+    static constexpr const char* JKSV_BASE_PATH = "sdmc:/JKSV/";
+
     // Cache for save data
     struct SaveCache {
         std::vector<pksm::saves::Save::Ref> consoleSaves;
@@ -25,6 +28,7 @@ private:
 
     mutable std::unordered_map<u64, std::unordered_map<AccountUid, SaveCache, AccountUidHash>> consoleSaveCache;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> checkpointSaveCache;
+    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> jksvSaveCache;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> customSaveCache;
 
     // Catalog of non-installed games (loaded once; romfs is immutable)
@@ -41,6 +45,7 @@ private:
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
     void RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const;
+    void RefreshJKSVSaves(const pksm::titles::Title::Ref& title) const;
     bool IsEmulatorTitle(u64 titleId) const { return emulatorCatalog.count(titleId) > 0; }
     std::vector<pksm::saves::Save::Ref> ListEmulatorSaves(u64 titleId) const;
     bool ValidateWithCore(const std::string& path) const;
@@ -74,6 +79,10 @@ public:
         const AccountUid& userId
     );
     std::optional<pksm::saves::LoadedSave> LoadCheckpointSave(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName
+    );
+    std::optional<pksm::saves::LoadedSave> LoadJKSVSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName
     );
