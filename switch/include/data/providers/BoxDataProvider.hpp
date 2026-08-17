@@ -63,4 +63,6 @@ public:
     pksm::ui::BoxPokemonData GetHeldPokemon() const override { return heldVisual; }
     int GetHeldOriginBox() const override { return heldOriginBox; }
     bool IsHeldPokemonClone() const override { return heldPkm != nullptr && heldIsClone; }
+    std::optional<pksm::summary::SummaryData>
+    GetPokemonSummary(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) const override;
 };

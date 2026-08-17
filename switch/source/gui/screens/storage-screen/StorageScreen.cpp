@@ -52,6 +52,12 @@ StorageScreen::StorageScreen(
         [this]() { HandleReleaseButton(); },
         [this]() { return pokemonBox->IsGridFocused(); }
     );
+    buttonHandler.RegisterButton(
+        HidNpadButton_Plus,
+        nullptr,
+        [this]() { HandleSummaryButton(); },
+        [this]() { return pokemonBox->IsGridFocused(); }
+    );
 
     // Set initial help items
     UpdateHelpItems();
@@ -231,6 +237,35 @@ void StorageScreen::HandleReleaseButton() {
     }
 }
 
+void StorageScreen::HandleSummaryButton() {
+    if (boxDataProvider->HasHeldPokemon()) {
+        return;
+    }
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData) {
+        return;
+    }
+    auto summaryData =
+        boxDataProvider->GetPokemonSummary(saveData, pokemonBox->GetCurrentBox(), pokemonBox->GetSelectedSlot());
+    if (!summaryData) {
+        return;
+    }
+
+    if (!summaryOverlay) {
+        summaryOverlay = pksm::ui::PokemonSummaryOverlay::New(0, 0, GetWidth(), GetHeight());
+    }
+    summaryOverlay->SetData(std::move(*summaryData));
+    onShowOverlay(summaryOverlay);
+    isSummaryVisible = true;
+    pokemonBox->SetDisabled(true);
+}
+
+void StorageScreen::HideSummary() {
+    onHideOverlay();
+    isSummaryVisible = false;
+    pokemonBox->SetDisabled(false);
+}
+
 void StorageScreen::RefreshBox(int boxIndex) {
     auto saveData = saveDataAccessor->getCurrentSaveData();
     if (!saveData) {
@@ -279,14 +314,14 @@ void StorageScreen::UpdateHelpItems() {
             {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up"},
             {{{pksm::ui::global::ButtonGlyph::X}}, "Clone"},
             {{{pksm::ui::global::ButtonGlyph::Y}}, "Release"},
-            {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
+            {{{pksm::ui::global::ButtonGlyph::Plus}}, "Summary"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, "Back"},
         };
     } else {
         // No slot verbs apply here (header pill, Box Spaces button, empty or
         // unusable slot)
         helpItems = {
-            {{{pksm::ui::global::ButtonGlyph::B}},
-             held ? (clone ? "Discard Copy" : "Put Back") : "Back to Main Menu"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, held ? (clone ? "Discard Copy" : "Put Back") : "Back"},
         };
     }
     for (const auto& item : pokemonBox->GetHelpItems()) {
@@ -329,6 +364,14 @@ void StorageScreen::LoadBoxData() {
 StorageScreen::~StorageScreen() = default;
 
 void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
+    // The summary overlay swallows all input until dismissed
+    if (isSummaryVisible) {
+        if (down & (HidNpadButton_B | HidNpadButton_Plus)) {
+            HideSummary();
+        }
+        return;
+    }
+
     // First handle help-related input
     if (HandleHelpInput(down)) {
         return;  // Input was handled by help system
@@ -358,6 +401,7 @@ std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
             {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up Pokémon"},
             {{{pksm::ui::global::ButtonGlyph::X}}, "Clone into Hand"},
             {{{pksm::ui::global::ButtonGlyph::Y}}, "Release Pokémon"},
+            {{{pksm::ui::global::ButtonGlyph::Plus}}, "View Summary"},
             {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
         };
     } else {

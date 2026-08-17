@@ -11,6 +11,7 @@
 #include "gui/shared/components/HelpFooter.hpp"
 #include "gui/shared/components/HelpOverlay.hpp"
 #include "gui/shared/components/PokemonBox.hpp"
+#include "gui/shared/components/PokemonSummaryOverlay.hpp"
 #include "gui/shared/components/SpriteImage.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/ButtonInputHandler.hpp"
@@ -52,6 +53,10 @@ private:
     // Floating sprite of the picked-up Pokémon
     pksm::ui::SpriteImage::Ref heldSprite;
 
+    // Summary overlay for the selected Pokémon, created on first use
+    pksm::ui::PokemonSummaryOverlay::Ref summaryOverlay;
+    bool isSummaryVisible = false;
+
     // Layout constants
     static constexpr pu::i32 BOX_GRID_SIDE_MARGIN = 80;  // Margin from left edge
     static constexpr pu::i32 BOX_GRID_TOP_MARGIN = 120;  // Margin from top
@@ -74,6 +79,8 @@ private:
     void HandleBackButton();
     void HandleCloneButton();
     void HandleReleaseButton();
+    void HandleSummaryButton();
+    void HideSummary();
     void RefreshBox(int boxIndex);
     void UpdateHeldVisual();
     void UpdateHelpItems();

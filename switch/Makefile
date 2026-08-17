@@ -221,7 +221,7 @@ all: $(BUILD)
 debug:
 	@$(MAKE) DEBUG=1
 
-$(BUILD): $(ROMFS)/personal $(ROMFS)/gfx/fallback_title_icon.jpg
+$(BUILD): $(ROMFS)/personal $(ROMFS)/i18n $(ROMFS)/gfx/fallback_title_icon.jpg
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
@@ -230,6 +230,13 @@ $(ROMFS)/personal: $(wildcard ../core/personals/*)
 	@rm -rf $(ROMFS)/personal
 	@mkdir -p $(ROMFS)/personal
 	@cp ../core/personals/* $(ROMFS)/personal/
+
+# String tables from PKSM-Core, loaded lazily by core's i18n (PKSMCORE_CONFIG.h
+# points _PKSMCORE_LANG_FOLDER here)
+$(ROMFS)/i18n: $(shell find ../core/strings -type f 2>/dev/null)
+	@rm -rf $(ROMFS)/i18n
+	@mkdir -p $(ROMFS)/i18n
+	@cp -R ../core/strings/* $(ROMFS)/i18n/
 
 # Placeholder title icon (the app icon) for titles whose icon can't be fetched
 $(ROMFS)/gfx/fallback_title_icon.jpg: PKSM.jpg

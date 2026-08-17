@@ -419,7 +419,7 @@ int PokemonBox::CurrentFocusZone() const {
 std::vector<HelpItem> PokemonBox::GetHelpItems() const {
     return {
         {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
-        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate"},
     };
 }
 
