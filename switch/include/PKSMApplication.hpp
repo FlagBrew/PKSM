@@ -1,5 +1,6 @@
 #pragma once
 
+#include <future>
 #include <memory>
 #include <pu/Plutonium>
 #include <switch.h>
@@ -42,9 +43,16 @@ private:
     void ShowMainMenu();
     void ShowTitleLoadScreen();
     void ShowStorageScreen();
+    void HandleMainMenuBack();
 
     // Save handling
     void OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save);
+    void ProcessPendingSaveAndExit();
+
+    // In-flight save-and-exit write: runs on a worker thread so the render
+    // loop keeps animating; ProcessPendingSaveAndExit polls it each frame,
+    // keeping input blocked until it completes
+    std::future<bool> saveWriteResult;
 
 public:
     PKSMApplication(

@@ -122,6 +122,12 @@ PokemonBox::PokemonBox(
         }
     });
 
+    boxGrid->SetOnSlotActivated([this](int slotIndex) {
+        if (onSlotActivatedCallback) {
+            onSlotActivatedCallback(currentBox, slotIndex);
+        }
+    });
+
     SetBoxCount(1);
     container->PreRender();
 
@@ -553,6 +559,20 @@ BoxPokemonData PokemonBox::GetPokemonData(int boxIndex, int slotIndex) const {
 
 int PokemonBox::GetSelectedSlot() const {
     return static_cast<int>(boxGrid->GetSelectedIndex());
+}
+
+void PokemonBox::SetSelectedSlot(int slotIndex) {
+    if (slotIndex >= 0) {
+        boxGrid->SetSelectedIndex(static_cast<size_t>(slotIndex));
+    }
+}
+
+pu::i32 PokemonBox::GetSelectedItemX() {
+    return boxGrid->GetSelectedItemX();
+}
+
+pu::i32 PokemonBox::GetSelectedItemY() {
+    return boxGrid->GetSelectedItemY();
 }
 
 void PokemonBox::SetDisabled(bool disabled) {

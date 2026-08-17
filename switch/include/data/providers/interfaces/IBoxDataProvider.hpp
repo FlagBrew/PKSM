@@ -28,4 +28,20 @@ public:
         int slotIndex,
         const pksm::ui::BoxPokemonData& pokemonData
     ) = 0;
+
+    // Pick up / place / put back for box editing. Grid slot indices; the held
+    // Pokémon lives with the provider so the UI only ever sees visuals.
+    virtual bool PickUpPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) = 0;
+
+    // Place the held Pokémon; an occupied target slot swaps into the hand
+    virtual bool PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) = 0;
+
+    // Return the held Pokémon to its origin slot
+    virtual bool CancelHold(const pksm::saves::SaveData::Ref& saveData) = 0;
+
+    virtual bool HasHeldPokemon() const = 0;
+    virtual pksm::ui::BoxPokemonData GetHeldPokemon() const = 0;
+
+    // Box the current carry started from; -1 when nothing is held
+    virtual int GetHeldOriginBox() const = 0;
 };

@@ -41,6 +41,7 @@ private:
     // Event callbacks
     std::function<void(int)> onSelectionChangedCallback;
     std::function<void(int)> onPokemonMovedCallback;
+    std::function<void(int)> onSlotActivatedCallback;
 
     // IGrid layout method implementations
     pu::i32 GetItemWidth() const override { return itemSize; }
@@ -106,9 +107,14 @@ public:
     // Event handlers
     void SetOnSelectionChanged(std::function<void(int)> callback) { onSelectionChangedCallback = callback; }
     void SetOnPokemonMoved(std::function<void(int)> callback) { onPokemonMovedCallback = callback; }
+    void SetOnSlotActivated(std::function<void(int)> callback) { onSlotActivatedCallback = callback; }
 
     // Get current selection
     size_t GetSelectedIndex() const { return selectedIndex; }
+
+    // Screen position of the selected item, for anchoring the held sprite
+    pu::i32 GetSelectedItemX() { return selectedIndex < items.size() ? items[selectedIndex]->GetX() : GetX(); }
+    pu::i32 GetSelectedItemY() { return selectedIndex < items.size() ? items[selectedIndex]->GetY() : GetY(); }
 
     bool ShouldResignUpFocus() const { return IsInFirstRow(selectedIndex); }
     bool ShouldResignDownFocus() const { return IsInLastRow(selectedIndex); }

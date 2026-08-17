@@ -164,6 +164,9 @@ void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
             if (onSelectionChangedCallback) {
                 onSelectionChangedCallback(static_cast<int>(index));
             }
+            if (onSlotActivatedCallback) {
+                onSlotActivatedCallback(static_cast<int>(index));
+            }
         });
 
         // Register with focus and selection managers

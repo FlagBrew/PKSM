@@ -11,6 +11,7 @@
 #include "gui/shared/components/HelpFooter.hpp"
 #include "gui/shared/components/HelpOverlay.hpp"
 #include "gui/shared/components/PokemonBox.hpp"
+#include "gui/shared/components/SpriteImage.hpp"
 #include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
@@ -42,6 +43,9 @@ private:
     ISaveDataAccessor::Ref saveDataAccessor;
     IBoxDataProvider::Ref boxDataProvider;
 
+    // Floating sprite of the picked-up Pokémon
+    pksm::ui::SpriteImage::Ref heldSprite;
+
     // Layout constants
     static constexpr pu::i32 BOX_GRID_SIDE_MARGIN = 80;  // Margin from left edge
     static constexpr pu::i32 BOX_GRID_TOP_MARGIN = 120;  // Margin from top
@@ -60,6 +64,11 @@ private:
     void OnInput(u64 down, u64 up, u64 held);
     void InitializePokemonBox();
     void InitializeFocusManagement();
+    void HandleSlotActivated(int boxIndex, int slotIndex);
+    void HandleBackButton();
+    void RefreshBox(int boxIndex);
+    void UpdateHeldVisual();
+    void UpdateHelpItems();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

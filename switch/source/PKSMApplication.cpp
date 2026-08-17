@@ -6,6 +6,7 @@
 #include "data/providers/SwitchSaveDataProvider.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
 #include "data/providers/BoxDataProvider.hpp"
+#include "data/providers/SwitchSaveDataWriter.hpp"
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
@@ -100,6 +101,7 @@ PKSMApplication::PKSMApplication(
     boxDataProvider(std::move(boxDataProvider)) {
     // Add render callback to process account updates
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
+    AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
 }
 
 PKSMApplication::Ref PKSMApplication::Initialize() {
@@ -150,8 +152,9 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         LOG_DEBUG("Creating data providers...");
         auto saveProvider = SwitchSaveDataProvider::New();
+        auto saveWriter = SwitchSaveDataWriter::New();
         auto titleProvider = SwitchTitleDataProvider::New(saveProvider);
-        auto saveDataAccessor = SaveDataAccessor::New(saveProvider);
+        auto saveDataAccessor = SaveDataAccessor::New(saveProvider, saveWriter);
         auto boxDataProvider = BoxDataProvider::New(saveDataAccessor);
         LOG_MEMORY();  // Memory after data provider initialization
 
@@ -186,6 +189,76 @@ void PKSMApplication::ShowMainMenu() {
 void PKSMApplication::ShowTitleLoadScreen() {
     LOG_DEBUG("Switching to title load screen");
     this->LoadLayout(this->titleLoadScreen);
+}
+
+void PKSMApplication::HandleMainMenuBack() {
+    if (saveDataAccessor->hasUnsavedChanges()) {
+        const int choice = this->CreateShowDialog(
+            "Unsaved Changes",
+            "Save the changes to this game's save file?",
+            {"Save", "Discard", "Cancel"},
+            true
+        );
+        if (choice == 0) {
+            auto savingText =
+                pu::ui::elm::TextBlock::New(0, 0, "Saving... Do not close the app or power off.");
+            savingText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
+            savingText->SetColor(pksm::ui::global::TEXT_WHITE);
+            constexpr pu::i32 SAVING_OVERLAY_PADDING = 60;
+            const pu::i32 overlayWidth = savingText->GetWidth() + 2 * SAVING_OVERLAY_PADDING;
+            const pu::i32 overlayHeight = savingText->GetHeight() + 2 * SAVING_OVERLAY_PADDING;
+            auto savingOverlay = pu::ui::Overlay::New(
+                (static_cast<pu::i32>(pu::ui::render::ScreenWidth) - overlayWidth) / 2,
+                (static_cast<pu::i32>(pu::ui::render::ScreenHeight) - overlayHeight) / 2,
+                overlayWidth,
+                overlayHeight,
+                pu::ui::Color(30, 30, 30, 255)
+            );
+            savingOverlay->SetFadeAlphaVariation(pu::ui::Overlay::DefaultMaxFadeAlpha);
+            savingText->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
+            savingText->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
+            savingOverlay->Add(savingText);
+            this->StartOverlay(savingOverlay);
+            // Write on a worker thread so the render loop keeps animating.
+            // Block input meanwhile via Plutonium's render-over flag - OnRender
+            // consumes it at the end of every frame, so ProcessPendingSaveAndExit
+            // re-arms it each frame until the write completes.
+            this->in_render_over = true;
+            this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+            saveWriteResult = std::async(std::launch::async, [this]() { return saveDataAccessor->saveChanges(); });
+            return;
+        }
+        if (choice != 1) {
+            return;
+        }
+    }
+    this->ShowTitleLoadScreen();
+}
+
+void PKSMApplication::ProcessPendingSaveAndExit() {
+    if (!saveWriteResult.valid()) {
+        return;
+    }
+    if (saveWriteResult.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
+        // Still writing: keep input blocked (OnRender consumed the flag at the
+        // end of the previous frame)
+        this->in_render_over = true;
+        this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+        return;
+    }
+
+    const bool saved = saveWriteResult.get();
+    this->EndOverlay();
+    if (!saved) {
+        this->CreateShowDialog(
+            "Save Failed",
+            "The save file could not be written. Your changes are still loaded.",
+            {"OK"},
+            true
+        );
+        return;
+    }
+    this->ShowTitleLoadScreen();
 }
 
 void PKSMApplication::ShowStorageScreen() {
@@ -236,7 +309,7 @@ void PKSMApplication::OnLoad() {
 
         LOG_DEBUG("Creating main menu...");
         mainMenu = pksm::layout::MainMenu::New(
-            [this]() { this->ShowTitleLoadScreen(); },
+            [this]() { this->HandleMainMenuBack(); },
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
             saveDataAccessor,  // Pass the save data accessor to the main menu

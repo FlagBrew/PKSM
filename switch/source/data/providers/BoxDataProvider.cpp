@@ -4,6 +4,7 @@
 #include <cctype>
 #include <string>
 
+#include "data/saves/BoxListRefs.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
@@ -22,6 +23,15 @@ int ToGridSlot(int saveSlot) {
     return (saveSlot / 4) * 6 + 1 + (saveSlot % 4);
 }
 
+pksm::ui::BoxPokemonData VisualFromPkx(const ::pksm::PKX& pk) {
+    const u16 form = pk.alternativeForm();
+    return pksm::ui::BoxPokemonData(
+        static_cast<u16>(pk.species()),
+        form > 0xFF ? 0 : static_cast<u8>(form),
+        pk.shiny()
+    );
+}
+
 }  // namespace
 
 BoxDataProvider::BoxDataProvider(SaveDataAccessor::Ref saveDataAccessor)
@@ -32,6 +42,26 @@ BoxDataProvider::BoxDataProvider(SaveDataAccessor::Ref saveDataAccessor)
         return nullptr;
     }
     return saveDataAccessor->currentSav();
+}
+
+int BoxDataProvider::GridToSaveSlot(const ::pksm::Sav& sav, int boxIndex, int gridSlot) const {
+    if (gridSlot < 0 || gridSlot >= GRID_SLOTS) {
+        return -1;
+    }
+    const bool twentySlot = SaveUsesTwentySlotBoxes(sav);
+    int saveSlot = gridSlot;
+    if (twentySlot) {
+        const int col = gridSlot % 6;
+        if (col == 0 || col == 5) {
+            return -1;
+        }
+        saveSlot = (gridSlot / 6) * 4 + (col - 1);
+    }
+    const int slotsPerBox = twentySlot ? 20 : GRID_SLOTS;
+    if (boxIndex * slotsPerBox + saveSlot >= sav.maxSlot()) {
+        return -1;
+    }
+    return saveSlot;
 }
 
 size_t BoxDataProvider::GetBoxCount(const pksm::saves::SaveData::Ref& saveData) const {
@@ -108,4 +138,101 @@ bool BoxDataProvider::SetPokemonData(
         std::to_string(slotIndex) + ")"
     );
     return false;
+}
+
+bool BoxDataProvider::PickUpPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) {
+    auto* sav = CurrentSav(saveData);
+    if (!sav || heldPkm || boxIndex < 0 || boxIndex >= sav->maxBoxes()) {
+        return false;
+    }
+    const int saveSlot = GridToSaveSlot(*sav, boxIndex, slotIndex);
+    if (saveSlot < 0) {
+        return false;
+    }
+
+    auto pk = sav->pkm(static_cast<u8>(boxIndex), static_cast<u8>(saveSlot));
+    if (!pk) {
+        return false;
+    }
+    if (pk->isEncrypted()) {
+        pk->decrypt();
+    }
+    if (static_cast<u16>(pk->species()) == 0) {
+        return false;
+    }
+
+    heldVisual = VisualFromPkx(*pk);
+    heldPkm = std::move(pk);
+    heldOriginBox = boxIndex;
+    heldOriginSlot = saveSlot;
+    heldSwapped = false;
+    heldListRef = pksm::saves::ListRefAt(*sav, boxIndex * GRID_SLOTS + saveSlot);
+    sav->pkm(*sav->emptyPkm(), static_cast<u8>(boxIndex), static_cast<u8>(saveSlot), false);
+    return true;
+}
+
+bool BoxDataProvider::PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) {
+    auto* sav = CurrentSav(saveData);
+    if (!sav || !heldPkm || boxIndex < 0 || boxIndex >= sav->maxBoxes()) {
+        return false;
+    }
+    const int saveSlot = GridToSaveSlot(*sav, boxIndex, slotIndex);
+    if (saveSlot < 0) {
+        return false;
+    }
+
+    auto occupant = sav->pkm(static_cast<u8>(boxIndex), static_cast<u8>(saveSlot));
+    if (occupant && occupant->isEncrypted()) {
+        occupant->decrypt();
+    }
+    const bool occupied = occupant && static_cast<u16>(occupant->species()) != 0;
+
+    // Read before the list changes, excluding the held Pokémon's own ref -
+    // after an earlier swap it transiently points at this very target
+    const int occupantListRef =
+        occupied ? pksm::saves::ListRefAt(*sav, boxIndex * GRID_SLOTS + saveSlot, heldListRef) : -1;
+
+    sav->pkm(*heldPkm, static_cast<u8>(boxIndex), static_cast<u8>(saveSlot), false);
+    pksm::saves::MoveListRef(*sav, heldListRef, boxIndex * GRID_SLOTS + saveSlot);
+
+    if (occupied) {
+        // Swap: the displaced Pokémon stays in hand, origin unchanged so a
+        // later cancel still returns to where the carry started
+        heldPkm = std::move(occupant);
+        heldVisual = VisualFromPkx(*heldPkm);
+        heldSwapped = true;
+        heldListRef = occupantListRef;
+        saveDataAccessor->markDirty();
+    } else {
+        const bool backHome = !heldSwapped && boxIndex == heldOriginBox && saveSlot == heldOriginSlot;
+        if (!backHome) {
+            saveDataAccessor->markDirty();
+        }
+        heldPkm.reset();
+        heldVisual = pksm::ui::BoxPokemonData();
+        heldOriginBox = -1;
+        heldOriginSlot = -1;
+        heldSwapped = false;
+        heldListRef = -1;
+    }
+    return true;
+}
+
+bool BoxDataProvider::CancelHold(const pksm::saves::SaveData::Ref& saveData) {
+    auto* sav = CurrentSav(saveData);
+    if (!sav || !heldPkm) {
+        return false;
+    }
+
+    // The origin slot was emptied by this carry's own pickup and only this
+    // hand can refill it, so the put-back always succeeds
+    sav->pkm(*heldPkm, static_cast<u8>(heldOriginBox), static_cast<u8>(heldOriginSlot), false);
+    pksm::saves::MoveListRef(*sav, heldListRef, heldOriginBox * GRID_SLOTS + heldOriginSlot);
+    heldPkm.reset();
+    heldVisual = pksm::ui::BoxPokemonData();
+    heldOriginBox = -1;
+    heldOriginSlot = -1;
+    heldSwapped = false;
+    heldListRef = -1;
+    return true;
 }

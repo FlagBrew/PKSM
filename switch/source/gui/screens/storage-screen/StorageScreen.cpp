@@ -34,21 +34,10 @@ StorageScreen::StorageScreen(
     InitializeHelpFooter();
 
     // Set up button input handler for Back button
-    buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() {
-        LOG_DEBUG("B button pressed, returning to main menu");
-        if (this->onBack) {
-            this->onBack();
-        }
-    });
+    buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { HandleBackButton(); });
 
     // Set initial help items
-    std::vector<pksm::ui::HelpItem> helpItems = {
-        {{{pksm::ui::global::ButtonGlyph::A}}, "Select"},
-        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
-        {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
-        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
-    };
-    helpFooter->SetHelpItems(helpItems);
+    UpdateHelpItems();
 
     // Set up input handling
     this->SetOnInput(
@@ -104,12 +93,115 @@ void StorageScreen::InitializePokemonBox() {
     // Set up selection changed callback
     pokemonBox->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
         LOG_DEBUG("Box selection changed: Box " + std::to_string(boxIndex) + ", Slot " + std::to_string(slotIndex));
+        UpdateHeldVisual();
     });
+
+    pokemonBox->SetOnSlotActivated([this](int boxIndex, int slotIndex) {
+        HandleSlotActivated(boxIndex, slotIndex);
+    });
+
+    // The held sprite renders above the box, following the cursor
+    heldSprite = pksm::ui::SpriteImage::New(0, 0, BOX_ITEM_SIZE, BOX_ITEM_SIZE, 0);
+    heldSprite->SetVisible(false);
+    this->Add(heldSprite);
 
     // Set initial focus
     pokemonBox->RequestFocus();
 
     LOG_DEBUG("PokemonBox initialization complete");
+}
+
+void StorageScreen::HandleSlotActivated(int boxIndex, int slotIndex) {
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData) {
+        return;
+    }
+
+    // This runs inside the slot's own A-press callback, so the grid may only
+    // be updated in place - a rebuild would destroy the calling BoxItem
+    if (!boxDataProvider->HasHeldPokemon()) {
+        if (boxDataProvider->PickUpPokemon(saveData, boxIndex, slotIndex)) {
+            LOG_DEBUG("Picked up from box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex));
+            pokemonBox->SetPokemonData(boxIndex, slotIndex, pksm::ui::BoxPokemonData());
+            UpdateHeldVisual();
+        }
+    } else {
+        const auto held = boxDataProvider->GetHeldPokemon();
+        if (boxDataProvider->PlaceDownPokemon(saveData, boxIndex, slotIndex)) {
+            LOG_DEBUG("Placed at box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex));
+            pokemonBox->SetPokemonData(boxIndex, slotIndex, held);
+            UpdateHeldVisual();
+        }
+    }
+}
+
+void StorageScreen::HandleBackButton() {
+    if (boxDataProvider->HasHeldPokemon()) {
+        auto saveData = saveDataAccessor->getCurrentSaveData();
+        // Read before the cancel: a successful CancelHold clears the hand
+        const int originBox = boxDataProvider->GetHeldOriginBox();
+        if (boxDataProvider->CancelHold(saveData)) {
+            LOG_DEBUG("Cancelled pick-up, restored to origin");
+            const int currentBox = pokemonBox->GetCurrentBox();
+            RefreshBox(currentBox);
+            if (originBox >= 0 && originBox != currentBox) {
+                RefreshBox(originBox);
+            }
+            UpdateHeldVisual();
+        }
+        return;
+    }
+
+    LOG_DEBUG("B button pressed, returning to main menu");
+    if (onBack) {
+        onBack();
+    }
+}
+
+void StorageScreen::RefreshBox(int boxIndex) {
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData) {
+        return;
+    }
+    // SetBoxData rebuilds the grid, which resets the cursor; keep it in place
+    const int selectedSlot = pokemonBox->GetSelectedSlot();
+    pokemonBox->SetBoxData(boxIndex, boxDataProvider->GetBoxData(saveData, boxIndex));
+    if (boxIndex == pokemonBox->GetCurrentBox()) {
+        pokemonBox->SetSelectedSlot(selectedSlot);
+    }
+}
+
+void StorageScreen::UpdateHeldVisual() {
+    if (boxDataProvider->HasHeldPokemon()) {
+        const auto held = boxDataProvider->GetHeldPokemon();
+        heldSprite->SetPokemonSprite(held.species, held.form, held.shiny);
+        heldSprite->SetX(pokemonBox->GetSelectedItemX() + BOX_ITEM_SIZE / 3);
+        heldSprite->SetY(pokemonBox->GetSelectedItemY() - BOX_ITEM_SIZE / 3);
+        heldSprite->SetVisible(true);
+    } else {
+        heldSprite->SetVisible(false);
+    }
+    UpdateHelpItems();
+}
+
+void StorageScreen::UpdateHelpItems() {
+    std::vector<pksm::ui::HelpItem> helpItems;
+    if (boxDataProvider->HasHeldPokemon()) {
+        helpItems = {
+            {{{pksm::ui::global::ButtonGlyph::A}}, "Place / Swap"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, "Put Back"},
+            {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
+            {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
+        };
+    } else {
+        helpItems = {
+            {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
+            {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
+            {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
+        };
+    }
+    helpFooter->SetHelpItems(helpItems);
 }
 
 void StorageScreen::LoadBoxData() {
@@ -157,8 +249,18 @@ void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
 }
 
 std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
+    if (boxDataProvider->HasHeldPokemon()) {
+        return {
+            {{{pksm::ui::global::ButtonGlyph::A}}, "Place / Swap Pokémon"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, "Put Back"},
+            {{{pksm::ui::global::ButtonGlyph::DPad}, {pksm::ui::global::ButtonGlyph::AnalogStick}}, "Navigate Box"},
+            {{{pksm::ui::global::ButtonGlyph::L}}, "Previous Box"},
+            {{{pksm::ui::global::ButtonGlyph::R}}, "Next Box"},
+            {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
+        };
+    }
     return {
-        {{{pksm::ui::global::ButtonGlyph::A}}, "Select Pokémon"},
+        {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up Pokémon"},
         {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
         {{{pksm::ui::global::ButtonGlyph::DPad}, {pksm::ui::global::ButtonGlyph::AnalogStick}}, "Navigate Box"},
         {{{pksm::ui::global::ButtonGlyph::L}}, "Previous Box"},
