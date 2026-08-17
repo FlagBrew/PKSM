@@ -4,6 +4,13 @@
 #include <condition_variable>
 #include <cstdio>
 #include <ctime>
+#include <unistd.h>
+
+// libnx heap bounds, set up at startup by the runtime
+extern "C" {
+extern char* fake_heap_start;
+extern char* fake_heap_end;
+}
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -275,10 +282,18 @@ void Logger::LogMemoryInfo() {
     // Calculate available memory
     u64 available = total - used;
 
+    // svcGetInfo reports the reserved envelope, which is static once the
+    // heap is claimed at boot; the sbrk high-water mark tracks how much of
+    // the malloc heap has actually been claimed (mallinfo is unreliable here)
+    const u64 heapTotal = static_cast<u64>(fake_heap_end - fake_heap_start);
+    const u64 heapHighWater = static_cast<u64>(static_cast<char*>(sbrk(0)) - fake_heap_start);
+
     std::stringstream ss;
     ss << "Memory - Total: " << (total / 1024 / 1024) << "MB, "
        << "Used: " << (used / 1024 / 1024) << "MB, "
-       << "Available: " << (available / 1024 / 1024) << "MB";
+       << "Available: " << (available / 1024 / 1024) << "MB"
+       << " | Heap total: " << (heapTotal / 1024 / 1024) << "MB, "
+       << "high-water: " << (heapHighWater / 1024 / 1024) << "MB";
     Debug(ss.str());
 }
 

@@ -187,6 +187,13 @@ void PKSMApplication::ShowMainMenu() {
 }
 
 void PKSMApplication::ShowTitleLoadScreen() {
+    // Leaving a save session: drop the storage screen and the sprite cache so
+    // their textures go back to the applet heap. Both rebuild on demand -
+    // ShowStorageScreen reconstructs, sprites reload from romfs.
+    if (storageScreen) {
+        storageScreen = nullptr;
+        utils::PokemonSpriteManager::ClearCache();
+    }
     LOG_DEBUG("Switching to title load screen");
     this->LoadLayout(this->titleLoadScreen);
 }
@@ -262,6 +269,19 @@ void PKSMApplication::ProcessPendingSaveAndExit() {
 }
 
 void PKSMApplication::ShowStorageScreen() {
+    // Constructed on first entry, not at boot: the screen's textures cost
+    // ~25MB of the applet heap, paid only when storage is actually used
+    if (!storageScreen) {
+        LOG_DEBUG("Creating storage screen on first use...");
+        storageScreen = pksm::layout::StorageScreen::New(
+            [this]() { this->ShowMainMenu(); },
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); },
+            saveDataAccessor,
+            boxDataProvider
+        );
+        storageScreen->LoadBoxData();
+    }
     LOG_DEBUG("Switching to storage screen");
     this->LoadLayout(this->storageScreen);
 }
@@ -316,15 +336,8 @@ void PKSMApplication::OnLoad() {
             navigationCallbacks  // Pass navigation callbacks to the main menu
         );
 
-        // Create storage screen
-        LOG_DEBUG("Creating storage screen...");
-        storageScreen = pksm::layout::StorageScreen::New(
-            [this]() { this->ShowMainMenu(); },  // Back handler goes to main menu
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            saveDataAccessor,  // Pass the save data accessor
-            boxDataProvider  // Pass the box data provider
-        );
+        // The storage screen is built lazily in ShowStorageScreen - its
+        // textures are too heavy for the applet heap to pay at boot
 
         // Register for save data changes in both MainMenu and StorageScreen
         LOG_DEBUG("Setting up save data change callbacks...");
