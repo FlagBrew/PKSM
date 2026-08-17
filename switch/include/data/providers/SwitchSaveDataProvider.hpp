@@ -32,7 +32,13 @@ private:
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> customSaveCache;
 
     // Catalog of non-installed games (loaded once; romfs is immutable)
+    std::vector<pksm::data::emulator::EmulatorGameEntry> emulatorGames;
     std::unordered_map<u64, pksm::data::emulator::EmulatorGameEntry> emulatorCatalog;
+
+    // Saves found by scanning the card's emulator locations, built on
+    // first use and kept for the session (a fresh scan needs a relaunch)
+    mutable std::optional<std::unordered_map<u64, std::vector<std::string>>> discoveredSaves;
+    const std::unordered_map<u64, std::vector<std::string>>& DiscoveredSaves() const;
 
     // Core-validation results per file, invalidated when the file changes
     struct ValidatedFile {
@@ -71,6 +77,8 @@ public:
     ) override;
 
     bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const override;
+
+    bool HasEmulatorSaveCandidates(u64 titleId) const override;
 
     // Load save from different sources
     std::optional<pksm::saves::LoadedSave> LoadConsoleSave(

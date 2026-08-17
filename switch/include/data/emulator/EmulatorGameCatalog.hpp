@@ -23,6 +23,13 @@ struct EmulatorGameEntry {
     u64 titleId = 0;
     std::vector<std::string> saveProbes;
     std::vector<ExtraSaveSlot> extraSaves;
+    // Save-file family shared with sibling games whose saves are
+    // byte-identical in kind (Ruby/Sapphire, Gold/Silver...); empty for
+    // games whose saves discovery does not recognize
+    std::string saveFamily;
+    // Lowercase substrings that pick this game out of its family when a
+    // discovered file's path names it (serials like "bpee" included)
+    std::vector<std::string> keywords;
 };
 
 class EmulatorGameCatalog {

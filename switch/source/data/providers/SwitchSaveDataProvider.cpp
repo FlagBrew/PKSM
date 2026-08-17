@@ -8,6 +8,7 @@
 #include <switch.h>
 
 #include "data/emulator/EmulatorSaveConfig.hpp"
+#include "data/emulator/SaveDiscovery.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
 #include "data/saves/ConsoleSaveMount.hpp"
 #include "data/saves/SafeNames.hpp"
@@ -15,9 +16,15 @@
 #include "utils/Logger.hpp"
 
 SwitchSaveDataProvider::SwitchSaveDataProvider() {
-    emulatorCatalog = pksm::data::emulator::EmulatorGameCatalog::BuildIndexByTitleId(
-        pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson()
-    );
+    emulatorGames = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
+    emulatorCatalog = pksm::data::emulator::EmulatorGameCatalog::BuildIndexByTitleId(emulatorGames);
+}
+
+const std::unordered_map<u64, std::vector<std::string>>& SwitchSaveDataProvider::DiscoveredSaves() const {
+    if (!discoveredSaves) {
+        discoveredSaves = pksm::data::emulator::SaveDiscovery::Discover(emulatorGames);
+    }
+    return *discoveredSaves;
 }
 
 Result SwitchSaveDataProvider::MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const {
@@ -170,9 +177,18 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u6
     }
 
     // The config file is tiny and hand-editable, so reload it on every
-    // listing to pick up changes without a restart
+    // listing to pick up changes without a restart; discovered paths
+    // follow the configured ones
     const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
-    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+    auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+    const auto& discovered = DiscoveredSaves();
+    if (const auto it = discovered.find(titleId); it != discovered.end()) {
+        for (const auto& path : it->second) {
+            if (std::find(paths.begin(), paths.end(), path) == paths.end()) {
+                paths.push_back(path);
+            }
+        }
+    }
 
     for (const auto& path : paths) {
         std::error_code ec;
@@ -196,6 +212,29 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u6
     }
 
     return saves;
+}
+
+bool SwitchSaveDataProvider::HasEmulatorSaveCandidates(u64 titleId) const {
+    auto catalogIt = emulatorCatalog.find(titleId);
+    if (catalogIt == emulatorCatalog.end()) {
+        return false;
+    }
+
+    // Whether a candidate file parses as a save is decided at listing time;
+    // a tile only needs one candidate to exist
+    const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+    const bool anyConfigured = std::any_of(paths.begin(), paths.end(), [](const std::string& path) {
+        std::error_code ec;
+        return std::filesystem::exists(std::filesystem::path(path), ec) && !ec;
+    });
+    if (anyConfigured) {
+        return true;
+    }
+
+    const auto& discovered = DiscoveredSaves();
+    const auto it = discovered.find(titleId);
+    return it != discovered.end() && !it->second.empty();
 }
 
 void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const {

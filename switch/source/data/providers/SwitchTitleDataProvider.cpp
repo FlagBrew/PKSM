@@ -1,14 +1,11 @@
 #include "data/providers/SwitchTitleDataProvider.hpp"
 
-#include <algorithm>
 #include <cstring>
-#include <filesystem>
 #include <memory>
 #include <sstream>
 #include <switch.h>
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
-#include "data/emulator/EmulatorSaveConfig.hpp"
 #include "utils/Logger.hpp"
 
 // Helper to check if a title ID belongs to a Pokémon game
@@ -311,20 +308,12 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
 void SwitchTitleDataProvider::RefreshEmulatorTitles() {
     emulatorTitles.clear();
 
-    // A catalog game is shown when any of its candidate save paths exists;
-    // whether a file is actually a parseable save is decided by the save
-    // layer when its saves are listed
-    auto pathExists = [](const std::string& path) {
-        std::error_code ec;
-        return std::filesystem::exists(std::filesystem::path(path), ec) && !ec;
-    };
-
+    // The save layer decides which catalog games have save candidates
+    // (configured paths or discovered files); the title layer only turns
+    // that answer into tiles
     const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
-    const auto saveCfg = pksm::data::emulator::EmulatorSaveConfig::Load();
-
     for (const auto& game : games) {
-        const auto candidates = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(game, saveCfg);
-        if (std::any_of(candidates.begin(), candidates.end(), pathExists)) {
+        if (saveDataProvider->HasEmulatorSaveCandidates(game.titleId)) {
             emulatorTitles.push_back(pksm::titles::Title::New(game.name, game.iconPath, game.titleId));
         }
     }

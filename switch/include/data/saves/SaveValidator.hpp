@@ -35,7 +35,6 @@ public:
     // Returns trainer info when core can parse the file, nullopt otherwise.
     static std::optional<Summary> Validate(const std::string& path);
 
-private:
     // Largest known main-series save (SV DLC ~4.4MB) with headroom; larger
     // files can't be saves and are rejected without reading them
     static constexpr size_t MAX_SAVE_SIZE = 0x500000;
