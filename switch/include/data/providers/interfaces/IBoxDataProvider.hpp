@@ -36,12 +36,25 @@ public:
     // Place the held Pokémon; an occupied target slot swaps into the hand
     virtual bool PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) = 0;
 
-    // Return the held Pokémon to its origin slot
+    // Return the held Pokémon to its origin slot; a cloned hand is discarded
     virtual bool CancelHold(const pksm::saves::SaveData::Ref& saveData) = 0;
+
+    // Take a copy of the slot's Pokémon into the empty hand; the slot keeps
+    // the original
+    virtual bool ClonePokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) = 0;
+
+    // Remove the slot's Pokémon from the save; hand must be empty
+    virtual bool ReleasePokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) = 0;
+
+    // Remove the held Pokémon from the save instead of placing it back
+    virtual bool ReleaseHeldPokemon(const pksm::saves::SaveData::Ref& saveData) = 0;
 
     virtual bool HasHeldPokemon() const = 0;
     virtual pksm::ui::BoxPokemonData GetHeldPokemon() const = 0;
 
     // Box the current carry started from; -1 when nothing is held
     virtual int GetHeldOriginBox() const = 0;
+
+    // Whether the hand holds a copy whose original is still in its slot
+    virtual bool IsHeldPokemonClone() const = 0;
 };

@@ -2,6 +2,7 @@
 
 #include <pu/Plutonium>
 
+#include "enums/Gender.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "input/ButtonInputHandler.hpp"
@@ -17,6 +18,8 @@ private:
     pu::ui::Container::Ref container;
     pu::ui::elm::Rectangle::Ref background;
     pu::ui::elm::Image::Ref image;
+    pu::ui::elm::Image::Ref genderIcon;
+    pu::ui::elm::Rectangle::Ref unusableShade;
     pksm::ui::RectangularOutline::Ref outline;
     pu::i32 outlinePadding;  // Padding between box and outline
     pu::i32 x;
@@ -62,6 +65,12 @@ public:
 
     void SetImage(pu::sdl2::TextureHandle::Ref newImage);
     pu::ui::elm::Image::Ref GetImage();
+
+    // Gender badge in the slot's top-right corner; hidden for empty slots
+    void SetGender(pksm::Gender gender, bool visible);
+
+    // Darkens the slot to mark it as having no backing storage in the save
+    void SetUnusable(bool unusable);
 
     // Controls whether this box is the currently selected one
     void SetSelected(bool select) override;

@@ -391,6 +391,36 @@ void PokemonBox::OnInput(
     boxGrid->OnInput(keys_down, keys_up, keys_held, touch_pos);
     boxNamePill->OnInput(keys_down, keys_up, keys_held, touch_pos);
     boxSpacesButton->OnInput(keys_down, keys_up, keys_held, touch_pos);
+
+    // Focus can move between the zones through both buttons and touch, so
+    // the change is detected here rather than at each transition site
+    const int focusZone = CurrentFocusZone();
+    if (focusZone != lastFocusZone) {
+        lastFocusZone = focusZone;
+        if (onFocusZoneChangedCallback) {
+            onFocusZoneChangedCallback();
+        }
+    }
+}
+
+int PokemonBox::CurrentFocusZone() const {
+    if (boxGrid->IsFocused()) {
+        return 0;
+    }
+    if (boxNamePill->IsFocused()) {
+        return 1;
+    }
+    if (boxSpacesButton->IsFocused()) {
+        return 2;
+    }
+    return -1;
+}
+
+std::vector<HelpItem> PokemonBox::GetHelpItems() const {
+    return {
+        {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
+        {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
+    };
 }
 
 void PokemonBox::SetFocused(bool focused) {
@@ -485,6 +515,12 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
 
         // Update sprite cache
         UpdateSpriteCache();
+
+        // The selected (box, slot) pair changed even when the slot index
+        // stayed put, and the grid rebuild only notifies on an index change
+        if (onSelectionChangedCallback) {
+            onSelectionChangedCallback(currentBox, GetSelectedSlot());
+        }
     }
 }
 
@@ -559,6 +595,14 @@ BoxPokemonData PokemonBox::GetPokemonData(int boxIndex, int slotIndex) const {
 
 int PokemonBox::GetSelectedSlot() const {
     return static_cast<int>(boxGrid->GetSelectedIndex());
+}
+
+bool PokemonBox::IsSelectedSlotOccupied() const {
+    return !GetPokemonData(currentBox, GetSelectedSlot()).isEmpty();
+}
+
+bool PokemonBox::IsSelectedSlotUsable() const {
+    return !GetPokemonData(currentBox, GetSelectedSlot()).unusable;
 }
 
 void PokemonBox::SetSelectedSlot(int slotIndex) {

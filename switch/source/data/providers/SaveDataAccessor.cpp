@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
+#include "data/saves/BoxListRefs.hpp"
 #include "enums/GameVersion.hpp"
 #include "enums/Gender.hpp"
 #include "enums/Generation.hpp"
-#include "sav/SavLGPE.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
@@ -206,27 +206,7 @@ bool SaveDataAccessor::saveChanges() {
         return true;
     }
 
-    if (sav->generation() == pksm::Generation::LGPE) {
-        // LGPE stores its boxes as one contiguous list; mirror the 3DS app's
-        // storage-exit bookkeeping (3ds StorageScreen.cpp) before the bytes
-        // leave memory: compact the list, then recount its length
-        auto* lgpe = static_cast<::pksm::SavLGPE*>(sav.get());
-        lgpe->compressBox();
-        u16 occupiedSlots = 0;
-        for (int i = 0; i < sav->maxSlot(); i++) {
-            // 30 slots per LGPE box view; box/slot pairs keep both args in u8
-            auto pk = sav->pkm(static_cast<u8>(i / 30), static_cast<u8>(i % 30));
-            if (pk && pk->isEncrypted()) {
-                pk->decrypt();
-            }
-            if (!pk || static_cast<u16>(pk->species()) == 0) {
-                break;
-            }
-            occupiedSlots++;
-        }
-        lgpe->boxedPkm(occupiedSlots);
-    }
-
+    pksm::saves::FinalizeBoxList(*sav);
     sav->finishEditing();
     const bool written = saveWriter->WriteSave(
         saveTitle,

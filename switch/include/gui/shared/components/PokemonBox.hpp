@@ -8,6 +8,7 @@
 #include "gui/shared/components/BoxSpacesButton.hpp"
 #include "gui/shared/components/PillTextContainer.hpp"
 #include "gui/shared/components/StaticOutline.hpp"
+#include "gui/shared/interfaces/IHelpProvider.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
@@ -15,7 +16,7 @@
 
 namespace pksm::ui {
 
-class PokemonBox : public pu::ui::elm::Element, public ISelectable {
+class PokemonBox : public pu::ui::elm::Element, public ISelectable, public IHelpProvider {
 private:
     // Layout constants
     static constexpr pu::i32 FRAME_PADDING = 10;  // Padding inside the frame
@@ -72,6 +73,12 @@ private:
     // Event callbacks
     std::function<void(int, int)> onSelectionChangedCallback;  // (boxIndex, slotIndex)
     std::function<void(int, int)> onSlotActivatedCallback;  // (boxIndex, slotIndex)
+    std::function<void()> onFocusZoneChangedCallback;
+
+    // Focus zone at the last input pass (grid / header pill / footer button),
+    // watched here because zone moves happen through both buttons and touch
+    int lastFocusZone = 0;
+    int CurrentFocusZone() const;
 
     // Cached frame texture with cutout
     SDL_Texture* maskTexture = nullptr;
@@ -146,6 +153,16 @@ public:
     // Current selection
     int GetSelectedSlot() const;
     void SetSelectedSlot(int slotIndex);
+    bool IsSelectedSlotOccupied() const;
+    bool IsSelectedSlotUsable() const;
+
+    // Whether focus is on the slot grid itself, not the header pill or the
+    // footer button; slot verbs only apply there
+    bool IsGridFocused() const { return boxGrid->IsFocused(); }
+
+    // IHelpProvider implementation: the box's own verbs; the owning screen
+    // contributes the slot and hand verbs it handles itself
+    std::vector<HelpItem> GetHelpItems() const override;
 
     // Screen position of the selected slot, for anchoring the held sprite
     pu::i32 GetSelectedItemX();
@@ -157,6 +174,7 @@ public:
     // Event handlers
     void SetOnSelectionChanged(std::function<void(int, int)> callback) { onSelectionChangedCallback = callback; }
     void SetOnSlotActivated(std::function<void(int, int)> callback) { onSlotActivatedCallback = callback; }
+    void SetOnFocusZoneChanged(std::function<void()> callback) { onFocusZoneChangedCallback = callback; }
 
     // Appearance configuration
     void SetColors(const pu::ui::Color& frameColor, const pu::ui::Color& borderColor);

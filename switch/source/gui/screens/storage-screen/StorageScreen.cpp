@@ -11,11 +11,14 @@ StorageScreen::StorageScreen(
     std::function<void()> onBack,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
     std::function<void()> onHideOverlay,
+    std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
+        requestConfirmation,
     ISaveDataAccessor::Ref saveDataAccessor,
     IBoxDataProvider::Ref boxDataProvider
 )
   : BaseLayout(onShowOverlay, onHideOverlay),
     onBack(onBack),
+    requestConfirmation(requestConfirmation),
     saveDataAccessor(saveDataAccessor),
     boxDataProvider(boxDataProvider) {
     LOG_DEBUG("Initializing StorageScreen...");
@@ -35,6 +38,20 @@ StorageScreen::StorageScreen(
 
     // Set up button input handler for Back button
     buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { HandleBackButton(); });
+    // Clone/Release act on the selected slot, so they only apply while focus
+    // is on the grid itself (same gating as the slots' own A handler)
+    buttonHandler.RegisterButton(
+        HidNpadButton_X,
+        nullptr,
+        [this]() { HandleCloneButton(); },
+        [this]() { return pokemonBox->IsGridFocused(); }
+    );
+    buttonHandler.RegisterButton(
+        HidNpadButton_Y,
+        nullptr,
+        [this]() { HandleReleaseButton(); },
+        [this]() { return pokemonBox->IsGridFocused(); }
+    );
 
     // Set initial help items
     UpdateHelpItems();
@@ -100,6 +117,9 @@ void StorageScreen::InitializePokemonBox() {
         HandleSlotActivated(boxIndex, slotIndex);
     });
 
+    // The slot and hand verbs only apply while the grid itself is focused
+    pokemonBox->SetOnFocusZoneChanged([this]() { UpdateHelpItems(); });
+
     // The held sprite renders above the box, following the cursor
     heldSprite = pksm::ui::SpriteImage::New(0, 0, BOX_ITEM_SIZE, BOX_ITEM_SIZE, 0);
     heldSprite->SetVisible(false);
@@ -158,6 +178,59 @@ void StorageScreen::HandleBackButton() {
     }
 }
 
+void StorageScreen::HandleCloneButton() {
+    if (boxDataProvider->HasHeldPokemon()) {
+        return;
+    }
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData) {
+        return;
+    }
+    const int boxIndex = pokemonBox->GetCurrentBox();
+    const int slotIndex = pokemonBox->GetSelectedSlot();
+    if (boxDataProvider->ClonePokemon(saveData, boxIndex, slotIndex)) {
+        LOG_DEBUG("Cloned box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex) + " into hand");
+        UpdateHeldVisual();
+    }
+}
+
+void StorageScreen::HandleReleaseButton() {
+    auto saveData = saveDataAccessor->getCurrentSaveData();
+    if (!saveData) {
+        return;
+    }
+
+    if (boxDataProvider->HasHeldPokemon()) {
+        // A cloned hand has no Release verb - discarding the copy (B)
+        // already covers it
+        if (boxDataProvider->IsHeldPokemonClone()) {
+            return;
+        }
+        if (requestConfirmation("Release Pokémon", "Release the held Pokémon? It will be gone for good.", "Release")) {
+            if (boxDataProvider->ReleaseHeldPokemon(saveData)) {
+                LOG_DEBUG("Released held Pokémon");
+                UpdateHeldVisual();
+            }
+        }
+        return;
+    }
+
+    const int boxIndex = pokemonBox->GetCurrentBox();
+    const int slotIndex = pokemonBox->GetSelectedSlot();
+    if (pokemonBox->GetPokemonData(boxIndex, slotIndex).isEmpty()) {
+        return;
+    }
+    if (!requestConfirmation("Release Pokémon", "Release this Pokémon? It will be gone for good.", "Release")) {
+        return;
+    }
+    if (boxDataProvider->ReleasePokemon(saveData, boxIndex, slotIndex)) {
+        LOG_DEBUG("Released box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex));
+        pokemonBox->SetPokemonData(boxIndex, slotIndex, pksm::ui::BoxPokemonData());
+        // The cursor now sits on an empty slot
+        UpdateHelpItems();
+    }
+}
+
 void StorageScreen::RefreshBox(int boxIndex) {
     auto saveData = saveDataAccessor->getCurrentSaveData();
     if (!saveData) {
@@ -185,21 +258,39 @@ void StorageScreen::UpdateHeldVisual() {
 }
 
 void StorageScreen::UpdateHelpItems() {
+    const bool held = boxDataProvider->HasHeldPokemon();
+    const bool clone = held && boxDataProvider->IsHeldPokemonClone();
+
+    // The screen contributes the verbs it handles; the box then appends its
+    // own (box switching, navigation). A held Pokémon drops on any usable
+    // slot; the empty-hand slot verbs also need an occupied one. A cloned
+    // hand gets no Release: discarding the copy already covers it.
     std::vector<pksm::ui::HelpItem> helpItems;
-    if (boxDataProvider->HasHeldPokemon()) {
+    if (pokemonBox->IsGridFocused() && held && pokemonBox->IsSelectedSlotUsable()) {
         helpItems = {
             {{{pksm::ui::global::ButtonGlyph::A}}, "Place / Swap"},
-            {{{pksm::ui::global::ButtonGlyph::B}}, "Put Back"},
-            {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
-            {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, clone ? "Discard Copy" : "Put Back"},
         };
-    } else {
+        if (!clone) {
+            helpItems.push_back({{{pksm::ui::global::ButtonGlyph::Y}}, "Release"});
+        }
+    } else if (pokemonBox->IsGridFocused() && !held && pokemonBox->IsSelectedSlotOccupied()) {
         helpItems = {
             {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up"},
+            {{{pksm::ui::global::ButtonGlyph::X}}, "Clone"},
+            {{{pksm::ui::global::ButtonGlyph::Y}}, "Release"},
             {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
-            {{{pksm::ui::global::ButtonGlyph::L}, {pksm::ui::global::ButtonGlyph::R}}, "Switch Box"},
-            {{{pksm::ui::global::ButtonGlyph::DPad}}, "Navigate Box"},
         };
+    } else {
+        // No slot verbs apply here (header pill, Box Spaces button, empty or
+        // unusable slot)
+        helpItems = {
+            {{{pksm::ui::global::ButtonGlyph::B}},
+             held ? (clone ? "Discard Copy" : "Put Back") : "Back to Main Menu"},
+        };
+    }
+    for (const auto& item : pokemonBox->GetHelpItems()) {
+        helpItems.push_back(item);
     }
     helpFooter->SetHelpItems(helpItems);
 }
@@ -249,24 +340,37 @@ void StorageScreen::OnInput(u64 down, u64 up, u64 held) {
 }
 
 std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
-    if (boxDataProvider->HasHeldPokemon()) {
-        return {
+    const bool held = boxDataProvider->HasHeldPokemon();
+    const bool clone = held && boxDataProvider->IsHeldPokemonClone();
+
+    // Composed like the footer: the screen's verbs, then the box's own
+    std::vector<pksm::ui::HelpItem> items;
+    if (pokemonBox->IsGridFocused() && held && pokemonBox->IsSelectedSlotUsable()) {
+        items = {
             {{{pksm::ui::global::ButtonGlyph::A}}, "Place / Swap Pokémon"},
-            {{{pksm::ui::global::ButtonGlyph::B}}, "Put Back"},
-            {{{pksm::ui::global::ButtonGlyph::DPad}, {pksm::ui::global::ButtonGlyph::AnalogStick}}, "Navigate Box"},
-            {{{pksm::ui::global::ButtonGlyph::L}}, "Previous Box"},
-            {{{pksm::ui::global::ButtonGlyph::R}}, "Next Box"},
-            {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
+            {{{pksm::ui::global::ButtonGlyph::B}}, clone ? "Discard the Copy" : "Put Back"},
+        };
+        if (!clone) {
+            items.push_back({{{pksm::ui::global::ButtonGlyph::Y}}, "Release Held Pokémon"});
+        }
+    } else if (pokemonBox->IsGridFocused() && !held && pokemonBox->IsSelectedSlotOccupied()) {
+        items = {
+            {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up Pokémon"},
+            {{{pksm::ui::global::ButtonGlyph::X}}, "Clone into Hand"},
+            {{{pksm::ui::global::ButtonGlyph::Y}}, "Release Pokémon"},
+            {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
+        };
+    } else {
+        items = {
+            {{{pksm::ui::global::ButtonGlyph::B}},
+             held ? (clone ? "Discard the Copy" : "Put Back") : "Back to Main Menu"},
         };
     }
-    return {
-        {{{pksm::ui::global::ButtonGlyph::A}}, "Pick Up Pokémon"},
-        {{{pksm::ui::global::ButtonGlyph::B}}, "Back to Main Menu"},
-        {{{pksm::ui::global::ButtonGlyph::DPad}, {pksm::ui::global::ButtonGlyph::AnalogStick}}, "Navigate Box"},
-        {{{pksm::ui::global::ButtonGlyph::L}}, "Previous Box"},
-        {{{pksm::ui::global::ButtonGlyph::R}}, "Next Box"},
-        {{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"}
-    };
+    for (const auto& item : pokemonBox->GetHelpItems()) {
+        items.push_back(item);
+    }
+    items.push_back({{{pksm::ui::global::ButtonGlyph::Minus}}, "Close Help"});
+    return items;
 }
 
 void StorageScreen::OnHelpOverlayShown() {

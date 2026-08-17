@@ -19,6 +19,9 @@ private:
     int heldOriginBox = -1;
     int heldOriginSlot = -1;
     bool heldSwapped = false;
+    // A cloned hand left the original in its slot, so nothing is owed back
+    // to the origin on cancel
+    bool heldIsClone = false;
     // External reference into the box list attached to the held Pokémon
     // (pksm::saves::ListRefAt token, -1 if none); moved to wherever the
     // hand finally empties
@@ -30,6 +33,10 @@ private:
     // Save-file slot for a grid slot; -1 for the padding columns of 20-slot
     // saves and for slots past the save's last box entry
     int GridToSaveSlot(const ::pksm::Sav& sav, int boxIndex, int gridSlot) const;
+
+    // Decrypted occupant of a grid slot, with its save-file slot through
+    // saveSlot; null when the slot is out of range (saveSlot -1) or empty
+    std::unique_ptr<::pksm::PKX> OccupantAt(::pksm::Sav& sav, int boxIndex, int gridSlot, int& saveSlot) const;
 
 public:
     explicit BoxDataProvider(SaveDataAccessor::Ref saveDataAccessor);
@@ -49,7 +56,11 @@ public:
     bool PickUpPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
     bool PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
     bool CancelHold(const pksm::saves::SaveData::Ref& saveData) override;
+    bool ClonePokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
+    bool ReleasePokemon(const pksm::saves::SaveData::Ref& saveData, int boxIndex, int slotIndex) override;
+    bool ReleaseHeldPokemon(const pksm::saves::SaveData::Ref& saveData) override;
     bool HasHeldPokemon() const override { return heldPkm != nullptr; }
     pksm::ui::BoxPokemonData GetHeldPokemon() const override { return heldVisual; }
     int GetHeldOriginBox() const override { return heldOriginBox; }
+    bool IsHeldPokemonClone() const override { return heldPkm != nullptr && heldIsClone; }
 };
