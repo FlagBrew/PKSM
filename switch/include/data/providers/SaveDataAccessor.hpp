@@ -33,6 +33,9 @@ public:
     explicit SaveDataAccessor(ISaveDataProvider::Ref saveProvider);
     PU_SMART_CTOR(SaveDataAccessor)
 
+    // Borrowed view of the live save; ownership stays here
+    ::pksm::Sav* currentSav() const { return sav.get(); }
+
     // ISaveDataAccessor interface implementation
     pksm::saves::SaveData::Ref getCurrentSaveData() const override;
     bool loadSave(const pksm::titles::Title::Ref& title, const std::string& saveName, const AccountUid* userId = nullptr)
