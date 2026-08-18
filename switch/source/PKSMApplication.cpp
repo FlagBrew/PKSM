@@ -112,6 +112,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
     try {
         // Initialize logger first
         utils::Logger::Initialize();
+        utils::Logger::LogOutputMode();
         LOG_INFO("Initializing PKSM...");
         LOG_MEMORY();  // Initial memory state
 
@@ -242,6 +243,8 @@ void PKSMApplication::HandleMainMenuBack() {
             // re-arms it each frame until the write completes.
             this->in_render_over = true;
             this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+            LOG_DEBUG("Starting save write...");
+            LOG_MEMORY();
             saveWriteResult = std::async(std::launch::async, [this]() { return saveDataAccessor->saveChanges(); });
             return;
         }
@@ -309,6 +312,7 @@ void PKSMApplication::ShowStorageScreen() {
             boxNameEditor
         );
         storageScreen->LoadBoxData();
+        LOG_MEMORY();
     }
     LOG_DEBUG("Switching to storage screen");
     this->LoadLayout(this->storageScreen);
@@ -321,6 +325,7 @@ void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves
     // on the title screen, whose next listing drops the bad candidate
     auto userId = accountManager->GetCurrentAccount();
     if (saveDataAccessor->loadSave(title, save->getName(), &userId)) {
+        LOG_MEMORY();
         this->ShowMainMenu();
     } else {
         LOG_ERROR("Failed to load save data");
