@@ -37,7 +37,16 @@ std::unique_ptr<::pksm::Sav> SaveValidator::Load(const std::string& path) {
     // The input is an arbitrary user file; a parse throwing on malformed
     // content means "not a save", not a crash
     try {
-        return ::pksm::Sav::getSave(data, size);
+        auto sav = ::pksm::Sav::getSave(data, size);
+        if (sav && !sav->checksumsValid()) {
+            // Structurally parseable, but the save's own integrity checksums
+            // disagree with its contents - a torn copy or a ROM-hack save with
+            // a foreign layout. The game rewrites these checksums on every
+            // in-game save, so a healthy file never fails this.
+            LOG_INFO("Rejecting " + path + ": save checksums do not match its contents");
+            return nullptr;
+        }
+        return sav;
     } catch (const std::exception& e) {
         LOG_ERROR("Core threw while parsing " + path + ": " + e.what());
         return nullptr;
