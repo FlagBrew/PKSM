@@ -90,5 +90,7 @@ public:
     // IBoxNameEditor implementation
     bool CanRenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex) const override;
     size_t GetBoxNameMaxLength(const pksm::saves::SaveData::Ref& saveData) const override;
+    std::optional<std::string>
+    FirstUnstorableBoxNameChar(const pksm::saves::SaveData::Ref& saveData, const std::string& name) const override;
     bool RenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const std::string& name) override;
 };
