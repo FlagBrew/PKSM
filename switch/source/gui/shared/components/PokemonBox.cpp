@@ -515,6 +515,7 @@ void PokemonBox::PreviousBox() {
 
 void PokemonBox::SetCurrentBox(int boxIndex) {
     if (boxIndex >= 0 && static_cast<size_t>(boxIndex) < boxes.size() && boxIndex != currentBox) {
+        const u64 t0 = armGetSystemTick();
         currentBox = boxIndex;
 
         // Update the grid with data from the selected box
@@ -526,14 +527,27 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
         // Update box counter display
         UpdateBoxCounterText();
 
+        const u64 t1 = armGetSystemTick();
+
         // Update sprite cache
         UpdateSpriteCache();
 
+        const u64 t2 = armGetSystemTick();
+
         // The selected (box, slot) pair changed even when the slot index
-        // stayed put, and the grid rebuild only notifies on an index change
+        // stayed put, and the grid update only notifies on an index change
         if (onSelectionChangedCallback) {
             onSelectionChangedCallback(currentBox, GetSelectedSlot());
         }
+
+        const u64 t3 = armGetSystemTick();
+        LOG_DEBUG(
+            "Box switch to " + std::to_string(currentBox) + ": total " +
+            std::to_string(armTicksToNs(t3 - t0) / 1000000) + " ms (grid " +
+            std::to_string(armTicksToNs(t1 - t0) / 1000000) + ", sprites " +
+            std::to_string(armTicksToNs(t2 - t1) / 1000000) + ", resync " +
+            std::to_string(armTicksToNs(t3 - t2) / 1000000) + ")"
+        );
     }
 }
 

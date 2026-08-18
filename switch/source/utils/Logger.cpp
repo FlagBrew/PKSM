@@ -188,6 +188,13 @@ void Logger::Flush() {
     FlushLinesToFile(lines);
 }
 
+void Logger::LogOutputMode() {
+    // Timing measurements are only meaningful without the nxlink console:
+    // console mode sleeps 1ms after every line
+    Log(Level::Debug, g_console_initialized ? "Logger mode: nxlink console (1ms sleep per line!)"
+                                            : "Logger mode: file only");
+}
+
 void Logger::Finalize() {
     StopFlushThread();
 
