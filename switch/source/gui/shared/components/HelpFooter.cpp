@@ -86,6 +86,11 @@ void HelpFooter::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
 }
 
 void HelpFooter::SetHelpItems(const std::vector<HelpItem>& items) {
+    // Skip the text re-render when nothing changed; this runs on every box
+    // switch and cursor move
+    if (items == helpItems) {
+        return;
+    }
     LOG_DEBUG("Setting help items, count: " + std::to_string(items.size()));
     helpItems = items;
     UpdateDynamicHelpTexts();
