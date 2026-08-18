@@ -30,10 +30,6 @@ pksm::ui::BoxGrid::BoxGrid(
     inputHandler.SetOnMoveUp([this]() { IGrid::MoveUp(); });
     inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
 
-    // Initialize focus manager
-    focusManager = input::FocusManager::New("BoxGrid");
-    selectionManager = input::SelectionManager::New("BoxGrid");
-
     // Set name for this component
     IFocusable::SetName("BoxGrid Element");
     ISelectable::SetName("BoxGrid Element");
@@ -111,8 +107,20 @@ void pksm::ui::BoxGrid::SetBoxData(const BoxData& boxData) {
         currentBoxData.resize(expectedSize);
     }
 
-    // Update the grid with the new data
-    UpdateGridFromBoxData();
+    // The slot count never changes after construction, so the items built
+    // then are updated in place; destroying and re-registering all 30 slots
+    // per box switch cost enough to hitch the render loop
+    if (items.size() != currentBoxData.size() || !itemsRegistered) {
+        UpdateGridFromBoxData();
+        return;
+    }
+    for (size_t i = 0; i < currentBoxData.size(); i++) {
+        const BoxPokemonData& data = currentBoxData[i];
+        items[i]->SetImage(data.getSprite());
+        items[i]->SetGender(data.gender, !data.isEmpty());
+        items[i]->SetPartyNumber(data.partyNumber);
+        items[i]->SetUnusable(data.unusable);
+    }
 }
 
 pksm::ui::BoxPokemonData pksm::ui::BoxGrid::GetPokemonData(int slotIndex) const {
@@ -187,6 +195,8 @@ void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
         items.push_back(boxItem);
         container->Add(boxItem);
     }
+
+    itemsRegistered = focusManager.lock() != nullptr && selectionManager.lock() != nullptr;
 
     // Select the first item by default if we have any items
     if (!items.empty()) {
