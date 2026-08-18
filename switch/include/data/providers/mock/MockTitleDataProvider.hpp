@@ -3,7 +3,6 @@
 #include <random>
 #include <unordered_map>
 
-#include "data/providers/CustomTitleProvider.hpp"
 #include "data/providers/interfaces/ITitleDataProvider.hpp"
 #include "utils/AccountUtil.hpp"
 
@@ -12,7 +11,6 @@ private:
     pksm::titles::Title::Ref mockCartridgeTitle;
     std::vector<pksm::titles::Title::Ref> mockInstalledTitles;
     std::vector<pksm::titles::Title::Ref> mockEmulatorTitles;
-    CustomTitleProvider::Ref customTitleProvider;
     AccountUid initialUserId;
     mutable std::unordered_map<AccountUid, std::vector<pksm::titles::Title::Ref>, AccountUidHash> userSpecificTitles;
     mutable std::mt19937 rng;

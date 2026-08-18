@@ -56,8 +56,7 @@ SDL_Texture* SwitchTitleDataProvider::LoadTitleIcon(NsApplicationControlData* ns
 
 SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveDataProvider)
   : saveDataProvider(std::move(saveDataProvider)),
-    gameCardTitle(nullptr),
-    customTitleProvider(CustomTitleProvider::New()) {
+    gameCardTitle(nullptr) {
     // Known Pokémon titles; doubles as the IsPokemonTitle filter list
     knownTitleNames = {
         {0x010003F003A34000, "Pokémon: Let's Go, Pikachu!"},
@@ -72,8 +71,8 @@ SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveData
         {0x0100F43008C44000, "Pokémon Legends: Z-A"}
     };
 
-    // Emulator titles come from the bundled catalog + the user's save config
-    RefreshEmulatorTitles();
+    // Emulator and Custom tiles both come from the bundled catalog
+    RefreshCatalogTitles();
 
     // Bring up ns once for the provider's lifetime (icons + game card metadata)
     Result rc = nsInitialize();
@@ -123,7 +122,7 @@ std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetEmulatorTitles
 }
 
 std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetCustomTitles() const {
-    return customTitleProvider->GetCustomTitles();
+    return customTitles;
 }
 
 bool SwitchTitleDataProvider::RefreshGameCardTitle() {
@@ -305,20 +304,30 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
     LOG_INFO(ss.str());
 }
 
-void SwitchTitleDataProvider::RefreshEmulatorTitles() {
+void SwitchTitleDataProvider::RefreshCatalogTitles() {
     emulatorTitles.clear();
+    customTitles.clear();
 
-    // The save layer decides which catalog games have save candidates
-    // (configured paths or discovered files); the title layer only turns
-    // that answer into tiles
+    // The save layer decides which catalog games have save candidates; the
+    // title layer only turns those answers into tiles. A game with both
+    // discovered and configured saves gets a tile on each tab, and each
+    // tile's context routes it to its own save listing.
     const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
     for (const auto& game : games) {
-        if (saveDataProvider->HasEmulatorSaveCandidates(game.titleId)) {
-            emulatorTitles.push_back(pksm::titles::Title::New(game.name, game.iconPath, game.titleId));
+        if (saveDataProvider->HasDiscoveredEmulatorSaves(game.titleId)) {
+            emulatorTitles.push_back(
+                pksm::titles::Title::New(game.name, game.iconPath, game.titleId, pksm::titles::TitleContext::Emulator)
+            );
+        }
+        if (saveDataProvider->HasConfiguredEmulatorSaves(game.titleId)) {
+            customTitles.push_back(
+                pksm::titles::Title::New(game.name, game.iconPath, game.titleId, pksm::titles::TitleContext::Custom)
+            );
         }
     }
 
     std::stringstream ss;
-    ss << "Found " << emulatorTitles.size() << " emulator titles with save candidates";
+    ss << "Catalog tiles: " << emulatorTitles.size() << " with discovered saves, " << customTitles.size()
+       << " with configured saves";
     LOG_INFO(ss.str());
 }

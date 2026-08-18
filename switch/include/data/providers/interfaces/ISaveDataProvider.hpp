@@ -38,8 +38,12 @@ public:
         return true;
     }
 
-    // Whether any save candidate exists for a catalog (emulator) game, so
-    // the title layer can decide which games earn a tile without owning
-    // save-location knowledge
-    virtual bool HasEmulatorSaveCandidates(u64 titleId) const { return false; }
+    // Whether the save-location scan found any file for a catalog game, so
+    // the title layer can decide which games earn an Emulator-tab tile
+    // without owning save-location knowledge
+    virtual bool HasDiscoveredEmulatorSaves(u64 titleId) const { return false; }
+
+    // Whether the user's save config lists an existing file for a catalog
+    // game; decides which games earn a Custom-tab tile
+    virtual bool HasConfiguredEmulatorSaves(u64 titleId) const { return false; }
 };

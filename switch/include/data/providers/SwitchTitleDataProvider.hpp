@@ -3,7 +3,6 @@
 #include <random>
 #include <unordered_map>
 
-#include "data/providers/CustomTitleProvider.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/providers/interfaces/ITitleDataProvider.hpp"
 #include "utils/AccountUtil.hpp"
@@ -20,7 +19,7 @@ private:
     pksm::titles::Title::Ref gameCardTitle;
     mutable std::unordered_map<AccountUid, std::vector<pksm::titles::Title::Ref>, AccountUidHash> installedTitleCache;
     std::vector<pksm::titles::Title::Ref> emulatorTitles;
-    CustomTitleProvider::Ref customTitleProvider;
+    std::vector<pksm::titles::Title::Ref> customTitles;
 
     // Map of known title IDs to their names
     std::unordered_map<u64, std::string> knownTitleNames;
@@ -51,5 +50,5 @@ public:
     // Update methods to refresh data
     bool RefreshGameCardTitle() override;
     void RefreshInstalledTitles(const AccountUid& userId) const;
-    void RefreshEmulatorTitles();
+    void RefreshCatalogTitles();
 };

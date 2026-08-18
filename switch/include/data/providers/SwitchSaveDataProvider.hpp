@@ -29,7 +29,6 @@ private:
     mutable std::unordered_map<u64, std::unordered_map<AccountUid, SaveCache, AccountUidHash>> consoleSaveCache;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> checkpointSaveCache;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> jksvSaveCache;
-    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> customSaveCache;
 
     // Catalog of non-installed games (loaded once; romfs is immutable)
     std::vector<pksm::data::emulator::EmulatorGameEntry> emulatorGames;
@@ -52,8 +51,8 @@ private:
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
     void RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const;
     void RefreshJKSVSaves(const pksm::titles::Title::Ref& title) const;
-    bool IsEmulatorTitle(u64 titleId) const { return emulatorCatalog.count(titleId) > 0; }
-    std::vector<pksm::saves::Save::Ref> ListEmulatorSaves(u64 titleId) const;
+    std::vector<pksm::saves::Save::Ref> ListDiscoveredSaves(u64 titleId) const;
+    std::vector<pksm::saves::Save::Ref> ListConfiguredSaves(u64 titleId) const;
     bool ValidateWithCore(const std::string& path) const;
 
     // Filesystem mounting helpers
@@ -78,7 +77,9 @@ public:
 
     bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const override;
 
-    bool HasEmulatorSaveCandidates(u64 titleId) const override;
+    bool HasDiscoveredEmulatorSaves(u64 titleId) const override;
+
+    bool HasConfiguredEmulatorSaves(u64 titleId) const override;
 
     // Load save from different sources
     std::optional<pksm::saves::LoadedSave> LoadConsoleSave(
@@ -90,10 +91,6 @@ public:
         const std::string& saveName
     );
     std::optional<pksm::saves::LoadedSave> LoadJKSVSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName
-    );
-    std::optional<pksm::saves::LoadedSave> LoadCustomSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName
     );
