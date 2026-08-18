@@ -11,6 +11,8 @@ namespace pksm::ui {
 struct HelpItem {
     std::vector<pksm::ui::global::ButtonGlyph> buttons;  // Multiple buttons can be grouped (separated by /)
     std::string actionDescription;
+
+    bool operator==(const HelpItem& other) const = default;
 };
 
 }  // namespace pksm::ui

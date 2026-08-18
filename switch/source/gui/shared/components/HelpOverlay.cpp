@@ -15,6 +15,9 @@ HelpOverlay::HelpOverlay(const pu::i32 x, const pu::i32 y, const pu::i32 width, 
 }
 
 void HelpOverlay::SetHelpItems(const std::vector<HelpItem>& items) {
+    if (items == helpItems) {
+        return;
+    }
     LOG_DEBUG("Setting help items, count: " + std::to_string(items.size()));
     helpItems = items;
     UpdateHelpTexts();
