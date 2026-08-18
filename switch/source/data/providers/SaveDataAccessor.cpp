@@ -227,6 +227,15 @@ bool SaveDataAccessor::saveChanges() {
     return true;
 }
 
+void SaveDataAccessor::unloadSave() {
+    sav.reset();
+    savePath.clear();
+    saveTitle = nullptr;
+    hasSaveUserId = false;
+    currentSave = nullptr;
+    hasChanges = false;
+}
+
 bool SaveDataAccessor::hasUnsavedChanges() const {
     return hasChanges;
 }

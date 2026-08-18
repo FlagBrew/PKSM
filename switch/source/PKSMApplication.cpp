@@ -195,13 +195,15 @@ void PKSMApplication::ShowMainMenu() {
 }
 
 void PKSMApplication::ShowTitleLoadScreen() {
-    // Leaving a save session: drop the storage screen and the sprite cache so
-    // their textures go back to the applet heap. Both rebuild on demand -
-    // ShowStorageScreen reconstructs, sprites reload from romfs.
+    // Leaving a save session: release the loaded Sav (a console SV save holds
+    // ~4.4MB) and drop the storage screen and sprite cache so their textures
+    // go back to the applet heap. Everything rebuilds on demand.
+    saveDataAccessor->unloadSave();
     if (storageScreen) {
         storageScreen = nullptr;
         utils::PokemonSpriteManager::ClearCache();
     }
+    LOG_MEMORY();
     LOG_DEBUG("Switching to title load screen");
     this->LoadLayout(this->titleLoadScreen);
 }

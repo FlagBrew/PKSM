@@ -314,14 +314,21 @@ void SwitchTitleDataProvider::RefreshCatalogTitles() {
     // tile's context routes it to its own save listing.
     const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
     for (const auto& game : games) {
-        if (saveDataProvider->HasDiscoveredEmulatorSaves(game.titleId)) {
+        const bool discovered = saveDataProvider->HasDiscoveredEmulatorSaves(game.titleId);
+        const bool configured = saveDataProvider->HasConfiguredEmulatorSaves(game.titleId);
+        if (!discovered && !configured) {
+            continue;
+        }
+        // One icon texture per game, shared by both tabs' tiles
+        auto icon = pu::sdl2::TextureHandle::New(pu::ui::render::LoadImage(game.iconPath));
+        if (discovered) {
             emulatorTitles.push_back(
-                pksm::titles::Title::New(game.name, game.iconPath, game.titleId, pksm::titles::TitleContext::Emulator)
+                pksm::titles::Title::New(game.name, icon, game.titleId, pksm::titles::TitleContext::Emulator)
             );
         }
-        if (saveDataProvider->HasConfiguredEmulatorSaves(game.titleId)) {
+        if (configured) {
             customTitles.push_back(
-                pksm::titles::Title::New(game.name, game.iconPath, game.titleId, pksm::titles::TitleContext::Custom)
+                pksm::titles::Title::New(game.name, icon, game.titleId, pksm::titles::TitleContext::Custom)
             );
         }
     }

@@ -53,5 +53,6 @@ public:
         onSaveDataChanged = callback;
     }
     bool saveChanges() override;
+    void unloadSave() override;
     bool hasUnsavedChanges() const override;
 };

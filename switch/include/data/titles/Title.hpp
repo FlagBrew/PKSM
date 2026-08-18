@@ -34,6 +34,16 @@ public:
         iconTexture = pu::sdl2::TextureHandle::New(texture);
     }
 
+    // Constructor sharing an already-loaded texture (a game on both the
+    // Emulator and Custom tabs keeps one icon in memory, not two)
+    Title(
+        const std::string& name,
+        pu::sdl2::TextureHandle::Ref texture,
+        u64 titleId,
+        TitleContext context = TitleContext::Console
+    )
+      : name(name), titleId(titleId), context(context), iconTexture(std::move(texture)) {}
+
     PU_SMART_CTOR(Title)
 
     // Getters
