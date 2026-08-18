@@ -320,12 +320,16 @@ void StorageScreen::RefreshBox(int boxIndex) {
     if (!saveData) {
         return;
     }
-    // SetBoxData rebuilds the grid, which resets the cursor; keep it in place
-    const int selectedSlot = pokemonBox->GetSelectedSlot();
-    pokemonBox->SetBoxData(boxIndex, boxDataProvider->GetBoxData(saveData, boxIndex));
-    if (boxIndex == pokemonBox->GetCurrentBox()) {
-        pokemonBox->SetSelectedSlot(selectedSlot);
-    }
+    const u64 t0 = armGetSystemTick();
+    const auto boxData = boxDataProvider->GetBoxData(saveData, boxIndex);
+    const u64 t1 = armGetSystemTick();
+    pokemonBox->SetBoxData(boxIndex, boxData);
+    const u64 t2 = armGetSystemTick();
+    LOG_DEBUG(
+        "RefreshBox " + std::to_string(boxIndex) + ": provider " +
+        std::to_string(armTicksToNs(t1 - t0) / 1000000) + " ms, apply " +
+        std::to_string(armTicksToNs(t2 - t1) / 1000000) + " ms"
+    );
 }
 
 void StorageScreen::RefreshAffectedSlots() {
