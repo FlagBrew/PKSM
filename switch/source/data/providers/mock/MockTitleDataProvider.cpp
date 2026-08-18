@@ -6,8 +6,6 @@
 
 MockTitleDataProvider::MockTitleDataProvider(const AccountUid& initialUserId)
   : initialUserId(initialUserId), userSpecificTitles(), rng(std::random_device{}()) {
-    customTitleProvider = CustomTitleProvider::New();
-
     // Initialize mock data
     mockCartridgeTitle = std::make_shared<pksm::titles::Title>(
         "Pokémon Legends: Arceus",
@@ -216,5 +214,5 @@ std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetEmulatorTitles()
 }
 
 std::vector<pksm::titles::Title::Ref> MockTitleDataProvider::GetCustomTitles() const {
-    return customTitleProvider->GetCustomTitles();
+    return {};
 }

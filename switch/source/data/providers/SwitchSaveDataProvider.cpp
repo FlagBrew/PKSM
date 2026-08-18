@@ -9,7 +9,6 @@
 
 #include "data/emulator/EmulatorSaveConfig.hpp"
 #include "data/emulator/SaveDiscovery.hpp"
-#include "data/providers/SwitchTitleDataProvider.hpp"
 #include "data/saves/ConsoleSaveMount.hpp"
 #include "data/saves/SafeNames.hpp"
 #include "data/saves/SaveValidator.hpp"
@@ -168,7 +167,47 @@ bool SwitchSaveDataProvider::ValidateWithCore(const std::string& path) const {
     return summary.has_value();
 }
 
-std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u64 titleId) const {
+std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(u64 titleId) const {
+    std::vector<pksm::saves::Save::Ref> saves;
+
+    const auto& discovered = DiscoveredSaves();
+    const auto it = discovered.find(titleId);
+    if (it == discovered.end()) {
+        return saves;
+    }
+
+    const auto taken = [&saves](const std::string& name) {
+        return std::any_of(saves.begin(), saves.end(), [&name](const pksm::saves::Save::Ref& s) {
+            return s->getName() == name;
+        });
+    };
+
+    for (const auto& path : it->second) {
+        std::error_code ec;
+        if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
+            continue;
+        }
+        if (!ValidateWithCore(path)) {
+            continue;
+        }
+
+        // A discovered file's directory is what identifies it (the emulator
+        // or ROM folder it lives in), so always qualify with the parent;
+        // when two files would still read identically, add the grandparent
+        const std::filesystem::path p(path);
+        const std::string filename = p.filename().string();
+        std::string name = filename + " (" + p.parent_path().filename().string() + ")";
+        if (taken(name)) {
+            name = filename + " (" + p.parent_path().parent_path().filename().string() + "/" +
+                p.parent_path().filename().string() + ")";
+        }
+        saves.push_back(pksm::saves::Save::New(name, path));
+    }
+
+    return saves;
+}
+
+std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(u64 titleId) const {
     std::vector<pksm::saves::Save::Ref> saves;
 
     auto catalogIt = emulatorCatalog.find(titleId);
@@ -177,18 +216,9 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u6
     }
 
     // The config file is tiny and hand-editable, so reload it on every
-    // listing to pick up changes without a restart; discovered paths
-    // follow the configured ones
+    // listing to pick up changes without a restart
     const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
-    auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
-    const auto& discovered = DiscoveredSaves();
-    if (const auto it = discovered.find(titleId); it != discovered.end()) {
-        for (const auto& path : it->second) {
-            if (std::find(paths.begin(), paths.end(), path) == paths.end()) {
-                paths.push_back(path);
-            }
-        }
-    }
+    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
 
     for (const auto& path : paths) {
         std::error_code ec;
@@ -214,27 +244,28 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListEmulatorSaves(u6
     return saves;
 }
 
-bool SwitchSaveDataProvider::HasEmulatorSaveCandidates(u64 titleId) const {
+bool SwitchSaveDataProvider::HasDiscoveredEmulatorSaves(u64 titleId) const {
+    // Whether a discovered file parses as a save was already decided by the
+    // scan itself
+    const auto& discovered = DiscoveredSaves();
+    const auto it = discovered.find(titleId);
+    return it != discovered.end() && !it->second.empty();
+}
+
+bool SwitchSaveDataProvider::HasConfiguredEmulatorSaves(u64 titleId) const {
     auto catalogIt = emulatorCatalog.find(titleId);
     if (catalogIt == emulatorCatalog.end()) {
         return false;
     }
 
-    // Whether a candidate file parses as a save is decided at listing time;
+    // Whether a configured file parses as a save is decided at listing time;
     // a tile only needs one candidate to exist
     const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
     const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
-    const bool anyConfigured = std::any_of(paths.begin(), paths.end(), [](const std::string& path) {
+    return std::any_of(paths.begin(), paths.end(), [](const std::string& path) {
         std::error_code ec;
         return std::filesystem::exists(std::filesystem::path(path), ec) && !ec;
     });
-    if (anyConfigured) {
-        return true;
-    }
-
-    const auto& discovered = DiscoveredSaves();
-    const auto it = discovered.find(titleId);
-    return it != discovered.end() && !it->second.empty();
 }
 
 void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const {
@@ -404,9 +435,10 @@ void SwitchSaveDataProvider::RefreshSaves(
 
     u64 titleId = title->getTitleId();
 
-    // Emulator titles have no console/Checkpoint saves to refresh; their
-    // listing is rebuilt (and revalidated on change) in GetSavesForTitle
-    if (IsEmulatorTitle(titleId)) {
+    // Emulator and Custom titles have no console/Checkpoint saves to
+    // refresh; their listings are rebuilt (and revalidated on change) in
+    // GetSavesForTitle
+    if (title->getContext() != pksm::titles::TitleContext::Console) {
         return;
     }
 
@@ -434,10 +466,18 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
 
     u64 titleId = title->getTitleId();
 
-    // Catalog (emulator) games never have console/Checkpoint saves; their
-    // files live at arbitrary sdmc paths and are core-validated instead
-    if (IsEmulatorTitle(titleId)) {
-        return ListEmulatorSaves(titleId);
+    // Catalog games never have console/Checkpoint saves; their files live
+    // at arbitrary sdmc paths and are core-validated instead. The title's
+    // context picks the save universe - the same game can sit on the
+    // Emulator tab (discovered files) and the Custom tab (configured files)
+    // with different lists.
+    switch (title->getContext()) {
+        case pksm::titles::TitleContext::Emulator:
+            return ListDiscoveredSaves(titleId);
+        case pksm::titles::TitleContext::Custom:
+            return ListConfiguredSaves(titleId);
+        case pksm::titles::TitleContext::Console:
+            break;
     }
 
     // Console saves: refresh only on cache miss (a refresh mounts the save
@@ -482,12 +522,6 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     auto jksvIt = jksvSaveCache.find(titleId);
     if (jksvIt != jksvSaveCache.end()) {
         result.insert(result.end(), jksvIt->second.begin(), jksvIt->second.end());
-    }
-
-    // Add custom saves
-    auto customIt = customSaveCache.find(titleId);
-    if (customIt != customSaveCache.end()) {
-        result.insert(result.end(), customIt->second.begin(), customIt->second.end());
     }
 
     return result;
@@ -600,27 +634,6 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadJKSVSave(
     return std::nullopt;
 }
 
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCustomSave(
-    const pksm::titles::Title::Ref& title,
-    const std::string& saveName
-) {
-    if (!title) {
-        return std::nullopt;
-    }
-
-    u64 titleId = title->getTitleId();
-
-    std::stringstream ss;
-    ss << "Loading custom save " << saveName << " for title " << std::hex << titleId;
-    LOG_INFO(ss.str());
-
-    // Custom save loading would go here
-    // This could be for saves located in specific known locations outside
-    // of the standard console or Checkpoint directories
-
-    return std::nullopt;  // Not implemented yet
-}
-
 std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName,
@@ -630,14 +643,20 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
         return std::nullopt;
     }
 
-    // Emulator saves: re-resolve the name to its path and parse it with core
-    if (IsEmulatorTitle(title->getTitleId())) {
-        for (const auto& save : ListEmulatorSaves(title->getTitleId())) {
+    // Emulator/Custom saves: re-resolve the name against the title's own
+    // listing (its context picks discovered vs configured files) and parse
+    // the file with core
+    if (title->getContext() != pksm::titles::TitleContext::Console) {
+        const bool fromDiscovery = title->getContext() == pksm::titles::TitleContext::Emulator;
+        const auto saves =
+            fromDiscovery ? ListDiscoveredSaves(title->getTitleId()) : ListConfiguredSaves(title->getTitleId());
+        const char* context = fromDiscovery ? "discovered" : "configured";
+        for (const auto& save : saves) {
             if (save->getName() == saveName) {
                 auto sav = pksm::saves::SaveValidator::Load(save->getPath());
                 if (sav) {
                     LOG_INFO(
-                        "Loaded emulator save " + save->getPath() + ": " +
+                        "Loaded " + std::string(context) + " emulator save " + save->getPath() + ": " +
                         pksm::saves::SaveValidator::Summarize(*sav).Describe()
                     );
                     return pksm::saves::LoadedSave{std::move(sav), save->getPath()};
@@ -646,7 +665,7 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
                 return std::nullopt;
             }
         }
-        LOG_ERROR("Emulator save not found: " + saveName);
+        LOG_ERROR("No " + std::string(context) + " emulator save named " + saveName);
         return std::nullopt;
     }
 
@@ -662,11 +681,6 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
 
     // Try to load from JKSV backups
     if (auto loaded = LoadJKSVSave(title, saveName)) {
-        return loaded;
-    }
-
-    // Try to load from custom saves
-    if (auto loaded = LoadCustomSave(title, saveName)) {
         return loaded;
     }
 
