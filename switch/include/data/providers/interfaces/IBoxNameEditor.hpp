@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string>
 
 #include "data/saves/SaveData.hpp"
@@ -16,6 +17,11 @@ public:
 
     // Longest name the save can store, in characters; 0 when not renamable
     virtual size_t GetBoxNameMaxLength(const pksm::saves::SaveData::Ref& saveData) const = 0;
+
+    // First character of `name` the save's character set cannot store, as a
+    // UTF-8 string; nullopt when the whole name stores
+    virtual std::optional<std::string>
+    FirstUnstorableBoxNameChar(const pksm::saves::SaveData::Ref& saveData, const std::string& name) const = 0;
 
     // Store the name through the save's own setter, which owns the encoding.
     // Blank names, and names the save's character set cannot represent at

@@ -180,8 +180,17 @@ void StorageScreen::HandleBoxNameActivated(int boxIndex) {
         return;
     }
     const std::string currentName = boxDataProvider->GetBoxData(saveData, boxIndex).name;
-    const auto entered =
-        pksm::utils::ShowKeyboard("Box Name", currentName, boxNameEditor->GetBoxNameMaxLength(saveData));
+    // Reject characters the save can't store while the keyboard is still
+    // open; which those are is the name editor's per-save knowledge
+    const auto entered = pksm::utils::ShowKeyboard("Box Name", currentName,
+        boxNameEditor->GetBoxNameMaxLength(saveData),
+        [this, &saveData](const std::string& name) -> std::optional<std::string> {
+            const auto lost = boxNameEditor->FirstUnstorableBoxNameChar(saveData, name);
+            if (!lost) {
+                return std::nullopt;
+            }
+            return "This save can't store '" + *lost + "'.";
+        });
     if (!entered) {
         return;
     }

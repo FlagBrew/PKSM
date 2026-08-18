@@ -1,5 +1,7 @@
 #include "utils/SoftwareKeyboard.hpp"
 
+#include <algorithm>
+#include <cstdio>
 #include <sstream>
 #include <switch.h>
 #include <vector>
@@ -24,12 +26,29 @@ std::string ClampToChars(const std::string& text, size_t maxChars) {
     return text.substr(0, bytes);
 }
 
+// swkbd's text-check callback is a bare C function pointer with no user-data
+// argument, so the active validator sits here for the duration of the one
+// blocking swkbdShow call; this UI is single-threaded, so no call overlaps
+pksm::utils::KeyboardValidator activeValidator;
+
+// Runs in this process when the keyboard's OK is pressed; registered only
+// while a validator is set. A rejection message is returned to swkbd
+// through the same buffer the text came in.
+SwkbdTextCheckResult ValidateText(char* tmp_string, size_t tmp_string_size) {
+    const auto error = activeValidator(tmp_string);
+    if (!error) {
+        return SwkbdTextCheckResult_OK;
+    }
+    std::snprintf(tmp_string, tmp_string_size, "%s", error->c_str());
+    return SwkbdTextCheckResult_Bad;
+}
+
 }  // namespace
 
 namespace pksm::utils {
 
-std::optional<std::string>
-ShowKeyboard(const std::string& headerText, const std::string& initialText, size_t maxLength) {
+std::optional<std::string> ShowKeyboard(const std::string& headerText, const std::string& initialText,
+    size_t maxLength, KeyboardValidator validator) {
     SwkbdConfig kbd;
     Result rc = swkbdCreate(&kbd, 0);
     if (R_FAILED(rc)) {
@@ -45,9 +64,18 @@ ShowKeyboard(const std::string& headerText, const std::string& initialText, size
     swkbdConfigSetStringLenMax(&kbd, static_cast<u32>(maxLength));
 
     // UTF-8 output: up to four bytes per character, plus the terminator
-    std::vector<char> out(maxLength * 4 + 1, '\0');
+    size_t bufferSize = maxLength * 4 + 1;
+    if (validator) {
+        swkbdConfigSetTextCheckCallback(&kbd, ValidateText);
+        activeValidator = std::move(validator);
+        // The same buffer carries a rejection message back to swkbd, so it
+        // also needs room for one
+        bufferSize = std::max<size_t>(bufferSize, 256);
+    }
+    std::vector<char> out(bufferSize, '\0');
     rc = swkbdShow(&kbd, out.data(), out.size());
     swkbdClose(&kbd);
+    activeValidator = nullptr;
 
     // Cancellation surfaces as a failed result
     if (R_FAILED(rc)) {

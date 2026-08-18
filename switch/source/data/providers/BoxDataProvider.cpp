@@ -483,6 +483,15 @@ size_t BoxDataProvider::GetBoxNameMaxLength(const pksm::saves::SaveData::Ref& sa
     return sav ? pksm::saves::BoxNameRulesFor(*sav).maxLength : 0;
 }
 
+std::optional<std::string>
+BoxDataProvider::FirstUnstorableBoxNameChar(const pksm::saves::SaveData::Ref& saveData, const std::string& name) const {
+    auto* sav = CurrentSav(saveData);
+    if (!sav) {
+        return std::nullopt;
+    }
+    return pksm::saves::FirstUnstorableBoxNameChar(*sav, name);
+}
+
 bool BoxDataProvider::RenameBox(const pksm::saves::SaveData::Ref& saveData, int boxIndex, const std::string& name) {
     if (!CanRenameBox(saveData, boxIndex) || IsBlankName(name)) {
         return false;
