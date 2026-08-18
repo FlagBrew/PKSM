@@ -30,6 +30,9 @@ public:
     // Save any changes to the current save
     virtual bool saveChanges() = 0;
 
+    // Release the loaded save (and any unsaved changes with it)
+    virtual void unloadSave() = 0;
+
     // Check if there are unsaved changes
     virtual bool hasUnsavedChanges() const = 0;
 };
