@@ -174,6 +174,20 @@ void Logger::Initialize() {
     }
 }
 
+void Logger::Flush() {
+    // Synchronous flush for moments the 3s background cadence would lose:
+    // right before a likely crash or applet teardown
+    std::vector<std::string> lines;
+    {
+        std::lock_guard<std::mutex> lg(g_log_mutex);
+        if (!g_initialized || OUTPUT_TO_FILE == 0) {
+            return;
+        }
+        FlushPendingToFileLocked(lines);
+    }
+    FlushLinesToFile(lines);
+}
+
 void Logger::Finalize() {
     StopFlushThread();
 

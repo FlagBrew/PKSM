@@ -262,7 +262,20 @@ void PKSMApplication::ProcessPendingSaveAndExit() {
         return;
     }
 
-    const bool saved = saveWriteResult.get();
+    // The worker can die on allocation failure in a fragmented heap; that is
+    // a failed save with changes still loaded, not a reason to bring the
+    // whole app down past the failure dialog below
+    bool saved = false;
+    try {
+        saved = saveWriteResult.get();
+    } catch (const std::exception& e) {
+        LOG_ERROR("Save write threw: " + std::string(e.what()));
+    }
+    LOG_DEBUG(saved ? "Save write completed" : "Save write failed");
+    LOG_MEMORY();
+    // Persist the tail now: a follow-up crash or the applet being torn down
+    // would lose the 3s flush window
+    utils::Logger::Flush();
     this->EndOverlay();
     if (!saved) {
         this->CreateShowDialog(
