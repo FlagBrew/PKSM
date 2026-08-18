@@ -128,18 +128,7 @@ void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string&
         LOG_ERROR("Backup skipped: " + savePath + " reports absurd size " + std::to_string(srcSize));
         return;
     }
-    std::vector<char> bytes(srcSize);
-    FILE* in = fopen(savePath.c_str(), "rb");
-    if (!in) {
-        LOG_ERROR("Backup skipped: cannot open " + savePath);
-        return;
-    }
-    const size_t got = fread(bytes.data(), 1, srcSize, in);
-    fclose(in);
-    if (got != srcSize) {
-        LOG_ERROR("Backup skipped: short read of " + savePath);
-        return;
-    }
+    LOG_DEBUG("Backing up " + savePath + " (" + std::to_string(srcSize) + " bytes)");
 
     // Saves within the same second share a stamp dir; the later backup wins
     char stamp[32];
@@ -152,10 +141,41 @@ void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string&
         return;
     }
 
+    FILE* in = fopen(savePath.c_str(), "rb");
+    if (!in) {
+        LOG_ERROR("Backup skipped: cannot open " + savePath);
+        return;
+    }
     const std::string target = dir + "/" + savePath.substr(savePath.find_last_of('/') + 1);
-    if (!WriteFile(target, reinterpret_cast<const u8*>(bytes.data()), bytes.size())) {
-        LOG_ERROR("Backup failed writing " + target);
+    FILE* out = fopen(target.c_str(), "wb");
+    if (!out) {
+        fclose(in);
+        LOG_ERROR("Backup skipped: cannot create " + target);
+        return;
+    }
+
+    // Copy in fixed-size chunks: this runs when the heap is at its fullest,
+    // and a save-sized contiguous buffer has failed to allocate there
+    std::vector<char> chunk(0x40000);
+    u64 copied = 0;
+    bool writeOk = true;
+    while (copied < srcSize) {
+        const size_t got = fread(chunk.data(), 1, chunk.size(), in);
+        if (got == 0) {
+            break;
+        }
+        if (fwrite(chunk.data(), 1, got, out) != got) {
+            writeOk = false;
+            break;
+        }
+        copied += got;
+    }
+    fclose(in);
+    fclose(out);
+    if (!writeOk || copied != srcSize) {
+        LOG_ERROR("Backup failed copying " + savePath + " to " + target);
         std::remove(target.c_str());
+        std::remove(dir.c_str());
         return;
     }
     LOG_INFO("Backed up " + savePath + " to " + target);
