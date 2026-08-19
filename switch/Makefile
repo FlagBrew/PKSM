@@ -76,6 +76,10 @@ CORE_INCLUDES	:=	../core/include \
 FIND_SOURCES	+=	$(CORE_SOURCES)
 FIND_INCLUDES	+=	$(CORE_INCLUDES)
 
+# Vendored third-party sources
+FIND_SOURCES	+=	vendor/lz4
+FIND_INCLUDES	+=	vendor/lz4
+
 # Strip CURDIR from the found paths
 FIND_SOURCES	:=	$(patsubst $(CURDIR)/%,%,$(FIND_SOURCES))
 FIND_INCLUDES	:=	$(patsubst $(CURDIR)/%,%,$(FIND_INCLUDES))
