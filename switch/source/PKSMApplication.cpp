@@ -1,6 +1,8 @@
 #include "PKSMApplication.hpp"
 
+#include <atomic>
 #include <sstream>
+#include <thread>
 
 #include "data/providers/SaveDataAccessor.hpp"
 #include "data/providers/SwitchSaveDataProvider.hpp"
@@ -8,11 +10,240 @@
 #include "data/providers/BoxDataProvider.hpp"
 #include "data/providers/SwitchSaveDataWriter.hpp"
 #include "gui/shared/FontManager.hpp"
+#include "input/ButtonInputHandler.hpp"
 #include "gui/shared/UIConstants.hpp"
+#include "utils/AssetDownloader.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PokemonSpriteManager.hpp"
 
 namespace pksm {
+
+namespace {
+
+// The hand-pumped boot status frame: the phases before the first real
+// layout (asset check, save scanning, screen construction) run on this
+// thread, so each phase renders one labeled frame and the screen holds it
+// while the work happens. Downloads add a live progress bar, animated by
+// the worker thread's byte counts.
+class BootProgress {
+public:
+    explicit BootProgress(pu::ui::render::Renderer::Ref& renderer) : renderer(renderer) {
+        appName = pu::ui::elm::TextBlock::New(0, 430, "PKSM");
+        appName->SetColor(ui::global::TEXT_WHITE);
+        appName->SetFont(ui::global::MakeHeavyFontName(ui::global::FONT_SIZE_TITLE));
+        appName->SetX((SCREEN_W - appName->GetWidth()) / 2);
+        status = pu::ui::elm::TextBlock::New(0, 540, "");
+        status->SetColor(ui::global::TEXT_WHITE);
+        status->SetFont(ui::global::MakeMediumFontName(ui::global::FONT_SIZE_TRIGGER_BUTTON_NAVIGATION));
+        bar = pu::ui::elm::ProgressBar::New((SCREEN_W - BAR_W) / 2, 610, BAR_W, 28, 1.0);
+        bar->SetProgressColor(ui::global::OUTLINE_COLOR);
+    }
+
+    void ShowPhase(const std::string& text) {
+        SetStatus(text);
+        Draw(false, false);
+    }
+
+    void ShowDownload(const std::string& text, double progress) {
+        SetStatus(text);
+        bar->SetProgress(progress);
+        Draw(true, false);
+    }
+
+    void ShowRetry(const std::string& text) {
+        SetStatus(text);
+        Draw(false, true);
+    }
+
+    // Drop the SDL textures while the renderer that owns them is still
+    // alive; letting the destructor run after Renderer::Finalize reads
+    // freed memory (the same class of bug as the hbmenu teardown crash)
+    void Release() {
+        appName = nullptr;
+        status = nullptr;
+        bar = nullptr;
+        retryAction.Release();
+        quitAction.Release();
+    }
+
+    void SetRetryPressed(bool pressed) { retryAction.SetPressed(pressed); }
+    void SetQuitPressed(bool pressed) { quitAction.SetPressed(pressed); }
+
+private:
+    // The renderer's canvas is 1920x1080 (pu::ui::render::ScreenWidth)
+    static constexpr pu::i32 SCREEN_W = pu::ui::render::ScreenWidth;
+    static constexpr pu::i32 BAR_W = 640;
+
+    // One "glyph + label" action on the retry screen, with the title
+    // screen's trigger-button feedback: highlighted while held, so a
+    // retry that lands on the same screen still visibly registered
+    class BootAction {
+    public:
+        BootAction(ui::global::ButtonGlyph button, const std::string& label) {
+            glyphText = pu::ui::elm::TextBlock::New(0, 0, ui::global::GetButtonGlyphString(button));
+            glyphText->SetFont(ui::global::MakeSwitchButtonFontName(ui::global::FONT_SIZE_ACCOUNT_NAME));
+            labelText = pu::ui::elm::TextBlock::New(0, 0, label);
+            labelText->SetFont(ui::global::MakeMediumFontName(ui::global::FONT_SIZE_ACCOUNT_NAME));
+            SetPressed(false);
+        }
+
+        void SetPressed(bool pressed) {
+            const auto clr = pressed ? ui::global::OUTLINE_COLOR : ui::global::TEXT_WHITE;
+            glyphText->SetColor(clr);
+            labelText->SetColor(clr);
+        }
+
+        pu::i32 GetWidth() { return glyphText->GetWidth() + GLYPH_GAP + labelText->GetWidth(); }
+
+        void Release() {
+            glyphText = nullptr;
+            labelText = nullptr;
+        }
+
+        void Render(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
+            glyphText->OnRender(drawer, x, y);
+            labelText->OnRender(drawer, x + glyphText->GetWidth() + GLYPH_GAP, y);
+        }
+
+    private:
+        static constexpr pu::i32 GLYPH_GAP = 14;
+        pu::ui::elm::TextBlock::Ref glyphText;
+        pu::ui::elm::TextBlock::Ref labelText;
+    };
+
+    // SetText rebuilds the TTF texture even for identical text, and the
+    // retry screen redraws every frame with a constant string
+    void SetStatus(const std::string& text) {
+        if (text != currentStatus) {
+            currentStatus = text;
+            status->SetText(text);
+        }
+    }
+
+    void Draw(bool withBar, bool withActions) {
+        status->SetX((SCREEN_W - status->GetWidth()) / 2);
+        renderer->InitializeRender(ui::global::BACKGROUND_BLUE);
+        appName->OnRender(renderer, appName->GetX(), appName->GetY());
+        status->OnRender(renderer, status->GetX(), status->GetY());
+        if (withBar) {
+            bar->OnRender(renderer, bar->GetX(), bar->GetY());
+        }
+        if (withActions) {
+            const pu::i32 rowWidth = retryAction.GetWidth() + ACTION_GAP + quitAction.GetWidth();
+            const pu::i32 rowX = (SCREEN_W - rowWidth) / 2;
+            retryAction.Render(renderer, rowX, ACTION_ROW_Y);
+            quitAction.Render(renderer, rowX + retryAction.GetWidth() + ACTION_GAP, ACTION_ROW_Y);
+        }
+        renderer->FinalizeRender();
+    }
+
+    static constexpr pu::i32 ACTION_ROW_Y = 640;
+    static constexpr pu::i32 ACTION_GAP = 72;
+
+    pu::ui::render::Renderer::Ref& renderer;
+    pu::ui::elm::TextBlock::Ref appName;
+    pu::ui::elm::TextBlock::Ref status;
+    pu::ui::elm::ProgressBar::Ref bar;
+    std::string currentStatus;
+    BootAction retryAction{ui::global::ButtonGlyph::A, "Retry"};
+    BootAction quitAction{ui::global::ButtonGlyph::Plus, "Quit"};
+};
+
+// The sheets are the app's sprite art and romfs ships none of it (the
+// 3DS app's model): boot cannot continue until every asset is verified
+// on SD. First launch downloads them from the PKResources release; where
+// the 3DS app errors out and exits when that fails, this gate holds on a
+// retry screen instead. Returns false only when the user quits from it.
+bool RunAssetBootstrap(BootProgress& boot) {
+    boot.ShowPhase("Checking sprites");
+    utils::AssetDownloader::Refresh();
+
+    PadState pad;
+    padInitializeDefault(&pad);
+    int retries = 0;
+    while (utils::AssetDownloader::NeedsDownload()) {
+        bool online = false;
+        if (R_SUCCEEDED(nifmInitialize(NifmServiceType_User))) {
+            NifmInternetConnectionType connType;
+            u32 strength = 0;
+            NifmInternetConnectionStatus connStatus;
+            const Result rc = nifmGetInternetConnectionStatus(&connType, &strength, &connStatus);
+            nifmExit();
+            online = R_SUCCEEDED(rc) && connStatus == NifmInternetConnectionStatus_Connected;
+        }
+
+        if (online) {
+            utils::AssetDownloader::Progress progress;
+            std::atomic<bool> done{false};
+            std::thread worker([&]() {
+                utils::AssetDownloader::DownloadAll(progress);
+                done.store(true);
+            });
+            while (!done.load()) {
+                const size_t received = progress.received.load();
+                const size_t total = progress.total.load();
+                const size_t index = progress.fileIndex.load();
+                std::string text = "Connecting...";
+                if (index > 0) {
+                    text = "Downloading sprites (" + std::to_string(index) + " of " +
+                        std::to_string(progress.fileCount.load()) + ")  " + std::to_string(received / 1024) +
+                        " KB";
+                }
+                boot.ShowDownload(text, total > 0 ? double(received) / double(total) : 0.0);
+            }
+            worker.join();
+            if (!utils::AssetDownloader::NeedsDownload()) {
+                LOG_INFO("Sprite assets downloaded and verified on SD");
+                return true;
+            }
+        }
+
+        std::string message;
+        if (retries == 0) {
+            message = online ? "The download failed - check your connection and try again"
+                             : "PKSM needs to download its sprites on first launch - connect to the internet first";
+        } else {
+            message = online ? "The download failed again - check your connection and try again"
+                             : "Still no connection - connect to the internet and retry";
+        }
+        retries++;
+
+        // The title screen's trigger-button contract: highlight on press,
+        // act on release
+        input::ButtonInputHandler buttons;
+        bool retryRequested = false;
+        bool quitRequested = false;
+        buttons.RegisterButton(
+            HidNpadButton_A,
+            [&]() { boot.SetRetryPressed(true); },
+            [&]() {
+                boot.SetRetryPressed(false);
+                retryRequested = true;
+            }
+        );
+        buttons.RegisterButton(
+            HidNpadButton_Plus,
+            [&]() { boot.SetQuitPressed(true); },
+            [&]() {
+                boot.SetQuitPressed(false);
+                quitRequested = true;
+            }
+        );
+        while (!retryRequested && !quitRequested) {
+            padUpdate(&pad);
+            buttons.HandleInput(padGetButtonsDown(&pad), padGetButtonsUp(&pad), padGetButtons(&pad));
+            boot.ShowRetry(message);
+        }
+        if (quitRequested) {
+            LOG_INFO("User quit from the asset retry screen");
+            return false;
+        }
+    }
+    LOG_DEBUG("Sprite assets verified on SD");
+    return true;
+}
+
+}  // namespace
 
 pu::ui::render::RendererInitOptions PKSMApplication::CreateRendererOptions() {
     LOG_DEBUG("Creating renderer options...");
@@ -109,6 +340,7 @@ PKSMApplication::PKSMApplication(
 }
 
 PKSMApplication::Ref PKSMApplication::Initialize() {
+    pu::ui::render::Renderer::Ref renderer;
     try {
         // Initialize logger first
         utils::Logger::Initialize();
@@ -116,13 +348,25 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         LOG_INFO("Initializing PKSM...");
         LOG_MEMORY();  // Initial memory state
 
+        // Wall-clock per boot phase: the gap between launch and the first
+        // interactive frame lives in these steps, so keep them measured
+        u64 bootPhaseStart = armGetSystemTick();
+        auto logBootPhase = [&bootPhaseStart](const char* phase) {
+            const u64 now = armGetSystemTick();
+            LOG_DEBUG(
+                "Boot phase " + std::string(phase) + ": " +
+                std::to_string(armTicksToNs(now - bootPhaseStart) / 1000000) + " ms"
+            );
+            bootPhaseStart = now;
+        };
+
         // Initialize renderer with all configurations
         auto renderer_opts = CreateRendererOptions();
         ConfigureFonts(renderer_opts);
         ConfigureInput(renderer_opts);
 
         LOG_DEBUG("Creating renderer...");
-        auto renderer = pu::ui::render::Renderer::New(renderer_opts);
+        renderer = pu::ui::render::Renderer::New(renderer_opts);
 
         LOG_DEBUG("Initializing renderer...");
         renderer->Initialize();
@@ -130,11 +374,31 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         // Register additional fonts after romfs is mounted
         RegisterAdditionalFonts();
+        logBootPhase("renderer + fonts");
 
-        if (!utils::PokemonSpriteManager::Initialize("romfs:/gfx/pokesprites.pkss")) {
-            LOG_ERROR("Failed to initialize Pokemon sprite manager");
+        BootProgress bootProgress(renderer);
+        if (!RunAssetBootstrap(bootProgress)) {
+            // No assets, no app - the same contract as the 3DS original,
+            // minus its error screen: the user chose to quit. Exiting
+            // before an Application exists means nobody else runs the
+            // renderer teardown Application::Close would - skipping it
+            // hands hbmenu a live SDL/romfs stack, which crashes it
+            bootProgress.Release();
+            renderer->Finalize();
             return nullptr;
         }
+
+        logBootPhase("asset bootstrap");
+
+        if (!utils::PokemonSpriteManager::Initialize(
+                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::PokemonSprites)
+            )) {
+            LOG_ERROR("Failed to initialize Pokemon sprite manager");
+            bootProgress.Release();
+            renderer->Finalize();
+            return nullptr;
+        }
+        logBootPhase("sprite sheet");
 
         auto recordingInitResult = appletInitializeGamePlayRecording();
         if (R_FAILED(recordingInitResult)) {
@@ -144,6 +408,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         }
 
         // Initialize account manager and data providers
+        bootProgress.ShowPhase("Scanning saves");
         LOG_DEBUG("Initializing account manager and data providers...");
         auto accountManager = std::make_unique<data::AccountManager>();
         Result res = accountManager->Initialize();
@@ -161,9 +426,11 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto titleProvider = SwitchTitleDataProvider::New(saveProvider);
         auto saveDataAccessor = SaveDataAccessor::New(saveProvider, saveWriter);
         auto boxDataProvider = BoxDataProvider::New(saveDataAccessor);
+        logBootPhase("data providers");
         LOG_MEMORY();  // Memory after data provider initialization
 
         // Create and prepare application
+        bootProgress.ShowPhase("Preparing screens");
         LOG_DEBUG("Creating application...");
         // The box provider doubles as the storage hand and box-name editor:
         // one object owns the read model and every edit over the same Sav
@@ -180,6 +447,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         LOG_DEBUG("Preparing application...");
         app->Prepare();
+        logBootPhase("screens");
 
         // Boot disk traffic is done; warm the save-validation cache so the
         // first landing on each title doesn't pay it on the input path
@@ -190,6 +458,11 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         return app;
     } catch (const std::exception& e) {
         LOG_ERROR("Failed to initialize application: " + std::string(e.what()));
+        // Unwinding has already destroyed any BootProgress; the renderer
+        // outlives the try and still owes hbmenu its teardown
+        if (renderer) {
+            renderer->Finalize();
+        }
         throw;
     }
 }
