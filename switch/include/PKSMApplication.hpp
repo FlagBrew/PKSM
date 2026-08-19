@@ -52,11 +52,28 @@ private:
     // Save handling
     void OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save);
     void ProcessPendingSaveAndExit();
+    void ProcessPendingSaveLoad();
+    // Save-exit-style overlay; input stays blocked until EndOverlay
+    void ShowBlockingToast(const std::string& message);
+    // Non-blocking notice that ends after 3s or any button press
+    void ShowErrorToast(const std::string& message);
 
     // In-flight save-and-exit write: runs on a worker thread so the render
     // loop keeps animating; ProcessPendingSaveAndExit polls it each frame,
     // keeping input blocked until it completes
     std::future<bool> saveWriteResult;
+
+    // An in-flight save load: the provider resolved (and possibly mounted)
+    // on the UI thread, the worker reads+parses, and ProcessPendingSaveLoad
+    // finishes the mount and commits on the UI thread
+    std::future<std::optional<pksm::saves::LoadedSave>> saveLoadResult;
+    std::optional<pksm::saves::PendingLoad> pendingSaveLoad;
+    pksm::titles::Title::Ref pendingLoadTitle;
+    std::string pendingLoadSaveName;
+    AccountUid pendingLoadUserId{};
+    u64 pendingLoadStartTick = 0;
+
+    bool errorToastActive = false;
 
 public:
     PKSMApplication(
