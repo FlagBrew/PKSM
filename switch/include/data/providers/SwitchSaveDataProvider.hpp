@@ -9,6 +9,7 @@
 #include "data/emulator/EmulatorGameCatalog.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/providers/sources/BackupSaveSource.hpp"
+#include "data/providers/sources/NsoContainerSource.hpp"
 #include "data/saves/Save.hpp"
 #include "data/saves/SaveValidationCache.hpp"
 #include "utils/AccountUtil.hpp"
@@ -36,14 +37,7 @@ private:
 
     mutable std::mutex discoveryMutex;
 
-    // Saves in the NSO apps' own console containers, keyed by catalog game;
-    // scanned once per account, UI thread only (the scan mounts the shared "save" device)
-    mutable std::optional<AccountUid> nsoScanUser;
-    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> nsoConsoleSaves;
-    void ScanNSOContainers(const AccountUid& userId) const;
-    std::vector<pksm::saves::Save::Ref>
-    ListNSOConsoleSaves(u64 titleId, const std::optional<AccountUid>& user) const;
-    std::optional<pksm::saves::PendingLoad> ResolveNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId);
+    mutable NsoContainerSource nsoSaves;
 
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
