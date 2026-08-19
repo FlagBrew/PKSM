@@ -65,8 +65,7 @@ bool BoxArtSheet::Load(const std::string& path) {
     }
     u64 prevKey = 0;
     for (const IndexEntry& e : index) {
-        // Strict ascent doubles as a nonzero-key check: key 0 can't beat
-        // the initial prevKey
+        // Strict ascent doubles as a nonzero-key check
         if (e.key <= prevKey ||
             static_cast<u64>(e.dataOffset) + e.dataSize > fileSize) {
             LOG_ERROR("Box-art index entry out of bounds");

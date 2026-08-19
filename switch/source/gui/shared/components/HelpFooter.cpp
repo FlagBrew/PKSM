@@ -86,8 +86,7 @@ void HelpFooter::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
 }
 
 void HelpFooter::SetHelpItems(const std::vector<HelpItem>& items) {
-    // Skip the text re-render when nothing changed; this runs on every box
-    // switch and cursor move
+    // Runs on every box switch and cursor move; skip when nothing changed
     if (items == helpItems) {
         return;
     }

@@ -58,14 +58,10 @@ private:
     // Non-blocking notice that ends after 3s or any button press
     void ShowErrorToast(const std::string& message);
 
-    // In-flight save-and-exit write: runs on a worker thread so the render
-    // loop keeps animating; ProcessPendingSaveAndExit polls it each frame,
-    // keeping input blocked until it completes
+    // Save-and-exit write on a worker thread; polled each frame with input blocked
     std::future<bool> saveWriteResult;
 
-    // An in-flight save load: the provider resolved (and possibly mounted)
-    // on the UI thread, the worker reads+parses, and ProcessPendingSaveLoad
-    // finishes the mount and commits on the UI thread
+    // Worker reads+parses; mounts and the commit stay on the UI thread
     std::future<std::optional<pksm::saves::LoadedSave>> saveLoadResult;
     std::optional<pksm::saves::PendingLoad> pendingSaveLoad;
     pksm::titles::Title::Ref pendingLoadTitle;

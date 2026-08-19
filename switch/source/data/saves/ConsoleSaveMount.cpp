@@ -10,11 +10,9 @@ Result MountConsoleSave(FsFileSystem* fs, u64 titleId, AccountUid userId) {
     // Defensively clear any leftover mount under the same device name
     fsdevUnmountDevice("save");
 
-    // Open save data filesystem
     Result res = fsOpen_SaveData(fs, titleId, userId);
     if (R_SUCCEEDED(res)) {
-        // Mount the filesystem to "save". fsdev closes fs itself on failure
-        // (see libnx fs_dev.h) - do NOT fsFsClose here.
+        // fsdev closes fs itself on failure (libnx fs_dev.h) - do NOT fsFsClose here
         int mountResult = fsdevMountDevice("save", *fs);
         if (mountResult == -1) {
             LOG_ERROR("Failed to mount save filesystem device");

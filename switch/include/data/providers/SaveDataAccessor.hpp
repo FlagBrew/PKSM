@@ -10,17 +10,13 @@
 #include "data/saves/SaveData.hpp"
 #include "data/titles/Title.hpp"
 
-// Owns the single live PKSM-Core save. Sourcing the bytes (emulator files,
-// console containers, Checkpoint backups) is the save provider's job; every
-// read and write of the loaded save goes through this one owner, so there is
-// never a second Sav for the same file to clobber it with.
+// Sole owner of the live PKSM-Core save; there is never a second Sav for the same file
 class SaveDataAccessor : public ISaveDataAccessor {
 private:
     ISaveDataProvider::Ref saveProvider;
     ISaveDataWriter::Ref saveWriter;
 
-    // The one live save and where it came from; title and user are kept so a
-    // console save (unmounted after loading) can be remounted for write-back
+    // Title and user are kept so a console save can be remounted for write-back
     std::unique_ptr<::pksm::Sav> sav;
     std::string savePath;
     pksm::titles::Title::Ref saveTitle;
@@ -42,7 +38,6 @@ public:
     // Borrowed view of the live save; ownership stays here
     ::pksm::Sav* currentSav() const { return sav.get(); }
 
-    // Editors call this after mutating the Sav so saveChanges knows there is work
     void markDirty() { hasChanges = true; }
 
     // ISaveDataAccessor interface implementation

@@ -7,9 +7,8 @@
 #include "enums/Gender.hpp"
 #include "enums/Type.hpp"
 
-// Generation-agnostic view of one Pokémon's summary. The builder decides
-// which rows and columns exist for the Pokémon's format; the UI renders
-// this structure verbatim and carries no generation knowledge.
+// Generation-agnostic view of one Pokémon's summary; the UI renders it
+// verbatim and carries no generation knowledge.
 namespace pksm::summary {
 
 enum class Accent : u8 {
@@ -34,9 +33,7 @@ struct TypeBadge {
 
 struct StatCell {
     std::string text;
-    // The cell shares one stored value with the row above (e.g. the single
-    // Gen 2 Special DV backing both Sp. Atk and Sp. Def); the shared text
-    // lives on the row above and this cell renders as its continuation
+    // Shares one stored value with the row above (e.g. Gen 2's single Special DV)
     bool mergedWithAbove = false;
     Accent accent = Accent::None;
 };

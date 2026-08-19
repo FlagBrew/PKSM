@@ -12,17 +12,14 @@
 
 namespace pksm::ui {
 
-// The title screen's Game Card slot: a cartridge frame with a transparent
-// label window through which the inserted game's icon shows. Dimming for
-// the unselected state color-modulates the textures themselves, so the
-// frame's transparency is respected (no overlay rectangle over the
-// bounding box). Owns its empty (no cartridge) state.
+// Game Card slot: cartridge frame with the game's icon showing through its
+// window; dimming color-modulates the textures so the frame stays transparent
 class GameCardSlot : public pu::ui::elm::Element, public ISelectable, public ShakeableWithOutline {
 public:
     GameCardSlot(const pu::i32 x, const pu::i32 y, const pu::i32 cardSize, const pu::i32 outlinePadding = 0);
     PU_SMART_CTOR(GameCardSlot)
 
-    // Sets the cartridge title (nullptr = no game card -> empty state)
+    // nullptr = no game card (empty state)
     void SetTitle(pksm::titles::Title::Ref title);
     pksm::titles::Title::Ref GetTitle() const { return title; }
 
@@ -50,8 +47,7 @@ public:
     void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 
 private:
-    // Frame art geometry: 232px square canvas, transparent label window at
-    // x47 y63, 137x140; all scaled by cardSize at render time
+    // Frame art geometry on a 232px canvas, scaled by cardSize at render time
     static constexpr pu::i32 FRAME_CANVAS = 232;
     static constexpr pu::i32 WINDOW_X = 47;
     static constexpr pu::i32 WINDOW_Y = 63;
@@ -59,11 +55,9 @@ private:
     static constexpr pu::i32 WINDOW_HEIGHT = 140;
     static constexpr pu::i32 FRAME_CORNER_RADIUS = 24;
 
-    // Brightness factor for the unselected state (matches the previous
-    // black-overlay-at-alpha-94 look: 255 - 94 = 161)
+    // Unselected-state brightness (matches a black overlay at alpha 94)
     static constexpr u8 DIM_COLOR_MOD = 161;
 
-    // Ghosted alpha for the empty (no cartridge) frame
     static constexpr u8 EMPTY_FRAME_ALPHA = 140;
 
     pu::i32 Scaled(const pu::i32 v) const { return v * cardSize / FRAME_CANVAS; }

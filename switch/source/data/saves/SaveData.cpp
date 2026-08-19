@@ -52,7 +52,6 @@ float SaveData::getDexCompletionPercentage() const {
         return 0.0f;
     }
 
-    // Completion is caught out of the game's whole dex, not out of seen
     u16 adjustedCaught = std::min(dexCaught, dexTotal);
     return (static_cast<float>(adjustedCaught) / static_cast<float>(dexTotal)) * 100.0f;
 }

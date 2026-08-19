@@ -10,9 +10,7 @@
 
 namespace {
 
-// Clamp to a number of UTF-8 characters without splitting a sequence; a
-// stored value can exceed the keyboard's cap (other tools write longer
-// than this app does)
+// Clamp to a number of UTF-8 characters without splitting a sequence
 std::string ClampToChars(const std::string& text, size_t maxChars) {
     size_t chars = 0;
     size_t bytes = 0;
@@ -26,14 +24,11 @@ std::string ClampToChars(const std::string& text, size_t maxChars) {
     return text.substr(0, bytes);
 }
 
-// swkbd's text-check callback is a bare C function pointer with no user-data
-// argument, so the active validator sits here for the duration of the one
-// blocking swkbdShow call; this UI is single-threaded, so no call overlaps
+// swkbd's text-check callback takes no user data, so the active validator
+// lives here (the UI is single-threaded, no call overlaps)
 pksm::utils::KeyboardValidator activeValidator;
 
-// Runs in this process when the keyboard's OK is pressed; registered only
-// while a validator is set. A rejection message is returned to swkbd
-// through the same buffer the text came in.
+// A rejection message goes back to swkbd through the same buffer the text came in
 SwkbdTextCheckResult ValidateText(char* tmp_string, size_t tmp_string_size) {
     const auto error = activeValidator(tmp_string);
     if (!error) {
@@ -68,8 +63,7 @@ std::optional<std::string> ShowKeyboard(const std::string& headerText, const std
     if (validator) {
         swkbdConfigSetTextCheckCallback(&kbd, ValidateText);
         activeValidator = std::move(validator);
-        // The same buffer carries a rejection message back to swkbd, so it
-        // also needs room for one
+        // The buffer must also fit a rejection message
         bufferSize = std::max<size_t>(bufferSize, 256);
     }
     std::vector<char> out(bufferSize, '\0');

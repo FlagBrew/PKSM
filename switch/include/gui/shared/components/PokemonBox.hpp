@@ -50,8 +50,7 @@ private:
     std::vector<BoxData> boxes;  // All box data
     int currentBox = 0;  // Current displayed box
 
-    // Sprites queued toward the neighboring boxes, warmed a frame-slice at
-    // a time so sequential box browsing lands on cache hits
+    // Neighboring boxes' sprites, warmed a frame-slice at a time
     std::vector<BoxPokemonData> prefetchQueue;
     size_t prefetchPos = 0;
 
@@ -79,8 +78,7 @@ private:
     std::function<void(int)> onBoxNameActivatedCallback;  // (boxIndex)
     std::function<void()> onFocusZoneChangedCallback;
 
-    // Focus zone at the last input pass (grid / header pill / footer button),
-    // watched here because zone moves happen through both buttons and touch
+    // Focus zone at the last input pass (grid / header pill / footer button)
     int lastFocusZone = 0;
     int CurrentFocusZone() const;
 
@@ -163,16 +161,12 @@ public:
     bool IsSelectedSlotOccupied() const;
     bool IsSelectedSlotUsable() const;
 
-    // Whether focus is on the slot grid itself, not the header pill or the
-    // footer button; slot verbs only apply there
+    // Slot verbs only apply while the grid itself is focused
     bool IsGridFocused() const { return boxGrid->IsFocused(); }
 
-    // Whether focus is on the box-name pill, where its A verb (rename)
-    // applies
     bool IsBoxNameFocused() const { return boxNamePill->IsFocused(); }
 
-    // IHelpProvider implementation: the box's own verbs; the owning screen
-    // contributes the slot and hand verbs it handles itself
+    // The box's own verbs; the owning screen contributes the slot/hand verbs
     std::vector<HelpItem> GetHelpItems() const override;
 
     // Screen position of the selected slot, for anchoring the held sprite

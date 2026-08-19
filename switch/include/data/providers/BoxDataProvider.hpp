@@ -8,54 +8,38 @@
 #include "data/providers/interfaces/IStorageHand.hpp"
 #include "pkx/PKX.hpp"
 
-// Reads and edits box contents on the accessor's single owned Sav. Mutations
-// stay in memory until the accessor's saveChanges writes them back.
+// Reads and edits box contents on the accessor's single owned Sav.
 // Display box 0 presents the party as a box; the save's own boxes follow,
 // shifted up by one.
 class BoxDataProvider : public IBoxDataProvider, public IStorageHand, public IBoxNameEditor {
 private:
     SaveDataAccessor::Ref saveDataAccessor;
 
-    // The Pokémon currently in hand during pick/place, with its origin so a
-    // cancel can put it back
+    // The Pokémon in hand during pick/place, with its origin for cancel
     std::unique_ptr<::pksm::PKX> heldPkm;
     pksm::ui::BoxPokemonData heldVisual;
     int heldOriginBox = -1;
     int heldOriginSlot = -1;
     bool heldSwapped = false;
-    // A cloned hand left the original in its slot, so nothing is owed back
-    // to the origin on cancel
     bool heldIsClone = false;
-    // External reference into the box list attached to the held Pokémon
-    // (pksm::saves::ListRefAt token, -1 if none); moved to wherever the
-    // hand finally empties
+    // pksm::saves::ListRefAt token riding with the held Pokémon, -1 if none
     int heldListRef = -1;
-    // The carry emptied or filled party slots; fixParty is owed when the
-    // hand empties (never earlier - the compaction would shift the origin
-    // slot and, on LGPE, the party references while heldListRef is live)
+    // fixParty is owed when the hand empties, never earlier (compaction would
+    // shift the origin slot and, on LGPE, live party references)
     bool heldTouchedParty = false;
 
     // Non-null only when `saveData` is the save the accessor currently owns
     ::pksm::Sav* CurrentSav(const pksm::saves::SaveData::Ref& saveData) const;
 
-    // Save-side slot for a grid slot of a display box: a party slot for the
-    // party box, a box-file slot otherwise; -1 for slots with no backing
-    // storage (party slots past six, padding columns of 20-slot saves,
-    // slots past the save's last box entry)
+    // Save-side slot for a display grid slot; -1 for slots with no backing storage
     int GridToSaveSlot(const ::pksm::Sav& sav, int boxIndex, int gridSlot) const;
 
-    // Decrypted occupant of a display box's grid slot, with its save-side
-    // slot through saveSlot; null when the slot is out of range (saveSlot
-    // -1) or empty
+    // Decrypted occupant of a grid slot; null when empty or out of range
     std::unique_ptr<::pksm::PKX> OccupantAt(::pksm::Sav& sav, int boxIndex, int gridSlot, int& saveSlot) const;
 
-    // Occupied party slots counted live from the slots themselves; the
-    // save's stored party count goes stale while a carry holds a hole open
+    // Counted from the slots; the stored party count goes stale mid-carry
     int LivePartyCount(::pksm::Sav& sav) const;
 
-    // Whether removing the occupant of this display slot would leave the
-    // party without a member: it is a party slot, or a box slot the party
-    // references, and no other member remains
     bool WouldEmptyParty(::pksm::Sav& sav, int boxIndex, int saveSlot) const;
 
     // Empty the hand, settling any deferred party compaction first

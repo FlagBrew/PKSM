@@ -6,9 +6,8 @@
 
 namespace pksm::ui {
 
-// Full-screen overlay rendering one Pokémon's SummaryData verbatim: the
-// builder decides which rows, columns and accents exist per format; this
-// component carries no generation knowledge
+// Renders one Pokémon's SummaryData verbatim; the builder decides which
+// rows and accents exist per format - no generation knowledge here
 class PokemonSummaryOverlay : public pu::ui::Overlay {
 public:
     PokemonSummaryOverlay(const pu::i32 x, const pu::i32 y, const pu::i32 width, const pu::i32 height);
@@ -56,9 +55,7 @@ private:
 
     // Title bar
     static constexpr pu::i32 TITLE_BAR_HEIGHT = 96;
-    // Same render size as the box grid's slots; taller than the bar, so it
-    // overhangs it symmetrically, centered on the title line (the art's
-    // transparent margins keep the overlap clean)
+    // Taller than the bar; overhangs it symmetrically, centered on the title line
     static constexpr pu::i32 SPRITE_SIZE = 124;
     static constexpr pu::i32 SPRITE_MARGIN = 16;
     static constexpr pu::i32 TITLE_TEXT_GAP = 14;  // Sprite to species name

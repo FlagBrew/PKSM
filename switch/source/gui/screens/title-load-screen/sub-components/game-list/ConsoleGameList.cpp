@@ -99,8 +99,6 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     this->gameCardX = gameCardX;
     this->installedStartX = installedStartX;
 
-    // Cartridge slot component: frame + icon-through-window + its own
-    // texture-level dimming and (eventually) empty state
     gameCardSlot = GameCardSlot::New(
         gameCardX,
         cartridgeText->GetY() + config.sectionTitleSpacing,
@@ -247,9 +245,8 @@ void pksm::ui::ConsoleGameList::SetGameCardTitle(titles::Title::Ref title) {
     );
     gameCardSlot->SetTitle(title);
 
-    // If the selected cart was removed, selection migrates to wherever it
-    // would naturally be without a cart: the installed grid. Inserting a
-    // cart never steals an existing selection.
+    // Removing the selected cart moves selection to the installed grid;
+    // inserting one never steals an existing selection
     if (!title && selectionState == SelectionState::GameCard) {
         selectionState = SelectionState::InstalledGame;
         if (focused) {
@@ -263,13 +260,11 @@ void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::R
     LOG_DEBUG("[ConsoleGameList] Setting data source with " + std::to_string(titles.size()) + " installed titles");
     LOG_MEMORY();  // Memory check when loading new titles
 
-    // Preserve the current grid selection by title identity across data
-    // refreshes (hotplug, profile change) instead of resetting to slot 0
+    // Preserve the grid selection by title identity across refreshes
     titles::Title::Ref prevSelected =
         (selectionState == SelectionState::InstalledGame) ? installedGames->GetSelectedTitle() : nullptr;
 
-    // These are installed titles only; the game card arrives separately
-    // via SetGameCardTitle
+    // Installed titles only; the game card arrives via SetGameCardTitle
     this->titles = titles;
     installedGames->SetDataSource(titles);
 

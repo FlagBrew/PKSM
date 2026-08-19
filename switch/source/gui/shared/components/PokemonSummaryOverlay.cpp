@@ -6,8 +6,7 @@
 
 namespace {
 
-// The 3DS app's shiny star, shared by every overlay instance and kept for
-// the lifetime of the app
+// Shared shiny star, loaded once and kept for the app's lifetime
 pu::sdl2::TextureHandle::Ref GetShinyIconTexture() {
     static pu::sdl2::TextureHandle::Ref star;
     if (!star) {
@@ -125,8 +124,7 @@ void PokemonSummaryOverlay::Rebuild() {
     this->Add(panelBorder);
     this->Add(panelBg);
 
-    // Title bar: sprite, species (+ shiny star), gender badge, PKRS badge,
-    // format badge and level on the right
+    // Title bar
     const pu::i32 barY = PANEL_Y + PANEL_INSET;
     auto titleBar = pu::ui::elm::Rectangle::New(
         panelX + PANEL_INSET,
@@ -156,8 +154,7 @@ void PokemonSummaryOverlay::Rebuild() {
     speciesText->SetY(barY + (TITLE_BAR_HEIGHT - speciesText->GetHeight()) / 2);
     this->Add(speciesText);
 
-    // Badges align to the species text's own center, not the bar's - the
-    // text's font metrics pad its height, so bar-centering drifts optically
+    // Center badges on the species text, not the bar - font metrics pad its height
     const pu::i32 titleCenterY = speciesText->GetY() + speciesText->GetHeight() / 2;
     pu::i32 titleX = speciesText->GetX() + speciesText->GetWidth() + GENDER_ICON_GAP;
     if (data.gender.has_value()) {
@@ -245,8 +242,7 @@ void PokemonSummaryOverlay::Rebuild() {
     // Left card: type chips, then the builder's detail rows
     pu::i32 leftY = contentTop + CARD_PAD_TOP;
 
-    // Draws one colored type chip centered on a row of labelHeight; returns
-    // its width
+    // Draws one type chip centered on a row of labelHeight; returns its width
     const auto drawChip =
         [&](const pu::i32 x, const pu::i32 rowY, const pu::i32 labelHeight, const std::string& text,
             const pu::ui::Color& bg) {
@@ -294,8 +290,7 @@ void PokemonSummaryOverlay::Rebuild() {
         leftY += lbl->GetHeight() + ROW_GAP;
     }
 
-    // Right card: the stat table (variable column count, merged cells drawn
-    // once centered across the sharing rows), then moves
+    // Right card: the stat table (merged cells drawn once, centered), then moves
     std::string statsTitle = "Stats";
     if (!data.stats.columnHeaders.empty()) {
         statsTitle += " (";
@@ -367,7 +362,7 @@ void PokemonSummaryOverlay::Rebuild() {
         moveY += moveText->GetHeight() + MOVE_ROW_GAP;
     }
 
-    // Close hint, centered in the strip between the cards and the panel edge
+    // Close hint, centered in the strip under the cards
     auto hint = pu::ui::elm::TextBlock::New(0, 0, global::GetButtonGlyphString(global::ButtonGlyph::B) + "  Back");
     hint->SetColor(TEXT_DARK);
     hint->SetFont(switchBtnFont);

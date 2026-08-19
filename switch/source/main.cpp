@@ -20,8 +20,7 @@ int main(int argc, char* argv[]) {
         pksm::utils::Logger::Finalize();
         return 0;
     } catch (const std::exception& e) {
-        // Make sure we log any fatal errors, with the heap state if it can
-        // still be captured
+        // Make sure we log any fatal errors
         pksm::utils::Logger::Error("Fatal error: " + std::string(e.what()));
         try {
             pksm::utils::Logger::LogMemoryInfo();

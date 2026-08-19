@@ -11,8 +11,7 @@ public:
     // Load the PKSS spritesheet; sprites cannot render without it
     static bool Initialize(const std::string& sheetPath);
 
-    // Sprite for a specific Pokemon, falling back form -> 0 and shiny ->
-    // regular when the exact variant has no art
+    // Falls back form -> 0 and shiny -> regular when the variant has no art
     static SpriteRef GetPokemonSprite(u16 species, u8 form = 0, bool shiny = false);
 
     // Drop the warm sprite textures (session teardown)

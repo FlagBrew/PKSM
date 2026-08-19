@@ -4,18 +4,15 @@
 
 namespace {
 
-// 1001 is LGPE's empty-party-slot sentinel; fixParty then compacts the six
-// slots so the party has no holes (the same repair the 3DS app performs when
-// releasing a party-referenced Pokémon)
+// 1001 is LGPE's empty-party-slot sentinel; fixParty then compacts the holes
 constexpr u16 LGPE_EMPTY_PARTY_SLOT = 1001;
 
 }  // namespace
 
 namespace pksm::saves {
 
-// LGPE party members are partyBoxSlot indices into the box list (mirrors the
-// party-ref patching the 3DS app does in its StorageScreen). Other saves
-// keep party storage separate from boxes and have no list references.
+// LGPE party members are partyBoxSlot indices into the box list; other saves
+// keep party storage separate and have no list references
 
 int ListRefAt(::pksm::Sav& sav, int listIndex, int excludeToken) {
     if (sav.generation() != ::pksm::Generation::LGPE) {
@@ -73,8 +70,7 @@ void FinalizeBoxList(::pksm::Sav& sav) {
     if (sav.generation() != ::pksm::Generation::LGPE) {
         return;
     }
-    // Mirror the 3DS app's storage-exit bookkeeping (3ds StorageScreen.cpp):
-    // compact the contiguous list, then recount its length
+    // Mirror the 3DS app's storage-exit bookkeeping: compact the list, then recount it
     auto& lgpe = static_cast<::pksm::SavLGPE&>(sav);
     lgpe.compressBox();
     u16 occupiedSlots = 0;

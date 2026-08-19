@@ -8,12 +8,10 @@ namespace pksm::saves {
 namespace {
 
 constexpr size_t SHA_HEX_LEN = 40;
-// Magic, version byte, git revision, SHA-1 hex: the raw save can never
-// start earlier than this
+// Magic, version byte, git revision, SHA-1 hex: the raw save never starts earlier
 constexpr size_t MIN_HEADER = 4 + 1 + 1 + SHA_HEX_LEN;
 
-// GB/GBC cartridge SRAM sizes, largest first so a big save is never
-// mistaken for a small one with a padded header
+// Largest first so a big save is never mistaken for a small one with a padded header
 constexpr size_t GB_RAW_SIZES[] = {0x20000, 0x10000, 0x8000, 0x2000, 0x800};
 
 void Sha1Hex(const u8* data, size_t size, char out[SHA_HEX_LEN]) {

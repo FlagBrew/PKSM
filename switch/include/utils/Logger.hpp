@@ -18,9 +18,8 @@ public:
     static void LogOutputMode();
     static void Flush();
 
-    // Runtime knobs: file logging to sdmc:/switch/PKSM/pksm.log (works in
-    // release builds too; previous run kept as pksm.log.old), and
-    // extra-verbose logging for input feedback.
+    // Runtime knobs: file logging to sdmc:/switch/PKSM/pksm.log (previous
+    // run kept as pksm.log.old), and extra-verbose input logging
     static int OUTPUT_TO_FILE;
     static int ADVANCED_LOGGING;
 
@@ -31,8 +30,7 @@ private:
 }  // namespace pksm::utils
 
 #define LOG_DEBUG(msg) ::pksm::utils::Logger::Debug(msg)
-// Input/focus/render chatter that fires per event or per frame: compiled in,
-// but neither built nor emitted unless ADVANCED_LOGGING is set
+// Per-event/per-frame chatter; the message isn't even built unless ADVANCED_LOGGING is set
 #define LOG_TRACE(msg)                                    \
     do {                                                  \
         if (::pksm::utils::Logger::ADVANCED_LOGGING != 0) { \

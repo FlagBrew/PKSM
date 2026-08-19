@@ -204,11 +204,9 @@ void pksm::layout::TitleLoadScreen::LoadSaves() {
         LOG_DEBUG("Found " + std::to_string(saves.size()) + " saves for title");
         this->saveList->SetDataSource(saves);
 
-        // Nothing to load without a save
         this->loadButton->SetDisabled(saves.empty());
     } else {
-        // No selection (e.g. cart removed with no installed games): the
-        // save area must follow, not keep the previous title's saves
+        // e.g. cart removed with no installed games
         LOG_DEBUG("No title selected, clearing save list");
         this->headerText->SetText("");
         this->saveList->SetDataSource({});
@@ -297,8 +295,7 @@ void pksm::layout::TitleLoadScreen::TransitionToButtons() {
 }
 
 void pksm::layout::TitleLoadScreen::OnInput(u64 down, u64 up, u64 held) {
-    // Poll the game card slot every 2 seconds; the provider only does real
-    // work when the card changed
+    // Game-card hotplug poll; the provider only does real work when the card changed
     auto now = std::chrono::steady_clock::now();
     if (now - lastGameCardPoll >= GAME_CARD_POLL_INTERVAL) {
         lastGameCardPoll = now;

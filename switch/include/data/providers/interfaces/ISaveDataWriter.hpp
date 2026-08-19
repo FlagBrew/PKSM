@@ -11,9 +11,8 @@ public:
     PU_SMART_CTOR(ISaveDataWriter)
     virtual ~ISaveDataWriter() = default;
 
-    // Write edited save bytes back to their source - an SD file, or a console
-    // container (remounted with the title/user it was loaded for, written,
-    // and committed). The writer never interprets the bytes.
+    // Write edited save bytes back to their source (SD file or console
+    // container); the writer never interprets the bytes
     virtual bool WriteSave(
         const pksm::titles::Title::Ref& title,
         const std::string& savePath,

@@ -101,8 +101,7 @@ private:
     void UpdateTriggerButtonLabels();
 
 public:
-    // Rebuilds the console list from the title provider (game card +
-    // installed titles); also used by the game-card hotplug poll
+    // Rebuilds the console list; also called by the game-card hotplug poll
     void UpdateConsoleGameListData();
 
 private:

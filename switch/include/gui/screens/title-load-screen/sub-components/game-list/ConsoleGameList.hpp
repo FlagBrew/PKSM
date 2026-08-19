@@ -45,7 +45,7 @@ public:
 
     // IGameList interface
     void SetDataSource(const std::vector<titles::Title::Ref>& titles) override;
-    // Sets the game card slot's title (nullptr -> empty, unselectable slot)
+    // nullptr -> empty, unselectable slot
     void SetGameCardTitle(titles::Title::Ref title);
     titles::Title::Ref GetSelectedTitle() const override;
     void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }

@@ -16,8 +16,7 @@ struct BoxPokemonData {
     u8 form;  // Form number (0 for normal form)
     bool shiny;  // Whether the Pokémon is shiny
     pksm::Gender gender;  // Pokémon gender
-    // Slot has no backing storage in the save (20-slot padding columns,
-    // slots past a partial last box); rendered disabled, nothing drops there
+    // No backing storage in the save (padding columns, partial last box)
     bool unusable = false;
     // 1-based party membership badge; 0 for non-members
     u8 partyNumber = 0;

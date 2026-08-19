@@ -372,8 +372,7 @@ void pksm::ui::GameList::UpdateGameListData() {
                 auto card = titleProvider->GetGameCardTitle();
                 auto installed = titleProvider->GetInstalledTitles(currentUserId);
                 if (card) {
-                    // The cart's own account save also appears in the
-                    // installed scan - don't show the game twice
+                    // The cart also appears in the installed scan - don't show it twice
                     installed.erase(
                         std::remove_if(
                             installed.begin(),

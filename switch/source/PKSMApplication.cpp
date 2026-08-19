@@ -20,11 +20,8 @@ namespace pksm {
 
 namespace {
 
-// The hand-pumped boot status frame: the phases before the first real
-// layout (asset check, save scanning, screen construction) run on this
-// thread, so each phase renders one labeled frame and the screen holds it
-// while the work happens. Downloads add a live progress bar, animated by
-// the worker thread's byte counts.
+// Hand-pumped boot frames: each phase renders one labeled frame and holds it
+// while the work runs; downloads animate from the worker thread's byte counts.
 class BootProgress {
 public:
     explicit BootProgress(pu::ui::render::Renderer::Ref& renderer) : renderer(renderer) {
@@ -55,9 +52,7 @@ public:
         Draw(false, true);
     }
 
-    // Drop the SDL textures while the renderer that owns them is still
-    // alive; letting the destructor run after Renderer::Finalize reads
-    // freed memory (the same class of bug as the hbmenu teardown crash)
+    // Drop the SDL textures before Renderer::Finalize - destruction after it reads freed memory
     void Release() {
         appName = nullptr;
         status = nullptr;
@@ -70,13 +65,10 @@ public:
     void SetQuitPressed(bool pressed) { quitAction.SetPressed(pressed); }
 
 private:
-    // The renderer's canvas is 1920x1080 (pu::ui::render::ScreenWidth)
     static constexpr pu::i32 SCREEN_W = pu::ui::render::ScreenWidth;
     static constexpr pu::i32 BAR_W = 640;
 
-    // One "glyph + label" action on the retry screen, with the title
-    // screen's trigger-button feedback: highlighted while held, so a
-    // retry that lands on the same screen still visibly registered
+    // Highlighted while held, so a retry that lands on the same screen still visibly registered
     class BootAction {
     public:
         BootAction(ui::global::ButtonGlyph button, const std::string& label) {
@@ -111,8 +103,7 @@ private:
         pu::ui::elm::TextBlock::Ref labelText;
     };
 
-    // SetText rebuilds the TTF texture even for identical text, and the
-    // retry screen redraws every frame with a constant string
+    // SetText rebuilds the TTF texture even for identical text; the retry screen redraws every frame
     void SetStatus(const std::string& text) {
         if (text != currentStatus) {
             currentStatus = text;
@@ -149,11 +140,8 @@ private:
     BootAction quitAction{ui::global::ButtonGlyph::Plus, "Quit"};
 };
 
-// The sheets are the app's sprite art and romfs ships none of it (the
-// 3DS app's model): boot cannot continue until every asset is verified
-// on SD. First launch downloads them from the PKResources release; where
-// the 3DS app errors out and exits when that fails, this gate holds on a
-// retry screen instead. Returns false only when the user quits from it.
+// romfs ships no sprite art: boot gates on every asset verified on SD.
+// Returns false only when the user quits from the retry screen.
 bool RunAssetBootstrap(BootProgress& boot) {
     boot.ShowPhase("Checking sprites");
     utils::AssetDownloader::Refresh();
@@ -208,8 +196,6 @@ bool RunAssetBootstrap(BootProgress& boot) {
         }
         retries++;
 
-        // The title screen's trigger-button contract: highlight on press,
-        // act on release
         input::ButtonInputHandler buttons;
         bool retryRequested = false;
         bool quitRequested = false;
@@ -338,8 +324,7 @@ PKSMApplication::PKSMApplication(
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveLoad(); });
-    // The error toast also ends on any button press (harmless no-op once
-    // its 3s timeout already ended it)
+    // The error toast also ends on any button press; a no-op once the 3s timeout ended it
     SetOnInput([this](const u64 down, const u64, const u64, const pu::ui::TouchPoint) {
         if (down != 0 && errorToastActive) {
             this->EndOverlay();
@@ -357,8 +342,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         LOG_INFO("Initializing PKSM...");
         LOG_MEMORY();  // Initial memory state
 
-        // Wall-clock per boot phase: the gap between launch and the first
-        // interactive frame lives in these steps, so keep them measured
+        // The launch-to-first-interactive-frame gap lives in these steps; keep them measured
         u64 bootPhaseStart = armGetSystemTick();
         auto logBootPhase = [&bootPhaseStart](const char* phase) {
             const u64 now = armGetSystemTick();
@@ -387,11 +371,8 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         BootProgress bootProgress(renderer);
         if (!RunAssetBootstrap(bootProgress)) {
-            // No assets, no app - the same contract as the 3DS original,
-            // minus its error screen: the user chose to quit. Exiting
-            // before an Application exists means nobody else runs the
-            // renderer teardown Application::Close would - skipping it
-            // hands hbmenu a live SDL/romfs stack, which crashes it
+            // No Application exists yet to run renderer teardown; skipping
+            // Finalize hands hbmenu a live SDL/romfs stack, which crashes it
             bootProgress.Release();
             renderer->Finalize();
             return nullptr;
@@ -422,8 +403,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto accountManager = std::make_unique<data::AccountManager>();
         Result res = accountManager->Initialize();
         if (R_FAILED(res)) {
-            // Not fatal: the app still works for emulator/backup saves;
-            // console-save listing just comes up empty without an account
+            // Not fatal: emulator/backup saves still work; console listing just comes up empty
             std::stringstream ss;
             ss << "Failed to initialize account manager: 0x" << std::hex << res;
             LOG_ERROR(ss.str());
@@ -441,8 +421,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         // Create and prepare application
         bootProgress.ShowPhase("Preparing screens");
         LOG_DEBUG("Creating application...");
-        // The box provider doubles as the storage hand and box-name editor:
-        // one object owns the read model and every edit over the same Sav
+        // The box provider doubles as storage hand and box-name editor: one object owns every edit
         auto app = PKSMApplication::New(
             renderer,
             std::move(accountManager),
@@ -458,8 +437,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         app->Prepare();
         logBootPhase("screens");
 
-        // Boot disk traffic is done; warm the save-validation cache so the
-        // first landing on each title doesn't pay it on the input path
+        // Warm the save-validation cache so first landing on a title doesn't pay it on input
         saveProvider->PrewarmValidationCache();
 
         LOG_INFO("PKSM initialization complete");
@@ -467,8 +445,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         return app;
     } catch (const std::exception& e) {
         LOG_ERROR("Failed to initialize application: " + std::string(e.what()));
-        // Unwinding has already destroyed any BootProgress; the renderer
-        // outlives the try and still owes hbmenu its teardown
+        // The renderer outlives the try and still owes hbmenu its teardown
         if (renderer) {
             renderer->Finalize();
         }
@@ -482,9 +459,7 @@ void PKSMApplication::ShowMainMenu() {
 }
 
 void PKSMApplication::ShowTitleLoadScreen() {
-    // Leaving a save session: release the loaded Sav (a console SV save holds
-    // ~4.4MB) and drop the storage screen and warm sprite pages so their
-    // textures go back to the applet heap. Everything rebuilds on demand.
+    // Release the Sav and storage textures back to the applet heap; everything rebuilds on demand
     saveDataAccessor->unloadSave();
     if (storageScreen) {
         storageScreen = nullptr;
@@ -504,8 +479,6 @@ void PKSMApplication::HandleMainMenuBack() {
             true
         );
         if (choice == 0) {
-            // Write on a worker thread so the render loop keeps animating;
-            // ProcessPendingSaveAndExit polls the future each frame
             ShowBlockingToast("Saving... Do not close the app or power off.");
             LOG_DEBUG("Starting save write...");
             LOG_MEMORY();
@@ -543,8 +516,7 @@ void PKSMApplication::ShowBlockingToast(const std::string& message) {
     text->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
     overlay->Add(text);
     this->StartOverlay(overlay);
-    // Block input via Plutonium's render-over flag - OnRender consumes it
-    // at the end of every frame, so waiters re-arm it until they finish
+    // OnRender consumes the render-over flag each frame, so waiters re-arm it until they finish
     this->in_render_over = true;
     this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
 }
@@ -580,16 +552,13 @@ void PKSMApplication::ProcessPendingSaveAndExit() {
         return;
     }
     if (saveWriteResult.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
-        // Still writing: keep input blocked (OnRender consumed the flag at the
-        // end of the previous frame)
+        // Still writing: keep input blocked
         this->in_render_over = true;
         this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
         return;
     }
 
-    // The worker can die on allocation failure in a fragmented heap; that is
-    // a failed save with changes still loaded, not a reason to bring the
-    // whole app down past the failure dialog below
+    // A worker death (allocation failure) is a failed save with changes still loaded, not a crash
     bool saved = false;
     try {
         saved = saveWriteResult.get();
@@ -598,8 +567,7 @@ void PKSMApplication::ProcessPendingSaveAndExit() {
     }
     LOG_DEBUG(saved ? "Save write completed" : "Save write failed");
     LOG_MEMORY();
-    // Persist the tail now: a follow-up crash or the applet being torn down
-    // would lose the 3s flush window
+    // Flush now - a follow-up crash would lose the 3s flush window
     utils::Logger::Flush();
     this->EndOverlay();
     if (!saved) {
@@ -658,8 +626,7 @@ void PKSMApplication::ProcessPendingSaveLoad() {
 }
 
 void PKSMApplication::ShowStorageScreen() {
-    // Constructed on first entry, not at boot: the screen's textures cost
-    // ~25MB of the applet heap, paid only when storage is actually used
+    // Built on first entry: the screen's textures cost ~25MB of the applet heap
     if (!storageScreen) {
         const u64 t0 = armGetSystemTick();
         LOG_DEBUG("Creating storage screen on first use...");
@@ -687,9 +654,7 @@ void PKSMApplication::ShowStorageScreen() {
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
 
-    // Resolution and any console mount stay on the UI thread; the
-    // expensive read+parse runs on a worker behind the toast, and
-    // ProcessPendingSaveLoad commits the result.
+    // Resolution and any console mount stay on the UI thread; the worker only reads+parses
     auto userId = accountManager->GetCurrentAccount();
     pendingLoadStartTick = armGetSystemTick();
     pendingSaveLoad = saveProvider->ResolveLoad(title, save->getName(), &userId);
@@ -742,8 +707,7 @@ void PKSMApplication::OnLoad() {
             navigationCallbacks  // Pass navigation callbacks to the main menu
         );
 
-        // The storage screen is built lazily in ShowStorageScreen - its
-        // textures are too heavy for the applet heap to pay at boot
+        // The storage screen is built lazily in ShowStorageScreen
 
         // Register for save data changes in both MainMenu and StorageScreen
         LOG_DEBUG("Setting up save data change callbacks...");
