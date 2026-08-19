@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -36,11 +37,25 @@ constexpr const char* ROM_TREE_ROOT = "sdmc:/roms";
 constexpr const char* CITRA_USER_DIRS[] = {"sdmc:/switch/dekopon/", "sdmc:/switch/azahar/"};
 constexpr const char* CITRA_TREE_NAME = "Nintendo 3DS";
 
+// Backups of the NSO emulator apps hold per-game saves (JKSV:
+// <backup>/saves/A-BPEE_e/cartridge.sram); scan just those two titles'
+// backup dirs - the rest of a backup tree is console saves, not emulator
+// files. GBA sram is raw; GB .sav files come in the NSO container the
+// validator peels.
+constexpr const char* JKSV_BASE = "sdmc:/JKSV/";
+constexpr const char* CHECKPOINT_SAVES_BASE = "sdmc:/switch/Checkpoint/saves/";
+
+std::string TitleIdHex(u64 titleId) {
+    char hex[17];
+    snprintf(hex, sizeof(hex), "%016lX", titleId);
+    return hex;
+}
+
 // A scan is a boot-time cost; keep it bounded whatever the card holds
 constexpr int MAX_SCAN_DEPTH = 4;
 constexpr int MAX_SCAN_DIRS = 512;
 
-const std::set<std::string> SAVE_EXTENSIONS = {".srm", ".sav", ".dsv"};
+const std::set<std::string> SAVE_EXTENSIONS = {".srm", ".sav", ".dsv", ".sram"};
 
 std::string ToLower(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
@@ -110,6 +125,21 @@ std::vector<std::string> CollectScanRoots() {
     const std::string mgbaDir = ConfigValue(MGBA_CONFIG, "savegamePath");
     if (!mgbaDir.empty()) {
         roots.push_back(NormalizeConfiguredPath(mgbaDir));
+    }
+
+    // JKSV names backup dirs by bare title ID; Checkpoint prefixes the ID
+    // with 0x and appends the title's name - and can leave several dirs for
+    // one title (name-resolved and ID-only), so take every prefix match
+    for (const u64 tid : pksm::data::emulator::SaveDiscovery::NSO_APP_TITLES) {
+        roots.push_back(JKSV_BASE + TitleIdHex(tid) + "/");
+        const std::string prefix = "0x" + TitleIdHex(tid);
+        std::error_code ec;
+        fs::directory_iterator it(CHECKPOINT_SAVES_BASE, fs::directory_options::skip_permission_denied, ec);
+        for (const fs::directory_iterator end; !ec && it != end; it.increment(ec)) {
+            if (it->path().filename().string().rfind(prefix, 0) == 0) {
+                roots.push_back(it->path().string() + "/");
+            }
+        }
     }
 
     roots.push_back(ROM_TREE_ROOT);
@@ -328,6 +358,27 @@ std::string FamilyOf(::pksm::GameVersion version) {
 }  // namespace
 
 namespace pksm::data::emulator {
+
+std::optional<SaveDiscovery::NSOBackupRef> SaveDiscovery::ParseNSOBackupPath(const std::filesystem::path& path) {
+    std::vector<std::string> parts;
+    for (const auto& part : path) {
+        parts.push_back(part.string());
+    }
+    if (parts.size() < 5 || parts[parts.size() - 3] != "saves") {
+        return std::nullopt;
+    }
+    const std::string& titleDir = parts[parts.size() - 5];
+    for (const u64 tid : NSO_APP_TITLES) {
+        const std::string hex = TitleIdHex(tid);
+        if (titleDir == hex) {
+            return NSOBackupRef{tid, "JKSV NSO", parts[parts.size() - 4], parts[parts.size() - 2]};
+        }
+        if (titleDir.rfind("0x" + hex, 0) == 0) {
+            return NSOBackupRef{tid, "Checkpoint NSO", parts[parts.size() - 4], parts[parts.size() - 2]};
+        }
+    }
+    return std::nullopt;
+}
 
 std::unordered_map<u64, std::vector<std::string>>
 SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const ParseReport& onParsed) {

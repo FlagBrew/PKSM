@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <cstdio>
+#include <cstring>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
@@ -10,7 +11,9 @@
 #include <vector>
 
 #include "data/saves/ConsoleSaveMount.hpp"
+#include "data/saves/NSOContainer.hpp"
 #include "data/saves/SafeNames.hpp"
+#include "data/saves/SaveValidator.hpp"
 #include "utils/Logger.hpp"
 
 namespace {
@@ -182,6 +185,48 @@ void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string&
     PruneOldBackups(titleDir);
 }
 
+// A save loaded out of a GB NSO container must go back into it: keep the
+// container's header, splice the raw save in, re-sign its SHA-1. Plain
+// files pass through untouched. Returns false when the write must abort;
+// on success data/size point at the bytes to write (the caller's raw save,
+// or the container built around it in `container`).
+bool PrepareWriteBuffer(const std::string& path, const u8*& data, size_t& size, std::vector<u8>& container) {
+    std::error_code ec;
+    const auto existingSize = std::filesystem::file_size(std::filesystem::path(path), ec);
+    if (ec || existingSize <= size || existingSize > pksm::saves::SaveValidator::MAX_SAVE_SIZE) {
+        return true;
+    }
+
+    container.resize(existingSize);
+    FILE* in = fopen(path.c_str(), "rb");
+    const bool readOk = in && fread(container.data(), 1, existingSize, in) == existingSize;
+    if (in) {
+        fclose(in);
+    }
+    if (!readOk) {
+        // The target is bigger than the raw save, so it may be a container;
+        // writing raw bytes over an unreadable one would destroy its header
+        LOG_ERROR("Cannot read existing save file before write-back: " + path);
+        return false;
+    }
+    const auto region = pksm::saves::ProbeNSOContainer(container.data(), container.size());
+    if (region && region->rawSize == size) {
+        std::memcpy(container.data() + region->rawOffset, data, size);
+        pksm::saves::ResignNSOContainer(container.data(), *region);
+        data = container.data();
+        size = container.size();
+    } else if (region) {
+        LOG_ERROR(
+            "Refusing to write " + std::to_string(size) + " bytes into a container holding " +
+            std::to_string(region->rawSize) + ": " + path
+        );
+        return false;
+    } else {
+        container.clear();
+    }
+    return true;
+}
+
 }  // namespace
 
 bool SwitchSaveDataWriter::WriteSave(
@@ -232,6 +277,11 @@ bool SwitchSaveDataWriter::WriteSave(
     }
 
     BackupBeforeWrite(title, savePath);
+
+    std::vector<u8> container;
+    if (!PrepareWriteBuffer(savePath, data, size, container)) {
+        return false;
+    }
 
     // sdmc files have no journal and the target is the only copy: write a
     // sibling temp file and swap it in, so an interrupted write can never
