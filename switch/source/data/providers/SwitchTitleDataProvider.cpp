@@ -6,6 +6,7 @@
 #include <switch.h>
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
+#include "utils/AssetDownloader.hpp"
 #include "utils/BoxArtSheet.hpp"
 #include "utils/Logger.hpp"
 
@@ -317,7 +318,7 @@ void SwitchTitleDataProvider::RefreshCatalogTitles() {
     // and only the games that actually tile get decoded. A failed load is
     // deliberately not checked - every tile then takes the fallback icon
     pksm::utils::BoxArtSheet boxArt;
-    boxArt.Load(BOX_ART_SHEET_PATH);
+    boxArt.Load(pksm::utils::AssetDownloader::ResolvedPath(pksm::utils::AssetDownloader::Asset::BoxArt));
 
     const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
     for (const auto& game : games) {

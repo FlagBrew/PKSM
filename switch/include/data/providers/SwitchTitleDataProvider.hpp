@@ -12,9 +12,6 @@ private:
     // Placeholder shown when a title's icon can't be fetched or decoded
     static constexpr const char* FALLBACK_TITLE_ICON_PATH = "romfs:/gfx/fallback_title_icon.jpg";
 
-    // Box art for catalog (Emulator/Custom) tiles, keyed by title id
-    static constexpr const char* BOX_ART_SHEET_PATH = "romfs:/gfx/basprites.pkss";
-
     // Save layer; owns the "does this container hold save data" policy
     ISaveDataProvider::Ref saveDataProvider;
 
