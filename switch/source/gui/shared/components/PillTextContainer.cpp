@@ -57,47 +57,6 @@ void PillTextContainer::SetText(const std::string& text) {
     UpdateTextPosition();
 }
 
-std::string PillTextContainer::GetText() const {
-    return textBlock->GetText();
-}
-
-void PillTextContainer::SetFont(const std::string& font) {
-    textBlock->SetFont(font);
-    UpdateTextPosition();
-}
-
-void PillTextContainer::SetContainerColor(const pu::ui::Color& color) {
-    containerColor = color;
-}
-
-void PillTextContainer::SetTextColor(const pu::ui::Color& color) {
-    textBlock->SetColor(color);
-}
-
-void PillTextContainer::SetX(pu::i32 newX) {
-    x = newX;
-    UpdateTextPosition();
-    pulsingOutline->SetX(newX);
-}
-
-void PillTextContainer::SetY(pu::i32 newY) {
-    y = newY;
-    UpdateTextPosition();
-    pulsingOutline->SetY(newY);
-}
-
-void PillTextContainer::SetWidth(pu::i32 newWidth) {
-    width = newWidth;
-    UpdateTextPosition();
-    pulsingOutline->SetWidth(newWidth);
-}
-
-void PillTextContainer::SetHeight(pu::i32 newHeight) {
-    height = newHeight;
-    UpdateTextPosition();
-    pulsingOutline->SetHeight(newHeight);
-}
-
 void PillTextContainer::SetDimensions(pu::i32 newX, pu::i32 newY, pu::i32 newWidth, pu::i32 newHeight) {
     x = newX;
     y = newY;

@@ -4,7 +4,6 @@
 #include <cmath>
 #include <sstream>
 
-#include "gui/render/LineRenderer.hpp"
 #include "gui/render/PatternRenderer.hpp"
 #include "gui/screens/title-load-screen/sub-components/game-list/GameListCommon.hpp"
 #include "gui/shared/UIConstants.hpp"
@@ -276,13 +275,6 @@ void pksm::ui::GameList::SetFocused(bool focused) {
 
 bool pksm::ui::GameList::IsFocused() const {
     return focused;
-}
-
-void pksm::ui::GameList::SetBackgroundColor(const pu::ui::Color& color) {
-    backgroundColor = color;
-    if (background) {
-        background->SetBackgroundColor(color);
-    }
 }
 
 bool pksm::ui::GameList::ShouldResignDownFocus() const {

@@ -33,9 +33,6 @@ public:
 
     void SetWidth(const pu::i32 width);
     void SetHeight(const pu::i32 height);
-    void SetX(const pu::i32 x);
-    void SetY(const pu::i32 y);
-    void SetOutlinePadding(const pu::i32 padding);
 
     // Controls whether this image is the currently selected one
     void SetSelected(bool select) override;
@@ -44,8 +41,6 @@ public:
     // IFocusable implementation
     void SetFocused(bool focus) override;
     bool IsFocused() const override;
-
-    pu::ui::elm::Rectangle::Ref GetOverlay();
 
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;
 

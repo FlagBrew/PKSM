@@ -32,9 +32,6 @@ public:
     void
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
-    void SetX(const pu::i32 x);
-    void SetY(const pu::i32 y);
-
     // ISelectable
     void SetSelected(bool select) override;
     bool IsSelected() const override;

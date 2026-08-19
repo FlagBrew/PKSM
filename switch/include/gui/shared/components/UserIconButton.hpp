@@ -39,7 +39,6 @@ public:
 
     // Disable/enable the button (affects input handling only)
     void SetDisabled(bool disabled);
-    bool IsDisabled() const;
 
     // Set callbacks
     void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }

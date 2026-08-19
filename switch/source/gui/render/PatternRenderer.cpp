@@ -20,18 +20,6 @@ bool PatternRenderer::IsInRoundedCorner(
     return (dx * dx + dy * dy) <= (radius * radius);
 }
 
-bool PatternBackground::IsInRoundedCorner(
-    const pu::i32 x,
-    const pu::i32 y,
-    const pu::i32 cornerX,
-    const pu::i32 cornerY,
-    const pu::i32 radius
-) {
-    pu::i32 dx = x - cornerX;
-    pu::i32 dy = y - cornerY;
-    return (dx * dx + dy * dy) <= (radius * radius);
-}
-
 PatternBackground::PatternBackground(
     const pu::i32 x,
     const pu::i32 y,
@@ -61,45 +49,6 @@ PatternBackground::~PatternBackground() {
     if (backgroundTexture) {
         SDL_DestroyTexture(backgroundTexture);
         backgroundTexture = nullptr;
-    }
-}
-
-void PatternBackground::SetDimensions(const pu::i32 width, const pu::i32 height) {
-    if (this->width != width || this->height != height) {
-        this->width = width;
-        this->height = height;
-        CreateBackgroundTexture();
-    }
-}
-
-void PatternBackground::SetCornerRadius(const pu::i32 radius) {
-    if (this->cornerRadius != radius) {
-        this->cornerRadius = radius;
-        CreateBackgroundTexture();
-    }
-}
-
-void PatternBackground::SetBackgroundColor(const pu::ui::Color& color) {
-    if (this->backgroundColor.r != color.r || this->backgroundColor.g != color.g ||
-        this->backgroundColor.b != color.b || this->backgroundColor.a != color.a) {
-        this->backgroundColor = color;
-        CreateBackgroundTexture();
-    }
-}
-
-void PatternBackground::SetLineColor(const pu::ui::Color& color) {
-    if (this->lineColor.r != color.r || this->lineColor.g != color.g || this->lineColor.b != color.b ||
-        this->lineColor.a != color.a) {
-        this->lineColor = color;
-        CreateBackgroundTexture();
-    }
-}
-
-void PatternBackground::SetLineProperties(const pu::i32 spacing, const pu::i32 thickness) {
-    if (this->lineSpacing != spacing || this->lineThickness != thickness) {
-        this->lineSpacing = spacing;
-        this->lineThickness = thickness;
-        CreateBackgroundTexture();
     }
 }
 

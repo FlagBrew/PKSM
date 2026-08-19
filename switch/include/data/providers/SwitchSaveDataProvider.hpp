@@ -96,12 +96,6 @@ public:
     std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) override;
     void FinishLoad(const pksm::saves::PendingLoad& pending) override;
 
-    std::optional<pksm::saves::LoadedSave> LoadSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName,
-        const AccountUid* userId = nullptr
-    ) override;
-
     bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const override;
 
     bool HasDiscoveredEmulatorSaves(u64 titleId) const override;
@@ -121,8 +115,4 @@ public:
         const pksm::titles::Title::Ref& title,
         const std::string& saveName
     );
-
-    // Refresh methods
-    void
-    RefreshSaves(const pksm::titles::Title::Ref& title, const std::optional<AccountUid>& userId = std::nullopt) const;
 };

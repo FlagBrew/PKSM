@@ -52,8 +52,6 @@ public:
     // Getters/setters
     void SetX(const pu::i32 x);
     void SetY(const pu::i32 y);
-    void SetWidth(const pu::i32 width);
-    void SetHeight(const pu::i32 height);
     void SetImage(const utils::SpriteRef& sprite);
 
     // Set Pokemon sprite

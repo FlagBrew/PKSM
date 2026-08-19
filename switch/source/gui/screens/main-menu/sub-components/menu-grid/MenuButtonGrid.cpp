@@ -95,11 +95,6 @@ void MenuButtonGrid::RegisterButtonCallback(MenuButtonType type, MenuButtonCallb
     buttonCallbacks[type] = callback;
 }
 
-bool MenuButtonGrid::HandleSelectInput(const u64 keys_down) {
-    // No longer needed as buttons now handle their own input via ButtonInputHandler
-    return false;
-}
-
 void MenuButtonGrid::SetSelectedIndex(size_t index) {
     if (index < buttons.size() && selectedIndex != index) {
         selectedIndex = index;

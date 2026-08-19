@@ -45,7 +45,6 @@ public:
 
     // Data source management
     void SetDataSource(const std::vector<std::string>& items);
-    const std::vector<std::string>& GetDataSource() const;
 
     // Touch selection callback
     void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }
@@ -59,7 +58,6 @@ public:
 
     // Disable/enable the menu (affects input handling only)
     void SetDisabled(bool disabled);
-    bool IsDisabled() const;
 
 private:
     // Position management methods

@@ -101,20 +101,10 @@ void TriggerButton::SetBackgroundColor(const pu::ui::Color& color) {
     backgroundColor = color;
 }
 
-void TriggerButton::SetTextColor(const pu::ui::Color& color) {
-    textColor = color;
-    textBlock->SetColor(color);
-}
-
 void TriggerButton::SetNavigationText(const std::string& text) {
     navigationText = text;
     navigationTextBlock->SetText(text);
     UpdateTextPosition();
-}
-
-void TriggerButton::SetNavigationTextColor(const pu::ui::Color& color) {
-    navigationTextColor = color;
-    navigationTextBlock->SetColor(color);
 }
 
 void TriggerButton::UpdateTextPosition() {

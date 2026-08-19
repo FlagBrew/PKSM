@@ -20,9 +20,7 @@ public:
 
     // Scroll position management
     void SetContentHeight(pu::i32 height);
-    pu::i32 GetContentHeight() const;
     void ScrollToOffset(pu::i32 offset, bool animated = false);
-    pu::i32 GetScrollOffset() const;
 
     // Viewport management
     pu::i32 GetX() override;

@@ -654,12 +654,6 @@ bool PokemonBox::IsSelectedSlotUsable() const {
     return !GetPokemonData(currentBox, GetSelectedSlot()).unusable;
 }
 
-void PokemonBox::SetSelectedSlot(int slotIndex) {
-    if (slotIndex >= 0) {
-        boxGrid->SetSelectedIndex(static_cast<size_t>(slotIndex));
-    }
-}
-
 pu::i32 PokemonBox::GetSelectedItemX() {
     return boxGrid->GetSelectedItemX();
 }
@@ -670,16 +664,6 @@ pu::i32 PokemonBox::GetSelectedItemY() {
 
 void PokemonBox::SetDisabled(bool disabled) {
     this->disabled = disabled;
-}
-
-void PokemonBox::SetColors(const pu::ui::Color& frameColor, const pu::ui::Color& borderColor) {
-    this->frameColor = frameColor;
-    this->borderColor = borderColor;
-
-    // Update the border outline color
-    if (borderOutline) {
-        borderOutline->SetColor(borderColor);
-    }
 }
 
 void PokemonBox::SetFocusManager(input::FocusManager::Ref focusManager) {

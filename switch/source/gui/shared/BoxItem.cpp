@@ -112,64 +112,6 @@ pksm::ui::BoxItem::BoxItem(
     pulsingOutline->SetVisible(false);
 }
 
-void pksm::ui::BoxItem::SetWidth(const pu::i32 width) {
-    this->width = width;
-    container->SetWidth(width);
-    background->SetWidth(width);
-    image->SetWidth(width);
-
-    // Update outlines
-    pu::i32 outlineWidth = width + (outlinePadding * 2);
-    outline->SetWidth(outlineWidth);
-    pulsingOutline->SetWidth(outlineWidth);
-}
-
-void pksm::ui::BoxItem::SetHeight(const pu::i32 height) {
-    this->height = height;
-    container->SetHeight(height);
-    background->SetHeight(height);
-    image->SetHeight(height);
-
-    // Update outlines
-    pu::i32 outlineHeight = height + (outlinePadding * 2);
-    outline->SetHeight(outlineHeight);
-    pulsingOutline->SetHeight(outlineHeight);
-}
-
-void pksm::ui::BoxItem::SetX(const pu::i32 x) {
-    this->x = x;
-    pu::i32 outlineX = x - outlinePadding;
-    outline->SetX(outlineX);
-    pulsingOutline->SetX(outlineX);
-}
-
-void pksm::ui::BoxItem::SetY(const pu::i32 y) {
-    this->y = y;
-    pu::i32 outlineY = y - outlinePadding;
-    outline->SetY(outlineY);
-    pulsingOutline->SetY(outlineY);
-}
-
-void pksm::ui::BoxItem::SetOutlinePadding(const pu::i32 padding) {
-    outlinePadding = padding;
-
-    // Update both outlines
-    pu::i32 outlineX = x - padding;
-    pu::i32 outlineY = y - padding;
-    pu::i32 outlineWidth = width + (padding * 2);
-    pu::i32 outlineHeight = height + (padding * 2);
-
-    outline->SetX(outlineX);
-    outline->SetY(outlineY);
-    outline->SetWidth(outlineWidth);
-    outline->SetHeight(outlineHeight);
-
-    pulsingOutline->SetX(outlineX);
-    pulsingOutline->SetY(outlineY);
-    pulsingOutline->SetWidth(outlineWidth);
-    pulsingOutline->SetHeight(outlineHeight);
-}
-
 pu::i32 pksm::ui::BoxItem::GetX() {
     return x;
 }

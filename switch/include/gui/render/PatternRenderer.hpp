@@ -41,15 +41,6 @@ private:
     pu::ui::Color backgroundColor;
     SDL_Texture* backgroundTexture;
 
-    // Helper function for corner calculations
-    static bool IsInRoundedCorner(
-        const pu::i32 x,
-        const pu::i32 y,
-        const pu::i32 cornerX,
-        const pu::i32 cornerY,
-        const pu::i32 radius
-    );
-
     // Create or recreate the background texture
     void CreateBackgroundTexture();
 
@@ -75,13 +66,6 @@ public:
     void SetY(const pu::i32 y) { this->y = y; }
     pu::i32 GetWidth() override { return width; }
     pu::i32 GetHeight() override { return height; }
-
-    // Customization methods
-    void SetDimensions(const pu::i32 width, const pu::i32 height);
-    void SetCornerRadius(const pu::i32 radius);
-    void SetBackgroundColor(const pu::ui::Color& color);
-    void SetLineColor(const pu::ui::Color& color);
-    void SetLineProperties(const pu::i32 spacing, const pu::i32 thickness);
 
     // Rendering
     void OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) override;

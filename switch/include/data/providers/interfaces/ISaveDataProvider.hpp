@@ -21,14 +21,6 @@ public:
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const = 0;
 
-    // Load a specific save, with optional user ID for installed titles;
-    // ownership of the loaded save lives in the save data accessor
-    virtual std::optional<pksm::saves::LoadedSave> LoadSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName,
-        const AccountUid* userId = nullptr
-    ) = 0;
-
     // LoadSave split for a worker thread: ResolveLoad (UI thread; mounts),
     // ExecuteLoad (thread-safe), FinishLoad (UI thread, every outcome, exactly once)
     virtual std::optional<pksm::saves::PendingLoad> ResolveLoad(

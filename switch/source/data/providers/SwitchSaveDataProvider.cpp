@@ -645,36 +645,6 @@ void SwitchSaveDataProvider::RefreshJKSVSaves(const pksm::titles::Title::Ref& ti
     jksvSaveCache[titleId] = saves;
 }
 
-void SwitchSaveDataProvider::RefreshSaves(
-    const pksm::titles::Title::Ref& title,
-    const std::optional<AccountUid>& userId
-) const {
-    if (!title) {
-        return;
-    }
-
-    u64 titleId = title->getTitleId();
-
-    // Emulator and Custom titles have nothing to refresh here; their
-    // listings are rebuilt in GetSavesForTitle
-    if (title->getContext() != pksm::titles::TitleContext::Console) {
-        return;
-    }
-
-    // If a user ID is provided, refresh console saves
-    if (userId) {
-        RefreshConsoleSaves(title, *userId);
-    }
-
-    // Refresh Checkpoint and JKSV backups (these are independent of the user)
-    RefreshCheckpointSaves(title);
-    RefreshJKSVSaves(title);
-
-    std::stringstream ss;
-    ss << "Refreshed saves for title " << std::hex << titleId;
-    LOG_INFO(ss.str());
-}
-
 std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     const pksm::titles::Title::Ref& title,
     const std::optional<AccountUid>& currentUser
@@ -920,18 +890,4 @@ void SwitchSaveDataProvider::FinishLoad(const pksm::saves::PendingLoad& pending)
     if (pending.mounted) {
         UnmountSaveData();
     }
-}
-
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
-    const pksm::titles::Title::Ref& title,
-    const std::string& saveName,
-    const AccountUid* userId
-) {
-    auto pending = ResolveLoad(title, saveName, userId);
-    if (!pending) {
-        return std::nullopt;
-    }
-    auto loaded = ExecuteLoad(*pending);
-    FinishLoad(*pending);
-    return loaded;
 }

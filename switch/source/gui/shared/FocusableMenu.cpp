@@ -164,10 +164,6 @@ void pksm::ui::FocusableMenu::SetDataSource(const std::vector<std::string>& item
     }
 }
 
-const std::vector<std::string>& pksm::ui::FocusableMenu::GetDataSource() const {
-    return currentDataSource;
-}
-
 std::string pksm::ui::FocusableMenu::GetSelectedItemText() const {
     if (!currentDataSource.empty()) {
         if (selected_item_idx < currentDataSource.size()) {
@@ -180,8 +176,4 @@ std::string pksm::ui::FocusableMenu::GetSelectedItemText() const {
 void pksm::ui::FocusableMenu::SetDisabled(bool disabled) {
     LOG_TRACE("FocusableMenu SetDisabled: " + std::to_string(disabled));
     this->disabled = disabled;
-}
-
-bool pksm::ui::FocusableMenu::IsDisabled() const {
-    return disabled;
 }

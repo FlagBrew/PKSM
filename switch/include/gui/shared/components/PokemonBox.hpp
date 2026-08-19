@@ -157,7 +157,6 @@ public:
 
     // Current selection
     int GetSelectedSlot() const;
-    void SetSelectedSlot(int slotIndex);
     bool IsSelectedSlotOccupied() const;
     bool IsSelectedSlotUsable() const;
 
@@ -181,9 +180,6 @@ public:
     void SetOnSlotActivated(std::function<void(int, int)> callback) { onSlotActivatedCallback = callback; }
     void SetOnBoxNameActivated(std::function<void(int)> callback) { onBoxNameActivatedCallback = callback; }
     void SetOnFocusZoneChanged(std::function<void()> callback) { onFocusZoneChangedCallback = callback; }
-
-    // Appearance configuration
-    void SetColors(const pu::ui::Color& frameColor, const pu::ui::Color& borderColor);
 };
 
 }  // namespace pksm::ui

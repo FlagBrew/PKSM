@@ -137,14 +137,6 @@ void pksm::ui::FocusableButton::SetContentFont(const std::string& font) {
     SetContent(text->GetText());
 }
 
-void pksm::ui::FocusableButton::SetContentColor(const pu::ui::Color& color) {
-    text->SetColor(color);
-}
-
-void pksm::ui::FocusableButton::SetBackgroundColor(const pu::ui::Color& color) {
-    background->SetColor(color);
-}
-
 void pksm::ui::FocusableButton::SetHelpText(const std::string& text) {
     helpText = text;
 }
@@ -162,8 +154,4 @@ std::vector<pksm::ui::HelpItem> pksm::ui::FocusableButton::GetHelpItems() const 
 void pksm::ui::FocusableButton::SetDisabled(bool disabled) {
     LOG_TRACE("FocusableButton SetDisabled: " + std::to_string(disabled));
     this->disabled = disabled;
-}
-
-bool pksm::ui::FocusableButton::IsDisabled() const {
-    return disabled;
 }

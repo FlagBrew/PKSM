@@ -50,8 +50,6 @@ public:
     bool IsPressed() const { return isPressed; }
 
     // Position
-    void SetX(pu::i32 newX);
-    void SetY(pu::i32 newY);
     void SetPosition(pu::i32 newX, pu::i32 newY);
 
     // Color

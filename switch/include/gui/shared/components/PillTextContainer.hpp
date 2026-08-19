@@ -60,23 +60,11 @@ public:
 
     // Text handling
     void SetText(const std::string& text);
-    std::string GetText() const;
-
-    // Font handling
-    void SetFont(const std::string& font);
-
-    // Color handling
-    void SetContainerColor(const pu::ui::Color& color);
-    void SetTextColor(const pu::ui::Color& color);
 
     // Focus handling
     bool IsFocused() const override;
 
     // Size and position
-    void SetX(pu::i32 x);
-    void SetY(pu::i32 y);
-    void SetWidth(pu::i32 width);
-    void SetHeight(pu::i32 height);
     void SetDimensions(pu::i32 x, pu::i32 y, pu::i32 width, pu::i32 height);
 };
 

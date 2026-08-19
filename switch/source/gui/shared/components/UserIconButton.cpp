@@ -238,8 +238,4 @@ void UserIconButton::SetDisabled(bool disabled) {
     this->disabled = disabled;
 }
 
-bool UserIconButton::IsDisabled() const {
-    return disabled;
-}
-
 }  // namespace pksm::ui

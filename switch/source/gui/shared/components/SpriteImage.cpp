@@ -66,14 +66,6 @@ void SpriteImage::SetY(const pu::i32 y) {
     this->y = y;
 }
 
-void SpriteImage::SetWidth(const pu::i32 width) {
-    this->width = width;
-}
-
-void SpriteImage::SetHeight(const pu::i32 height) {
-    this->height = height;
-}
-
 void SpriteImage::SetImage(const utils::SpriteRef& sprite) {
     this->texture = sprite.texture;
     this->clipRect = sprite.src;

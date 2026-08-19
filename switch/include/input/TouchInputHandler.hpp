@@ -27,11 +27,6 @@ public:
         const pu::i32 width,
         const pu::i32 height
     );
-    bool IsPressed() const;
-
-    // Static methods to check and reset touch state
-    static bool IsAnyTouchActive();
-    static void ResetTouchState();
 };
 
 }  // namespace pksm::input
