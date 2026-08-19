@@ -77,7 +77,15 @@ const std::unordered_map<u64, std::vector<std::string>>& SwitchSaveDataProvider:
     // long and must never make validationCache hits wait on it
     std::lock_guard<std::mutex> lg(discoveryMutex);
     if (!discoveredSaves) {
-        discoveredSaves = pksm::data::emulator::SaveDiscovery::Discover(emulatorGames);
+        // The scan already core-parses every candidate; capture the verdicts
+        // so nothing (prewarm included) parses these files a second time
+        discoveredSaves = pksm::data::emulator::SaveDiscovery::Discover(
+            emulatorGames,
+            [this](const std::string& path, std::filesystem::file_time_type mtime, std::uintmax_t size, bool valid) {
+                std::lock_guard<std::mutex> cacheLock(validationMutex);
+                validationCache[path] = {mtime, size, valid};
+            }
+        );
     }
     return *discoveredSaves;
 }
