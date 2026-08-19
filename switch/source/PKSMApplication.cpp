@@ -181,6 +181,10 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         LOG_DEBUG("Preparing application...");
         app->Prepare();
 
+        // Boot disk traffic is done; warm the save-validation cache so the
+        // first landing on each title doesn't pay it on the input path
+        saveProvider->PrewarmValidationCache();
+
         LOG_INFO("PKSM initialization complete");
         LOG_MEMORY();  // Final initialization memory state
         return app;

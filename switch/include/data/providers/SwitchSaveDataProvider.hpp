@@ -1,9 +1,12 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <filesystem>
 #include <map>
+#include <mutex>
 #include <optional>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -39,13 +42,19 @@ private:
     mutable std::optional<std::unordered_map<u64, std::vector<std::string>>> discoveredSaves;
     const std::unordered_map<u64, std::vector<std::string>>& DiscoveredSaves() const;
 
-    // Core-validation results per file, invalidated when the file changes
+    // Core-validation results per file, invalidated when the file changes.
+    // Guarded by validationMutex: the prewarm worker fills it while the UI
+    // thread reads through it
     struct ValidatedFile {
         std::filesystem::file_time_type mtime;
         std::uintmax_t size = 0;
         bool valid = false;
     };
     mutable std::unordered_map<std::string, ValidatedFile> validationCache;
+    mutable std::mutex validationMutex;
+    mutable std::mutex discoveryMutex;
+    std::thread prewarmThread;
+    std::atomic<bool> prewarmStop{false};
 
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
@@ -61,7 +70,13 @@ private:
 
 public:
     SwitchSaveDataProvider();
+    ~SwitchSaveDataProvider();
     PU_SMART_CTOR(SwitchSaveDataProvider)
+
+    // Validate every discovered and configured save on a background thread,
+    // so the first landing on a title finds the cache already warm.
+    // Main-thread-only, call once
+    void PrewarmValidationCache();
 
     // Implementation of ISaveDataProvider
     std::vector<pksm::saves::Save::Ref> GetSavesForTitle(
