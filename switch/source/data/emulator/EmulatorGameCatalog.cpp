@@ -83,7 +83,7 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson() {
 
 std::vector<std::string> EmulatorGameCatalog::CandidatePaths(
     u64 titleId,
-    const std::unordered_map<u64, EmulatorSaveSelection>& config
+    const std::unordered_map<u64, CustomSaveSelection>& config
 ) {
     std::vector<std::string> paths;
     auto it = config.find(titleId);

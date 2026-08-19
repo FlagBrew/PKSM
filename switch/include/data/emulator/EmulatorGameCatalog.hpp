@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "data/emulator/EmulatorSaveConfig.hpp"
+#include "data/emulator/CustomSaveConfig.hpp"
 
 namespace pksm::data::emulator {
 
@@ -27,7 +27,7 @@ public:
 
     static std::vector<std::string> CandidatePaths(
         u64 titleId,
-        const std::unordered_map<u64, EmulatorSaveSelection>& config
+        const std::unordered_map<u64, CustomSaveSelection>& config
     );
 };
 
