@@ -434,15 +434,25 @@ void StorageScreen::LoadBoxData() {
     pokemonBox->SetBoxCount(boxCount);
 
     // Load all boxes at once to ensure the box data provider knows about them
+    u64 providerNs = 0;
+    u64 applyNs = 0;
     for (size_t i = 0; i < boxCount; ++i) {
+        const u64 t0 = armGetSystemTick();
         auto boxData = boxDataProvider->GetBoxData(currentSave, i);
+        const u64 t1 = armGetSystemTick();
         pokemonBox->SetBoxData(i, boxData);
+        providerNs += armTicksToNs(t1 - t0);
+        applyNs += armTicksToNs(armGetSystemTick() - t1);
     }
 
     // Start at box 0
+    const u64 tBox0 = armGetSystemTick();
     pokemonBox->SetCurrentBox(0);
-
-    LOG_DEBUG("Box data loaded successfully");
+    LOG_DEBUG(
+        "Box preload: " + std::to_string(boxCount) + " boxes, provider " + std::to_string(providerNs / 1000000) +
+        " ms, apply " + std::to_string(applyNs / 1000000) + " ms, box 0 display " +
+        std::to_string(armTicksToNs(armGetSystemTick() - tBox0) / 1000000) + " ms"
+    );
 }
 
 StorageScreen::~StorageScreen() = default;

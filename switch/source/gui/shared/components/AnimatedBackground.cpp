@@ -30,6 +30,8 @@ AnimatedBackground::AnimatedBackground()
 
 AnimatedBackground::~AnimatedBackground() = default;
 
+// The color mod lands on the shared textures: a tint applies to every
+// screen's background, not just this instance's
 void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
     tintColor = color;
     for (auto& texture : bg_textures) {
@@ -42,33 +44,50 @@ void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
 void AnimatedBackground::InitializeBackground() {
     LOG_DEBUG("Initializing animated background");
 
-    // Load static background first
-    pu::sdl2::Texture staticTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/bg_style.png");
-    if (!staticTexture) {
-        LOG_ERROR("Failed to load static background texture");
-    } else {
-        static_bg_texture = pu::sdl2::TextureHandle::New(staticTexture);
-        staticBgWidth = pu::ui::render::GetTextureWidth(static_bg_texture->Get());
-        staticBgHeight = pu::ui::render::GetTextureHeight(static_bg_texture->Get());
-        LOG_DEBUG("Static background loaded successfully");
+    // Every screen owns an AnimatedBackground, and re-decoding the same
+    // four PNGs cost 118ms of the storage screen's 235ms construction -
+    // so the textures are loaded once per app run and shared. The cache
+    // is deliberately leaked: a static handle would destroy its texture
+    // after Renderer::Finalize, reading freed memory at exit.
+    struct SharedTextures {
+        pu::sdl2::TextureHandle::Ref staticBg;
+        pu::sdl2::TextureHandle::Ref layers[3];
+    };
+    static SharedTextures* shared = nullptr;
+    if (!shared) {
+        shared = new SharedTextures();
+        pu::sdl2::Texture staticTexture = pu::ui::render::LoadImage("romfs:/gfx/ui/bg_style.png");
+        if (!staticTexture) {
+            LOG_ERROR("Failed to load static background texture");
+        } else {
+            shared->staticBg = pu::sdl2::TextureHandle::New(staticTexture);
+        }
+        const char* layerPaths[] = {
+            "romfs:/gfx/ui/anim_squares_1.png",
+            "romfs:/gfx/ui/anim_squares_2.png",
+            "romfs:/gfx/ui/anim_squares_3.png"
+        };
+        for (int i = 0; i < 3; i++) {
+            pu::sdl2::Texture loadedTexture = pu::ui::render::LoadImage(layerPaths[i]);
+            if (!loadedTexture) {
+                LOG_ERROR("Failed to load animated squares texture");
+                continue;
+            }
+            shared->layers[i] = pu::sdl2::TextureHandle::New(loadedTexture);
+        }
     }
 
-    // Load the three animated square layers
-    const char* layerPaths[] = {
-        "romfs:/gfx/ui/anim_squares_1.png",
-        "romfs:/gfx/ui/anim_squares_2.png",
-        "romfs:/gfx/ui/anim_squares_3.png"
-    };
+    if (shared->staticBg) {
+        static_bg_texture = shared->staticBg;
+        staticBgWidth = pu::ui::render::GetTextureWidth(static_bg_texture->Get());
+        staticBgHeight = pu::ui::render::GetTextureHeight(static_bg_texture->Get());
+    }
 
     for (int i = 0; i < 3; i++) {
-        pu::sdl2::Texture loadedTexture = pu::ui::render::LoadImage(layerPaths[i]);
-        if (!loadedTexture) {
-            LOG_ERROR("Failed to load animated squares texture");
+        if (!shared->layers[i]) {
             continue;
         }
-
-        // Create a texture handle from the loaded texture
-        bg_textures[i] = pu::sdl2::TextureHandle::New(loadedTexture);
+        bg_textures[i] = shared->layers[i];
 
         // Get actual texture dimensions
         textureWidths[i] = pu::ui::render::GetTextureWidth(bg_textures[i]->Get());
@@ -161,9 +180,11 @@ void AnimatedBackground::EnableBobbing(int layer, bool enabled) {
 }
 
 void AnimatedBackground::UpdateBackgroundAnimation() {
-    // Calculate time delta for smooth animation
+    // Calculate time delta for smooth animation. Clamped: after a stall
+    // (screen construction, save parsing) an unbounded delta teleports
+    // every layer in a single frame
     const auto currentTime = SDL_GetTicks64();
-    const auto deltaTime = currentTime - lastFrameTime;
+    const auto deltaTime = std::min<u64>(currentTime - lastFrameTime, 50);
     lastFrameTime = currentTime;
 
     // Time since animation started (for bobbing delays)
