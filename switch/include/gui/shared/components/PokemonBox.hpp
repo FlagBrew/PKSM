@@ -1,7 +1,6 @@
 #pragma once
 
 #include <pu/Plutonium>
-#include <set>
 
 #include "gui/shared/components/BoxGrid.hpp"
 #include "gui/shared/components/BoxNavigationButton.hpp"
@@ -12,7 +11,6 @@
 #include "input/ButtonInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 #include "input/visual-feedback/SelectionManager.hpp"
-#include "utils/PokemonSpriteManager.hpp"
 
 namespace pksm::ui {
 
@@ -92,7 +90,6 @@ private:
     void PreviousBox();
 
     // Manage sprite cache when changing boxes
-    void UpdateSpriteCache();
     void UpdateBoxGrid();
 
     // Update box name display

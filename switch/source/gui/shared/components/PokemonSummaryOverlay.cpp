@@ -2,7 +2,7 @@
 
 #include "gui/shared/UIConstants.hpp"
 #include "gui/shared/components/GenderIcon.hpp"
-#include "utils/PokemonSpriteManager.hpp"
+#include "gui/shared/components/SpriteImage.hpp"
 
 namespace {
 
@@ -138,13 +138,15 @@ void PokemonSummaryOverlay::Rebuild() {
     );
     this->Add(titleBar);
 
-    auto sprite = pu::ui::elm::Image::New(
+    auto sprite = SpriteImage::New(
         panelX + SPRITE_MARGIN,
         barY + (TITLE_BAR_HEIGHT - SPRITE_SIZE) / 2,
-        utils::PokemonSpriteManager::GetPokemonSprite(data.species, data.form, data.shiny)
+        SPRITE_SIZE,
+        SPRITE_SIZE,
+        data.species,
+        data.form,
+        data.shiny
     );
-    sprite->SetWidth(SPRITE_SIZE);
-    sprite->SetHeight(SPRITE_SIZE);
     this->Add(sprite);
 
     auto speciesText =

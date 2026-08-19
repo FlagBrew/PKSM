@@ -3,10 +3,12 @@
 #include <SDL2/SDL.h>
 #include <pu/Plutonium>
 
-#include "utils/PokemonSpriteManager.hpp"
+#include "utils/SpriteSheet.hpp"
 
 namespace pksm::ui {
 
+// Draws a region of a shared texture (a spritesheet page) at an explicit
+// size; the sprite equivalent of Plutonium's Image
 class SpriteImage : public pu::ui::elm::Element {
 private:
     pu::i32 x;
@@ -15,20 +17,17 @@ private:
     pu::i32 height;
     SDL_Rect clipRect;
     pu::sdl2::TextureHandle::Ref texture;
-    bool usingSpritesheet;
 
 public:
-    // Constructor for a clipped sprite image
     SpriteImage(
         const pu::i32 x,
         const pu::i32 y,
         const pu::i32 width,
         const pu::i32 height,
-        pu::sdl2::TextureHandle::Ref texture,
-        const SDL_Rect& clipRect
+        const utils::SpriteRef& sprite
     );
 
-    // Constructor for Pokemon sprite from individual files
+    // Constructor resolving a Pokemon's sprite from the sheet
     SpriteImage(
         const pu::i32 x,
         const pu::i32 y,
@@ -40,8 +39,6 @@ public:
     );
 
     PU_SMART_CTOR(SpriteImage)
-
-    ~SpriteImage();
 
     // Element implementation
     pu::i32 GetX() override;
@@ -57,14 +54,10 @@ public:
     void SetY(const pu::i32 y);
     void SetWidth(const pu::i32 width);
     void SetHeight(const pu::i32 height);
-    void SetClipRect(const SDL_Rect& clipRect);
-    void SetImage(pu::sdl2::TextureHandle::Ref texture, const SDL_Rect* clipRect = nullptr);
+    void SetImage(const utils::SpriteRef& sprite);
 
     // Set Pokemon sprite
     void SetPokemonSprite(u16 species, u8 form = 0, bool shiny = false);
-
-    // Get the texture
-    pu::sdl2::TextureHandle::Ref GetTexture();
 };
 
 }  // namespace pksm::ui

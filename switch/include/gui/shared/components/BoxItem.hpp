@@ -5,6 +5,7 @@
 #include "enums/Gender.hpp"
 #include "gui/shared/components/PulsingOutline.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
+#include "gui/shared/components/SpriteImage.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/TouchInputHandler.hpp"
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
@@ -17,7 +18,7 @@ private:
     bool selected;
     pu::ui::Container::Ref container;
     pu::ui::elm::Rectangle::Ref background;
-    pu::ui::elm::Image::Ref image;
+    pksm::ui::SpriteImage::Ref image;
     pu::ui::elm::Image::Ref genderIcon;
     pu::ui::elm::Image::Ref partyBadge;
     pu::ui::elm::Rectangle::Ref unusableShade;
@@ -46,7 +47,7 @@ public:
         const pu::i32 y,
         const pu::i32 width,
         const pu::i32 height,
-        pu::sdl2::TextureHandle::Ref image,
+        const utils::SpriteRef& sprite,
         const pu::i32 outlinePadding = 2,
         const pu::ui::Color defaultBgColor = pu::ui::Color(200, 200, 200, 58),
         const pu::ui::Color selectedBgColor = pu::ui::Color(255, 255, 0, 128)
@@ -64,8 +65,7 @@ public:
     pu::i32 GetWidth() override;
     pu::i32 GetHeight() override;
 
-    void SetImage(pu::sdl2::TextureHandle::Ref newImage);
-    pu::ui::elm::Image::Ref GetImage();
+    void SetImage(const utils::SpriteRef& sprite);
 
     // Gender badge in the slot's top-right corner; hidden for empty slots
     void SetGender(pksm::Gender gender, bool visible);

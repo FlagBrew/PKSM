@@ -1,6 +1,6 @@
 #include "gui/shared/components/SpriteImage.hpp"
 
-#include "utils/Logger.hpp"
+#include "utils/PokemonSpriteManager.hpp"
 
 namespace pksm::ui {
 
@@ -9,12 +9,9 @@ SpriteImage::SpriteImage(
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
-    pu::sdl2::TextureHandle::Ref texture,
-    const SDL_Rect& clipRect
+    const utils::SpriteRef& sprite
 )
-  : Element(), x(x), y(y), width(width), height(height), clipRect(clipRect), texture(texture), usingSpritesheet(false) {
-    LOG_DEBUG("Created SpriteImage with clipping rect");
-}
+  : Element(), x(x), y(y), width(width), height(height), clipRect(sprite.src), texture(sprite.texture) {}
 
 SpriteImage::SpriteImage(
     const pu::i32 x,
@@ -25,21 +22,8 @@ SpriteImage::SpriteImage(
     u8 form,
     bool shiny
 )
-  : Element(),
-    x(x),
-    y(y),
-    width(width),
-    height(height),
-    clipRect{0, 0, 0, 0},
-    texture(nullptr),
-    usingSpritesheet(false) {
-    // Set the Pokemon sprite
+  : Element(), x(x), y(y), width(width), height(height), clipRect{0, 0, 0, 0}, texture(nullptr) {
     SetPokemonSprite(species, form, shiny);
-    LOG_DEBUG("Created SpriteImage for Pokemon species " + std::to_string(species));
-}
-
-SpriteImage::~SpriteImage() {
-    // The texture handle will be destroyed automatically
 }
 
 pu::i32 SpriteImage::GetX() {
@@ -60,16 +44,8 @@ pu::i32 SpriteImage::GetHeight() {
 
 void SpriteImage::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
     if (texture) {
-        // Destination rectangle
         SDL_Rect destRect = {x, y, width, height};
-
-        // Render the texture
-        SDL_RenderCopy(
-            pu::ui::render::GetMainRenderer(),
-            texture->Get(),
-            nullptr,  // Use the entire texture
-            &destRect  // Destination rectangle
-        );
+        SDL_RenderCopy(pu::ui::render::GetMainRenderer(), texture->Get(), &clipRect, &destRect);
     }
 }
 
@@ -98,53 +74,13 @@ void SpriteImage::SetHeight(const pu::i32 height) {
     this->height = height;
 }
 
-void SpriteImage::SetClipRect(const SDL_Rect& clipRect) {
-    this->clipRect = clipRect;
-}
-
-void SpriteImage::SetImage(pu::sdl2::TextureHandle::Ref texture, const SDL_Rect* clipRect) {
-    this->texture = texture;
-
-    if (clipRect) {
-        this->clipRect = *clipRect;
-    } else if (texture) {
-        // Use the entire texture if no clip rect provided
-        this->clipRect =
-            {0, 0, pu::ui::render::GetTextureWidth(texture->Get()), pu::ui::render::GetTextureHeight(texture->Get())};
-    } else {
-        this->clipRect = {0, 0, 0, 0};
-    }
-
-    this->usingSpritesheet = false;
+void SpriteImage::SetImage(const utils::SpriteRef& sprite) {
+    this->texture = sprite.texture;
+    this->clipRect = sprite.src;
 }
 
 void SpriteImage::SetPokemonSprite(u16 species, u8 form, bool shiny) {
-    if (species == 0) {
-        // Empty slot
-        this->texture = nullptr;
-        this->clipRect = {0, 0, 0, 0};
-        return;
-    }
-
-    // Get the sprite directly from PokemonSpriteManager
-    this->texture = utils::PokemonSpriteManager::GetPokemonSprite(species, form, shiny);
-
-    if (this->texture) {
-        // Set clip rect to the full texture size
-        this->clipRect = {
-            0,
-            0,
-            pu::ui::render::GetTextureWidth(this->texture->Get()),
-            pu::ui::render::GetTextureHeight(this->texture->Get())
-        };
-    } else {
-        LOG_ERROR("Failed to find sprite for species " + std::to_string(species));
-        this->clipRect = {0, 0, 0, 0};
-    }
-}
-
-pu::sdl2::TextureHandle::Ref SpriteImage::GetTexture() {
-    return this->texture;
+    SetImage(species == 0 ? utils::SpriteRef{} : utils::PokemonSpriteManager::GetPokemonSprite(species, form, shiny));
 }
 
 }  // namespace pksm::ui

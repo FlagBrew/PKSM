@@ -18,7 +18,7 @@ pksm::ui::BoxItem::BoxItem(
     const pu::i32 y,
     const pu::i32 width,
     const pu::i32 height,
-    pu::sdl2::TextureHandle::Ref image,
+    const utils::SpriteRef& sprite,
     const pu::i32 outlinePadding,
     const pu::ui::Color defaultBgColor,
     const pu::ui::Color selectedBgColor
@@ -51,11 +51,7 @@ pksm::ui::BoxItem::BoxItem(
     // Create container with elements
     container = pu::ui::Container::New(0, 0, width, height);
     background = pu::ui::elm::Rectangle::New(0, 0, width, height, defaultBgColor);
-    this->image = pu::ui::elm::Image::New(0, 0, image);
-
-    // Set image dimensions to match container
-    this->image->SetWidth(width);
-    this->image->SetHeight(height);
+    this->image = pksm::ui::SpriteImage::New(0, 0, width, height, sprite);
 
     // Add elements to container
     container->Add(background);
@@ -192,14 +188,8 @@ pu::i32 pksm::ui::BoxItem::GetHeight() {
     return height;
 }
 
-void pksm::ui::BoxItem::SetImage(pu::sdl2::TextureHandle::Ref newImage) {
-    image->SetImage(newImage);
-    image->SetWidth(width);
-    image->SetHeight(height);
-}
-
-pu::ui::elm::Image::Ref pksm::ui::BoxItem::GetImage() {
-    return image;
+void pksm::ui::BoxItem::SetImage(const utils::SpriteRef& sprite) {
+    image->SetImage(sprite);
 }
 
 void pksm::ui::BoxItem::SetGender(pksm::Gender gender, bool visible) {
