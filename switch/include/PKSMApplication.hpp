@@ -54,6 +54,7 @@ private:
     void ProcessPendingSaveAndExit();
     void ProcessPendingSaveLoad();
     // Save-exit-style overlay; input stays blocked until EndOverlay
+    pu::ui::Overlay::Ref MakeToastOverlay(const std::string& message);
     void ShowBlockingToast(const std::string& message);
     // Non-blocking notice that ends after 3s or any button press
     void ShowErrorToast(const std::string& message);

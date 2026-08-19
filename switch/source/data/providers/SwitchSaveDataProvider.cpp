@@ -540,7 +540,6 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
     u64 titleId = title->getTitleId();
     std::vector<pksm::saves::Save::Ref> saves;
 
-    // Format the title ID as a hex string
     char titleIdStr[20];
     snprintf(titleIdStr, sizeof(titleIdStr), "0x%016lX", titleId);
 
@@ -570,7 +569,6 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
         return;
     }
 
-    // Scan for subdirectories
     try {
         for (const auto& entry : std::filesystem::directory_iterator(titlePath)) {
             if (entry.is_directory()) {
@@ -592,7 +590,6 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
         LOG_ERROR(ss.str());
     }
 
-    // Cache the results
     checkpointSaveCache[titleId] = saves;
 }
 

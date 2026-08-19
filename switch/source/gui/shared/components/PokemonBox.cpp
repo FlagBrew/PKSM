@@ -37,7 +37,6 @@ PokemonBox::PokemonBox(
     localShouldConsiderSideOutOfBounds[ShakeDirection::UP] = false;
     localShouldConsiderSideOutOfBounds[ShakeDirection::DOWN] = false;
 
-    // Create the BoxGrid
     boxGrid = BoxGrid::New(
         gridX,
         gridY,
@@ -51,7 +50,6 @@ PokemonBox::PokemonBox(
     boxGrid->SetName("BoxGrid Element");
     boxGrid->EstablishOwningRelationship();
 
-    // Initialize container for child elements
     container = pu::ui::Container::New(x, y, GetWidth(), GetHeight());
 
     // Create the navigation buttons
@@ -69,7 +67,6 @@ PokemonBox::PokemonBox(
     boxCounterText->SetColor(pu::ui::Color(255, 255, 255, 255));
     boxCounterText->SetFont(global::MakeMediumFontName(global::FONT_SIZE_BOX_SPACES_BUTTON));
 
-    // Initialize the Box Spaces button
     InitializeBoxSpacesButton();
 
     // Position will be set in UpdateBoxNameText
@@ -197,7 +194,6 @@ pu::i32 PokemonBox::GetHeight() {
 }
 
 PokemonBox::~PokemonBox() {
-    // Clean up the mask texture
     if (maskTexture) {
         SDL_DestroyTexture(maskTexture);
         maskTexture = nullptr;
@@ -317,7 +313,6 @@ void PokemonBox::UpdateBoxNameText() {
     pu::i32 boxNameContainerHeight = TOP_FRAME_HEIGHT - (30 * 2);  // Vertical margin of 30px
     pu::i32 boxNameContainerY = y + 30;  // Vertical margin of 30px
 
-    // Update the box name pill with the new position and dimensions
     boxNamePill->SetDimensions(boxNameContainerX, boxNameContainerY, boxNameContainerWidth, boxNameContainerHeight);
     boxNamePill->SetText(boxName);
 }
@@ -471,7 +466,6 @@ void PokemonBox::SetBoxCount(size_t count) {
     // Resize the boxes vector to hold the requested number of boxes
     boxes.resize(count);
 
-    // Initialize each box with empty Pokémon data if it's a new box
     for (size_t i = 0; i < boxes.size(); i++) {
         // Calculate number of slots based on GridBox dimensions
         size_t slotsPerBox = static_cast<size_t>(boxGrid->GetItemCount());
@@ -490,9 +484,7 @@ void PokemonBox::SetBoxCount(size_t count) {
     if (static_cast<size_t>(currentBox) >= count) {
         SetCurrentBox(0);
     } else {
-        // Update the grid to display the current box
         UpdateBoxGrid();
-        // Update the box counter
         UpdateBoxCounterText();
     }
 }
@@ -519,7 +511,6 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
         const u64 t0 = armGetSystemTick();
         currentBox = boxIndex;
 
-        // Update the grid with data from the selected box
         UpdateBoxGrid();
 
         // Update box name display
@@ -667,7 +658,7 @@ void PokemonBox::SetDisabled(bool disabled) {
 }
 
 void PokemonBox::SetFocusManager(input::FocusManager::Ref focusManager) {
-    LOG_DEBUG("Setting focus manager on GameList");
+    LOG_DEBUG("Setting focus manager on PokemonBox");
     IFocusable::SetFocusManager(focusManager);
 
     // Register all child managers
@@ -677,7 +668,7 @@ void PokemonBox::SetFocusManager(input::FocusManager::Ref focusManager) {
 }
 
 void PokemonBox::SetSelectionManager(input::SelectionManager::Ref selectionManager) {
-    LOG_DEBUG("Setting selection manager on GameList");
+    LOG_DEBUG("Setting selection manager on PokemonBox");
     ISelectable::SetSelectionManager(selectionManager);
 
     // Register all child managers
