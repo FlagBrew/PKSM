@@ -119,6 +119,7 @@ std::vector<std::string> CollectScanRoots() {
 struct FoundFile {
     std::string path;
     fs::file_time_type mtime;
+    std::uintmax_t size = 0;
 };
 
 std::vector<FoundFile> ScanForSaveFiles(const std::vector<std::string>& roots) {
@@ -158,7 +159,7 @@ std::vector<FoundFile> ScanForSaveFiles(const std::vector<std::string>& roots) {
             if (ec) {
                 mtime = fs::file_time_type{};
             }
-            found.push_back({entry.path().string(), mtime});
+            found.push_back({entry.path().string(), mtime, size});
         }
     }
     if (dirBudget <= 0) {
@@ -260,7 +261,7 @@ void ScanCitraTrees(std::vector<FoundFile>& found) {
                         if (ec) {
                             mtime = fs::file_time_type{};
                         }
-                        found.push_back({savePath.string(), mtime});
+                        found.push_back({savePath.string(), mtime, size});
                     }
                 });
             });
@@ -328,7 +329,8 @@ std::string FamilyOf(::pksm::GameVersion version) {
 
 namespace pksm::data::emulator {
 
-std::unordered_map<u64, std::vector<std::string>> SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games) {
+std::unordered_map<u64, std::vector<std::string>>
+SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const ParseReport& onParsed) {
     std::unordered_map<u64, std::vector<std::string>> discovered;
 
     auto files = ScanForSaveFiles(CollectScanRoots());
@@ -341,6 +343,9 @@ std::unordered_map<u64, std::vector<std::string>> SaveDiscovery::Discover(const 
     int matched = 0;
     for (const auto& file : files) {
         const auto sav = pksm::saves::SaveValidator::Load(file.path);
+        if (onParsed) {
+            onParsed(file.path, file.mtime, file.size, sav != nullptr);
+        }
         if (!sav) {
             continue;
         }
