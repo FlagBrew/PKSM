@@ -31,6 +31,17 @@ public:
         const AccountUid* userId = nullptr
     ) = 0;
 
+    // LoadSave split for a worker thread: ResolveLoad (UI thread: source
+    // resolution + mounts), ExecuteLoad (read+parse, no provider state,
+    // thread-safe), FinishLoad (UI thread, every outcome, exactly once).
+    virtual std::optional<pksm::saves::PendingLoad> ResolveLoad(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName,
+        const AccountUid* userId = nullptr
+    ) = 0;
+    virtual std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) = 0;
+    virtual void FinishLoad(const pksm::saves::PendingLoad& pending) = 0;
+
     // Whether a console save container for this title/user holds actual save
     // data. Containers are created the moment a profile launches a game, so an
     // existing-but-empty container must not count as a loadable save.

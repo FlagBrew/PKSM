@@ -165,8 +165,15 @@ bool SaveDataAccessor::loadSave(
     const std::string& saveName,
     const AccountUid* userId
 ) {
-    auto loaded = saveProvider->LoadSave(title, saveName, userId);
+    return applySaveLoadResult(title, saveName, userId, saveProvider->LoadSave(title, saveName, userId));
+}
 
+bool SaveDataAccessor::applySaveLoadResult(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName,
+    const AccountUid* userId,
+    std::optional<pksm::saves::LoadedSave> loaded
+) {
     // Success or failure, the previous save is gone either way - a failed
     // load must not leave stale data on screen
     if (!loaded) {

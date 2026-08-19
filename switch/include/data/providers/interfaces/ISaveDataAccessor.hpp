@@ -5,6 +5,9 @@
 #include <string>
 #include <switch.h>
 
+#include <optional>
+
+#include "data/saves/LoadedSave.hpp"
 #include "data/saves/SaveData.hpp"
 #include "data/titles/Title.hpp"
 
@@ -22,6 +25,15 @@ public:
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
         const AccountUid* userId = nullptr
+    ) = 0;
+
+    // Commit (or, on nullopt, clear) a load the caller ran itself - the
+    // tail of loadSave for the async flow. UI thread only.
+    virtual bool applySaveLoadResult(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName,
+        const AccountUid* userId,
+        std::optional<pksm::saves::LoadedSave> loaded
     ) = 0;
 
     // Set a callback for when the save data changes

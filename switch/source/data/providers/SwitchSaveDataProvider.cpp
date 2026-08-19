@@ -196,8 +196,8 @@ SwitchSaveDataProvider::ListNSOConsoleSaves(u64 titleId, const std::optional<Acc
     return it != nsoConsoleSaves.end() ? it->second : std::vector<pksm::saves::Save::Ref>{};
 }
 
-std::optional<pksm::saves::LoadedSave>
-SwitchSaveDataProvider::LoadNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId) {
+std::optional<pksm::saves::PendingLoad>
+SwitchSaveDataProvider::ResolveNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId) {
     const auto parsed = pksm::saves::ParseNSOSavePath(nsoPath);
     if (!parsed) {
         LOG_ERROR("Malformed NSO save path: " + nsoPath);
@@ -208,19 +208,14 @@ SwitchSaveDataProvider::LoadNSOConsoleSave(const std::string& nsoPath, const Acc
     if (R_FAILED(MountSaveData(&fs, parsed->nsoTitleId, userId))) {
         return std::nullopt;
     }
-    auto sav = pksm::saves::SaveValidator::Load("save:" + parsed->innerPath);
-    // The Sav holds a full in-memory copy; write-back remounts by the
-    // title id carried in the path
-    UnmountSaveData();
-
-    if (!sav) {
-        LOG_ERROR("NSO container save no longer parses: " + nsoPath);
-        return std::nullopt;
-    }
-    LOG_INFO(
-        "Loaded NSO container save " + nsoPath + ": " + pksm::saves::SaveValidator::Summarize(*sav).Describe()
-    );
-    return pksm::saves::LoadedSave{std::move(sav), nsoPath};
+    // The Sav will hold a full in-memory copy; write-back remounts by the
+    // title id carried in the recorded path
+    pksm::saves::PendingLoad pending;
+    pending.candidates = {"save:" + parsed->innerPath};
+    pending.recordedPath = nsoPath;
+    pending.description = "NSO container save";
+    pending.mounted = true;
+    return pending;
 }
 
 Result SwitchSaveDataProvider::MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const {
@@ -354,20 +349,21 @@ std::optional<CitraTreeLabel> LabelCitraTreePath(const std::filesystem::path& p)
 
 // A backup (Checkpoint, JKSV) is a directory; probe its files and let core
 // decide which one is the save
-std::optional<pksm::saves::LoadedSave> LoadBackupDirectory(
+std::optional<pksm::saves::PendingLoad> ResolveBackupDirectory(
     const std::string& dirPath,
     const std::string& logContext
 ) {
-    std::vector<std::string> candidates;
+    pksm::saves::PendingLoad pending;
     std::error_code ec;
     for (const auto& entry : std::filesystem::directory_iterator(dirPath, ec)) {
-        candidates.push_back(entry.path().string());
+        pending.candidates.push_back(entry.path().string());
     }
-    if (auto loaded = ProbeSaveFiles(candidates, logContext)) {
-        return loaded;
+    if (pending.candidates.empty()) {
+        LOG_ERROR("Backup " + dirPath + " has no files to probe");
+        return std::nullopt;
     }
-    LOG_ERROR("No file in backup " + dirPath + " parses as a save");
-    return std::nullopt;
+    pending.description = logContext;
+    return pending;
 }
 
 }  // namespace
@@ -781,7 +777,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
     return result;
 }
 
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadConsoleSave(
+std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveConsoleSave(
     const pksm::titles::Title::Ref& title,
     const AccountUid& userId
 ) {
@@ -812,29 +808,25 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadConsoleSave(
     }
 
     // Save file names vary per game (main, savedata.bin, ...), so probe every
-    // file in the container root and let core decide which one is the save
-    auto rootEntries = ListMountedSaveRoot();
-    std::vector<std::string> candidates;
-    for (const auto& entry : rootEntries) {
-        candidates.push_back("save:/" + entry);
+    // file in the container root and let core decide which one is the save.
+    // The Sav will hold a full in-memory copy, so FinishLoad unmounts as soon
+    // as the read completes - leaving "save" mounted poisons every later
+    // mount attempt; write-back will remount when it lands.
+    pksm::saves::PendingLoad pending;
+    for (const auto& entry : ListMountedSaveRoot()) {
+        pending.candidates.push_back("save:/" + entry);
     }
-    auto loaded = ProbeSaveFiles(candidates, "console save for " + title->getName());
-
-    // The Sav holds a full in-memory copy, so unmount immediately - leaving
-    // "save" mounted poisons every later mount attempt. Write-back will
-    // remount when it lands.
-    UnmountSaveData();
-
-    if (!loaded) {
-        LOG_ERROR(
-            "No file in the save container parses as a save for " + title->getName() +
-            "; save root: " + JoinNames(rootEntries)
-        );
+    pending.description = "console save for " + title->getName();
+    pending.mounted = true;
+    if (pending.candidates.empty()) {
+        LOG_ERROR("Save container for " + title->getName() + " lists no files");
+        UnmountSaveData();
+        return std::nullopt;
     }
-    return loaded;
+    return pending;
 }
 
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCheckpointSave(
+std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveCheckpointSave(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName
 ) {
@@ -844,8 +836,8 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCheckpointSav
 
     u64 titleId = title->getTitleId();
 
-    // A miss here is normal - LoadSave tries each save source in turn, so
-    // only a claimed-but-failed load (in LoadBackupDirectory) is an error
+    // A miss here is normal - ResolveLoad tries each save source in turn, so
+    // only a claimed-but-failed load is an error
     auto titleIt = checkpointSaveCache.find(titleId);
     if (titleIt == checkpointSaveCache.end()) {
         return std::nullopt;
@@ -857,14 +849,14 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadCheckpointSav
             std::stringstream ss;
             ss << "Loading Checkpoint save " << saveName << " for title " << std::hex << titleId;
             LOG_INFO(ss.str());
-            return LoadBackupDirectory(save->getPath(), "Checkpoint save");
+            return ResolveBackupDirectory(save->getPath(), "Checkpoint save");
         }
     }
 
     return std::nullopt;
 }
 
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadJKSVSave(
+std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveJKSVSave(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName
 ) {
@@ -881,14 +873,14 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadJKSVSave(
 
     for (const auto& save : titleIt->second) {
         if (save->getName() == saveName) {
-            return LoadBackupDirectory(save->getPath(), "JKSV save");
+            return ResolveBackupDirectory(save->getPath(), "JKSV save");
         }
     }
 
     return std::nullopt;
 }
 
-std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
+std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveLoad(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName,
     const AccountUid* userId
@@ -898,13 +890,12 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
     }
 
     // Emulator/Custom saves: re-resolve the name against the title's own
-    // listing (its context picks discovered vs configured files) and parse
-    // the file with core
+    // listing (its context picks discovered vs configured files)
     if (title->getContext() != pksm::titles::TitleContext::Console) {
         if (title->getContext() == pksm::titles::TitleContext::Emulator && userId) {
             for (const auto& save : ListNSOConsoleSaves(title->getTitleId(), *userId)) {
                 if (save->getName() == saveName) {
-                    return LoadNSOConsoleSave(save->getPath(), *userId);
+                    return ResolveNSOConsoleSave(save->getPath(), *userId);
                 }
             }
         }
@@ -914,16 +905,10 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
         const char* context = fromDiscovery ? "discovered" : "configured";
         for (const auto& save : saves) {
             if (save->getName() == saveName) {
-                auto sav = pksm::saves::SaveValidator::Load(save->getPath());
-                if (sav) {
-                    LOG_INFO(
-                        "Loaded " + std::string(context) + " emulator save " + save->getPath() + ": " +
-                        pksm::saves::SaveValidator::Summarize(*sav).Describe()
-                    );
-                    return pksm::saves::LoadedSave{std::move(sav), save->getPath()};
-                }
-                LOG_ERROR("Emulator save no longer parses: " + save->getPath());
-                return std::nullopt;
+                pksm::saves::PendingLoad pending;
+                pending.candidates = {save->getPath()};
+                pending.description = std::string(context) + " emulator save";
+                return pending;
             }
         }
         LOG_ERROR("No " + std::string(context) + " emulator save named " + saveName);
@@ -932,21 +917,54 @@ std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
 
     // Handle console save (which requires a user ID)
     if (saveName == "Console Save" && userId) {
-        return LoadConsoleSave(title, *userId);
+        return ResolveConsoleSave(title, *userId);
     }
 
-    // Try to load from Checkpoint saves
-    if (auto loaded = LoadCheckpointSave(title, saveName)) {
-        return loaded;
+    // Try Checkpoint saves, then JKSV backups
+    if (auto pending = ResolveCheckpointSave(title, saveName)) {
+        return pending;
     }
-
-    // Try to load from JKSV backups
-    if (auto loaded = LoadJKSVSave(title, saveName)) {
-        return loaded;
+    if (auto pending = ResolveJKSVSave(title, saveName)) {
+        return pending;
     }
 
     std::stringstream ss;
-    ss << "Unable to load save " << saveName << " for title " << std::hex << title->getTitleId();
+    ss << "Unable to resolve save " << saveName << " for title " << std::hex << title->getTitleId();
     LOG_ERROR(ss.str());
     return std::nullopt;
+}
+
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::ExecuteLoad(const pksm::saves::PendingLoad& pending) {
+    auto loaded = ProbeSaveFiles(pending.candidates, pending.description);
+    if (!loaded) {
+        LOG_ERROR(
+            "No candidate parses as a " + pending.description + " (" + std::to_string(pending.candidates.size()) +
+            " files near " + (pending.candidates.empty() ? "?" : pending.candidates.front()) + ")"
+        );
+        return std::nullopt;
+    }
+    if (!pending.recordedPath.empty()) {
+        loaded->path = pending.recordedPath;
+    }
+    return loaded;
+}
+
+void SwitchSaveDataProvider::FinishLoad(const pksm::saves::PendingLoad& pending) {
+    if (pending.mounted) {
+        UnmountSaveData();
+    }
+}
+
+std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::LoadSave(
+    const pksm::titles::Title::Ref& title,
+    const std::string& saveName,
+    const AccountUid* userId
+) {
+    auto pending = ResolveLoad(title, saveName, userId);
+    if (!pending) {
+        return std::nullopt;
+    }
+    auto loaded = ExecuteLoad(*pending);
+    FinishLoad(*pending);
+    return loaded;
 }

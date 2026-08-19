@@ -337,6 +337,15 @@ PKSMApplication::PKSMApplication(
     // Add render callback to process account updates
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
+    AddRenderCallback([this]() { this->ProcessPendingSaveLoad(); });
+    // The error toast also ends on any button press (harmless no-op once
+    // its 3s timeout already ended it)
+    SetOnInput([this](const u64 down, const u64, const u64, const pu::ui::TouchPoint) {
+        if (down != 0 && errorToastActive) {
+            this->EndOverlay();
+            errorToastActive = false;
+        }
+    });
 }
 
 PKSMApplication::Ref PKSMApplication::Initialize() {
@@ -495,31 +504,9 @@ void PKSMApplication::HandleMainMenuBack() {
             true
         );
         if (choice == 0) {
-            auto savingText =
-                pu::ui::elm::TextBlock::New(0, 0, "Saving... Do not close the app or power off.");
-            savingText->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
-            savingText->SetColor(pksm::ui::global::TEXT_WHITE);
-            constexpr pu::i32 SAVING_OVERLAY_PADDING = 60;
-            const pu::i32 overlayWidth = savingText->GetWidth() + 2 * SAVING_OVERLAY_PADDING;
-            const pu::i32 overlayHeight = savingText->GetHeight() + 2 * SAVING_OVERLAY_PADDING;
-            auto savingOverlay = pu::ui::Overlay::New(
-                (static_cast<pu::i32>(pu::ui::render::ScreenWidth) - overlayWidth) / 2,
-                (static_cast<pu::i32>(pu::ui::render::ScreenHeight) - overlayHeight) / 2,
-                overlayWidth,
-                overlayHeight,
-                pu::ui::Color(30, 30, 30, 255)
-            );
-            savingOverlay->SetFadeAlphaVariation(pu::ui::Overlay::DefaultMaxFadeAlpha);
-            savingText->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
-            savingText->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
-            savingOverlay->Add(savingText);
-            this->StartOverlay(savingOverlay);
-            // Write on a worker thread so the render loop keeps animating.
-            // Block input meanwhile via Plutonium's render-over flag - OnRender
-            // consumes it at the end of every frame, so ProcessPendingSaveAndExit
-            // re-arms it each frame until the write completes.
-            this->in_render_over = true;
-            this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+            // Write on a worker thread so the render loop keeps animating;
+            // ProcessPendingSaveAndExit polls the future each frame
+            ShowBlockingToast("Saving... Do not close the app or power off.");
             LOG_DEBUG("Starting save write...");
             LOG_MEMORY();
             saveWriteResult = std::async(std::launch::async, [this]() { return saveDataAccessor->saveChanges(); });
@@ -530,6 +517,62 @@ void PKSMApplication::HandleMainMenuBack() {
         }
     }
     this->ShowTitleLoadScreen();
+}
+
+void PKSMApplication::ShowBlockingToast(const std::string& message) {
+    // A lingering error toast would make StartOverlay a silent no-op
+    if (errorToastActive) {
+        this->EndOverlay();
+        errorToastActive = false;
+    }
+    auto text = pu::ui::elm::TextBlock::New(0, 0, message);
+    text->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
+    text->SetColor(pksm::ui::global::TEXT_WHITE);
+    constexpr pu::i32 TOAST_PADDING = 60;
+    const pu::i32 overlayWidth = text->GetWidth() + 2 * TOAST_PADDING;
+    const pu::i32 overlayHeight = text->GetHeight() + 2 * TOAST_PADDING;
+    auto overlay = pu::ui::Overlay::New(
+        (static_cast<pu::i32>(pu::ui::render::ScreenWidth) - overlayWidth) / 2,
+        (static_cast<pu::i32>(pu::ui::render::ScreenHeight) - overlayHeight) / 2,
+        overlayWidth,
+        overlayHeight,
+        pu::ui::Color(30, 30, 30, 255)
+    );
+    overlay->SetFadeAlphaVariation(pu::ui::Overlay::DefaultMaxFadeAlpha);
+    text->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
+    text->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
+    overlay->Add(text);
+    this->StartOverlay(overlay);
+    // Block input via Plutonium's render-over flag - OnRender consumes it
+    // at the end of every frame, so waiters re-arm it until they finish
+    this->in_render_over = true;
+    this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+}
+
+void PKSMApplication::ShowErrorToast(const std::string& message) {
+    if (errorToastActive) {
+        this->EndOverlay();
+        errorToastActive = false;
+    }
+    auto text = pu::ui::elm::TextBlock::New(0, 0, message);
+    text->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
+    text->SetColor(pksm::ui::global::TEXT_WHITE);
+    constexpr pu::i32 TOAST_PADDING = 60;
+    const pu::i32 overlayWidth = text->GetWidth() + 2 * TOAST_PADDING;
+    const pu::i32 overlayHeight = text->GetHeight() + 2 * TOAST_PADDING;
+    auto overlay = pu::ui::Overlay::New(
+        (static_cast<pu::i32>(pu::ui::render::ScreenWidth) - overlayWidth) / 2,
+        (static_cast<pu::i32>(pu::ui::render::ScreenHeight) - overlayHeight) / 2,
+        overlayWidth,
+        overlayHeight,
+        pu::ui::Color(30, 30, 30, 255)
+    );
+    overlay->SetFadeAlphaVariation(pu::ui::Overlay::DefaultMaxFadeAlpha);
+    text->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
+    text->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
+    overlay->Add(text);
+    this->StartOverlayWithTimeout(overlay, 3000);
+    errorToastActive = true;
 }
 
 void PKSMApplication::ProcessPendingSaveAndExit() {
@@ -571,10 +614,54 @@ void PKSMApplication::ProcessPendingSaveAndExit() {
     this->ShowTitleLoadScreen();
 }
 
+void PKSMApplication::ProcessPendingSaveLoad() {
+    if (!saveLoadResult.valid()) {
+        return;
+    }
+    if (saveLoadResult.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
+        // Still parsing: keep input blocked
+        this->in_render_over = true;
+        this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
+        return;
+    }
+
+    // A worker death (allocation failure) is just a failed load
+    std::optional<pksm::saves::LoadedSave> loaded;
+    try {
+        loaded = saveLoadResult.get();
+    } catch (const std::exception& e) {
+        LOG_ERROR("Save load threw: " + std::string(e.what()));
+    }
+    // Release the mount on every outcome
+    saveProvider->FinishLoad(*pendingSaveLoad);
+    pendingSaveLoad.reset();
+
+    const bool ok = saveDataAccessor->applySaveLoadResult(
+        pendingLoadTitle,
+        pendingLoadSaveName,
+        &pendingLoadUserId,
+        std::move(loaded)
+    );
+    pendingLoadTitle = nullptr;
+    this->EndOverlay();
+    if (ok) {
+        LOG_MEMORY();
+        this->ShowMainMenu();
+        LOG_DEBUG(
+            "Save selection to main menu: " +
+            std::to_string(armTicksToNs(armGetSystemTick() - pendingLoadStartTick) / 1000000) + " ms total"
+        );
+    } else {
+        LOG_ERROR("Failed to load save data");
+        ShowErrorToast("This save could not be loaded");
+    }
+}
+
 void PKSMApplication::ShowStorageScreen() {
     // Constructed on first entry, not at boot: the screen's textures cost
     // ~25MB of the applet heap, paid only when storage is actually used
     if (!storageScreen) {
+        const u64 t0 = armGetSystemTick();
         LOG_DEBUG("Creating storage screen on first use...");
         storageScreen = pksm::layout::StorageScreen::New(
             [this]() { this->ShowMainMenu(); },
@@ -588,8 +675,10 @@ void PKSMApplication::ShowStorageScreen() {
             storageHand,
             boxNameEditor
         );
-        storageScreen->LoadBoxData();
         LOG_MEMORY();
+        LOG_DEBUG(
+            "Storage screen construct: " + std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms"
+        );
     }
     LOG_DEBUG("Switching to storage screen");
     this->LoadLayout(this->storageScreen);
@@ -598,15 +687,22 @@ void PKSMApplication::ShowStorageScreen() {
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
 
-    // The main menu is only entered with a loaded save; a failed load stays
-    // on the title screen, whose next listing drops the bad candidate
+    // Resolution and any console mount stay on the UI thread; the
+    // expensive read+parse runs on a worker behind the toast, and
+    // ProcessPendingSaveLoad commits the result.
     auto userId = accountManager->GetCurrentAccount();
-    if (saveDataAccessor->loadSave(title, save->getName(), &userId)) {
-        LOG_MEMORY();
-        this->ShowMainMenu();
-    } else {
-        LOG_ERROR("Failed to load save data");
+    pendingLoadStartTick = armGetSystemTick();
+    pendingSaveLoad = saveProvider->ResolveLoad(title, save->getName(), &userId);
+    if (!pendingSaveLoad) {
+        saveDataAccessor->applySaveLoadResult(title, save->getName(), &userId, std::nullopt);
+        ShowErrorToast("This save could not be loaded");
+        return;
     }
+    pendingLoadTitle = title;
+    pendingLoadSaveName = save->getName();
+    pendingLoadUserId = userId;
+    ShowBlockingToast("Loading save...");
+    saveLoadResult = std::async(std::launch::async, [this]() { return saveProvider->ExecuteLoad(*pendingSaveLoad); });
 }
 
 void PKSMApplication::OnLoad() {

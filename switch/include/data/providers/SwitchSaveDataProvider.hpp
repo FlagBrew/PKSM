@@ -64,7 +64,7 @@ private:
     void ScanNSOContainers(const AccountUid& userId) const;
     std::vector<pksm::saves::Save::Ref>
     ListNSOConsoleSaves(u64 titleId, const std::optional<AccountUid>& user) const;
-    std::optional<pksm::saves::LoadedSave> LoadNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId);
+    std::optional<pksm::saves::PendingLoad> ResolveNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId);
 
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
@@ -94,6 +94,14 @@ public:
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const override;
 
+    std::optional<pksm::saves::PendingLoad> ResolveLoad(
+        const pksm::titles::Title::Ref& title,
+        const std::string& saveName,
+        const AccountUid* userId = nullptr
+    ) override;
+    std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) override;
+    void FinishLoad(const pksm::saves::PendingLoad& pending) override;
+
     std::optional<pksm::saves::LoadedSave> LoadSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
@@ -107,15 +115,15 @@ public:
     bool HasConfiguredEmulatorSaves(u64 titleId) const override;
 
     // Load save from different sources
-    std::optional<pksm::saves::LoadedSave> LoadConsoleSave(
+    std::optional<pksm::saves::PendingLoad> ResolveConsoleSave(
         const pksm::titles::Title::Ref& title,
         const AccountUid& userId
     );
-    std::optional<pksm::saves::LoadedSave> LoadCheckpointSave(
+    std::optional<pksm::saves::PendingLoad> ResolveCheckpointSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName
     );
-    std::optional<pksm::saves::LoadedSave> LoadJKSVSave(
+    std::optional<pksm::saves::PendingLoad> ResolveJKSVSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName
     );
