@@ -8,6 +8,7 @@
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
+#include "data/providers/sources/BackupSaveSource.hpp"
 #include "data/saves/Save.hpp"
 #include "data/saves/SaveValidationCache.hpp"
 #include "utils/AccountUtil.hpp"
@@ -16,12 +17,6 @@
 // the UI thread; of the load pipeline only ExecuteLoad is worker-safe.
 class SwitchSaveDataProvider : public ISaveDataProvider {
 private:
-    // Path where Checkpoint stores saves
-    static constexpr const char* CHECKPOINT_BASE_PATH = "sdmc:/switch/Checkpoint/saves/";
-
-    // Path where JKSV stores backups
-    static constexpr const char* JKSV_BASE_PATH = "sdmc:/JKSV/";
-
     // Cache for save data
     struct SaveCache {
         std::vector<pksm::saves::Save::Ref> consoleSaves;
@@ -29,8 +24,7 @@ private:
     };
 
     mutable std::unordered_map<u64, std::unordered_map<AccountUid, SaveCache, AccountUidHash>> consoleSaveCache;
-    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> checkpointSaveCache;
-    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> jksvSaveCache;
+    mutable BackupSaveSource backupSaves;
 
     // Catalog of non-installed games (loaded once; romfs is immutable)
     std::vector<pksm::data::emulator::EmulatorGameEntry> emulatorGames;
@@ -53,8 +47,6 @@ private:
 
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
-    void RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const;
-    void RefreshJKSVSaves(const pksm::titles::Title::Ref& title) const;
     std::vector<pksm::saves::Save::Ref> ListDiscoveredSaves(u64 titleId) const;
     std::vector<pksm::saves::Save::Ref> ListConfiguredSaves(u64 titleId) const;
 
@@ -97,13 +89,5 @@ public:
     std::optional<pksm::saves::PendingLoad> ResolveConsoleSave(
         const pksm::titles::Title::Ref& title,
         const AccountUid& userId
-    );
-    std::optional<pksm::saves::PendingLoad> ResolveCheckpointSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName
-    );
-    std::optional<pksm::saves::PendingLoad> ResolveJKSVSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName
     );
 };
