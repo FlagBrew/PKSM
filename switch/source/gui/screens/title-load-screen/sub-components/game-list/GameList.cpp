@@ -118,10 +118,8 @@ pksm::ui::GameList::GameList(
     // Let container prepare elements
     container->PreRender();
 
-    // Set up callbacks for active game list
     SetupGameListCallbacks(activeGameList);
 
-    // Set up input handler
     directionalInputHandler.SetOnMoveUp([this]() {
         if (activeGameList->IsFocused() && activeGameList->ShouldResignUpFocus()) {
             // Use the horizontal position to determine which trigger is closer
@@ -305,7 +303,6 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
     // Hide current game list
     activeGameList->SetVisible(false);
 
-    // Calculate next index
     size_t nextIndex;
     if (forward) {
         nextIndex = (currentGameListIndex + 1) % NAVIGATION_ORDER.size();
@@ -327,7 +324,6 @@ void pksm::ui::GameList::SwitchToNextGameList(bool forward) {
         onGameListChangedCallback();
     }
 
-    // Set up callbacks for new active game list
     SetupGameListCallbacks(activeGameList);
     onSelectionChangedCallback();
 }
@@ -352,32 +348,33 @@ void pksm::ui::GameList::SetupGameListCallbacks(IGameList::Ref gameList) {
     });
 }
 
+void pksm::ui::GameList::ApplyConsoleData(const std::shared_ptr<ConsoleGameList>& consoleList) {
+    auto card = titleProvider->GetGameCardTitle();
+    auto installed = titleProvider->GetInstalledTitles(currentUserId);
+    if (card) {
+        // The cart also appears in the installed scan - don't show it twice
+        installed.erase(
+            std::remove_if(
+                installed.begin(),
+                installed.end(),
+                [&](const titles::Title::Ref& t) { return t->getTitleId() == card->getTitleId(); }
+            ),
+            installed.end()
+        );
+    }
+    consoleList->SetGameCardTitle(card);
+    consoleList->SetDataSource(installed);
+}
+
 void pksm::ui::GameList::UpdateGameListData() {
-    // Update data for each game list type
     for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
         const auto& info = NAVIGATION_ORDER[i];
         auto& list = gameLists[i];
 
         switch (info.type) {
-            case GameListType::Console: {
-                auto consoleList = std::static_pointer_cast<ConsoleGameList>(list);
-                auto card = titleProvider->GetGameCardTitle();
-                auto installed = titleProvider->GetInstalledTitles(currentUserId);
-                if (card) {
-                    // The cart also appears in the installed scan - don't show it twice
-                    installed.erase(
-                        std::remove_if(
-                            installed.begin(),
-                            installed.end(),
-                            [&](const titles::Title::Ref& t) { return t->getTitleId() == card->getTitleId(); }
-                        ),
-                        installed.end()
-                    );
-                }
-                consoleList->SetGameCardTitle(card);
-                consoleList->SetDataSource(installed);
+            case GameListType::Console:
+                ApplyConsoleData(std::static_pointer_cast<ConsoleGameList>(list));
                 break;
-            }
             case GameListType::Custom:
                 list->SetDataSource(titleProvider->GetCustomTitles());
                 break;
@@ -389,25 +386,10 @@ void pksm::ui::GameList::UpdateGameListData() {
 }
 
 void pksm::ui::GameList::UpdateConsoleGameListData() {
-    // Only update the console game list
     for (size_t i = 0; i < NAVIGATION_ORDER.size(); i++) {
         const auto& info = NAVIGATION_ORDER[i];
         if (info.type == GameListType::Console) {
-            auto consoleList = std::static_pointer_cast<ConsoleGameList>(gameLists[i]);
-            auto card = titleProvider->GetGameCardTitle();
-            auto installed = titleProvider->GetInstalledTitles(currentUserId);
-            if (card) {
-                installed.erase(
-                    std::remove_if(
-                        installed.begin(),
-                        installed.end(),
-                        [&](const titles::Title::Ref& t) { return t->getTitleId() == card->getTitleId(); }
-                    ),
-                    installed.end()
-                );
-            }
-            consoleList->SetGameCardTitle(card);
-            consoleList->SetDataSource(installed);
+            ApplyConsoleData(std::static_pointer_cast<ConsoleGameList>(gameLists[i]));
             if (onSelectionChangedCallback) {
                 onSelectionChangedCallback();
             }

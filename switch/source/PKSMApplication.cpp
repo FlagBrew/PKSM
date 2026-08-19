@@ -253,10 +253,8 @@ pu::ui::render::RendererInitOptions PKSMApplication::CreateRendererOptions() {
 void PKSMApplication::ConfigureFonts(pu::ui::render::RendererInitOptions& renderer_opts) {
     LOG_DEBUG("Configuring fonts...");
 
-    // Register default (light) font
     renderer_opts.AddDefaultFontPath("romfs:/gfx/fonts/dinnextw1g_light.ttf");
 
-    // Register all custom font sizes
     pksm::ui::FontManager::ConfigureRendererFontSizes(renderer_opts);
 
     LOG_DEBUG("Fonts configured successfully");
@@ -265,10 +263,10 @@ void PKSMApplication::ConfigureFonts(pu::ui::render::RendererInitOptions& render
 void PKSMApplication::ConfigureInput(pu::ui::render::RendererInitOptions& renderer_opts) {
     LOG_DEBUG("Configuring input...");
 
-    renderer_opts.SetInputPlayerCount(1);  // Accept input from one player
-    renderer_opts.AddInputNpadStyleTag(HidNpadStyleSet_NpadStandard);  // Accept standard controller input
-    renderer_opts.AddInputNpadIdType(HidNpadIdType_Handheld);  // Accept handheld mode input
-    renderer_opts.AddInputNpadIdType(HidNpadIdType_No1);  // Accept controller 1 input
+    renderer_opts.SetInputPlayerCount(1);
+    renderer_opts.AddInputNpadStyleTag(HidNpadStyleSet_NpadStandard);
+    renderer_opts.AddInputNpadIdType(HidNpadIdType_Handheld);
+    renderer_opts.AddInputNpadIdType(HidNpadIdType_No1);
 
     LOG_DEBUG("Input configured successfully");
 }
@@ -492,7 +490,7 @@ void PKSMApplication::HandleMainMenuBack() {
     this->ShowTitleLoadScreen();
 }
 
-void PKSMApplication::ShowBlockingToast(const std::string& message) {
+pu::ui::Overlay::Ref PKSMApplication::MakeToastOverlay(const std::string& message) {
     // A lingering error toast would make StartOverlay a silent no-op
     if (errorToastActive) {
         this->EndOverlay();
@@ -515,35 +513,19 @@ void PKSMApplication::ShowBlockingToast(const std::string& message) {
     text->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
     text->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
     overlay->Add(text);
-    this->StartOverlay(overlay);
+    return overlay;
+}
+
+void PKSMApplication::ShowBlockingToast(const std::string& message) {
+    this->StartOverlay(MakeToastOverlay(message));
     // OnRender consumes the render-over flag each frame, so waiters re-arm it until they finish
     this->in_render_over = true;
     this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
 }
 
 void PKSMApplication::ShowErrorToast(const std::string& message) {
-    if (errorToastActive) {
-        this->EndOverlay();
-        errorToastActive = false;
-    }
-    auto text = pu::ui::elm::TextBlock::New(0, 0, message);
-    text->SetFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_HEADER));
-    text->SetColor(pksm::ui::global::TEXT_WHITE);
-    constexpr pu::i32 TOAST_PADDING = 60;
-    const pu::i32 overlayWidth = text->GetWidth() + 2 * TOAST_PADDING;
-    const pu::i32 overlayHeight = text->GetHeight() + 2 * TOAST_PADDING;
-    auto overlay = pu::ui::Overlay::New(
-        (static_cast<pu::i32>(pu::ui::render::ScreenWidth) - overlayWidth) / 2,
-        (static_cast<pu::i32>(pu::ui::render::ScreenHeight) - overlayHeight) / 2,
-        overlayWidth,
-        overlayHeight,
-        pu::ui::Color(30, 30, 30, 255)
-    );
-    overlay->SetFadeAlphaVariation(pu::ui::Overlay::DefaultMaxFadeAlpha);
-    text->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Center);
-    text->SetVerticalAlign(pu::ui::elm::VerticalAlign::Center);
-    overlay->Add(text);
-    this->StartOverlayWithTimeout(overlay, 3000);
+    // Ends after 3s or any button press (see the SetOnInput hook)
+    this->StartOverlayWithTimeout(MakeToastOverlay(message), 3000);
     errorToastActive = true;
 }
 

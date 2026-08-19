@@ -15,6 +15,8 @@
 #include "data/saves/Save.hpp"
 #include "utils/AccountUtil.hpp"
 
+// Threading rule: everything that mounts the shared "save:" device runs on
+// the UI thread; of the load pipeline only ExecuteLoad is worker-safe.
 class SwitchSaveDataProvider : public ISaveDataProvider {
 private:
     // Path where Checkpoint stores saves

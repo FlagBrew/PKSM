@@ -15,7 +15,9 @@ public:
     PU_SMART_CTOR(ISaveDataProvider)
     virtual ~ISaveDataProvider() = default;
 
-    // Get list of available saves for a given title and optional user
+    // Get list of available saves for a given title and optional user.
+    // Save names identify saves within a title - ResolveLoad re-matches the
+    // chosen name against these listings, so names must stay unique per title.
     virtual std::vector<pksm::saves::Save::Ref> GetSavesForTitle(
         const pksm::titles::Title::Ref& title,
         const std::optional<AccountUid>& currentUser = std::nullopt

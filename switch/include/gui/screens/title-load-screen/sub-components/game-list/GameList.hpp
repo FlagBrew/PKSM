@@ -96,6 +96,7 @@ private:
     // Helper methods
     void SwitchToNextGameList(bool forward);
     void SetupGameListCallbacks(IGameList::Ref gameList);
+    void ApplyConsoleData(const std::shared_ptr<ConsoleGameList>& consoleList);
     void UpdateGameListData();
     void CreateTriggerButtons();
     void UpdateTriggerButtonLabels();
@@ -133,7 +134,6 @@ public:
     void SetFocusManager(std::shared_ptr<input::FocusManager> manager);
 
     // Public interface
-    void SetBackgroundColor(const pu::ui::Color& color);
     titles::Title::Ref GetSelectedTitle() const;
     bool IsGameListDependentOnUser() const;
     void SetOnSelectionChanged(std::function<void()> callback) { onSelectionChangedCallback = callback; }

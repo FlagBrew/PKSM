@@ -7,8 +7,11 @@
 
 namespace pksm::titles {
 
-// The same catalog game can hold tiles on both the Emulator and Custom tabs
-// with different save lists, so the title id alone can't identify a tile's saves.
+// Which save universe a tile's saves come from: Console = installed titles
+// (console containers + Checkpoint/JKSV backups), Emulator = discovered
+// emulator files and live NSO containers, Custom = the user's configured
+// paths. The same catalog game can tile on both Emulator and Custom with
+// different save lists, so the title id alone can't identify a tile's saves.
 enum class TitleContext { Console, Emulator, Custom };
 
 class Title {
