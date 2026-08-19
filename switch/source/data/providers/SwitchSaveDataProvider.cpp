@@ -179,6 +179,38 @@ std::optional<pksm::saves::LoadedSave> ProbeSaveFiles(
     return std::nullopt;
 }
 
+// A save inside a Citra-style virtual SD ends in .../data/00000001/main,
+// so its parent directories say nothing; label it with the emulator's user
+// dir (the directory owning the tree) instead, e.g. "main (dekopon)"
+struct CitraTreeLabel {
+    std::string owner;
+    std::string id0;
+};
+std::optional<CitraTreeLabel> LabelCitraTreePath(const std::filesystem::path& p) {
+    std::vector<std::string> parts;
+    for (const auto& part : p) {
+        parts.push_back(part.string());
+    }
+    const auto it = std::find(parts.begin(), parts.end(), "Nintendo 3DS");
+    if (it == parts.end() || it + 1 == parts.end()) {
+        return std::nullopt;
+    }
+    CitraTreeLabel label;
+    label.id0 = *(it + 1);
+    // Walk back over the virtual "sdmc" dir to the emulator's own dir; a
+    // tree at the card root has no owner
+    auto owner = it;
+    if (owner != parts.begin() && *(owner - 1) == "sdmc") {
+        owner--;
+    }
+    if (owner != parts.begin() && (owner - 1)->find(':') == std::string::npos) {
+        label.owner = *(owner - 1);
+    } else {
+        label.owner = "3DS card";
+    }
+    return label;
+}
+
 // A backup (Checkpoint, JKSV) is a directory; probe its files and let core
 // decide which one is the save
 std::optional<pksm::saves::LoadedSave> LoadBackupDirectory(
@@ -258,10 +290,18 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(
         // when two files would still read identically, add the grandparent
         const std::filesystem::path p(path);
         const std::string filename = p.filename().string();
-        std::string name = filename + " (" + p.parent_path().filename().string() + ")";
-        if (taken(name)) {
-            name = filename + " (" + p.parent_path().parent_path().filename().string() + "/" +
-                p.parent_path().filename().string() + ")";
+        std::string name;
+        if (const auto citra = LabelCitraTreePath(p)) {
+            name = filename + " (" + citra->owner + ")";
+            if (taken(name)) {
+                name = filename + " (" + citra->owner + "/" + citra->id0.substr(0, 8) + ")";
+            }
+        } else {
+            name = filename + " (" + p.parent_path().filename().string() + ")";
+            if (taken(name)) {
+                name = filename + " (" + p.parent_path().parent_path().filename().string() + "/" +
+                    p.parent_path().filename().string() + ")";
+            }
         }
         saves.push_back(pksm::saves::Save::New(name, path));
     }

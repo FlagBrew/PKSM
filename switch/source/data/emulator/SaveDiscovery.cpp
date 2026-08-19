@@ -4,6 +4,7 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <set>
 
 #include "data/saves/SaveValidator.hpp"
@@ -24,6 +25,16 @@ constexpr const char* RETROARCH_CFG = "sdmc:/retroarch/retroarch.cfg";
 constexpr const char* RETROARCH_SAVE_ROOT = "sdmc:/retroarch/cores/savefiles/";
 constexpr const char* MGBA_CONFIG = "sdmc:/mGBA/config.ini";
 constexpr const char* ROM_TREE_ROOT = "sdmc:/roms";
+
+// Citra-lineage 3DS emulators (the Dekopon/Raika Azahar Switch ports; the
+// same tree shape as desktop Citra/Azahar copied to the card) keep saves in
+// a virtual SD card:
+//   <user dir>/sdmc/Nintendo 3DS/<id0>/<id1>/title/00040000/<title-lo>/data/00000001/main
+// where id0/id1 are 32 zeros when the emulator made the tree but real hex
+// when it was copied off a console's SD card, and gen 1/2 Virtual Console
+// titles store sav.dat in place of main
+constexpr const char* CITRA_USER_DIRS[] = {"sdmc:/switch/dekopon/", "sdmc:/switch/azahar/"};
+constexpr const char* CITRA_TREE_NAME = "Nintendo 3DS";
 
 // A scan is a boot-time cost; keep it bounded whatever the card holds
 constexpr int MAX_SCAN_DEPTH = 4;
@@ -156,6 +167,110 @@ std::vector<FoundFile> ScanForSaveFiles(const std::vector<std::string>& roots) {
     return found;
 }
 
+bool IsHex32(const std::string& name) {
+    return name.size() == 32 &&
+        std::all_of(name.begin(), name.end(), [](unsigned char c) { return std::isxdigit(c) != 0; });
+}
+
+// The Switch ports redirect their whole user dir through a plain-text
+// pointer file next to the default location
+std::string CitraUserDir(const std::string& defaultDir) {
+    std::ifstream f(defaultDir + "user_dir.txt");
+    if (!f.is_open()) {
+        return defaultDir;
+    }
+    std::string redirected((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    // Trim the ends only; the emulator allows interior spaces in the path
+    while (!redirected.empty() && std::isspace(static_cast<unsigned char>(redirected.front()))) {
+        redirected.erase(redirected.begin());
+    }
+    while (!redirected.empty() && std::isspace(static_cast<unsigned char>(redirected.back()))) {
+        redirected.pop_back();
+    }
+    if (redirected.empty()) {
+        return defaultDir;
+    }
+    if (redirected.back() != '/') {
+        redirected += '/';
+    }
+    return redirected;
+}
+
+std::vector<std::string> CitraTreeRoots() {
+    // Both ports' pointer files can target the same user dir; a duplicate
+    // root would list every save in it twice
+    std::vector<std::string> roots;
+    auto push = [&roots](const std::string& p) {
+        if (std::find(roots.begin(), roots.end(), p) == roots.end()) {
+            roots.push_back(p);
+        }
+    };
+    for (const char* base : CITRA_USER_DIRS) {
+        push(CitraUserDir(base) + "sdmc/" + CITRA_TREE_NAME + "/");
+    }
+    // A console's SD card copied onto this one wholesale
+    push(std::string("sdmc:/") + CITRA_TREE_NAME + "/");
+    return roots;
+}
+
+// The virtual-SD tree is too deep for the generic sweep, but its shape is
+// fixed, so walk it level by level instead of recursing
+void ScanCitraTrees(std::vector<FoundFile>& found) {
+    int dirBudget = MAX_SCAN_DIRS;
+    const auto eachSubdir = [&dirBudget](const fs::path& dir, const auto& visit) {
+        std::error_code ec;
+        fs::directory_iterator it(dir, fs::directory_options::skip_permission_denied, ec);
+        if (ec) {
+            return;
+        }
+        for (const fs::directory_iterator end; it != end && dirBudget > 0; it.increment(ec)) {
+            if (ec) {
+                break;
+            }
+            std::error_code typeEc;
+            if (!it->is_directory(typeEc) || typeEc) {
+                continue;
+            }
+            dirBudget--;
+            visit(it->path());
+        }
+    };
+
+    for (const auto& root : CitraTreeRoots()) {
+        eachSubdir(fs::path(root), [&](const fs::path& id0) {
+            if (!IsHex32(id0.filename().string())) {
+                return;
+            }
+            eachSubdir(id0, [&](const fs::path& id1) {
+                if (!IsHex32(id1.filename().string())) {
+                    return;
+                }
+                eachSubdir(id1 / "title" / "00040000", [&](const fs::path& titleDir) {
+                    for (const char* filename : {"main", "sav.dat"}) {
+                        const fs::path savePath = titleDir / "data" / "00000001" / filename;
+                        std::error_code ec;
+                        if (!fs::is_regular_file(savePath, ec) || ec) {
+                            continue;
+                        }
+                        const auto size = fs::file_size(savePath, ec);
+                        if (ec || size == 0 || size > pksm::saves::SaveValidator::MAX_SAVE_SIZE) {
+                            continue;
+                        }
+                        auto mtime = fs::last_write_time(savePath, ec);
+                        if (ec) {
+                            mtime = fs::file_time_type{};
+                        }
+                        found.push_back({savePath.string(), mtime});
+                    }
+                });
+            });
+        });
+    }
+    if (dirBudget <= 0) {
+        LOG_INFO("Citra tree scan stopped early: directory budget exhausted, some locations were not scanned");
+    }
+}
+
 // Core's version() collapses sibling games into one save family; the
 // catalog's save_family keys pick up from here
 std::string FamilyOf(::pksm::GameVersion version) {
@@ -186,6 +301,24 @@ std::string FamilyOf(::pksm::GameVersion version) {
             return "b2";
         case ::pksm::GameVersion::W2:
             return "w2";
+        // Gen 6/7 saves carry their exact version, so each game is a
+        // one-member family and never needs keyword disambiguation
+        case ::pksm::GameVersion::X:
+            return "x";
+        case ::pksm::GameVersion::Y:
+            return "y";
+        case ::pksm::GameVersion::OR:
+            return "or";
+        case ::pksm::GameVersion::AS:
+            return "as";
+        case ::pksm::GameVersion::SN:
+            return "sn";
+        case ::pksm::GameVersion::MN:
+            return "mn";
+        case ::pksm::GameVersion::US:
+            return "us";
+        case ::pksm::GameVersion::UM:
+            return "um";
         default:
             return "";
     }
@@ -199,6 +332,7 @@ std::unordered_map<u64, std::vector<std::string>> SaveDiscovery::Discover(const 
     std::unordered_map<u64, std::vector<std::string>> discovered;
 
     auto files = ScanForSaveFiles(CollectScanRoots());
+    ScanCitraTrees(files);
     // Most recently written first, so each game lists its live save on top
     std::sort(files.begin(), files.end(), [](const FoundFile& a, const FoundFile& b) {
         return a.mtime > b.mtime;
