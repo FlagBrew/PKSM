@@ -1,18 +1,15 @@
 #pragma once
 
-#include <atomic>
-#include <cstdint>
-#include <filesystem>
 #include <map>
 #include <mutex>
 #include <optional>
-#include <thread>
 #include <unordered_map>
 #include <vector>
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
 #include "data/providers/interfaces/ISaveDataProvider.hpp"
 #include "data/saves/Save.hpp"
+#include "data/saves/SaveValidationCache.hpp"
 #include "utils/AccountUtil.hpp"
 
 // Threading rule: everything that mounts the shared "save:" device runs on
@@ -43,17 +40,7 @@ private:
     mutable std::optional<std::unordered_map<u64, std::vector<std::string>>> discoveredSaves;
     const std::unordered_map<u64, std::vector<std::string>>& DiscoveredSaves() const;
 
-    // Per-file core-validation results; guarded by validationMutex (prewarm worker writes, UI reads)
-    struct ValidatedFile {
-        std::filesystem::file_time_type mtime;
-        std::uintmax_t size = 0;
-        bool valid = false;
-    };
-    mutable std::unordered_map<std::string, ValidatedFile> validationCache;
-    mutable std::mutex validationMutex;
     mutable std::mutex discoveryMutex;
-    std::thread prewarmThread;
-    std::atomic<bool> prewarmStop{false};
 
     // Saves in the NSO apps' own console containers, keyed by catalog game;
     // scanned once per account, UI thread only (the scan mounts the shared "save" device)
@@ -70,15 +57,17 @@ private:
     void RefreshJKSVSaves(const pksm::titles::Title::Ref& title) const;
     std::vector<pksm::saves::Save::Ref> ListDiscoveredSaves(u64 titleId) const;
     std::vector<pksm::saves::Save::Ref> ListConfiguredSaves(u64 titleId) const;
-    bool ValidateWithCore(const std::string& path) const;
 
     // Filesystem mounting helpers
     Result MountSaveData(FsFileSystem* fs, u64 titleId, AccountUid userId) const;
     void UnmountSaveData() const;
 
+    // Declared last: its destructor joins the prewarm worker, whose path
+    // collection reads the members above
+    mutable pksm::saves::SaveValidationCache validationCache;
+
 public:
     SwitchSaveDataProvider();
-    ~SwitchSaveDataProvider();
     PU_SMART_CTOR(SwitchSaveDataProvider)
 
     // Warm the validation cache on a background thread; main-thread-only, call once

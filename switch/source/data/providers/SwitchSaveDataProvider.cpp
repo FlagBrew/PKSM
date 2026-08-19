@@ -20,55 +20,22 @@ SwitchSaveDataProvider::SwitchSaveDataProvider() {
     emulatorCatalog = pksm::data::emulator::EmulatorGameCatalog::BuildIndexByTitleId(emulatorGames);
 }
 
-SwitchSaveDataProvider::~SwitchSaveDataProvider() {
-    prewarmStop = true;
-    if (prewarmThread.joinable()) {
-        prewarmThread.join();
-    }
-}
-
 void SwitchSaveDataProvider::PrewarmValidationCache() {
-    if (prewarmThread.joinable()) {
-        return;
-    }
-    prewarmThread = std::thread([this]() {
-        // An exception escaping a std::thread is std::terminate; a failed
-        // prewarm must degrade to cold landings instead
-        try {
-            const u64 t0 = armGetSystemTick();
-
-            std::vector<std::string> paths;
-            for (const auto& [titleId, list] : DiscoveredSaves()) {
-                paths.insert(paths.end(), list.begin(), list.end());
-            }
-            const auto cfg = pksm::data::emulator::CustomSaveConfig::Load();
-            for (const auto& [titleId, entry] : emulatorCatalog) {
-                for (const auto& path : pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(entry.titleId, cfg)) {
-                    std::error_code ec;
-                    if (std::filesystem::is_regular_file(std::filesystem::path(path), ec) && !ec) {
-                        paths.push_back(path);
-                    }
-                }
-            }
-            // Save families share files (one .srm can match several games)
-            std::sort(paths.begin(), paths.end());
-            paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
-
-            size_t validated = 0;
-            for (const auto& path : paths) {
-                if (prewarmStop) {
-                    return;
-                }
-                ValidateWithCore(path);
-                validated++;
-            }
-            LOG_DEBUG(
-                "Prewarmed save validation: " + std::to_string(validated) + " files in " +
-                std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms"
-            );
-        } catch (const std::exception& e) {
-            LOG_ERROR("Save prewarm aborted: " + std::string(e.what()));
+    validationCache.Prewarm([this]() {
+        std::vector<std::string> paths;
+        for (const auto& [titleId, list] : DiscoveredSaves()) {
+            paths.insert(paths.end(), list.begin(), list.end());
         }
+        const auto cfg = pksm::data::emulator::CustomSaveConfig::Load();
+        for (const auto& [titleId, entry] : emulatorCatalog) {
+            for (const auto& path : pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(entry.titleId, cfg)) {
+                std::error_code ec;
+                if (std::filesystem::is_regular_file(std::filesystem::path(path), ec) && !ec) {
+                    paths.push_back(path);
+                }
+            }
+        }
+        return paths;
     });
 }
 
@@ -82,8 +49,7 @@ const std::unordered_map<u64, std::vector<std::string>>& SwitchSaveDataProvider:
         discoveredSaves = pksm::data::emulator::SaveDiscovery::Discover(
             emulatorGames,
             [this](const std::string& path, std::filesystem::file_time_type mtime, std::uintmax_t size, bool valid) {
-                std::lock_guard<std::mutex> cacheLock(validationMutex);
-                validationCache[path] = {mtime, size, valid};
+                validationCache.Record(path, mtime, size, valid);
             }
         );
     }
@@ -352,35 +318,6 @@ std::optional<pksm::saves::PendingLoad> ResolveBackupDirectory(
 
 }  // namespace
 
-bool SwitchSaveDataProvider::ValidateWithCore(const std::string& path) const {
-    std::error_code ec;
-    const auto mtime = std::filesystem::last_write_time(std::filesystem::path(path), ec);
-    const auto size = ec ? 0 : std::filesystem::file_size(std::filesystem::path(path), ec);
-    if (ec) {
-        return false;
-    }
-
-    {
-        std::lock_guard<std::mutex> lg(validationMutex);
-        auto it = validationCache.find(path);
-        if (it != validationCache.end() && it->second.mtime == mtime && it->second.size == size) {
-            return it->second.valid;
-        }
-    }
-
-    // Validation runs unlocked; it must not block the UI thread's cache hits
-    const auto summary = pksm::saves::SaveValidator::Validate(path);
-    if (summary) {
-        LOG_INFO("Validated save " + path + ": " + summary->Describe());
-    } else {
-        LOG_INFO("Rejected save candidate " + path + ": core cannot parse it");
-    }
-
-    std::lock_guard<std::mutex> lg(validationMutex);
-    validationCache[path] = {mtime, size, summary.has_value()};
-    return summary.has_value();
-}
-
 std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(u64 titleId) const {
     std::vector<pksm::saves::Save::Ref> saves;
 
@@ -401,7 +338,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(
         if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
             continue;
         }
-        if (!ValidateWithCore(path)) {
+        if (!validationCache.Validate(path)) {
             continue;
         }
 
@@ -450,7 +387,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(
         if (!std::filesystem::is_regular_file(std::filesystem::path(path), ec) || ec) {
             continue;
         }
-        if (!ValidateWithCore(path)) {
+        if (!validationCache.Validate(path)) {
             continue;
         }
 
