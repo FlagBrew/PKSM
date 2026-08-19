@@ -87,9 +87,7 @@ void pksm::ui::BoxGrid::SetPokemonData(int slotIndex, const BoxPokemonData& data
 
         // Update the displayed item if it exists
         if (static_cast<size_t>(slotIndex) < items.size()) {
-            // Get the sprite for this Pokémon
-            pu::sdl2::TextureHandle::Ref texture = data.getSprite();
-            items[slotIndex]->SetImage(texture);
+            items[slotIndex]->SetImage(data.getSprite());
             items[slotIndex]->SetGender(data.gender, !data.isEmpty());
             items[slotIndex]->SetPartyNumber(data.partyNumber);
             items[slotIndex]->SetUnusable(data.unusable);
@@ -153,11 +151,8 @@ void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
         // Get the Pokémon data
         BoxPokemonData& pokemonData = currentBoxData[i];
 
-        // Get the texture handle for this Pokémon
-        pu::sdl2::TextureHandle::Ref textureHandle = pokemonData.getSprite();
-
         // Create a BoxItem for this slot
-        auto boxItem = BoxItem::New(position.first, position.second, itemSize, itemSize, textureHandle);
+        auto boxItem = BoxItem::New(position.first, position.second, itemSize, itemSize, pokemonData.getSprite());
         boxItem->SetGender(pokemonData.gender, !pokemonData.isEmpty());
         boxItem->SetPartyNumber(pokemonData.partyNumber);
         boxItem->SetUnusable(pokemonData.unusable);

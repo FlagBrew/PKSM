@@ -131,7 +131,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         // Register additional fonts after romfs is mounted
         RegisterAdditionalFonts();
 
-        if (!utils::PokemonSpriteManager::Initialize("romfs:/gfx/pokesprites/pokesprite.json")) {
+        if (!utils::PokemonSpriteManager::Initialize("romfs:/gfx/pokesprites.pkss")) {
             LOG_ERROR("Failed to initialize Pokemon sprite manager");
             return nullptr;
         }
@@ -197,8 +197,8 @@ void PKSMApplication::ShowMainMenu() {
 
 void PKSMApplication::ShowTitleLoadScreen() {
     // Leaving a save session: release the loaded Sav (a console SV save holds
-    // ~4.4MB) and drop the storage screen and sprite cache so their textures
-    // go back to the applet heap. Everything rebuilds on demand.
+    // ~4.4MB) and drop the storage screen and warm sprite pages so their
+    // textures go back to the applet heap. Everything rebuilds on demand.
     saveDataAccessor->unloadSave();
     if (storageScreen) {
         storageScreen = nullptr;

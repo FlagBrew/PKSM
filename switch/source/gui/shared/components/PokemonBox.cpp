@@ -529,24 +529,18 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
 
         const u64 t1 = armGetSystemTick();
 
-        // Update sprite cache
-        UpdateSpriteCache();
-
-        const u64 t2 = armGetSystemTick();
-
         // The selected (box, slot) pair changed even when the slot index
         // stayed put, and the grid update only notifies on an index change
         if (onSelectionChangedCallback) {
             onSelectionChangedCallback(currentBox, GetSelectedSlot());
         }
 
-        const u64 t3 = armGetSystemTick();
+        const u64 t2 = armGetSystemTick();
         LOG_DEBUG(
             "Box switch to " + std::to_string(currentBox) + ": total " +
-            std::to_string(armTicksToNs(t3 - t0) / 1000000) + " ms (grid " +
-            std::to_string(armTicksToNs(t1 - t0) / 1000000) + ", sprites " +
-            std::to_string(armTicksToNs(t2 - t1) / 1000000) + ", resync " +
-            std::to_string(armTicksToNs(t3 - t2) / 1000000) + ")"
+            std::to_string(armTicksToNs(t2 - t0) / 1000000) + " ms (grid " +
+            std::to_string(armTicksToNs(t1 - t0) / 1000000) + ", resync " +
+            std::to_string(armTicksToNs(t2 - t1) / 1000000) + ")"
         );
     }
 }
@@ -559,26 +553,6 @@ void PokemonBox::UpdateBoxGrid() {
 
     // Send the current box data to the grid
     boxGrid->SetBoxData(boxes[currentBox]);
-}
-
-void PokemonBox::UpdateSpriteCache() {
-    // Build a list of active sprites to keep in memory
-    std::set<std::string> activeKeys;
-
-    if (!boxes.empty() && static_cast<size_t>(currentBox) < boxes.size()) {
-        // Add sprites for the current box
-        for (size_t i = 0; i < boxes[currentBox].size(); i++) {
-            const auto& pokemonData = boxes[currentBox][i];
-            if (!pokemonData.isEmpty()) {
-                activeKeys.insert(
-                    utils::PokemonSpriteManager::GenerateKey(pokemonData.species, pokemonData.form, pokemonData.shiny)
-                );
-            }
-        }
-    }
-
-    // Release sprites that aren't in the current box
-    utils::PokemonSpriteManager::ReleaseUnusedSprites(activeKeys);
 }
 
 void PokemonBox::SetPokemonData(int boxIndex, int slotIndex, const BoxPokemonData& data) {
