@@ -116,8 +116,7 @@ PokemonBox::PokemonBox(
         }
     );
 
-    // A activates the focused box-name pill; the owning screen decides what
-    // (if anything) that offers for the current box
+    // A on the focused box-name pill; the owning screen decides what it offers
     buttonHandler.RegisterButton(
         HidNpadButton_A,
         nullptr,
@@ -408,8 +407,7 @@ void PokemonBox::OnInput(
     boxNamePill->OnInput(keys_down, keys_up, keys_held, touch_pos);
     boxSpacesButton->OnInput(keys_down, keys_up, keys_held, touch_pos);
 
-    // Focus can move between the zones through both buttons and touch, so
-    // the change is detected here rather than at each transition site
+    // Zone moves happen through both buttons and touch, so detect them here
     const int focusZone = CurrentFocusZone();
     if (focusZone != lastFocusZone) {
         lastFocusZone = focusZone;
@@ -532,8 +530,7 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
 
         const u64 t1 = armGetSystemTick();
 
-        // The selected (box, slot) pair changed even when the slot index
-        // stayed put, and the grid update only notifies on an index change
+        // The grid only notifies on a slot-index change; the box changed regardless
         if (onSelectionChangedCallback) {
             onSelectionChangedCallback(currentBox, GetSelectedSlot());
         }
@@ -587,8 +584,7 @@ void PokemonBox::DrainSpritePrefetch() {
     if (prefetchPos >= prefetchQueue.size()) {
         return;
     }
-    // A slice of the frame budget; cache hits burn through in microseconds,
-    // so only cold sprites actually spend it
+    // Cache hits burn through in microseconds; only cold sprites spend the slice
     constexpr u64 FRAME_SLICE_NS = 1'500'000;
     const u64 t0 = armGetSystemTick();
     while (prefetchPos < prefetchQueue.size() && armTicksToNs(armGetSystemTick() - t0) < FRAME_SLICE_NS) {

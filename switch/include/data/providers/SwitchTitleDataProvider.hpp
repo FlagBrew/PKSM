@@ -27,8 +27,7 @@ private:
     // Whether nsInitialize succeeded (held for the provider's lifetime)
     bool nsAvailable = false;
 
-    // Application id of the currently probed game card (0 = none); lets
-    // RefreshGameCardTitle detect hotplug without rebuilding textures
+    // Application id of the currently probed game card; 0 = none
     u64 currentCardId = 0;
 
     // Helper methods

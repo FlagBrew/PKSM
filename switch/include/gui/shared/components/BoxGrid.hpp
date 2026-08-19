@@ -36,9 +36,8 @@ private:
     // Components
     pu::ui::Container::Ref container;
     std::vector<BoxItem::Ref> items;
-    // The construction-time build runs before the parent managers are wired,
-    // so its registrations go nowhere; the first SetBoxData after wiring must
-    // rebuild to register the items with the live managers
+    // Items built at construction predate manager wiring; the first
+    // SetBoxData must rebuild to register them with the live managers
     bool itemsRegistered = false;
     pksm::input::DirectionalInputHandler inputHandler;
 

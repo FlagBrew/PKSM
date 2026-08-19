@@ -99,8 +99,7 @@ bool pksm::ui::GameCardSlot::IsFocused() const {
 }
 
 void pksm::ui::GameCardSlot::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
-    // Empty state: ghosted grayscale frame + hint text, never dimmed
-    // further (the slot is not selectable while empty)
+    // Empty state: ghosted frame + hint text (the slot is not selectable)
     if (!title) {
         if (emptyFrameTexture && emptyFrameTexture->Get()) {
             drawer->RenderTexture(
@@ -168,7 +167,6 @@ void pksm::ui::GameCardSlot::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
-    // An empty slot is not interactive
     if (!title) {
         return;
     }

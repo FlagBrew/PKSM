@@ -37,14 +37,11 @@ private:
     std::vector<pksm::data::emulator::EmulatorGameEntry> emulatorGames;
     std::unordered_map<u64, pksm::data::emulator::EmulatorGameEntry> emulatorCatalog;
 
-    // Saves found by scanning the card's emulator locations, built on
-    // first use and kept for the session (a fresh scan needs a relaunch)
+    // Emulator save scan results, built on first use and kept for the session
     mutable std::optional<std::unordered_map<u64, std::vector<std::string>>> discoveredSaves;
     const std::unordered_map<u64, std::vector<std::string>>& DiscoveredSaves() const;
 
-    // Core-validation results per file, invalidated when the file changes.
-    // Guarded by validationMutex: the prewarm worker fills it while the UI
-    // thread reads through it
+    // Per-file core-validation results; guarded by validationMutex (prewarm worker writes, UI reads)
     struct ValidatedFile {
         std::filesystem::file_time_type mtime;
         std::uintmax_t size = 0;
@@ -56,9 +53,8 @@ private:
     std::thread prewarmThread;
     std::atomic<bool> prewarmStop{false};
 
-    // Live saves inside the NSO emulator apps' own console save containers,
-    // keyed by catalog game. Scanned once per account, UI thread only (the
-    // scan mounts the shared "save" device)
+    // Saves in the NSO apps' own console containers, keyed by catalog game;
+    // scanned once per account, UI thread only (the scan mounts the shared "save" device)
     mutable std::optional<AccountUid> nsoScanUser;
     mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> nsoConsoleSaves;
     void ScanNSOContainers(const AccountUid& userId) const;
@@ -83,9 +79,7 @@ public:
     ~SwitchSaveDataProvider();
     PU_SMART_CTOR(SwitchSaveDataProvider)
 
-    // Validate every discovered and configured save on a background thread,
-    // so the first landing on a title finds the cache already warm.
-    // Main-thread-only, call once
+    // Warm the validation cache on a background thread; main-thread-only, call once
     void PrewarmValidationCache();
 
     // Implementation of ISaveDataProvider

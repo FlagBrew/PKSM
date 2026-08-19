@@ -105,9 +105,7 @@ void pksm::ui::BoxGrid::SetBoxData(const BoxData& boxData) {
         currentBoxData.resize(expectedSize);
     }
 
-    // The slot count never changes after construction, so the items built
-    // then are updated in place; destroying and re-registering all 30 slots
-    // per box switch cost enough to hitch the render loop
+    // Update items in place: rebuilding all 30 slots per box switch hitches the render loop
     if (items.size() != currentBoxData.size() || !itemsRegistered) {
         UpdateGridFromBoxData();
         return;

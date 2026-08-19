@@ -7,11 +7,8 @@
 
 namespace pksm::saves {
 
-// Path of a save living inside an NSO emulator app's console save
-// container: "nsosave:<16-hex title id>/saves/<code>/<file>". The scheme
-// carries the container's own title id, so loading and write-back mount
-// the right save data no matter which catalog game the save listed under;
-// the remainder is the path inside the mounted container.
+// "nsosave:<16-hex title id>/saves/<code>/<file>" - the id is the NSO app's own
+// container id, not the catalog game's, so write-back mounts the right save data.
 struct NSOSavePath {
     u64 nsoTitleId = 0;
     std::string innerPath;

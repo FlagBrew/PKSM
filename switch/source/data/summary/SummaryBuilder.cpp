@@ -16,9 +16,8 @@ using pksm::summary::StatCell;
 using pksm::summary::StatRow;
 using pksm::summary::SummaryData;
 
-// Storage formats, disambiguated beyond Generation: the Legends formats
-// report the mainline generation from generation() (the Generation enum has
-// no PLA value), so they are told apart by file extension
+// The Legends formats report the mainline generation, so they are told
+// apart by file extension
 enum class Format { G1, G2, G3, G4, G5, G6, G7, LGPE, G8, PLA, G9, ZA };
 
 Format DetectFormat(const ::pksm::PKX& pk) {
@@ -111,8 +110,7 @@ u8 BaseStat(const ::pksm::PKX& pk, ::pksm::Stat stat) {
     }
 }
 
-// Nature amp in the canonical table order (Atk, Def, Spe, SpA, SpD), which
-// is the core Stat enum order shifted by one; +1 raised, -1 lowered
+// Canonical nature table order (Atk, Def, Spe, SpA, SpD) = core Stat enum order shifted by one
 int NatureAmp(::pksm::Nature nature, ::pksm::Stat stat) {
     if (stat == ::pksm::Stat::HP) {
         return 0;
@@ -143,8 +141,7 @@ Accent NatureAccent(::pksm::Nature nature, ::pksm::Stat stat) {
     }
 }
 
-// Classic Gen 3+ stat formula, for formats whose core stat() only reads
-// party bytes (returns 0 for box Pokémon)
+// Gen 3+ formula, for formats whose core stat() only reads party bytes (0 for box Pokémon)
 u16 ClassicStat(const ::pksm::PKX& pk, ::pksm::Stat stat, ::pksm::Nature nature) {
     const int base = BaseStat(pk, stat);
     const int calc = (2 * base + pk.iv(stat) + pk.ev(stat) / 4) * pk.level() / 100;
@@ -165,8 +162,7 @@ u16 ClassicStat(const ::pksm::PKX& pk, ::pksm::Stat stat, ::pksm::Nature nature)
     }
 }
 
-// Legends: Arceus stat formula, ported from PKHeX 26.07.07 PA8.cs
-// LoadStats/GetGanbaruStat/GetStatHp/GetStat + IGanbaru.cs
+// Ported from PKHeX 26.07.07 PA8.cs LoadStats/GetGanbaruStat/GetStatHp/GetStat + IGanbaru.cs
 u16 PlaStat(const ::pksm::PA8& pk, ::pksm::Stat stat, ::pksm::Nature nature) {
     static constexpr u8 GANBARU_MULTIPLIER[11] = {0, 2, 3, 4, 7, 8, 9, 14, 15, 16, 25};
 
@@ -194,10 +190,8 @@ u16 PlaStat(const ::pksm::PA8& pk, ::pksm::Stat stat, ::pksm::Nature nature) {
     }
 }
 
-// Effective Tera type per PKHeX 26.07.07 ITeraType.GetTeraType: overrides
-// 0-17 and 99 (Stellar) apply; other non-19 values are junk-guarded to
-// Normal; 19 means no override. Stellar has no Type enum value, so it comes
-// back as nullopt and the caller names it.
+// Per PKHeX 26.07.07 ITeraType.GetTeraType: 19 = no override, junk guards to
+// Normal. Stellar has no Type enum value, so it returns nullopt.
 std::optional<::pksm::Type> TeraType(const ::pksm::PK9& pk) {
     constexpr u8 OVERRIDE_NONE = 19;
     constexpr u8 STELLAR = 99;
@@ -221,10 +215,8 @@ std::optional<::pksm::Type> TeraType(const ::pksm::PK9& pk) {
     return ::pksm::Type{effective};
 }
 
-// The generations whose games display the six-digit trainer ID; keyed by the
-// Pokémon's ORIGIN, matching the games and PKHeX (a Gen 3 native shown in a
-// Gen 9 save keeps its five-digit ID). GO and unset origins map to UNUSED,
-// where the storage format decides instead.
+// Keyed by the Pokémon's origin, matching the games and PKHeX; GO/unset
+// origins fall back to the storage format.
 bool SixDigitTrainerId(const ::pksm::PKX& pk, Format fmt) {
     switch (pk.originGen()) {
         case ::pksm::Generation::SEVEN:
@@ -270,8 +262,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
         data.types.push_back({pk.type2(), strings::TypeName(pk.type2())});
     }
 
-    // The nature the game applies to stats: Gen 9's minted nature lives in
-    // its own byte (PK8's nature() already reads it; earlier gens have none)
+    // Gen 9/PLA mint a separate stat nature; the other formats apply nature() itself
     ::pksm::Nature statNature = pk.nature();
     if (fmt == Format::G9) {
         statNature = static_cast<const ::pksm::PK9&>(pk).statNature();
@@ -279,9 +270,8 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
         statNature = static_cast<const ::pksm::PA8&>(pk).statNature();
     }
 
-    // Detail rows; whitelist per format - the core fabricates values for
-    // concepts a game doesn't have (Gen 1/2 nature is the exp%25 transfer
-    // derivation, Gen 1's "held item" is the catch-rate byte, ...)
+    // Detail rows, whitelisted per format - the core fabricates values for
+    // concepts a game doesn't have (Gen 1/2 nature, Gen 1's catch-rate "held item")
     const auto addRow = [&](const std::string& label, const std::string& value, Accent accent = Accent::None) {
         data.details.push_back({label, value, accent, std::nullopt});
     };
@@ -293,8 +283,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
     addRow("OT", OrDash(pk.otName()));
     if (!DvEra(fmt)) {
         addRow("Nature", strings::NatureName(pk.nature()));
-        // LGPE/PLA store an ability byte their gameplay never uses; shown
-        // for parity with PKHeX
+        // LGPE/PLA store an ability byte their gameplay never uses; shown for PKHeX parity
         addRow(
             "Ability",
             strings::AbilityName(pk.ability()),
@@ -308,8 +297,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
     if (fmt == Format::LGPE) {
         addRow("CP", std::to_string(static_cast<const ::pksm::PB7&>(pk).CP()));
     }
-    // The extension gate keeps the cast safe even if an unknown future
-    // format ever lands in DetectFormat's default branch
+    // The extension gate keeps the cast safe if a format lands in DetectFormat's default
     if (fmt == Format::G8 && pk.extension() == ".pk8") {
         const auto& pk8 = static_cast<const ::pksm::PK8&>(pk);
         addRow(
@@ -361,8 +349,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
         row.labelAccent = natureAccents ? NatureAccent(statNature, stat) : Accent::None;
         StatCell ivCell{std::to_string(pk.iv(stat)), mergedDvExp,
                         pk.hyperTrain(stat) ? Accent::Highlight : Accent::None};
-        // Middle column: stat exp (Gens 1/2), AVs (LGPE), effort levels
-        // (PLA - its ev() bytes are vestigial), EVs elsewhere
+        // Middle column: stat exp (Gens 1/2), AVs (LGPE), effort levels (PLA), EVs elsewhere
         const u16 middle = fmt == Format::PLA
             ? static_cast<const ::pksm::PA8&>(pk).effortLevel(stat)
             : pk.secondaryStatCalc(stat);
@@ -383,8 +370,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
     };
 
     if (fmt == Format::G1) {
-        // Five real stats; one Special DV/experience drives the one Special
-        // stat. Speed before Special is the era's own ordering.
+        // Speed before Special is the era's own ordering
         data.stats.columnHeaders = {"DV", "Exp", "Stat"};
         addStatRow("HP", ::pksm::Stat::HP, false, true, false);
         addStatRow("Attack", ::pksm::Stat::ATK, false, true, false);
@@ -392,8 +378,7 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
         addStatRow("Speed", ::pksm::Stat::SPD, false, true, false);
         addStatRow("Special", ::pksm::Stat::SPATK, false, true, false);
     } else if (fmt == Format::G2) {
-        // One Special DV/experience feeds two separately computed stats; the
-        // Sp. Def cells merge with Sp. Atk's to say so
+        // One Special DV/Exp feeds two separately computed stats; the merged cells say so
         data.stats.columnHeaders = {"DV", "Exp", "Stat"};
         addStatRow("HP", ::pksm::Stat::HP, false, true, false);
         addStatRow("Attack", ::pksm::Stat::ATK, false, true, false);

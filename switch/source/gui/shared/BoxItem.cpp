@@ -57,12 +57,11 @@ pksm::ui::BoxItem::BoxItem(
     container->Add(background);
     container->Add(this->image);
 
-    // Gender badge, top-right of the slot (container-relative coordinates)
+    // Badge positions are container-relative
     this->genderIcon = pu::ui::elm::Image::New(width - GENDER_ICON_SIZE - GENDER_ICON_MARGIN, GENDER_ICON_MARGIN, nullptr);
     this->genderIcon->SetVisible(false);
     container->Add(this->genderIcon);
 
-    // Party number badge, bottom-right of the slot
     this->partyBadge = pu::ui::elm::Image::New(
         width - PARTY_BADGE_SIZE - PARTY_BADGE_MARGIN,
         height - PARTY_BADGE_SIZE - PARTY_BADGE_MARGIN,
@@ -71,7 +70,6 @@ pksm::ui::BoxItem::BoxItem(
     this->partyBadge->SetVisible(false);
     container->Add(this->partyBadge);
 
-    // Drawn over everything else when the slot has no backing storage
     unusableShade = pu::ui::elm::Rectangle::New(0, 0, width, height, pu::ui::Color(0, 0, 0, 110));
     unusableShade->SetVisible(false);
     container->Add(unusableShade);
@@ -198,9 +196,7 @@ void pksm::ui::BoxItem::SetGender(pksm::Gender gender, bool visible) {
         genderIcon->SetImage(nullptr);
         return;
     }
-    // SetImage resets the element to the texture's natural size (the badge
-    // art is only 12px), so the display size is re-applied after it - the
-    // same dance SetImage above does for the sprite
+    // SetImage resets the element to the texture's natural size; re-apply the display size
     genderIcon->SetImage(GetGenderIconTexture(gender));
     genderIcon->SetWidth(GENDER_ICON_SIZE);
     genderIcon->SetHeight(GENDER_ICON_SIZE);
@@ -214,8 +210,7 @@ void pksm::ui::BoxItem::SetPartyNumber(u8 partyNumber) {
         partyBadge->SetImage(nullptr);
         return;
     }
-    // SetImage resets the element to the texture's natural size, so the
-    // display size is re-applied after it (same dance as the gender badge)
+    // Same natural-size reset as the gender badge
     partyBadge->SetImage(texture);
     partyBadge->SetWidth(PARTY_BADGE_SIZE);
     partyBadge->SetHeight(PARTY_BADGE_SIZE);
@@ -260,8 +255,7 @@ void pksm::ui::BoxItem::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu
         outline->OnRender(drawer, x - outlinePadding, y - outlinePadding);
     }
 
-    // Draw container elements, honoring visibility the way Plutonium's own
-    // render loop does - OnRender alone draws regardless of SetVisible
+    // Draw container elements; OnRender alone draws regardless of SetVisible
     for (auto& element : container->GetElements()) {
         if (element->IsVisible()) {
             element->OnRender(drawer, x + element->GetX(), y + element->GetY());

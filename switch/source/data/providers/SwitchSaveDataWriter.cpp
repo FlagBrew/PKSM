@@ -30,8 +30,7 @@ bool WriteFile(const std::string& path, const u8* data, size_t size) {
     return out.good();
 }
 
-// mkdir one component at a time (the 3DS app's idiom - std::filesystem's
-// recursive creation is unproven against device-prefixed paths here)
+// mkdir one component at a time; std::filesystem recursion is unproven on device-prefixed paths
 bool MakeDirTree(const std::string& path) {
     size_t pos = path.find(":/");
     pos = (pos == std::string::npos) ? 0 : pos + 2;
@@ -63,7 +62,6 @@ std::string BackupDirName(const pksm::titles::Title::Ref& title) {
     return dirName;
 }
 
-// Backups are pruned per title, oldest first, so heavy savers stay bounded
 constexpr size_t MAX_BACKUPS_PER_TITLE = 10;
 
 // Strictly our "%Y-%m-%d_%H-%M-%S" folder names; anything else is never pruned
@@ -115,12 +113,8 @@ void PruneOldBackups(const std::string& titleDir) {
     }
 }
 
-// Copy the current on-disk save aside before it gets overwritten, the same
-// habit as 3DS PKSM's auto-backup. Best-effort: a failure is logged but
-// never blocks the user's explicit save.
+// Best-effort auto-backup; failure is logged but never blocks the user's save
 void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string& savePath) {
-    // Bounded read, the same discipline as SaveValidator::Load - never trust
-    // a device file to report EOF or a sane size
     constexpr u64 MAX_BACKUP_SIZE = 0x4000000;  // 64MB, far above any save container file
     std::error_code ec;
     const u64 srcSize = std::filesystem::file_size(std::filesystem::path(savePath), ec);
@@ -158,8 +152,7 @@ void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string&
         return;
     }
 
-    // Copy in fixed-size chunks: this runs when the heap is at its fullest,
-    // and a save-sized contiguous buffer has failed to allocate there
+    // Chunked copy: a save-sized contiguous buffer has failed to allocate under peak heap here
     std::vector<char> chunk(0x40000);
     u64 copied = 0;
     bool writeOk = true;
@@ -186,11 +179,8 @@ void BackupBeforeWrite(const pksm::titles::Title::Ref& title, const std::string&
     PruneOldBackups(titleDir);
 }
 
-// A save loaded out of a GB NSO container must go back into it: keep the
-// container's header, splice the raw save in, re-sign its SHA-1. Plain
-// files pass through untouched. Returns false when the write must abort;
-// on success data/size point at the bytes to write (the caller's raw save,
-// or the container built around it in `container`).
+// Splice a raw save back into its NSO container (header kept, SHA-1 re-signed);
+// plain files pass through untouched. False means the write must abort.
 bool PrepareWriteBuffer(const std::string& path, const u8*& data, size_t& size, std::vector<u8>& container) {
     std::error_code ec;
     const auto existingSize = std::filesystem::file_size(std::filesystem::path(path), ec);
@@ -205,8 +195,7 @@ bool PrepareWriteBuffer(const std::string& path, const u8*& data, size_t& size, 
         fclose(in);
     }
     if (!readOk) {
-        // The target is bigger than the raw save, so it may be a container;
-        // writing raw bytes over an unreadable one would destroy its header
+        // Writing raw bytes over an unreadable container would destroy its header
         LOG_ERROR("Cannot read existing save file before write-back: " + path);
         return false;
     }
@@ -241,9 +230,7 @@ bool SwitchSaveDataWriter::WriteSave(
         return false;
     }
 
-    // A save inside an NSO app's container: mount that app's save data by
-    // the title id the path carries, splice into its container, and commit
-    // through the same journal as any console save
+    // Save inside an NSO app's console container
     if (const auto nso = pksm::saves::ParseNSOSavePath(savePath)) {
         if (!userId) {
             LOG_ERROR("NSO container write-back needs the account it was loaded for");
@@ -291,8 +278,7 @@ bool SwitchSaveDataWriter::WriteSave(
 
         BackupBeforeWrite(title, savePath);
 
-        // The container is journaled: write in place, nothing persists
-        // without the commit
+        // The container is journaled: nothing persists without the commit
         bool written = WriteFile(savePath, data, size);
         if (written) {
             Result rc = fsdevCommitDevice("save");
@@ -315,9 +301,7 @@ bool SwitchSaveDataWriter::WriteSave(
         return false;
     }
 
-    // sdmc files have no journal and the target is the only copy: write a
-    // sibling temp file and swap it in, so an interrupted write can never
-    // leave a truncated save behind
+    // sdmc has no journal: write a sibling temp file and swap, so interruption never truncates the save
     const std::string tempPath = savePath + ".pksm-tmp";
     if (!WriteFile(tempPath, data, size)) {
         LOG_ERROR("Failed to write " + tempPath);

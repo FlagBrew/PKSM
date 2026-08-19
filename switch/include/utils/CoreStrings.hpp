@@ -10,13 +10,11 @@
 #include "enums/Species.hpp"
 #include "enums/Type.hpp"
 
-// Localized display names from PKSM-Core's string tables (romfs:/i18n/,
-// loaded lazily by the core on first use). Every lookup falls back to a
-// readable placeholder rather than an empty string.
+// Localized display names from PKSM-Core's string tables (romfs:/i18n/);
+// every lookup falls back to a readable placeholder, never an empty string
 namespace pksm::strings {
 
-// The app currently presents in English; following the system language is a
-// planned follow-up, and this is the one place that decides.
+// English for now; the one place that decides the display language
 ::pksm::Language CurrentLanguage();
 
 std::string SpeciesName(::pksm::Species species);
@@ -26,8 +24,7 @@ std::string NatureName(::pksm::Nature nature);
 std::string TypeName(::pksm::Type type);
 std::string ItemName(u16 itemId);
 
-// The raw held-item index is format-native: Gen 2 and Gen 3 formats store
-// their own item indices, later formats store national ones
+// itemId is format-native: Gen 2/3 use their own item indices
 std::string ItemName(u16 itemId, ::pksm::Generation storageFormat);
 
 }  // namespace pksm::strings

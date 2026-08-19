@@ -119,8 +119,7 @@ void pksm::ui::GameGrid::SetDataSource(const std::vector<titles::Title::Ref>& ti
     // Store titles
     this->titles = titles;
 
-    // A stale index from a longer previous list must not outlive the data;
-    // clamp to the end so the selection stays close to where it was
+    // Clamp a stale selection index from a longer previous list
     if (selectedIndex >= titles.size()) {
         selectedIndex = titles.empty() ? 0 : titles.size() - 1;
     }

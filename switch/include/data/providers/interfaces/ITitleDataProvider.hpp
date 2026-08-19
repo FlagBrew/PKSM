@@ -14,8 +14,7 @@ public:
     // Get the currently inserted game card title, or nullptr if none
     virtual pksm::titles::Title::Ref GetGameCardTitle() const = 0;
 
-    // Re-probe the game card slot; returns true if the inserted card
-    // changed since the last probe (default: providers without hotplug)
+    // Re-probe the game card slot; true if the inserted card changed
     virtual bool RefreshGameCardTitle() { return false; }
 
     // Get list of installed titles for a specific user

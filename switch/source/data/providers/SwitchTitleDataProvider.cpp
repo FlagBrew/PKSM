@@ -10,33 +10,27 @@
 #include "utils/BoxArtSheet.hpp"
 #include "utils/Logger.hpp"
 
-// Helper to check if a title ID belongs to a Pokémon game
 bool SwitchTitleDataProvider::IsPokemonTitle(u64 titleId) const {
     return knownTitleNames.find(titleId) != knownTitleNames.end();
 }
 
-// Get a readable name for a title
 std::string SwitchTitleDataProvider::GetTitleName(u64 titleId, NacpLanguageEntry* languageEntry) const {
     if (languageEntry && strlen(languageEntry->name) > 0) {
         return std::string(languageEntry->name);
     }
 
-    // Check if we have a known name for this title
     auto it = knownTitleNames.find(titleId);
     if (it != knownTitleNames.end()) {
         return it->second;
     }
 
-    // Fallback to title ID as hex
     char buffer[32];
     snprintf(buffer, sizeof(buffer), "0x%016lX", titleId);
     return std::string(buffer);
 }
 
-// Load title icon into a texture
 SDL_Texture* SwitchTitleDataProvider::LoadTitleIcon(NsApplicationControlData* nsacd, size_t iconSize) const {
     if (!nsacd || iconSize == 0) {
-        // Return a default icon texture
         return pu::ui::render::LoadImage(FALLBACK_TITLE_ICON_PATH);
     }
 
@@ -73,10 +67,8 @@ SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveData
         {0x0100F43008C44000, "Pokémon Legends: Z-A"}
     };
 
-    // Emulator and Custom tiles both come from the bundled catalog
     RefreshCatalogTitles();
 
-    // Bring up ns once for the provider's lifetime (icons + game card metadata)
     Result rc = nsInitialize();
     nsAvailable = R_SUCCEEDED(rc);
     if (!nsAvailable) {
@@ -85,7 +77,6 @@ SwitchTitleDataProvider::SwitchTitleDataProvider(ISaveDataProvider::Ref saveData
         LOG_ERROR(ss.str());
     }
 
-    // Refresh game card and installed titles
     RefreshGameCardTitle();
 }
 
@@ -105,17 +96,14 @@ std::vector<pksm::titles::Title::Ref> SwitchTitleDataProvider::GetInstalledTitle
         return it->second;
     }
 
-    // Not in cache, so refresh
     LOG_INFO("Titles not in cache, refreshing for user");
     RefreshInstalledTitles(userId);
 
-    // Now check cache again
     it = installedTitleCache.find(userId);
     if (it != installedTitleCache.end()) {
         return it->second;
     }
 
-    // Return empty vector if not found
     return {};
 }
 
@@ -132,8 +120,7 @@ bool SwitchTitleDataProvider::RefreshGameCardTitle() {
         return false;
     }
 
-    // Lightweight probe first: this runs on a poll, so only rebuild the
-    // title (metadata fetch + texture upload) when the card actually changed
+    // Runs on a poll: only rebuild the title when the card actually changed
     u64 titleId = 0;
     bool inserted = false;
     if (R_SUCCEEDED(nsIsGameCardInserted(&inserted)) && inserted) {
@@ -154,7 +141,6 @@ bool SwitchTitleDataProvider::RefreshGameCardTitle() {
         return true;
     }
 
-    // Check if this is a Pokémon game
     if (!IsPokemonTitle(titleId)) {
         std::stringstream ss;
         ss << "Game card is not a Pokémon game (Title ID: 0x" << std::hex << titleId << ")";
@@ -162,7 +148,6 @@ bool SwitchTitleDataProvider::RefreshGameCardTitle() {
         return true;
     }
 
-    // Get game card control data
     NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
     if (!nsacd) {
         LOG_ERROR("Failed to allocate memory for control data");
@@ -172,8 +157,7 @@ bool SwitchTitleDataProvider::RefreshGameCardTitle() {
     memset(nsacd, 0, sizeof(NsApplicationControlData));
     Result res;
 
-    // Get control data for the game card; fall back to the known name and
-    // default icon on failure rather than dropping the card
+    // On failure fall back to the known name and default icon rather than dropping the card
     size_t outsize = 0;
     res = nsGetApplicationControlData(
         NsApplicationControlSource_Storage,
@@ -206,13 +190,11 @@ bool SwitchTitleDataProvider::RefreshGameCardTitle() {
 }
 
 void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) const {
-    // Clear existing titles for this user
     installedTitleCache.erase(userId);
     std::vector<pksm::titles::Title::Ref> userTitles;
 
     LOG_INFO("REFRESH TITLES");
 
-    // Open save data info reader
     FsSaveDataInfoReader reader;
     Result res = fsOpenSaveDataInfoReader(&reader, FsSaveDataSpaceId_User);
     if (R_FAILED(res)) {
@@ -220,11 +202,9 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
         return;
     }
 
-    // Read save data info
     FsSaveDataInfo info;
     s64 total = 0;
 
-    // Allocate memory for application control data
     NsApplicationControlData* nsacd = (NsApplicationControlData*)malloc(sizeof(NsApplicationControlData));
     if (!nsacd) {
         LOG_ERROR("Failed to allocate memory for application control data");
@@ -232,19 +212,16 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
         return;
     }
 
-    // Read save data info entries
     while (true) {
         res = fsSaveDataInfoReaderRead(&reader, &info, 1, &total);
         if (R_FAILED(res) || total == 0) {
             break;
         }
 
-        // Check if this is account-specific save data
         if (info.save_data_type == FsSaveDataType_Account && info.uid.uid[0] == userId.uid[0] &&
             info.uid.uid[1] == userId.uid[1]) {
             u64 titleId = info.application_id;
 
-            // Check if this is a Pokémon title with an actual save
             if (IsPokemonTitle(titleId)) {
                 if (!saveDataProvider->HasConsoleSaveData(titleId, userId)) {
                     std::stringstream ss;
@@ -252,9 +229,7 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
                     LOG_INFO(ss.str());
                     continue;
                 }
-                // Get application control data; fall back to known name +
-                // default icon if metadata is unavailable, rather than
-                // silently dropping the title
+                // Fall back to the known name and default icon rather than dropping the title
                 size_t outsize = 0;
                 NsApplicationControlData* controlData = nullptr;
                 NacpLanguageEntry* languageEntry = nullptr;
@@ -294,10 +269,8 @@ void SwitchTitleDataProvider::RefreshInstalledTitles(const AccountUid& userId) c
         }
     }
 
-    // Cache the results
     installedTitleCache[userId] = userTitles;
 
-    // Clean up
     free(nsacd);
     fsSaveDataInfoReaderClose(&reader);
 
@@ -310,13 +283,8 @@ void SwitchTitleDataProvider::RefreshCatalogTitles() {
     emulatorTitles.clear();
     customTitles.clear();
 
-    // The save layer decides which catalog games have save candidates; the
-    // title layer only turns those answers into tiles. A game with both
-    // discovered and configured saves gets a tile on each tab, and each
-    // tile's context routes it to its own save listing.
-    // Catalog tiles draw box art from the sheet; the sheet stays on disk
-    // and only the games that actually tile get decoded. A failed load is
-    // deliberately not checked - every tile then takes the fallback icon
+    // The box-art sheet stays on disk and only tiling games get decoded;
+    // a failed load is deliberately unchecked - tiles then take the fallback icon
     pksm::utils::BoxArtSheet boxArt;
     boxArt.Load(pksm::utils::AssetDownloader::ResolvedPath(pksm::utils::AssetDownloader::Asset::BoxArt));
 

@@ -21,19 +21,16 @@ public:
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const = 0;
 
-    // Load a specific save, with optional user ID for installed titles.
-    // Resolves the name to its source (emulator file, console container,
-    // Checkpoint backup), parses it with core, and hands the Sav over -
-    // ownership of the loaded save lives in the save data accessor.
+    // Load a specific save, with optional user ID for installed titles;
+    // ownership of the loaded save lives in the save data accessor
     virtual std::optional<pksm::saves::LoadedSave> LoadSave(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
         const AccountUid* userId = nullptr
     ) = 0;
 
-    // LoadSave split for a worker thread: ResolveLoad (UI thread: source
-    // resolution + mounts), ExecuteLoad (read+parse, no provider state,
-    // thread-safe), FinishLoad (UI thread, every outcome, exactly once).
+    // LoadSave split for a worker thread: ResolveLoad (UI thread; mounts),
+    // ExecuteLoad (thread-safe), FinishLoad (UI thread, every outcome, exactly once)
     virtual std::optional<pksm::saves::PendingLoad> ResolveLoad(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,
@@ -42,19 +39,15 @@ public:
     virtual std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) = 0;
     virtual void FinishLoad(const pksm::saves::PendingLoad& pending) = 0;
 
-    // Whether a console save container for this title/user holds actual save
-    // data. Containers are created the moment a profile launches a game, so an
-    // existing-but-empty container must not count as a loadable save.
+    // Containers exist as soon as a profile launches a game; an empty one
+    // must not count as a loadable save
     virtual bool HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {
         return true;
     }
 
-    // Whether the save-location scan found any file for a catalog game, so
-    // the title layer can decide which games earn an Emulator-tab tile
-    // without owning save-location knowledge
+    // Gates which catalog games earn an Emulator-tab tile
     virtual bool HasDiscoveredEmulatorSaves(u64 titleId) const { return false; }
 
-    // Whether the user's save config lists an existing file for a catalog
-    // game; decides which games earn a Custom-tab tile
+    // Gates which catalog games earn a Custom-tab tile
     virtual bool HasConfiguredEmulatorSaves(u64 titleId) const { return false; }
 };

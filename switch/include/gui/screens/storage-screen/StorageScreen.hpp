@@ -46,8 +46,7 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(5, 171, 49, 255);
     std::function<void()> onBack;
-    // Blocking yes/no prompt shown by the application (Plutonium dialogs are
-    // application-level); returns whether the user confirmed
+    // Blocking yes/no prompt; Plutonium dialogs are application-level
     std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
         requestConfirmation;
     pksm::ui::PokemonBox::Ref pokemonBox;
@@ -56,15 +55,12 @@ private:
     IStorageHand::Ref storageHand;
     IBoxNameEditor::Ref boxNameEditor;
 
-    // Floating sprite of the picked-up Pokémon
     pksm::ui::SpriteImage::Ref heldSprite;
 
-    // Summary overlay for the selected Pokémon, created on first use
     pksm::ui::PokemonSummaryOverlay::Ref summaryOverlay;
     bool isSummaryVisible = false;
 
-    // Box currently on screen, to detect box switches in the selection
-    // callback; the entered box is then re-read from the provider
+    // Detects box switches in the selection callback
     int lastDisplayedBox = 0;
 
     // Layout constants

@@ -30,8 +30,7 @@ AnimatedBackground::AnimatedBackground()
 
 AnimatedBackground::~AnimatedBackground() = default;
 
-// The color mod lands on the shared textures: a tint applies to every
-// screen's background, not just this instance's
+// The mod lands on the shared textures: a tint applies to every screen's background
 void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
     tintColor = color;
     for (auto& texture : bg_textures) {
@@ -44,11 +43,8 @@ void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
 void AnimatedBackground::InitializeBackground() {
     LOG_DEBUG("Initializing animated background");
 
-    // Every screen owns an AnimatedBackground, and re-decoding the same
-    // four PNGs cost 118ms of the storage screen's 235ms construction -
-    // so the textures are loaded once per app run and shared. The cache
-    // is deliberately leaked: a static handle would destroy its texture
-    // after Renderer::Finalize, reading freed memory at exit.
+    // Decoded once per app run and shared across screens. Deliberately leaked:
+    // a static handle would destroy its texture after Renderer::Finalize
     struct SharedTextures {
         pu::sdl2::TextureHandle::Ref staticBg;
         pu::sdl2::TextureHandle::Ref layers[3];
@@ -180,9 +176,7 @@ void AnimatedBackground::EnableBobbing(int layer, bool enabled) {
 }
 
 void AnimatedBackground::UpdateBackgroundAnimation() {
-    // Calculate time delta for smooth animation. Clamped: after a stall
-    // (screen construction, save parsing) an unbounded delta teleports
-    // every layer in a single frame
+    // Time delta, clamped so a stall doesn't teleport every layer in one frame
     const auto currentTime = SDL_GetTicks64();
     const auto deltaTime = std::min<u64>(currentTime - lastFrameTime, 50);
     lastFrameTime = currentTime;

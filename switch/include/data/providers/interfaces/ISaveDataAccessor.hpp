@@ -27,8 +27,7 @@ public:
         const AccountUid* userId = nullptr
     ) = 0;
 
-    // Commit (or, on nullopt, clear) a load the caller ran itself - the
-    // tail of loadSave for the async flow. UI thread only.
+    // Commit (or, on nullopt, clear) an externally-run load; UI thread only
     virtual bool applySaveLoadResult(
         const pksm::titles::Title::Ref& title,
         const std::string& saveName,

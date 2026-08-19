@@ -7,8 +7,8 @@
 
 namespace pksm::ui {
 
-// Draws a region of a shared texture (a spritesheet page) at an explicit
-// size; the sprite equivalent of Plutonium's Image
+// Draws a region of a shared spritesheet page; the sprite equivalent of
+// Plutonium's Image
 class SpriteImage : public pu::ui::elm::Element {
 private:
     pu::i32 x;

@@ -17,8 +17,7 @@ constexpr int GRID_SLOTS = 30;
 // The party box exposes the six party slots as its first grid row
 constexpr int PARTY_SLOTS = 6;
 
-// International Gen 1/2 saves hold 20 Pokémon per box; the games show them
-// 4 wide, so keep the outer grid columns empty and center each row
+// International Gen 1/2 boxes hold 20 shown 4 wide; center each row in the grid
 bool SaveUsesTwentySlotBoxes(const ::pksm::Sav& sav) {
     const int boxes = sav.maxBoxes();
     return boxes > 0 && (sav.maxSlot() / boxes) == 20;
@@ -28,8 +27,7 @@ int ToGridSlot(int saveSlot) {
     return (saveSlot / 4) * 6 + 1 + (saveSlot % 4);
 }
 
-// Stored box names may be NUL-padded; strip that before display or judging
-// blankness. A blank name (empty or whitespace-only) has no visible content.
+// Stored box names may be NUL-padded; strip before display or judging blankness
 std::string VisibleName(std::string name) {
     name.erase(std::remove(name.begin(), name.end(), '\0'), name.end());
     return name;
@@ -133,9 +131,7 @@ bool BoxDataProvider::WouldEmptyParty(::pksm::Sav& sav, int boxIndex, int saveSl
 
 void BoxDataProvider::ClearHand(::pksm::Sav& sav) {
     if (heldTouchedParty) {
-        // Settle the deferred repair: close the party holes the carry left
-        // and refresh the stored party count. Safe only here - no reference
-        // token is live once the hand empties.
+        // Settle the deferred party repair; safe only here, once no reference token is live
         sav.fixParty();
     }
     heldPkm.reset();
@@ -254,8 +250,7 @@ bool BoxDataProvider::PickUpPokemon(const pksm::saves::SaveData::Ref& saveData, 
     heldSwapped = false;
     heldIsClone = false;
     if (IsPartyBox(boxIndex)) {
-        // The party setter empties the slot (and, on LGPE, the box-list
-        // entry backing it); the hole it leaves is repaired at hand-empty
+        // The party setter empties the slot; the hole is repaired at hand-empty
         heldListRef = -1;
         heldTouchedParty = true;
         sav->pkm(*sav->emptyPkm(), static_cast<u8>(saveSlot));
@@ -277,8 +272,7 @@ bool BoxDataProvider::ClonePokemon(const pksm::saves::SaveData::Ref& saveData, i
         return false;
     }
 
-    // The copy carries no external reference of its own; the original keeps
-    // both its slot and any reference naming it
+    // The copy carries no external reference; the original keeps its slot and refs
     heldVisual = VisualFromPkx(*pk);
     heldPkm = std::move(pk);
     heldOriginBox = boxIndex;
@@ -303,19 +297,15 @@ bool BoxDataProvider::PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveDat
 
     int occupantListRef = -1;
     if (IsPartyBox(boxIndex)) {
-        // The party setter admits the held Pokémon (on LGPE by writing it
-        // into the box list and referencing it). A reference it still
-        // carried from its old box slot is superseded by the new
-        // membership; detach it, leaving the repair for hand-empty.
+        // A reference still carried from the old box slot is superseded by
+        // party membership; detach it, leaving the repair for hand-empty
         pksm::saves::DetachListRef(*sav, heldListRef);
         heldListRef = -1;
         heldTouchedParty = true;
         sav->pkm(*heldPkm, static_cast<u8>(saveSlot));
         if (!occupied) {
-            // LGPE's party setter fails silently when the box list has no
-            // free entry. Only a cloned hand can meet a full list (a real
-            // pickup frees the entry it came from), so nothing above needs
-            // undoing - the copy just stays in hand.
+            // LGPE's party setter fails silently on a full box list; only a
+            // cloned hand can hit that, so the copy just stays in hand
             auto placed = sav->pkm(static_cast<u8>(saveSlot));
             if (placed && placed->isEncrypted()) {
                 placed->decrypt();
@@ -325,13 +315,11 @@ bool BoxDataProvider::PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveDat
             }
         }
     } else {
-        // A hand-emptying placement outside the party may not leave the
-        // party empty; its last member can still be swapped or put back
+        // A hand-emptying placement outside the party may not leave the party empty
         if (!occupied && LivePartyCount(*sav) == 0) {
             return false;
         }
-        // Read before the list changes, excluding the held Pokémon's own ref -
-        // after an earlier swap it transiently points at this very target
+        // Read before the list changes, excluding the held Pokémon's own transiently stale ref
         const int listIndex = (boxIndex - 1) * GRID_SLOTS + saveSlot;
         occupantListRef = occupied ? pksm::saves::ListRefAt(*sav, listIndex, heldListRef) : -1;
         sav->pkm(*heldPkm, static_cast<u8>(boxIndex - 1), static_cast<u8>(saveSlot), false);
@@ -339,11 +327,9 @@ bool BoxDataProvider::PlaceDownPokemon(const pksm::saves::SaveData::Ref& saveDat
     }
 
     if (occupied) {
-        // Swap: the displaced Pokémon stays in hand, origin unchanged so a
-        // later cancel still returns to where the carry started. A cloned
-        // hand owes nothing to its source slot - the displaced Pokémon's
-        // origin becomes the slot the copy just took, so cancelling undoes
-        // the swap instead of overwriting the untouched original.
+        // Swap: the displaced Pokémon goes in hand, origin unchanged so cancel
+        // returns to where the carry started (for a cloned hand, to the slot
+        // the copy just took)
         if (heldIsClone) {
             heldOriginBox = boxIndex;
             heldOriginSlot = saveSlot;
@@ -385,10 +371,8 @@ bool BoxDataProvider::CancelHold(const pksm::saves::SaveData::Ref& saveData) {
         return false;
     }
 
-    // A cloned hand is discarded outright - its original never left the
-    // origin slot. Otherwise the origin slot was emptied by this carry's own
-    // pickup and only this hand can refill it, so the put-back always
-    // succeeds (a party origin regains its freed LGPE list entry too).
+    // A cloned hand is discarded outright; otherwise the origin slot was
+    // emptied by this carry's own pickup, so the put-back always succeeds
     if (!heldIsClone) {
         if (IsPartyBox(heldOriginBox)) {
             sav->pkm(*heldPkm, static_cast<u8>(heldOriginSlot));
@@ -432,8 +416,7 @@ bool BoxDataProvider::ReleaseHeldPokemon(const pksm::saves::SaveData::Ref& saveD
     }
 
     // A copy vanishes without a trace; a real held Pokémon already left its
-    // slot at pickup, so dropping it removes it from the save - unless the
-    // party has no other member left to its name
+    // slot at pickup, so dropping it removes it from the save
     if (!heldIsClone) {
         if (LivePartyCount(*sav) == 0) {
             return false;
@@ -501,9 +484,7 @@ bool BoxDataProvider::RenameBox(const pksm::saves::SaveData::Ref& saveData, int 
     const std::string oldName = sav->boxName(box);
     sav->boxName(box, name);
     const std::string storedName = sav->boxName(box);
-    // The setter owns the encoding: it truncates to the field and stops at
-    // characters the generation's character set lacks. A name that stored as
-    // nothing keeps the old one.
+    // The setter owns the encoding; a name that stored as nothing keeps the old one
     if (IsBlankName(VisibleName(storedName))) {
         sav->boxName(box, oldName);
         return false;

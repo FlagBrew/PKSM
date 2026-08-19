@@ -43,9 +43,8 @@ AccountManager::~AccountManager() {
 }
 
 Result AccountManager::Initialize() {
-    // Administrator (acc:su) works under hbloader's ACL; fall back for
-    // launch contexts with a tighter ACL. Application (acc:u0) is last -
-    // it needs real application info that homebrew NROs lack (0x2c7c).
+    // acc:su works under hbloader's ACL; fall back for tighter launch contexts.
+    // acc:u0 last - it needs application info that homebrew NROs lack (0x2c7c).
     Result res = accountInitialize(AccountServiceType_Administrator);
     if (R_FAILED(res)) {
         res = accountInitialize(AccountServiceType_System);
@@ -54,8 +53,7 @@ Result AccountManager::Initialize() {
         res = accountInitialize(AccountServiceType_Application);
     }
     if (R_SUCCEEDED(res)) {
-        // Prefer the profile the user actually launched with (title
-        // takeover), then the last-opened profile, then the first listed
+        // Prefer the preselected user (title takeover), then last-opened, then first listed
         AccountUid uid = {};
         if (R_FAILED(accountGetPreselectedUser(&uid)) || !accountUidIsValid(&uid)) {
             uid = {};

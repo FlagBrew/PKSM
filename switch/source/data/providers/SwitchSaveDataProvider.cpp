@@ -32,8 +32,8 @@ void SwitchSaveDataProvider::PrewarmValidationCache() {
         return;
     }
     prewarmThread = std::thread([this]() {
-        // An exception escaping a std::thread is std::terminate with no log;
-        // a failed prewarm must degrade to cold landings instead
+        // An exception escaping a std::thread is std::terminate; a failed
+        // prewarm must degrade to cold landings instead
         try {
             const u64 t0 = armGetSystemTick();
 
@@ -73,13 +73,12 @@ void SwitchSaveDataProvider::PrewarmValidationCache() {
 }
 
 const std::unordered_map<u64, std::vector<std::string>>& SwitchSaveDataProvider::DiscoveredSaves() const {
-    // The prewarm worker and the UI thread can both trigger the lazy build;
-    // the map is immutable once built. Its own mutex: the scan is seconds
-    // long and must never make validationCache hits wait on it
+    // Prewarm worker and UI thread can both trigger the lazy build; its own
+    // mutex so the seconds-long scan never blocks validationCache hits
     std::lock_guard<std::mutex> lg(discoveryMutex);
     if (!discoveredSaves) {
         // The scan already core-parses every candidate; capture the verdicts
-        // so nothing (prewarm included) parses these files a second time
+        // so nothing parses these files a second time
         discoveredSaves = pksm::data::emulator::SaveDiscovery::Discover(
             emulatorGames,
             [this](const std::string& path, std::filesystem::file_time_type mtime, std::uintmax_t size, bool valid) {
@@ -102,12 +101,11 @@ void SwitchSaveDataProvider::ScanNSOContainers(const AccountUid& userId) const {
             continue;
         }
 
-        // The app's game list tells a save the app still opens apart from
-        // an orphan of a removed entry
+        // The app's game list separates saves it still opens from orphans of removed entries
         const auto installedCodes = pksm::data::emulator::SaveDiscovery::InstalledNSOCodes(nsoTitleId);
 
-        // Non-throwing iteration: a filesystem_error thrown mid-scan would
-        // leave the save device mounted, poisoning every later mount
+        // Non-throwing iteration: a throw mid-scan would leave the save
+        // device mounted, poisoning every later mount
         std::error_code ec;
         std::filesystem::directory_iterator codeIt("save:/saves", ec);
         for (const std::filesystem::directory_iterator end; !ec && codeIt != end; codeIt.increment(ec)) {
@@ -141,15 +139,10 @@ void SwitchSaveDataProvider::ScanNSOContainers(const AccountUid& userId) const {
                 const std::string filename = file.path().filename().string();
                 const std::string path =
                     pksm::saves::MakeNSOSavePath(nsoTitleId, "/saves/" + code + "/" + filename);
-                // "[NSO] main" is the save the app itself plays from -
-                // edits land straight back in the app. A save whose entry
-                // left the app's game list is an orphan the app can no
-                // longer open; its code says which removed entry owned it.
-                // Collisions (a second live entry of the same game, or a
-                // multi-file code dir) qualify by code and filename.
+                // "[NSO] main" is the save the app itself plays from; orphans
+                // are labeled by their removed entry's code
                 const bool orphan = installedCodes && installedCodes->find(code) == installedCodes->end();
-                // Same rule as discovery: an orphan nothing pins to one
-                // game would smear across a whole family of tiles
+                // Same rule as discovery: orphans list only where identification is exact
                 if (orphan && games.size() > 1) {
                     continue;
                 }
@@ -208,8 +201,7 @@ SwitchSaveDataProvider::ResolveNSOConsoleSave(const std::string& nsoPath, const 
     if (R_FAILED(MountSaveData(&fs, parsed->nsoTitleId, userId))) {
         return std::nullopt;
     }
-    // The Sav will hold a full in-memory copy; write-back remounts by the
-    // title id carried in the recorded path
+    // The Sav holds a full in-memory copy; write-back remounts by the title id in the recorded path
     pksm::saves::PendingLoad pending;
     pending.candidates = {"save:" + parsed->innerPath};
     pending.recordedPath = nsoPath;
@@ -227,9 +219,8 @@ void SwitchSaveDataProvider::UnmountSaveData() const {
 }
 
 bool SwitchSaveDataProvider::HasConsoleSaveData(u64 titleId, const AccountUid& userId) const {
-    // A save container is created the moment a profile launches a game, even
-    // if nothing was ever saved. Peek inside at the raw fs level (no fsdev
-    // mount needed) so such empty containers don't count as save data.
+    // A save container exists the moment a profile launches a game; peek at
+    // the raw fs level so empty containers don't count as save data
     FsFileSystem fs;
     if (R_FAILED(fsOpen_SaveData(&fs, titleId, userId))) {
         return false;
@@ -250,8 +241,6 @@ bool SwitchSaveDataProvider::HasConsoleSaveData(u64 titleId, const AccountUid& u
 namespace {
 
 // List the mounted save's root. Returns entry names (bounded), empty if none.
-// A save container can exist but be empty when a profile launched the game
-// without ever playing - such containers must not surface as loadable saves.
 std::vector<std::string> ListMountedSaveRoot() {
     std::vector<std::string> names;
     DIR* dir = opendir("save:/");
@@ -276,10 +265,8 @@ std::string JoinNames(const std::vector<std::string>& names) {
     return joined.empty() ? "(empty)" : joined;
 }
 
-// Try candidate files in order and load the first one core parses. Known
-// live-save names are tried first; a container may also hold the game's own
-// rolling copy (SWSH's "backup"), which should only win when nothing else
-// parses.
+// Try candidates in order, known live-save names first, so a container's own
+// rolling copy (SWSH's "backup") only wins when nothing else parses
 std::optional<pksm::saves::LoadedSave> ProbeSaveFiles(
     std::vector<std::string> paths,
     const std::string& logContext
@@ -315,9 +302,8 @@ std::optional<pksm::saves::LoadedSave> ProbeSaveFiles(
     return std::nullopt;
 }
 
-// A save inside a Citra-style virtual SD ends in .../data/00000001/main,
-// so its parent directories say nothing; label it with the emulator's user
-// dir (the directory owning the tree) instead, e.g. "main (dekopon)"
+// A virtual-SD save's parent dirs say nothing; label it with the emulator's
+// user dir instead, e.g. "main (dekopon)"
 struct CitraTreeLabel {
     std::string owner;
     std::string id0;
@@ -333,8 +319,7 @@ std::optional<CitraTreeLabel> LabelCitraTreePath(const std::filesystem::path& p)
     }
     CitraTreeLabel label;
     label.id0 = *(it + 1);
-    // Walk back over the virtual "sdmc" dir to the emulator's own dir; a
-    // tree at the card root has no owner
+    // Walk back over the virtual "sdmc" dir to the emulator's own dir
     auto owner = it;
     if (owner != parts.begin() && *(owner - 1) == "sdmc") {
         owner--;
@@ -347,8 +332,7 @@ std::optional<CitraTreeLabel> LabelCitraTreePath(const std::filesystem::path& p)
     return label;
 }
 
-// A backup (Checkpoint, JKSV) is a directory; probe its files and let core
-// decide which one is the save
+// A backup is a directory; probe its files and let core decide which is the save
 std::optional<pksm::saves::PendingLoad> ResolveBackupDirectory(
     const std::string& dirPath,
     const std::string& logContext
@@ -384,8 +368,7 @@ bool SwitchSaveDataProvider::ValidateWithCore(const std::string& path) const {
         }
     }
 
-    // Validation itself runs unlocked - it reads and parses the whole file,
-    // and must not block the UI thread's cache hits
+    // Validation runs unlocked; it must not block the UI thread's cache hits
     const auto summary = pksm::saves::SaveValidator::Validate(path);
     if (summary) {
         LOG_INFO("Validated save " + path + ": " + summary->Describe());
@@ -422,9 +405,8 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(
             continue;
         }
 
-        // A discovered file's directory is what identifies it (the emulator
-        // or ROM folder it lives in), so always qualify with the parent;
-        // when two files would still read identically, add the grandparent
+        // A discovered file's directory identifies it, so qualify with the
+        // parent; add the grandparent when two still read identically
         const std::filesystem::path p(path);
         const std::string filename = p.filename().string();
         std::string name;
@@ -472,8 +454,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(
             continue;
         }
 
-        // Name saves by filename; qualify with the parent directory when two
-        // candidates share one
+        // Name saves by filename; qualify with the parent when two candidates share one
         std::string name = std::filesystem::path(path).filename().string();
         for (const auto& existing : saves) {
             if (existing->getName() == name) {
@@ -488,8 +469,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(
 }
 
 bool SwitchSaveDataProvider::HasDiscoveredEmulatorSaves(u64 titleId) const {
-    // Whether a discovered file parses as a save was already decided by the
-    // scan itself
+    // Whether a discovered file parses was already decided by the scan itself
     const auto& discovered = DiscoveredSaves();
     const auto it = discovered.find(titleId);
     return it != discovered.end() && !it->second.empty();
@@ -520,8 +500,7 @@ void SwitchSaveDataProvider::RefreshConsoleSaves(const pksm::titles::Title::Ref&
     u64 titleId = title->getTitleId();
     consoleSaveCache[titleId][userId].consoleSaves.clear();
 
-    // The emptiness policy lives in HasConsoleSaveData; don't bother
-    // mounting a container that holds no save data
+    // Don't mount a container HasConsoleSaveData judged empty
     if (!HasConsoleSaveData(titleId, userId)) {
         std::stringstream ss;
         ss << "Empty save container for title " << std::hex << titleId << ", ignoring";
@@ -565,9 +544,8 @@ void SwitchSaveDataProvider::RefreshCheckpointSaves(const pksm::titles::Title::R
     char titleIdStr[20];
     snprintf(titleIdStr, sizeof(titleIdStr), "0x%016lX", titleId);
 
-    // Checkpoint names its per-title folder with its own title string
-    // ("0x<ID> <name>"), which won't always match how we render the name.
-    // Scan the saves dir and substring-match the 16-hex ID instead.
+    // Checkpoint names its per-title folder "0x<ID> <name>"; scan the saves
+    // dir and substring-match the 16-hex ID
     std::string basePath = CHECKPOINT_BASE_PATH;
     std::string titlePath;
     const std::string idHex = titleIdStr + 2;  // skip "0x"
@@ -626,8 +604,8 @@ void SwitchSaveDataProvider::RefreshJKSVSaves(const pksm::titles::Title::Ref& ti
     u64 titleId = title->getTitleId();
     std::vector<pksm::saves::Save::Ref> saves;
 
-    // JKSV names a game's folder after its sanitized title, or after the
-    // title ID when the name has no ASCII representation
+    // JKSV names a game's folder after its sanitized title, or the title ID
+    // when the name has no ASCII representation
     char titleIdStr[17];
     snprintf(titleIdStr, sizeof(titleIdStr), "%016lX", titleId);
     const std::string safeName = pksm::saves::JKSVSafeName(title->getName());
@@ -677,9 +655,8 @@ void SwitchSaveDataProvider::RefreshSaves(
 
     u64 titleId = title->getTitleId();
 
-    // Emulator and Custom titles have no console/Checkpoint saves to
-    // refresh; their listings are rebuilt (and revalidated on change) in
-    // GetSavesForTitle
+    // Emulator and Custom titles have nothing to refresh here; their
+    // listings are rebuilt in GetSavesForTitle
     if (title->getContext() != pksm::titles::TitleContext::Console) {
         return;
     }
@@ -708,15 +685,11 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
 
     u64 titleId = title->getTitleId();
 
-    // Catalog games never have console/Checkpoint saves; their files live
-    // at arbitrary sdmc paths and are core-validated instead. The title's
-    // context picks the save universe - the same game can sit on the
-    // Emulator tab (discovered files) and the Custom tab (configured files)
-    // with different lists.
+    // Catalog games' files live at arbitrary sdmc paths; the title's context
+    // picks discovered (Emulator tab) vs configured (Custom tab) lists
     switch (title->getContext()) {
         case pksm::titles::TitleContext::Emulator: {
-            // The NSO apps' own containers hold the live saves; SD files
-            // (emulator trees, NSO backups) list after them
+            // The NSO apps' own containers hold the live saves; SD files list after them
             auto saves = ListNSOConsoleSaves(titleId, currentUser);
             const auto discovered = ListDiscoveredSaves(titleId);
             saves.insert(saves.end(), discovered.begin(), discovered.end());
@@ -728,10 +701,8 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::GetSavesForTitle(
             break;
     }
 
-    // Console saves: refresh only on cache miss (a refresh mounts the save
-    // FS, too heavy for every selection change). Checkpoint/JKSV backups:
-    // always rescan - it's a cheap directory read, and backups can be
-    // created mid-session.
+    // Console saves refresh only on cache miss (a refresh mounts the save FS);
+    // Checkpoint/JKSV rescans are cheap directory reads, done every time
     bool consoleCached = true;
     if (currentUser) {
         auto titleIt = consoleSaveCache.find(titleId);
@@ -805,11 +776,9 @@ std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveConsoleSa
         return std::nullopt;
     }
 
-    // Save file names vary per game (main, savedata.bin, ...), so probe every
-    // file in the container root and let core decide which one is the save.
-    // The Sav will hold a full in-memory copy, so FinishLoad unmounts as soon
-    // as the read completes - leaving "save" mounted poisons every later
-    // mount attempt; write-back will remount when it lands.
+    // Probe every file in the container root and let core decide which is the
+    // save. FinishLoad unmounts as soon as the read completes - leaving
+    // "save" mounted poisons every later mount attempt.
     pksm::saves::PendingLoad pending;
     for (const auto& entry : ListMountedSaveRoot()) {
         pending.candidates.push_back("save:/" + entry);
@@ -834,8 +803,8 @@ std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveCheckpoin
 
     u64 titleId = title->getTitleId();
 
-    // A miss here is normal - ResolveLoad tries each save source in turn, so
-    // only a claimed-but-failed load is an error
+    // A miss is normal - ResolveLoad tries each save source in turn; only a
+    // claimed-but-failed load is an error
     auto titleIt = checkpointSaveCache.find(titleId);
     if (titleIt == checkpointSaveCache.end()) {
         return std::nullopt;
@@ -887,8 +856,8 @@ std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveLoad(
         return std::nullopt;
     }
 
-    // Emulator/Custom saves: re-resolve the name against the title's own
-    // listing (its context picks discovered vs configured files)
+    // Re-resolve the name against the title's own listing (context picks
+    // discovered vs configured files)
     if (title->getContext() != pksm::titles::TitleContext::Console) {
         if (title->getContext() == pksm::titles::TitleContext::Emulator && userId) {
             for (const auto& save : ListNSOConsoleSaves(title->getTitleId(), *userId)) {

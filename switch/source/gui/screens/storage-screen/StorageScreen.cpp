@@ -43,8 +43,7 @@ StorageScreen::StorageScreen(
 
     // Set up button input handler for Back button
     buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { HandleBackButton(); });
-    // Clone/Release act on the selected slot, so they only apply while focus
-    // is on the grid itself (same gating as the slots' own A handler)
+    // Slot verbs only apply while the grid itself is focused
     buttonHandler.RegisterButton(
         HidNpadButton_X,
         nullptr,
@@ -121,9 +120,7 @@ void StorageScreen::InitializePokemonBox() {
     // Set up selection changed callback
     pokemonBox->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
         LOG_TRACE("Box selection changed: Box " + std::to_string(boxIndex) + ", Slot " + std::to_string(slotIndex));
-        // Entering a box re-reads it from the provider: edits made while it
-        // was off screen leave its stored copy stale (LGPE party moves write
-        // into distant boxes - the box list backs the party there)
+        // Re-read on entry: off-screen edits (e.g. LGPE party moves) leave a box's stored copy stale
         if (boxIndex != lastDisplayedBox) {
             lastDisplayedBox = boxIndex;
             RefreshBox(boxIndex);
@@ -137,10 +134,8 @@ void StorageScreen::InitializePokemonBox() {
 
     pokemonBox->SetOnBoxNameActivated([this](int boxIndex) { HandleBoxNameActivated(boxIndex); });
 
-    // The slot and hand verbs only apply while the grid itself is focused
     pokemonBox->SetOnFocusZoneChanged([this]() { UpdateHelpItems(); });
 
-    // The held sprite renders above the box, following the cursor
     heldSprite = pksm::ui::SpriteImage::New(0, 0, BOX_ITEM_SIZE, BOX_ITEM_SIZE, 0);
     heldSprite->SetVisible(false);
     this->Add(heldSprite);
@@ -157,8 +152,7 @@ void StorageScreen::HandleSlotActivated(int boxIndex, int slotIndex) {
         return;
     }
 
-    // This runs inside the slot's own A-press callback, so the grid may only
-    // be updated in place - a rebuild would destroy the calling BoxItem
+    // Runs inside the slot's own A-press callback - a grid rebuild would destroy the calling BoxItem
     if (!storageHand->HasHeldPokemon()) {
         if (storageHand->PickUpPokemon(saveData, boxIndex, slotIndex)) {
             LOG_DEBUG("Picked up from box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex));
@@ -180,8 +174,6 @@ void StorageScreen::HandleBoxNameActivated(int boxIndex) {
         return;
     }
     const std::string currentName = boxDataProvider->GetBoxData(saveData, boxIndex).name;
-    // Reject characters the save can't store while the keyboard is still
-    // open; which those are is the name editor's per-save knowledge
     const auto entered = pksm::utils::ShowKeyboard("Box Name", currentName,
         boxNameEditor->GetBoxNameMaxLength(saveData),
         [this, &saveData](const std::string& name) -> std::optional<std::string> {
@@ -196,8 +188,7 @@ void StorageScreen::HandleBoxNameActivated(int boxIndex) {
     }
     if (boxNameEditor->RenameBox(saveData, boxIndex, *entered)) {
         LOG_DEBUG("Renamed box " + std::to_string(boxIndex));
-        // Re-read the name the save actually stored (its encoding may have
-        // truncated or transliterated the input)
+        // Re-read: the save's encoding may truncate or transliterate the input
         pokemonBox->SetBoxName(boxIndex, boxDataProvider->GetBoxData(saveData, boxIndex).name);
     }
 }
@@ -214,8 +205,7 @@ void StorageScreen::HandleBackButton() {
             if (originBox >= 0 && originBox != currentBox) {
                 RefreshBox(originBox);
             }
-            // A cancelled carry can also restore party membership badges
-            // when the party box is neither current nor origin
+            // The cancel can also restore party badges outside current/origin
             constexpr int partyBox = IBoxDataProvider::PARTY_BOX_INDEX;
             if (partyBox != currentBox && partyBox != originBox) {
                 RefreshBox(partyBox);
@@ -254,8 +244,7 @@ void StorageScreen::HandleReleaseButton() {
     }
 
     if (storageHand->HasHeldPokemon()) {
-        // A cloned hand has no Release verb - discarding the copy (B)
-        // already covers it
+        // A cloned hand has no Release verb; discarding the copy (B) covers it
         if (storageHand->IsHeldPokemonClone() || !storageHand->CanReleaseHeldPokemon(saveData)) {
             return;
         }
@@ -271,7 +260,6 @@ void StorageScreen::HandleReleaseButton() {
 
     const int boxIndex = pokemonBox->GetCurrentBox();
     const int slotIndex = pokemonBox->GetSelectedSlot();
-    // Covers empty slots and a Pokémon the party cannot spare
     if (!storageHand->CanReleasePokemon(saveData, boxIndex, slotIndex)) {
         return;
     }
@@ -281,7 +269,6 @@ void StorageScreen::HandleReleaseButton() {
     if (storageHand->ReleasePokemon(saveData, boxIndex, slotIndex)) {
         LOG_DEBUG("Released box " + std::to_string(boxIndex) + " slot " + std::to_string(slotIndex));
         RefreshAffectedSlots();
-        // The cursor now sits on an empty slot
         UpdateHelpItems();
     }
 }
@@ -333,10 +320,7 @@ void StorageScreen::RefreshBox(int boxIndex) {
 }
 
 void StorageScreen::RefreshAffectedSlots() {
-    // In-place resync after an edit: party compaction and party-reference
-    // moves can change slots and badges beyond the touched one, and this can
-    // run inside a slot's own callback, where a grid rebuild would destroy
-    // the caller - so update per slot, never rebuild
+    // May run inside a slot's own callback - update slots in place, never rebuild the grid
     auto saveData = saveDataAccessor->getCurrentSaveData();
     if (!saveData) {
         return;
@@ -373,11 +357,6 @@ void StorageScreen::UpdateHelpItems() {
     const bool held = storageHand->HasHeldPokemon();
     const bool clone = held && storageHand->IsHeldPokemonClone();
 
-    // The screen contributes the verbs it handles; the box then appends its
-    // own (box switching, navigation). A held Pokémon drops on any usable
-    // slot; the empty-hand slot verbs also need an occupied one. A cloned
-    // hand gets no Release (discarding the copy already covers it), and
-    // neither hand nor slot get one for the party's last member.
     std::vector<pksm::ui::HelpItem> helpItems;
     if (pokemonBox->IsGridFocused() && held && pokemonBox->IsSelectedSlotUsable()) {
         helpItems = {
@@ -398,8 +377,6 @@ void StorageScreen::UpdateHelpItems() {
         helpItems.push_back({{{pksm::ui::global::ButtonGlyph::Plus}}, "Summary"});
         helpItems.push_back({{{pksm::ui::global::ButtonGlyph::B}}, "Back"});
     } else {
-        // No slot verbs apply here (header pill, Box Spaces button, empty or
-        // unusable slot); the pill offers Rename where the save supports it
         if (pokemonBox->IsBoxNameFocused() &&
             boxNameEditor->CanRenameBox(saveData, pokemonBox->GetCurrentBox())) {
             helpItems.push_back({{{pksm::ui::global::ButtonGlyph::A}}, "Rename"});
@@ -481,7 +458,6 @@ std::vector<pksm::ui::HelpItem> StorageScreen::GetHelpOverlayItems() const {
     const bool held = storageHand->HasHeldPokemon();
     const bool clone = held && storageHand->IsHeldPokemonClone();
 
-    // Composed like the footer: the screen's verbs, then the box's own
     std::vector<pksm::ui::HelpItem> items;
     if (pokemonBox->IsGridFocused() && held && pokemonBox->IsSelectedSlotUsable()) {
         items = {

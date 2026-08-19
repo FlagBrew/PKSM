@@ -18,32 +18,20 @@ namespace fs = std::filesystem;
 
 namespace {
 
-// Locations emulators write saves to on this console. RetroArch's own
-// save root and the common ROM tree cover its four path modes: an explicit
-// savefile_directory (with optional per-core/per-content subdirs) resolves
-// under the save root or the configured directory, and
-// savefiles_in_content_dir puts saves next to the ROM - as do standalone
-// mGBA's default and the sort-by-core layout (<romdir>/<CoreName>/x.srm).
+// Locations emulators write saves to: RetroArch's save root plus the common
+// ROM tree cover its path modes, standalone mGBA, and saves-next-to-ROM layouts
 constexpr const char* RETROARCH_CFG = "sdmc:/retroarch/retroarch.cfg";
 constexpr const char* RETROARCH_SAVE_ROOT = "sdmc:/retroarch/cores/savefiles/";
 constexpr const char* MGBA_CONFIG = "sdmc:/mGBA/config.ini";
 constexpr const char* ROM_TREE_ROOT = "sdmc:/roms";
 
-// Citra-lineage 3DS emulators (the Dekopon/Raika Azahar Switch ports; the
-// same tree shape as desktop Citra/Azahar copied to the card) keep saves in
-// a virtual SD card:
+// Citra-lineage 3DS emulators (Dekopon/Raika Azahar ports) keep saves in a virtual SD:
 //   <user dir>/sdmc/Nintendo 3DS/<id0>/<id1>/title/00040000/<title-lo>/data/00000001/main
-// where id0/id1 are 32 zeros when the emulator made the tree but real hex
-// when it was copied off a console's SD card, and gen 1/2 Virtual Console
-// titles store sav.dat in place of main
 constexpr const char* CITRA_USER_DIRS[] = {"sdmc:/switch/dekopon/", "sdmc:/switch/azahar/"};
 constexpr const char* CITRA_TREE_NAME = "Nintendo 3DS";
 
-// Backups of the NSO emulator apps hold per-game saves (JKSV:
-// <backup>/saves/A-BPEE_e/cartridge.sram); scan just those two titles'
-// backup dirs - the rest of a backup tree is console saves, not emulator
-// files. GBA sram is raw; GB .sav files come in the NSO container the
-// validator peels.
+// NSO emulator app backups hold per-game saves (<backup>/saves/A-BPEE_e/cartridge.sram);
+// scan just those two titles' backup dirs
 constexpr const char* JKSV_BASE = "sdmc:/JKSV/";
 constexpr const char* CHECKPOINT_SAVES_BASE = "sdmc:/switch/Checkpoint/saves/";
 
@@ -98,8 +86,7 @@ std::string ConfigValue(const std::string& configPath, const std::string& key) {
     return "";
 }
 
-// RetroArch writes SD-relative ("/retroarch/...") and app-relative
-// (":/savefiles") directory values; give them their device back
+// RetroArch writes SD-relative and app-relative (":/") paths; restore the device
 std::string NormalizeConfiguredPath(const std::string& path) {
     if (path.rfind(":/", 0) == 0) {
         return "sdmc:/retroarch" + path.substr(1);
@@ -111,13 +98,12 @@ std::string NormalizeConfiguredPath(const std::string& path) {
 }
 
 std::vector<std::string> CollectScanRoots() {
-    // Configured directories are small and explicit user intent; scan them
-    // before the ROM tree so a large library cannot starve them of the
-    // directory budget
+    // Configured directories scan before the ROM tree so a large library
+    // cannot starve them of the directory budget
     std::vector<std::string> roots = {RETROARCH_SAVE_ROOT};
 
-    // An explicit RetroArch save directory only applies when saves are not
-    // redirected into the content dir (the ROM tree covers that mode)
+    // An explicit save directory only applies when saves are not redirected
+    // into the content dir
     const std::string savefileDir = ConfigValue(RETROARCH_CFG, "savefile_directory");
     const bool inContentDir = ConfigValue(RETROARCH_CFG, "savefiles_in_content_dir") == "true";
     if (!savefileDir.empty() && savefileDir != "default" && !inContentDir) {
@@ -129,9 +115,8 @@ std::vector<std::string> CollectScanRoots() {
         roots.push_back(NormalizeConfiguredPath(mgbaDir));
     }
 
-    // JKSV names backup dirs by bare title ID; Checkpoint prefixes the ID
-    // with 0x and appends the title's name - and can leave several dirs for
-    // one title (name-resolved and ID-only), so take every prefix match
+    // JKSV names backup dirs by bare title ID; Checkpoint uses 0x<ID> <name>
+    // and can leave several dirs per title, so take every prefix match
     for (const u64 tid : pksm::data::emulator::SaveDiscovery::NSO_APP_TITLES) {
         roots.push_back(JKSV_BASE + TitleIdHex(tid) + "/");
         const std::string prefix = "0x" + TitleIdHex(tid);
@@ -230,8 +215,7 @@ std::string CitraUserDir(const std::string& defaultDir) {
 }
 
 std::vector<std::string> CitraTreeRoots() {
-    // Both ports' pointer files can target the same user dir; a duplicate
-    // root would list every save in it twice
+    // Both ports' pointer files can target the same user dir; dedupe roots
     std::vector<std::string> roots;
     auto push = [&roots](const std::string& p) {
         if (std::find(roots.begin(), roots.end(), p) == roots.end()) {
@@ -246,8 +230,7 @@ std::vector<std::string> CitraTreeRoots() {
     return roots;
 }
 
-// The virtual-SD tree is too deep for the generic sweep, but its shape is
-// fixed, so walk it level by level instead of recursing
+// The virtual-SD tree is too deep for the generic sweep; walk its fixed shape level by level
 void ScanCitraTrees(std::vector<FoundFile>& found) {
     int dirBudget = MAX_SCAN_DIRS;
     const auto eachSubdir = [&dirBudget](const fs::path& dir, const auto& visit) {
@@ -304,8 +287,7 @@ void ScanCitraTrees(std::vector<FoundFile>& found) {
     }
 }
 
-// Core's version() collapses sibling games into one save family; the
-// catalog's save_family keys pick up from here
+// Core's version() collapses sibling games into one save family
 std::string FamilyOf(::pksm::GameVersion version) {
     switch (version) {
         case ::pksm::GameVersion::RD:
@@ -334,8 +316,7 @@ std::string FamilyOf(::pksm::GameVersion version) {
             return "b2";
         case ::pksm::GameVersion::W2:
             return "w2";
-        // Gen 6/7 saves carry their exact version, so each game is a
-        // one-member family and never needs keyword disambiguation
+        // Gen 6/7 saves carry their exact version; no keyword disambiguation needed
         case ::pksm::GameVersion::X:
             return "x";
         case ::pksm::GameVersion::Y:
@@ -378,8 +359,8 @@ std::vector<const EmulatorGameEntry*> SaveDiscovery::MatchGames(
         }
     }
 
-    // Path keywords pick a game out of a multi-game family; a file
-    // nothing names lists under the whole family
+    // Path keywords pick a game out of a multi-game family; an unnamed file
+    // lists under the whole family
     if (candidates.size() > 1) {
         const std::string lowerPath = ToLower(path);
         std::vector<const EmulatorGameEntry*> named;
@@ -470,9 +451,8 @@ SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const Parse
             continue;
         }
 
-        // A backed-up save of an entry the NSO app no longer lists, that no
-        // keyword pins to one game, would smear across a whole family of
-        // tiles - orphans list only where identification is exact
+        // Orphaned backups list only where identification is exact - an
+        // unpinned one would smear across its whole family
         if (candidates.size() > 1) {
             if (const auto nso = ParseNSOBackupPath(std::filesystem::path(file.path))) {
                 auto [it, inserted] = installedByApp.try_emplace(nso->nsoTitleId);

@@ -6,9 +6,7 @@
 
 namespace pksm::ui {
 
-// Shared badge texture for a gender (male/female/neutral). The three
-// textures are tiny and shared by every caller, loaded once and kept for
-// the lifetime of the app.
+// Shared gender badge texture, loaded once and kept for the app's lifetime
 pu::sdl2::TextureHandle::Ref GetGenderIconTexture(::pksm::Gender gender);
 
 }  // namespace pksm::ui

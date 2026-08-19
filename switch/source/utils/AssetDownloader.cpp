@@ -49,7 +49,6 @@ std::string ToHex(Result rc) {
     return buf;
 }
 
-// SHA-256 of a file in chunks, compared against the pinned lowercase hex
 bool FileMatchesSha256(const std::string& path, const char* expectedHex) {
     FILE* f = fopen(path.c_str(), "rb");
     if (!f) {
@@ -77,10 +76,7 @@ bool FileMatchesSha256(const std::string& path, const char* expectedHex) {
 }
 
 // ---- Minimal HTTPS GET over the console's own ssl service ----------------
-// The call sequence (SetHostName before SetSocketDescriptor, the
-// DoNotCloseSocket option, tolerating AlreadyInitialized) follows the
-// fork's field-proven downloader; the transfer itself streams to a sink
-// instead of buffering the body, so a sheet never sits in RAM.
+// The body streams to a sink instead of buffering, so a sheet never sits in RAM.
 
 struct UrlParts {
     std::string host;
@@ -99,10 +95,8 @@ bool ParseHttpsUrl(const std::string& url, UrlParts& out) {
     return !out.host.empty();
 }
 
-// Fresh inits are released after the downloads so their transfer memory
-// (~2MB of bsd buffers) goes back to the applet heap before the heavy
-// boot phases; AlreadyInitialized means someone else owns the service
-// (debug builds' nxlink logger holds the sockets) and it is left alone
+// Fresh inits are released after the downloads (~2MB of bsd buffers back to
+// the applet heap); AlreadyInitialized means another owner, leave it alone
 bool ownSocketService = false;
 bool ownSslService = false;
 
@@ -149,10 +143,8 @@ int ConnectTcp(const UrlParts& url, std::string& err) {
         if (sockfd < 0) {
             continue;
         }
-        // These timeouts only govern the raw socket, i.e. the connect
-        // phase: once the TLS handshake runs, ssl:s puts the fd in
-        // non-blocking mode and applies its own 5-minute timeout to every
-        // sslConnectionRead/Write - a mid-transfer stall recovers, slowly
+        // These timeouts only govern the connect phase; after the handshake
+        // ssl:s applies its own 5-minute timeout to every read/write
         timeval tv{};
         tv.tv_sec = 10;
         if (::connect(sockfd, rp->ai_addr, static_cast<socklen_t>(rp->ai_addrlen)) == 0 &&
@@ -170,11 +162,10 @@ int ConnectTcp(const UrlParts& url, std::string& err) {
     return sockfd;
 }
 
-// Body bytes flow to `sink` as they arrive; contentLength reports the
-// declared size once headers parse (0 when absent)
 struct GetResult {
     int statusCode = 0;
     std::string location;
+    // contentLength stays 0 when the server declared none
     size_t contentLength = 0;
 };
 
@@ -262,9 +253,6 @@ bool HttpsGet(
         sent += chunk;
     }
 
-    // Status line + the two headers this client acts on, parsed the moment
-    // the blank line arrives - the redirect decision and the progress total
-    // are both needed before any body byte may reach the sink
     auto parseHeader = [&](const std::string& header) {
         const size_t space = header.find(' ');
         out.statusCode = (space == std::string::npos) ? 0 : atoi(header.c_str() + space + 1);
@@ -289,10 +277,8 @@ bool HttpsGet(
         out.contentLength = strtoul(headerValue("content-length").c_str(), nullptr, 10);
     };
 
-    // Accumulate only until the blank line; a 200's body streams out, any
-    // other response's body is discarded. A declared Content-Length also
-    // bounds the transfer - without it a misbehaving server could stream
-    // until the SD fills, and the SHA check would only name the symptom
+    // A declared Content-Length bounds the transfer so a misbehaving
+    // server cannot stream until the SD fills
     constexpr size_t MAX_HEADER_SIZE = 0x4000;
     std::string header;
     bool headerDone = false;
@@ -325,7 +311,6 @@ bool HttpsGet(
             header.resize(marker);
             parseHeader(header);
             if (out.statusCode != 200) {
-                // Redirect or error: the headers are all we need
                 break;
             }
         }
@@ -340,7 +325,6 @@ bool HttpsGet(
         }
         bodyWritten += bodyLen;
         if (out.contentLength > 0 && bodyWritten >= out.contentLength) {
-            // Everything promised has arrived; no need to wait for close
             break;
         }
     }
@@ -453,7 +437,6 @@ bool AssetDownloader::DownloadAll(Progress& progress) {
         LOG_ERROR(err);
         return false;
     }
-    // mkdir -p for the two fixed levels the assets dir needs
     mkdir("sdmc:/switch", 0777);
     mkdir("sdmc:/switch/PKSM", 0777);
     mkdir(SD_ASSETS_DIR, 0777);

@@ -174,8 +174,7 @@ bool SaveDataAccessor::applySaveLoadResult(
     const AccountUid* userId,
     std::optional<pksm::saves::LoadedSave> loaded
 ) {
-    // Success or failure, the previous save is gone either way - a failed
-    // load must not leave stale data on screen
+    // The previous save is gone either way - a failed load must not leave stale data on screen
     if (!loaded) {
         sav.reset();
         savePath.clear();

@@ -7,13 +7,8 @@
 
 namespace pksm::utils {
 
-// Downloads the PKSS sprite sheets from the PKResources release and keeps
-// them on SD, verified against SHA-256 hashes pinned here - the 3DS app's
-// asset model, romfs ships no sheets. The boot gate refuses to continue
-// until every asset is verified on SD, so consumers may trust
-// ResolvedPath unconditionally. Mirrors PokemonSpriteManager's
-// static-singleton shape: state is file-local, callers see only the
-// policy.
+// Downloads the PKSS sprite sheets to SD, verified against the SHA-256
+// hashes pinned here; romfs ships no sheets.
 class AssetDownloader {
 public:
     enum class Asset { PokemonSprites, BoxArt };
@@ -34,9 +29,8 @@ public:
         std::atomic<size_t> total{0};
     };
 
-    // Fetch every missing/mismatched asset into the SD dir (tmp + verify +
-    // rename). Blocking - run on a worker thread. Returns true when every
-    // asset ended up verified on SD.
+    // Fetch every missing/mismatched asset (tmp + verify + rename).
+    // Blocking - run on a worker thread.
     static bool DownloadAll(Progress& progress);
 };
 

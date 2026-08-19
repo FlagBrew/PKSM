@@ -31,9 +31,7 @@ constexpr const char* LOG_DIR = "sdmc:/switch/PKSM";
 constexpr const char* LOG_FILE = "sdmc:/switch/PKSM/pksm.log";
 constexpr const char* LOG_FILE_OLD = "sdmc:/switch/PKSM/pksm.log.old";
 
-// All logger state is TU-local: the header stays a pure API surface.
-// g_log_mutex guards every flag and buffer below, and serializes console
-// writes so concurrent LOG_* calls can't interleave.
+// g_log_mutex guards every flag and buffer below, and serializes console writes
 std::mutex g_log_mutex;
 std::condition_variable g_log_cv;
 std::vector<std::string> g_pending_lines;
@@ -101,8 +99,7 @@ void EnsureFlushThreadStartedLocked() {
     try {
         std::filesystem::create_directories(LOG_DIR);
         if (!g_log_file_rotated) {
-            // Keep the previous run's log so a crash log survives one
-            // relaunch: users can reopen the app and still send it.
+            // Keep the previous run's log so a crash log survives one relaunch
             std::error_code ec;
             std::filesystem::remove(LOG_FILE_OLD, ec);
             if (std::filesystem::exists(LOG_FILE, ec)) {
@@ -117,7 +114,6 @@ void EnsureFlushThreadStartedLocked() {
 
     g_flush_thread_stop = false;
     g_flush_thread_running = true;
-    // The new thread blocks on g_log_mutex until our caller releases it.
     g_flush_thread = std::thread(FlushThreadMain);
 }
 
@@ -150,9 +146,8 @@ void Logger::Initialize() {
     Result rc = socketInitializeDefault();
     g_socket_initialized = R_SUCCEEDED(rc);
 
-    // Enable console logging only when nxlink redirection succeeds.
-    // Avoid consoleInit(NULL) fallback since it conflicts with SDL/Plutonium
-    // and causes black screens/crashes when launching normally.
+    // No consoleInit(NULL) fallback: it conflicts with SDL/Plutonium and
+    // black-screens normal launches
     g_console_initialized = false;
     if (g_socket_initialized) {
         g_console_initialized = nxlinkStdio() > 0;
@@ -175,8 +170,7 @@ void Logger::Initialize() {
 }
 
 void Logger::Flush() {
-    // Synchronous flush for moments the 3s background cadence would lose:
-    // right before a likely crash or applet teardown
+    // Synchronous flush for right before a likely crash or applet teardown
     std::vector<std::string> lines;
     {
         std::lock_guard<std::mutex> lg(g_log_mutex);
@@ -189,8 +183,6 @@ void Logger::Flush() {
 }
 
 void Logger::LogOutputMode() {
-    // Timing measurements are only meaningful without the nxlink console:
-    // console mode sleeps 1ms after every line
     Log(Level::Debug, g_console_initialized ? "Logger mode: nxlink console (1ms sleep per line!)"
                                             : "Logger mode: file only");
 }
@@ -303,9 +295,8 @@ void Logger::LogMemoryInfo() {
     // Calculate available memory
     u64 available = total - used;
 
-    // svcGetInfo reports the reserved envelope, which is static once the
-    // heap is claimed at boot; the sbrk high-water mark tracks how much of
-    // the malloc heap has actually been claimed (mallinfo is unreliable here)
+    // sbrk's high-water mark tracks actual malloc-heap claim (mallinfo is
+    // unreliable here)
     const u64 heapTotal = static_cast<u64>(fake_heap_end - fake_heap_start);
     const u64 heapHighWater = static_cast<u64>(static_cast<char*>(sbrk(0)) - fake_heap_start);
 
