@@ -16,18 +16,19 @@ public:
     virtual ~ISaveDataProvider() = default;
 
     // Get list of available saves for a given title and optional user.
-    // Save names identify saves within a title - ResolveLoad re-matches the
-    // chosen name against these listings, so names must stay unique per title.
+    // Names only label the UI; listings keep them unique per title so every
+    // entry stays distinguishable.
     virtual std::vector<pksm::saves::Save::Ref> GetSavesForTitle(
         const pksm::titles::Title::Ref& title,
         const std::optional<AccountUid>& currentUser = std::nullopt
     ) const = 0;
 
     // LoadSave split for a worker thread: ResolveLoad (UI thread; mounts),
-    // ExecuteLoad (thread-safe), FinishLoad (UI thread, every outcome, exactly once)
+    // ExecuteLoad (thread-safe), FinishLoad (UI thread, every outcome, exactly once).
+    // The save is one of GetSavesForTitle's entries; its path picks the source.
     virtual std::optional<pksm::saves::PendingLoad> ResolveLoad(
         const pksm::titles::Title::Ref& title,
-        const std::string& saveName,
+        const pksm::saves::Save::Ref& save,
         const AccountUid* userId = nullptr
     ) = 0;
     virtual std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) = 0;

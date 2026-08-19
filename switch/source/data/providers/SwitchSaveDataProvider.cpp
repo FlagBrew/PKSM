@@ -439,53 +439,39 @@ std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveConsoleSa
 
 std::optional<pksm::saves::PendingLoad> SwitchSaveDataProvider::ResolveLoad(
     const pksm::titles::Title::Ref& title,
-    const std::string& saveName,
+    const pksm::saves::Save::Ref& save,
     const AccountUid* userId
 ) {
-    if (!title) {
+    if (!title || !save) {
         return std::nullopt;
     }
+    const std::string& path = save->getPath();
 
-    // Re-resolve the name against the title's own listing (context picks
-    // discovered vs configured files)
-    if (title->getContext() != pksm::titles::TitleContext::Console) {
-        if (title->getContext() == pksm::titles::TitleContext::Emulator && userId) {
-            for (const auto& save : nsoSaves.List(title->getTitleId(), *userId)) {
-                if (save->getName() == saveName) {
-                    return nsoSaves.Resolve(save->getPath(), *userId);
-                }
-            }
-        }
-        const bool fromDiscovery = title->getContext() == pksm::titles::TitleContext::Emulator;
-        const auto saves =
-            fromDiscovery ? ListDiscoveredSaves(title->getTitleId()) : ListConfiguredSaves(title->getTitleId());
-        const char* context = fromDiscovery ? "discovered" : "configured";
-        for (const auto& save : saves) {
-            if (save->getName() == saveName) {
-                pksm::saves::PendingLoad pending;
-                pending.candidates = {save->getPath()};
-                pending.description = std::string(context) + " emulator save";
-                return pending;
-            }
-        }
-        LOG_ERROR("No " + std::string(context) + " emulator save named " + saveName);
-        return std::nullopt;
+    // The selected save carries its path, and the path's shape says which
+    // source owns it - no listing runs again
+
+    if (path.rfind("nsosave:", 0) == 0) {
+        return userId ? nsoSaves.Resolve(path, *userId) : std::nullopt;
     }
 
-    // Handle console save (which requires a user ID)
-    if (saveName == "Console Save" && userId) {
-        return ResolveConsoleSave(title, *userId);
+    // RefreshConsoleSaves lists the container itself as "save:/"; the real
+    // identity is title+user, so mount that container and probe its root
+    if (path == "save:/") {
+        return userId ? ResolveConsoleSave(title, *userId) : std::nullopt;
     }
 
-    // Try Checkpoint saves, then JKSV backups
-    if (auto pending = backupSaves.Resolve(title->getTitleId(), saveName)) {
-        return pending;
+    // A Checkpoint/JKSV backup is a directory of candidate files
+    std::error_code ec;
+    if (std::filesystem::is_directory(std::filesystem::path(path), ec) && !ec) {
+        return BackupSaveSource::ResolveDirectory(path);
     }
 
-    std::stringstream ss;
-    ss << "Unable to resolve save " << saveName << " for title " << std::hex << title->getTitleId();
-    LOG_ERROR(ss.str());
-    return std::nullopt;
+    // A discovered or configured emulator file loads as-is
+    pksm::saves::PendingLoad pending;
+    pending.candidates = {path};
+    pending.description = title->getContext() == pksm::titles::TitleContext::Custom ? "configured emulator save"
+                                                                                    : "discovered emulator save";
+    return pending;
 }
 
 std::optional<pksm::saves::LoadedSave> SwitchSaveDataProvider::ExecuteLoad(const pksm::saves::PendingLoad& pending) {

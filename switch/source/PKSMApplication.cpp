@@ -424,7 +424,7 @@ void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves
     // Resolution and any console mount stay on the UI thread; the worker only reads+parses
     auto userId = accountManager->GetCurrentAccount();
     pendingLoadStartTick = armGetSystemTick();
-    pendingSaveLoad = saveProvider->ResolveLoad(title, save->getName(), &userId);
+    pendingSaveLoad = saveProvider->ResolveLoad(title, save, &userId);
     if (!pendingSaveLoad) {
         saveDataAccessor->applySaveLoadResult(title, save->getName(), &userId, std::nullopt);
         ShowErrorToast("This save could not be loaded");
