@@ -43,7 +43,7 @@ void SwitchSaveDataProvider::PrewarmValidationCache() {
             }
             const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
             for (const auto& [titleId, entry] : emulatorCatalog) {
-                for (const auto& path : pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(entry, cfg)) {
+                for (const auto& path : pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(entry.titleId, cfg)) {
                     std::error_code ec;
                     if (std::filesystem::is_regular_file(std::filesystem::path(path), ec) && !ec) {
                         paths.push_back(path);
@@ -459,10 +459,9 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(
         return saves;
     }
 
-    // The config file is tiny and hand-editable, so reload it on every
-    // listing to pick up changes without a restart
+    // The config file is tiny and hand-editable; reload it on every listing
     const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
-    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->first, cfg);
 
     for (const auto& path : paths) {
         std::error_code ec;
@@ -502,10 +501,9 @@ bool SwitchSaveDataProvider::HasConfiguredEmulatorSaves(u64 titleId) const {
         return false;
     }
 
-    // Whether a configured file parses as a save is decided at listing time;
-    // a tile only needs one candidate to exist
+    // Configured files are validated at listing time; a tile only needs one candidate to exist
     const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
-    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->second, cfg);
+    const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->first, cfg);
     return std::any_of(paths.begin(), paths.end(), [](const std::string& path) {
         std::error_code ec;
         return std::filesystem::exists(std::filesystem::path(path), ec) && !ec;
