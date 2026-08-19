@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <filesystem>
+#include <new>
 #include <sstream>
 
 #include "utils/Logger.hpp"
@@ -27,7 +28,13 @@ std::unique_ptr<::pksm::Sav> SaveValidator::Load(const std::string& path) {
         return nullptr;
     }
 
-    std::shared_ptr<u8[]> data(new u8[size]);
+    // A save-sized allocation can fail on a fragmented heap; that's "cannot
+    // validate", not a crash (and the file handle must not leak)
+    std::shared_ptr<u8[]> data(new (std::nothrow) u8[size]);
+    if (!data) {
+        fclose(f);
+        return nullptr;
+    }
     const size_t read = fread(data.get(), 1, size, f);
     fclose(f);
     if (read != size) {
