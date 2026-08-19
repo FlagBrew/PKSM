@@ -6,7 +6,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/red_icon.jpg",
       "save_family": "rby",
       "keywords": [
-        "red"
+        "red",
+        "171000",
+        "170c00"
       ]
     },
     {
@@ -15,7 +17,8 @@
       "icon_path": "romfs:/gfx/data/game_icons/green_icon.jpg",
       "save_family": "rby",
       "keywords": [
-        "green"
+        "green",
+        "170d00"
       ]
     },
     {
@@ -24,7 +27,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/blue_icon.jpg",
       "save_family": "rby",
       "keywords": [
-        "blue"
+        "blue",
+        "171100",
+        "170e00"
       ]
     },
     {
@@ -33,7 +38,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/yellow_icon.jpg",
       "save_family": "rby",
       "keywords": [
-        "yellow"
+        "yellow",
+        "171200",
+        "170f00"
       ]
     },
     {
@@ -42,7 +49,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/gold_icon.jpg",
       "save_family": "gs",
       "keywords": [
-        "gold"
+        "gold",
+        "172600",
+        "172300"
       ]
     },
     {
@@ -51,7 +60,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/silver_icon.jpg",
       "save_family": "gs",
       "keywords": [
-        "silver"
+        "silver",
+        "172700",
+        "172400"
       ]
     },
     {
@@ -60,7 +71,9 @@
       "icon_path": "romfs:/gfx/data/game_icons/crystal_icon.jpg",
       "save_family": "c",
       "keywords": [
-        "crystal"
+        "crystal",
+        "172800",
+        "172500"
       ]
     },
     {
@@ -212,42 +225,50 @@
     {
       "name": "Pokémon X",
       "title_id": "0000000000000022",
-      "icon_path": "romfs:/gfx/data/game_icons/x_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/x_icon.jpg",
+      "save_family": "x"
     },
     {
       "name": "Pokémon Y",
       "title_id": "0000000000000023",
-      "icon_path": "romfs:/gfx/data/game_icons/y_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/y_icon.jpg",
+      "save_family": "y"
     },
     {
       "name": "Pokémon Omega Ruby",
       "title_id": "0000000000000024",
-      "icon_path": "romfs:/gfx/data/game_icons/omega_ruby_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/omega_ruby_icon.jpg",
+      "save_family": "or"
     },
     {
       "name": "Pokémon Alpha Sapphire",
       "title_id": "0000000000000025",
-      "icon_path": "romfs:/gfx/data/game_icons/alpha_sapphire_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/alpha_sapphire_icon.jpg",
+      "save_family": "as"
     },
     {
       "name": "Pokémon Sun",
       "title_id": "0000000000000026",
-      "icon_path": "romfs:/gfx/data/game_icons/sun_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/sun_icon.jpg",
+      "save_family": "sn"
     },
     {
       "name": "Pokémon Moon",
       "title_id": "0000000000000027",
-      "icon_path": "romfs:/gfx/data/game_icons/moon_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/moon_icon.jpg",
+      "save_family": "mn"
     },
     {
       "name": "Pokémon Ultra Sun",
       "title_id": "0000000000000028",
-      "icon_path": "romfs:/gfx/data/game_icons/ultra_sun_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/ultra_sun_icon.jpg",
+      "save_family": "us"
     },
     {
       "name": "Pokémon Ultra Moon",
       "title_id": "0000000000000029",
-      "icon_path": "romfs:/gfx/data/game_icons/ultra_moon_icon.jpg"
+      "icon_path": "romfs:/gfx/data/game_icons/ultra_moon_icon.jpg",
+      "save_family": "um"
     }
   ]
 }
