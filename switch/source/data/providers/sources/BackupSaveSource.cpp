@@ -155,29 +155,7 @@ std::vector<pksm::saves::Save::Ref> BackupSaveSource::List(u64 titleId) const {
     return result;
 }
 
-std::optional<pksm::saves::PendingLoad> BackupSaveSource::Resolve(u64 titleId, const std::string& saveName) const {
-    // A miss is normal - the caller tries each save source in turn; only a
-    // claimed-but-failed load is an error
-    auto checkpointIt = checkpointSaves.find(titleId);
-    if (checkpointIt != checkpointSaves.end()) {
-        for (const auto& save : checkpointIt->second) {
-            if (save->getName() == saveName) {
-                std::stringstream ss;
-                ss << "Loading Checkpoint save " << saveName << " for title " << std::hex << titleId;
-                LOG_INFO(ss.str());
-                return ResolveBackupDirectory(save->getPath(), "Checkpoint save");
-            }
-        }
-    }
-
-    auto jksvIt = jksvSaves.find(titleId);
-    if (jksvIt != jksvSaves.end()) {
-        for (const auto& save : jksvIt->second) {
-            if (save->getName() == saveName) {
-                return ResolveBackupDirectory(save->getPath(), "JKSV save");
-            }
-        }
-    }
-
-    return std::nullopt;
+std::optional<pksm::saves::PendingLoad> BackupSaveSource::ResolveDirectory(const std::string& dirPath) {
+    const bool jksv = dirPath.rfind(JKSV_BASE_PATH, 0) == 0;
+    return ResolveBackupDirectory(dirPath, jksv ? "JKSV save" : "Checkpoint save");
 }

@@ -67,7 +67,7 @@ public:
 
     std::optional<pksm::saves::PendingLoad> ResolveLoad(
         const pksm::titles::Title::Ref& title,
-        const std::string& saveName,
+        const pksm::saves::Save::Ref& save,
         const AccountUid* userId = nullptr
     ) override;
     std::optional<pksm::saves::LoadedSave> ExecuteLoad(const pksm::saves::PendingLoad& pending) override;

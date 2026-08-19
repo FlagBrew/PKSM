@@ -19,8 +19,8 @@ public:
     // Cached backups for the title, Checkpoint's before JKSV's
     std::vector<pksm::saves::Save::Ref> List(u64 titleId) const;
 
-    // Resolve a listed backup name into its directory's candidate files
-    std::optional<pksm::saves::PendingLoad> Resolve(u64 titleId, const std::string& saveName) const;
+    // Resolve a chosen backup directory into its candidate files
+    static std::optional<pksm::saves::PendingLoad> ResolveDirectory(const std::string& dirPath);
 
 private:
     // Path where Checkpoint stores saves
