@@ -109,7 +109,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     );
     gameCardSlot->SetTitle(nullptr);
     gameCardSlot->SetOnTouchSelect([this]() {
-        LOG_DEBUG("[ConsoleGameList] Touch select on game card slot");
+        LOG_TRACE("[ConsoleGameList] Touch select on game card slot");
         selectionState = SelectionState::GameCard;
         HandleOnSelectionChanged();
         if (onTouchSelectCallback) {
@@ -128,7 +128,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     directionalInputHandler.SetOnMoveLeft([this]() {
         if (selectionState == SelectionState::InstalledGame && installedGames->IsFirstInRow()) {
             if (gameCardSlot->GetTitle()) {
-                LOG_DEBUG("[ConsoleGameList] Transitioning selection from installed games to game card");
+                LOG_TRACE("[ConsoleGameList] Transitioning selection from installed games to game card");
                 selectionState = SelectionState::GameCard;
                 gameCardSlot->RequestFocus();
                 HandleOnSelectionChanged();
@@ -140,7 +140,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     });
     directionalInputHandler.SetOnMoveRight([this]() {
         if (selectionState == SelectionState::GameCard && !titles.empty()) {
-            LOG_DEBUG("[ConsoleGameList] Transitioning selection from game card to installed games");
+            LOG_TRACE("[ConsoleGameList] Transitioning selection from game card to installed games");
             selectionState = SelectionState::InstalledGame;
             installedGames->SetSelectedIndex(0);  // Always select first game when moving right
             installedGames->RequestFocus();
@@ -151,7 +151,7 @@ pksm::ui::ConsoleGameList::ConsoleGameList(
     // Set up grid callbacks
     installedGames->SetOnSelectionChanged([this]() { HandleOnSelectionChanged(); });
     installedGames->SetOnTouchSelect([this]() {
-        LOG_DEBUG("[ConsoleGameList] Touch select on installed games");
+        LOG_TRACE("[ConsoleGameList] Touch select on installed games");
         selectionState = SelectionState::InstalledGame;
         HandleOnSelectionChanged();
         if (onTouchSelectCallback) {
@@ -207,7 +207,7 @@ void pksm::ui::ConsoleGameList::OnInput(
 
 void pksm::ui::ConsoleGameList::SetFocused(bool focused) {
     if (this->focused != focused) {
-        LOG_DEBUG(focused ? "[ConsoleGameList] Gained focus" : "[ConsoleGameList] Lost focus");
+        LOG_TRACE(focused ? "[ConsoleGameList] Gained focus" : "[ConsoleGameList] Lost focus");
         this->focused = focused;
         if (!focused) {
             directionalInputHandler.ClearState();
@@ -216,10 +216,10 @@ void pksm::ui::ConsoleGameList::SetFocused(bool focused) {
         if (focused) {
             // Just update the visual state of the appropriate section
             if (selectionState == SelectionState::GameCard && gameCardSlot->GetTitle()) {
-                LOG_DEBUG("[ConsoleGameList] Requesting focus on game card image");
+                LOG_TRACE("[ConsoleGameList] Requesting focus on game card image");
                 gameCardSlot->ISelectable::RequestFocus();
             } else {
-                LOG_DEBUG("[ConsoleGameList] Requesting focus on installed games");
+                LOG_TRACE("[ConsoleGameList] Requesting focus on installed games");
                 installedGames->RequestFocus();
             }
         }
@@ -291,22 +291,22 @@ void pksm::ui::ConsoleGameList::SetDataSource(const std::vector<titles::Title::R
 }
 
 pksm::titles::Title::Ref pksm::ui::ConsoleGameList::GetSelectedTitle() const {
-    LOG_DEBUG("[ConsoleGameList] Getting selected title");
+    LOG_TRACE("[ConsoleGameList] Getting selected title");
     if (selectionState == SelectionState::GameCard) {
-        LOG_DEBUG("[ConsoleGameList] Returning game card title");
+        LOG_TRACE("[ConsoleGameList] Returning game card title");
         return gameCardSlot->GetTitle();
     } else {
-        LOG_DEBUG("[ConsoleGameList] Returning installed title");
+        LOG_TRACE("[ConsoleGameList] Returning installed title");
         return installedGames->GetSelectedTitle();
     }
 }
 
 void pksm::ui::ConsoleGameList::HandleOnSelectionChanged() {
-    LOG_DEBUG("[ConsoleGameList] Handling selection changed");
+    LOG_TRACE("[ConsoleGameList] Handling selection changed");
     if (onSelectionChangedCallback) {
         auto selected = GetSelectedTitle();
         if (selected) {
-            LOG_DEBUG("[ConsoleGameList] Selection changed to title: " + selected->getName());
+            LOG_TRACE("[ConsoleGameList] Selection changed to title: " + selected->getName());
         }
         onSelectionChangedCallback();
     }

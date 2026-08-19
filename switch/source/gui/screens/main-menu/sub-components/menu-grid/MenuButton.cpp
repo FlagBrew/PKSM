@@ -59,13 +59,13 @@ MenuButton::MenuButton(
 
     // Setup touch handler callbacks
     touchHandler.SetOnTouchUpInside([this]() {
-        LOG_DEBUG("[MenuButton] Touch Up Inside");
+        LOG_TRACE("[MenuButton] Touch Up Inside");
         if (!focused && onTouchSelectCallback) {
-            LOG_DEBUG("[MenuButton] Requesting focus");
+            LOG_TRACE("[MenuButton] Requesting focus");
             onTouchSelectCallback();
             RequestFocus();
         } else if (focused && onSelectCallback) {
-            LOG_DEBUG("[MenuButton] Executing select callback");
+            LOG_TRACE("[MenuButton] Executing select callback");
             onSelectCallback();
         }
     });
@@ -76,7 +76,7 @@ MenuButton::MenuButton(
         nullptr,  // No press visual feedback needed
         [this]() {
             if (onSelectCallback) {
-                LOG_DEBUG("[MenuButton] A button pressed, executing select callback");
+                LOG_TRACE("[MenuButton] A button pressed, executing select callback");
                 onSelectCallback();
             }
         },
@@ -155,7 +155,7 @@ void MenuButton::OnInput(
 }
 
 void MenuButton::SetFocused(bool focused) {
-    LOG_DEBUG("[MenuButton] Setting focused: " + std::to_string(focused));
+    LOG_TRACE("[MenuButton] Setting focused: " + std::to_string(focused));
     this->focused = focused;
     pulsingOutline->SetVisible(focused);
 }

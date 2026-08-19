@@ -177,11 +177,11 @@ void pksm::ui::GameList::CreateTriggerButtons() {
     );
     leftTrigger->SetName("LeftTrigger Button Element");
     leftTrigger->SetOnTouchSelect([this]() {
-        LOG_DEBUG("Left trigger button touched");
+        LOG_TRACE("Left trigger button touched");
         FocusLeftTrigger();
     });
     leftTrigger->SetOnSelect([this]() {
-        LOG_DEBUG("Left trigger button touched again");
+        LOG_TRACE("Left trigger button touched again");
         SwitchToNextGameList(false);
     });
 
@@ -196,11 +196,11 @@ void pksm::ui::GameList::CreateTriggerButtons() {
     );
     rightTrigger->SetName("RightTrigger Button Element");
     rightTrigger->SetOnTouchSelect([this]() {
-        LOG_DEBUG("Right trigger button touched");
+        LOG_TRACE("Right trigger button touched");
         FocusRightTrigger();
     });
     rightTrigger->SetOnSelect([this]() {
-        LOG_DEBUG("Right trigger button touched again");
+        LOG_TRACE("Right trigger button touched again");
         SwitchToNextGameList(true);
     });
 
@@ -262,7 +262,7 @@ void pksm::ui::GameList::OnInput(
 
 void pksm::ui::GameList::SetFocused(bool focused) {
     if (this->focused != focused) {
-        LOG_DEBUG(focused ? "GameList gained focus" : "GameList lost focus");
+        LOG_TRACE(focused ? "GameList gained focus" : "GameList lost focus");
         this->focused = focused;
         if (!focused) {
             directionalInputHandler.ClearState();

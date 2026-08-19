@@ -108,9 +108,9 @@ void pksm::ui::FocusableMenu::MoveDown() {
 
 void pksm::ui::FocusableMenu::SetFocused(bool focused) {
     if (focused) {
-        LOG_DEBUG("[FocusableMenu] Setting focused to true");
+        LOG_TRACE("[FocusableMenu] Setting focused to true");
     } else {
-        LOG_DEBUG("[FocusableMenu] Setting focused to false");
+        LOG_TRACE("[FocusableMenu] Setting focused to false");
     }
     if (this->focused != focused) {
         this->focused = focused;
@@ -178,7 +178,7 @@ std::string pksm::ui::FocusableMenu::GetSelectedItemText() const {
 }
 
 void pksm::ui::FocusableMenu::SetDisabled(bool disabled) {
-    LOG_DEBUG("FocusableMenu SetDisabled: " + std::to_string(disabled));
+    LOG_TRACE("FocusableMenu SetDisabled: " + std::to_string(disabled));
     this->disabled = disabled;
 }
 

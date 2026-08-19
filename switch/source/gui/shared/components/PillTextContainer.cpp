@@ -141,7 +141,7 @@ void PillTextContainer::OnInput(
 }
 
 void PillTextContainer::SetFocused(bool focus) {
-    LOG_DEBUG("[PillTextContainer] SetFocused: " + std::to_string(focus));
+    LOG_TRACE("[PillTextContainer] SetFocused: " + std::to_string(focus));
     this->focused = focus;
     pulsingOutline->SetVisible(focus);
 }

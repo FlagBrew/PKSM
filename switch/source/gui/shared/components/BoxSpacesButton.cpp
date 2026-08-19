@@ -131,7 +131,7 @@ void BoxSpacesButton::OnInput(
 }
 
 void BoxSpacesButton::SetFocused(bool focus) {
-    LOG_DEBUG("[BoxSpacesButton] SetFocused: " + std::to_string(focus));
+    LOG_TRACE("[BoxSpacesButton] SetFocused: " + std::to_string(focus));
     this->focused = focus;
     pulsingOutline->SetVisible(focus);
 }

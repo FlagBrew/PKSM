@@ -59,7 +59,7 @@ void InputManager<T>::RegisterElement(ElementRef element) {
     if (element) {
         // Only add if not already registered
         if (std::find(elements.begin(), elements.end(), element) == elements.end()) {
-            LOG_DEBUG("[InputManager] Registering element " + element->GetName() + " with manager: " + name);
+            LOG_TRACE("[InputManager] Registering element " + element->GetName() + " with manager: " + name);
             elements.push_back(element);
             SetInputManager(element, this->shared_from_this());
         }
@@ -69,7 +69,7 @@ void InputManager<T>::RegisterElement(ElementRef element) {
 template <typename T>
 void InputManager<T>::UnregisterElement(ElementRef element) {
     if (element) {
-        LOG_DEBUG("[InputManager] Unregistering element " + element->GetName() + " from manager: " + name);
+        LOG_TRACE("[InputManager] Unregistering element " + element->GetName() + " from manager: " + name);
         auto it = std::find(elements.begin(), elements.end(), element);
         if (it != elements.end()) {
             if (auto active = currentlyActive.lock()) {
@@ -88,7 +88,7 @@ void InputManager<T>::RegisterChildManager(Ref childManager) {
     if (childManager) {
         // Only add if not already registered
         if (std::find(childManagers.begin(), childManagers.end(), childManager) == childManagers.end()) {
-            LOG_DEBUG("[InputManager] Registering child manager: " + childManager->name + " to " + name);
+            LOG_TRACE("[InputManager] Registering child manager: " + childManager->name + " to " + name);
             childManagers.push_back(childManager);
             childManager->SetParentManager(this->shared_from_this());
         }
@@ -98,7 +98,7 @@ void InputManager<T>::RegisterChildManager(Ref childManager) {
 template <typename T>
 void InputManager<T>::UnregisterChildManager(Ref childManager) {
     if (childManager) {
-        LOG_DEBUG("[InputManager] Unregistering child manager: " + childManager->name + " from " + name);
+        LOG_TRACE("[InputManager] Unregistering child manager: " + childManager->name + " from " + name);
         auto it = std::find(childManagers.begin(), childManagers.end(), childManager);
         if (it != childManagers.end()) {
             childManager->SetParentManager(nullptr);
@@ -110,37 +110,37 @@ void InputManager<T>::UnregisterChildManager(Ref childManager) {
 template <typename T>
 void InputManager<T>::SetParentManager(Ref parent) {
     parentManager = parent;
-    LOG_DEBUG("[InputManager] Setting parent manager for " + name + " to " + parent->name);
+    LOG_TRACE("[InputManager] Setting parent manager for " + name + " to " + parent->name);
 }
 
 template <typename T>
 void InputManager<T>::SetOwningElement(ElementRef owner) {
     owningElement = owner;
-    LOG_DEBUG("[InputManager] Setting owning element for " + name + " to " + owner->GetName());
+    LOG_TRACE("[InputManager] Setting owning element for " + name + " to " + owner->GetName());
 }
 
 template <typename T>
 void InputManager<T>::ResignElement() {
     if (!isActive)
         return;
-    LOG_DEBUG("[InputManager] Resigning from manager: " + name);
+    LOG_TRACE("[InputManager] Resigning from manager: " + name);
 
     isActive = false;
 
     if (auto owner = owningElement.lock()) {
-        LOG_DEBUG("[InputManager] Resigning from owning element: " + owner->GetName());
+        LOG_TRACE("[InputManager] Resigning from owning element: " + owner->GetName());
         SetElementActive(owner, false);
     }
 
     // Resign all child managers first
     for (auto& child : childManagers) {
-        LOG_DEBUG("[InputManager] Resigning child manager: " + child->name);
+        LOG_TRACE("[InputManager] Resigning child manager: " + child->name);
         child->ResignElement();
     }
 
     // Resign any active element
     if (auto active = currentlyActive.lock()) {
-        LOG_DEBUG("[InputManager] Resigning from: " + active->GetName());
+        LOG_TRACE("[InputManager] Resigning from: " + active->GetName());
         SetElementActive(active, false);
         currentlyActive.reset();
     }
@@ -148,12 +148,12 @@ void InputManager<T>::ResignElement() {
 
 template <typename T>
 void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
-    LOG_DEBUG("[InputManager] " + name + " handling request from " + requestingElement->GetName());
+    LOG_TRACE("[InputManager] " + name + " handling request from " + requestingElement->GetName());
 
     if (!isActive) {
         // Activate this branch of the tree
         isActive = true;
-        LOG_DEBUG(
+        LOG_TRACE(
             "[InputManager] Activating manager: " + name + " with owning element: " + owningElement.lock()->GetName()
         );
 
@@ -163,19 +163,19 @@ void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
         }
         SetElementActive(requestingElement, true);
         SetElementActive(owningElement.lock(), true);
-        LOG_DEBUG("[InputManager] Element set to: " + requestingElement->GetName());
+        LOG_TRACE("[InputManager] Element set to: " + requestingElement->GetName());
 
         // Resign all siblings (both elements and managers)
         for (auto& child : parentManager.lock()->childManagers) {
             if (child->owningElement.lock() != owningElement.lock() && child->IsActive()) {
-                LOG_DEBUG("[InputManager] Resigning unrelated sibling manager: " + child->name + " in manager: " + name);
+                LOG_TRACE("[InputManager] Resigning unrelated sibling manager: " + child->name + " in manager: " + name);
                 child->ResignElement();
             }
         }
 
         for (auto& element : parentManager.lock()->elements) {
             if (IsElementActive(element) && element != requestingElement) {
-                LOG_DEBUG(
+                LOG_TRACE(
                     "[InputManager] Resigning unrelated sibling element: " + element->GetName() + " in manager: " + name
                 );
                 SetElementActive(element, false);
@@ -187,7 +187,7 @@ void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
         if (auto parent = parentManager.lock()) {
             if (!parent->IsActive()) {
                 if (auto owner = owningElement.lock()) {
-                    LOG_DEBUG("[InputManager] Propagating to parent via: " + owner->GetName());
+                    LOG_TRACE("[InputManager] Propagating to parent via: " + owner->GetName());
                     parent->HandleElementRequest(owner);
                 }
             }
@@ -195,19 +195,19 @@ void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
     } else {
         // Manager is already active - update active element within
         auto current = currentlyActive.lock();
-        LOG_DEBUG(
+        LOG_TRACE(
             "[InputManager] Manager: " + name + " Current: " + (current ? current->GetName() : "nothing") +
             " requesting: " + requestingElement->GetName() +
             " owning: " + (owningElement.lock() ? owningElement.lock()->GetName() : "nothing")
         );
         if (current != requestingElement && requestingElement != owningElement.lock()) {
-            LOG_DEBUG(
+            LOG_TRACE(
                 "[InputManager] Switching within " + name + " from " + (current ? current->GetName() : "nothing") +
                 " to " + requestingElement->GetName() + " in manager: " + name
             );
 
             if (current) {
-                LOG_DEBUG("[InputManager] Resigning previous: " + current->GetName() + " in manager: " + name);
+                LOG_TRACE("[InputManager] Resigning previous: " + current->GetName() + " in manager: " + name);
                 SetElementActive(current, false);
                 currentlyActive.reset();
             }
@@ -215,7 +215,7 @@ void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
             // Resign any child managers not related to new element
             for (auto& child : childManagers) {
                 if (child->IsActive()) {
-                    LOG_DEBUG(
+                    LOG_TRACE(
                         "[InputManager] Resigning unrelated child manager: " + child->name + " in manager: " + name
                     );
                     child->ResignElement();
@@ -224,7 +224,7 @@ void InputManager<T>::HandleElementRequest(ElementRef requestingElement) {
 
             currentlyActive = requestingElement;
             SetElementActive(requestingElement, true);
-            LOG_DEBUG("[InputManager] New element set to: " + requestingElement->GetName() + " in manager: " + name);
+            LOG_TRACE("[InputManager] New element set to: " + requestingElement->GetName() + " in manager: " + name);
         }
     }
 }

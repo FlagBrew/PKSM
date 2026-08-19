@@ -237,10 +237,10 @@ bool pksm::ui::BoxItem::IsSelected() const {
 
 void pksm::ui::BoxItem::SetFocused(bool focus) {
     if (focus) {
-        LOG_DEBUG("[BoxItem] Setting focused to true");
+        LOG_TRACE("[BoxItem] Setting focused to true");
         RequestSelection();
     } else {
-        LOG_DEBUG("[BoxItem] Setting focused to false");
+        LOG_TRACE("[BoxItem] Setting focused to false");
     }
 
     this->focused = focus;

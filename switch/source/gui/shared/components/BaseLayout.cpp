@@ -46,7 +46,7 @@ void BaseLayout::HideHelpOverlay() {
 
 bool BaseLayout::HandleHelpInput(u64 down) {
     if (down & HidNpadButton_Minus) {
-        LOG_DEBUG("Minus button pressed");
+        LOG_TRACE("Minus button pressed");
         if (isHelpOverlayVisible) {
             HideHelpOverlay();
         } else {
@@ -57,7 +57,7 @@ bool BaseLayout::HandleHelpInput(u64 down) {
 
     if (isHelpOverlayVisible) {
         if (down & HidNpadButton_B) {
-            LOG_DEBUG("B button pressed while help overlay visible");
+            LOG_TRACE("B button pressed while help overlay visible");
             HideHelpOverlay();
         }
         return true;  // Input was handled (block other input while help is visible)

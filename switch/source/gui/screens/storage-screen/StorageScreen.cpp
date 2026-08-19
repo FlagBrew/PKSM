@@ -120,7 +120,7 @@ void StorageScreen::InitializePokemonBox() {
 
     // Set up selection changed callback
     pokemonBox->SetOnSelectionChanged([this](int boxIndex, int slotIndex) {
-        LOG_DEBUG("Box selection changed: Box " + std::to_string(boxIndex) + ", Slot " + std::to_string(slotIndex));
+        LOG_TRACE("Box selection changed: Box " + std::to_string(boxIndex) + ", Slot " + std::to_string(slotIndex));
         // Entering a box re-reads it from the provider: edits made while it
         // was off screen leave its stored copy stale (LGPE party moves write
         // into distant boxes - the box list backs the party there)

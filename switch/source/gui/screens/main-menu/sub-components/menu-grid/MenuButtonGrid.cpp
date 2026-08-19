@@ -80,7 +80,7 @@ void MenuButtonGrid::InitializeButtons() {
         button->SetOnSelect([this, buttonType]() {
             // Execute the callback if registered
             if (buttonCallbacks.count(buttonType) > 0) {
-                LOG_DEBUG("Executing callback for button: " + std::to_string(static_cast<int>(buttonType)));
+                LOG_TRACE("Executing callback for button: " + std::to_string(static_cast<int>(buttonType)));
                 buttonCallbacks[buttonType]();
             }
         });

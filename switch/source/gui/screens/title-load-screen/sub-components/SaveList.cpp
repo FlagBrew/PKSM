@@ -26,7 +26,7 @@ pu::i32 SaveList::GetHeight() const {
 }
 
 void SaveList::SetDataSource(const std::vector<saves::Save::Ref>& saves) {
-    LOG_DEBUG("Setting SaveList data source with " + std::to_string(saves.size()) + " saves");
+    LOG_TRACE("Setting SaveList data source with " + std::to_string(saves.size()) + " saves");
     this->saves = saves;
 
     // Convert saves to display strings

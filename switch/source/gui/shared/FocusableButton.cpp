@@ -107,7 +107,7 @@ void pksm::ui::FocusableButton::OnInput(
 }
 
 void pksm::ui::FocusableButton::SetFocused(bool focus) {
-    LOG_DEBUG("FocusableButton SetFocused: " + std::to_string(focus));
+    LOG_TRACE("FocusableButton SetFocused: " + std::to_string(focus));
     this->focused = focus;
     background->SetColor(focus ? focusedColor : normalColor);
     pulsingOutline->SetVisible(focused);
@@ -160,7 +160,7 @@ std::vector<pksm::ui::HelpItem> pksm::ui::FocusableButton::GetHelpItems() const 
 }
 
 void pksm::ui::FocusableButton::SetDisabled(bool disabled) {
-    LOG_DEBUG("FocusableButton SetDisabled: " + std::to_string(disabled));
+    LOG_TRACE("FocusableButton SetDisabled: " + std::to_string(disabled));
     this->disabled = disabled;
 }
 
