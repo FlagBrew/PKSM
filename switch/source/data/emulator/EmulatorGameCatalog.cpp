@@ -63,14 +63,6 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::
             continue;
         }
 
-        if (eg.contains("save_probes") && eg["save_probes"].is_array()) {
-            for (const auto& p : eg["save_probes"]) {
-                if (p.is_string()) {
-                    entry.saveProbes.push_back(p.get<std::string>());
-                }
-            }
-        }
-
         if (eg.contains("save_family") && eg["save_family"].is_string()) {
             entry.saveFamily = eg["save_family"].get<std::string>();
         }
@@ -80,30 +72,6 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::
                 if (k.is_string()) {
                     entry.keywords.push_back(k.get<std::string>());
                 }
-            }
-        }
-
-        if (eg.contains("extra_saves") && eg["extra_saves"].is_array()) {
-            for (const auto& slot : eg["extra_saves"]) {
-                if (!slot.is_object()) {
-                    continue;
-                }
-                if (!slot.contains("name") || !slot["name"].is_string()) {
-                    continue;
-                }
-
-                ExtraSaveSlot s;
-                s.name = slot["name"].get<std::string>();
-
-                if (slot.contains("paths") && slot["paths"].is_array()) {
-                    for (const auto& sp : slot["paths"]) {
-                        if (sp.is_string()) {
-                            s.paths.push_back(sp.get<std::string>());
-                        }
-                    }
-                }
-
-                entry.extraSaves.push_back(std::move(s));
             }
         }
 
@@ -123,27 +91,15 @@ std::optional<EmulatorGameEntry> EmulatorGameCatalog::FindByTitleId(const std::v
 }
 
 std::vector<std::string> EmulatorGameCatalog::CandidatePaths(
-    const EmulatorGameEntry& entry,
+    u64 titleId,
     const std::unordered_map<u64, EmulatorSaveSelection>& config
 ) {
     std::vector<std::string> paths;
-    auto push = [&paths](const std::string& p) {
-        if (!p.empty() && std::find(paths.begin(), paths.end(), p) == paths.end()) {
-            paths.push_back(p);
-        }
-    };
-
-    for (const auto& p : entry.saveProbes) {
-        push(p);
-    }
-    auto it = config.find(entry.titleId);
+    auto it = config.find(titleId);
     if (it != config.end()) {
         for (const auto& p : it->second.primary) {
-            push(p);
-        }
-        for (const auto& [slotName, slotPaths] : it->second.extra) {
-            for (const auto& p : slotPaths) {
-                push(p);
+            if (!p.empty() && std::find(paths.begin(), paths.end(), p) == paths.end()) {
+                paths.push_back(p);
             }
         }
     }

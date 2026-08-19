@@ -10,26 +10,12 @@
 
 namespace pksm::data::emulator {
 
-struct ExtraSaveSlot {
-    std::string name;
-    std::vector<std::string> paths;
-};
-
-// One game from the bundled catalog (romfs data.json "emulator_games"):
-// a non-installed game PKSM knows about, with candidate save locations.
-// Box art comes from the basprites sheet keyed by titleId - emulator-era
-// entries carry synthetic ids, Switch-era entries their real console ids.
 struct EmulatorGameEntry {
     std::string name;
     u64 titleId = 0;
-    std::vector<std::string> saveProbes;
-    std::vector<ExtraSaveSlot> extraSaves;
-    // Save-file family shared with sibling games whose saves are
-    // byte-identical in kind (Ruby/Sapphire, Gold/Silver...); empty for
-    // games whose saves discovery does not recognize
+    // Save-file family shared with sibling games (Ruby/Sapphire, Gold/Silver...)
     std::string saveFamily;
-    // Lowercase substrings that pick this game out of its family when a
-    // discovered file's path names it (serials like "bpee" included)
+    // Lowercase path substrings that pick this game out of its family
     std::vector<std::string> keywords;
 };
 
@@ -46,11 +32,8 @@ public:
         const std::vector<EmulatorGameEntry>& entries
     );
 
-    // Every place a save for this game may live: catalog probes plus the
-    // user's configured paths (order-preserving, deduplicated). Existence
-    // and validity are the caller's concern.
     static std::vector<std::string> CandidatePaths(
-        const EmulatorGameEntry& entry,
+        u64 titleId,
         const std::unordered_map<u64, EmulatorSaveSelection>& config
     );
 };

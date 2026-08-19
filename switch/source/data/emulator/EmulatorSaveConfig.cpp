@@ -81,26 +81,7 @@ std::unordered_map<u64, EmulatorSaveSelection> EmulatorSaveConfig::Load(const st
             }
         }
 
-        if (v.contains("extra") && v["extra"].is_object()) {
-            for (auto eit = v["extra"].begin(); eit != v["extra"].end(); ++eit) {
-                if (!eit.value().is_array()) {
-                    continue;
-                }
-
-                std::vector<std::string> paths;
-                for (const auto& p : eit.value()) {
-                    if (p.is_string()) {
-                        UniquePush(paths, p.get<std::string>());
-                    }
-                }
-
-                if (!paths.empty()) {
-                    sel.extra.emplace(eit.key(), std::move(paths));
-                }
-            }
-        }
-
-        if (!sel.primary.empty() || !sel.extra.empty()) {
+        if (!sel.primary.empty()) {
             out.emplace(titleId, std::move(sel));
         }
     }
@@ -126,11 +107,6 @@ bool EmulatorSaveConfig::Save(const std::unordered_map<u64, EmulatorSaveSelectio
 
         nlohmann::json g;
         g["primary"] = sel.primary;
-        g["extra"] = nlohmann::json::object();
-        for (const auto& [slotName, paths] : sel.extra) {
-            g["extra"][slotName] = paths;
-        }
-
         out["games"][key] = std::move(g);
     }
 
@@ -155,17 +131,5 @@ void EmulatorSaveConfig::AddPrimaryPath(std::unordered_map<u64, EmulatorSaveSele
     UniquePush(data[titleId].primary, path);
 }
 
-void EmulatorSaveConfig::AddExtraPath(
-    std::unordered_map<u64, EmulatorSaveSelection>& data,
-    u64 titleId,
-    const std::string& slotName,
-    const std::string& path
-) {
-    if (titleId == 0 || slotName.empty()) {
-        return;
-    }
-
-    UniquePush(data[titleId].extra[slotName], path);
-}
 
 }  // namespace pksm::data::emulator

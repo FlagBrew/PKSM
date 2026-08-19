@@ -7,11 +7,9 @@
 
 namespace pksm::data::emulator {
 
-// User-selected save locations for one catalog game: primary saves plus
-// named extra slots, all arbitrary sdmc paths.
+// User-selected save locations for one catalog game (arbitrary sdmc paths)
 struct EmulatorSaveSelection {
     std::vector<std::string> primary;
-    std::unordered_map<std::string, std::vector<std::string>> extra;
 };
 
 class EmulatorSaveConfig {
@@ -27,12 +25,6 @@ public:
     static void AddPrimaryPath(
         std::unordered_map<u64, EmulatorSaveSelection>& data,
         u64 titleId,
-        const std::string& path
-    );
-    static void AddExtraPath(
-        std::unordered_map<u64, EmulatorSaveSelection>& data,
-        u64 titleId,
-        const std::string& slotName,
         const std::string& path
     );
 };
