@@ -56,6 +56,16 @@ private:
     std::thread prewarmThread;
     std::atomic<bool> prewarmStop{false};
 
+    // Live saves inside the NSO emulator apps' own console save containers,
+    // keyed by catalog game. Scanned once per account, UI thread only (the
+    // scan mounts the shared "save" device)
+    mutable std::optional<AccountUid> nsoScanUser;
+    mutable std::unordered_map<u64, std::vector<pksm::saves::Save::Ref>> nsoConsoleSaves;
+    void ScanNSOContainers(const AccountUid& userId) const;
+    std::vector<pksm::saves::Save::Ref>
+    ListNSOConsoleSaves(u64 titleId, const std::optional<AccountUid>& user) const;
+    std::optional<pksm::saves::LoadedSave> LoadNSOConsoleSave(const std::string& nsoPath, const AccountUid& userId);
+
     // Helper methods
     void RefreshConsoleSaves(const pksm::titles::Title::Ref& title, const AccountUid& userId) const;
     void RefreshCheckpointSaves(const pksm::titles::Title::Ref& title) const;

@@ -8,6 +8,8 @@
 #include <iterator>
 #include <set>
 
+#include <nlohmann/json.hpp>
+
 #include "data/saves/SaveValidator.hpp"
 #include "enums/GameVersion.hpp"
 #include "utils/Logger.hpp"
@@ -359,6 +361,45 @@ std::string FamilyOf(::pksm::GameVersion version) {
 
 namespace pksm::data::emulator {
 
+std::vector<const EmulatorGameEntry*> SaveDiscovery::MatchGames(
+    const std::vector<EmulatorGameEntry>& games,
+    const std::string& path,
+    ::pksm::GameVersion version
+) {
+    const std::string family = FamilyOf(version);
+    if (family.empty()) {
+        return {};
+    }
+
+    std::vector<const EmulatorGameEntry*> candidates;
+    for (const auto& game : games) {
+        if (game.saveFamily == family) {
+            candidates.push_back(&game);
+        }
+    }
+
+    // Path keywords pick a game out of a multi-game family; a file
+    // nothing names lists under the whole family
+    if (candidates.size() > 1) {
+        const std::string lowerPath = ToLower(path);
+        std::vector<const EmulatorGameEntry*> named;
+        for (const auto* game : candidates) {
+            const bool hit = std::any_of(
+                game->keywords.begin(),
+                game->keywords.end(),
+                [&lowerPath](const std::string& k) { return lowerPath.find(k) != std::string::npos; }
+            );
+            if (hit) {
+                named.push_back(game);
+            }
+        }
+        if (!named.empty()) {
+            candidates = std::move(named);
+        }
+    }
+    return candidates;
+}
+
 std::optional<SaveDiscovery::NSOBackupRef> SaveDiscovery::ParseNSOBackupPath(const std::filesystem::path& path) {
     std::vector<std::string> parts;
     for (const auto& part : path) {
@@ -380,6 +421,29 @@ std::optional<SaveDiscovery::NSOBackupRef> SaveDiscovery::ParseNSOBackupPath(con
     return std::nullopt;
 }
 
+std::optional<std::set<std::string>> SaveDiscovery::InstalledNSOCodes(u64 nsoTitleId) {
+    const std::string dbPath =
+        "sdmc:/atmosphere/contents/" + TitleIdHex(nsoTitleId) + "/romfs/titles/lclassics.titlesdb";
+    std::ifstream f(dbPath);
+    if (!f.is_open()) {
+        return std::nullopt;
+    }
+    nlohmann::json j;
+    try {
+        f >> j;
+    } catch (...) {
+        return std::nullopt;
+    }
+    if (!j.is_object() || !j.contains("titles") || !j["titles"].is_object()) {
+        return std::nullopt;
+    }
+    std::set<std::string> codes;
+    for (const auto& [code, entry] : j["titles"].items()) {
+        codes.insert(code);
+    }
+    return codes;
+}
+
 std::unordered_map<u64, std::vector<std::string>>
 SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const ParseReport& onParsed) {
     std::unordered_map<u64, std::vector<std::string>> discovered;
@@ -392,6 +456,7 @@ SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const Parse
     });
 
     int matched = 0;
+    std::unordered_map<u64, std::optional<std::set<std::string>>> installedByApp;
     for (const auto& file : files) {
         const auto sav = pksm::saves::SaveValidator::Load(file.path);
         if (onParsed) {
@@ -400,38 +465,24 @@ SaveDiscovery::Discover(const std::vector<EmulatorGameEntry>& games, const Parse
         if (!sav) {
             continue;
         }
-        const std::string family = FamilyOf(sav->version());
-        if (family.empty()) {
-            continue;
-        }
-
-        std::vector<const EmulatorGameEntry*> candidates;
-        for (const auto& game : games) {
-            if (game.saveFamily == family) {
-                candidates.push_back(&game);
-            }
-        }
+        const auto candidates = MatchGames(games, file.path, sav->version());
         if (candidates.empty()) {
             continue;
         }
 
-        // Path keywords pick a game out of a multi-game family; a file
-        // nothing names lists under the whole family
+        // A backed-up save of an entry the NSO app no longer lists, that no
+        // keyword pins to one game, would smear across a whole family of
+        // tiles - orphans list only where identification is exact
         if (candidates.size() > 1) {
-            const std::string lowerPath = ToLower(file.path);
-            std::vector<const EmulatorGameEntry*> named;
-            for (const auto* game : candidates) {
-                const bool hit = std::any_of(
-                    game->keywords.begin(),
-                    game->keywords.end(),
-                    [&lowerPath](const std::string& k) { return lowerPath.find(k) != std::string::npos; }
-                );
-                if (hit) {
-                    named.push_back(game);
+            if (const auto nso = ParseNSOBackupPath(std::filesystem::path(file.path))) {
+                auto [it, inserted] = installedByApp.try_emplace(nso->nsoTitleId);
+                if (inserted) {
+                    it->second = InstalledNSOCodes(nso->nsoTitleId);
                 }
-            }
-            if (!named.empty()) {
-                candidates = std::move(named);
+                const auto& installed = it->second;
+                if (installed && installed->find(nso->code) == installed->end()) {
+                    continue;
+                }
             }
         }
 

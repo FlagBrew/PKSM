@@ -12,6 +12,7 @@
 
 #include "data/saves/ConsoleSaveMount.hpp"
 #include "data/saves/NSOContainer.hpp"
+#include "data/saves/NSOPathScheme.hpp"
 #include "data/saves/SafeNames.hpp"
 #include "data/saves/SaveValidator.hpp"
 #include "utils/Logger.hpp"
@@ -238,6 +239,37 @@ bool SwitchSaveDataWriter::WriteSave(
 ) {
     if (!data || size == 0) {
         return false;
+    }
+
+    // A save inside an NSO app's container: mount that app's save data by
+    // the title id the path carries, splice into its container, and commit
+    // through the same journal as any console save
+    if (const auto nso = pksm::saves::ParseNSOSavePath(savePath)) {
+        if (!userId) {
+            LOG_ERROR("NSO container write-back needs the account it was loaded for");
+            return false;
+        }
+        FsFileSystem fs;
+        if (R_FAILED(pksm::saves::MountConsoleSave(&fs, nso->nsoTitleId, *userId))) {
+            LOG_ERROR("Cannot mount NSO save container for write-back: " + savePath);
+            return false;
+        }
+        const std::string mountedPath = "save:" + nso->innerPath;
+        BackupBeforeWrite(title, mountedPath);
+        std::vector<u8> container;
+        bool written = PrepareWriteBuffer(mountedPath, data, size, container) && WriteFile(mountedPath, data, size);
+        if (written) {
+            Result rc = fsdevCommitDevice("save");
+            if (R_FAILED(rc)) {
+                LOG_ERROR("Failed to commit NSO save container for " + savePath);
+                written = false;
+            }
+        }
+        pksm::saves::UnmountConsoleSave();
+        if (!written) {
+            LOG_ERROR("Failed to write " + savePath);
+        }
+        return written;
     }
 
     const bool isConsoleSave = savePath.rfind("save:/", 0) == 0;

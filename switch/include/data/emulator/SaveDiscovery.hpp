@@ -4,11 +4,13 @@
 #include <filesystem>
 #include <functional>
 #include <optional>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
+#include "enums/GameVersion.hpp"
 
 namespace pksm::data::emulator {
 
@@ -23,6 +25,19 @@ public:
     // The NSO emulator apps whose save containers hold per-game saves
     // (Game Boy Advance and Game Boy - Nintendo Switch Online)
     static constexpr u64 NSO_APP_TITLES[] = {0x010012F017576000ULL, 0x0100C62011050000ULL};
+
+    // Content-first matching, shared by every save source: core's version
+    // is authoritative for the save family; path keywords pick a game out
+    // of a multi-game family, and a path nothing names matches the whole
+    // family. Empty when the version maps to no catalog family.
+    static std::vector<const EmulatorGameEntry*>
+    MatchGames(const std::vector<EmulatorGameEntry>& games, const std::string& path, ::pksm::GameVersion version);
+
+    // Game codes the NSO app currently lists, read from its LayeredFS
+    // titles database on the card. A save whose code is absent is an
+    // orphan of a removed entry - the app can no longer open it. Empty
+    // optional when the app is unmodded (no database on the card to read).
+    static std::optional<std::set<std::string>> InstalledNSOCodes(u64 nsoTitleId);
 
     // A file inside an NSO app backup: <JKSV or Checkpoint title dir>/
     // <backup>/saves/<code>/<file>
