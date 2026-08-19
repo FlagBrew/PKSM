@@ -9,6 +9,11 @@ int main(int argc, char* argv[]) {
     try {
         // Initialize and run application
         auto app = pksm::PKSMApplication::Initialize();
+        if (!app) {
+            pksm::utils::Logger::Error("Application failed to initialize; exiting");
+            pksm::utils::Logger::Finalize();
+            return 1;
+        }
         app->ShowWithFadeIn();
 
         // Cleanup
