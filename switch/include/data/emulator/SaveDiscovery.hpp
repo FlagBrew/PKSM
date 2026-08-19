@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -19,6 +20,20 @@ namespace pksm::data::emulator {
 // lists under every game in its family.
 class SaveDiscovery {
 public:
+    // The NSO emulator apps whose save containers hold per-game saves
+    // (Game Boy Advance and Game Boy - Nintendo Switch Online)
+    static constexpr u64 NSO_APP_TITLES[] = {0x010012F017576000ULL, 0x0100C62011050000ULL};
+
+    // A file inside an NSO app backup: <JKSV or Checkpoint title dir>/
+    // <backup>/saves/<code>/<file>
+    struct NSOBackupRef {
+        u64 nsoTitleId = 0;
+        std::string source;
+        std::string backup;
+        std::string code;
+    };
+    static std::optional<NSOBackupRef> ParseNSOBackupPath(const std::filesystem::path& path);
+
     // Every candidate file gets a core parse during the scan; the verdict
     // is reported here so callers can seed their own validation caches
     // instead of parsing the same files again

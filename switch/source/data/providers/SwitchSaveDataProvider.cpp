@@ -304,6 +304,11 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListDiscoveredSaves(
             if (taken(name)) {
                 name = filename + " (" + citra->owner + "/" + citra->id0.substr(0, 8) + ")";
             }
+        } else if (const auto nso = pksm::data::emulator::SaveDiscovery::ParseNSOBackupPath(p)) {
+            name = "[" + nso->source + "] " + nso->backup + " (" + nso->code + ")";
+            if (taken(name)) {
+                name += " " + filename;
+            }
         } else {
             name = filename + " (" + p.parent_path().filename().string() + ")";
             if (taken(name)) {

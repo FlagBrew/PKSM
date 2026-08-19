@@ -5,6 +5,7 @@
 #include <new>
 #include <sstream>
 
+#include "data/saves/NSOContainer.hpp"
 #include "utils/Logger.hpp"
 
 namespace pksm::saves {
@@ -41,10 +42,19 @@ std::unique_ptr<::pksm::Sav> SaveValidator::Load(const std::string& path) {
         return nullptr;
     }
 
+    // A GB NSO container holds the raw save at its tail; parse just that
+    // slice (the aliasing pointer keeps the whole buffer alive)
+    size_t parseSize = size;
+    std::shared_ptr<u8[]> parseData = data;
+    if (const auto container = ProbeNSOContainer(data.get(), size)) {
+        parseData = std::shared_ptr<u8[]>(data, data.get() + container->rawOffset);
+        parseSize = container->rawSize;
+    }
+
     // The input is an arbitrary user file; a parse throwing on malformed
     // content means "not a save", not a crash
     try {
-        auto sav = ::pksm::Sav::getSave(data, size);
+        auto sav = ::pksm::Sav::getSave(parseData, parseSize);
         if (sav && !sav->checksumsValid()) {
             // Structurally parseable, but the save's own integrity checksums
             // disagree with its contents - a torn copy or a ROM-hack save with
