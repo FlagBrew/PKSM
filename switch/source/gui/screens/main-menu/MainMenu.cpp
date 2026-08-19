@@ -66,7 +66,7 @@ MainMenu::MainMenu(
         HidNpadButton_B,
         nullptr,  // No visual feedback needed
         [this]() {
-            LOG_DEBUG("B button pressed, returning to game selection");
+            LOG_TRACE("B button pressed, returning to game selection");
             if (this->onBack) {
                 this->onBack();
             }

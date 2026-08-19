@@ -88,7 +88,7 @@ TriggerButton::TriggerButton(
 
     // Setup touch handler callbacks
     touchHandler.SetOnTouchUpInside([this]() {
-        LOG_DEBUG("TriggerButton Touch Up Inside");
+        LOG_TRACE("TriggerButton Touch Up Inside");
         if (!focused && onTouchSelectCallback) {
             onTouchSelectCallback();
         } else if (focused && onSelectCallback) {
@@ -155,7 +155,7 @@ void TriggerButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i3
 }
 
 void TriggerButton::SetFocused(bool focus) {
-    LOG_DEBUG("Trigger button SetFocused: " + std::to_string(focus));
+    LOG_TRACE("Trigger button SetFocused: " + std::to_string(focus));
     this->focused = focus;
     pulsingOutline->SetVisible(focus);
 }

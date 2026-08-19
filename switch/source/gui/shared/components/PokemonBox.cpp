@@ -440,7 +440,7 @@ std::vector<HelpItem> PokemonBox::GetHelpItems() const {
 }
 
 void PokemonBox::SetFocused(bool focused) {
-    LOG_DEBUG("[BoxGrid] SetFocused: " + std::to_string(focused));
+    LOG_TRACE("[BoxGrid] SetFocused: " + std::to_string(focused));
     if (this->focused != focused) {
         this->focused = focused;
 

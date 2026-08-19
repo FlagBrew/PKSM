@@ -97,7 +97,7 @@ void pksm::ui::GameGrid::OnInput(
 }
 
 void pksm::ui::GameGrid::SetFocused(bool focused) {
-    LOG_DEBUG("[GameGrid] Setting focused: " + std::to_string(focused));
+    LOG_TRACE("[GameGrid] Setting focused: " + std::to_string(focused));
     if (this->focused != focused) {
         this->focused = focused;
         this->scrollView->SetFocused(focused);

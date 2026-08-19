@@ -124,7 +124,7 @@ void FullWidthGameList::OnInput(
 
 void FullWidthGameList::SetFocused(bool focused) {
     if (this->focused != focused) {
-        LOG_DEBUG(focused ? "FullWidthGameList gained focus" : "FullWidthGameList lost focus");
+        LOG_TRACE(focused ? "FullWidthGameList gained focus" : "FullWidthGameList lost focus");
         this->focused = focused;
         if (focused) {
             gameGrid->RequestFocus();
@@ -163,7 +163,7 @@ void FullWidthGameList::HandleOnSelectionChanged() {
     if (onSelectionChangedCallback) {
         auto selected = GetSelectedTitle();
         if (selected) {
-            LOG_DEBUG("Selection changed to title: " + selected->getName());
+            LOG_TRACE("Selection changed to title: " + selected->getName());
         }
         onSelectionChangedCallback();
     }

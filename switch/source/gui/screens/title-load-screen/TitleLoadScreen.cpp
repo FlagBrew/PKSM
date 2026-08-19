@@ -233,66 +233,66 @@ pksm::saves::Save::Ref pksm::layout::TitleLoadScreen::GetSelectedSave() const {
 
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionUp() {
     if (this->wirelessButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection up from Wireless to Load Save");
+        LOG_TRACE("Moving button selection up from Wireless to Load Save");
         this->FocusLoadButton();
     } else if (this->loadButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection up from Load Save to Wireless");
+        LOG_TRACE("Moving button selection up from Load Save to Wireless");
         this->loadButton->shakeOutOfBounds(pksm::ui::ShakeDirection::UP);
     }
 }
 
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionDown() {
     if (this->loadButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection down from Load Save to Wireless");
+        LOG_TRACE("Moving button selection down from Load Save to Wireless");
         this->FocusWirelessButton();
     } else if (this->wirelessButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection down from Wireless to Load Save");
+        LOG_TRACE("Moving button selection down from Wireless to Load Save");
         this->wirelessButton->shakeOutOfBounds(pksm::ui::ShakeDirection::DOWN);
     }
 }
 
 void pksm::layout::TitleLoadScreen::MoveButtonSelectionRight() {
     if (this->wirelessButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection right from Load Save to Wireless");
+        LOG_TRACE("Moving button selection right from Load Save to Wireless");
         this->wirelessButton->shakeOutOfBounds(pksm::ui::ShakeDirection::RIGHT);
     } else if (this->loadButton->IsFocused()) {
-        LOG_DEBUG("Moving button selection right from Load Save to Wireless");
+        LOG_TRACE("Moving button selection right from Load Save to Wireless");
         this->loadButton->shakeOutOfBounds(pksm::ui::ShakeDirection::RIGHT);
     }
 }
 
 void pksm::layout::TitleLoadScreen::FocusGameSection() {
-    LOG_DEBUG("Focusing game section");
+    LOG_TRACE("Focusing game section");
     this->gameList->RequestFocus();
     UpdateHelpItems(this->gameList);
 }
 
 void pksm::layout::TitleLoadScreen::FocusSaveList() {
-    LOG_DEBUG("Focusing save list");
+    LOG_TRACE("Focusing save list");
     this->saveList->RequestFocus();
     UpdateHelpItems(this->saveList);
 }
 
 void pksm::layout::TitleLoadScreen::FocusUserIcon() {
-    LOG_DEBUG("Focusing user icon");
+    LOG_TRACE("Focusing user icon");
     this->userIconButton->RequestFocus();
     UpdateHelpItems(this->userIconButton);
 }
 
 void pksm::layout::TitleLoadScreen::FocusLoadButton() {
-    LOG_DEBUG("Focusing load button");
+    LOG_TRACE("Focusing load button");
     this->loadButton->RequestFocus();
     UpdateHelpItems(this->loadButton);
 }
 
 void pksm::layout::TitleLoadScreen::FocusWirelessButton() {
-    LOG_DEBUG("Focusing wireless button");
+    LOG_TRACE("Focusing wireless button");
     this->wirelessButton->RequestFocus();
     UpdateHelpItems(this->wirelessButton);
 }
 
 void pksm::layout::TitleLoadScreen::TransitionToButtons() {
-    LOG_DEBUG("Transitioning focus to button region");
+    LOG_TRACE("Transitioning focus to button region");
     this->FocusLoadButton();
 }
 
@@ -343,21 +343,21 @@ void pksm::layout::TitleLoadScreen::OnWirelessButtonClick() {
 }
 
 void pksm::layout::TitleLoadScreen::OnSaveSelected() {
-    LOG_DEBUG("Save selected: " + saveList->GetSelectedItemText());
+    LOG_TRACE("Save selected: " + saveList->GetSelectedItemText());
 }
 
 void pksm::layout::TitleLoadScreen::OnGameTouchSelect() {
-    LOG_DEBUG("Game selected via touch");
+    LOG_TRACE("Game selected via touch");
 }
 
 void pksm::layout::TitleLoadScreen::OnGameListChanged() {
-    LOG_DEBUG("Game list changed");
+    LOG_TRACE("Game list changed");
     this->userIconButton->SetVisible(this->gameList->IsGameListDependentOnUser());
     this->userIconButton->SetDisabled(!this->gameList->IsGameListDependentOnUser());
 }
 
 void pksm::layout::TitleLoadScreen::OnSaveListTouchSelect() {
-    LOG_DEBUG("Save list selected via touch");
+    LOG_TRACE("Save list selected via touch");
     FocusSaveList();
 }
 

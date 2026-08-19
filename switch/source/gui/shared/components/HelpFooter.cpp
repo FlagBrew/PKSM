@@ -91,13 +91,13 @@ void HelpFooter::SetHelpItems(const std::vector<HelpItem>& items) {
     if (items == helpItems) {
         return;
     }
-    LOG_DEBUG("Setting help items, count: " + std::to_string(items.size()));
+    LOG_TRACE("Setting help items, count: " + std::to_string(items.size()));
     helpItems = items;
     UpdateDynamicHelpTexts();
 }
 
 void HelpFooter::UpdateDynamicHelpTexts() {
-    LOG_DEBUG("Updating dynamic help texts");
+    LOG_TRACE("Updating dynamic help texts");
     dynamicHelpTexts.clear();
 
     // Calculate vertical center

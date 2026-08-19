@@ -24,7 +24,7 @@ bool TouchInputHandler::HandleInput(
             if (!anyTouchActive || isPressed) {
                 isPressed = true;
                 anyTouchActive = true;
-                LOG_DEBUG("[TouchInputHandler] Touch down inside region");
+                LOG_TRACE("[TouchInputHandler] Touch down inside region");
 
                 if (onTouchDownCallback) {
                     onTouchDownCallback();
@@ -33,19 +33,19 @@ bool TouchInputHandler::HandleInput(
             }
         } else if (isPressed && !touch_pos.HitsRegion(x, y, width, height)) {
             // Touch moved outside while pressed
-            LOG_DEBUG("[TouchInputHandler] Touch moved outside while pressed");
+            LOG_TRACE("[TouchInputHandler] Touch moved outside while pressed");
             isPressed = false;
             return false;
         }
     } else if (isPressed) {
         // Touch released
-        LOG_DEBUG("[TouchInputHandler] Touch released");
+        LOG_TRACE("[TouchInputHandler] Touch released");
         isPressed = false;
         anyTouchActive = false;  // Reset global touch state when touch is released
 
         // Only trigger if touch ends inside the region (last known state was inside)
         if (onTouchUpInsideCallback) {
-            LOG_DEBUG("[TouchInputHandler] Executing touch up inside callback");
+            LOG_TRACE("[TouchInputHandler] Executing touch up inside callback");
             onTouchUpInsideCallback();
             return true;
         }

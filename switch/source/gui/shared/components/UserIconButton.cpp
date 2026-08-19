@@ -61,7 +61,7 @@ UserIconButton::UserIconButton(
 
     // Setup touch handler
     touchHandler.SetOnTouchUpInside([this]() {
-        LOG_DEBUG("UserIconButton Touch Up Inside");
+        LOG_TRACE("UserIconButton Touch Up Inside");
         this->RequestFocus();
         this->accountManager.ShowAccountSelector();
     });
@@ -88,7 +88,7 @@ UserIconButton::UserIconButton(
 
     // Register ZL button (works regardless of focus)
     buttonHandler.RegisterButton(HidNpadButton_ZL, nullptr, [this]() {
-        LOG_DEBUG("ZL button pressed");
+        LOG_TRACE("ZL button pressed");
         this->RequestFocus();
         this->accountManager.ShowAccountSelector();
     });
@@ -234,7 +234,7 @@ std::vector<pksm::ui::HelpItem> UserIconButton::GetHelpItems() const {
 }
 
 void UserIconButton::SetDisabled(bool disabled) {
-    LOG_DEBUG("UserIconButton SetDisabled: " + std::to_string(disabled));
+    LOG_TRACE("UserIconButton SetDisabled: " + std::to_string(disabled));
     this->disabled = disabled;
 }
 

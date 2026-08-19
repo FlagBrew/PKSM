@@ -31,6 +31,14 @@ private:
 }  // namespace pksm::utils
 
 #define LOG_DEBUG(msg) ::pksm::utils::Logger::Debug(msg)
+// Input/focus/render chatter that fires per event or per frame: compiled in,
+// but neither built nor emitted unless ADVANCED_LOGGING is set
+#define LOG_TRACE(msg)                                    \
+    do {                                                  \
+        if (::pksm::utils::Logger::ADVANCED_LOGGING != 0) { \
+            ::pksm::utils::Logger::Debug(msg);            \
+        }                                                 \
+    } while (0)
 #define LOG_INFO(msg) ::pksm::utils::Logger::Info(msg)
 #define LOG_WARNING(msg) ::pksm::utils::Logger::Warning(msg)
 #define LOG_ERROR(msg) ::pksm::utils::Logger::Error(msg)

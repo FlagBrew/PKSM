@@ -27,7 +27,7 @@ bool ButtonInputHandler::HandleInput(const u64 keys_down, const u64 keys_up, con
 
         // Check for button down
         if (keys_down & buttonMask) {
-            LOG_DEBUG("[ButtonInputHandler] Button down detected: " + std::to_string(buttonMask));
+            LOG_TRACE("[ButtonInputHandler] Button down detected: " + std::to_string(buttonMask));
             isPressed = true;
 
             // Call the button down callback if it exists
@@ -41,7 +41,7 @@ bool ButtonInputHandler::HandleInput(const u64 keys_down, const u64 keys_up, con
 
         // Check for button up, but only if the button was previously pressed
         if (keys_up & buttonMask && isPressed) {
-            LOG_DEBUG("[ButtonInputHandler] Button up detected: " + std::to_string(buttonMask));
+            LOG_TRACE("[ButtonInputHandler] Button up detected: " + std::to_string(buttonMask));
             isPressed = false;
 
             // Call the button up callback if it exists

@@ -200,13 +200,13 @@ void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
         // If this BoxGrid is focused, also focus the first item
         if (focused && items.size() > 0) {
             items[0]->RequestFocus();
-            LOG_DEBUG("Initial box item focused");
+            LOG_TRACE("Initial box item focused");
         }
     }
 }
 
 void pksm::ui::BoxGrid::SetSelectedIndex(size_t index) {
-    LOG_DEBUG("[BoxGrid] Setting selected index: " + std::to_string(index));
+    LOG_TRACE("[BoxGrid] Setting selected index: " + std::to_string(index));
     if (index < items.size() && selectedIndex != index) {
         selectedIndex = index;
 
@@ -224,13 +224,13 @@ void pksm::ui::BoxGrid::SetSelectedIndex(size_t index) {
 
 // IFocusable implementation
 void pksm::ui::BoxGrid::SetFocused(bool focused) {
-    LOG_DEBUG("[BoxGrid] SetFocused: " + std::to_string(focused));
+    LOG_TRACE("[BoxGrid] SetFocused: " + std::to_string(focused));
     if (this->focused != focused) {
         this->focused = focused;
 
         // When gaining focus, focus the selected box item
         if (focused && !items.empty() && selectedIndex < items.size()) {
-            LOG_DEBUG("[BoxGrid] Focusing item: " + std::to_string(selectedIndex));
+            LOG_TRACE("[BoxGrid] Focusing item: " + std::to_string(selectedIndex));
             items[selectedIndex]->RequestFocus();
         }
     }
@@ -250,7 +250,7 @@ bool pksm::ui::BoxGrid::IsSelected() const {
 }
 
 void pksm::ui::BoxGrid::EstablishOwningRelationship() {
-    LOG_DEBUG("[BoxGrid] Establishing owning relationship");
+    LOG_TRACE("[BoxGrid] Establishing owning relationship");
 
     IFocusable::EstablishOwningRelationship();
     ISelectable::EstablishOwningRelationship();

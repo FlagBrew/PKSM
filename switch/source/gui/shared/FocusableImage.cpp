@@ -21,9 +21,9 @@ pksm::ui::FocusableImage::FocusableImage(
 
     // Setup touch handler callbacks
     touchHandler.SetOnTouchUpInside([this]() {
-        LOG_DEBUG("[FocusableImage] Touch Up Inside");
+        LOG_TRACE("[FocusableImage] Touch Up Inside");
         if (!focused && onTouchSelectCallback) {
-            LOG_DEBUG("[FocusableImage] Requesting focus");
+            LOG_TRACE("[FocusableImage] Requesting focus");
             onTouchSelectCallback();
             RequestFocus();
         } else if (focused && onSelectCallback) {
@@ -87,10 +87,10 @@ bool pksm::ui::FocusableImage::IsSelected() const {
 
 void pksm::ui::FocusableImage::SetFocused(bool focus) {
     if (focus) {
-        LOG_DEBUG("[FocusableImage] Setting focused to true");
+        LOG_TRACE("[FocusableImage] Setting focused to true");
         RequestSelection();
     } else {
-        LOG_DEBUG("[FocusableImage] Setting focused to false");
+        LOG_TRACE("[FocusableImage] Setting focused to false");
     }
     this->focused = focus;
     pulsingOutline->SetVisible(focus && selected);  // Only show outline when both focused and selected

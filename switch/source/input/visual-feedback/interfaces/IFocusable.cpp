@@ -17,7 +17,7 @@ void IFocusable::SetFocusManager(std::shared_ptr<input::FocusManager> manager) {
 
 void IFocusable::EstablishOwningRelationship() {
     if (auto manager = focusManager.lock()) {
-        LOG_DEBUG("[IFocusable] Establishing owning relationship for " + name + " with manager " + manager->name);
+        LOG_TRACE("[IFocusable] Establishing owning relationship for " + name + " with manager " + manager->name);
         manager->SetOwningFocusable(IFocusable::shared_from_this());
     }
 }

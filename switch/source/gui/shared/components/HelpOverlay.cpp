@@ -18,7 +18,7 @@ void HelpOverlay::SetHelpItems(const std::vector<HelpItem>& items) {
     if (items == helpItems) {
         return;
     }
-    LOG_DEBUG("Setting help items, count: " + std::to_string(items.size()));
+    LOG_TRACE("Setting help items, count: " + std::to_string(items.size()));
     helpItems = items;
     UpdateHelpTexts();
 }
@@ -34,7 +34,7 @@ void HelpOverlay::Hide() {
 }
 
 void HelpOverlay::UpdateHelpTexts() {
-    LOG_DEBUG("Updating help texts");
+    LOG_TRACE("Updating help texts");
 
     // Clear all elements
     this->Clear();
