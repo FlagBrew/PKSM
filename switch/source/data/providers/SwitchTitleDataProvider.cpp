@@ -6,6 +6,7 @@
 #include <switch.h>
 
 #include "data/emulator/EmulatorGameCatalog.hpp"
+#include "utils/BoxArtSheet.hpp"
 #include "utils/Logger.hpp"
 
 // Helper to check if a title ID belongs to a Pokémon game
@@ -312,6 +313,12 @@ void SwitchTitleDataProvider::RefreshCatalogTitles() {
     // title layer only turns those answers into tiles. A game with both
     // discovered and configured saves gets a tile on each tab, and each
     // tile's context routes it to its own save listing.
+    // Catalog tiles draw box art from the sheet; the sheet stays on disk
+    // and only the games that actually tile get decoded. A failed load is
+    // deliberately not checked - every tile then takes the fallback icon
+    pksm::utils::BoxArtSheet boxArt;
+    boxArt.Load(BOX_ART_SHEET_PATH);
+
     const auto games = pksm::data::emulator::EmulatorGameCatalog::LoadFromDataJson();
     for (const auto& game : games) {
         const bool discovered = saveDataProvider->HasDiscoveredEmulatorSaves(game.titleId);
@@ -320,7 +327,8 @@ void SwitchTitleDataProvider::RefreshCatalogTitles() {
             continue;
         }
         // One icon texture per game, shared by both tabs' tiles
-        auto icon = pu::sdl2::TextureHandle::New(pu::ui::render::LoadImage(game.iconPath));
+        SDL_Texture* art = boxArt.CreateTexture(game.titleId);
+        auto icon = pu::sdl2::TextureHandle::New(art ? art : pu::ui::render::LoadImage(FALLBACK_TITLE_ICON_PATH));
         if (discovered) {
             emulatorTitles.push_back(
                 pksm::titles::Title::New(game.name, icon, game.titleId, pksm::titles::TitleContext::Emulator)

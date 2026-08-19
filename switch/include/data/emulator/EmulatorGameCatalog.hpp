@@ -17,9 +17,10 @@ struct ExtraSaveSlot {
 
 // One game from the bundled catalog (romfs data.json "emulator_games"):
 // a non-installed game PKSM knows about, with candidate save locations.
+// Box art comes from the basprites sheet keyed by titleId - emulator-era
+// entries carry synthetic ids, Switch-era entries their real console ids.
 struct EmulatorGameEntry {
     std::string name;
-    std::string iconPath;
     u64 titleId = 0;
     std::vector<std::string> saveProbes;
     std::vector<ExtraSaveSlot> extraSaves;

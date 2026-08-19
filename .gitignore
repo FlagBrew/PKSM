@@ -47,3 +47,4 @@ switch/romfs/i18n/
 # Generated at build time from switch/PKSM.jpg
 switch/romfs/gfx/fallback_title_icon.jpg
 PKSM.lst
+.DS_Store
