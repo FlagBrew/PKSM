@@ -65,18 +65,6 @@ void pksm::ui::GameCardSlot::SetTitle(pksm::titles::Title::Ref newTitle) {
     IFocusable::SetName(name);
 }
 
-void pksm::ui::GameCardSlot::SetX(const pu::i32 newX) {
-    x = newX;
-    pulsingOutline->SetX(newX - outlinePadding);
-    emptyText->SetX(newX + Scaled(WINDOW_X) + (Scaled(WINDOW_WIDTH) - emptyText->GetWidth()) / 2);
-}
-
-void pksm::ui::GameCardSlot::SetY(const pu::i32 newY) {
-    y = newY;
-    pulsingOutline->SetY(newY - outlinePadding);
-    emptyText->SetY(newY + Scaled(WINDOW_Y) + (Scaled(WINDOW_HEIGHT) - emptyText->GetHeight()) / 2);
-}
-
 void pksm::ui::GameCardSlot::SetSelected(bool select) {
     this->selected = select;
 }

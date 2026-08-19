@@ -101,9 +101,6 @@ public:
     // Set the entire box data
     void SetBoxData(const BoxData& boxData);
 
-    // Get the Pokémon data at the specified slot
-    BoxPokemonData GetPokemonData(int slotIndex) const;
-
     // Update the grid view with current box data
     void UpdateGridFromBoxData();
 

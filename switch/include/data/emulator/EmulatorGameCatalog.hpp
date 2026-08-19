@@ -1,6 +1,5 @@
 #pragma once
 
-#include <optional>
 #include <string>
 #include <switch/types.h>
 #include <unordered_map>
@@ -21,13 +20,7 @@ struct EmulatorGameEntry {
 
 class EmulatorGameCatalog {
 public:
-    static constexpr const char* DefaultCatalogPath = "romfs:/gfx/data/data.json";
-
-    static std::vector<EmulatorGameEntry> LoadFromDataJson(const std::string& jsonPath = DefaultCatalogPath);
-    static std::optional<EmulatorGameEntry> FindByTitleId(
-        const std::vector<EmulatorGameEntry>& entries,
-        u64 titleId
-    );
+    static std::vector<EmulatorGameEntry> LoadFromDataJson();
     static std::unordered_map<u64, EmulatorGameEntry> BuildIndexByTitleId(
         const std::vector<EmulatorGameEntry>& entries
     );

@@ -45,10 +45,6 @@ void pksm::ui::ScrollView::SetContentHeight(pu::i32 height) {
     ClampScrollOffset();
 }
 
-pu::i32 pksm::ui::ScrollView::GetContentHeight() const {
-    return contentHeight;
-}
-
 void pksm::ui::ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
     // Clamp the target offset first
     pu::i32 maxScroll = std::max<pu::i32>(0, contentHeight - GetHeight());
@@ -73,10 +69,6 @@ void pksm::ui::ScrollView::ScrollToOffset(pu::i32 offset, bool animated) {
     // Set debounce state
     isScrollingProgrammatically = true;
     lastProgrammaticScrollTime = SDL_GetTicks64();
-}
-
-pu::i32 pksm::ui::ScrollView::GetScrollOffset() const {
-    return scrollOffset;
 }
 
 void pksm::ui::ScrollView::Add(pu::ui::elm::Element::Ref elem) {

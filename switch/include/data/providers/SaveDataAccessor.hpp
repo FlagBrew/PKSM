@@ -49,8 +49,6 @@ public:
         std::optional<pksm::saves::LoadedSave> loaded
     ) override;
 
-    bool loadSave(const pksm::titles::Title::Ref& title, const std::string& saveName, const AccountUid* userId = nullptr)
-        override;
     void setOnSaveDataChanged(std::function<void(pksm::saves::SaveData::Ref)> callback) override {
         onSaveDataChanged = callback;
     }

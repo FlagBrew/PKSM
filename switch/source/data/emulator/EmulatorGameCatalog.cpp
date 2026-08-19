@@ -20,10 +20,10 @@ bool ParseTitleIdHex(const std::string& hex, u64& out) {
 
 }  // namespace
 
-std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::string& jsonPath) {
+std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson() {
     std::vector<EmulatorGameEntry> out;
 
-    std::ifstream f(jsonPath);
+    std::ifstream f("romfs:/gfx/data/data.json");
     if (!f.is_open()) {
         return out;
     }
@@ -79,15 +79,6 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::
     }
 
     return out;
-}
-
-std::optional<EmulatorGameEntry> EmulatorGameCatalog::FindByTitleId(const std::vector<EmulatorGameEntry>& entries, u64 titleId) {
-    for (const auto& e : entries) {
-        if (e.titleId == titleId) {
-            return e;
-        }
-    }
-    return std::nullopt;
 }
 
 std::vector<std::string> EmulatorGameCatalog::CandidatePaths(

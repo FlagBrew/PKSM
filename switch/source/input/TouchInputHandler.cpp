@@ -57,16 +57,4 @@ bool TouchInputHandler::HandleInput(
     return false;
 }
 
-bool TouchInputHandler::IsPressed() const {
-    return isPressed;
-}
-
-bool TouchInputHandler::IsAnyTouchActive() {
-    return anyTouchActive;
-}
-
-void TouchInputHandler::ResetTouchState() {
-    anyTouchActive = false;
-}
-
 }  // namespace pksm::input

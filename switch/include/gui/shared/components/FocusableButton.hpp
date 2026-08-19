@@ -67,14 +67,11 @@ public:
     void SetContent(const std::string& content);
     std::string GetContent() const;
     void SetContentFont(const std::string& font);
-    void SetContentColor(const pu::ui::Color& color);
-    void SetBackgroundColor(const pu::ui::Color& color);
     void SetOnClick(std::function<void()> callback) { onClickCallback = callback; }
     void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }
 
     // Disable/enable the button
     void SetDisabled(bool disabled);
-    bool IsDisabled() const;
 
     // IHelpProvider implementation
     void SetHelpText(const std::string& text);

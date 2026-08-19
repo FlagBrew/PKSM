@@ -22,23 +22,12 @@ AnimatedBackground::AnimatedBackground()
     textureHeights{0, 0, 0},
     staticBgWidth(0),
     staticBgHeight(0),
-    tintColor(std::nullopt),
     customScaleFactor(1.5f) {
     InitializeBackground();
     ConfigureDefaultAnimations();
 }
 
 AnimatedBackground::~AnimatedBackground() = default;
-
-// The mod lands on the shared textures: a tint applies to every screen's background
-void AnimatedBackground::SetTintColor(const pu::ui::Color& color) {
-    tintColor = color;
-    for (auto& texture : bg_textures) {
-        if (texture) {
-            SDL_SetTextureColorMod(texture->Get(), color.r, color.g, color.b);
-        }
-    }
-}
 
 void AnimatedBackground::InitializeBackground() {
     LOG_DEBUG("Initializing animated background");
@@ -91,11 +80,6 @@ void AnimatedBackground::InitializeBackground() {
 
         // Set blending mode for smooth animation
         SDL_SetTextureBlendMode(bg_textures[i]->Get(), pksm::sdl::BlendModeBlend());
-
-        // Apply tint color if one is set
-        if (tintColor) {
-            SDL_SetTextureColorMod(bg_textures[i]->Get(), tintColor->r, tintColor->g, tintColor->b);
-        }
 
         // Initialize scroll position
         bg_positions[i] = 0;
@@ -161,18 +145,6 @@ void AnimatedBackground::ConfigureLayer(
     layerConfigs[layer].bobAmplitude = bobAmplitude;
     layerConfigs[layer].bobFrequency = bobFrequency;
     layerConfigs[layer].bobDelay = bobDelay;
-}
-
-void AnimatedBackground::EnableLayer(int layer, bool enabled) {
-    if (layer >= 0 && layer < NUM_LAYERS) {
-        layerConfigs[layer].enabled = enabled;
-    }
-}
-
-void AnimatedBackground::EnableBobbing(int layer, bool enabled) {
-    if (layer >= 0 && layer < NUM_LAYERS) {
-        layerConfigs[layer].bobEnabled = enabled;
-    }
 }
 
 void AnimatedBackground::UpdateBackgroundAnimation() {
@@ -264,10 +236,6 @@ pu::i32 AnimatedBackground::GetWidth() {
 
 pu::i32 AnimatedBackground::GetHeight() {
     return textureHeights[0];  // Return height of first layer as reference
-}
-
-void AnimatedBackground::SetCustomScale(float scale) {
-    customScaleFactor = std::max(0.1f, scale);  // Ensure scale doesn't go too small
 }
 
 }  // namespace pksm::ui

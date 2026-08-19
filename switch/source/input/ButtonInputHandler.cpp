@@ -81,12 +81,4 @@ void ButtonInputHandler::RegisterButton(
     }
 }
 
-bool ButtonInputHandler::IsButtonPressed(const u64 button_mask) const {
-    auto it = buttonStates.find(button_mask);
-    if (it != buttonStates.end()) {
-        return it->second;
-    }
-    return false;
-}
-
 }  // namespace pksm::input

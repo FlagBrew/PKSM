@@ -25,20 +25,11 @@ public:
     SaveList(const pu::i32 x, const pu::i32 y, const pu::i32 width);
     PU_SMART_CTOR(SaveList)
 
-    // Get component height
-    pu::i32 GetHeight() const;
-
     // Get maximum height needed for the save list
     static constexpr pu::i32 GetMaxHeight() { return SAVE_ITEM_HEIGHT * SAVE_LIST_MAX_VISIBLE_ITEMS; }
 
     // Set save data
     void SetDataSource(const std::vector<saves::Save::Ref>& saves);
-
-    // Get currently selected save
-    saves::Save::Ref GetSelectedSave() const;
-
-    // Get selected save text (for display)
-    std::string GetSelectedSaveText() const;
 
     // Selection changed callback
     void SetOnSelectionChanged(std::function<void()> callback);

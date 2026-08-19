@@ -164,26 +164,4 @@ bool MenuButton::IsFocused() const {
     return focused;
 }
 
-void MenuButton::SetX(const pu::i32 x) {
-    this->x = x;
-
-    // Update outline position
-    pulsingOutline->SetX(x - OUTLINE_PADDING);
-
-    // Update text position
-    const pu::i32 textX = x + ((width - textBlock->GetWidth()) / 2);
-    textBlock->SetX(textX);
-}
-
-void MenuButton::SetY(const pu::i32 y) {
-    this->y = y;
-
-    // Update outline position
-    pulsingOutline->SetY(y - OUTLINE_PADDING);
-
-    // Update text position
-    const pu::i32 textY = y + ICON_SIZE + TEXT_MARGIN;
-    textBlock->SetY(textY);
-}
-
 }  // namespace pksm::ui

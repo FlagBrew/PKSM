@@ -51,16 +51,6 @@ pu::i32 BoxNavigationButton::GetHeight() {
     return std::max(chevronText->GetHeight(), buttonText->GetHeight());
 }
 
-void BoxNavigationButton::SetX(pu::i32 newX) {
-    x = newX;
-    UpdateLayout();
-}
-
-void BoxNavigationButton::SetY(pu::i32 newY) {
-    y = newY;
-    UpdateLayout();
-}
-
 void BoxNavigationButton::SetPosition(pu::i32 newX, pu::i32 newY) {
     x = newX;
     y = newY;

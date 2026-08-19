@@ -20,13 +20,6 @@ public:
     // Get the current save data
     virtual pksm::saves::SaveData::Ref getCurrentSaveData() const = 0;
 
-    // Load a save from a title and save name, with the user ID console saves need
-    virtual bool loadSave(
-        const pksm::titles::Title::Ref& title,
-        const std::string& saveName,
-        const AccountUid* userId = nullptr
-    ) = 0;
-
     // Commit (or, on nullopt, clear) an externally-run load; UI thread only
     virtual bool applySaveLoadResult(
         const pksm::titles::Title::Ref& title,

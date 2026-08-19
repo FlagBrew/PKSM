@@ -22,9 +22,6 @@ public:
         const std::function<bool()>& condition = nullptr
     );
 
-    // Check if a specific button is currently pressed
-    bool IsButtonPressed(const u64 button_mask) const;
-
 private:
     // Track press state for each button
     std::unordered_map<u64, bool> buttonStates;

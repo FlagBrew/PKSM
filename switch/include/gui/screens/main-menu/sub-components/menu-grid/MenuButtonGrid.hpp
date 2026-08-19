@@ -82,9 +82,6 @@ public:
 
     // Register callback for a specific button type
     void RegisterButtonCallback(MenuButtonType type, MenuButtonCallback callback);
-
-    // Handle A button press on selected button
-    bool HandleSelectInput(const u64 keys_down);
 };
 
 }  // namespace pksm::ui

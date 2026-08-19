@@ -56,26 +56,6 @@ void pksm::ui::FocusableImage::SetHeight(const pu::i32 height) {
     pulsingOutline->SetHeight(height + (outlinePadding * 2));  // Add padding to top and bottom
 }
 
-void pksm::ui::FocusableImage::SetX(const pu::i32 x) {
-    Image::SetX(x);
-    overlay->SetX(x);
-    pulsingOutline->SetX(x - outlinePadding);  // Adjust for padding
-}
-
-void pksm::ui::FocusableImage::SetY(const pu::i32 y) {
-    Image::SetY(y);
-    overlay->SetY(y);
-    pulsingOutline->SetY(y - outlinePadding);  // Adjust for padding
-}
-
-void pksm::ui::FocusableImage::SetOutlinePadding(const pu::i32 padding) {
-    outlinePadding = padding;
-    pulsingOutline->SetX(GetX() - padding);
-    pulsingOutline->SetY(GetY() - padding);
-    pulsingOutline->SetWidth(GetWidth() + (padding * 2));
-    pulsingOutline->SetHeight(GetHeight() + (padding * 2));
-}
-
 void pksm::ui::FocusableImage::SetSelected(bool select) {
     this->selected = select;
     overlay->SetVisible(!select);  // Show overlay for unselected items
@@ -98,10 +78,6 @@ void pksm::ui::FocusableImage::SetFocused(bool focus) {
 
 bool pksm::ui::FocusableImage::IsFocused() const {
     return focused;
-}
-
-pu::ui::elm::Rectangle::Ref pksm::ui::FocusableImage::GetOverlay() {
-    return overlay;
 }
 
 void pksm::ui::FocusableImage::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {

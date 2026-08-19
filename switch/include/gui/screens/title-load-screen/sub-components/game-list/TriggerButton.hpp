@@ -35,9 +35,7 @@ public:
 
     // Customization methods
     void SetBackgroundColor(const pu::ui::Color& color);
-    void SetTextColor(const pu::ui::Color& color);
     void SetNavigationText(const std::string& text);
-    void SetNavigationTextColor(const pu::ui::Color& color);
 
     // Touch selection callback
     void SetOnTouchSelect(std::function<void()> callback) { onTouchSelectCallback = callback; }

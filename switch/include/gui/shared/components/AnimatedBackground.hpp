@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 #include <pu/Plutonium>
 
 namespace pksm::ui {
@@ -36,7 +35,6 @@ private:
     pu::i32 textureHeights[NUM_LAYERS];
     pu::i32 staticBgWidth;  // Dimensions for the static background
     pu::i32 staticBgHeight;
-    std::optional<pu::ui::Color> tintColor;  // Optional tint color
     float customScaleFactor;  // Scale factor for the background
 
     void InitializeBackground();
@@ -62,14 +60,6 @@ public:
         float bobFrequency = 2.0f,
         float bobDelay = 0.0f
     );
-    void EnableLayer(int layer, bool enabled);
-    void EnableBobbing(int layer, bool enabled);
-
-    // Set a tint color for the background texture
-    void SetTintColor(const pu::ui::Color& color);
-
-    // Set a custom scale factor for the background
-    void SetCustomScale(float scale);
 
     // Required Element overrides
     pu::i32 GetX() override { return 0; }  // Background is always at 0,0

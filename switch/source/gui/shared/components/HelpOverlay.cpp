@@ -23,16 +23,6 @@ void HelpOverlay::SetHelpItems(const std::vector<HelpItem>& items) {
     UpdateHelpTexts();
 }
 
-void HelpOverlay::Show() {
-    LOG_DEBUG("Showing help overlay");
-    this->NotifyEnding(false);
-}
-
-void HelpOverlay::Hide() {
-    LOG_DEBUG("Hiding help overlay");
-    this->NotifyEnding(true);
-}
-
 void HelpOverlay::UpdateHelpTexts() {
     LOG_TRACE("Updating help texts");
 

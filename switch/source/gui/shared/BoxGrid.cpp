@@ -119,13 +119,6 @@ void pksm::ui::BoxGrid::SetBoxData(const BoxData& boxData) {
     }
 }
 
-pksm::ui::BoxPokemonData pksm::ui::BoxGrid::GetPokemonData(int slotIndex) const {
-    if (slotIndex >= 0 && static_cast<size_t>(slotIndex) < currentBoxData.size()) {
-        return currentBoxData[slotIndex];
-    }
-    return BoxPokemonData();  // Return empty data for invalid indices
-}
-
 void pksm::ui::BoxGrid::UpdateGridFromBoxData() {
     // Clear existing items and unregister them from focus/selection managers
     for (auto& item : items) {

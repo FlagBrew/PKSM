@@ -12,8 +12,6 @@ public:
     PU_SMART_CTOR(HelpOverlay)
 
     void SetHelpItems(const std::vector<HelpItem>& items);
-    void Show();
-    void Hide();
 
 private:
     void UpdateHelpTexts();

@@ -54,12 +54,6 @@ public:
     );
     PU_SMART_CTOR(BoxItem)
 
-    void SetWidth(const pu::i32 width);
-    void SetHeight(const pu::i32 height);
-    void SetX(const pu::i32 x);
-    void SetY(const pu::i32 y);
-    void SetOutlinePadding(const pu::i32 padding);
-
     pu::i32 GetX() override;
     pu::i32 GetY() override;
     pu::i32 GetWidth() override;

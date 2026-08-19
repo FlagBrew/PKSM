@@ -160,14 +160,6 @@ pksm::saves::SaveData::Ref SaveDataAccessor::BuildSaveData(const std::string& na
     );
 }
 
-bool SaveDataAccessor::loadSave(
-    const pksm::titles::Title::Ref& title,
-    const std::string& saveName,
-    const AccountUid* userId
-) {
-    return applySaveLoadResult(title, saveName, userId, saveProvider->LoadSave(title, saveName, userId));
-}
-
 bool SaveDataAccessor::applySaveLoadResult(
     const pksm::titles::Title::Ref& title,
     const std::string& saveName,

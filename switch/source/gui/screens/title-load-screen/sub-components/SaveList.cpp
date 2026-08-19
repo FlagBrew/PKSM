@@ -21,10 +21,6 @@ SaveList::SaveList(const pu::i32 x, const pu::i32 y, const pu::i32 width)
     SetScrollbarWidth(SCROLLBAR_WIDTH);
 }
 
-pu::i32 SaveList::GetHeight() const {
-    return GetMaxHeight();
-}
-
 void SaveList::SetDataSource(const std::vector<saves::Save::Ref>& saves) {
     LOG_TRACE("Setting SaveList data source with " + std::to_string(saves.size()) + " saves");
     this->saves = saves;
@@ -37,18 +33,6 @@ void SaveList::SetDataSource(const std::vector<saves::Save::Ref>& saves) {
 
     // Set display strings in base menu
     FocusableMenu::SetDataSource(displayStrings);
-}
-
-saves::Save::Ref SaveList::GetSelectedSave() const {
-    pu::i32 selectedIndex = GetSelectedIndex();
-    if (selectedIndex >= 0 && static_cast<size_t>(selectedIndex) < saves.size()) {
-        return saves[selectedIndex];
-    }
-    return nullptr;
-}
-
-std::string SaveList::GetSelectedSaveText() const {
-    return GetSelectedItemText();
 }
 
 void SaveList::SetOnSelectionChanged(std::function<void()> callback) {
