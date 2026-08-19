@@ -63,10 +63,6 @@ std::vector<EmulatorGameEntry> EmulatorGameCatalog::LoadFromDataJson(const std::
             continue;
         }
 
-        if (eg.contains("icon_path") && eg["icon_path"].is_string()) {
-            entry.iconPath = eg["icon_path"].get<std::string>();
-        }
-
         if (eg.contains("save_probes") && eg["save_probes"].is_array()) {
             for (const auto& p : eg["save_probes"]) {
                 if (p.is_string()) {
