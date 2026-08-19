@@ -7,7 +7,7 @@
 #include <sstream>
 #include <switch.h>
 
-#include "data/emulator/EmulatorSaveConfig.hpp"
+#include "data/emulator/CustomSaveConfig.hpp"
 #include "data/emulator/SaveDiscovery.hpp"
 #include "data/saves/ConsoleSaveMount.hpp"
 #include "data/saves/NSOPathScheme.hpp"
@@ -41,7 +41,7 @@ void SwitchSaveDataProvider::PrewarmValidationCache() {
             for (const auto& [titleId, list] : DiscoveredSaves()) {
                 paths.insert(paths.end(), list.begin(), list.end());
             }
-            const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+            const auto cfg = pksm::data::emulator::CustomSaveConfig::Load();
             for (const auto& [titleId, entry] : emulatorCatalog) {
                 for (const auto& path : pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(entry.titleId, cfg)) {
                     std::error_code ec;
@@ -442,7 +442,7 @@ std::vector<pksm::saves::Save::Ref> SwitchSaveDataProvider::ListConfiguredSaves(
     }
 
     // The config file is tiny and hand-editable; reload it on every listing
-    const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+    const auto cfg = pksm::data::emulator::CustomSaveConfig::Load();
     const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->first, cfg);
 
     for (const auto& path : paths) {
@@ -482,7 +482,7 @@ bool SwitchSaveDataProvider::HasConfiguredEmulatorSaves(u64 titleId) const {
     }
 
     // Configured files are validated at listing time; a tile only needs one candidate to exist
-    const auto cfg = pksm::data::emulator::EmulatorSaveConfig::Load();
+    const auto cfg = pksm::data::emulator::CustomSaveConfig::Load();
     const auto paths = pksm::data::emulator::EmulatorGameCatalog::CandidatePaths(catalogIt->first, cfg);
     return std::any_of(paths.begin(), paths.end(), [](const std::string& path) {
         std::error_code ec;

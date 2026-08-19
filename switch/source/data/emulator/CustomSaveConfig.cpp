@@ -1,4 +1,4 @@
-#include "data/emulator/EmulatorSaveConfig.hpp"
+#include "data/emulator/CustomSaveConfig.hpp"
 
 #include <algorithm>
 #include <filesystem>
@@ -34,8 +34,8 @@ void UniquePush(std::vector<std::string>& v, const std::string& s) {
 
 }  // namespace
 
-std::unordered_map<u64, EmulatorSaveSelection> EmulatorSaveConfig::Load(const std::string& path) {
-    std::unordered_map<u64, EmulatorSaveSelection> out;
+std::unordered_map<u64, CustomSaveSelection> CustomSaveConfig::Load(const std::string& path) {
+    std::unordered_map<u64, CustomSaveSelection> out;
 
     std::ifstream f(path);
     if (!f.is_open()) {
@@ -70,7 +70,7 @@ std::unordered_map<u64, EmulatorSaveSelection> EmulatorSaveConfig::Load(const st
             continue;
         }
 
-        EmulatorSaveSelection sel;
+        CustomSaveSelection sel;
 
         const auto& v = it.value();
         if (v.contains("primary") && v["primary"].is_array()) {
@@ -89,7 +89,7 @@ std::unordered_map<u64, EmulatorSaveSelection> EmulatorSaveConfig::Load(const st
     return out;
 }
 
-bool EmulatorSaveConfig::Save(const std::unordered_map<u64, EmulatorSaveSelection>& data, const std::string& path) {
+bool CustomSaveConfig::Save(const std::unordered_map<u64, CustomSaveSelection>& data, const std::string& path) {
     if (!EnsureParentDir(path)) {
         return false;
     }
@@ -124,7 +124,7 @@ bool EmulatorSaveConfig::Save(const std::unordered_map<u64, EmulatorSaveSelectio
     return f.good();
 }
 
-void EmulatorSaveConfig::AddPrimaryPath(std::unordered_map<u64, EmulatorSaveSelection>& data, u64 titleId, const std::string& path) {
+void CustomSaveConfig::AddPrimaryPath(std::unordered_map<u64, CustomSaveSelection>& data, u64 titleId, const std::string& path) {
     if (titleId == 0) {
         return;
     }
