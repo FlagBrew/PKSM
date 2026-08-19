@@ -50,6 +50,11 @@ private:
     std::vector<BoxData> boxes;  // All box data
     int currentBox = 0;  // Current displayed box
 
+    // Sprites queued toward the neighboring boxes, warmed a frame-slice at
+    // a time so sequential box browsing lands on cache hits
+    std::vector<BoxPokemonData> prefetchQueue;
+    size_t prefetchPos = 0;
+
     // Components
     pu::ui::Container::Ref container;  // Container for child elements
     BoxGrid::Ref boxGrid;  // The internal BoxGrid component
@@ -91,6 +96,8 @@ private:
 
     // Manage sprite cache when changing boxes
     void UpdateBoxGrid();
+    void QueueNeighborSpritePrefetch();
+    void DrainSpritePrefetch();
 
     // Update box name display
     void UpdateBoxNameText();

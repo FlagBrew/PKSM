@@ -5,6 +5,7 @@
 
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
+#include "utils/PokemonSpriteManager.hpp"
 #include "utils/SDLHelper.hpp"
 
 namespace pksm::ui {
@@ -388,6 +389,8 @@ void PokemonBox::OnInput(
     const u64 keys_held,
     const pu::ui::TouchPoint touch_pos
 ) {
+    DrainSpritePrefetch();
+
     if (disabled) {
         return;
     }
@@ -542,6 +545,8 @@ void PokemonBox::SetCurrentBox(int boxIndex) {
             std::to_string(armTicksToNs(t1 - t0) / 1000000) + ", resync " +
             std::to_string(armTicksToNs(t2 - t1) / 1000000) + ")"
         );
+
+        QueueNeighborSpritePrefetch();
     }
 }
 
@@ -553,6 +558,43 @@ void PokemonBox::UpdateBoxGrid() {
 
     // Send the current box data to the grid
     boxGrid->SetBoxData(boxes[currentBox]);
+}
+
+void PokemonBox::QueueNeighborSpritePrefetch() {
+    prefetchQueue.clear();
+    prefetchPos = 0;
+    const size_t boxCount = boxes.size();
+    if (boxCount < 2) {
+        return;
+    }
+    const size_t next = (static_cast<size_t>(currentBox) + 1) % boxCount;
+    const size_t prev = (static_cast<size_t>(currentBox) + boxCount - 1) % boxCount;
+    for (const auto& data : boxes[next].pokemon) {
+        if (!data.isEmpty()) {
+            prefetchQueue.push_back(data);
+        }
+    }
+    if (prev != next) {
+        for (const auto& data : boxes[prev].pokemon) {
+            if (!data.isEmpty()) {
+                prefetchQueue.push_back(data);
+            }
+        }
+    }
+}
+
+void PokemonBox::DrainSpritePrefetch() {
+    if (prefetchPos >= prefetchQueue.size()) {
+        return;
+    }
+    // A slice of the frame budget; cache hits burn through in microseconds,
+    // so only cold sprites actually spend it
+    constexpr u64 FRAME_SLICE_NS = 1'500'000;
+    const u64 t0 = armGetSystemTick();
+    while (prefetchPos < prefetchQueue.size() && armTicksToNs(armGetSystemTick() - t0) < FRAME_SLICE_NS) {
+        const BoxPokemonData& data = prefetchQueue[prefetchPos++];
+        utils::PokemonSpriteManager::GetPokemonSprite(data.species, data.form, data.shiny);
+    }
 }
 
 void PokemonBox::SetPokemonData(int boxIndex, int slotIndex, const BoxPokemonData& data) {
@@ -583,6 +625,7 @@ void PokemonBox::SetBoxData(int boxIndex, const BoxData& boxData) {
             boxGrid->SetBoxData(boxData);
             UpdateBoxNameText();
         }
+        QueueNeighborSpritePrefetch();
     }
 }
 
