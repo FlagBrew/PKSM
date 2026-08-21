@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,13 +27,12 @@
 #ifndef CLOUDACCESS_HPP
 #define CLOUDACCESS_HPP
 
-#include "enums/Generation.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "GpssBrowser.hpp"
 #include "pkx/PKX.hpp"
-#include <atomic>
 #include <memory>
-#include <optional>
 
+// The single-Pokémon half of GPSS: what a slot on the current page holds, and how to put a
+// Pokémon up there. The paging behind it is GpssBrowser's.
 class CloudAccess
 {
 public:
@@ -44,85 +43,40 @@ public:
     };
 
     CloudAccess();
+
     std::unique_ptr<pksm::PKX> pkm(size_t slot) const;
+    // The Pokémon in a slot without copying it, or nullptr if the slot is empty. For the draw
+    // path, which asks for all thirty of them every frame.
+    const pksm::PKX* peek(size_t slot) const;
     bool isLegal(size_t slot) const;
-    // Gets the Pokémon and increments the server-side download counter
+    // The Pokémon, plus a word to the server that it was downloaded
     std::unique_ptr<pksm::PKX> fetchPkm(size_t slot) const;
+    // Uploads, and answers with the HTTP status the server gave
     long pkm(std::unique_ptr<pksm::PKX> pk);
-    int pages() const;
 
-    int page() const { return pageNumber; }
+    // Which page is on screen and how to turn it. Paging is the browser's job; this class only
+    // says what a slot on the page holds.
+    GpssBrowser& paging() { return browser; }
 
-    std::optional<int> nextPage();
-    std::optional<int> prevPage();
-    std::optional<int> jumpPage(int page);
+    const GpssBrowser& paging() const { return browser; }
 
-    void sortType(SortType type)
-    {
-        if (sort != type)
-        {
-            sort = type;
-            refreshPages();
-        }
-    }
+    void sortType(SortType type);
 
-    SortType sortType() const { return sort; }
+    SortType sortType() const { return browser.query().popular ? POPULAR : LATEST; }
 
-    void sortDir(bool ascend)
-    {
-        if (this->ascend != ascend)
-        {
-            this->ascend = ascend;
-            refreshPages();
-        }
-    }
+    void sortDir(bool ascend);
 
-    bool sortAscending() const { return ascend; }
+    bool sortAscending() const { return browser.query().ascending; }
 
-    void filterLegal(bool v)
-    {
-        if (v != legal)
-        {
-            legal = v;
-            refreshPages();
-        }
-    }
+    void filterLegal(bool legal);
 
-    bool filterLegal() const { return legal; }
-
-    void filterToGen(pksm::Generation g);
-    void removeGenFilter();
-
-    bool good() const { return isGood; }
-
-    int currentPageError() const { return current->siteJsonErrorCode; }
-
-    static std::pair<std::string, std::string> makeURL(int page, SortType type, bool ascend,
-        bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
-    nlohmann::json grabPage(int page);
+    bool filterLegal() const { return browser.query().legal; }
 
 private:
-    struct Page
-    {
-        ~Page();
-        std::unique_ptr<nlohmann::json> data;
-        std::atomic<bool> available        = false;
-        std::atomic<int> siteJsonErrorCode = 0;
-    };
+    // The Pokémon in a slot, or nullptr if the page has no such slot.
+    const GpssBrowser::Mon* mon(size_t slot) const;
 
-    void refreshPages();
-    static void downloadCloudPage(std::shared_ptr<Page> page, int number, SortType type,
-        bool ascend, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
-    static bool pageIsGood(const nlohmann::json& json);
-    std::shared_ptr<Page> current, next, prev;
-    int pageNumber;
-    SortType sort            = LATEST;
-    bool isGood              = false;
-    bool ascend              = true;
-    bool legal               = false;
-    pksm::Generation lowGen  = pksm::Generation::ONE;
-    pksm::Generation highGen = pksm::Generation::EIGHT;
-    bool showLGPE            = true;
+    GpssBrowser browser;
 };
 
 #endif

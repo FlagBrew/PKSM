@@ -30,7 +30,6 @@
 #include "base64.hpp"
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
-#include "CloudViewOverlay.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
 #include "FilterScreen.hpp"
@@ -46,17 +45,15 @@
 #include "utils/format.hpp"
 #include "website.h"
 #include <algorithm>
-#include <cstdlib>
 #include <format>
-#include <sys/stat.h>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
-    : Screen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
-             i18n::localize("Y_GROUP_SINGLE") + '\n' + i18n::localize("START_FILTER_LEGAL") + '\n' +
-             "SELECT: " + i18n::localize("BOX_JUMP") + '\n' + i18n::localize("L_BOX_PREV") + '\n' +
-             i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK")),
-      filter(filter ? filter : std::make_shared<pksm::PKFilter>()),
-      storageBox(storageBox)
+    : GpssScreen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
+                     i18n::localize("Y_GROUP_SINGLE") + '\n' +
+                     i18n::localize("START_FILTER_LEGAL") + '\n' +
+                     "SELECT: " + i18n::localize("BOX_JUMP") + '\n' + i18n::localize("L_BOX_PREV") +
+                     '\n' + i18n::localize("R_BOX_NEXT") + '\n' + i18n::localize("B_BACK"),
+          filter, storageBox)
 {
     mainButtons[0] = std::make_unique<ClickButton>(
         212, 78, 108, 28,
@@ -103,13 +100,11 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
     clickButtons[30] = std::make_unique<ClickButton>(
         25, 15, 164, 24, [this]() { return this->clickBottomIndex(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK);
-
-    websiteURL = Configuration::getInstance().apiUrl();
 }
 
 void GroupCloudScreen::drawBottom() const
 {
-    if (!access.good())
+    if (!paging().good())
     {
         return;
     }
@@ -192,7 +187,7 @@ void GroupCloudScreen::drawBottom() const
 
 void GroupCloudScreen::drawTop() const
 {
-    if (!access.good())
+    if (!paging().good())
     {
         return;
     }
@@ -225,7 +220,7 @@ void GroupCloudScreen::drawTop() const
         "\uE004", 45 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
     Gui::text(
         "\uE005", 225 + 24 / 2, 24, FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
-    Gui::text(pksm::format(i18n::localize("CLOUD_BOX"), access.page()), 69 + 156 / 2, 24,
+    Gui::text(pksm::format(i18n::localize("CLOUD_BOX"), paging().page()), 69 + 156 / 2, 24,
         FONT_SIZE_14, COLOR_BLACK, TextPosX::CENTER, TextPosY::TOP);
 
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 50);
@@ -239,8 +234,8 @@ void GroupCloudScreen::drawTop() const
         u16 x = 45;
         for (u8 column = 0; column < 6; column++)
         {
-            auto pkm = access.pkm(row, column);
-            if (pkm->species() != pksm::Species::None)
+            const auto* pkm = access.peek(row, column);
+            if (pkm && pkm->species() != pksm::Species::None)
             {
                 float blend = *pkm == *filter ? 0.0f : 0.5f;
                 Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
@@ -364,18 +359,9 @@ void GroupCloudScreen::drawTop() const
 
 void GroupCloudScreen::update(touchPosition* touch)
 {
-    if (!access.good())
+    if (!paging().good())
     {
-        if (access.currentPageError() != 0)
-        {
-            Gui::warn(pksm::format(
-                i18n::localize("GPSS_COMMUNICATION_ERROR"), access.currentPageError()));
-        }
-        else
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        }
-        Gui::screenBack();
+        leftOnPageError(paging().errorCode());
         return;
     }
     if (justSwitched)
@@ -658,141 +644,6 @@ void GroupCloudScreen::pickup()
     }
 }
 
-bool GroupCloudScreen::prevBox(bool forceBottom)
-{
-    if (cloudChosen && !forceBottom)
-    {
-        return prevBoxTop();
-    }
-    else
-    {
-        storageBox--;
-        if (storageBox == -1)
-        {
-            storageBox = Banks::bank->boxes() - 1;
-        }
-    }
-    return false;
-}
-
-bool GroupCloudScreen::prevBoxTop()
-{
-    if (auto err = access.prevPage())
-    {
-        if (*err != 0)
-        {
-            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
-        }
-        else
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        }
-        Gui::screenBack();
-        return true;
-    }
-    return false;
-}
-
-bool GroupCloudScreen::nextBox(bool forceBottom)
-{
-    if (cloudChosen && !forceBottom)
-    {
-        return nextBoxTop();
-    }
-    else
-    {
-        storageBox++;
-        if (storageBox == Banks::bank->boxes())
-        {
-            storageBox = 0;
-        }
-    }
-    return false;
-}
-
-bool GroupCloudScreen::nextBoxTop()
-{
-    if (auto err = access.nextPage())
-    {
-        if (*err != 0)
-        {
-            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
-        }
-        else
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        }
-        Gui::screenBack();
-        return true;
-    }
-    return false;
-}
-
-bool GroupCloudScreen::jumpBoxTopBy(int delta)
-{
-    if (auto err = access.jumpPage(access.page() + delta))
-    {
-        if (*err != 0)
-        {
-            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
-        }
-        else
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        }
-        Gui::screenBack();
-        return true;
-    }
-    return false;
-}
-
-bool GroupCloudScreen::jumpBoxTop()
-{
-    if (access.pages() <= 1)
-    {
-        cloudChosen = true;
-        return false;
-    }
-
-    SwkbdState state;
-    const std::string hint = i18n::localize("BOX_JUMP") + " 1-" + std::to_string(access.pages());
-    swkbdInit(&state, SWKBD_TYPE_NUMPAD, 2, std::to_string(access.pages()).size());
-    swkbdSetFeatures(&state, SWKBD_FIXED_WIDTH);
-    swkbdSetHintText(&state, hint.c_str());
-    swkbdSetValidation(&state, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
-
-    char input[12]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    if (ret != SWKBD_BUTTON_CONFIRM)
-    {
-        return false;
-    }
-
-    char* end = nullptr;
-    long page = std::strtol(input, &end, 10);
-    if (end == input || *end != '\0' || page <= 0)
-    {
-        return false;
-    }
-
-    if (auto err = access.jumpPage((int)page))
-    {
-        if (*err != 0)
-        {
-            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), *err));
-        }
-        else
-        {
-            Gui::warn(i18n::localize("OFFLINE_ERROR"));
-        }
-        Gui::screenBack();
-        return true;
-    }
-
-    cloudChosen = true;
-    return false;
-}
-
 bool GroupCloudScreen::backButton()
 {
     if (!toSend.empty())
@@ -806,21 +657,6 @@ bool GroupCloudScreen::backButton()
         return false;
     }
     Gui::screenBack();
-    return true;
-}
-
-bool GroupCloudScreen::showViewer()
-{
-    if (cursorIndex == 0)
-    {
-        return false;
-    }
-
-    if (infoMon && infoMon->species() != pksm::Species::None)
-    {
-        justSwitched = true;
-        addOverlay<CloudViewOverlay>(infoMon);
-    }
     return true;
 }
 
@@ -847,59 +683,6 @@ bool GroupCloudScreen::releasePkm()
     return false;
 }
 
-bool GroupCloudScreen::dumpPkm()
-{
-    if (!cloudChosen && cursorIndex != 0)
-    {
-        auto dumpMon = Banks::bank->pkm(storageBox, cursorIndex - 1);
-        if (dumpMon && dumpMon->species() != pksm::Species::None &&
-            Gui::showChoiceMessage(i18n::localize("BANK_CONFIRM_DUMP")))
-        {
-            DateTime now     = DateTime::now();
-            std::string path = std::format(
-                "/3ds/PKSM/dumps/{0:d}-{1:d}-{2:d}", now.year(), now.month(), now.day());
-            mkdir(path.c_str(), 777);
-            path += std::format("/{0:d}-{1:d}-{2:d}", now.hour(), now.minute(), now.second());
-            if (cursorIndex == 0)
-            {
-                return false;
-            }
-            else
-            {
-                path += " - " + std::to_string(int(dumpMon->species())) + " - " +
-                        dumpMon->nickname() + " - " + std::format("{:08X}", dumpMon->PID()) +
-                        dumpMon->extension().data();
-                FILE* out = fopen(path.c_str(), "wb");
-                if (out)
-                {
-                    fwrite(dumpMon->rawData().data(), 1, dumpMon->getLength(), out);
-                    fclose(out);
-                }
-                else
-                {
-                    Gui::error(i18n::localize("FAILED_OPEN_DUMP"), errno);
-                }
-            }
-            return true;
-        }
-    }
-    return false;
-}
-
-bool GroupCloudScreen::clickBottomIndex(int index)
-{
-    if (cursorIndex == index && !cloudChosen && cursorIndex != 0)
-    {
-        pickup();
-    }
-    else
-    {
-        cursorIndex = index;
-        cloudChosen = false;
-    }
-    return false;
-}
-
 void GroupCloudScreen::shareSend()
 {
     std::vector<std::unique_ptr<pksm::PKX>> sendMe;
@@ -907,29 +690,7 @@ void GroupCloudScreen::shareSend()
     {
         sendMe.emplace_back(Banks::bank->pkm(index.first, index.second));
     }
-    long status_code = access.group(std::move(sendMe));
-    switch (status_code)
-    {
-        case 200:
-        case 201:
-            break;
-        case 400:
-            Gui::error(i18n::localize("SHARE_FAILED_CHECK"), status_code);
-            break;
-        case 401:
-            Gui::warn(i18n::localize("GPSS_BANNED"));
-            break;
-        case 502:
-            Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-            break;
-        case 429:
-        case 503:
-            Gui::warn(i18n::localize("GPSS_TEMP_DISABLED") + '\n' + i18n::localize("PLEASE_WAIT"));
-            break;
-        default:
-            Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-            break;
-    }
+    reportUploadStatus(access.group(std::move(sendMe)));
 }
 
 void GroupCloudScreen::shareReceive()

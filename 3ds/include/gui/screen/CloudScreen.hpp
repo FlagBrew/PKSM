@@ -28,14 +28,15 @@
 #define CLOUDSCREEN_HPP
 
 #include "CloudAccess.hpp"
+#include "GpssScreen.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
-#include "Screen.hpp"
-#include <array>
 
 class Button;
 
-class CloudScreen : public Screen
+// The GPSS browser one Pokémon at a time. The cursor, the page turning and the bank box below
+// are GpssScreen's; what a slot holds is this screen's.
+class CloudScreen : public GpssScreen
 {
 public:
     CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter = nullptr);
@@ -45,38 +46,21 @@ public:
     void drawBottom() const override;
 
 private:
-    bool showViewer();
+    GpssBrowser& paging() override { return access.paging(); }
+
+    const GpssBrowser& paging() const override { return access.paging(); }
+
     bool releasePkm();
-    bool dumpPkm();
     bool backButton();
-    // Have to basically reimplement Hid because two Hids don't go well together
-    bool prevBox(bool forceBottom = false);
-    bool nextBox(bool forceBottom = false);
-    bool prevBoxTop();
-    bool nextBoxTop();
-    bool jumpBoxTopBy(int delta);
-    bool jumpBoxTop();
-    bool clickBottomIndex(int index);
     // Clones from storage (bottom), clones and increments download counter (top), places in storage
     // (bottom), or uploads (top)
-    void pickup();
+    void pickup() override;
 
     void shareSend();
     void shareReceive();
 
-    std::array<std::unique_ptr<Button>, 7> mainButtons;
-    std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::unique_ptr<pksm::PKX> infoMon = nullptr;
     std::unique_ptr<pksm::PKX> moveMon;
     CloudAccess access;
-    std::shared_ptr<pksm::PKFilter> filter;
-    int cursorIndex           = 0;
-    int storageBox            = 0;
-    int pendingPageJumpFrames = 0;
-    bool justSwitched         = true;
-    bool cloudChosen          = false;
-    bool pendingPageJump      = false;
-    std::string websiteURL    = "";
 };
 
 #endif

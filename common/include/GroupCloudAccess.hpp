@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,73 +27,47 @@
 #ifndef GROUPCLOUDACCESS_HPP
 #define GROUPCLOUDACCESS_HPP
 
-#include "enums/Generation.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "GpssBrowser.hpp"
 #include "pkx/PKX.hpp"
-#include <atomic>
 #include <memory>
-#include <optional>
+#include <vector>
 
+// The bundle half of GPSS: groups of up to six Pokémon. The paging behind it is GpssBrowser's,
+// the same state machine the single-Pokémon browser uses.
 class GroupCloudAccess
 {
 public:
     static constexpr int NUM_GROUPS = 5;
+
     GroupCloudAccess();
+
     std::vector<std::unique_ptr<pksm::PKX>> group(size_t groupIndex) const;
+    // The group, plus a word to the server that it was downloaded
     std::vector<std::unique_ptr<pksm::PKX>> fetchGroup(size_t groupIndex) const;
+    // Uploads, and answers with the HTTP status the server gave
     long group(std::vector<std::unique_ptr<pksm::PKX>> pokemon);
     std::unique_ptr<pksm::PKX> pkm(size_t groupIndex, size_t pkm) const;
+    // A Pokémon without copying it, or nullptr if there is none there. For the draw path, which
+    // asks for every Pokémon on the page every frame.
+    const pksm::PKX* peek(size_t groupIndex, size_t pkm) const;
     std::unique_ptr<pksm::PKX> fetchPkm(size_t groupIndex, size_t pkm) const;
     bool isLegal(size_t groupIndex, size_t pkm) const;
 
-    int pages() const;
+    // Which page is on screen and how to turn it. Paging is the browser's job; this class only
+    // says what a bundle on the page holds.
+    GpssBrowser& paging() { return browser; }
 
-    int page() const { return pageNumber; }
+    const GpssBrowser& paging() const { return browser; }
 
-    std::optional<int> nextPage();
-    std::optional<int> prevPage();
-    std::optional<int> jumpPage(int page);
+    void filterLegal(bool legal);
 
-    bool filterLegal() const { return legal; }
-
-    void filterLegal(bool v)
-    {
-        if (v != legal)
-        {
-            legal = v;
-            refreshPages();
-        }
-    }
-
-    bool good() const { return isGood; }
-
-    int currentPageError() const { return current->siteJsonErrorCode; }
-
-    nlohmann::json grabPage(int page);
-    static std::pair<std::string, std::string> makeURL(
-        int page, bool legal, pksm::Generation low, pksm::Generation high, bool LGPE);
+    bool filterLegal() const { return browser.query().legal; }
 
 private:
-    struct Page
-    {
-        ~Page();
-        std::unique_ptr<nlohmann::json> data;
-        std::atomic<bool> available        = false;
-        std::atomic<int> siteJsonErrorCode = 0;
-    };
+    const GpssBrowser::Entry* entry(size_t groupIndex) const;
+    const GpssBrowser::Mon* mon(size_t groupIndex, size_t pkm) const;
 
-    void refreshPages();
-    static void downloadGroupPage(std::shared_ptr<Page> page, int number, bool legal,
-        pksm::Generation low, pksm::Generation high, bool LGPE);
-    static bool pageIsGood(const nlohmann::json& page);
-    std::shared_ptr<Page> current, next, prev;
-    int pageNumber;
-    bool isGood = false;
-    bool legal  = false;
-    // Currently not changeable
-    pksm::Generation high = pksm::Generation::EIGHT;
-    pksm::Generation low  = pksm::Generation::ONE;
-    bool LGPE             = true;
+    GpssBrowser browser;
 };
 
 #endif

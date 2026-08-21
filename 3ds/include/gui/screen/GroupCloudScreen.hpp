@@ -27,14 +27,18 @@
 #ifndef GROUPCLOUDSCREEN_HPP
 #define GROUPCLOUDSCREEN_HPP
 
+#include "GpssScreen.hpp"
 #include "GroupCloudAccess.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
-#include "Screen.hpp"
+#include <utility>
+#include <vector>
 
 class Button;
 
-class GroupCloudScreen : public Screen
+// The GPSS browser a bundle at a time. The cursor, the page turning and the bank box below are
+// GpssScreen's; what a slot holds is this screen's.
+class GroupCloudScreen : public GpssScreen
 {
 public:
     GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter);
@@ -44,41 +48,24 @@ public:
     void drawBottom() const override;
 
 private:
-    bool showViewer();
-    bool releasePkm();
-    bool dumpPkm();
-    bool backButton();
-    // Have to basically reimplement Hid because two Hids don't go well together
-    bool prevBox(bool forceBottom = false);
-    bool nextBox(bool forceBottom = false);
-    bool prevBoxTop();
-    bool nextBoxTop();
-    bool jumpBoxTopBy(int delta);
-    bool jumpBoxTop();
-    bool clickBottomIndex(int index);
+    GpssBrowser& paging() override { return access.paging(); }
 
-    void pickup();
+    const GpssBrowser& paging() const override { return access.paging(); }
+
+    bool releasePkm();
+    bool backButton();
+
+    void pickup() override;
 
     // Will send Pokémon in toSend as a group, then clear it
     void shareSend();
     // If toSend is empty and groupPkm is empty, grabs the group and sticks it in groupPkm
     void shareReceive();
 
-    std::array<std::unique_ptr<Button>, 7> mainButtons;
-    std::array<std::unique_ptr<Button>, 31> clickButtons;
-    std::unique_ptr<pksm::PKX> infoMon = nullptr;
     std::vector<std::unique_ptr<pksm::PKX>> groupPkm;
     // box-index pairs
     std::vector<std::pair<int, int>> toSend;
-    std::shared_ptr<pksm::PKFilter> filter;
     GroupCloudAccess access;
-    int cursorIndex           = 0;
-    int storageBox            = 0;
-    int pendingPageJumpFrames = 0;
-    bool justSwitched         = true;
-    bool cloudChosen          = false;
-    bool pendingPageJump      = false;
-    std::string websiteURL    = "";
 };
 
 #endif
