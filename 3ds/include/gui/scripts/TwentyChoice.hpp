@@ -24,18 +24,18 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef FORTYCHOICE_HPP
-#define FORTYCHOICE_HPP
+#ifndef TWENTYCHOICE_HPP
+#define TWENTYCHOICE_HPP
 
 #include "Hid.hpp"
 #include "RunnableScreen.hpp"
 #include <string>
 #include <vector>
 
-class FortyChoice : public RunnableScreen<size_t>
+class TwentyChoice : public RunnableScreen<size_t>
 {
 public:
-    FortyChoice(char* question, char** text, int items)
+    TwentyChoice(char* question, char** text, int items)
         : RunnableScreen(0), question(question), hid(20, 2), items(items)
     {
         for (int i = 0; i < items; i++)

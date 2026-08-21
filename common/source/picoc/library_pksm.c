@@ -15,7 +15,10 @@ struct LibraryFunction UnixFunctions[] =
     { gui_warn,             "void gui_warn(char* warning);" },
     { gui_splash,           "void gui_splash(char* notification);" },
     { gui_menu6x5,          "int gui_menu_6x5(char* question, int options, char** labels, struct pkx* pokemon, enum Generation generation);" },
-    { gui_menu20x2,         "int gui_menu_20x2(char* question, int options, char** labels);" },
+    { gui_menu10x2,         "int gui_menu_10x2(char* question, int options, char** labels);" },
+    // Deprecated alias: this menu used to show 40 entries over 20 rows, now 20 over 10.
+    // Kept so scripts written against the old name keep working.
+    { gui_menu10x2,         "int gui_menu_20x2(char* question, int options, char** labels);" },
     { gui_keyboard,         "void gui_keyboard(char* out, char* hint, int maxChars);" },
     { gui_numpad,           "void gui_numpad(unsigned int* out, char* hint, int maxDigits);" },
     { gui_boxes,            "int gui_boxes(int* fromStorage, int* box, int* slot, int doCrypt);" },

@@ -24,10 +24,10 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "FortyChoice.hpp"
+#include "TwentyChoice.hpp"
 #include "gui.hpp"
 
-void FortyChoice::drawTop() const
+void TwentyChoice::drawTop() const
 {
     Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
@@ -45,18 +45,18 @@ void FortyChoice::drawTop() const
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         Gui::text(labels[i + hid.page() * hid.maxVisibleEntries()], x,
-            (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
+            (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
     }
 }
 
-void FortyChoice::drawBottom() const
+void TwentyChoice::drawBottom() const
 {
     Gui::backgroundBottom(false);
     Gui::text(question, 160, 120, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER, TextPosY::CENTER);
 }
 
-void FortyChoice::update(touchPosition* touch)
+void TwentyChoice::update(touchPosition* touch)
 {
     hid.update(items);
     if (hidKeysDown() & KEY_A)

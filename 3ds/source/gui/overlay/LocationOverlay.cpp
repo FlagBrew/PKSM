@@ -89,8 +89,8 @@ void LocationOverlay::drawTop() const
         if (hid.page() * hid.maxVisibleEntries() + i < locations.size())
         {
             Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x,
-                (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+                (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
             ++locIt;
         }
         else
