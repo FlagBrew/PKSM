@@ -41,7 +41,11 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "utils/VersionTables.hpp"
+#include <algorithm>
 #include <format>
+#include <utility>
+#include <variant>
+#include <vector>
 
 #define BANK(paths) (paths).first
 #define JSON(paths) (paths).second
@@ -67,22 +71,13 @@ Bank::Bank(const std::string& name, int maxBoxes) : bankName(name)
     load(maxBoxes);
 }
 
-Bank::~Bank()
-{
-    if (entries)
-    {
-        delete[] entries;
-    }
-}
+// Out of line so nlohmann::json only has to be complete here.
+Bank::~Bank() = default;
 
 void Bank::load(int maxBoxes)
 {
     bool create = false;
-    if (entries)
-    {
-        delete[] entries;
-        entries = nullptr;
-    }
+    entries.clear();
     needsCheck = false;
     if (name() == "pksm_1" && io::exists("/3ds/PKSM/bank/bank.bin"))
     {
@@ -96,79 +91,50 @@ void Bank::load(int maxBoxes)
         if (in)
         {
             Gui::waitFrame(i18n::localize("BANK_LOAD"), ScreenTarget::TOP);
-            u32 size = in->size();
-            in->read((char*)&header, sizeof(BankHeader::MAGIC) + sizeof(BankHeader::version));
-            if (memcmp(header.MAGIC, BANK_MAGIC.data(), 8))
-            {
-                Gui::warn(i18n::localize("BANK_CORRUPT"));
-                in->close();
-                createBank(maxBoxes);
-                needSave = true;
-            }
-            else
-            {
-                // NOTE: THIS IS THE CONVERSION SECTION. WILL NEED TO BE MODIFIED WHEN THE FORMAT IS
-                // CHANGED
-                struct G7Entry
-                {
-                    pksm::Generation gen;
-                    u8 data[260];
-                };
+            std::vector<u8> raw(std::min<u64>(in->size(), BankFile::MAX_SIZE));
+            const u32 amountRead = raw.empty() ? 0 : in->read(raw.data(), raw.size());
+            in->close();
+            // A short read is not handled here: how many bytes are enough is the format's
+            // business, so hand BankFile exactly what came off the card.
+            raw.resize(amountRead);
 
-                static_assert(sizeof(G7Entry) == 264);
-                if (header.version == 1)
+            auto parsed = BankFile::parse(raw);
+            if (auto* contents = std::get_if<BankFile::Contents>(&parsed))
+            {
+                if (contents->sourceVersion == 1)
                 {
-                    header.boxes =
-                        (size - (sizeof(BankHeader) - sizeof(u32))) / sizeof(G7Entry) / 30;
-                    maxBoxes = header.boxes;
+                    // Version 1 kept no box count, so the file's own size decides how big this
+                    // bank is and the bank list has to be told about it.
+                    maxBoxes = contents->boxes;
                     extern nlohmann::json g_banks;
                     g_banks[bankName] = maxBoxes;
                     Banks::saveJson();
-                    entries        = new BankEntry[boxes() * 30];
-                    header.version = BANK_VERSION;
-                    needSave       = true;
-
-                    for (int i = 0; i < boxes() * 30; i++)
-                    {
-                        in->read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry),
-                            sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
-                    }
-                    in->close();
                 }
-                else if (header.version == 2)
+                if (contents->truncated)
                 {
-                    in->read(&header.boxes, sizeof(u32));
-                    entries        = new BankEntry[boxes() * 30];
-                    header.version = BANK_VERSION;
-                    needSave       = true;
+                    // The boxes the file did hold survive; the rest come back empty.
+                    Gui::warn(i18n::localize("BANK_CORRUPT"));
+                }
 
-                    for (int i = 0; i < boxes() * 30; i++)
-                    {
-                        in->read(entries + i, sizeof(G7Entry));
-                        std::fill_n((u8*)(entries + i) + sizeof(G7Entry),
-                            sizeof(BankEntry) - sizeof(G7Entry), 0xFF);
-                    }
-                    in->close();
-                }
-                else if (header.version == BANK_VERSION)
-                {
-                    in->read(&header.boxes, sizeof(u32));
-                    entries = new BankEntry[boxes() * 30];
-
-                    in->read(entries, size - sizeof(BankHeader));
-                    in->close();
-                }
-                else
-                {
-                    Gui::warn(
-                        i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
-                    Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
-                    in->close();
-                    createBank(maxBoxes);
-                    needSave = true;
-                    create   = true;
-                }
+                std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
+                header.version = BANK_VERSION;
+                header.boxes   = contents->boxes;
+                entries        = std::move(contents->entries);
+                needSave       = contents->migrated() || contents->truncated;
+            }
+            else if (std::get<BankFile::Error>(parsed) == BankFile::Error::NewerVersion)
+            {
+                Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
+                Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
+                createBank(maxBoxes);
+                needSave = true;
+                create   = true;
+            }
+            else
+            {
+                Gui::warn(i18n::localize("BANK_CORRUPT"));
+                createBank(maxBoxes);
+                needSave = true;
             }
         }
         else
@@ -231,7 +197,8 @@ void Bank::load(int maxBoxes)
         }
         else
         {
-            prevHash = pksm::crypto::sha256({(u8*)entries, sizeof(BankEntry) * boxes() * 30});
+            prevHash =
+                pksm::crypto::sha256({(u8*)entries.data(), sizeof(BankEntry) * boxes() * 30});
             std::string nameData = boxNames->dump(2);
             prevNameHash         = pksm::crypto::sha256({(u8*)nameData.data(), nameData.size()});
         }
@@ -248,7 +215,7 @@ bool Bank::saveWithoutBackup() const
     if (out)
     {
         out->write(&header, sizeof(BankHeader));
-        out->write(entries, sizeof(BankEntry) * boxes() * 30);
+        out->write(entries.data(), sizeof(BankEntry) * boxes() * 30);
         out->close();
 
         std::string jsonData = boxNames->dump(2);
@@ -258,7 +225,8 @@ bool Bank::saveWithoutBackup() const
         if (out)
         {
             out->write(jsonData.data(), jsonData.size() + 1);
-            prevHash     = pksm::crypto::sha256({(u8*)entries, sizeof(BankEntry) * boxes() * 30});
+            prevHash =
+                pksm::crypto::sha256({(u8*)entries.data(), sizeof(BankEntry) * boxes() * 30});
             prevNameHash = pksm::crypto::sha256({(u8*)jsonData.data(), jsonData.size()});
             out->close();
         }
@@ -291,18 +259,13 @@ bool Bank::save() const
 
 void Bank::resize(int boxes)
 {
+    // The requested size comes from banks.json, which the user can edit by hand.
+    boxes = std::clamp(boxes, 1, BankFile::MAX_BOXES);
     if (this->boxes() != boxes)
     {
         Gui::showResizeStorage();
-        BankEntry* newEntries = new BankEntry[boxes * 30];
-        std::copy(entries, entries + std::min(boxes, this->boxes()) * 30, newEntries);
-        delete[] entries;
-        if (boxes > this->boxes())
-        {
-            std::fill_n((u8*)(newEntries + this->boxes() * 30),
-                (boxes - this->boxes()) * 30 * sizeof(BankEntry), 0xFF);
-        }
-        entries = newEntries;
+        // Growing fills the new slots with empty entries; shrinking drops the tail.
+        entries.resize(boxes * 30, BankFile::emptyEntry());
 
         header.boxes = boxes;
 
@@ -318,67 +281,62 @@ void Bank::resize(int boxes)
 std::unique_ptr<pksm::PKX> Bank::pkm(int box, int slot) const
 {
     int index = box * 30 + slot;
+    // getPKM copies out of the buffer it is handed, but does not take it as const.
+    u8* data = const_cast<u8*>(entries[index].data);
 
     std::unique_ptr<pksm::PKX> ret = nullptr;
     switch (entries[index].gen)
     {
         case pksm::Generation::ONE:
         {
-            u8 jpEnd = entries[index].data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1];
+            u8 jpEnd = data[pksm::PK1::JP_LENGTH_WITH_NAMES - 1];
             if (jpEnd == 0x50 || jpEnd == 0)
             {
-                ret = pksm::PKX::getPKM<pksm::Generation::ONE>(
-                    entries[index].data, pksm::PK1::JP_LENGTH_WITH_NAMES);
+                ret =
+                    pksm::PKX::getPKM<pksm::Generation::ONE>(data, pksm::PK1::JP_LENGTH_WITH_NAMES);
             }
             else
             {
                 ret = pksm::PKX::getPKM<pksm::Generation::ONE>(
-                    entries[index].data, pksm::PK1::INT_LENGTH_WITH_NAMES);
+                    data, pksm::PK1::INT_LENGTH_WITH_NAMES);
             }
         }
         break;
         case pksm::Generation::TWO:
         {
-            u8 jpEnd = entries[index].data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1];
+            u8 jpEnd = data[pksm::PK2::JP_LENGTH_WITH_NAMES - 1];
             if (jpEnd == 0x50 || jpEnd == 0)
             {
-                ret = pksm::PKX::getPKM<pksm::Generation::TWO>(
-                    entries[index].data, pksm::PK2::JP_LENGTH_WITH_NAMES);
+                ret =
+                    pksm::PKX::getPKM<pksm::Generation::TWO>(data, pksm::PK2::JP_LENGTH_WITH_NAMES);
             }
             else
             {
                 ret = pksm::PKX::getPKM<pksm::Generation::TWO>(
-                    entries[index].data, pksm::PK2::INT_LENGTH_WITH_NAMES);
+                    data, pksm::PK2::INT_LENGTH_WITH_NAMES);
             }
         }
         break;
         case pksm::Generation::THREE:
-            ret = pksm::PKX::getPKM<pksm::Generation::THREE>(
-                entries[index].data, pksm::PK3::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::THREE>(data, pksm::PK3::BOX_LENGTH);
             break;
         case pksm::Generation::FOUR:
-            ret = pksm::PKX::getPKM<pksm::Generation::FOUR>(
-                entries[index].data, pksm::PK4::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::FOUR>(data, pksm::PK4::BOX_LENGTH);
             break;
         case pksm::Generation::FIVE:
-            ret = pksm::PKX::getPKM<pksm::Generation::FIVE>(
-                entries[index].data, pksm::PK5::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::FIVE>(data, pksm::PK5::BOX_LENGTH);
             break;
         case pksm::Generation::SIX:
-            ret = pksm::PKX::getPKM<pksm::Generation::SIX>(
-                entries[index].data, pksm::PK6::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::SIX>(data, pksm::PK6::BOX_LENGTH);
             break;
         case pksm::Generation::SEVEN:
-            ret = pksm::PKX::getPKM<pksm::Generation::SEVEN>(
-                entries[index].data, pksm::PK7::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::SEVEN>(data, pksm::PK7::BOX_LENGTH);
             break;
         case pksm::Generation::LGPE:
-            ret = pksm::PKX::getPKM<pksm::Generation::LGPE>(
-                entries[index].data, pksm::PB7::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::LGPE>(data, pksm::PB7::BOX_LENGTH);
             break;
         case pksm::Generation::EIGHT:
-            ret = pksm::PKX::getPKM<pksm::Generation::EIGHT>(
-                entries[index].data, pksm::PK8::BOX_LENGTH);
+            ret = pksm::PKX::getPKM<pksm::Generation::EIGHT>(data, pksm::PK8::BOX_LENGTH);
             break;
         default:
             break;
@@ -461,15 +419,11 @@ void Bank::createJSON()
 
 void Bank::createBank(int maxBoxes)
 {
+    maxBoxes = std::clamp(maxBoxes, 1, BankFile::MAX_BOXES);
     std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
     header.version = BANK_VERSION;
     header.boxes   = maxBoxes;
-    if (entries)
-    {
-        delete[] entries;
-    }
-    entries = new BankEntry[maxBoxes * 30];
-    std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
+    entries.assign(maxBoxes * 30, BankFile::emptyEntry());
 }
 
 bool Bank::hasChanged() const
@@ -478,7 +432,7 @@ bool Bank::hasChanged() const
     {
         return false;
     }
-    auto hash = pksm::crypto::sha256({(u8*)entries, sizeof(BankEntry) * boxes() * 30});
+    auto hash = pksm::crypto::sha256({(u8*)entries.data(), sizeof(BankEntry) * boxes() * 30});
     if (hash != prevHash)
     {
         return true;
@@ -508,17 +462,16 @@ void Bank::convertFromBankBin()
         size_t oldSize = inStream->size();
         std::array<u8, pksm::PK6::BOX_LENGTH> pkmData;
         // ANOTHER CONVERSION SECTION
-        entries = new BankEntry[oldSize / pksm::PK6::BOX_LENGTH];
+        entries.assign(oldSize / pksm::PK6::BOX_LENGTH, BankFile::emptyEntry());
         std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
         header.version = BANK_VERSION;
         header.boxes   = oldSize / pksm::PK6::BOX_LENGTH / 30;
         extern nlohmann::json g_banks;
         g_banks["pksm_1"] = header.boxes;
-        std::fill_n((u8*)entries, sizeof(BankEntry) * boxes() * 30, 0xFF);
-        boxNames = std::make_unique<nlohmann::json>(nlohmann::json::array());
+        boxNames          = std::make_unique<nlohmann::json>(nlohmann::json::array());
 
         for (int box = 0; box < std::min((int)(oldSize / (pksm::PK6::BOX_LENGTH * 30)), boxes());
-             box++)
+            box++)
         {
             for (int slot = 0; slot < 30; slot++)
             {

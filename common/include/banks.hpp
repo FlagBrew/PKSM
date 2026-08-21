@@ -33,7 +33,7 @@
 
 #define BANKS_VERSION 1
 #define BANK_DEFAULT_SIZE 50
-#define BANK_MAX_SIZE 500
+#define BANK_MAX_SIZE BankFile::MAX_BOXES
 
 class Bank;
 

@@ -27,10 +27,12 @@
 #ifndef BANK_HPP
 #define BANK_HPP
 
+#include "BankFile.hpp"
 #include "enums/Generation.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include "pkx/PKX.hpp"
 #include "utils/crypto.hpp"
+#include <vector>
 
 class Bank
 {
@@ -53,35 +55,22 @@ public:
     bool setName(const std::string& name);
 
 private:
-    static constexpr int BANK_VERSION            = 3;
-    static constexpr std::string_view BANK_MAGIC = "PKSMBANK";
+    static constexpr int BANK_VERSION            = BankFile::VERSION;
+    static constexpr std::string_view BANK_MAGIC = BankFile::MAGIC;
     void createJSON();
     void createBank(int maxBoxes);
     void convertFromBankBin();
 
-    struct BankHeader
-    {
-        char MAGIC[8];
-        u32 version;
-        u32 boxes;
-    };
-
-    static_assert(sizeof(BankHeader) == 16);
-
-    struct BankEntry
-    {
-        pksm::Generation gen;
-        u8 data[0x148];
-        u8 padding[4]; // Pad to 8 bytes
-    };
-
-    static_assert(sizeof(BankEntry) == 0x150);
+    // The format itself lives in BankFile; Bank owns the storage and the I/O around it.
+    using BankHeader = BankFile::Header;
+    using BankEntry  = BankFile::Entry;
     std::unique_ptr<nlohmann::json> boxNames;
     mutable std::array<u8, 32> prevHash;
     mutable std::array<u8, 32> prevNameHash;
     std::string bankName;
     BankHeader header;
-    BankEntry* entries      = nullptr;
+    // Always boxes() * 30 entries.
+    std::vector<BankEntry> entries;
     mutable bool needsCheck = false;
 };
 

@@ -71,6 +71,9 @@ endif
 	@mv 3ds/build/compile_commands.json 3ds_compile_commands.json
 	@echo 3DS compile commands written to 3ds_compile_commands.json
 
+tests:
+	$(MAKE) -C tests
+
 docs:
 	@mkdir -p $(OUTDIR)
 	@gwtc -o $(OUTDIR) -n "$(PKSM_TITLE) Manual - v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)" -t "$(APP_TITLE) v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO) Documentation" --logo-img $(ICON) docs/wiki
@@ -98,4 +101,4 @@ cppcheck:
 cppclean:
 	$(MAKE) -C 3ds cppclean
 
-.PHONY: debug release 3ds-debug no-deps 3ds-release docs clean spotless format cppcheck cppclean
+.PHONY: debug release 3ds-debug no-deps 3ds-release tests docs clean spotless format cppcheck cppclean
