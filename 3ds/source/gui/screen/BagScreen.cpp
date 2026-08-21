@@ -36,6 +36,7 @@
 #include "sav/Sav1.hpp"
 #include "sav/Sav2.hpp"
 #include "sav/Sav3.hpp"
+#include "ScreenStack.hpp"
 
 BagScreen::BagScreen()
     : Screen(i18n::localize("A_ITEM_EDIT") + '\n' + i18n::localize("L_POUCH") + '\n' +
@@ -233,7 +234,7 @@ void BagScreen::update(touchPosition* touch)
         }
         else
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
     }

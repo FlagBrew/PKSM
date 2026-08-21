@@ -27,6 +27,7 @@
 #include "ScrollingTextScreen.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
+#include "ScreenStack.hpp"
 #include "ViewOverlay.hpp"
 
 ScrollingTextScreen::ScrollingTextScreen(
@@ -58,7 +59,7 @@ void ScrollingTextScreen::update(touchPosition* touch)
     }
     if (down & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
 }

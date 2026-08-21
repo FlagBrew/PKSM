@@ -29,6 +29,7 @@
 #include "ExtraSavesSubScreen.hpp"
 #include "gui.hpp"
 #include "loader.hpp"
+#include "ScreenStack.hpp"
 #include "Species.hpp"
 #include "thread.hpp"
 
@@ -485,13 +486,13 @@ void ExtraSavesScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_A)
     {
-        Gui::setScreen(
+        ScreenStack::push(
             std::make_unique<ExtraSavesSubScreen>(calcSaveGroupFromSystem(systemGroup, saveGroup)));
     }
     else if (downKeys & KEY_B)
     {
         TitleLoader::scanSaves();
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
 

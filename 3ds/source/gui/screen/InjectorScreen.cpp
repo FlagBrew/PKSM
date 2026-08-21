@@ -31,6 +31,7 @@
 #include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "ScreenStack.hpp"
 #include "ToggleButton.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
@@ -229,7 +230,7 @@ void InjectorScreen::makeButtons()
         282, 212, 34, 28,
         []()
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
@@ -557,7 +558,7 @@ void InjectorScreen::update(touchPosition* touch)
             {
                 TitleLoader::save->language(getSafeLanguage(TitleLoader::save->generation(), lang));
             }
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
     }
@@ -574,7 +575,7 @@ void InjectorScreen::update(touchPosition* touch)
     {
         if (!choosingSlot)
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
         else

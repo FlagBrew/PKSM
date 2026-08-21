@@ -32,6 +32,7 @@
 #include "MainMenu.hpp"
 #include "printerator.hpp"
 #include "Sav.hpp"
+#include "ScreenStack.hpp"
 #include "TitleLoadScreen.hpp"
 #include "utils/format.hpp"
 #include <arpa/inet.h>
@@ -134,7 +135,7 @@ bool receiveSaveFromBridge(void)
         if (TitleLoader::load(data, total))
         {
             saveFromBridge = true;
-            Gui::setScreen(std::make_unique<MainMenu>());
+            ScreenStack::push(std::make_unique<MainMenu>());
         }
     }
     else

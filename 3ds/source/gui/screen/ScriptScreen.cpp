@@ -34,6 +34,7 @@
 #include "loader.hpp"
 #include "sav/Sav.hpp"
 #include "sav/Sav4.hpp"
+#include "ScreenStack.hpp"
 #include "ScrollingTextScreen.hpp"
 #include <array>
 
@@ -219,7 +220,7 @@ void ScriptScreen::update(touchPosition* touch)
                                  (cScripts ? std::string("/scripts/universal")
                                            : getScriptDir(TitleLoader::save->version())))
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
         else
@@ -416,7 +417,7 @@ void ScriptScreen::parsePicoCScript(std::string& file)
         {
             Gui::warn(i18n::localize("SCRIPTS_EXECUTION_ERROR") + '\n' + file);
             show += "\nExit code: " + std::to_string(picoc->PicocExitValue);
-            Gui::setScreen(std::make_unique<ScrollingTextScreen>(show, std::nullopt));
+            ScreenStack::push(std::make_unique<ScrollingTextScreen>(show, std::nullopt));
         }
     }
 

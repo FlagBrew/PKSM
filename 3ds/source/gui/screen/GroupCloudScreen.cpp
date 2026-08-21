@@ -42,6 +42,7 @@
 #include "pkx/PKFilter.hpp"
 #include "QRScanner.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "utils/format.hpp"
 #include "website.h"
 #include <algorithm>
@@ -59,7 +60,7 @@ GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilte
         212, 78, 108, 28,
         [this]()
         {
-            Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
+            ScreenStack::push(std::make_unique<FilterScreen>(this->filter));
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("FILTER"), FONT_SIZE_12, COLOR_BLACK);
@@ -431,8 +432,8 @@ void GroupCloudScreen::update(touchPosition* touch)
     else if (kDown & KEY_Y)
     {
         std::unique_ptr<Screen> screen = std::make_unique<CloudScreen>(storageBox, filter);
-        Gui::screenBack();
-        Gui::setScreen(std::move(screen));
+        ScreenStack::requestPop();
+        ScreenStack::push(std::move(screen));
         return;
     }
     else if (kDown & KEY_X)
@@ -656,7 +657,7 @@ bool GroupCloudScreen::backButton()
         groupPkm.pop_back();
         return false;
     }
-    Gui::screenBack();
+    ScreenStack::requestPop();
     return true;
 }
 

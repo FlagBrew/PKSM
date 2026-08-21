@@ -36,6 +36,7 @@
 #include "MainMenuButton.hpp"
 #include "revision.h"
 #include "sav/Sav5.hpp"
+#include "ScreenStack.hpp"
 #include "ScriptScreen.hpp"
 #include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
@@ -55,7 +56,7 @@ namespace
                         i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                     return false;
                 }
-                Gui::setScreen(std::make_unique<StorageScreen>());
+                ScreenStack::push(std::make_unique<StorageScreen>());
                 return true;
             case 1:
                 if (TitleLoader::save->partyCount() < 1)
@@ -64,7 +65,7 @@ namespace
                         i18n::localize("NEED_ONE_POKEMON") + '\n' + i18n::localize("GET_STARTER"));
                     return false;
                 }
-                Gui::setScreen(std::make_unique<EditSelectorScreen>());
+                ScreenStack::push(std::make_unique<EditSelectorScreen>());
                 return true;
             case 2:
                 if (TitleLoader::save->generation() >= pksm::Generation::LGPE ||
@@ -74,16 +75,16 @@ namespace
                         i18n::localize("NO_WONDERCARDS") + '\n' + i18n::localize("USE_INJECTOR_C"));
                     return false;
                 }
-                Gui::setScreen(std::make_unique<InjectSelectorScreen>());
+                ScreenStack::push(std::make_unique<InjectSelectorScreen>());
                 return true;
             case 3:
-                Gui::setScreen(std::make_unique<ScriptScreen>());
+                ScreenStack::push(std::make_unique<ScriptScreen>());
                 return true;
             case 4:
-                Gui::setScreen(std::make_unique<BagScreen>());
+                ScreenStack::push(std::make_unique<BagScreen>());
                 return true;
             case 5:
-                Gui::setScreen(std::make_unique<ConfigScreen>());
+                ScreenStack::push(std::make_unique<ConfigScreen>());
                 return true;
         }
         return true;
@@ -301,7 +302,7 @@ void MainMenu::update(touchPosition* touch)
         if (!needsSave() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
         {
             setLoadedSaveFromBridge(false);
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
     }

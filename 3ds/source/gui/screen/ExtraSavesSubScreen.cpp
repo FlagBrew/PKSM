@@ -30,6 +30,7 @@
 #include "GameVersion.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "ScreenStack.hpp"
 #include "Species.hpp"
 #include "Title.hpp"
 
@@ -654,7 +655,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     }
     else if (down & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
     else if (down & KEY_X && selectedSave != -1)

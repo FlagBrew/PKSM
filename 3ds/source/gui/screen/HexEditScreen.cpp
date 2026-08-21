@@ -38,6 +38,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "utils/format.hpp"
 #include <format>
 
@@ -2527,7 +2528,7 @@ void HexEditScreen::update(touchPosition* touch)
     {
         // Reset back to normal repeat time
         hidSetRepeatParameters(10, 10);
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
 

@@ -34,6 +34,7 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "SortScreen.hpp"
 
 StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBox, int& storageBox,
@@ -48,7 +49,7 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         106, 63, 108, 28,
         [this]()
         {
-            Gui::setScreen(std::make_unique<SortScreen>(storage));
+            ScreenStack::push(std::make_unique<SortScreen>(storage));
             parent->removeOverlay();
             return true;
         },
@@ -57,7 +58,7 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         106, 94, 108, 28,
         [this]()
         {
-            Gui::setScreen(std::make_unique<FilterScreen>(this->filter));
+            ScreenStack::push(std::make_unique<FilterScreen>(this->filter));
             parent->removeOverlay();
             return true;
         },
@@ -69,7 +70,7 @@ StorageOverlay::StorageOverlay(ReplaceableScreen& screen, bool store, int& boxBo
         106, 156, 108, 28,
         [this]()
         {
-            Gui::setScreen(std::make_unique<BankSelectionScreen>(this->storageBox));
+            ScreenStack::push(std::make_unique<BankSelectionScreen>(this->storageBox));
             parent->removeOverlay();
             return true;
         },

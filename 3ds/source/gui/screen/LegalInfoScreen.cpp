@@ -34,6 +34,7 @@
 #include "nlohmann/json.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "website.h"
 
 LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
@@ -146,13 +147,13 @@ void LegalInfoScreen::attemptLegalization()
                     if (!retJson["success"].get<bool>())
                     {
                         Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
-                        Gui::screenBack();
+                        ScreenStack::requestPop();
                         return;
                     }
                     else if (!retJson["ran"].get<bool>())
                     {
                         Gui::warn(i18n::localize("ALREADY_LEGAL"));
-                        Gui::screenBack();
+                        ScreenStack::requestPop();
                         return;
                     }
                     else if (!retJson["pokemon"].is_null())
@@ -168,7 +169,7 @@ void LegalInfoScreen::attemptLegalization()
                                     0, std::min(pkm->get().getLength(), fixed->getLength())),
                                 pkm->get().rawData().begin());
                             Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                            Gui::screenBack();
+                            ScreenStack::requestPop();
                             return;
                         }
                         else

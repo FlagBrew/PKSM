@@ -35,6 +35,7 @@
 #include "MainMenu.hpp"
 #include "sav/Sav.hpp"
 #include "SaveLoadScreen.hpp"
+#include "ScreenStack.hpp"
 #include "Title.hpp"
 #include <format>
 
@@ -52,7 +53,7 @@ bool TitleLoadScreen::loadSave() const
     }
     if (status)
     {
-        Gui::setScreen(std::make_unique<MainMenu>());
+        ScreenStack::push(std::make_unique<MainMenu>());
     }
 
     return status;
@@ -337,13 +338,13 @@ void TitleLoadScreen::update(touchPosition* touch)
             buttons[0]->update(touch);
             if (buttonsDown & KEY_Y)
             {
-                Gui::screenBack();
-                Gui::setScreen(std::make_unique<SaveLoadScreen>());
+                ScreenStack::requestPop();
+                ScreenStack::push(std::make_unique<SaveLoadScreen>());
                 return;
             }
             else if (buttonsDown & KEY_X)
             {
-                Gui::setScreen(std::make_unique<ConfigScreen>());
+                ScreenStack::push(std::make_unique<ConfigScreen>());
             }
             else if (buttonsDown & KEY_L)
             {
@@ -607,8 +608,8 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else if (buttonsDown & KEY_Y)
         {
-            Gui::screenBack();
-            Gui::setScreen(std::make_unique<SaveLoadScreen>());
+            ScreenStack::requestPop();
+            ScreenStack::push(std::make_unique<SaveLoadScreen>());
             return;
         }
         else if (buttonsDown & KEY_A)
@@ -654,7 +655,7 @@ void TitleLoadScreen::update(touchPosition* touch)
 
     if (buttonsDown & KEY_X)
     {
-        Gui::setScreen(std::make_unique<ConfigScreen>());
+        ScreenStack::push(std::make_unique<ConfigScreen>());
     }
 }
 

@@ -34,7 +34,6 @@
 #include "enums/Language.hpp"
 #include "PKX.hpp"
 #include "RunnableScreen.hpp"
-#include "Screen.hpp"
 #include "spritesheets.h"
 #include "TextParse.hpp"
 #include "TextPos.hpp"
@@ -122,8 +121,6 @@ namespace Gui
         TextPosX positionX, TextPosY positionY, TextWidthAction action = TextWidthAction::IGNORE,
         float maxWidth = 0.0f);
 
-    void setScreen(std::unique_ptr<Screen> screen);
-    void screenBack(void);
     bool showChoiceMessage(const std::string& message, int timer = 0);
     void showRestoreProgress(u32 partial, u32 total);
     void showDownloadProgress(const std::string& path, u32 partial, u32 total);

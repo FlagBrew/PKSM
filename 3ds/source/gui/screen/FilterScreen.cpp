@@ -34,6 +34,7 @@
 #include "MoveOverlay.hpp"
 #include "pkx/PKFilter.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "SpeciesOverlay.hpp"
 #include "ToggleButton.hpp"
 
@@ -215,7 +216,7 @@ void FilterScreen::update(touchPosition* touch)
     u32 kDown = hidKeysDown();
     if (kDown & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
 }

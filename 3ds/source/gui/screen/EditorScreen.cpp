@@ -50,6 +50,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "SpeciesOverlay.hpp"
 #include "StatsEditScreen.hpp"
 #include "utils/random.hpp"
@@ -244,7 +245,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         204, 109, 108, 30,
         [this]()
         {
-            Gui::setScreen(std::make_unique<StatsEditScreen>(*pkm));
+            ScreenStack::push(std::make_unique<StatsEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
@@ -253,7 +254,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         204, 140, 108, 30,
         [this]()
         {
-            Gui::setScreen(std::make_unique<MoveEditScreen>(*pkm));
+            ScreenStack::push(std::make_unique<MoveEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
@@ -262,7 +263,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
         204, 171, 108, 30,
         [this]()
         {
-            Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
+            ScreenStack::push(std::make_unique<MiscEditScreen>(*pkm));
             justSwitched = true;
             return true;
         },
@@ -400,7 +401,7 @@ void EditorScreen::update(touchPosition* touch)
         }
         else if (pkm->species() == pksm::Species::None)
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return;
         }
         else
@@ -428,7 +429,7 @@ void EditorScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_Y)
     {
-        Gui::setScreen(std::make_unique<MiscEditScreen>(*pkm));
+        ScreenStack::push(std::make_unique<MiscEditScreen>(*pkm));
         justSwitched = true;
         return;
     }
@@ -456,7 +457,7 @@ bool EditorScreen::goBack()
 {
     if (saved() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         if (!emergency && TitleLoader::save)
         {
             TitleLoader::save->fixParty();
@@ -538,7 +539,7 @@ bool EditorScreen::advanceMon(bool forward)
 
 bool EditorScreen::hexEdit()
 {
-    Gui::setScreen(std::make_unique<HexEditScreen>(*pkm));
+    ScreenStack::push(std::make_unique<HexEditScreen>(*pkm));
     return false;
 }
 

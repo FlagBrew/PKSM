@@ -38,6 +38,7 @@
 #include "pkx/PKX.hpp"
 #include "QRScanner.hpp"
 #include "revision.h"
+#include "ScreenStack.hpp"
 #include "thread.hpp"
 #include "TitleIdOverlay.hpp"
 #include "ToggleButton.hpp"
@@ -349,7 +350,7 @@ void ConfigScreen::initButtons()
         140, 32, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::ONE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -359,7 +360,7 @@ void ConfigScreen::initButtons()
         140, 48, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::TWO),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -369,7 +370,7 @@ void ConfigScreen::initButtons()
         140, 64, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::THREE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -379,7 +380,7 @@ void ConfigScreen::initButtons()
         140, 80, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FOUR),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -389,7 +390,7 @@ void ConfigScreen::initButtons()
         140, 96, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::FIVE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -399,7 +400,7 @@ void ConfigScreen::initButtons()
         140, 112, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SIX),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -409,7 +410,7 @@ void ConfigScreen::initButtons()
         140, 128, 15, 12,
         []()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::SEVEN),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -419,7 +420,7 @@ void ConfigScreen::initButtons()
         140, 144, 15, 12,
         [this]()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::LGPE),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -429,7 +430,7 @@ void ConfigScreen::initButtons()
         140, 160, 15, 12,
         [this]()
         {
-            Gui::setScreen(
+            ScreenStack::push(
                 std::make_unique<EditorScreen>(PkmUtils::getDefault(pksm::Generation::EIGHT),
                     EditorScreen::PARTY_MAGIC_NUM, 0, true));
             return false;
@@ -541,7 +542,7 @@ void ConfigScreen::initButtons()
         247, 176, 15, 12,
         [this]()
         {
-            Gui::setScreen(std::make_unique<ExtraSavesScreen>());
+            ScreenStack::push(std::make_unique<ExtraSavesScreen>());
             return true;
         },
         ui_sheet_button_info_detail_editor_light_idx, "", 0.0f, COLOR_BLACK));
@@ -789,7 +790,7 @@ void ConfigScreen::back()
         TitleLoader::scanSaves();
     }
     PkmUtils::saveDefaults();
-    Gui::screenBack();
+    ScreenStack::requestPop();
 }
 
 void ConfigScreen::drawTop() const

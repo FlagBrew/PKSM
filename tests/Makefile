@@ -6,7 +6,8 @@ CXXFLAGS := -std=gnu++20 -g -Wall -Wextra -Werror -Og
 INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I../external
 
 BUILD   := build
-TARGETS := $(BUILD)/BankFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests
+TARGETS := $(BUILD)/BankFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
+	$(BUILD)/ScreenStackTests
 
 .PHONY: all clean
 all: $(TARGETS)
@@ -21,6 +22,9 @@ $(BUILD)/GpssPageTests: GpssPageTests.cpp ../common/source/GpssPage.cpp \
 
 $(BUILD)/PresenterTests: PresenterTests.cpp ../common/source/Presenter.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^ -pthread
+
+$(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -Ifakes -I../common/include/gui -o $@ $^
 
 $(BUILD):
 	@mkdir -p $(BUILD)

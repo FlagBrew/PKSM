@@ -30,13 +30,13 @@
 #include "MessageScreen.hpp"
 #include "personal.hpp"
 #include "pkx/PKX.hpp"
+#include "ScreenStack.hpp"
 #include "sound.hpp"
 #include "TextParse.hpp"
 #include "utils/DataMutex.hpp"
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
 #include "utils/thread.hpp"
-#include <stack>
 
 static CFG_Region getRegionFromLanguage()
 {
@@ -90,8 +90,6 @@ namespace
     LightEvent fontsLoaded;
     bool fontLoaderStarted = false;
 
-    std::stack<std::unique_ptr<Screen>, std::vector<std::unique_ptr<Screen>>> screens;
-
     constexpr u32 magicNumber = 0xC7D84AB9;
     float noHomeAlpha         = 0.0f;
 #define NOHOMEALPHA_ACCEL 0.001f
@@ -101,6 +99,27 @@ namespace
 
     bool textMode = false;
     bool inFrame  = false;
+
+    template <typename T>
+    T runModalScreen(RunnableScreen<T>& screen)
+    {
+        bool resumeFrame = inFrame;
+        if (resumeFrame)
+        {
+            C3D_FrameEnd(0);
+            Gui::frameClean();
+            inFrame = false;
+        }
+
+        T result = Gui::runScreen(screen);
+
+        if (resumeFrame)
+        {
+            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+            inFrame = true;
+        }
+        return result;
+    }
 
     struct ScrollingTextOffset
     {
@@ -1086,8 +1105,19 @@ void Gui::mainLoop(void)
 {
     Sound::start();
     int selectHelpFrames = 0;
+    if (ScreenStack::applyPending())
+    {
+        scrollOffsets.clear();
+    }
     while (aptMainLoop() && !shouldExit)
     {
+        Screen* currentScreen = ScreenStack::top();
+        if (!currentScreen)
+        {
+            Logging::error("The screen stack is empty");
+            break;
+        }
+
         hidScanInput();
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         inFrame = true;
@@ -1107,15 +1137,15 @@ void Gui::mainLoop(void)
 
         magicFun += M_TAU / 360;
 
-        if (selectHelpFrames > 15 && !screens.top()->getInstructions().empty())
+        if (selectHelpFrames > 15 && !currentScreen->getInstructions().empty())
         {
             target(GFX_TOP);
-            screens.top()->doTopDraw();
-            screens.top()->getInstructions().drawTop();
+            currentScreen->doTopDraw();
+            currentScreen->getInstructions().drawTop();
             flushText();
             target(GFX_BOTTOM);
-            screens.top()->doBottomDraw();
-            screens.top()->getInstructions().drawBottom();
+            currentScreen->doBottomDraw();
+            currentScreen->getInstructions().drawBottom();
             flushText();
 
             if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
@@ -1131,11 +1161,11 @@ void Gui::mainLoop(void)
         else
         {
             target(GFX_TOP);
-            screens.top()->doTopDraw();
+            currentScreen->doTopDraw();
             flushText();
 
             target(GFX_BOTTOM);
-            screens.top()->doBottomDraw();
+            currentScreen->doBottomDraw();
             flushText();
 
             if (!aptIsHomeAllowed() && aptCheckHomePressRejected())
@@ -1150,7 +1180,12 @@ void Gui::mainLoop(void)
 
             touchPosition touch;
             hidTouchRead(&touch);
-            screens.top()->doUpdate(&touch);
+            currentScreen->doUpdate(&touch);
+        }
+
+        if (ScreenStack::applyPending())
+        {
+            scrollOffsets.clear();
         }
 
         fontData.lock()->buffer->clear();
@@ -2008,11 +2043,6 @@ void Gui::type(pksm::Language lang, pksm::Type type, int x, int y)
     Gui::drawImageAt(typeImage(lang, type), x, y);
 }
 
-void Gui::setScreen(std::unique_ptr<Screen> screen)
-{
-    screens.push(std::move(screen));
-}
-
 int Gui::pointerBob()
 {
     static int currentBob = 0;
@@ -2062,7 +2092,7 @@ u8 Gui::transparencyWaver()
 bool Gui::showChoiceMessage(const std::string& message, int timer)
 {
     DecisionScreen screen(message);
-    return runScreen(screen);
+    return runModalScreen(screen);
 }
 
 void Gui::waitFrame(const std::string& message, ScreenTarget targetScreen)
@@ -2114,13 +2144,7 @@ void Gui::waitFrame(const std::string& message, ScreenTarget targetScreen)
 void Gui::warn(const std::string& message)
 {
     MessageScreen screen(message);
-    runScreen(screen);
-}
-
-void Gui::screenBack()
-{
-    scrollOffsets.clear();
-    screens.pop();
+    runModalScreen(screen);
 }
 
 void Gui::showRestoreProgress(u32 partial, u32 total)

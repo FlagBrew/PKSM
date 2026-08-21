@@ -41,6 +41,7 @@
 #include "printerator.hpp"
 #include "random.hpp"
 #include "revision.h"
+#include "ScreenStack.hpp"
 #include "thread.hpp"
 #include "TitleLoadScreen.hpp"
 #include "utils/crypto.hpp"
@@ -886,7 +887,7 @@ Result App::init(const std::string& execPath)
     gfxSwapBuffersGpu();
     gspWaitForVBlank();
 
-    Gui::setScreen(std::make_unique<TitleLoadScreen>());
+    ScreenStack::push(std::make_unique<TitleLoadScreen>());
     // uncomment when needing to debug with GDB
     // consoleDebugInit(debugDevice_SVC);
 

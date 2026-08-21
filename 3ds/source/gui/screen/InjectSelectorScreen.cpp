@@ -35,6 +35,7 @@
 #include "mysterygift.hpp"
 #include "nlohmann/json.hpp"
 #include "QRScanner.hpp"
+#include "ScreenStack.hpp"
 #include "ToggleButton.hpp"
 #include "wcx/PGF.hpp"
 #include "wcx/PGT.hpp"
@@ -161,7 +162,7 @@ void InjectSelectorScreen::update(touchPosition* touch)
             hid.update(wondercards.size());
             if (downKeys & KEY_B)
             {
-                Gui::screenBack();
+                ScreenStack::requestPop();
                 return;
             }
             if ((heldKeys & KEY_L && downKeys & KEY_R) || (downKeys & KEY_L && heldKeys & KEY_R))
@@ -185,7 +186,8 @@ void InjectSelectorScreen::update(touchPosition* touch)
                     Gui::showChoiceMessage("Not all of these wonder card(s) are "
                                            "released.\nContinue to injection screen?"))
                 {
-                    Gui::setScreen(std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
+                    ScreenStack::push(
+                        std::make_unique<InjectorScreen>(wondercards[hid.fullIndex()]));
                     updateGifts = true;
                     return;
                 }
@@ -488,7 +490,7 @@ bool InjectSelectorScreen::doQR()
     if (wcx)
     {
         Logging::info("QR scan successful, navigating to injector screen");
-        Gui::setScreen(std::make_unique<InjectorScreen>(std::move(wcx)));
+        ScreenStack::push(std::make_unique<InjectorScreen>(std::move(wcx)));
         updateGifts = true;
         return true;
     }

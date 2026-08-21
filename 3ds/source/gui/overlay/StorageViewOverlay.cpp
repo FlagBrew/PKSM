@@ -29,6 +29,7 @@
 #include "EditorScreen.hpp"
 #include "gui.hpp"
 #include "pkx/PKX.hpp"
+#include "ScreenStack.hpp"
 #include "StorageScreen.hpp"
 
 void StorageViewOverlay::drawBottom() const
@@ -130,7 +131,7 @@ void StorageViewOverlay::update(touchPosition* touch)
     {
         if (emergencyMode[8] && emergencyInfo.first != -1)
         {
-            Gui::setScreen(std::make_unique<EditorScreen>(
+            ScreenStack::push(std::make_unique<EditorScreen>(
                 getPKM().clone(), emergencyInfo.first, emergencyInfo.second, true));
         }
         parent->removeOverlay();

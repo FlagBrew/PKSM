@@ -40,6 +40,7 @@
 #include "pkx/PK8.hpp"
 #include "QRScanner.hpp"
 #include "sav/SavLGPE.hpp"
+#include "ScreenStack.hpp"
 #include "utils/format.hpp"
 #include "ViewOverlay.hpp"
 #include <format>
@@ -744,7 +745,7 @@ bool EditSelectorScreen::editPokemon()
         if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
             justSwitched = true;
-            Gui::setScreen(std::make_unique<EditorScreen>(
+            ScreenStack::push(std::make_unique<EditorScreen>(
                 TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
             return true;
         }
@@ -752,7 +753,7 @@ bool EditSelectorScreen::editPokemon()
     else if (cursorPos > maxPkmInBox)
     {
         justSwitched = true;
-        Gui::setScreen(
+        ScreenStack::push(
             std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1)),
                 EditorScreen::PARTY_MAGIC_NUM, cursorPos - (maxPkmInBox + 1)));
         return true;
@@ -866,7 +867,7 @@ bool EditSelectorScreen::goBack()
         }
         TitleLoader::save->cryptBoxData(false);
         TitleLoader::save->currentBox((u8)box);
-        Gui::screenBack();
+        ScreenStack::requestPop();
     }
     return true;
 }

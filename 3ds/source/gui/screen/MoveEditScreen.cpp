@@ -31,6 +31,7 @@
 #include "i18n_ext.hpp"
 #include "MoveOverlay.hpp"
 #include "pkx/PB7.hpp"
+#include "ScreenStack.hpp"
 #include "ViewOverlay.hpp"
 
 MoveEditScreen::MoveEditScreen(pksm::PKX& pkm) : pkm(pkm)
@@ -39,7 +40,7 @@ MoveEditScreen::MoveEditScreen(pksm::PKX& pkm) : pkm(pkm)
         283, 211, 34, 28,
         [this]()
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
@@ -80,7 +81,7 @@ void MoveEditScreen::update(touchPosition* touch)
 
     if (downKeys & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
 

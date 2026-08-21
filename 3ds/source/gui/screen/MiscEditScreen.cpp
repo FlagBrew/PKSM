@@ -41,6 +41,7 @@
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
 #include "website.h"
@@ -51,7 +52,7 @@ MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
         283, 211, 34, 28,
         [this]()
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
@@ -338,7 +339,7 @@ void MiscEditScreen::update(touchPosition* touch)
 
     if (kDown & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
     else if (kDown & KEY_Y)
@@ -771,7 +772,7 @@ void MiscEditScreen::validate()
                     {
                         legal_text = "Receive error.";
                     }
-                    Gui::setScreen(std::make_unique<LegalInfoScreen>(legal_text, pkm));
+                    ScreenStack::push(std::make_unique<LegalInfoScreen>(legal_text, pkm));
                 }
                 break;
             case 502:

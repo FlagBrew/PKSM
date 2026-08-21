@@ -34,6 +34,7 @@
 #include "gui.hpp"
 #include "loader.hpp"
 #include "MainMenu.hpp"
+#include "ScreenStack.hpp"
 #include "Title.hpp"
 #include "TitleLoadScreen.hpp"
 
@@ -86,7 +87,7 @@ SaveLoadScreen::SaveLoadScreen()
         [this]()
         {
             mustUpdateTitles = true;
-            Gui::setScreen(std::make_unique<ExtraSavesSubScreen>(
+            ScreenStack::push(std::make_unique<ExtraSavesSubScreen>(
                 calcSaveGroupFromSystem(systemGroup, saveGroup)));
             return true;
         },
@@ -704,8 +705,8 @@ void SaveLoadScreen::update(touchPosition* touch)
         }
         else if (downKeys & KEY_Y)
         {
-            Gui::screenBack();
-            Gui::setScreen(std::make_unique<TitleLoadScreen>());
+            ScreenStack::requestPop();
+            ScreenStack::push(std::make_unique<TitleLoadScreen>());
             return;
         }
         if (downKeys & KEY_A)
@@ -740,7 +741,7 @@ void SaveLoadScreen::update(touchPosition* touch)
     if (downKeys & KEY_X)
     {
         mustUpdateTitles = true;
-        Gui::setScreen(std::make_unique<ConfigScreen>());
+        ScreenStack::push(std::make_unique<ConfigScreen>());
     }
 }
 
@@ -750,7 +751,7 @@ bool SaveLoadScreen::loadSave()
 
     if (TitleLoader::load(nullptr, saves[u8(fullSaveGroup)][selectedSave + firstSave].second))
     {
-        Gui::setScreen(std::make_unique<MainMenu>());
+        ScreenStack::push(std::make_unique<MainMenu>());
         return true;
     }
     return false;

@@ -29,6 +29,7 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "ScreenStack.hpp"
 #include "utils/format.hpp"
 #include <algorithm>
 
@@ -105,12 +106,12 @@ void BankSelectionScreen::update(touchPosition* touch)
                 storageBox = 0;
             }
         }
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
         return;
     }
     else if (downKeys & KEY_X)

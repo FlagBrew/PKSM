@@ -33,6 +33,7 @@
 #include "loader.hpp"
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
+#include "ScreenStack.hpp"
 #include "SortOverlay.hpp"
 
 SortScreen::SortScreen(bool storage) : storage(storage)
@@ -54,7 +55,7 @@ SortScreen::SortScreen(bool storage) : storage(storage)
         {
             justSwitched = true;
             this->sort();
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return true;
         },
         ui_sheet_button_editor_idx, i18n::localize("SORT"), FONT_SIZE_12, COLOR_BLACK));
@@ -62,7 +63,7 @@ SortScreen::SortScreen(bool storage) : storage(storage)
         1, 211, 34, 28,
         []()
         {
-            Gui::screenBack();
+            ScreenStack::requestPop();
             return true;
         },
         ui_sheet_button_back_idx, "", 0.0f, COLOR_BLACK));
@@ -122,7 +123,7 @@ void SortScreen::update(touchPosition* touch)
 
     if (hidKeysDown() & KEY_B)
     {
-        Gui::screenBack();
+        ScreenStack::requestPop();
     }
 }
 

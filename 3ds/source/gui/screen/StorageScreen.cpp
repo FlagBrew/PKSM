@@ -40,6 +40,7 @@
 #include "pkx/PB7.hpp"
 #include "pkx/PK4.hpp"
 #include "sav/SavLGPE.hpp"
+#include "ScreenStack.hpp"
 #include "SortOverlay.hpp"
 #include "StorageOverlay.hpp"
 #include "StorageViewOverlay.hpp"
@@ -212,7 +213,7 @@ StorageScreen::StorageScreen()
                 return false;
             }
 
-            Gui::setScreen(std::make_unique<CloudScreen>(storageBox, filter));
+            ScreenStack::push(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;
         },
@@ -968,7 +969,7 @@ bool StorageScreen::backButton()
             }
             TitleLoader::save->cryptBoxData(false);
             TitleLoader::save->currentBox((u8)boxBox);
-            Gui::screenBack();
+            ScreenStack::requestPop();
         }
     }
     return true;

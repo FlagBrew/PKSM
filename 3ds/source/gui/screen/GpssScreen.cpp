@@ -31,6 +31,7 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "ScreenStack.hpp"
 #include "utils/DateTime.hpp"
 #include "utils/format.hpp"
 #include <cstdlib>
@@ -61,7 +62,7 @@ bool GpssScreen::leftOnPageError(std::optional<int> error)
     {
         Gui::warn(i18n::localize("OFFLINE_ERROR"));
     }
-    Gui::screenBack();
+    ScreenStack::requestPop();
     return true;
 }
 
