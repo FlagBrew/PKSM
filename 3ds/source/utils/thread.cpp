@@ -150,35 +150,60 @@ namespace
 
 bool Threads::init(u8 min, u8 max)
 {
-    minWorkers         = min;
-    maxWorkers         = max;
-    auto lockedThreads = threads.lock();
-    lockedThreads->second.emplace_back();
-    if (R_FAILED(svcCreateEvent(&lockedThreads->second[0], RESET_ONESHOT)))
+    minWorkers = min;
+    maxWorkers = max;
+
     {
-        return false;
-    }
-    lockedThreads->second.emplace_back();
-    if (R_FAILED(svcCreateEvent(&lockedThreads->second[1], RESET_ONESHOT)))
-    {
-        return false;
-    }
-    s32 prio = 0;
-    if (R_FAILED(svcGetThreadPriority(&prio, CUR_THREAD_HANDLE)))
-    {
-        return false;
-    }
-    reaperThread = threadCreate(reapThread, nullptr, 0x400, prio - 3, -2, false);
-    if (!reaperThread)
-    {
-        return false;
+        auto lockedThreads = threads.lock();
+        auto& handles      = lockedThreads->second;
+
+        // A partial init leaves nothing behind. The caller is told the subsystem never came
+        // up, so its teardown never runs - which is what used to happen here, against a
+        // handle vector left shorter than the two events Threads::exit indexes.
+        const auto unwind = [&handles]
+        {
+            for (auto& handle : handles)
+            {
+                svcCloseHandle(handle);
+            }
+            handles.clear();
+            return false;
+        };
+
+        handles.emplace_back();
+        if (R_FAILED(svcCreateEvent(&handles[0], RESET_ONESHOT)))
+        {
+            handles.clear();
+            return false;
+        }
+        handles.emplace_back();
+        if (R_FAILED(svcCreateEvent(&handles[1], RESET_ONESHOT)))
+        {
+            handles.pop_back();
+            return unwind();
+        }
+        s32 prio = 0;
+        if (R_FAILED(svcGetThreadPriority(&prio, CUR_THREAD_HANDLE)))
+        {
+            return unwind();
+        }
+        reaperThread = threadCreate(reapThread, nullptr, 0x400, prio - 3, -2, false);
+        if (!reaperThread)
+        {
+            return unwind();
+        }
+
+        LightSemaphore_Init(&moreTasks, 0, 10000);
     }
 
-    LightSemaphore_Init(&moreTasks, 0, 10000);
+    // Outside the lock: Threads::create takes it too, so spawning the initial workers while
+    // still holding it deadlocked for any min above zero.
     for (int i = 0; i < minWorkers; i++)
     {
         if (!Threads::create(WORKER_STACK, taskWorkerThread))
         {
+            // The reaper is up by now, so this unwinds the same way any shutdown does.
+            Threads::exit();
             return false;
         }
     }
@@ -222,11 +247,22 @@ void Threads::executeTask(void (*task)(void*), void* arg)
 
 void Threads::exit(void)
 {
+    if (!reaperThread)
+    {
+        return;
+    }
     workerTasks.lock()->clear();
     LightSemaphore_Release(&moreTasks, numWorkers);
     svcSignalEvent(threads.lock()->second[0]);
     threadJoin(reaperThread, U64_MAX);
     threadFree(reaperThread);
-    svcCloseHandle(threads.lock()->second[0]);
-    svcCloseHandle(threads.lock()->second[1]);
+    reaperThread = nullptr;
+
+    auto lockedThreads = threads.lock();
+    // Only the two events are owned here. The rest are thread handles belonging to the
+    // Thread objects the reaper has already freed.
+    svcCloseHandle(lockedThreads->second[0]);
+    svcCloseHandle(lockedThreads->second[1]);
+    lockedThreads->second.clear();
+    lockedThreads->first.clear();
 }

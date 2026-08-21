@@ -42,6 +42,7 @@
 #include "random.hpp"
 #include "revision.h"
 #include "ScreenStack.hpp"
+#include "Subsystems.hpp"
 #include "thread.hpp"
 #include "TitleLoadScreen.hpp"
 #include "utils/crypto.hpp"
@@ -52,9 +53,11 @@
 #include <3ds.h>
 #include <array>
 #include <atomic>
+#include <cstdlib>
 #include <format>
 #include <malloc.h>
 #include <stdio.h>
+#include <string_view>
 #include <sys/stat.h>
 
 // #include <chrono>
@@ -62,11 +65,23 @@
 namespace
 {
     u32 old_time_limit;
+    // Never opened: the hb:ldr connection above HBLDR_SetTarget is commented out, so this
+    // stays zero and the chainload path fails rather than closing a handle it never had.
     Handle hbldrHandle;
-    std::atomic_flag moveIcon         = ATOMIC_FLAG_INIT;
-    std::atomic_flag doCartScan       = ATOMIC_FLAG_INIT;
-    std::atomic_flag continueI18N     = ATOMIC_FLAG_INIT;
-    std::atomic<bool> iconThreadAlive = false;
+    std::atomic_flag moveIcon           = ATOMIC_FLAG_INIT;
+    std::atomic_flag doCartScan         = ATOMIC_FLAG_INIT;
+    std::atomic_flag continueI18N       = ATOMIC_FLAG_INIT;
+    std::atomic<bool> iconThreadAlive   = false;
+    std::atomic<bool> cartScanAlive     = false;
+    std::atomic<bool> i18nPrefetchAlive = false;
+    // Held for as long as soc is up, and freed with it. It used to be allocated and never
+    // released at all.
+    u32* socketBuffer = nullptr;
+
+    // Everything PKSM brings up, in the order it came up. Acquiring records the teardown,
+    // so App::exit unwinds exactly this much and no more - including when startup stopped
+    // partway, which is a routine path (no wifi, missing assets, corrupt ext data).
+    pksm::Subsystems subsystems;
 
     // Signal the splash/icon thread to stop and block until it has actually
     // finished its last framebuffer write and buffer swap. Drawing to the top
@@ -79,6 +94,56 @@ namespace
         {
             svcSleepThread(100'000); // 0.1 ms
         }
+    }
+
+    // Clearing a flag only asks a thread to stop, and its teardown runs the moment this
+    // returns, so wait for it to actually be gone. Bounded, because a thread that never
+    // started - a worker that could not be spawned, a task still queued - would otherwise
+    // hang the exit path forever.
+    bool waitForStop(const std::atomic<bool>& alive)
+    {
+        constexpr int MAX_WAIT_TICKS = 20000; // 0.1 ms each, so two seconds
+        for (int tick = 0; alive.load() && tick < MAX_WAIT_TICKS; tick++)
+        {
+            svcSleepThread(100'000);
+        }
+        return !alive.load();
+    }
+
+    void stopCartScan()
+    {
+        doCartScan.clear();
+        if (!waitForStop(cartScanAlive))
+        {
+            Logging::warning("The cart scan thread did not stop");
+        }
+    }
+
+    void stopI18NPrefetch()
+    {
+        continueI18N.clear();
+        if (!waitForStop(i18nPrefetchAlive))
+        {
+            Logging::warning("The i18n prefetch task did not stop");
+        }
+    }
+
+    // What the console error screen says when a step does not come up. The subsystem's own
+    // name carries it, so adding a step to the sequence needs nothing here.
+    std::string startupErrorMessage(std::string_view name)
+    {
+        if (name == "assets")
+        {
+            return "Additional assets download failed.\n\nAlways make sure you're connected to "
+                   "the internet and on the lastest version.";
+        }
+        return std::format("{:s} failed to initialize.", name);
+    }
+
+    void logSubsystemEvent(std::string_view name, pksm::Subsystems::Event event)
+    {
+        Logging::startupLog(
+            std::string(name), event == pksm::Subsystems::Event::Acquired ? "init ok" : "exited");
     }
 
     struct asset
@@ -459,7 +524,7 @@ namespace
         bool oldCardIn;
         FSUSER_CardSlotIsInserted(&oldCardIn);
 
-        while (doCartScan.test_and_set())
+        while (doCartScan.test())
         {
             bool cardIn = false;
 
@@ -474,7 +539,7 @@ namespace
                     {
                         FSUSER_CardSlotPowerOn(&power);
                     }
-                    while (!power && doCartScan.test_and_set())
+                    while (!power && doCartScan.test())
                     {
                         FSUSER_CardSlotGetCardIFPowerStatus(&power);
                     }
@@ -495,6 +560,8 @@ namespace
                 }
             }
         }
+
+        cartScanAlive = false;
     }
 
     void iconThread()
@@ -527,7 +594,7 @@ namespace
             particles[i].alpha = 0.3f + (rand() % 70) / 100.0f;
         }
 
-        while (moveIcon.test_and_set())
+        while (moveIcon.test())
         {
             u8* fb = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, &w, &h);
 
@@ -674,15 +741,16 @@ namespace
             pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
         for (const auto& i : languages)
         {
-            if (continueI18N.test_and_set())
+            if (!continueI18N.test())
             {
-                i18n::init(i);
+                break;
             }
-            else
-            {
-                return;
-            }
+            i18n::init(i);
         }
+
+        // i18n::exit frees what this wrote, and it is torn down as soon as the prefetch
+        // token is released, so the release has to see this.
+        i18nPrefetchAlive = false;
     }
 
     Result rebootToPKSM(const std::string& execPath)
@@ -711,22 +779,7 @@ Result App::init(const std::string& execPath)
 {
     // auto start = std::chrono::high_resolution_clock::now();
 
-    Result res;
-
     srand(time(NULL));
-
-    hidInit();
-    gfxInitDefault();
-    Logging::init();
-
-    Threads::init(0, 2);
-
-    moveIcon.test_and_set();
-    iconThreadAlive = true;
-    if (!Threads::create(iconThread))
-    {
-        iconThreadAlive = false;
-    }
 
     // if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr")))
     // {
@@ -734,107 +787,108 @@ Result App::init(const std::string& execPath)
     //         "Rosalina sysmodule has not been found.\n\nMake sure you're running latest Luma3DS.",
     //         res);
     // }
-    // Logging::startupLog("rosalina", "ok");
 
-    APT_GetAppCpuTimeLimit(&old_time_limit);
-    APT_SetAppCpuTimeLimit(30);
-    Logging::startupLog("cpu", "time limit ok");
+    // The order below is the whole startup sequence, and the only place it is written down.
+    // Chained with &&, so the first step that does not come up stops the rest; whatever did
+    // come up is held, and App::exit releases it in reverse. The console is up first so
+    // there is something to report a failure on.
+    const bool platformUp =
+        subsystems.acquire("hid", hidInit, hidExit) &&
+        subsystems.acquire("gfx", gfxInitDefault, gfxExit) &&
+        // The observer logs every later step, so it goes in as soon as there is a log to
+        // write to. hid and gfx come up before it and are not logged, as before.
+        subsystems.acquire(
+            "logging",
+            []
+            {
+                Logging::init();
+                subsystems.observe(logSubsystemEvent);
+            },
+            Logging::exit) &&
+        subsystems.acquire(
+            "cpu",
+            []
+            {
+                APT_GetAppCpuTimeLimit(&old_time_limit);
+                APT_SetAppCpuTimeLimit(30);
+            },
+            []
+            {
+                if (old_time_limit != UINT32_MAX)
+                {
+                    APT_SetAppCpuTimeLimit(old_time_limit);
+                }
+            }) &&
+        subsystems.acquire("cfgu", cfguInit, cfguExit) &&
+        subsystems.acquire("romfs", romfsInit, romfsExit) &&
+        subsystems.acquire(
+            "archive", [&execPath] { return Archive::init(execPath, confirmExtdataReset); },
+            Archive::exit) &&
+        subsystems.acquire("file logging", Logging::initFileLogging) &&
+        // Threads comes up after everything a worker touches on its way out, so joining
+        // them at teardown happens while the archive and the services are still there.
+        subsystems.acquire(
+            "threads", [] { return Threads::init(0, 2); }, Threads::exit) &&
+        subsystems.acquire(
+            "splash",
+            []
+            {
+                moveIcon.test_and_set();
+                iconThreadAlive = true;
+                if (!Threads::create(iconThread))
+                {
+                    iconThreadAlive = false;
+                }
+            },
+            stopIconThread) &&
+        subsystems.acquire("pxiDev", pxiDevInit, pxiDevExit) &&
+        subsystems.acquire("am", amInit, amExit) && subsystems.acquire("ac", acInit, acExit) &&
+        subsystems.acquire("ns", nsInit, nsExit) &&
+        subsystems.acquire(
+            "socket buffer",
+            []
+            {
+                socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+                return socketBuffer != nullptr;
+            },
+            []
+            {
+                free(socketBuffer);
+                socketBuffer = nullptr;
+            }) &&
+        subsystems.acquire(
+            "soc", [] { return socInit(socketBuffer, SOC_BUFFERSIZE) == 0; }, socExit) &&
+        subsystems.acquire("network", Fetch::init, Fetch::exit) &&
+        subsystems.acquire("server", Server::init, Server::exit) &&
+        subsystems.acquire("assets", downloadAdditionalAssets) &&
+        subsystems.acquire("gui", Gui::init, Gui::exit) &&
+        subsystems.acquire(
+            "i18n",
+            []
+            {
+                i18n::addCallbacks(i18n::initGui, i18n::exitGui);
+                // Nothing may draw to the top screen while the splash thread still owns it.
+                // Stopping it here rather than at teardown costs nothing: the handshake is
+                // idempotent, so the token's release is a no-op afterwards.
+                stopIconThread();
+                i18n::init(Configuration::getInstance().language());
+            },
+            i18n::exit) &&
+        // Only now is there something to draw with and a language to draw in. Installing the
+        // presenter also drains whatever the domain reported on the way up - Configuration
+        // parses before any of this exists, and its warnings have been waiting here since.
+        subsystems.acquire(
+            "presenter", [] { pksm::present::install(GuiPresenter::create()); },
+            pksm::present::uninstall) &&
+        subsystems.acquire("pkm", PkmUtils::initDefaults);
 
-    if (R_FAILED(res = cfguInit()))
+    if (!platformUp)
     {
-        return consoleDisplayError("cfguInit failed.", res);
+        const auto& failure = *subsystems.failure();
+        return consoleDisplayError(startupErrorMessage(failure.name), failure.status);
     }
-    Logging::startupLog("cfgu", "init ok");
 
-    if (R_FAILED(res = romfsInit()))
-    {
-        return consoleDisplayError("romfsInit failed.", res);
-    }
-    Logging::startupLog("romfs", "init ok");
-
-    if (R_FAILED(res = Archive::init(execPath, confirmExtdataReset)))
-    {
-        return consoleDisplayError("Archive::init failed.", res);
-    }
-    Logging::startupLog("archive", "init ok");
-
-    Logging::initFileLogging();
-
-    if (R_FAILED(res = pxiDevInit()))
-    {
-        return consoleDisplayError("pxiDevInit failed.", res);
-    }
-    Logging::startupLog("pxiDev", "init ok");
-
-    if (R_FAILED(res = amInit()))
-    {
-        return consoleDisplayError("amInit failed.", res);
-    }
-    Logging::startupLog("am", "init ok");
-
-    if (R_FAILED(res = acInit()))
-    {
-        return consoleDisplayError("acInit failed.", res);
-    }
-    Logging::startupLog("ac", "init ok");
-
-    if (R_FAILED(res = nsInit()))
-    {
-        return consoleDisplayError("nsInit failed.", res);
-    }
-    Logging::startupLog("ns", "init ok");
-
-    u32* socketBuffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
-    if (socketBuffer == NULL)
-    {
-        return consoleDisplayError("Failed to create socket buffer.", -1);
-    }
-    Logging::startupLog("net", "socket buffer init ok");
-
-    if (socInit(socketBuffer, SOC_BUFFERSIZE))
-    {
-        return consoleDisplayError("socInit failed.", -1);
-    }
-    Logging::startupLog("soc", "init ok");
-
-    if (R_FAILED(Fetch::init()))
-    {
-        return consoleDisplayError("Initializing network connection failed.", -1);
-    }
-    Logging::startupLog("net", "network init ok");
-
-    Server::init();
-
-    // link3dsStdio();
-
-    if (R_FAILED(res = downloadAdditionalAssets()))
-    {
-        return consoleDisplayError("Additional assets download failed.\n\nAlways make sure you're "
-                                   "connected to the internet and on the lastest version.",
-            res);
-    }
-    Logging::startupLog("gui", "assets download ok");
-
-    if (R_FAILED(res = Gui::init()))
-    {
-        return consoleDisplayError("Gui::init failed.", res);
-    }
-    Logging::startupLog("gui", "init ok");
-
-    i18n::addCallbacks(i18n::initGui, i18n::exitGui);
-    stopIconThread();
-    i18n::init(Configuration::getInstance().language());
-    Logging::startupLog("i18n", "init ok");
-
-    // Only now is there something to draw with and a language to draw in. Installing the
-    // presenter also drains whatever the domain reported on the way up — Configuration
-    // parses before any of this exists, and its warnings have been waiting here since.
-    pksm::present::install(GuiPresenter::create());
-    Logging::startupLog("presenter", "install ok");
-
-    PkmUtils::initDefaults();
-    Logging::startupLog("pkm", "init ok");
-
+    // Not lifetime: two decisions that can end this run by rebooting into a new build.
     if (!assetsMatch())
     {
         Gui::warn("Additional assets are not correct.\nPress A to start PKSM update");
@@ -855,28 +909,39 @@ Result App::init(const std::string& execPath)
         return rebootToPKSM(execPath);
     }
 
-    if (R_FAILED(res = Banks::init()))
+    // The rest of the sequence, resumed now that this run is staying.
+    const bool contentUp =
+        subsystems.acquire("banks", Banks::init) &&
+        subsystems.acquire("titles", TitleLoader::init, TitleLoader::exit) &&
+        subsystems.acquire("title scan", [] { Threads::executeTask(TitleLoader::scanTitles); }) &&
+        subsystems.acquire("save scan", TitleLoader::scanSaves) &&
+        subsystems.acquire(
+            "cart scan",
+            []
+            {
+                doCartScan.test_and_set();
+                cartScanAlive = true;
+                if (!Threads::create(cartScan))
+                {
+                    cartScanAlive = false;
+                }
+            },
+            stopCartScan) &&
+        subsystems.acquire(
+            "i18n prefetch",
+            []
+            {
+                continueI18N.test_and_set();
+                i18nPrefetchAlive = true;
+                Threads::executeTask(i18nThread);
+            },
+            stopI18NPrefetch);
+
+    if (!contentUp)
     {
-        return consoleDisplayError("Banks::init failed.", res);
+        const auto& failure = *subsystems.failure();
+        return consoleDisplayError(startupErrorMessage(failure.name), failure.status);
     }
-    Logging::startupLog("banks", "init ok");
-
-    TitleLoader::init();
-    Logging::startupLog("title", "init ok");
-
-    Threads::executeTask(TitleLoader::scanTitles);
-    Logging::startupLog("title", "scan started");
-
-    TitleLoader::scanSaves();
-    Logging::startupLog("save", "scan started");
-
-    doCartScan.test_and_set();
-    Threads::create(cartScan);
-    Logging::startupLog("cart", "scan started");
-
-    continueI18N.test_and_set();
-    Threads::executeTask(i18nThread);
-    Logging::startupLog("i18n", "thread started");
 
     // reinitialize both screens. The top screen format is restored explicitly because the
     // ext data corruption prompt (confirmExtdataReset) may have switched it to console mode.
@@ -901,35 +966,7 @@ Result App::init(const std::string& execPath)
 Result App::exit(void)
 {
     Logging::info("Exiting PKSM");
-    moveIcon.clear();
-    continueI18N.clear();
-    svcCloseHandle(hbldrHandle);
-    TitleLoader::exit();
-    pksm::present::uninstall();
-    Gui::exit();
-    Fetch::exit();
-    Server::exit();
-    socExit();
-    nsExit();
-    acExit();
-    doCartScan.clear();
-    Threads::exit();
-    i18n::exit();
-    amExit();
-    pxiDevExit();
-    Logging::exit();
-    Archive::exit();
-    romfsExit();
-    cfguExit();
-
-    if (old_time_limit != UINT32_MAX)
-    {
-        APT_SetAppCpuTimeLimit(old_time_limit);
-    }
-
-    gfxExit();
-    hidExit();
-
+    subsystems.releaseAll();
     return 0;
 }
 

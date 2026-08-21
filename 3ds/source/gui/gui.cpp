@@ -1046,8 +1046,19 @@ void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Col
 
 Result Gui::init(void)
 {
-    C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-    C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+    // Everything below draws through citro, so a failure here has to be reported rather
+    // than swallowed: this used to return 0 whatever happened, and the caller went on to
+    // render against a context that was never created.
+    if (!C3D_Init(C3D_DEFAULT_CMDBUF_SIZE))
+    {
+        Logging::error("C3D_Init failed");
+        return -1;
+    }
+    if (!C2D_Init(C2D_DEFAULT_MAX_OBJECTS))
+    {
+        C3D_Fini();
+        return -1;
+    }
     C2D_Prepare();
     Logging::startupLog("gui", "C2D initialized");
 
@@ -1055,8 +1066,26 @@ Result Gui::init(void)
 
     g_renderTargetTop    = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     g_renderTargetBottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
+    if (!g_renderTargetTop || !g_renderTargetBottom)
+    {
+        Logging::error("Could not create the screen render targets");
+        Sound::exit();
+        C2D_Fini();
+        C3D_Fini();
+        return -1;
+    }
 
-    spritesheet_ui    = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
+    // The UI sheet ships in romfs, so a missing one is a broken build rather than the
+    // missing-assets case below, which downloadAdditionalAssets and assetsMatch handle.
+    spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
+    if (!spritesheet_ui)
+    {
+        Logging::error("Could not load romfs:/gfx/ui_sheet.t3x");
+        Sound::exit();
+        C2D_Fini();
+        C3D_Fini();
+        return -1;
+    }
     spritesheet_pkm   = C2D_SpriteSheetLoad("/3ds/PKSM/assets/pkm_spritesheet.t3x");
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
     Logging::startupLog("gui", "spritesheets loaded");

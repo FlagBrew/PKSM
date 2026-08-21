@@ -265,5 +265,8 @@ void Logging::exit()
     if (logFile != nullptr)
     {
         fclose(logFile);
+        // Teardown carries on logging after this point, and flushLogBuffer writes to
+        // whatever this holds.
+        logFile = nullptr;
     }
 }

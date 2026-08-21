@@ -8,7 +8,7 @@ INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I..
 
 BUILD   := build
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests \
-	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests
+	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
 
 .PHONY: all clean
 all: $(TARGETS)
@@ -30,6 +30,9 @@ $(BUILD)/PresenterTests: PresenterTests.cpp ../common/source/Presenter.cpp | $(B
 
 $(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -Ifakes -I../common/include/gui -o $@ $^
+
+$(BUILD)/SubsystemsTests: SubsystemsTests.cpp ../common/source/Subsystems.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD):
 	@mkdir -p $(BUILD)
