@@ -128,7 +128,7 @@ namespace Gui
     void showRestoreProgress(u32 partial, u32 total);
     void showDownloadProgress(const std::string& path, u32 partial, u32 total);
     void waitFrame(const std::string& message, ScreenTarget target = ScreenTarget::TOP_BOTTOM);
-    void warn(const std::string& message, std::optional<pksm::Language> forceLang = std::nullopt);
+    void warn(const std::string& message);
     void error(const std::string& message, Result errorCode);
     void showResizeStorage(void);
 }

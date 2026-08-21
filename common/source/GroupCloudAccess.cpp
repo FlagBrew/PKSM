@@ -27,11 +27,10 @@
 #include "GroupCloudAccess.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "gui.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PK7.hpp"
+#include "Presenter.hpp"
 #include "revision.h"
-#include "utils/format.hpp"
 #include <format>
 
 namespace
@@ -176,13 +175,13 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
                 nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
                 if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
                 {
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' +
-                              retJson["code"].get<std::string>());
+                    pksm::present::show(
+                        pksm::Notice::GpssDownloadCode, 0, retJson["code"].get<std::string>());
                     browser.refresh();
                 }
                 else
                 {
-                    Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), ret));
+                    pksm::present::show(pksm::Notice::GpssCommunicationError, ret);
                 }
             }
         }

@@ -2111,9 +2111,9 @@ void Gui::waitFrame(const std::string& message, ScreenTarget targetScreen)
     }
 }
 
-void Gui::warn(const std::string& message, std::optional<pksm::Language> lang)
+void Gui::warn(const std::string& message)
 {
-    MessageScreen screen(message, lang.value_or(pksm::Language::ENG));
+    MessageScreen screen(message);
     runScreen(screen);
 }
 

@@ -30,8 +30,8 @@
 #include "Configuration.hpp"
 #include "DateTime.hpp"
 #include "Directory.hpp"
-#include "gui.hpp"
 #include "io.hpp"
+#include "Presenter.hpp"
 #include "sav/Sav.hpp"
 #include "Title.hpp"
 #include "utils/crypto.hpp"
@@ -491,7 +491,7 @@ void TitleLoader::scanTitles(void)
 void TitleLoader::scanSaves(void)
 {
     Logging::info("TitleLoader::scanSaves - Starting save scanning");
-    Gui::waitFrame(i18n::localize("SCAN_SAVES"), ScreenTarget::TOP);
+    pksm::present::busy(pksm::Task::ScanSaves);
     auto scan = [](auto& tids)
     {
         for (const auto& tid : tids)
@@ -596,7 +596,7 @@ void TitleLoader::backupSave(const std::string& id)
         return;
     }
     Logging::info("TitleLoader::backupSave - Backing up save for ID: {}", id);
-    Gui::waitFrame(i18n::localize("LOADER_BACKING_UP"), ScreenTarget::TOP);
+    pksm::present::busy(pksm::Task::BackUpSave);
     DateTime now     = DateTime::now();
     std::string path = std::format("/3ds/PKSM/backups/{0:s}", id);
     mkdir(path.c_str(), 777);
@@ -622,7 +622,7 @@ void TitleLoader::backupSave(const std::string& id)
     else
     {
         Logging::error("TitleLoader::backupSave - Failed to open backup file: {}", path);
-        Gui::warn(i18n::localize("BAD_OPEN_BACKUP"));
+        pksm::present::show(pksm::Notice::SaveBackupOpenFailed);
     }
 }
 
@@ -682,7 +682,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 if (!memcmp(header1.get(), ZEROS, sizeof(ZEROS)))
                 {
                     Logging::warning("TitleLoader::load - Uninitialized GBA save detected");
-                    Gui::warn("Uninitialized save");
+                    pksm::present::show(pksm::Notice::SaveUninitialized);
                     // Dummy data
                     data = std::shared_ptr<u8[]>(new u8[1]);
                     size = 1;
@@ -727,7 +727,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         if (invalid)
                         {
                             Logging::warning("TitleLoader::load - Invalid GBA save CMAC detected");
-                            Gui::warn("Invalid single CMAC");
+                            pksm::present::show(pksm::Notice::SaveSingleCmacInvalid);
                             data = std::shared_ptr<u8[]>(new u8[1]);
                             size = 1;
                         }
@@ -779,7 +779,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                         if (secondInvalid)
                         {
                             Logging::warning("TitleLoader::load - Both GBA save CMACs are invalid");
-                            Gui::warn("Both CMACs are invalid");
+                            pksm::present::show(pksm::Notice::SaveBothCmacsInvalid);
                             // Dummy data
                             data = std::shared_ptr<u8[]>(new u8[1]);
                             size = 1;
@@ -859,7 +859,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
                 {
                     Logging::error(
                         "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
-                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), readSize);
+                    pksm::present::show(pksm::Notice::SaveOpenFailed, readSize);
                     loadedTitle = nullptr;
                     return false;
                 }
@@ -876,7 +876,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             else
             {
                 Logging::error("TitleLoader::load - Invalid save file format");
-                Gui::error(i18n::localize("SAVE_INVALID"), -1);
+                pksm::present::show(pksm::Notice::SaveInvalid, -1);
             }
             return save != nullptr;
         }
@@ -884,7 +884,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
         {
             Logging::error("TitleLoader::load - Failed to open save file, archive result: {}",
                 archive.result());
-            Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
+            pksm::present::show(pksm::Notice::SaveOpenFailed, archive.result());
             loadedTitle = nullptr;
             return false;
         }
@@ -897,7 +897,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
         if (cap != 524288)
         {
             Logging::warning("TitleLoader::load - Unexpected DS save size: {} bytes", cap);
-            Gui::warn(i18n::localize("WRONG_SIZE") + '\n' + i18n::localize("Please report"));
+            pksm::present::show(pksm::Notice::SaveWrongSizeReport);
             return false;
         }
 
@@ -939,7 +939,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
         return save != nullptr;
     }
     Logging::error("TitleLoader::load - Critical error during load");
-    Gui::warn(i18n::localize("LOADER_CRITICAL_ERROR"));
+    pksm::present::show(pksm::Notice::TitleScanCritical);
     return false;
 }
 
@@ -960,7 +960,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
         {
             Logging::error("TitleLoader::load - Save file too large: {} bytes", size);
-            Gui::error(i18n::localize("WRONG_SIZE"), size);
+            pksm::present::show(pksm::Notice::SaveWrongSize, size);
             loadedTitle  = nullptr;
             saveFileName = "";
             fclose(in);
@@ -974,7 +974,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         {
             Logging::error(
                 "TitleLoader::load - Incomplete save read: {} of {} bytes", readSize, size);
-            Gui::error(i18n::localize("WRONG_SIZE"), readSize);
+            pksm::present::show(pksm::Notice::SaveWrongSize, readSize);
             loadedTitle  = nullptr;
             saveFileName = "";
             return false;
@@ -984,7 +984,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
     {
         Logging::error(
             "TitleLoader::load - Failed to open save file: {}, error: {}", savePath, errno);
-        Gui::error(i18n::localize("BAD_OPEN_SAVE"), errno);
+        pksm::present::show(pksm::Notice::SaveOpenFailed, errno);
         loadedTitle  = nullptr;
         saveFileName = "";
         return false;
@@ -993,7 +993,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
     if (!save)
     {
         Logging::error("TitleLoader::load - Invalid save file format: {}", savePath);
-        Gui::warn(saveFileName + '\n' + i18n::localize("SAVE_INVALID"));
+        pksm::present::show(pksm::Notice::SaveFileInvalid, 0, saveFileName);
         saveFileName = "";
         loadedTitle  = nullptr;
         return false;
@@ -1046,8 +1046,7 @@ void TitleLoader::saveToTitle(bool ask)
     {
         Logging::info("TitleLoader::saveToTitle - Saving to title");
         if (TitleLoader::cardTitle.load() == loadedTitle &&
-            (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
-                                            i18n::localize("SAVE_OVERWRITE_CARD"))))
+            (!ask || pksm::present::ask(pksm::Question::OverwriteCardSave)))
         {
             Logging::debug("TitleLoader::saveToTitle - Saving to game card");
             auto title = TitleLoader::cardTitle.load();
@@ -1068,7 +1067,7 @@ void TitleLoader::saveToTitle(bool ask)
                             "TitleLoader::saveToTitle - Failed to commit archive: {}", res);
                         out->close();
                         archive.close();
-                        Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
+                        pksm::present::show(pksm::Notice::SaveCommitFailed, res);
                         return;
                     }
                     out->close();
@@ -1080,7 +1079,7 @@ void TitleLoader::saveToTitle(bool ask)
                     Logging::error(
                         "TitleLoader::saveToTitle - Failed to open save file, archive result: {}",
                         archive.result());
-                    Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
+                    pksm::present::show(pksm::Notice::SaveOpenFailed, archive.result());
                 }
             }
             else
@@ -1099,7 +1098,8 @@ void TitleLoader::saveToTitle(bool ask)
                             res);
                         break;
                     }
-                    Gui::showRestoreProgress((pageSize * (i + 1)) / 1024, save->getLength() / 1024);
+                    pksm::present::progress(pksm::Progress::RestoreSave,
+                        (pageSize * (i + 1)) / 1024, save->getLength() / 1024);
                 }
                 if (R_SUCCEEDED(res))
                 {
@@ -1116,8 +1116,7 @@ void TitleLoader::saveToTitle(bool ask)
                 for (const auto& title : *titles)
                 {
                     if (title == loadedTitle &&
-                        (!ask || Gui::showChoiceMessage(i18n::localize("SAVE_OVERWRITE_1") + '\n' +
-                                                        i18n::localize("SAVE_OVERWRITE_INSTALL"))))
+                        (!ask || pksm::present::ask(pksm::Question::OverwriteInstalledSave)))
                     {
                         Archive archive;
                         std::unique_ptr<File> out;
@@ -1347,7 +1346,7 @@ void TitleLoader::saveToTitle(bool ask)
                                 {
                                     Logging::warning("TitleLoader::saveToTitle - Uninitialized GBA "
                                                      "save detected");
-                                    Gui::warn(i18n::localize("UNINIT_GBA_SAVE"));
+                                    pksm::present::show(pksm::Notice::GbaSaveUninitialized);
                                 }
                             }
                             else
@@ -1362,7 +1361,7 @@ void TitleLoader::saveToTitle(bool ask)
                                     "TitleLoader::saveToTitle - Failed to commit archive: {}", res);
                                 out->close();
                                 archive.close();
-                                Gui::error(i18n::localize("FAIL_SAVE_COMMIT"), res);
+                                pksm::present::show(pksm::Notice::SaveCommitFailed, res);
                                 return;
                             }
                             out->close();
@@ -1374,7 +1373,7 @@ void TitleLoader::saveToTitle(bool ask)
                             Logging::error("TitleLoader::saveToTitle - Failed to open save file, "
                                            "archive result: {}",
                                 archive.result());
-                            Gui::error(i18n::localize("BAD_OPEN_SAVE"), archive.result());
+                            pksm::present::show(pksm::Notice::SaveOpenFailed, archive.result());
                         }
                         break; // There can only be one match
                     }
@@ -1391,7 +1390,7 @@ void TitleLoader::saveToTitle(bool ask)
         if (R_FAILED(res))
         {
             Logging::error("TitleLoader::saveToTitle - Failed to control secure save: {}", res);
-            Gui::error(i18n::localize("SECURE_VALUE_ERROR"), res);
+            pksm::present::show(pksm::Notice::SecureValueFailed, res);
         }
     }
 }

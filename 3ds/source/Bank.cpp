@@ -28,7 +28,6 @@
 #include "Archive.hpp"
 #include "banks.hpp"
 #include "Configuration.hpp"
-#include "gui.hpp"
 #include "io.hpp"
 #include "nlohmann/json.hpp"
 #include "pkx/PB7.hpp"
@@ -40,6 +39,7 @@
 #include "pkx/PK6.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PK8.hpp"
+#include "Presenter.hpp"
 #include "utils/VersionTables.hpp"
 #include <algorithm>
 #include <format>
@@ -90,7 +90,7 @@ void Bank::load(int maxBoxes)
         auto in       = ARCHIVE.file(BANK(paths), FS_OPEN_READ);
         if (in)
         {
-            Gui::waitFrame(i18n::localize("BANK_LOAD"), ScreenTarget::TOP);
+            pksm::present::busy(pksm::Task::BankLoad);
             std::vector<u8> raw(std::min<u64>(in->size(), BankFile::MAX_SIZE));
             const u32 amountRead = raw.empty() ? 0 : in->read(raw.data(), raw.size());
             in->close();
@@ -113,7 +113,7 @@ void Bank::load(int maxBoxes)
                 if (contents->truncated)
                 {
                     // The boxes the file did hold survive; the rest come back empty.
-                    Gui::warn(i18n::localize("BANK_CORRUPT"));
+                    pksm::present::show(pksm::Notice::BankCorrupt);
                 }
 
                 std::copy(BANK_MAGIC.data(), BANK_MAGIC.data() + BANK_MAGIC.size(), header.MAGIC);
@@ -124,22 +124,22 @@ void Bank::load(int maxBoxes)
             }
             else if (std::get<BankFile::Error>(parsed) == BankFile::Error::NewerVersion)
             {
-                Gui::warn(i18n::localize("THE_FUCK") + '\n' + i18n::localize("DO_NOT_DOWNGRADE"));
-                Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
+                pksm::present::show(pksm::Notice::BankFromNewerVersion);
+                pksm::present::busy(pksm::Task::BankCreate);
                 createBank(maxBoxes);
                 needSave = true;
                 create   = true;
             }
             else
             {
-                Gui::warn(i18n::localize("BANK_CORRUPT"));
+                pksm::present::show(pksm::Notice::BankCorrupt);
                 createBank(maxBoxes);
                 needSave = true;
             }
         }
         else
         {
-            Gui::waitFrame(i18n::localize("BANK_CREATE"), ScreenTarget::TOP);
+            pksm::present::busy(pksm::Task::BankCreate);
             createBank(maxBoxes);
             needSave = true;
             create   = true;
@@ -208,7 +208,7 @@ void Bank::load(int maxBoxes)
 bool Bank::saveWithoutBackup() const
 {
     auto paths = this->paths();
-    Gui::waitFrame(i18n::localize("BANK_SAVE"));
+    pksm::present::busy(pksm::Task::BankSave);
     ARCHIVE.deleteFile(BANK(paths));
     ARCHIVE.createFile(BANK(paths), 0, sizeof(BankHeader) + sizeof(BankEntry) * boxes() * 30);
     auto out = ARCHIVE.file(BANK(paths), FS_OPEN_WRITE);
@@ -232,14 +232,14 @@ bool Bank::saveWithoutBackup() const
         }
         else
         {
-            Gui::error(i18n::localize("BANK_NAME_ERROR"), ARCHIVE.result());
+            pksm::present::show(pksm::Notice::BankNameWriteFailed, ARCHIVE.result());
         }
         needsCheck = false;
         return true;
     }
     else
     {
-        Gui::error(i18n::localize("BANK_SAVE_ERROR"), ARCHIVE.result());
+        pksm::present::show(pksm::Notice::BankWriteFailed, ARCHIVE.result());
         return false;
     }
 }
@@ -248,8 +248,7 @@ bool Bank::save() const
 {
     if (Configuration::getInstance().autoBackup())
     {
-        if (!backup() && !Gui::showChoiceMessage(i18n::localize("BACKUP_FAIL_SAVE_1") + '\n' +
-                                                 i18n::localize("BACKUP_FAIL_SAVE_2")))
+        if (!backup() && !pksm::present::ask(pksm::Question::SaveBankWithoutBackup))
         {
             return false;
         }
@@ -263,7 +262,7 @@ void Bank::resize(int boxes)
     boxes = std::clamp(boxes, 1, BankFile::MAX_BOXES);
     if (this->boxes() != boxes)
     {
-        Gui::showResizeStorage();
+        pksm::present::busy(pksm::Task::BankResize);
         // Growing fills the new slots with empty entries; shrinking drops the tail.
         entries.resize(boxes * 30, BankFile::emptyEntry());
 
@@ -380,7 +379,7 @@ void Bank::pkm(const pksm::PKX& pkm, int box, int slot)
 
 bool Bank::backup() const
 {
-    Gui::waitFrame(i18n::localize("BANK_BACKUP"), ScreenTarget::TOP);
+    pksm::present::busy(pksm::Task::BankBackup);
     auto paths = this->paths();
     Archive::copyFile(Archive::sd(), "/3ds/PKSM/backups/" + bankName + ".bnk.bak", Archive::sd(),
         "/3ds/PKSM/backups/" + bankName + ".bnk.bak.old");
@@ -449,7 +448,7 @@ bool Bank::hasChanged() const
 
 void Bank::convertFromBankBin()
 {
-    Gui::waitFrame(i18n::localize("BANK_CONVERT"), ScreenTarget::TOP);
+    pksm::present::busy(pksm::Task::BankConvert);
     auto inStream   = Archive::sd().file("/3ds/PKSM/bank/bank.bin", FS_OPEN_READ);
     Result inResult = Archive::sd().result();
     Archive::sd().createFile("/3ds/PKSM/backups/bank.bin", 0, 1);
@@ -537,7 +536,8 @@ void Bank::convertFromBankBin()
     }
     else
     {
-        Gui::error(i18n::localize("BANK_BAD_CONVERT"), R_FAILED(inResult) ? inResult : outResult);
+        pksm::present::show(
+            pksm::Notice::BankConvertFailed, R_FAILED(inResult) ? inResult : outResult);
     }
 }
 
@@ -567,8 +567,7 @@ bool Bank::setName(const std::string& name)
         bankName = oldName;
         if (R_FAILED(Archive::moveFile(ARCHIVE, BANK(newPaths), ARCHIVE, BANK(oldPaths))))
         {
-            Gui::warn(i18n::localize("CRITICAL_BANK_ERROR_1") + '\n' +
-                      i18n::localize("CRITICAL_BANK_ERROR_2"));
+            pksm::present::show(pksm::Notice::BankCritical);
             return false;
         }
         return false;

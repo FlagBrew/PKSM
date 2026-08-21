@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,22 +24,17 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef MESSAGESCREEN_HPP
-#define MESSAGESCREEN_HPP
+#ifndef GUIPRESENTER_HPP
+#define GUIPRESENTER_HPP
 
-#include "RunnableScreen.hpp"
+#include "Presenter.hpp"
+#include <memory>
 
-class MessageScreen : public RunnableScreen<std::nullptr_t>
+// The citro2d side of the seam: the one place that knows how a domain outcome reads and
+// what it is drawn with. App::init installs it once the GUI and i18n are up.
+namespace GuiPresenter
 {
-public:
-    MessageScreen(const std::string& message) : RunnableScreen(nullptr), message(message) {}
-
-    void drawTop() const override;
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
-
-private:
-    std::string message;
-};
+    std::unique_ptr<pksm::Presenter> create();
+}
 
 #endif

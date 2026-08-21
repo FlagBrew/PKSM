@@ -32,6 +32,7 @@
 #include "Configuration.hpp"
 #include "fetch.hpp"
 #include "gui.hpp"
+#include "GuiPresenter.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"
 #include "loader.hpp"
@@ -846,6 +847,12 @@ Result App::init(const std::string& execPath)
     i18n::init(Configuration::getInstance().language());
     Logging::startupLog("i18n", "init ok");
 
+    // Only now is there something to draw with and a language to draw in. Installing the
+    // presenter also drains whatever the domain reported on the way up — Configuration
+    // parses before any of this exists, and its warnings have been waiting here since.
+    pksm::present::install(GuiPresenter::create());
+    Logging::startupLog("presenter", "install ok");
+
     PkmUtils::initDefaults();
     Logging::startupLog("pkm", "init ok");
 
@@ -919,6 +926,7 @@ Result App::exit(void)
     continueI18N.clear();
     svcCloseHandle(hbldrHandle);
     TitleLoader::exit();
+    pksm::present::uninstall();
     Gui::exit();
     Fetch::exitMulti();
     curl_global_cleanup();
