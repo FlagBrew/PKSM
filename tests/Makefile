@@ -3,17 +3,22 @@
 
 CXX      ?= g++
 CXXFLAGS := -std=gnu++20 -g -Wall -Wextra -Werror -Og
-INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I../external
+INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I../external \
+	-I../3ds/include
 
 BUILD   := build
-TARGETS := $(BUILD)/BankFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
-	$(BUILD)/ScreenStackTests
+TARGETS := $(BUILD)/BankFileTests $(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests \
+	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests
 
 .PHONY: all clean
 all: $(TARGETS)
 	@for test in $(TARGETS); do ./$$test || exit 1; done
 
 $(BUILD)/BankFileTests: BankFileTests.cpp ../common/source/BankFile.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/ConfigurationFileTests: ConfigurationFileTests.cpp \
+		../common/source/ConfigurationFile.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD)/GpssPageTests: GpssPageTests.cpp ../common/source/GpssPage.cpp \

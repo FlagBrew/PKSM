@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,299 +26,134 @@
 
 #include "Configuration.hpp"
 #include "Archive.hpp"
-#include "nlohmann/json.hpp"
 #include "Presenter.hpp"
-#include "website.h"
-#include <array>
+#include <cstdio>
+
+namespace
+{
+    std::string readFile(FILE* file)
+    {
+        if (!file || fseek(file, 0, SEEK_END) != 0)
+        {
+            return {};
+        }
+        const long length = ftell(file);
+        if (length <= 0 || fseek(file, 0, SEEK_SET) != 0)
+        {
+            return {};
+        }
+
+        std::string contents(size_t(length), '\0');
+        contents.resize(fread(contents.data(), 1, contents.size(), file));
+        return contents;
+    }
+
+    pksm::Language systemLanguage()
+    {
+        u8 language;
+        CFGU_GetSystemLanguage(&language);
+        switch (language)
+        {
+            case CFG_LANGUAGE_JP:
+                return pksm::Language::JPN;
+            case CFG_LANGUAGE_EN:
+                return pksm::Language::ENG;
+            case CFG_LANGUAGE_FR:
+                return pksm::Language::FRE;
+            case CFG_LANGUAGE_DE:
+                return pksm::Language::GER;
+            case CFG_LANGUAGE_IT:
+                return pksm::Language::ITA;
+            case CFG_LANGUAGE_ES:
+                return pksm::Language::SPA;
+            case CFG_LANGUAGE_ZH:
+                return pksm::Language::CHS;
+            case CFG_LANGUAGE_KO:
+                return pksm::Language::KOR;
+            case CFG_LANGUAGE_NL:
+                return pksm::Language::NL;
+            case CFG_LANGUAGE_PT:
+                return pksm::Language::PT;
+            case CFG_LANGUAGE_RU:
+                return pksm::Language::RU;
+            case CFG_LANGUAGE_TW:
+                return pksm::Language::CHT;
+            default:
+                return pksm::Language::ENG;
+        }
+    }
+
+    pksm::Notice noticeFor(ConfigurationFile::Error error)
+    {
+        switch (error)
+        {
+            case ConfigurationFile::Error::Corrupt:
+                return pksm::Notice::ConfigCorrupt;
+            case ConfigurationFile::Error::BadFormat:
+                return pksm::Notice::ConfigBadFormat;
+            case ConfigurationFile::Error::FromNewerVersion:
+                return pksm::Notice::ConfigFromNewerVersion;
+        }
+        return pksm::Notice::ConfigBadFormat;
+    }
+}
 
 Configuration::Configuration()
 {
     auto stream = Archive::data().file(u"/config.json", FS_OPEN_READ);
-
     if (!stream)
     {
         loadFromRomfs();
+        return;
     }
-    else
+
+    std::string jsonData(stream->size(), '\0');
+    jsonData.resize(stream->read(jsonData.data(), jsonData.size()));
+    stream->close();
+
+    auto result = ConfigurationFile::parse(jsonData);
+    if (auto* contents = std::get_if<ConfigurationFile::Contents>(&result))
     {
-        oldSize           = stream->size();
-        char* jsonData    = new char[oldSize + 1];
-        jsonData[oldSize] = '\0';
-        stream->read(jsonData, oldSize);
-        stream->close();
-        mJson = std::make_unique<nlohmann::json>(nlohmann::json::parse(jsonData, nullptr, false));
-        delete[] jsonData;
-
-        if (!mJson->is_object())
+        publish(std::move(contents->settings));
+        if (contents->changed)
         {
-            loadFromRomfs();
-            pksm::present::show(pksm::Notice::ConfigCorrupt);
-            return;
-        }
-
-        if (!(mJson->contains("version") && (*mJson)["version"].is_number_integer()))
-        {
-            loadFromRomfs();
-            pksm::present::show(pksm::Notice::ConfigBadFormat);
-            return;
-        }
-
-        if (!(mJson->contains("language") && (*mJson)["language"].is_number_integer()))
-        {
-            loadFromRomfs();
-            pksm::present::show(pksm::Notice::ConfigBadFormat);
-            return;
-        }
-
-        if ((*mJson)["version"].get<int>() != CURRENT_VERSION)
-        {
-            if ((*mJson)["version"].get<int>() > CURRENT_VERSION)
-            {
-                loadFromRomfs();
-                pksm::present::show(pksm::Notice::ConfigFromNewerVersion);
-                return;
-            }
-            if ((*mJson)["version"].get<int>() < 2)
-            {
-                (*mJson)["useSaveInfo"] = false;
-            }
-            if ((*mJson)["version"].get<int>() < 3)
-            {
-                (*mJson)["randomMusic"] = false;
-            }
-            if ((*mJson)["version"].get<int>() < 4)
-            {
-                u8 countryData[4];
-                CFGU_GetConfigInfoBlk2(0x4, 0x000B0000, countryData);
-                if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()))
-                {
-                    loadFromRomfs();
-                    pksm::present::show(pksm::Notice::ConfigBadFormat);
-                    return;
-                }
-                (*mJson)["defaults"]["country"] = countryData[3];
-                (*mJson)["defaults"]["region"]  = countryData[2];
-                CFGU_SecureInfoGetRegion(countryData);
-                (*mJson)["defaults"]["nationality"] = countryData[0];
-            }
-            if ((*mJson)["version"].get<int>() < 5)
-            {
-                if (!(mJson->contains("extraSaves") && (*mJson)["extraSaves"].is_object()))
-                {
-                    for (auto& game : (*mJson)["extraSaves"])
-                    {
-                        if (!game.is_object())
-                        {
-                            loadFromRomfs();
-                            pksm::present::show(pksm::Notice::ConfigBadFormat);
-                            return;
-                        }
-
-                        game.erase("folders");
-                        if (game.contains("files") && game["files"].is_array())
-                        {
-                            nlohmann::json tmp = game["files"];
-                            game               = tmp;
-                        }
-                        else
-                        {
-                            game = nlohmann::json::array();
-                        }
-                    }
-                }
-            }
-            if ((*mJson)["version"].get<int>() < 6)
-            {
-                mJson->erase("storageSize");
-                (*mJson)["showBackups"] = false;
-            }
-            if ((*mJson)["version"].get<int>() < 7)
-            {
-                if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
-                    !((*mJson)["defaults"].contains("pid") &&
-                        (*mJson)["defaults"]["pid"].is_number_integer()))
-                {
-                    loadFromRomfs();
-                    pksm::present::show(pksm::Notice::ConfigBadFormat);
-                    return;
-                }
-                (*mJson)["defaults"]["tid"] = (*mJson)["defaults"]["pid"];
-                (*mJson)["defaults"].erase("pid");
-                (*mJson)["legalEndpoint"] = WEBSITE_URL "pksm/legality/check";
-            }
-            if ((*mJson)["version"].get<int>() < 8)
-            {
-                // (*mJson)["patronCode"]   = "";
-                // (*mJson)["alphaChannel"] = false;
-                (*mJson)["autoUpdate"] = true;
-            }
-            if ((*mJson)["version"].get<int>() < 9)
-            {
-                if (!(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
-                    !((*mJson)["defaults"].contains("sid") &&
-                        (*mJson)["defaults"]["sid"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("tid") &&
-                        (*mJson)["defaults"]["tid"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("ot") &&
-                        (*mJson)["defaults"]["ot"].is_string()) ||
-                    !((*mJson)["defaults"].contains("nationality") &&
-                        (*mJson)["defaults"]["nationality"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("country") &&
-                        (*mJson)["defaults"]["country"].is_number_integer()) ||
-                    !((*mJson)["defaults"].contains("region") &&
-                        (*mJson)["defaults"]["region"].is_number_integer()))
-                {
-                    loadFromRomfs();
-                    pksm::present::show(pksm::Notice::ConfigBadFormat);
-                    return;
-                }
-                (*mJson)["defaults"].erase("sid");
-                (*mJson)["defaults"].erase("tid");
-                (*mJson)["defaults"].erase("ot");
-                (*mJson)["defaults"].erase("nationality");
-                (*mJson)["defaults"].erase("country");
-                (*mJson)["defaults"].erase("region");
-            }
-            if ((*mJson)["version"].get<int>() < 10)
-            {
-                mJson->erase("legalEndpoint");
-                (*mJson)["apiUrl"] = "";
-                // (*mJson)["useApiUrl"] = false;
-            }
-            if ((*mJson)["version"].get<int>() < 11)
-            {
-                (*mJson)["titles"] = nlohmann::json::object();
-
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::R)]  = "0x100";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::S)]  = "0x200";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::E)]  = "0x300";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::FR)] = "0x400";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::LG)] = "0x500";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::X)] =
-                    "0x0004000000055D00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::Y)] =
-                    "0x0004000000055E00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::OR)] =
-                    "0x000400000011C400";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::AS)] =
-                    "0x000400000011C500";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SN)] =
-                    "0x0004000000164800";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::MN)] =
-                    "0x0004000000175E00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::US)] =
-                    "0x00040000001B5000";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::UM)] =
-                    "0x00040000001B5100";
-            }
-            if ((*mJson)["version"].get<int>() < 12)
-            {
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::RD)] =
-                    "0x0004000000171000";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GN)] =
-                    "0x0004000000170D00";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::BU)] =
-                    "0x0004000000171100";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::YW)] =
-                    "0x0004000000171200";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GD)] =
-                    "0x0004000000172600";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SV)] =
-                    "0x0004000000172700";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::C)] =
-                    "0x0004000000172800";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GP)] = "0x600";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::GE)] = "0x700";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SW)] = "0x800";
-                (*mJson)["titles"][std::to_string((u32)pksm::GameVersion::SH)] = "0x900";
-            }
-            if ((*mJson)["version"].get<int>() < 13)
-            {
-                (*mJson)["cloudPageJump"] = 1;
-            }
-
-            (*mJson)["version"] = CURRENT_VERSION;
             save();
         }
-
-        // clang-format off
-        if (!(mJson->contains("version") && (*mJson)["version"].is_number_integer()) ||
-            !(mJson->contains("language") && (*mJson)["language"].is_number_integer()) ||
-            !(mJson->contains("autoBackup") && (*mJson)["autoBackup"].is_boolean()) ||
-            !(mJson->contains("transferEdit") && (*mJson)["transferEdit"].is_boolean()) ||
-            !(mJson->contains("useExtData") && (*mJson)["useExtData"].is_boolean()) ||
-            !(mJson->contains("defaults") && (*mJson)["defaults"].is_object()) ||
-            !(mJson->contains("extraSaves") && (*mJson)["extraSaves"].is_object()) ||
-            !(mJson->contains("writeFileSave") && (*mJson)["writeFileSave"].is_boolean()) ||
-            !(mJson->contains("useSaveInfo") && (*mJson)["useSaveInfo"].is_boolean()) ||
-            !(mJson->contains("randomMusic") && (*mJson)["randomMusic"].is_boolean()) ||
-            !(mJson->contains("showBackups") && (*mJson)["showBackups"].is_boolean()) ||
-            !(mJson->contains("apiUrl") && (*mJson)["apiUrl"].is_string()) ||
-            !(mJson->contains("autoUpdate") && (*mJson)["autoUpdate"].is_boolean()) ||
-            !(mJson->contains("cloudPageJump") && (*mJson)["cloudPageJump"].is_number_integer()) ||
-            !(mJson->contains("titles") && (*mJson)["titles"].is_object()) ||
-            !((*mJson)["defaults"].contains("date") && (*mJson)["defaults"]["date"].is_object()) ||
-            !((*mJson)["defaults"]["date"].contains("day") && (*mJson)["defaults"]["date"]["day"].is_number_integer()) ||
-            !((*mJson)["defaults"]["date"].contains("month") && (*mJson)["defaults"]["date"]["month"].is_number_integer()) ||
-            !((*mJson)["defaults"]["date"].contains("year") && (*mJson)["defaults"]["date"]["year"].is_number_integer()))
-        // clang-format on
-        {
-            loadFromRomfs();
-            pksm::present::show(pksm::Notice::ConfigBadFormat);
-            return;
-        }
-
-        for (const auto& game : (*mJson)["extraSaves"])
-        {
-            if (game.is_array())
-            {
-                for (const auto& save : game)
-                {
-                    if (!save.is_string())
-                    {
-                        loadFromRomfs();
-                        pksm::present::show(pksm::Notice::ConfigBadFormat);
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                loadFromRomfs();
-                pksm::present::show(pksm::Notice::ConfigBadFormat);
-                return;
-            }
-        }
-
-        for (const auto& version : (*mJson)["titles"])
-        {
-            if (!version.is_string())
-            {
-                loadFromRomfs();
-                pksm::present::show(pksm::Notice::ConfigBadFormat);
-                return;
-            }
-        }
-
-        if ((*mJson)["cloudPageJump"].get<int>() < 1)
-        {
-            (*mJson)["cloudPageJump"] = 1;
-            save();
-        }
+        return;
     }
+
+    const auto error = std::get<ConfigurationFile::Error>(result);
+    loadFromRomfs();
+    pksm::present::show(noticeFor(error));
 }
 
-Configuration::~Configuration() {}
+Configuration::~Configuration() = default;
+
+void Configuration::publish(Settings settings)
+{
+    mSettings.store(
+        std::shared_ptr<const Settings>(std::make_shared<Settings>(std::move(settings))),
+        std::memory_order_release);
+}
+
+Configuration::Snapshot Configuration::snapshot() const
+{
+    return mSettings.load(std::memory_order_acquire);
+}
 
 void Configuration::save()
 {
-    std::string writeData = mJson->dump(2);
+    // Serialize one coherent snapshot and prevent a concurrent setter from being acknowledged
+    // before this write while still being absent from it. Readers do not take the writer mutex.
+    std::lock_guard lock(mWriteMutex);
+    std::string writeData =
+        ConfigurationFile::serialize(*mSettings.load(std::memory_order_acquire));
     writeData.shrink_to_fit();
-    size_t size = writeData.size();
+    const size_t size = writeData.size();
 
     Archive::data().deleteFile("/config.json");
-    Archive::data().createFile(u"/config.json", 0, oldSize = size);
-    auto stream = Archive::data().file(u"/config.json", FS_OPEN_WRITE, oldSize = size);
+    Archive::data().createFile(u"/config.json", 0, size);
+    auto stream = Archive::data().file(u"/config.json", FS_OPEN_WRITE, size);
     if (stream)
     {
         stream->write(writeData.data(), size);
@@ -328,228 +163,203 @@ void Configuration::save()
 
 void Configuration::loadFromRomfs()
 {
-    FILE* in = fopen("romfs:/config.json", "rt");
-    mJson    = std::make_unique<nlohmann::json>(nlohmann::json::parse(in, nullptr, false));
-    fclose(in);
-
-    // load system language
-    pksm::Language systemLanguage;
-    CFGU_GetSystemLanguage((u8*)&systemLanguage);
-
-    switch (u8(systemLanguage))
+    Settings settings = ConfigurationFile::defaultSettings();
+    if (FILE* file = fopen("romfs:/config.json", "rt"))
     {
-        case CFG_LANGUAGE_JP:
-            systemLanguage = pksm::Language::JPN;
-            break;
-        case CFG_LANGUAGE_EN:
-            systemLanguage = pksm::Language::ENG;
-            break;
-        case CFG_LANGUAGE_FR:
-            systemLanguage = pksm::Language::FRE;
-            break;
-        case CFG_LANGUAGE_DE:
-            systemLanguage = pksm::Language::GER;
-            break;
-        case CFG_LANGUAGE_IT:
-            systemLanguage = pksm::Language::ITA;
-            break;
-        case CFG_LANGUAGE_ES:
-            systemLanguage = pksm::Language::SPA;
-            break;
-        case CFG_LANGUAGE_ZH:
-            systemLanguage = pksm::Language::CHS;
-            break;
-        case CFG_LANGUAGE_KO:
-            systemLanguage = pksm::Language::KOR;
-            break;
-        case CFG_LANGUAGE_NL:
-            systemLanguage = pksm::Language::NL;
-            break;
-        case CFG_LANGUAGE_PT:
-            systemLanguage = pksm::Language::PT;
-            break;
-        case CFG_LANGUAGE_RU:
-            systemLanguage = pksm::Language::RU;
-            break;
-        case CFG_LANGUAGE_TW:
-            systemLanguage = pksm::Language::CHT;
-            break;
-        default:
-            systemLanguage = pksm::Language::ENG;
-            break;
+        const std::string jsonData = readFile(file);
+        fclose(file);
+        auto result = ConfigurationFile::parse(jsonData);
+        if (auto* contents = std::get_if<ConfigurationFile::Contents>(&result))
+        {
+            settings = std::move(contents->settings);
+        }
     }
-    (*mJson)["language"] = u8(systemLanguage);
 
+    settings.language = systemLanguage();
+    publish(std::move(settings));
     save();
 }
 
-pksm::Language Configuration::language(void) const
+pksm::Language Configuration::language() const
 {
-    return pksm::Language((*mJson)["language"].get<u8>());
+    return snapshot()->language;
 }
 
-bool Configuration::autoBackup(void) const
+bool Configuration::autoBackup() const
 {
-    return (*mJson)["autoBackup"];
+    return snapshot()->autoBackup;
 }
 
-bool Configuration::transferEdit(void) const
+bool Configuration::transferEdit() const
 {
-    return (*mJson)["transferEdit"];
+    return snapshot()->transferEdit;
 }
 
-bool Configuration::useExtData(void) const
+bool Configuration::useExtData() const
 {
-    return (*mJson)["useExtData"];
+    return snapshot()->useExtData;
 }
 
-int Configuration::day(void) const
+int Configuration::day() const
 {
-    return (*mJson)["defaults"]["date"]["day"];
+    return snapshot()->day;
 }
 
-int Configuration::month(void) const
+int Configuration::month() const
 {
-    return (*mJson)["defaults"]["date"]["month"];
+    return snapshot()->month;
 }
 
-int Configuration::year(void) const
+int Configuration::year() const
 {
-    return (*mJson)["defaults"]["date"]["year"];
+    return snapshot()->year;
 }
 
-bool Configuration::writeFileSave(void) const
+Date Configuration::date() const
 {
-    return (*mJson)["writeFileSave"];
+    const auto settings = snapshot();
+    Date date           = Date::today();
+    if (settings->day != 0)
+    {
+        date.day(settings->day);
+    }
+    if (settings->month != 0)
+    {
+        date.month(settings->month);
+    }
+    if (settings->year != 0)
+    {
+        date.year(settings->year);
+    }
+    return date;
 }
 
-bool Configuration::useSaveInfo(void) const
+bool Configuration::writeFileSave() const
 {
-    return (*mJson)["useSaveInfo"];
+    return snapshot()->writeFileSave;
 }
 
-bool Configuration::randomMusic(void) const
+bool Configuration::useSaveInfo() const
 {
-    return (*mJson)["randomMusic"];
+    return snapshot()->useSaveInfo;
 }
 
-bool Configuration::showBackups(void) const
+bool Configuration::randomMusic() const
 {
-    return (*mJson)["showBackups"];
+    return snapshot()->randomMusic;
 }
 
-const std::string& Configuration::apiUrl(void) const
+bool Configuration::showBackups() const
 {
-    return (*mJson)["apiUrl"].get_ref<std::string&>();
+    return snapshot()->showBackups;
 }
 
-bool Configuration::autoUpdate(void) const
+std::string Configuration::apiUrl() const
 {
-    return (*mJson)["autoUpdate"];
+    return snapshot()->apiUrl;
 }
 
-int Configuration::cloudPageJump(void) const
+bool Configuration::autoUpdate() const
 {
-    int value = (*mJson)["cloudPageJump"];
-    return value > 0 ? value : 1;
+    return snapshot()->autoUpdate;
+}
+
+int Configuration::cloudPageJump() const
+{
+    return snapshot()->cloudPageJump;
 }
 
 std::vector<std::string> Configuration::extraSaves(const std::string& id) const
 {
-    if ((*mJson)["extraSaves"].count(id) > 0)
-    {
-        return (*mJson)["extraSaves"][id].get<std::vector<std::string>>();
-    }
-    return {};
+    const auto settings = snapshot();
+    const auto saves    = settings->extraSaves.find(id);
+    return saves == settings->extraSaves.end() ? std::vector<std::string>{} : saves->second;
 }
 
-const std::string& Configuration::titleId(pksm::GameVersion version) const
+std::string Configuration::titleId(pksm::GameVersion version) const
 {
-    static std::string emptyString;
-    std::string v = std::to_string((u32)version);
-    if ((*mJson)["titles"].count(v) > 0)
-    {
-        return (*mJson)["titles"][v].get_ref<std::string&>();
-    }
-    return emptyString;
+    const auto settings = snapshot();
+    const auto title    = settings->titles.find(std::to_string(u32(version)));
+    return title == settings->titles.end() ? std::string{} : title->second;
 }
 
 void Configuration::language(pksm::Language lang)
 {
-    (*mJson)["language"] = u8(lang);
+    update([lang](Settings& settings) { settings.language = lang; });
 }
 
 void Configuration::autoBackup(bool backup)
 {
-    (*mJson)["autoBackup"] = backup;
+    update([backup](Settings& settings) { settings.autoBackup = backup; });
 }
 
 void Configuration::transferEdit(bool edit)
 {
-    (*mJson)["transferEdit"] = edit;
+    update([edit](Settings& settings) { settings.transferEdit = edit; });
 }
 
 void Configuration::useExtData(bool use)
 {
-    (*mJson)["useExtData"] = use;
+    update([use](Settings& settings) { settings.useExtData = use; });
 }
 
-void Configuration::day(int day)
+void Configuration::day(int value)
 {
-    (*mJson)["defaults"]["date"]["day"] = day;
+    update([value](Settings& settings) { settings.day = value; });
 }
 
-void Configuration::month(int month)
+void Configuration::month(int value)
 {
-    (*mJson)["defaults"]["date"]["month"] = month;
+    update([value](Settings& settings) { settings.month = value; });
 }
 
-void Configuration::year(int year)
+void Configuration::year(int value)
 {
-    (*mJson)["defaults"]["date"]["year"] = year;
+    update([value](Settings& settings) { settings.year = value; });
 }
 
 void Configuration::writeFileSave(bool write)
 {
-    (*mJson)["writeFileSave"] = write;
+    update([write](Settings& settings) { settings.writeFileSave = write; });
 }
 
 void Configuration::useSaveInfo(bool saveInfo)
 {
-    (*mJson)["useSaveInfo"] = saveInfo;
+    update([saveInfo](Settings& settings) { settings.useSaveInfo = saveInfo; });
 }
 
 void Configuration::randomMusic(bool random)
 {
-    (*mJson)["randomMusic"] = random;
+    update([random](Settings& settings) { settings.randomMusic = random; });
 }
 
 void Configuration::showBackups(bool value)
 {
-    (*mJson)["showBackups"] = value;
+    update([value](Settings& settings) { settings.showBackups = value; });
 }
 
 void Configuration::apiUrl(const std::string& value)
 {
-    (*mJson)["apiUrl"] = value;
+    update([&value](Settings& settings) { settings.apiUrl = value; });
 }
 
 void Configuration::autoUpdate(bool value)
 {
-    (*mJson)["autoUpdate"] = value;
+    update([value](Settings& settings) { settings.autoUpdate = value; });
 }
 
 void Configuration::cloudPageJump(int value)
 {
-    (*mJson)["cloudPageJump"] = value > 0 ? value : 1;
+    update([value](Settings& settings) { settings.cloudPageJump = value > 0 ? value : 1; });
 }
 
 void Configuration::extraSaves(const std::string& id, const std::vector<std::string>& value)
 {
-    (*mJson)["extraSaves"][id] = value;
+    update([&id, &value](Settings& settings) { settings.extraSaves[id] = value; });
 }
 
 void Configuration::titleId(pksm::GameVersion version, const std::string& id)
 {
-    (*mJson)["titles"][std::to_string((u32)version)] = id;
+    update(
+        [version, &id](Settings& settings) { settings.titles[std::to_string(u32(version))] = id; });
 }

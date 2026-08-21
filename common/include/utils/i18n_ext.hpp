@@ -29,12 +29,13 @@
 
 #include "sav/Sav.hpp"
 #include "utils/i18n.hpp"
+#include <string_view>
 
 namespace i18n
 {
     void initGui(pksm::Language lang);
     void exitGui(pksm::Language lang);
-    const std::string& localize(pksm::Language lang, const std::string& index);
+    const std::string& localize(pksm::Language lang, std::string_view index);
 
     const std::string& pouch(pksm::Language lang, pksm::Sav::Pouch pouch);
     const std::string& badTransfer(pksm::Language lang, pksm::Sav::BadTransferReason reason);

@@ -58,17 +58,20 @@ namespace i18n
         gui.erase(lang);
     }
 
-    const std::string& localize(pksm::Language lang, const std::string& v)
+    const std::string& localize(pksm::Language lang, std::string_view v)
     {
         checkInitialized(lang);
         auto it = gui.find(lang);
         if (it != gui.end())
         {
-            if (!it->second.contains(v))
+            auto value = it->second.find(v);
+            if (value == it->second.end())
             {
-                it->second[v] = "MISSING: " + v;
+                const std::string key(v);
+                it->second[key] = "MISSING: " + key;
+                value           = it->second.find(key);
             }
-            return it->second[v].get_ref<const std::string&>();
+            return value->get_ref<const std::string&>();
         }
         return emptyString;
     }

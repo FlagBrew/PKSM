@@ -567,6 +567,8 @@ void ConfigScreen::initButtons()
 
 void ConfigScreen::drawBottom() const
 {
+    const auto settings = Configuration::getInstance().snapshot();
+
     // Color entire screen the nice medium blue without bars
     Gui::drawSolidRect(0, 0, 320, 240, PKSM_Color(40, 53, 147, 255));
 
@@ -674,12 +676,12 @@ void ConfigScreen::drawBottom() const
         // Configuration::getInstance().defaultCountry(),
         //               Configuration::getInstance().defaultRegion()),
         //     150, 141, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().day()), 168, 174, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().month()), 168, 190, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().year()), 168, 206, FONT_SIZE_12,
-            COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(settings->day), 168, 174, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(settings->month), 168, 190, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(settings->year), 168, 206, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
 
         for (const auto& button : tabButtons[currentTab])
         {
@@ -718,32 +720,24 @@ void ConfigScreen::drawBottom() const
             button->draw();
         }
 
-        Gui::text(Configuration::getInstance().autoBackup() ? i18n::localize("YES")
-                                                            : i18n::localize("NO"),
-            270, 31, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().transferEdit() ? i18n::localize("YES")
-                                                              : i18n::localize("NO"),
-            270, 47, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().writeFileSave() ? i18n::localize("YES")
-                                                               : i18n::localize("NO"),
-            270, 63, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useSaveInfo() ? i18n::localize("YES")
-                                                             : i18n::localize("NO"),
-            270, 79, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().useExtData() ? i18n::localize("YES")
-                                                            : i18n::localize("NO"),
-            270, 95, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().randomMusic() ? i18n::localize("YES")
-                                                             : i18n::localize("NO"),
-            270, 111, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().showBackups() ? i18n::localize("YES")
-                                                             : i18n::localize("NO"),
-            270, 127, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(Configuration::getInstance().autoUpdate() ? i18n::localize("YES")
-                                                            : i18n::localize("NO"),
-            270, 143, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-        Gui::text(std::to_string(Configuration::getInstance().cloudPageJump()), 270, 159,
+        Gui::text(settings->autoBackup ? i18n::localize("YES") : i18n::localize("NO"), 270, 31,
             FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->transferEdit ? i18n::localize("YES") : i18n::localize("NO"), 270, 47,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->writeFileSave ? i18n::localize("YES") : i18n::localize("NO"), 270, 63,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->useSaveInfo ? i18n::localize("YES") : i18n::localize("NO"), 270, 79,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->useExtData ? i18n::localize("YES") : i18n::localize("NO"), 270, 95,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->randomMusic ? i18n::localize("YES") : i18n::localize("NO"), 270, 111,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->showBackups ? i18n::localize("YES") : i18n::localize("NO"), 270, 127,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(settings->autoUpdate ? i18n::localize("YES") : i18n::localize("NO"), 270, 143,
+            FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        Gui::text(std::to_string(settings->cloudPageJump), 270, 159, FONT_SIZE_12, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
     }
 }
 

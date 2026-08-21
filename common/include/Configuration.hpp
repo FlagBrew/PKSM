@@ -27,23 +27,32 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 
+#include "ConfigurationFile.hpp"
 #include "coretypes.h"
 #include "enums/GameVersion.hpp"
 #include "enums/Language.hpp"
-#include "nlohmann/json_fwd.hpp"
 #include "utils/DateTime.hpp"
+#include <atomic>
 #include <memory>
+#include <mutex>
+#include <string_view>
 
 class Configuration
 {
 public:
-    static constexpr int CURRENT_VERSION = 13;
+    static constexpr int CURRENT_VERSION = ConfigurationFile::CURRENT_VERSION;
+    using Settings                       = ConfigurationFile::Settings;
+    using Snapshot                       = std::shared_ptr<const Settings>;
 
     static Configuration& getInstance(void)
     {
         static Configuration config;
         return config;
     }
+
+    // A snapshot remains valid and unchanged while setters publish newer settings. Callers that
+    // need several values should retain one snapshot rather than perform several independent reads.
+    Snapshot snapshot(void) const;
 
     pksm::Language language(void) const;
 
@@ -59,30 +68,14 @@ public:
 
     int year(void) const;
 
-    Date date(void) const
-    {
-        Date ret = Date::today();
-        if (day() != 0)
-        {
-            ret.day(day());
-        }
-        if (month() != 0)
-        {
-            ret.month(month());
-        }
-        if (year() != 0)
-        {
-            ret.year(year());
-        }
-        return ret;
-    }
+    Date date(void) const;
 
     // Files
     std::vector<std::string> extraSaves(const std::string& id) const;
 
     // Allows setting title IDs of versions. Can be used to edit romhacks or GB[A] VC. Support not
     // guaranteed for the former!
-    const std::string& titleId(pksm::GameVersion version) const;
+    std::string titleId(pksm::GameVersion version) const;
 
     bool writeFileSave(void) const;
 
@@ -92,7 +85,7 @@ public:
 
     bool showBackups(void) const;
 
-    const std::string& apiUrl(void) const;
+    std::string apiUrl(void) const;
 
     bool autoUpdate(void) const;
 
@@ -144,18 +137,28 @@ private:
     Configuration(const Configuration&)  = delete;
     void operator=(const Configuration&) = delete;
 
+    void publish(Settings settings);
     void loadFromRomfs(void);
 
-    std::unique_ptr<nlohmann::json> mJson;
+    template <typename Mutator>
+    void update(Mutator&& mutator)
+    {
+        std::lock_guard lock(mWriteMutex);
+        auto next = std::make_shared<Settings>(*mSettings.load(std::memory_order_acquire));
+        mutator(*next);
+        mSettings.store(
+            std::shared_ptr<const Settings>(std::move(next)), std::memory_order_release);
+    }
 
-    size_t oldSize = 0;
+    std::atomic<Snapshot> mSettings;
+    mutable std::mutex mWriteMutex;
 };
 
 namespace i18n
 {
-    const std::string& localize(pksm::Language lang, const std::string& index);
+    const std::string& localize(pksm::Language lang, std::string_view index);
 
-    inline const std::string& localize(const std::string& index)
+    inline const std::string& localize(std::string_view index)
     {
         return i18n::localize(Configuration::getInstance().language(), index);
     }
