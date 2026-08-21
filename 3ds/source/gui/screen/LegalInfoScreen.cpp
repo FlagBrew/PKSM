@@ -87,6 +87,15 @@ void LegalInfoScreen::update(touchPosition* touch)
     ScrollingTextScreen::update(touch);
 }
 
+namespace
+{
+    // Legalizing can mean brute-forcing, and the server says nothing while it does. Deliberately
+    // over Fetch::STALL_GUARD_LIMIT: that is what keeps the stall guard off a request that is
+    // quiet by design. Before Fetch owned that rule, this call site set the long timeout and left
+    // the guard armed, so a legalization that took its time was killed at ten seconds.
+    constexpr long LEGALIZE_TIMEOUT = 120;
+}
+
 void LegalInfoScreen::attemptLegalization()
 {
     long status_code = 0;
@@ -102,105 +111,84 @@ void LegalInfoScreen::attemptLegalization()
     }
     std::string generation = "generation: " + (std::string)pkm->get().generation();
 
-    curl_slist* headers = curl_slist_append(NULL, version.c_str());
-    headers             = curl_slist_append(headers, generation.c_str());
-
     std::string url = Configuration::getInstance().apiUrl();
 
     if (url == "")
     {
         Gui::warn(i18n::localize("API_URL_REQUIRED"));
-        curl_slist_free_all(headers);
         return;
     }
 
-    std::string writeData;
-    if (auto fetch = Fetch::init(url + "api/v2/pksm/legalize", true, &writeData, headers, ""))
+    const Fetch::Part parts[] = {
+        {"pkmn", pkm->get().rawData()}
+    };
+    auto response = Fetch::postMultipart(
+        url + "api/v2/pksm/legalize", parts, {version, generation}, LEGALIZE_TIMEOUT);
+    if (!response.ok())
     {
-        auto mimeThing       = fetch->mimeInit();
-        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-        curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)pkm->get().rawData().data(), pkm->get().getLength());
-        curl_mime_filename(field, "pkmn");
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        // Longer than the initial legal check, because it might need to brute force?
-        // Either way after 120 seconds it will timeout if it didn't get a response.
-        // It's higher than the previous check, but if you forgot to start the server
-        // you couldn't get to this point as it would timeout on the legality check after 5 seconds.
-        fetch->setopt(CURLOPT_TIMEOUT, 120L);
-
-        auto res = Fetch::perform(fetch);
-        curl_slist_free_all(headers);
-        if (res.index() == 0)
+        Gui::error(i18n::localize("CURL_ERROR"), response.code);
+    }
+    else
+    {
+        status_code = response.status;
+        switch (status_code)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
-        }
-        else if (std::get<1>(res) != CURLE_OK)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-        }
-        else
-        {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
+            case 200:
             {
-                case 200:
+                nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+                // clang-format off
+                if (retJson.is_object() &&
+                    retJson.contains("pokemon") && (retJson["pokemon"].is_string() || retJson["pokemon"].is_null()) &&
+                    retJson.contains("ran") && retJson["ran"].is_boolean() &&
+                    retJson.contains("success") && retJson["success"].is_boolean())
+                // clang-format on
                 {
-                    nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-                    // clang-format off
-                    if (retJson.is_object() &&
-                        retJson.contains("pokemon") && (retJson["pokemon"].is_string() || retJson["pokemon"].is_null()) &&
-                        retJson.contains("ran") && retJson["ran"].is_boolean() &&
-                        retJson.contains("success") && retJson["success"].is_boolean())
-                    // clang-format on
+                    if (!retJson["success"].get<bool>())
                     {
-                        if (!retJson["success"].get<bool>())
+                        Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
+                        Gui::screenBack();
+                        return;
+                    }
+                    else if (!retJson["ran"].get<bool>())
+                    {
+                        Gui::warn(i18n::localize("ALREADY_LEGAL"));
+                        Gui::screenBack();
+                        return;
+                    }
+                    else if (!retJson["pokemon"].is_null())
+                    {
+                        std::vector<u8> pkmData =
+                            base64_decode(retJson["pokemon"].get<std::string>());
+                        auto fixed = pksm::PKX::getPKM(
+                            pkm->get().generation(), pkmData.data(), pkmData.size(), true);
+                        if (fixed)
                         {
-                            Gui::warn(i18n::localize("AUTO_LEGALIZE_ERROR"));
+                            std::ranges::copy(
+                                fixed->rawData().subspan(
+                                    0, std::min(pkm->get().getLength(), fixed->getLength())),
+                                pkm->get().rawData().begin());
+                            Gui::warn(i18n::localize("PKM_LEGALIZED"));
                             Gui::screenBack();
                             return;
                         }
-                        else if (!retJson["ran"].get<bool>())
+                        else
                         {
-                            Gui::warn(i18n::localize("ALREADY_LEGAL"));
-                            Gui::screenBack();
+                            Gui::error(i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' +
+                                           i18n::localize("REPORT_THIS_TO_FLAGBREW"),
+                                pkmData.size());
                             return;
-                        }
-                        else if (!retJson["pokemon"].is_null())
-                        {
-                            std::vector<u8> pkmData =
-                                base64_decode(retJson["pokemon"].get<std::string>());
-                            auto fixed = pksm::PKX::getPKM(
-                                pkm->get().generation(), pkmData.data(), pkmData.size(), true);
-                            if (fixed)
-                            {
-                                std::ranges::copy(
-                                    fixed->rawData().subspan(
-                                        0, std::min(pkm->get().getLength(), fixed->getLength())),
-                                    pkm->get().rawData().begin());
-                                Gui::warn(i18n::localize("PKM_LEGALIZED"));
-                                Gui::screenBack();
-                                return;
-                            }
-                            else
-                            {
-                                Gui::error(i18n::localize("PROBLEM_LEGALIZED_LENGTH") + '\n' +
-                                               i18n::localize("REPORT_THIS_TO_FLAGBREW"),
-                                    pkmData.size());
-                                return;
-                            }
                         }
                     }
                 }
-                // falls through
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    return;
-                case 503:
-                    Gui::warn(
-                        i18n::localize("LEGALIZE_IN_QUEUE") + '\n' + i18n::localize("PLEASE_WAIT"));
-                    return;
             }
+            // falls through
+            default:
+                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                return;
+            case 503:
+                Gui::warn(
+                    i18n::localize("LEGALIZE_IN_QUEUE") + '\n' + i18n::localize("PLEASE_WAIT"));
+                return;
         }
     }
 }

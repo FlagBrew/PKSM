@@ -33,6 +33,9 @@
 
 namespace
 {
+    // One Pokémon going up, with the server only checking it: nothing here needs longer.
+    constexpr long UPLOAD_TIMEOUT = 10;
+
     std::unique_ptr<pksm::PKX> emptyPkm()
     {
         return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
@@ -104,37 +107,22 @@ void CloudAccess::filterLegal(bool legal)
 
 long CloudAccess::pkm(std::unique_ptr<pksm::PKX> mon)
 {
-    long ret                  = 0;
     const std::string version = "generation: " + (std::string)mon->generation();
     const std::string pksm_version =
         "source: PKSM " +
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
 
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
-    headers                    = curl_slist_append(headers, pksm_version.c_str());
-    headers                    = curl_slist_append(headers, version.c_str());
-
-    std::string writeData;
-    if (auto fetch =
-            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/pokemon", true,
-                &writeData, headers, ""))
+    const Fetch::Part parts[] = {
+        {"pkmn", mon->rawData()}
+    };
+    auto response =
+        Fetch::postMultipart(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/pokemon",
+            parts, {pksm_version, version}, UPLOAD_TIMEOUT);
+    if (!response.ok())
     {
-        auto mimeThing       = fetch->mimeInit();
-        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-        curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)mon->rawData().data(), mon->getLength());
-        curl_mime_filename(field, "pkmn");
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        fetch->setopt(CURLOPT_TIMEOUT, 10L);
-
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
-        {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
-            browser.refresh();
-        }
+        return 0;
     }
-    curl_slist_free_all(headers);
-    return ret;
+
+    browser.refresh();
+    return response.status;
 }

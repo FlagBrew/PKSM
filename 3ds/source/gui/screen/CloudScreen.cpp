@@ -650,65 +650,50 @@ bool CloudScreen::releasePkm()
     return false;
 }
 
+namespace
+{
+    // One Pokemon up or down, with the server only checking it: nothing here needs longer.
+    constexpr long SHARE_TIMEOUT = 10;
+}
+
 void CloudScreen::shareSend()
 {
-    long status_code    = 0;
     std::string version = "generation: " + (std::string)infoMon->generation();
     const std::string pksm_version =
         "source: PKSM " +
         std::format("v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
-    headers                    = curl_slist_append(headers, pksm_version.c_str());
-    headers                    = curl_slist_append(headers, version.c_str());
 
-    std::string writeData = "";
-    if (auto fetch =
-            Fetch::init(websiteURL + "api/v2/gpss/upload/pokemon", true, &writeData, headers, ""))
+    const Fetch::Part parts[] = {
+        {"pkmn", infoMon->rawData()}
+    };
+    auto response = Fetch::postMultipart(
+        websiteURL + "api/v2/gpss/upload/pokemon", parts, {pksm_version, version}, SHARE_TIMEOUT);
+    if (!response.ok())
     {
-        auto mimeThing       = fetch->mimeInit();
-        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-        curl_mime_name(field, "pkmn");
-        curl_mime_data(field, (char*)infoMon->rawData().data(), infoMon->getLength());
-        curl_mime_filename(field, "pkmn");
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        fetch->setopt(CURLOPT_TIMEOUT, 10L);
+        Gui::error(i18n::localize("CURL_ERROR"), response.code);
+        return;
+    }
 
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 0)
+    const long status_code = response.status;
+    if (status_code == 200 || status_code == 201)
+    {
+        // Only a success carries a download code. An error body may not even be JSON,
+        // so it is reported from the status alone.
+        nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+        if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
         {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
-        }
-        else if (std::get<1>(res) != CURLE_OK)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
+            Gui::warn(
+                i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' + retJson["code"].get<std::string>());
         }
         else
         {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            if (status_code == 200 || status_code == 201)
-            {
-                // Only a success carries a download code. An error body may not even be JSON,
-                // so it is reported from the status alone.
-                nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-                if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
-                {
-                    Gui::warn(i18n::localize("SHARE_DOWNLOAD_CODE") + '\n' +
-                              retJson["code"].get<std::string>());
-                }
-                else
-                {
-                    Gui::warn(
-                        pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), status_code));
-                }
-            }
-            else
-            {
-                reportUploadStatus(status_code);
-            }
+            Gui::warn(pksm::format(i18n::localize("GPSS_COMMUNICATION_ERROR"), status_code));
         }
     }
-    curl_slist_free_all(headers);
+    else
+    {
+        reportUploadStatus(status_code);
+    }
 }
 
 void CloudScreen::shareReceive()
@@ -739,79 +724,69 @@ void CloudScreen::shareReceive()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         const std::string url = websiteURL + "api/v2/gpss/download/pokemon/" + std::string(input);
-        std::string retData   = "";
-        if (auto fetch = Fetch::init(url, true, &retData, nullptr, ""))
+        auto response         = Fetch::get(url);
+        if (!response.ok())
         {
-            long status_code = 0;
+            Gui::error(i18n::localize("CURL_ERROR"), response.code);
+        }
+        else
+        {
+            const long status_code = response.status;
+            switch (status_code)
+            {
+                case 200:
+                    break;
+                case 400:
+                case 404:
+                    Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
+                    return;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    return;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    return;
+            }
 
-            auto res = Fetch::perform(fetch);
-            if (res.index() == 0)
+            nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+
+            std::string generation = "";
+            if (retJson.contains("generation"))
             {
-                Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
-            }
-            else if (std::get<1>(res) != CURLE_OK)
-            {
-                Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-            }
-            else
-            {
-                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                switch (status_code)
+                if (retJson["generation"].is_string())
                 {
-                    case 200:
-                        break;
-                    case 400:
-                    case 404:
-                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                        return;
-                    case 502:
-                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        return;
-                    default:
-                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        return;
+                    generation = retJson["generation"].get<std::string>();
+                }
+                else if (retJson["generation"].is_number())
+                {
+                    // convert the number to a string
+                    generation = std::to_string(retJson["generation"].get<int>());
+                }
+            }
+
+            if (retJson.is_object() && generation != "" && retJson.contains("pokemon") &&
+                retJson["pokemon"].is_string())
+            {
+                pksm::Generation gen = pksm::Generation::fromString(generation);
+
+                auto retData = base64_decode(retJson["pokemon"].get_ref<std::string&>());
+
+                std::unique_ptr<pksm::PKX> pkm =
+                    pksm::PKX::getPKM(gen, retData.data(), retData.size());
+
+                if (!pkm)
+                {
+                    Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
+                    return;
                 }
 
-                nlohmann::json retJson = nlohmann::json::parse(retData, nullptr, false);
-
-                std::string generation = "";
-                if (retJson.contains("generation"))
+                if (!cloudChosen && cursorIndex != 0)
                 {
-                    if (retJson["generation"].is_string())
-                    {
-                        generation = retJson["generation"].get<std::string>();
-                    }
-                    else if (retJson["generation"].is_number())
-                    {
-                        // convert the number to a string
-                        generation = std::to_string(retJson["generation"].get<int>());
-                    }
+                    Banks::bank->pkm(*pkm, storageBox, cursorIndex - 1);
                 }
-
-                if (retJson.is_object() && generation != "" && retJson.contains("pokemon") &&
-                    retJson["pokemon"].is_string())
+                else
                 {
-                    pksm::Generation gen = pksm::Generation::fromString(generation);
-
-                    auto retData = base64_decode(retJson["pokemon"].get_ref<std::string&>());
-
-                    std::unique_ptr<pksm::PKX> pkm =
-                        pksm::PKX::getPKM(gen, retData.data(), retData.size());
-
-                    if (!pkm)
-                    {
-                        Gui::error(i18n::localize("SHARE_ERROR_INCORRECT_VERSION"), retData.size());
-                        return;
-                    }
-
-                    if (!cloudChosen && cursorIndex != 0)
-                    {
-                        Banks::bank->pkm(*pkm, storageBox, cursorIndex - 1);
-                    }
-                    else
-                    {
-                        moveMon = std::move(pkm);
-                    }
+                    moveMon = std::move(pkm);
                 }
             }
         }

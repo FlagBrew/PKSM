@@ -259,73 +259,64 @@ namespace
         }
 
         execPath        = execPath.substr(execPath.find(':') + 1);
-        std::string url = "", path = "", retString = "";
-        if (auto fetch = Fetch::init("https://api.github.com/repos/FlagBrew/PKSM/releases/latest",
-                true, &retString, nullptr, ""))
+        std::string url = "", path = "";
+
+        stopIconThread();
+        Gui::waitFrame(i18n::localize("UPDATE_CHECKING"), ScreenTarget::TOP);
+        auto response = Fetch::get("https://api.github.com/repos/FlagBrew/PKSM/releases/latest");
+        if (!response.ok())
         {
-            stopIconThread();
-            Gui::waitFrame(i18n::localize("UPDATE_CHECKING"), ScreenTarget::TOP);
-            auto res = Fetch::perform(fetch);
-            if (res.index() == 1)
+            Gui::error(i18n::localize("CURL_ERROR"), response.code);
+        }
+        else
+        {
+            switch (response.status)
             {
-                if (std::get<1>(res) != CURLE_OK)
+                case 200:
                 {
-                    Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-                }
-                else
-                {
-                    long status_code;
-                    fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                    switch (status_code)
+                    nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+                    if (retJson.is_discarded() || !retJson.contains("tag_name") ||
+                        !retJson["tag_name"].is_string())
                     {
-                        case 200:
+                        Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' +
+                                  i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
+                    }
+                    else
+                    {
+                        std::string newVersion = retJson["tag_name"].get<std::string>();
+                        size_t pos             = 0;
+                        size_t pos2            = 0;
+                        int newMajor           = std::stoi(newVersion, &pos);
+                        int newMinor           = std::stoi(newVersion.substr(pos + 1), &pos2);
+                        int newMicro           = std::stoi(newVersion.substr(pos + pos2 + 2));
+
+                        if (newMajor > VERSION_MAJOR ||
+                            (newMajor == VERSION_MAJOR && newMinor > VERSION_MINOR) ||
+                            (newMajor == VERSION_MAJOR && newMinor == VERSION_MINOR &&
+                                newMicro > VERSION_MICRO))
                         {
-                            nlohmann::json retJson =
-                                nlohmann::json::parse(retString, nullptr, false);
-                            if (retJson.is_discarded() || !retJson.contains("tag_name") ||
-                                !retJson["tag_name"].is_string())
+                            url = "https://github.com/FlagBrew/PKSM/releases/download/" +
+                                  newVersion + "/PKSM";
+                            if (execPath != "")
                             {
-                                Gui::warn(i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_1") + '\n' +
-                                          i18n::localize("UPDATE_CHECK_ERROR_BAD_JSON_2"));
+                                url += ".3dsx";
+                                path = execPath + ".new";
                             }
                             else
                             {
-                                std::string newVersion = retJson["tag_name"].get<std::string>();
-                                size_t pos             = 0;
-                                size_t pos2            = 0;
-                                int newMajor           = std::stoi(newVersion, &pos);
-                                int newMinor = std::stoi(newVersion.substr(pos + 1), &pos2);
-                                int newMicro = std::stoi(newVersion.substr(pos + pos2 + 2));
-
-                                if (newMajor > VERSION_MAJOR ||
-                                    (newMajor == VERSION_MAJOR && newMinor > VERSION_MINOR) ||
-                                    (newMajor == VERSION_MAJOR && newMinor == VERSION_MINOR &&
-                                        newMicro > VERSION_MICRO))
-                                {
-                                    url = "https://github.com/FlagBrew/PKSM/releases/download/" +
-                                          newVersion + "/PKSM";
-                                    if (execPath != "")
-                                    {
-                                        url += ".3dsx";
-                                        path = execPath + ".new";
-                                    }
-                                    else
-                                    {
-                                        url += ".cia";
-                                        path = "/3ds/PKSM/PKSM.cia";
-                                    }
-                                }
+                                url += ".cia";
+                                path = "/3ds/PKSM/PKSM.cia";
                             }
-                            break;
                         }
-                        case 502:
-                            Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                            break;
-                        default:
-                            Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                            break;
                     }
+                    break;
                 }
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), response.status);
+                    break;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), response.status);
+                    break;
             }
         }
         if (!url.empty())
@@ -335,15 +326,8 @@ namespace
             backupBanks();
             Gui::waitFrame(i18n::localize("UPDATE_FOUND_DOWNLOAD"), ScreenTarget::TOP);
             std::string fileName = path.substr(path.find_last_of('/') + 1);
-            Result res           = Fetch::download(
-                url, path, "",
-                [](void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal,
-                    curl_off_t ulnow)
-                {
-                    Gui::showDownloadProgress(*(std::string*)clientp, dlnow / 1024, dltotal / 1024);
-                    return 0;
-                },
-                &fileName);
+            Result res           = Fetch::download(url, path, [&fileName](u64 now, u64 total)
+                          { Gui::showDownloadProgress(fileName, now / 1024, total / 1024); });
             if (R_FAILED(res))
             {
                 Gui::error(i18n::localize("UPDATE_FOUND_BUT_FAILED_DOWNLOAD"), res);
@@ -812,17 +796,11 @@ Result App::init(const std::string& execPath)
     }
     Logging::startupLog("soc", "init ok");
 
-    if (CURLcode code = curl_global_init(CURL_GLOBAL_NOTHING))
-    {
-        return consoleDisplayError("cURL init failed", (Result)code);
-    }
-    Logging::startupLog("net", "cURL init ok");
-
-    if (R_FAILED(Fetch::initMulti()))
+    if (R_FAILED(Fetch::init()))
     {
         return consoleDisplayError("Initializing network connection failed.", -1);
     }
-    Logging::startupLog("net", "parallel init ok");
+    Logging::startupLog("net", "network init ok");
 
     Server::init();
 
@@ -928,8 +906,7 @@ Result App::exit(void)
     TitleLoader::exit();
     pksm::present::uninstall();
     Gui::exit();
-    Fetch::exitMulti();
-    curl_global_cleanup();
+    Fetch::exit();
     Server::exit();
     socExit();
     nsExit();

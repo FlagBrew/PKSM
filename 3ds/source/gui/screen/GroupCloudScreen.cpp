@@ -721,81 +721,70 @@ void GroupCloudScreen::shareReceive()
     if (ret == SWKBD_BUTTON_CONFIRM)
     {
         const std::string url = websiteURL + "api/v2/gpss/download/bundle/" + std::string(input);
-        std::string jsonData  = "";
-        if (auto fetch = Fetch::init(url, true, &jsonData, nullptr, ""))
+        auto response         = Fetch::get(url);
+        if (!response.ok())
         {
-            long status_code = 0;
-
-            auto res = Fetch::perform(fetch);
-            if (res.index() == 0)
+            Gui::error(i18n::localize("CURL_ERROR"), response.code);
+        }
+        else
+        {
+            const long status_code = response.status;
+            switch (status_code)
             {
-                Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
+                case 200:
+                    break;
+                case 400:
+                case 404:
+                    Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
+                    return;
+                case 502:
+                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                    return;
+                default:
+                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                    return;
             }
-            else if (std::get<1>(res) != CURLE_OK)
-            {
-                Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-            }
-            else
-            {
-                fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-                switch (status_code)
-                {
-                    case 200:
-                        break;
-                    case 400:
-                    case 404:
-                        Gui::error(i18n::localize("SHARE_INVALID_CODE"), status_code);
-                        return;
-                    case 502:
-                        Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                        return;
-                    default:
-                        Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                        return;
-                }
-                nlohmann::json groupJson = nlohmann::json::parse(jsonData, nullptr, false);
+            nlohmann::json groupJson = nlohmann::json::parse(response.body, nullptr, false);
 
-                if (groupJson.is_object() && groupJson.contains("pokemons") &&
-                    groupJson["pokemons"].is_array())
+            if (groupJson.is_object() && groupJson.contains("pokemons") &&
+                groupJson["pokemons"].is_array())
+            {
+                groupPkm.clear();
+                std::string badVersions;
+                std::vector<std::unique_ptr<pksm::PKX>> temPkm;
+                for (const auto& pkm : groupJson["pokemons"])
                 {
-                    groupPkm.clear();
-                    std::string badVersions;
-                    std::vector<std::unique_ptr<pksm::PKX>> temPkm;
-                    for (const auto& pkm : groupJson["pokemons"])
-                    {
-                        // clang-format off
+                    // clang-format off
                         if (pkm.is_object() &&
                             pkm.contains("generation") && pkm["generation"].is_string() &&
                             pkm.contains("pokemon") && pkm["pokemon"].is_string())
-                        // clang-format on
-                        {
-                            pksm::Generation gen =
-                                pksm::Generation::fromString(pkm["generation"].get<std::string>());
-                            std::vector<u8> data = base64_decode(pkm["pokemon"].get<std::string>());
+                    // clang-format on
+                    {
+                        pksm::Generation gen =
+                            pksm::Generation::fromString(pkm["generation"].get<std::string>());
+                        std::vector<u8> data = base64_decode(pkm["pokemon"].get<std::string>());
 
-                            if (gen != pksm::Generation::UNUSED)
-                            {
-                                temPkm.emplace_back(
-                                    pksm::PKX::getPKM(gen, data.data(), data.size()));
-                            }
-                            else
-                            {
-                                badVersions += pkm["generation"].get<std::string>() + ", ";
-                            }
+                        if (gen != pksm::Generation::UNUSED)
+                        {
+                            temPkm.emplace_back(pksm::PKX::getPKM(gen, data.data(), data.size()));
+                        }
+                        else
+                        {
+                            badVersions += pkm["generation"].get<std::string>() + ", ";
                         }
                     }
+                }
 
-                    for (auto it = temPkm.rbegin(); it != temPkm.rend(); ++it)
-                    {
-                        groupPkm.emplace_back(std::move(*it));
-                    }
+                for (auto it = temPkm.rbegin(); it != temPkm.rend(); ++it)
+                {
+                    groupPkm.emplace_back(std::move(*it));
+                }
 
-                    if (!badVersions.empty())
-                    {
-                        badVersions.pop_back();
-                        badVersions.pop_back();
-                        Gui::warn(i18n::localize("UNSUPPORTED_FORMATS") + badVersions);
-                    }
+                if (!badVersions.empty())
+                {
+                    badVersions.pop_back();
+                    badVersions.pop_back();
+                    Gui::warn(i18n::localize("UNSUPPORTED_FORMATS") + badVersions);
                 }
             }
         }

@@ -2404,33 +2404,20 @@ void fetch_web_content(
     int* outSize = (int*)Param[1]->Val->Pointer;
     char* url    = (char*)Param[2]->Val->Pointer;
 
-    std::string outData;
-    auto fetch = Fetch::init(url, url[4] == 's', &outData, nullptr, "");
-    auto ret   = Fetch::perform(fetch);
-    if (ret.index() == 0)
+    auto response = Fetch::get(url);
+    if (!response.ok())
     {
-        ReturnValue->Val->Integer = -(int)std::get<0>(ret);
+        // Scripts have always read a negative return as "the request failed"; the number is the
+        // same one PKSM shows anywhere else.
+        ReturnValue->Val->Integer = -(response.code ? response.code : 1);
         *out                      = nullptr;
         *outSize                  = 0;
         return;
     }
-    else
-    {
-        if (std::get<1>(ret) == CURLE_OK)
-        {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &ReturnValue->Val->LongInteger);
-            *out     = (char*)strToRet(outData);
-            *outSize = outData.size();
-            return;
-        }
-        else
-        {
-            ReturnValue->Val->Integer = -((int)std::get<1>(ret) + 100);
-            *out                      = nullptr;
-            *outSize                  = 0;
-            return;
-        }
-    }
+
+    ReturnValue->Val->LongInteger = response.status;
+    *out                          = (char*)strToRet(response.body);
+    *outSize                      = response.body.size();
 }
 
 // struct JSON* json_new();

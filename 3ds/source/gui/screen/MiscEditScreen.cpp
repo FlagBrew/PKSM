@@ -705,96 +705,83 @@ void MiscEditScreen::year()
     }
 }
 
+namespace
+{
+    // If the server was never started, or the IP is wrong, ten seconds is long enough to find
+    // out and short enough that the user is still watching.
+    constexpr long LEGALITY_TIMEOUT = 10;
+}
+
 void MiscEditScreen::validate()
 {
-    std::string generation     = "generation: " + (std::string)pkm.generation();
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, "Content-Type: multipart/form-data");
-    headers                    = curl_slist_append(headers, generation.c_str());
+    std::string generation = "generation: " + (std::string)pkm.generation();
 
     std::string url = Configuration::getInstance().apiUrl();
 
     if (url == "")
     {
         Gui::warn(i18n::localize("API_URL_REQUIRED"));
-        curl_slist_free_all(headers);
         return;
     }
 
-    std::string writeData = "";
-    if (auto fetch = Fetch::init(url + "api/v2/pksm/legality", true, &writeData, headers, ""))
+    pkm.refreshChecksum();
+    const Fetch::Part parts[] = {
+        {"pkmn", pkm.rawData()}
+    };
+    auto response =
+        Fetch::postMultipart(url + "api/v2/pksm/legality", parts, {generation}, LEGALITY_TIMEOUT);
+    if (!response.ok())
     {
-        auto mimeThing       = fetch->mimeInit();
-        curl_mimepart* field = curl_mime_addpart(mimeThing.get());
-        curl_mime_name(field, "pkmn");
-        pkm.refreshChecksum();
-        curl_mime_data(field, (char*)pkm.rawData().data(), pkm.getLength());
-        curl_mime_filename(field, "pkmn");
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        // Incase you forgot to start the server or entered the wrong IP, it'll timeout after 10
-        // seconds
-        fetch->setopt(CURLOPT_TIMEOUT, 10L);
-
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 0)
+        Gui::error(i18n::localize("CURL_ERROR"), response.code);
+    }
+    else
+    {
+        const long status_code = response.status;
+        switch (status_code)
         {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<0>(res));
-        }
-        else if (std::get<1>(res) != CURLE_OK)
-        {
-            Gui::error(i18n::localize("CURL_ERROR"), std::get<1>(res) + 100);
-        }
-        else
-        {
-            long status_code;
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &status_code);
-            switch (status_code)
-            {
-                case 200:
-                    // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm.rawData());
-                    if (writeData.size() > 0)
+            case 200:
+                // std::copy(dataToWrite.begin(), dataToWrite.end(), pkm.rawData());
+                if (response.body.size() > 0)
+                {
+                    nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+                    std::string legal_text;
+                    if (retJson.is_object() && retJson.contains("report") &&
+                        retJson["report"].is_array())
                     {
-                        nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-                        std::string legal_text;
-                        if (retJson.is_object() && retJson.contains("report") &&
-                            retJson["report"].is_array())
+                        size_t full_size = 0;
+                        for (const auto& line : retJson["report"])
                         {
-                            size_t full_size = 0;
-                            for (const auto& line : retJson["report"])
+                            if (full_size)
                             {
-                                if (full_size)
-                                {
-                                    full_size += 1;
-                                }
-                                full_size += line.size();
+                                full_size += 1;
                             }
-                            legal_text.reserve(full_size);
-                            for (const auto& line : retJson["report"])
-                            {
-                                if (!legal_text.empty())
-                                {
-                                    legal_text += '\n';
-                                }
-                                legal_text += line;
-                            }
+                            full_size += line.size();
                         }
-                        else
+                        legal_text.reserve(full_size);
+                        for (const auto& line : retJson["report"])
                         {
-                            legal_text = "Receive error.";
+                            if (!legal_text.empty())
+                            {
+                                legal_text += '\n';
+                            }
+                            legal_text += line;
                         }
-                        Gui::setScreen(std::make_unique<LegalInfoScreen>(legal_text, pkm));
                     }
-                    break;
-                case 502:
-                    Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
-                    break;
-                default:
-                    Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
-                    break;
-            }
+                    else
+                    {
+                        legal_text = "Receive error.";
+                    }
+                    Gui::setScreen(std::make_unique<LegalInfoScreen>(legal_text, pkm));
+                }
+                break;
+            case 502:
+                Gui::error(i18n::localize("HTTP_OFFLINE"), status_code);
+                break;
+            default:
+                Gui::error(i18n::localize("HTTP_UNKNOWN_ERROR"), status_code);
+                break;
         }
     }
-    curl_slist_free_all(headers);
     // dataToWrite.clear();
     return;
 }

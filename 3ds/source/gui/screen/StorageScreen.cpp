@@ -32,7 +32,6 @@
 #include "ClickButton.hpp"
 #include "CloudScreen.hpp"
 #include "Configuration.hpp"
-#include "fetch.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "io.hpp"

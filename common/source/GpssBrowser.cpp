@@ -70,12 +70,9 @@ namespace
         return contents;
     }
 
-    curl_slist* pageHeaders()
+    Fetch::Headers pageHeaders()
     {
-        curl_slist* headers = nullptr;
-        headers = curl_slist_append(headers, "Content-Type: application/json;charset=UTF-8");
-        headers = curl_slist_append(headers, "pksm-mode: yes");
-        return headers;
+        return {"Content-Type: application/json;charset=UTF-8", "pksm-mode: yes"};
     }
 }
 
@@ -163,12 +160,8 @@ void GpssBrowser::countDownload(const std::string& what, const std::string& code
     {
         return;
     }
-    if (auto request = Fetch::init(
-            Configuration::getInstance().apiUrl() + "api/v2/gpss/download/" + what + '/' + code,
-            true, nullptr, nullptr, ""))
-    {
-        Fetch::performAsync(request);
-    }
+    Fetch::getAsync(
+        Configuration::getInstance().apiUrl() + "api/v2/gpss/download/" + what + '/' + code);
 }
 
 std::shared_ptr<GpssBrowser::Slot> GpssBrowser::fetch(int number)
@@ -177,51 +170,34 @@ std::shared_ptr<GpssBrowser::Slot> GpssBrowser::fetch(int number)
     const auto [url, postData] = makeURL(searchQuery, number);
     const Gpss::Kind kind      = searchQuery.kind;
 
-    std::string* retData = new std::string;
-    curl_slist* headers  = pageHeaders();
-
-    auto request = Fetch::init(url, true, retData, headers, postData);
-    if (request)
-    {
-        request->setopt(CURLOPT_TIMEOUT, PAGE_TIMEOUT);
-    }
-
-    // A page nobody is fetching still has to become available, or whoever waits for it waits for
-    // ever - which is what the discarded CURLMcode used to buy.
-    if (!request || Fetch::performAsync(request,
-                        [slot, retData, headers, kind](CURLcode code, std::shared_ptr<Fetch> handle)
-                        {
-                            if (code == CURLE_OK)
-                            {
-                                long status = 0;
-                                handle->getinfo(CURLINFO_RESPONSE_CODE, &status);
-                                if (status == 200)
-                                {
-                                    auto parsed = Gpss::parse(*retData, kind);
-                                    if (auto* page = std::get_if<Gpss::Page>(&parsed))
-                                    {
-                                        slot->contents = decode(*page);
-                                    }
-                                }
-                                if (!slot->contents)
-                                {
-                                    if (auto error = Gpss::errorCode(*retData, kind))
-                                    {
-                                        slot->errorCode = *error;
-                                    }
-                                }
-                            }
-                            delete retData;
-                            curl_slist_free_all(headers);
-                            // Last, and only once: everything above happened before the page was
-                            // published.
-                            slot->ready = true;
-                        }) != CURLM_OK)
-    {
-        delete retData;
-        curl_slist_free_all(headers);
-        slot->ready = true;
-    }
+    // Fetch runs the callback exactly once whatever becomes of the request, so a page that was
+    // never even sent still becomes available and whoever waits for it stops waiting.
+    Fetch::postJsonAsync(
+        url, postData,
+        [slot, kind](Fetch::Response response)
+        {
+            if (response.ok())
+            {
+                if (response.status == 200)
+                {
+                    auto parsed = Gpss::parse(response.body, kind);
+                    if (auto* page = std::get_if<Gpss::Page>(&parsed))
+                    {
+                        slot->contents = decode(*page);
+                    }
+                }
+                if (!slot->contents)
+                {
+                    if (auto error = Gpss::errorCode(response.body, kind))
+                    {
+                        slot->errorCode = *error;
+                    }
+                }
+            }
+            // Last, and only once: everything above happened before the page was published.
+            slot->ready = true;
+        },
+        pageHeaders(), PAGE_TIMEOUT);
 
     return slot;
 }
@@ -231,27 +207,19 @@ std::shared_ptr<GpssBrowser::Slot> GpssBrowser::fetchNow(int number)
     auto slot                  = std::make_shared<Slot>();
     const auto [url, postData] = makeURL(searchQuery, number);
 
-    std::string retData;
-    curl_slist* headers = pageHeaders();
-
-    if (auto request = Fetch::init(url, true, &retData, headers, postData))
+    auto response = Fetch::postJson(url, postData, pageHeaders(), PAGE_TIMEOUT);
+    if (response.ok())
     {
-        request->setopt(CURLOPT_TIMEOUT, PAGE_TIMEOUT);
-        auto res = Fetch::perform(request);
-        if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
+        auto parsed = Gpss::parse(response.body, searchQuery.kind);
+        if (auto* page = std::get_if<Gpss::Page>(&parsed))
         {
-            auto parsed = Gpss::parse(retData, searchQuery.kind);
-            if (auto* page = std::get_if<Gpss::Page>(&parsed))
-            {
-                slot->contents = decode(*page);
-            }
-            else if (auto error = Gpss::errorCode(retData, searchQuery.kind))
-            {
-                slot->errorCode = *error;
-            }
+            slot->contents = decode(*page);
+        }
+        else if (auto error = Gpss::errorCode(response.body, searchQuery.kind))
+        {
+            slot->errorCode = *error;
         }
     }
-    curl_slist_free_all(headers);
 
     slot->ready = true;
     return slot;

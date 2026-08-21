@@ -35,6 +35,11 @@
 
 namespace
 {
+    // The server legality-checks every Pokemon in the bundle before it answers, and says nothing
+    // while it does. Over Fetch::STALL_GUARD_LIMIT on purpose: that is what keeps the stall guard
+    // from tearing the request down mid-processing.
+    constexpr long BUNDLE_TIMEOUT = 60;
+
     std::unique_ptr<pksm::PKX> emptyPkm()
     {
         return pksm::PKX::getPKM<pksm::Generation::SEVEN>(nullptr, pksm::PK7::BOX_LENGTH);
@@ -136,56 +141,38 @@ long GroupCloudAccess::group(std::vector<std::unique_ptr<pksm::PKX>> sendMe)
     // Remove trailing comma
     generation.pop_back();
 
-    struct curl_slist* headers = NULL;
-    headers                    = curl_slist_append(headers, amount.c_str());
-    headers                    = curl_slist_append(headers, pksm_version.c_str());
-    headers                    = curl_slist_append(headers, generation.c_str());
-
-    std::string writeData;
-    if (auto fetch =
-            Fetch::init(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/bundle", true,
-                &writeData, headers, ""))
+    std::vector<Fetch::Part> parts;
+    parts.reserve(sendMe.size());
+    for (size_t i = 0; i < sendMe.size(); i++)
     {
-        auto mimeThing = fetch->mimeInit();
-        for (size_t i = 0; i < sendMe.size(); i++)
-        {
-            curl_mimepart* field  = curl_mime_addpart(mimeThing.get());
-            std::string fieldName = std::format("pkmn{:d}", i + 1);
-            curl_mime_name(field, fieldName.c_str());
-            curl_mime_data(field, (char*)sendMe[i]->rawData().data(), sendMe[i]->getLength());
-            curl_mime_filename(field, fieldName.c_str());
-        }
-        fetch->setopt(CURLOPT_MIMEPOST, mimeThing.get());
-        // The server runs a legality check on every mon in the bundle, which can
-        // keep the connection idle for a while. Give it a generous timeout and
-        // disable the low-speed abort that Fetch::init arms, otherwise curl tears
-        // the request down mid-processing (CURLE_OPERATION_TIMEDOUT, status 0).
-        fetch->setopt(CURLOPT_TIMEOUT, 60L);
-        fetch->setopt(CURLOPT_LOW_SPEED_LIMIT, 0L);
+        parts.push_back({std::format("pkmn{:d}", i + 1), sendMe[i]->rawData()});
+    }
 
-        auto res = Fetch::perform(fetch);
-        if (res.index() == 1 && std::get<1>(res) == CURLE_OK)
+    auto response =
+        Fetch::postMultipart(Configuration::getInstance().apiUrl() + "api/v2/gpss/upload/bundle",
+            parts, {amount, pksm_version, generation}, BUNDLE_TIMEOUT);
+    if (!response.ok())
+    {
+        return ret;
+    }
+
+    ret = response.status;
+    // Only the success responses carry a download code. Error statuses are reported by the
+    // caller based on the returned status code, so don't try to parse them here (the body may
+    // not even be JSON, which would crash).
+    if (ret == 200 || ret == 201)
+    {
+        nlohmann::json retJson = nlohmann::json::parse(response.body, nullptr, false);
+        if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
         {
-            fetch->getinfo(CURLINFO_RESPONSE_CODE, &ret);
-            // Only the success responses carry a download code. Error statuses are
-            // reported by the caller based on the returned status code, so don't try
-            // to parse them here (the body may not even be JSON, which would crash).
-            if (ret == 200 || ret == 201)
-            {
-                nlohmann::json retJson = nlohmann::json::parse(writeData, nullptr, false);
-                if (retJson.is_object() && retJson.contains("code") && retJson["code"].is_string())
-                {
-                    pksm::present::show(
-                        pksm::Notice::GpssDownloadCode, 0, retJson["code"].get<std::string>());
-                    browser.refresh();
-                }
-                else
-                {
-                    pksm::present::show(pksm::Notice::GpssCommunicationError, ret);
-                }
-            }
+            pksm::present::show(
+                pksm::Notice::GpssDownloadCode, 0, retJson["code"].get<std::string>());
+            browser.refresh();
+        }
+        else
+        {
+            pksm::present::show(pksm::Notice::GpssCommunicationError, ret);
         }
     }
-    curl_slist_free_all(headers);
     return ret;
 }
