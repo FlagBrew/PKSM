@@ -79,8 +79,14 @@ public:
 
     virtual bool handlesUpdate() const { return true; }
 
+    // Pops the innermost overlay. No-op when nothing is stacked, so call sites
+    // that fire on a button press don't have to track whether one is open.
     void removeOverlay()
     {
+        if (!overlay)
+        {
+            return;
+        }
         if (overlay->overlay)
         {
             overlay->removeOverlay();

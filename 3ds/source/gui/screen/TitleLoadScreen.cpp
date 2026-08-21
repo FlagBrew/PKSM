@@ -334,7 +334,8 @@ void TitleLoadScreen::update(touchPosition* touch)
         }
         else
         {
-            availableCheckpointSaves = {};
+            availableCheckpointSaves.clear();
+            savesCacheValid = false;
             buttons[0]->update(touch);
             if (buttonsDown & KEY_Y)
             {
@@ -646,17 +647,48 @@ void TitleLoadScreen::update(touchPosition* touch)
     }
     if (auto title = titleFromIndex(selectedTitle))
     {
-        availableCheckpointSaves = TitleLoader::sdSaves.lock().get()[title->checkpointPrefix()];
+        refreshCheckpointSaves(title->checkpointPrefix());
     }
     else
     {
-        availableCheckpointSaves = {};
+        availableCheckpointSaves.clear();
+        savesCacheValid = false;
     }
 
     if (buttonsDown & KEY_X)
     {
         ScreenStack::push(std::make_unique<ConfigScreen>());
     }
+}
+
+void TitleLoadScreen::refreshCheckpointSaves(const std::string& prefix)
+{
+    // update() runs every frame. Copying a vector of strings out of the shared map
+    // each time meant taking the sdSaves lock 60 times a second, and operator[]
+    // inserted an empty entry for every title that has no saves yet, growing the
+    // map that every other reader walks. Copy only when something actually moved.
+    const u32 version = TitleLoader::sdSavesVersion.load(std::memory_order_relaxed);
+    if (savesCacheValid && cachedSavesVersion == version && cachedSavePrefix == prefix)
+    {
+        return;
+    }
+
+    {
+        auto saves = TitleLoader::sdSaves.lock();
+        // find, not operator[]: a title with no backups must not insert one.
+        if (auto entry = saves->find(prefix); entry != saves->end())
+        {
+            availableCheckpointSaves = entry->second;
+        }
+        else
+        {
+            availableCheckpointSaves.clear();
+        }
+    }
+
+    cachedSavePrefix   = prefix;
+    cachedSavesVersion = version;
+    savesCacheValid    = true;
 }
 
 bool TitleLoadScreen::setSelectedSave(int i)

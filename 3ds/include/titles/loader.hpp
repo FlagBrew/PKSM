@@ -31,6 +31,7 @@
 #include "utils/DataMutex.hpp"
 #include "utils/SmallVector.hpp"
 #include <3ds.h>
+#include <atomic>
 #include <functional>
 #include <memory>
 #include <string>
@@ -71,6 +72,10 @@ namespace TitleLoader
     inline DataMutex<SmallVector<std::shared_ptr<Title>, 12>> vcTitles;
     inline std::atomic<std::shared_ptr<Title>> cardTitle = nullptr;
     inline DataMutex<std::unordered_map<std::string, std::vector<std::string>>> sdSaves;
+    // Bumped on every mutation of sdSaves. Readers that keep a copy compare it
+    // against their own stamp to tell whether the copy is still current, instead
+    // of re-copying under the lock on every frame.
+    inline std::atomic<u32> sdSavesVersion = 0;
     inline std::shared_ptr<pksm::Sav> save;
 }
 

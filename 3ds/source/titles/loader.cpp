@@ -534,11 +534,13 @@ void TitleLoader::scanSaves(void)
                 }
             }
             sdSaves.lock().get()[id] = std::move(saves);
+            sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
         }
     };
 
     {
         sdSaves.lock()->clear();
+        sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
         Logging::debug("TitleLoader::scanSaves - Cleared existing save cache");
     }
 
@@ -583,6 +585,7 @@ void TitleLoader::scanSaves(void)
                 }
             }
             sdSaves.lock().get()[id] = std::move(saves);
+            sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
         }
     }
     Logging::info("TitleLoader::scanSaves - Save scanning complete");
@@ -617,6 +620,7 @@ void TitleLoader::backupSave(const std::string& id)
             // NOTE: this locks sdSaves, so callers must not already hold that
             // lock (the mutex is non-recursive). See TitleLoader::load (#1529).
             sdSaves.lock().get()[id].emplace_back(path);
+            sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
         }
     }
     else

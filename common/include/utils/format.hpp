@@ -32,10 +32,22 @@
 
 namespace pksm
 {
+    // Most format strings here come from the localization JSON, which is authored
+    // by translators and not checked at compile time. A malformed spec makes
+    // std::vformat throw, and the only catch is around the whole main loop, so an
+    // unguarded throw takes the app down. Degrade to the raw string instead: the
+    // user sees literal braces, which is a cosmetic bug, not a lost session.
     template <typename... Ts>
     std::string format(std::string_view fmt, const Ts&... args)
     {
-        return std::vformat(fmt, std::make_format_args(args...));
+        try
+        {
+            return std::vformat(fmt, std::make_format_args(args...));
+        }
+        catch (const std::format_error&)
+        {
+            return std::string(fmt);
+        }
     }
 }
 

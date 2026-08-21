@@ -30,6 +30,7 @@
 #include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
+#include "utils/coretypes.h"
 #include "utils/DataMutex.hpp"
 #include "utils/SmallVector.hpp"
 #include <cmath>
@@ -52,8 +53,14 @@ private:
     std::shared_ptr<Title> titleFromIndex(int i) const;
     bool loadSave(void) const;
     void resetTitles(void);
+    // Refreshes availableCheckpointSaves from TitleLoader::sdSaves, but only when
+    // the selection or the save cache has actually changed since the last call.
+    void refreshCheckpointSaves(const std::string& prefix);
 
     std::vector<std::string> availableCheckpointSaves;
+    std::string cachedSavePrefix;
+    u32 cachedSavesVersion = 0;
+    bool savesCacheValid   = false;
     std::vector<std::unique_ptr<Button>> buttons;
     std::vector<std::unique_ptr<ToggleButton>> tabs;
     DataMutex<SmallVector<std::shared_ptr<Title>, 12>>* lockedTitles;

@@ -28,10 +28,10 @@
 #define THREAD_HPP
 
 #include "coretypes.h"
-#include "utils/alignsort_tuple.hpp"
 #include <functional>
 #include <memory>
 #include <optional>
+#include <tuple>
 #include <utility>
 
 namespace Threads
@@ -65,7 +65,7 @@ namespace Threads
                      (std::constructible_from<std::remove_cvref_t<Args>, decltype(args)> && ...)
         {
             using tuple_type =
-                alignsort_tuple<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...>;
+                std::tuple<std::remove_cvref_t<EPFunc>, std::remove_cvref_t<Args>...>;
             return {std::invoke(
                         []<std::size_t... Indices>(std::index_sequence<Indices...>)
                         {

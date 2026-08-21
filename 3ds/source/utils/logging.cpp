@@ -49,8 +49,26 @@ namespace
 
     std::mutex logMutex;
     constexpr size_t LOG_BUFFER_SIZE = 8192;
+    // applicationLogs is only what /logs/memory serves; the file on the SD card is
+    // the complete record. Title and save scanning emits one entry per title, so an
+    // uncapped buffer grows with the size of the user's SD card. Keep the tail.
+    constexpr size_t MEMORY_LOG_MAX = 128 * 1024;
     std::string logBuffer;
     FILE* logFile = nullptr;
+
+    // Caller must hold logMutex.
+    void trimMemoryLog()
+    {
+        if (applicationLogs.size() <= MEMORY_LOG_MAX)
+        {
+            return;
+        }
+        // Drop the oldest quarter, rounded forward to a line boundary so the
+        // served text never starts mid-entry.
+        size_t cut = applicationLogs.size() - (MEMORY_LOG_MAX * 3 / 4);
+        cut        = applicationLogs.find('\n', cut);
+        applicationLogs.erase(0, cut == std::string::npos ? applicationLogs.size() : cut + 1);
+    }
 
     void flushLogBuffer()
     {
@@ -115,7 +133,11 @@ void Logging::init()
 
     Server::registerHandler("/logs/memory",
         [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
-        { return {200, "text/plain", applicationLogs}; });
+        {
+            // Served from a server thread while log() may be appending.
+            std::lock_guard<std::mutex> lock(logMutex);
+            return {200, "text/plain", applicationLogs};
+        });
 
     Server::registerHandler("/logs/file",
         [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
@@ -217,7 +239,8 @@ void Logging::log(LogLevel level, const std::string& message)
 
     std::lock_guard<std::mutex> lock(logMutex);
     applicationLogs += logEntry;
-    logBuffer       += logEntry;
+    trimMemoryLog();
+    logBuffer += logEntry;
 
     // Flush if buffer is getting full or for important messages
     if (logFile != nullptr)
