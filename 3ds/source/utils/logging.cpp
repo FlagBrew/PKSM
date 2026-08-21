@@ -60,7 +60,7 @@ namespace
         }
         if (logFile != NULL)
         {
-            fprintf(logFile, logBuffer.c_str());
+            fwrite(logBuffer.data(), 1, logBuffer.size(), logFile);
             fflush(logFile);
             logBuffer.clear();
         }
