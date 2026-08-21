@@ -561,12 +561,34 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
     dataArchive = extdata(UNIQUE_ID, false);
     if (R_FAILED(data().result()))
     {
+        const Result openResult = data().result();
+
+        // An invalid-state error means the extdata is still registered, but FS cannot mount it.
+        // Trying to create it again only returns the same error (#1567). Offer the same recovery
+        // used when the archive opens but its root cannot be read.
+        if (R_SUMMARY(openResult) == RS_INVALIDSTATE)
+        {
+            if (!confirmExtdataReset || !confirmExtdataReset())
+            {
+                return openResult;
+            }
+
+            if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+            {
+                return res;
+            }
+        }
+
         if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
         {
             return res;
         }
 
         dataArchive = extdata(UNIQUE_ID, false);
+        if (R_FAILED(res = data().result()))
+        {
+            return res;
+        }
 
         if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
             res != (long)0xC82044B9)
