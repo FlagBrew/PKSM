@@ -30,6 +30,7 @@
 #include "gui.hpp"
 #include "quirc/quirc.h"
 #include "thread.hpp"
+#include "utils/logging.hpp"
 #include <3ds.h>
 #include <atomic>
 
@@ -123,6 +124,8 @@ namespace
             curImage->tex->border = 0xFFFFFFFF;
             C3D_TexSetWrap(curImage->tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
             svcCreateEvent(&exitEvent, RESET_STICKY);
+            LightEvent_Init(&drawThreadDone, RESET_STICKY);
+            LightEvent_Init(&captureThreadDone, RESET_STICKY);
             quirc_resize(data, camera_width, camera_height);
 
             LightSemaphore_Init(&letHandlerRun, 10, 10);
@@ -138,6 +141,8 @@ namespace
         void drawThread();
         void captureThread();
         void handler(std::vector<u8>& out);
+        // Blocks until neither thread can touch this object again
+        void joinThreads();
 
         bool done() { return finished; }
 
@@ -168,6 +173,8 @@ namespace
         static constexpr Tex3DS_SubTexture subtex = {camera_width, camera_height, 0.0f, 1.0f,
             ((float)camera_width) / image_width, 1.0f - (((float)camera_height) / image_height)};
         LightSemaphore letHandlerRun;
+        LightEvent drawThreadDone;
+        LightEvent captureThreadDone;
         std::atomic<bool> finished = false;
         bool capturing             = false;
         bool cancel                = false;
@@ -246,6 +253,8 @@ void QRData<Size>::drawThread()
         C3D_FrameEnd(0);
         Gui::frameClean();
     }
+
+    LightEvent_Signal(&drawThreadDone);
 }
 
 template <CAMU_Size Size>
@@ -332,6 +341,20 @@ void QRData<Size>::captureThread()
         }
     }
     finished = true;
+    LightEvent_Signal(&captureThreadDone);
+}
+
+template <CAMU_Size Size>
+void QRData<Size>::joinThreads()
+{
+    // The draw thread parks on the semaphore that handler() normally feeds, so it has to be let
+    // through one last time before it can observe done() and leave.
+    LightSemaphore_Release(&letHandlerRun, 10);
+    LightEvent_Wait(&drawThreadDone);
+    if (capturing)
+    {
+        LightEvent_Wait(&captureThreadDone);
+    }
 }
 
 template <CAMU_Size Size>
@@ -348,13 +371,13 @@ void QRData<Size>::handler(std::vector<u8>& out)
     if (!capturing)
     {
         // create cam thread
-        if (threadCreate((ThreadFunc)&captureHelp<Size>, this, 0x10000, 0x1A, 1, true) != NULL)
+        if (Threads::create(&captureHelp<Size>, this, 0x10000, 0x1A))
         {
             capturing = true;
         }
         else
         {
-            finish();
+            finished = true;
             return;
         }
     }
@@ -402,10 +425,18 @@ std::vector<u8> QR_Internal::scan()
     std::vector<u8> out                       = {};
     std::unique_ptr<QRData<CAMERA_SIZE>> data = std::make_unique<QRData<CAMERA_SIZE>>();
     aptSetHomeAllowed(false);
-    Threads::create<&QRData<CAMERA_SIZE>::drawThread>(0x10000, data.get());
-    while (!data->done())
+    if (Threads::create<&QRData<CAMERA_SIZE>::drawThread>(0x10000, data.get()))
     {
-        data->handler(out);
+        while (!data->done())
+        {
+            data->handler(out);
+        }
+        // data dies at the end of this scope, so nothing may still be inside it
+        data->joinThreads();
+    }
+    else
+    {
+        Logging::warning("Could not start the QR scanner draw thread");
     }
     aptSetHomeAllowed(true);
     return out;

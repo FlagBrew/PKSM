@@ -185,7 +185,8 @@ bool Threads::init(u8 min, u8 max)
     return true;
 }
 
-bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
+bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize,
+    std::optional<int> priority)
 {
     auto lockedThreads = threads.lock();
     if (lockedThreads->first.size() >= Threads::MAX_THREADS)
@@ -194,8 +195,9 @@ bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t>
     }
     s32 prio = 0;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
+    prio = priority.value_or(prio - 1);
     Thread thread =
-        threadCreate(entrypoint, arg, stackSize.value_or(DEFAULT_STACK), prio - 1, -2, false);
+        threadCreate(entrypoint, arg, stackSize.value_or(DEFAULT_STACK), prio, -2, false);
 
     if (thread)
     {

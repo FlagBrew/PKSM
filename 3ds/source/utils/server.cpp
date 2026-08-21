@@ -25,10 +25,13 @@
  */
 
 #include "server.hpp"
+#include "DataMutex.hpp"
 #include "logging.hpp"
 #include "thread.hpp"
 #include <3ds.h>
+#include <atomic>
 #include <cstring>
+#include <functional>
 #include <map>
 #include <string>
 
@@ -44,7 +47,13 @@ namespace
     std::atomic_flag serverRunning = ATOMIC_FLAG_INIT;
     s32 serverSocket               = -1;
 
-    std::map<std::string, Server::HttpHandler> handlers;
+    // Registered from the main thread, looked up from the network thread
+    DataMutex<std::map<std::string, Server::HttpHandler>> handlers;
+
+    // Signalled when the network thread has left networkLoop. Only initialized, and only worth
+    // waiting on, when that thread actually started.
+    LightEvent serverThreadDone;
+    bool serverThreadStarted = false;
 
     std::string extractPath(const std::string& request)
     {
@@ -66,10 +75,18 @@ namespace
         recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
         std::string request(buffer);
         std::string path = extractPath(request);
-        auto it          = handlers.find(path);
-        if (it != handlers.end())
+        // Copy the handler out rather than running it under the lock: it can take as long as it
+        // likes, and registerHandler must not block on it.
+        Server::HttpHandler handler = std::invoke(
+            [&]() -> Server::HttpHandler
+            {
+                auto lockedHandlers = handlers.lock();
+                auto it             = lockedHandlers->find(path);
+                return it != lockedHandlers->end() ? it->second : nullptr;
+            });
+        if (handler)
         {
-            Server::HttpResponse response = it->second(path, request);
+            Server::HttpResponse response = handler(path, request);
             std::string header            = "HTTP/1.1 " + std::to_string(response.statusCode);
             header                       += (response.statusCode == 200
                                                  ? " OK"
@@ -97,7 +114,7 @@ namespace
         // Set server socket to non-blocking
         fcntl(serverSocket, F_SETFL, fcntl(serverSocket, F_GETFL, 0) | O_NONBLOCK);
 
-        while (serverRunning.test_and_set())
+        while (serverRunning.test())
         {
             s32 clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
 
@@ -116,18 +133,20 @@ namespace
             // Prevent 100% CPU usage
             svcSleepThread(100000000); // 100ms
         }
+
+        LightEvent_Signal(&serverThreadDone);
     }
 }
 
 void Server::registerHandler(const std::string& path, Server::HttpHandler handler)
 {
-    handlers[path] = handler;
+    handlers.lock().get()[path] = handler;
     Logging::info("Registered HTTP handler for path {}", path);
 }
 
 void Server::unregisterHandler(const std::string& path)
 {
-    handlers.erase(path);
+    handlers.lock()->erase(path);
     Logging::info("Unregistered HTTP handler for path {}", path);
 }
 
@@ -168,7 +187,16 @@ void Server::init()
     inet_ntop(AF_INET, &(serverAddr.sin_addr), ipStr, INET_ADDRSTRLEN);
 
     serverRunning.test_and_set();
-    Threads::create(networkLoop);
+    LightEvent_Init(&serverThreadDone, RESET_STICKY);
+    serverThreadStarted = Threads::create(networkLoop);
+    if (!serverThreadStarted)
+    {
+        serverRunning.clear();
+        close(serverSocket);
+        serverSocket = -1;
+        Logging::startupLog("log", "Failed to start the HTTP server thread");
+        return;
+    }
     Logging::startupLog("log", "HTTP server started on http://{}:{}", ipStr, SERVER_PORT);
 }
 
@@ -176,13 +204,21 @@ void Server::exit()
 {
     serverRunning.clear();
 
+    // The network thread reads the socket and the handler map, so it has to be gone before either
+    // is torn down
+    if (serverThreadStarted)
+    {
+        LightEvent_Wait(&serverThreadDone);
+        serverThreadStarted = false;
+    }
+
     if (serverSocket >= 0)
     {
         close(serverSocket);
         serverSocket = -1;
     }
 
-    handlers.clear();
+    handlers.lock()->clear();
 
     Logging::trace("HTTP server stopped");
 }

@@ -32,12 +32,11 @@
 #include "pkx/PKX.hpp"
 #include "sound.hpp"
 #include "TextParse.hpp"
+#include "utils/DataMutex.hpp"
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
-#include <atomic>
-#include <mutex>
+#include "utils/thread.hpp"
 #include <stack>
-#include <thread>
 
 static CFG_Region getRegionFromLanguage()
 {
@@ -73,16 +72,23 @@ namespace
     C2D_SpriteSheet spritesheet_pkm;
     C2D_SpriteSheet spritesheet_types;
     C2D_Image bgBoxes;
-    TextParse::TextBuf* textBuffer;
     TextParse::ScreenText topText;
     TextParse::ScreenText bottomText;
     TextParse::ScreenText* currentText = nullptr;
 
-    std::atomic<bool> fontsLoaded{false};
-    std::thread fontLoaderThread;
-    std::mutex fontMutex;
+    // The glyph buffer and the font list are written by the background font loader and read by
+    // every draw call, so they live and die together behind one lock.
+    struct FontData
+    {
+        TextParse::TextBuf* buffer = nullptr;
+        std::vector<C2D_Font> fonts;
+    };
 
-    std::vector<C2D_Font> fonts;
+    DataMutex<FontData> fontData;
+    // Signalled once the background font loader can no longer touch fontData. Only initialized,
+    // and only worth waiting on, when the loader actually started.
+    LightEvent fontsLoaded;
+    bool fontLoaderStarted = false;
 
     std::stack<std::unique_ptr<Screen>, std::vector<std::unique_ptr<Screen>>> screens;
 
@@ -599,15 +605,15 @@ namespace
                 C2D_Font font = C2D_FontLoadSystem(region);
                 if (font)
                 {
-                    std::lock_guard<std::mutex> lock(fontMutex);
-                    fonts.emplace_back(font);
-                    textBuffer->addFont(font);
+                    auto lockedFonts = fontData.lock();
+                    lockedFonts->fonts.emplace_back(font);
+                    lockedFonts->buffer->addFont(font);
                     Logging::info("Loaded font for region {}", region);
                 }
             }
         }
 
-        fontsLoaded = true;
+        LightEvent_Signal(&fontsLoaded);
     }
 }
 
@@ -865,7 +871,7 @@ void Gui::backgroundAnimatedBottom()
 
 void Gui::clearText(void)
 {
-    textBuffer->clearUnconditional();
+    fontData.lock()->buffer->clearUnconditional();
 }
 
 std::shared_ptr<TextParse::Text> Gui::parseText(
@@ -873,7 +879,7 @@ std::shared_ptr<TextParse::Text> Gui::parseText(
 {
     static_assert(std::is_same<FontSize, float>::value);
     maxWidth /= size;
-    return textBuffer->parse(str, maxWidth);
+    return fontData.lock()->buffer->parse(str, maxWidth);
 }
 
 void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize sizeX,
@@ -881,9 +887,13 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
 {
     static_assert(std::is_same<FontSize, float>::value);
 
-    std::lock_guard<std::mutex> lock(fontMutex);
-    textMode            = true;
-    const float lineMod = sizeY * C2D_FontGetInfo(fonts[1])->lineFeed;
+    textMode = true;
+    float lineFeed;
+    {
+        auto lockedFonts = fontData.lock();
+        lineFeed         = C2D_FontGetInfo(lockedFonts->fonts[1])->lineFeed;
+    }
+    const float lineMod = sizeY * lineFeed;
     y                  -= sizeY * 6;
     switch (positionY)
     {
@@ -1032,22 +1042,28 @@ Result Gui::init(void)
     spritesheet_types = C2D_SpriteSheetLoad("/3ds/PKSM/assets/types_spritesheet.t3x");
     Logging::startupLog("gui", "spritesheets loaded");
 
-    std::lock_guard<std::mutex> lock(fontMutex);
-    fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
-    Logging::startupLog("gui", "pksm.bcfnt loaded");
+    {
+        auto lockedFonts = fontData.lock();
+        lockedFonts->fonts.emplace_back(C2D_FontLoad("romfs:/gfx/pksm.bcfnt"));
+        Logging::startupLog("gui", "pksm.bcfnt loaded");
 
-    CFG_Region region = getRegionFromLanguage();
-    fonts.emplace_back(C2D_FontLoadSystem(region));
-    Logging::startupLog("gui", "loaded main font for region {}", region);
+        CFG_Region region = getRegionFromLanguage();
+        lockedFonts->fonts.emplace_back(C2D_FontLoadSystem(region));
+        Logging::startupLog("gui", "loaded main font for region {}", region);
 
-    textBuffer = new TextParse::TextBuf(8192, fonts);
+        lockedFonts->buffer = new TextParse::TextBuf(8192, lockedFonts->fonts);
+    }
 
     bgBoxes = C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_anim_squares_idx);
 
     hidSetRepeatParameters(10, 10);
 
-    fontLoaderThread = std::thread(loadRemainingFonts);
-    fontLoaderThread.detach(); // Let it run in background
+    LightEvent_Init(&fontsLoaded, RESET_STICKY);
+    fontLoaderStarted = Threads::create(loadRemainingFonts);
+    if (!fontLoaderStarted)
+    {
+        Logging::warning("Could not start the font loader thread");
+    }
     return 0;
 }
 
@@ -1137,7 +1153,7 @@ void Gui::mainLoop(void)
             screens.top()->doUpdate(&touch);
         }
 
-        textBuffer->clear();
+        fontData.lock()->buffer->clear();
     }
 }
 
@@ -1160,20 +1176,30 @@ void Gui::exit(void)
     {
         C2D_SpriteSheetFree(spritesheet_types);
     }
-    std::lock_guard<std::mutex> lock(fontMutex);
-    if (textBuffer)
+    // The font loader writes into fontData, so it has to be done before any of it is freed.
+    // Serializing on the lock alone would only order the accesses, not outlive the thread.
+    if (fontLoaderStarted)
     {
-        delete textBuffer;
-        textBuffer = nullptr;
+        LightEvent_Wait(&fontsLoaded);
+        fontLoaderStarted = false;
     }
-    for (const auto& font : fonts)
+
     {
-        if (font)
+        auto lockedFonts = fontData.lock();
+        if (lockedFonts->buffer)
         {
-            C2D_FontFree(font);
+            delete lockedFonts->buffer;
+            lockedFonts->buffer = nullptr;
         }
+        for (const auto& font : lockedFonts->fonts)
+        {
+            if (font)
+            {
+                C2D_FontFree(font);
+            }
+        }
+        lockedFonts->fonts.clear();
     }
-    fonts.clear();
 
     C2D_Fini();
     C3D_Fini();

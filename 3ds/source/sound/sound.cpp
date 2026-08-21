@@ -55,7 +55,8 @@ namespace
     size_t currentSong         = 0;
     std::atomic<bool> playing  = false;
     std::atomic<bool> finished = true;
-    u8 currentVolume           = 0;
+    // Written by soundThread, read by the main thread in playEffect
+    std::atomic<u8> currentVolume = 0;
 
     void ndspFrameCallback(void*)
     {
@@ -151,11 +152,13 @@ namespace
         while (playing)
         {
             // Get volume for later usage
-            HIDUSER_GetSoundVolume(&currentVolume);
+            u8 volume = 0;
+            HIDUSER_GetSoundVolume(&volume);
+            currentVolume = volume;
             // Explicitly do the BGM channel with its special handling:
             // Replace the song if the volume slider is pushed all the way down and we haven't
             // already replaced it or the decoder is gone and the channel is done or paused
-            bool replaceBGM = (currentVolume == 0 && bgm.size() > 1 && !ndspChnIsPaused(0)) ||
+            bool replaceBGM = (volume == 0 && bgm.size() > 1 && !ndspChnIsPaused(0)) ||
                               (!decoders[0] && (!ndspChnIsPlaying(0) || ndspChnIsPaused(0)));
             // If the decoder still exists and we're not about to replace it, fill the buffers
             if (!replaceBGM && decoders[0])
@@ -169,7 +172,7 @@ namespace
             }
 
             // Pause the song if the volume slider is all the way down
-            if (currentVolume == 0)
+            if (volume == 0)
             {
                 ndspChnSetPaused(0, true);
             }

@@ -48,10 +48,11 @@ namespace Threads
         return init(workers, workers);
     }
 
-    // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN
-    // MIND IF YOU ARE PORTING
+    // stackSize and priority will be ignored on systems that don't provide explicit setting of
+    // them. KEEP THIS IN MIND IF YOU ARE PORTING. priority is an absolute OS priority; leave it
+    // empty to get one step above the calling thread.
     bool create(void (*entrypoint)(void*), void* arg = nullptr,
-        std::optional<size_t> stackSize = std::nullopt);
+        std::optional<size_t> stackSize = std::nullopt, std::optional<int> priority = std::nullopt);
     // Executes task on a worker thread with stack size of 0x8000 (if settable).
     void executeTask(void (*task)(void*), void* arg);
 
