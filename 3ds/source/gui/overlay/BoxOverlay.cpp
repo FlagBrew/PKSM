@@ -50,8 +50,8 @@ void BoxOverlay::drawTop() const
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
             Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i], x,
-                (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+                (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
         }
         else
         {

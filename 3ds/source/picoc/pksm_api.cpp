@@ -31,7 +31,6 @@
 #include "BZ2.hpp"
 #include "Configuration.hpp"
 #include "fetch.hpp"
-#include "FortyChoice.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "loader.hpp"
@@ -51,6 +50,7 @@
 #include "sav/Sav8.hpp"
 #include "STDirectory.hpp"
 #include "ThirtyChoice.hpp"
+#include "TwentyChoice.hpp"
 #include "utils/flagUtil.hpp"
 #include "utils/format.hpp"
 #include "utils/genToPkx.hpp"
@@ -236,13 +236,13 @@ void gui_menu6x5(
     ReturnValue->Val->Integer = ret;
 }
 
-void gui_menu20x2(
+void gui_menu10x2(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
     char* question            = (char*)Param[0]->Val->Pointer;
     int options               = Param[1]->Val->Integer;
     char** labels             = (char**)Param[2]->Val->Pointer;
-    FortyChoice screen        = FortyChoice(question, labels, options);
+    TwentyChoice screen       = TwentyChoice(question, labels, options);
     auto ret                  = Gui::runScreen(screen);
     ReturnValue->Val->Integer = ret;
 }

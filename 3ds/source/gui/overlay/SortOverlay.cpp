@@ -50,7 +50,7 @@ void SortOverlay::drawTop() const
         {
             Gui::text(i18n::localize(std::string(SortScreen::sortTypeToString(
                           vals[hid.page() * hid.maxVisibleEntries() + i]))),
-                x, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
         }
         else

@@ -71,10 +71,10 @@ void BankChoice::drawTop() const
         if (hid.page() * hid.maxVisibleEntries() + i < strings.size())
         {
             Gui::text(strings[hid.page() * hid.maxVisibleEntries() + i].first, x,
-                (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
-                TextPosY::TOP);
+                (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
+                TextPosX::LEFT, TextPosY::TOP);
             Gui::text(std::to_string(strings[hid.page() * hid.maxVisibleEntries() + i].second),
-                x + 192, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
+                x + 192, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
                 TextPosX::RIGHT, TextPosY::TOP);
         }
         else

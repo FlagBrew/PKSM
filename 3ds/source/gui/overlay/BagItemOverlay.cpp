@@ -57,7 +57,7 @@ void BagItemOverlay::drawTop() const
         }
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x,
-            (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE, TextPosX::LEFT,
+            (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
             TextPosY::TOP);
     }
 }

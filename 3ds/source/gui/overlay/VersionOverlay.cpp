@@ -32,7 +32,7 @@
 #include <algorithm>
 
 VersionOverlay::VersionOverlay(ReplaceableScreen& screen, pksm::PKX& pkm)
-    : ReplaceableScreen(&screen), pkm(pkm), hid(15, 2)
+    : ReplaceableScreen(&screen), pkm(pkm), hid(20, 2)
 {
     const auto& gameStrings = i18n::rawGames(Configuration::getInstance().language());
     for (size_t i = 0; i < gameStrings.size(); i++)
@@ -73,7 +73,7 @@ void VersionOverlay::drawTop() const
         {
             Gui::text(std::to_string((int)games[hid.page() * hid.maxVisibleEntries() + i].first) +
                           " - " + games[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
         }
         else

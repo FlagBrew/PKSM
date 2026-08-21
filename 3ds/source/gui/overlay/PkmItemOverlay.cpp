@@ -177,7 +177,7 @@ void PkmItemOverlay::drawTop() const
         {
             Gui::text(std::to_string(items[hid.page() * hid.maxVisibleEntries() + i].first) +
                           " - " + items[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 24, FONT_SIZE_18, COLOR_WHITE,
+                x, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
         }
         else

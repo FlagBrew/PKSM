@@ -33,7 +33,7 @@
 
 ConfigCountryOverlay::ConfigCountryOverlay(ReplaceableScreen& screen)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      hid(40, 2),
+      hid(20, 2),
       validCountries(i18n::rawCountries(Configuration::getInstance().language())),
       countries(validCountries)
 {
@@ -61,14 +61,14 @@ void ConfigCountryOverlay::drawBottom() const
 
 void ConfigCountryOverlay::drawTop() const
 {
-    Gui::sprite(ui_sheet_part_editor_20x2_idx, 0, 0);
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
     int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 12;
-    Gui::drawSolidRect(x, y, 198, 11, COLOR_MASKBLACK);
+    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
     Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 11, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 10, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 11, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
     // Stupid non random-access iterators
     std::map<u8, std::string>::const_iterator locIt = countries.begin();
     for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
@@ -80,7 +80,7 @@ void ConfigCountryOverlay::drawTop() const
         x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
         if (hid.page() * hid.maxVisibleEntries() + i < countries.size())
         {
-            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 12, FONT_SIZE_9, COLOR_WHITE,
+            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
                 TextPosX::LEFT, TextPosY::TOP);
             ++locIt;
         }
