@@ -33,7 +33,7 @@ namespace WirelessTransfer
     void clearLoadedSave(void);
     bool receiveSave(void);
     bool sendSave(void);
-    void backupChanges(void);
+    void persistChanges(void);
 }
 
 #endif

@@ -93,7 +93,15 @@ SaveLoadScreen::SaveLoadScreen()
             return true;
         },
         ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(200, 164, 96, 34, &WirelessTransfer::receiveSave,
+    buttons.push_back(std::make_unique<Button>(
+        200, 164, 96, 34,
+        [this]()
+        {
+            // a received save is stored on the SD card, so the list behind this screen has to
+            // pick it up on the way back
+            mustUpdateTitles = true;
+            return WirelessTransfer::receiveSave();
+        },
         ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "",

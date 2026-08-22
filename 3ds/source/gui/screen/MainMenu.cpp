@@ -344,25 +344,23 @@ void MainMenu::save()
 {
     if (WirelessTransfer::hasLoadedSave())
     {
+        if (TitleLoader::save->generation() == pksm::Generation::FIVE)
+        {
+            ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
+        }
+        TitleLoader::save->finishEditing();
+        // the copy on the SD card stays current whether or not the save also goes back over the
+        // air, so the console can open it again later
+        WirelessTransfer::persistChanges();
         if (Gui::showChoiceMessage(i18n::localize("TRANSFER_SHOULD_SEND_1") + '\n' +
                                    i18n::localize("TRANSFER_SHOULD_SEND_2")))
         {
-            if (TitleLoader::save->generation() == pksm::Generation::FIVE)
-            {
-                ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-            }
-            TitleLoader::save->finishEditing();
-            bool sent = WirelessTransfer::sendSave();
-            if (!sent)
-            {
-                // save a copy of the modified save to the SD card
-                WirelessTransfer::backupChanges();
-            }
-            TitleLoader::save->beginEditing();
-            if (TitleLoader::save->generation() == pksm::Generation::FIVE)
-            {
-                ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
-            }
+            WirelessTransfer::sendSave();
+        }
+        TitleLoader::save->beginEditing();
+        if (TitleLoader::save->generation() == pksm::Generation::FIVE)
+        {
+            ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
         }
     }
     else

@@ -29,6 +29,7 @@
 #include "DateTime.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "io.hpp"
 #include "loader.hpp"
 #include "MainMenu.hpp"
 #include "nlohmann/json.hpp"
@@ -36,12 +37,14 @@
 #include "Sav.hpp"
 #include "ScreenStack.hpp"
 #include "server.hpp"
+#include "Title.hpp"
 #include "TransferProtocol.hpp"
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
 #include <3ds.h>
 #include <algorithm>
 #include <arpa/inet.h>
+#include <array>
 #include <atomic>
 #include <cctype>
 #include <cerrno>
@@ -55,17 +58,35 @@
 #include <poll.h>
 #include <string>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace
 {
-    constexpr u16 TRANSFER_PORT            = 8000;
-    constexpr size_t MAX_TRANSFER_SIZE     = 32 * 1024 * 1024;
-    constexpr size_t MULTIPART_HEAD_SIZE   = 64 * 1024;
-    constexpr size_t NETWORK_CHUNK_SIZE    = 32 * 1024;
-    constexpr int NETWORK_TIMEOUT_MS       = 15000;
-    constexpr int MAX_AUTHENTICATION_TRIES = 5;
-    constexpr const char* TEMPORARY_UPLOAD = "/3ds/PKSM/transfer_upload.tmp";
+    constexpr u16 TRANSFER_PORT              = 8000;
+    constexpr size_t MAX_TRANSFER_SIZE       = 32 * 1024 * 1024;
+    constexpr size_t MULTIPART_HEAD_SIZE     = 64 * 1024;
+    constexpr size_t NETWORK_CHUNK_SIZE      = 32 * 1024;
+    constexpr int NETWORK_TIMEOUT_MS         = 15000;
+    constexpr int MAX_AUTHENTICATION_TRIES   = 5;
+    constexpr const char* TEMPORARY_UPLOAD   = "/3ds/PKSM/transfer_upload.tmp";
+    constexpr const char* TRANSFER_DIRECTORY = "/3ds/PKSM/transfers";
+    constexpr const char* WIRELESS_BACKUPS   = "/3ds/PKSM/backups/wireless";
+
+    constexpr std::array<std::string_view, 9> dsIds = {
+        "ADA", // Diamond
+        "APA", // Pearl
+        "CPU", // Platinum
+        "IPK", // HeartGold
+        "IPG", // SoulSilver
+        "IRB", // Black
+        "IRA", // White
+        "IRE", // Black 2
+        "IRD"  // White 2
+    };
+    constexpr std::array<pksm::GameVersion, 9> dsVersions = {pksm::GameVersion::D,
+        pksm::GameVersion::P, pksm::GameVersion::Pt, pksm::GameVersion::HG, pksm::GameVersion::SS,
+        pksm::GameVersion::B, pksm::GameVersion::W, pksm::GameVersion::B2, pksm::GameVersion::W2};
 
     enum class ReceiveState
     {
@@ -94,6 +115,8 @@ namespace
     Metadata receivedMetadata;
     std::shared_ptr<pksm::Sav> pendingSave;
     bool loadedFromTransfer = false;
+    // Where the save loaded over the air lives on the SD card, so edits keep landing there.
+    std::string persistedPath;
 
     std::string jsonString(const nlohmann::json& object, const char* key, std::string fallback = "")
     {
@@ -523,6 +546,168 @@ namespace
         }
         return result.empty() ? "main" : result;
     }
+
+    char regionPostfix(pksm::Language language)
+    {
+        switch (language)
+        {
+            case pksm::Language::JPN:
+                return 'J';
+            case pksm::Language::FRE:
+                return 'F';
+            case pksm::Language::ITA:
+                return 'I';
+            case pksm::Language::GER:
+                return 'D';
+            case pksm::Language::SPA:
+                return 'S';
+            case pksm::Language::KOR:
+                return 'K';
+            default:
+                return 'E';
+        }
+    }
+
+    // The key the save lists are grouped by: a DS game code plus its region letter for Gen 4 and
+    // Gen 5, the Checkpoint prefix of the owning title for everything else.
+    std::string saveIdentifier(const pksm::Sav& save, const Metadata& metadata)
+    {
+        auto dsGame = std::find(dsVersions.begin(), dsVersions.end(), save.version());
+        if (dsGame != dsVersions.end())
+        {
+            // A Gen 4 save cannot tell Diamond from Pearl on its own, so prefer the game code the
+            // sender supplied whenever it names a game of the same generation.
+            const std::string& sent = metadata.titleId;
+            if (sent.size() == 3 || sent.size() == 4)
+            {
+                auto found =
+                    std::find(dsIds.begin(), dsIds.end(), std::string_view(sent).substr(0, 3));
+                if (found != dsIds.end() &&
+                    pksm::Generation(dsVersions[std::distance(dsIds.begin(), found)]) ==
+                        save.generation())
+                {
+                    return sent.size() == 4 ? sent : sent + regionPostfix(save.language());
+                }
+            }
+            return std::string(dsIds[std::distance(dsVersions.begin(), dsGame)]) +
+                   regionPostfix(save.language());
+        }
+
+        std::string title = Configuration::getInstance().titleId(save.version());
+        if (title.empty())
+        {
+            return "";
+        }
+        return Title::tidToCheckpointPrefix<std::string>(strtoull(title.c_str(), nullptr, 16));
+    }
+
+    // Received saves get one directory per transfer, mirroring the layout the loader screens
+    // already read: they label every save with the directory that holds it.
+    std::string transferDirectory(const std::string& id, const Metadata& metadata)
+    {
+        mkdir(TRANSFER_DIRECTORY, 777);
+        std::string path = std::string(TRANSFER_DIRECTORY) + '/' + id;
+        mkdir(path.c_str(), 777);
+
+        std::string label = metadata.backupName.empty() ? "" : safeFileName(metadata.backupName);
+        if (label.empty() || label == "." || label == "..")
+        {
+            DateTime now = DateTime::now();
+            label        = std::format("{:04d}-{:02d}-{:02d}_{:02d}-{:02d}-{:02d}", now.year(),
+                       now.month(), now.day(), now.hour(), now.minute(), now.second());
+        }
+        path += '/' + label;
+
+        std::string unique = path;
+        for (int attempt = 2; io::exists(unique) && attempt < 100; attempt++)
+        {
+            unique = std::format("{}_{:d}", path, attempt);
+        }
+        if (mkdir(unique.c_str(), 777) != 0 && !io::exists(unique))
+        {
+            return "";
+        }
+        return unique;
+    }
+
+    // The caller owns the editing state: the save must be finished editing before its bytes are
+    // worth writing anywhere.
+    bool writeSave(const std::string& path, const pksm::Sav& save)
+    {
+        FILE* output = fopen(path.c_str(), "wb");
+        if (!output)
+        {
+            Logging::error("WirelessTransfer - Failed to open {} for writing: {}", path, errno);
+            return false;
+        }
+        size_t written = fwrite(save.rawData().get(), 1, save.getLength(), output);
+        fclose(output);
+        if (written != save.getLength())
+        {
+            Logging::error(
+                "WirelessTransfer - Wrote {} of {} bytes to {}", written, save.getLength(), path);
+            remove(path.c_str());
+            return false;
+        }
+        return true;
+    }
+
+    // Extra saves are what makes a save visible on the loader screens no matter which title it
+    // belongs to, and the config is only flushed by the settings screen, so flush it here too.
+    void registerSave(const std::string& id, const std::string& path)
+    {
+        auto configured = Configuration::getInstance().extraSaves(id);
+        if (std::find(configured.begin(), configured.end(), path) == configured.end())
+        {
+            configured.emplace_back(path);
+            Configuration::getInstance().extraSaves(id, configured);
+            Configuration::getInstance().save();
+        }
+
+        auto saves    = TitleLoader::sdSaves.lock();
+        auto& forming = saves.get()[id];
+        if (std::find(forming.begin(), forming.end(), path) == forming.end())
+        {
+            forming.emplace_back(path);
+            TitleLoader::sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
+        }
+    }
+
+    // Keeps the received save on the SD card and hands it to the loader as a file save, so the
+    // console can open it again later instead of it living only in memory.
+    bool persistReceivedSave(const std::shared_ptr<pksm::Sav>& save, const Metadata& metadata)
+    {
+        std::string id = saveIdentifier(*save, metadata);
+        if (id.empty())
+        {
+            Logging::warning("WirelessTransfer - No known title for the received save");
+            return false;
+        }
+        std::string directory = transferDirectory(id, metadata);
+        if (directory.empty())
+        {
+            Logging::error("WirelessTransfer - Failed to create a directory under {}/{}",
+                TRANSFER_DIRECTORY, id);
+            return false;
+        }
+
+        std::string path = directory + '/' + safeFileName(metadata.fileName);
+        save->finishEditing();
+        bool written = writeSave(path, *save);
+        save->beginEditing();
+        if (!written || !TitleLoader::load(nullptr, path))
+        {
+            remove(path.c_str());
+            return false;
+        }
+
+        // After the load: an autoBackup run looks the path up in the save list, and a save that
+        // arrived seconds ago does not need a backup of itself.
+        registerSave(id, path);
+        persistedPath = path;
+        Logging::info("WirelessTransfer - Received save stored at {} for ID: {}", path, id);
+        return true;
+    }
 }
 
 bool WirelessTransfer::hasLoadedSave()
@@ -533,6 +718,7 @@ bool WirelessTransfer::hasLoadedSave()
 void WirelessTransfer::clearLoadedSave()
 {
     loadedFromTransfer = false;
+    persistedPath.clear();
 }
 
 bool WirelessTransfer::receiveSave()
@@ -598,11 +784,22 @@ bool WirelessTransfer::receiveSave()
         return false;
     }
 
+    std::shared_ptr<pksm::Sav> received;
+    Metadata metadata;
     {
         std::lock_guard<std::mutex> lock(transferMutex);
-        TitleLoader::save = std::move(pendingSave);
+        received = std::move(pendingSave);
+        metadata = receivedMetadata;
     }
     receiveState.store(ReceiveState::Idle);
+
+    persistedPath.clear();
+    if (!persistReceivedSave(received, metadata))
+    {
+        // The save is still worth editing even when the SD card refuses it; it just cannot be
+        // opened again from the console afterwards.
+        TitleLoader::save = std::move(received);
+    }
     loadedFromTransfer = true;
     ScreenStack::push(std::make_unique<MainMenu>());
     return true;
@@ -737,15 +934,21 @@ bool WirelessTransfer::sendSave()
     return success;
 }
 
-void WirelessTransfer::backupChanges()
+void WirelessTransfer::persistChanges()
 {
-    DateTime now     = DateTime::now();
-    std::string path = std::format("/3ds/PKSM/backups/wireless/{:d}-{:d}-{:d}_{:d}-{:d}-{:d}.bak",
-        now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
-    FILE* output     = fopen(path.c_str(), "wb");
-    if (output)
+    // Called between finishEditing() and beginEditing(), so the bytes on hand are the ones a
+    // console would read back.
+    if (!persistedPath.empty())
     {
-        fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), output);
-        fclose(output);
+        writeSave(persistedPath, *TitleLoader::save);
+        return;
     }
+
+    // Nothing was stored on receive, so fall back to a dated copy that at least keeps the work.
+    DateTime now = DateTime::now();
+    mkdir("/3ds/PKSM/backups", 777);
+    mkdir(WIRELESS_BACKUPS, 777);
+    writeSave(std::format("{}/{:d}-{:d}-{:d}_{:d}-{:d}-{:d}.bak", WIRELESS_BACKUPS, now.year(),
+                  now.month(), now.day(), now.hour(), now.minute(), now.second()),
+        *TitleLoader::save);
 }
