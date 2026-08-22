@@ -1076,7 +1076,7 @@ Result Gui::init(void)
     }
 
     // The UI sheet ships in romfs, so a missing one is a broken build rather than the
-    // missing-assets case below, which downloadAdditionalAssets and assetsMatch handle.
+    // missing-assets case below, which AssetStore handles.
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     if (!spritesheet_ui)
     {
