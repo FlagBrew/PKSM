@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Você gostaria de enviar o arquivo modificado",
-    "BRIDGE_SHOULD_SEND_2": "ao Client original?",
+    "TRANSFER_SHOULD_SEND_1": "Você gostaria de enviar o arquivo modificado",
+    "TRANSFER_SHOULD_SEND_2": "a um receptor sem fio?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Downloading {:s}...",
     "GPSS_DOWNLOAD": "Download this GPSS Pokémon?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Your download code is (Please translate this)",
     "SHARE_SEND_CONFIRM": "Share this Pokémon?",
     "UPLOAD_GROUP": "Upload group to GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Endereço do receptor (IP ou IP:porta)",
     "WIRELESS_IP": "Endereço IP: {:s}",
+    "WIRELESS_PIN_HINT": "PIN do receptor",
+    "WIRELESS_SENDING": "Enviando save...",
     "WIRELESS_WARNING": "Isso vai trancar seu console até um Save for recebido."
 }

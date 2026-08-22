@@ -37,6 +37,7 @@
 #include "SaveLoadScreen.hpp"
 #include "ScreenStack.hpp"
 #include "Title.hpp"
+#include "WirelessTransfer.hpp"
 #include <format>
 
 bool TitleLoadScreen::loadSave() const
@@ -85,7 +86,8 @@ TitleLoadScreen::TitleLoadScreen()
     refreshLanguage();
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(
-        200, 147, 96, 51, &receiveSaveFromBridge, ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+        200, 147, 96, 51, &WirelessTransfer::receiveSave, ui_sheet_res_null_idx, "", 0.0f,
+        COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK, 10, 10));

@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,46 +24,16 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef WIRELESS_TRANSFER_HPP
+#define WIRELESS_TRANSFER_HPP
 
-#include <cstdint>
-#include <functional>
-#include <string>
-
-namespace Server
+namespace WirelessTransfer
 {
-    struct HttpResponse
-    {
-        int statusCode;
-        std::string contentType;
-        std::string body;
-    };
-
-    using HttpHandler =
-        std::function<HttpResponse(const std::string& path, const std::string& requestData)>;
-
-    // Upload bodies are streamed to SD instead of retained in the request
-    // string. This keeps the server usable for Switch-sized saves.
-    struct UploadRequest
-    {
-        std::string headers;
-        std::string bodyPath;
-        std::string peerAddress;
-        uint64_t bodyLength;
-    };
-
-    using UploadHandler = std::function<HttpResponse(const UploadRequest&)>;
-
-    void init(void);
-    void exit(void);
-    bool isRunning(void);
-    std::string getAddress(void);
-
-    void registerHandler(const std::string& path, HttpHandler handler);
-    void registerUploadHandler(
-        const std::string& path, const std::string& temporaryPath, UploadHandler handler);
-    void unregisterHandler(const std::string& path);
+    bool hasLoadedSave(void);
+    void clearLoadedSave(void);
+    bool receiveSave(void);
+    bool sendSave(void);
+    void backupChanges(void);
 }
 
 #endif

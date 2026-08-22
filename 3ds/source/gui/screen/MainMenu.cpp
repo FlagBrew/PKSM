@@ -41,6 +41,7 @@
 #include "StorageScreen.hpp"
 #include "utils/crypto.hpp"
 #include "utils/format.hpp"
+#include "WirelessTransfer.hpp"
 #include <format>
 
 namespace
@@ -301,7 +302,7 @@ void MainMenu::update(touchPosition* touch)
     {
         if (!needsSave() || Gui::showChoiceMessage(i18n::localize("EDITOR_CHECK_EXIT")))
         {
-            setLoadedSaveFromBridge(false);
+            WirelessTransfer::clearLoadedSave();
             ScreenStack::requestPop();
             return;
         }
@@ -341,21 +342,21 @@ bool MainMenu::needsSave()
 
 void MainMenu::save()
 {
-    if (isLoadedSaveFromBridge())
+    if (WirelessTransfer::hasLoadedSave())
     {
-        if (Gui::showChoiceMessage(i18n::localize("BRIDGE_SHOULD_SEND_1") + '\n' +
-                                   i18n::localize("BRIDGE_SHOULD_SEND_2")))
+        if (Gui::showChoiceMessage(i18n::localize("TRANSFER_SHOULD_SEND_1") + '\n' +
+                                   i18n::localize("TRANSFER_SHOULD_SEND_2")))
         {
             if (TitleLoader::save->generation() == pksm::Generation::FIVE)
             {
                 ((pksm::Sav5*)TitleLoader::save.get())->cryptMysteryGiftData();
             }
             TitleLoader::save->finishEditing();
-            bool sent = sendSaveToBridge();
+            bool sent = WirelessTransfer::sendSave();
             if (!sent)
             {
                 // save a copy of the modified save to the SD card
-                backupBridgeChanges();
+                WirelessTransfer::backupChanges();
             }
             TitleLoader::save->beginEditing();
             if (TitleLoader::save->generation() == pksm::Generation::FIVE)

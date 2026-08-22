@@ -677,7 +677,7 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
     mkdir("/3ds/PKSM", 777);
     mkdir("/3ds/PKSM/assets", 777);
     mkdir("/3ds/PKSM/backups", 777);
-    mkdir("/3ds/PKSM/backups/bridge", 777);
+    mkdir("/3ds/PKSM/backups/wireless", 777);
     mkdir("/3ds/PKSM/defaults", 777);
     mkdir("/3ds/PKSM/dumps", 777);
     mkdir("/3ds/PKSM/banks", 777);

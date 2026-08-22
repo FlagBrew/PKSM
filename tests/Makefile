@@ -8,7 +8,8 @@ INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I..
 
 BUILD   := build
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests \
-	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
+	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests \
+	$(BUILD)/TransferProtocolTests
 
 .PHONY: all clean
 all: $(TARGETS)
@@ -32,6 +33,10 @@ $(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -Ifakes -I../common/include/gui -o $@ $^
 
 $(BUILD)/SubsystemsTests: SubsystemsTests.cpp ../common/source/Subsystems.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/TransferProtocolTests: TransferProtocolTests.cpp \
+		../common/source/utils/TransferProtocol.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD):
