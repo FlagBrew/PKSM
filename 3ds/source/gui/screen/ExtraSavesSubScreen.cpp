@@ -706,6 +706,7 @@ void ExtraSavesSubScreen::drawBottom() const
 {
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
+    Gui::saveboxDivider(146);
 
     if (group == SaveGroup::RGB)
     {

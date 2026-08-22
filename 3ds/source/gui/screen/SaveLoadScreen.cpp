@@ -84,7 +84,7 @@ SaveLoadScreen::SaveLoadScreen()
 {
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(
-        200, 129, 96, 33,
+        200, 130, 96, 33,
         [this]()
         {
             mustUpdateTitles = true;
@@ -93,7 +93,7 @@ SaveLoadScreen::SaveLoadScreen()
             return true;
         },
         ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
-    buttons.push_back(std::make_unique<Button>(200, 163, 96, 35, &WirelessTransfer::receiveSave,
+    buttons.push_back(std::make_unique<Button>(200, 164, 96, 34, &WirelessTransfer::receiveSave,
         ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
         24, 96, 175, 16, [this]() { return this->setSelectedSave(0); }, ui_sheet_res_null_idx, "",
@@ -108,7 +108,7 @@ SaveLoadScreen::SaveLoadScreen()
         24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK, 10, 10));
     buttons.push_back(std::make_unique<Button>(
-        200, 95, 96, 33, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
+        200, 95, 96, 34, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
         COLOR_BLACK));
 
     tabs.push_back(std::make_unique<ToggleButton>(
@@ -384,6 +384,8 @@ void SaveLoadScreen::drawBottom() const
 
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
+    Gui::saveboxDivider(129);
+    Gui::saveboxDivider(163);
 
     for (const auto& tabButton : tabs)
     {
@@ -438,11 +440,11 @@ void SaveLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 248, 111, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+    Gui::text(i18n::localize("LOADER_LOAD"), 248, 112, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::CENTER, TextWidthAction::WRAP, 94);
-    Gui::text(i18n::localize("ADD_SAVE"), 248, 145, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+    Gui::text(i18n::localize("ADD_SAVE"), 248, 146, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::CENTER, TextWidthAction::WRAP, 94);
-    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 180, FONT_SIZE_12, COLOR_WHITE,
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 181, FONT_SIZE_12, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 94);
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE,

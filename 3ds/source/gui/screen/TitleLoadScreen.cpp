@@ -200,6 +200,7 @@ void TitleLoadScreen::drawBottom() const
     // Background to tab buttons
     Gui::drawSolidRect(0, 0, 320, 20, PKSM_Color(40, 53, 147, 255));
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
+    Gui::saveboxDivider(146);
 
     for (const auto& tabButton : tabs)
     {
