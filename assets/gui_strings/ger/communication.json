@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Möchtest Du die veränderte Datei",
-    "BRIDGE_SHOULD_SEND_2": "zum origin. Client senden?",
+    "TRANSFER_SHOULD_SEND_1": "Möchtest Du die veränderte Datei",
+    "TRANSFER_SHOULD_SEND_2": "an einen drahtlosen Empfänger senden?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Herunterladen {:s}...",
     "GPSS_DOWNLOAD": "Dieses GPSS Pokémon runterladen?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Dein Download-Code ist",
     "SHARE_SEND_CONFIRM": "Dieses Pokémon teilen?",
     "UPLOAD_GROUP": "Gruppe zum GPSS hochladen?",
+    "WIRELESS_ADDRESS_HINT": "Empfängeradresse (IP oder IP:Port)",
     "WIRELESS_IP": "IP Addresse: {:s}",
+    "WIRELESS_PIN_HINT": "Empfänger-PIN",
+    "WIRELESS_SENDING": "Speicherstand wird gesendet...",
     "WIRELESS_WARNING": "Dies wird deine Konsole sperren, bis sie einen Speicherstand erhält."
 }

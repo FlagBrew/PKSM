@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Vuoi mandare il salvataggio",
-    "BRIDGE_SHOULD_SEND_2": "al client originale?",
+    "TRANSFER_SHOULD_SEND_1": "Vuoi mandare il salvataggio",
+    "TRANSFER_SHOULD_SEND_2": "a un ricevitore wireless?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Scarico {:s}...",
     "GPSS_DOWNLOAD": "Scaricare questo Pokémon dal GPSS?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Il tuo codice di download è ",
     "SHARE_SEND_CONFIRM": "Condividere questo Pokémon?",
     "UPLOAD_GROUP": "Caricare gruppo sul GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Indirizzo ricevitore (IP o IP:porta)",
     "WIRELESS_IP": "Indirizzo IP: {:s}",
+    "WIRELESS_PIN_HINT": "PIN del ricevitore",
+    "WIRELESS_SENDING": "Invio del salvataggio...",
     "WIRELESS_WARNING": "La console si bloccherà fino alla ricezione di un save."
 }

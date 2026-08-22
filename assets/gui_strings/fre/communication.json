@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Voulez-vous envoyer le nouveau fichier",
-    "BRIDGE_SHOULD_SEND_2": "vers votre Switch?",
+    "TRANSFER_SHOULD_SEND_1": "Voulez-vous envoyer le nouveau fichier",
+    "TRANSFER_SHOULD_SEND_2": "vers un récepteur sans fil?",
     "CLOUD_BOX": "Nuage {:d}",
     "DOWNLOADING_FILE": "Téléchargement en cours {:s}...",
     "GPSS_DOWNLOAD": "Télécharger ce Pokémon depuis le GPSS?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Votre code PKMN est",
     "SHARE_SEND_CONFIRM": "Partager ce Pokémon?",
     "UPLOAD_GROUP": " Téléverser le groupe sur le GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Adresse du récepteur (IP ou IP:port)",
     "WIRELESS_IP": "Adresse IP : {:s}",
+    "WIRELESS_PIN_HINT": "PIN du récepteur",
+    "WIRELESS_SENDING": "Envoi de la sauvegarde...",
     "WIRELESS_WARNING": "La console sera bloquée jusqu'à réc. d'une sauvegarde."
 }

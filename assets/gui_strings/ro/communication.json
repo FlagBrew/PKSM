@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Vrei să trimiți fişierul schimbat?",
-    "BRIDGE_SHOULD_SEND_2": "clientului original?",
+    "TRANSFER_SHOULD_SEND_1": "Vrei să trimiți fişierul schimbat?",
+    "TRANSFER_SHOULD_SEND_2": "unui receptor wireless?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Se downloadează {:s}…",
     "GPSS_DOWNLOAD": "Downloadezi acest Pokémon GPSS?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Codul tău de download este",
     "SHARE_SEND_CONFIRM": "Schimbi acest Pokémon?",
     "UPLOAD_GROUP": "Uploadezi grupul pe GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Adresa receptorului (IP sau IP:port)",
     "WIRELESS_IP": "Adresă IP: {:s}",
+    "WIRELESS_PIN_HINT": "PIN receptor",
+    "WIRELESS_SENDING": "Se trimite salvarea...",
     "WIRELESS_WARNING": "Acest lucru va bloca consola până este primit un save."
 }
