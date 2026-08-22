@@ -27,6 +27,7 @@
 #ifndef EDITSELECTORSCREEN_HPP
 #define EDITSELECTORSCREEN_HPP
 
+#include "BoxView.hpp"
 #include "pkx/PKX.hpp"
 #include "Screen.hpp"
 #include <array>
@@ -60,10 +61,17 @@ private:
     std::vector<std::unique_ptr<Button>> viewerButtons;
     std::unique_ptr<pksm::PKX> moveMon = nullptr;
     std::unique_ptr<pksm::PKX> infoMon = nullptr;
-    int cursorPos                      = 0;
-    int box                            = 0;
-    bool justSwitched                  = true;
-    bool menu                          = false;
+    // The box and party on screen, materialized once instead of once per slot per
+    // frame. Mutable because drawing is what keeps them in step with the box index.
+    mutable SaveBoxView boxView;
+    mutable PartyView partyView;
+    int cursorPos = 0;
+    int box       = 0;
+    // Set when the editor takes over the frame; consumed by the first draw after it
+    // gives the frame back.
+    mutable bool refillOnResume = false;
+    bool justSwitched           = true;
+    bool menu                   = false;
 };
 
 #endif

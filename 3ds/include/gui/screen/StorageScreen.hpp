@@ -27,6 +27,7 @@
 #ifndef STORAGESCREEN_HPP
 #define STORAGESCREEN_HPP
 
+#include "BoxView.hpp"
 #include "pkx/PKFilter.hpp"
 #include "pkx/PKX.hpp"
 #include "Screen.hpp"
@@ -76,6 +77,7 @@ private:
     bool isValidTransfer(const pksm::PKX& moveMon, bool bulkTransfer = false);
     void scrunchSelection();
     void grabSelection(bool remove);
+    void refillDisplacedViews() const;
 
     std::array<std::unique_ptr<Button>, 10> mainButtons;
     std::array<std::unique_ptr<Button>, 31> clickButtons;
@@ -87,9 +89,13 @@ private:
     // If pickupMode == SWAP, box number & slot pair
     std::pair<int, int> selectDimensions   = {0, 0};
     std::shared_ptr<pksm::PKFilter> filter = std::make_shared<pksm::PKFilter>();
-    int cursorIndex                        = 0;
-    int storageBox                         = 0;
-    int boxBox                             = 0;
+    // The two boxes on screen, materialized once per box instead of once per slot per
+    // frame. Mutable because drawing is what keeps them in step with the box indices.
+    mutable SaveBoxView saveBoxView;
+    mutable BankBoxView bankBoxView;
+    int cursorIndex = 0;
+    int storageBox  = 0;
+    int boxBox      = 0;
 
     enum PickupMode : u8
     {
@@ -98,11 +104,14 @@ private:
         MULTI
     } pickupMode = SINGLE;
 
-    bool currentlySelecting = false;
-    bool justSwitched       = true;
-    bool storageChosen      = false;
-    bool fromStorage        = false;
-    bool backHeld           = false;
+    // Set when a screen that can write to a box takes over the frame; consumed by the
+    // first draw after it gives the frame back.
+    mutable bool refillOnResume = false;
+    bool currentlySelecting     = false;
+    bool justSwitched           = true;
+    bool storageChosen          = false;
+    bool fromStorage            = false;
+    bool backHeld               = false;
 };
 
 #endif
