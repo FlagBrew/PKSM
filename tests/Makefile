@@ -3,12 +3,16 @@
 
 CXX      ?= g++
 CXXFLAGS := -std=gnu++20 -g -Wall -Wextra -Werror -Og
-INCLUDE  := -I../common/include -I../common/include/utils -I../core/include -I../external \
-	-I../3ds/include
+INCLUDE  := -I../common/include -I../common/include/gui -I../common/include/utils \
+	-I../core/include -I../external -I../external/qrgen -I../3ds/include
 
 BUILD   := build
-TARGETS := $(BUILD)/BankFileTests $(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests \
-	$(BUILD)/PresenterTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
+TARGETS := $(BUILD)/BankFileTests $(BUILD)/CameraFrameTests \
+	$(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
+	$(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
+
+QUIRC_OBJECTS := $(BUILD)/quirc.o $(BUILD)/quirc_decode.o $(BUILD)/quirc_identify.o \
+	$(BUILD)/quirc_version_db.o
 
 .PHONY: all clean
 all: $(TARGETS)
@@ -16,6 +20,18 @@ all: $(TARGETS)
 
 $(BUILD)/BankFileTests: BankFileTests.cpp ../common/source/BankFile.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/CameraFrameTests: CameraFrameTests.cpp ../external/qrgen/QRGen.cpp \
+		../common/include/gui/CameraFrame.hpp $(QUIRC_OBJECTS) | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $(filter %.cpp %.o,$^)
+
+$(BUILD)/quirc.o: ../common/source/quirc/quirc.c | $(BUILD)
+	@$(CC) -std=gnu11 -g -Wall -Wextra -Werror -Og -DQUIRC_MAX_REGIONS=10000 \
+		-I../common/include/quirc -c -o $@ $<
+
+$(BUILD)/quirc_%.o: ../common/source/quirc/%.c | $(BUILD)
+	@$(CC) -std=gnu11 -g -Wall -Wextra -Werror -Og -DQUIRC_MAX_REGIONS=10000 \
+		-I../common/include/quirc -c -o $@ $<
 
 $(BUILD)/ConfigurationFileTests: ConfigurationFileTests.cpp \
 		../common/source/ConfigurationFile.cpp | $(BUILD)

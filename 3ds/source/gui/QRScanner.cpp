@@ -25,6 +25,7 @@
  */
 
 #include "QRScanner.hpp"
+#include "CameraFrame.hpp"
 #include "colors.hpp"
 #include "DataMutex.hpp"
 #include "gui.hpp"
@@ -36,104 +37,30 @@
 
 namespace
 {
-    consteval size_t camera_width_for_size(CAMU_Size camera_size)
-    {
-        switch (camera_size)
-        {
-            case SIZE_VGA:
-                return 640;
-            case SIZE_QVGA:
-                return 320;
-            case SIZE_QQVGA:
-                return 160;
-            case SIZE_CIF:
-                return 352;
-            case SIZE_QCIF:
-                return 176;
-            case SIZE_DS_LCD:
-                return 256;
-            case SIZE_DS_LCDx4:
-                return 512;
-            case SIZE_CTR_TOP_LCD:
-                return 400;
-        }
-        __unreachable();
-        return 0;
-    }
+    // Dense PKHeX codes need more than the 240 vertical samples of SIZE_CTR_TOP_LCD.
+    // Keep quirc at VGA and only reduce the display-only preview.
+    constexpr CAMU_Size CAMERA_SIZE = SIZE_VGA;
+    using ScannerFrame              = CameraFrame<640, 480>;
 
-    consteval size_t camera_height_for_size(CAMU_Size camera_size)
-    {
-        switch (camera_size)
-        {
-            case SIZE_VGA:
-                return 480;
-            case SIZE_QVGA:
-                return 240;
-            case SIZE_QQVGA:
-                return 120;
-            case SIZE_CIF:
-                return 288;
-            case SIZE_QCIF:
-                return 144;
-            case SIZE_DS_LCD:
-                return 192;
-            case SIZE_DS_LCDx4:
-                return 384;
-            case SIZE_CTR_TOP_LCD:
-                return 240;
-        }
-        __unreachable();
-        return 0;
-    }
-
-    constexpr float camera_scale_for_size(CAMU_Size camera_size)
-    {
-        switch (camera_size)
-        {
-            case SIZE_VGA:
-                return 0.5f;
-            case SIZE_QVGA:
-                return 1.0f;
-            case SIZE_QQVGA:
-                return 2.0f;
-            case SIZE_CIF:
-                return 0.75f;
-            case SIZE_QCIF:
-                return 1.5f;
-            case SIZE_DS_LCD:
-                return 1.0f;
-            case SIZE_DS_LCDx4:
-                return 0.75f;
-            case SIZE_CTR_TOP_LCD:
-                return 1.0f;
-        }
-        __unreachable();
-        return 0;
-    }
-
-    template <CAMU_Size Size>
     class QRData
     {
     public:
-        QRData() : cameraBuffer(), image{&tex, &subtex}, data(quirc_new())
+        QRData() : frame(), image{&tex, &subtex}, data(quirc_new())
         {
-            std::ranges::fill(cameraBuffer.lock().get(), 0);
-            auto curImage = image.lock();
-            C3D_TexInit(curImage->tex, image_width, image_height, GPU_RGB565);
-            C3D_TexSetFilter(curImage->tex, GPU_LINEAR, GPU_LINEAR);
-            curImage->tex->border = 0xFFFFFFFF;
-            C3D_TexSetWrap(curImage->tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
+            C3D_TexInit(image.tex, ScannerFrame::PREVIEW_TEXTURE_WIDTH,
+                ScannerFrame::PREVIEW_TEXTURE_HEIGHT, GPU_RGB565);
+            C3D_TexSetFilter(image.tex, GPU_LINEAR, GPU_LINEAR);
+            image.tex->border = 0xFFFFFFFF;
+            C3D_TexSetWrap(image.tex, GPU_CLAMP_TO_BORDER, GPU_CLAMP_TO_BORDER);
             svcCreateEvent(&exitEvent, RESET_STICKY);
             LightEvent_Init(&drawThreadDone, RESET_STICKY);
             LightEvent_Init(&captureThreadDone, RESET_STICKY);
-            quirc_resize(data, camera_width, camera_height);
-
-            LightSemaphore_Init(&letHandlerRun, 10, 10);
+            quirc_resize(data, ScannerFrame::CAMERA_WIDTH, ScannerFrame::CAMERA_HEIGHT);
         }
 
         ~QRData()
         {
-            C3D_TexDelete(image.lock()->tex);
+            C3D_TexDelete(image.tex);
             quirc_destroy(data);
             svcCloseHandle(exitEvent);
         }
@@ -146,94 +73,65 @@ namespace
 
         bool done() { return finished; }
 
-        bool cancelled() { return cancel; }
-
     private:
-        static constexpr CAMU_Size camera_size = Size;
-        static constexpr size_t camera_width   = camera_width_for_size(camera_size);
-        static constexpr size_t camera_height  = camera_height_for_size(camera_size);
-        static constexpr size_t image_width    = std::bit_ceil(camera_width);
-        static constexpr size_t image_height   = std::bit_ceil(camera_height);
-
-        static constexpr float camera_scale = camera_scale_for_size(camera_size);
-
-        static constexpr size_t image_pos_x = (400 - (camera_width * camera_scale)) / 2;
-        static constexpr size_t image_pos_y = (240 - (camera_height * camera_scale)) / 2;
-
-        static_assert(std::clamp<size_t>(image_width, 8, 1024) == image_width);
-        static_assert(std::clamp<size_t>(image_height, 8, 1024) == image_height);
-
         void buffToImage();
         void finish();
-        DataMutex<std::array<u16, camera_width * camera_height>> cameraBuffer;
+        DataMutex<ScannerFrame> frame;
         C3D_Tex tex;
-        DataMutex<C2D_Image> image;
+        C2D_Image image;
         quirc* data;
         Handle exitEvent;
-        static constexpr Tex3DS_SubTexture subtex = {camera_width, camera_height, 0.0f, 1.0f,
-            ((float)camera_width) / image_width, 1.0f - (((float)camera_height) / image_height)};
-        LightSemaphore letHandlerRun;
+        static constexpr Tex3DS_SubTexture subtex = {ScannerFrame::PREVIEW_WIDTH,
+            ScannerFrame::PREVIEW_HEIGHT, 0.0f, 1.0f,
+            float(ScannerFrame::PREVIEW_WIDTH) / ScannerFrame::PREVIEW_TEXTURE_WIDTH,
+            1.0f - float(ScannerFrame::PREVIEW_HEIGHT) / ScannerFrame::PREVIEW_TEXTURE_HEIGHT};
         LightEvent drawThreadDone;
         LightEvent captureThreadDone;
         std::atomic<bool> finished = false;
         bool capturing             = false;
-        bool cancel                = false;
     };
 
-    template <CAMU_Size Size>
     void captureHelp(void* arg)
     {
-        QRData<Size>* data = (QRData<Size>*)arg;
+        QRData* data = (QRData*)arg;
         data->captureThread();
     }
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::buffToImage()
+void QRData::buffToImage()
 {
-    auto lockedImage  = image.lock();
-    auto lockedBuffer = cameraBuffer.lock();
     u32 size;
-    void* imageData = C3D_Tex2DGetImagePtr(lockedImage->tex, 0, &size);
-    for (u32 x = 0; x < camera_width; x++)
+    auto* imageData = (u16*)C3D_Tex2DGetImagePtr(image.tex, 0, &size);
     {
-        for (u32 y = 0; y < camera_height; y++)
+        auto lockedFrame = frame.lock();
+        if (!lockedFrame->copyPreview(std::span<u16, ScannerFrame::PREVIEW_TEXTURE_PIXELS>{
+                imageData, ScannerFrame::PREVIEW_TEXTURE_PIXELS}))
         {
-            u32 dstPos = ((((y >> 3) * (image_width >> 3) + (x >> 3)) << 6) +
-                             ((x & 1) | ((y & 1) << 1) | ((x & 2) << 1) | ((y & 2) << 2) |
-                                 ((x & 4) << 2) | ((y & 4) << 3))) *
-                         2;
-            u32 srcPos = (y * camera_width + x) * 2;
-            memcpy(((u8*)imageData) + dstPos, ((u8*)lockedBuffer->data()) + srcPos, 2);
+            return;
         }
     }
     GSPGPU_FlushDataCache(imageData, size);
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::finish()
+void QRData::finish()
 {
     svcSignalEvent(exitEvent);
     while (!done())
     {
-        LightSemaphore_Release(&letHandlerRun, 10);
         svcSleepThread(1000000);
     }
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::drawThread()
+void QRData::drawThread()
 {
     while (aptMainLoop() && !done())
     {
-        LightSemaphore_Acquire(&letHandlerRun, 1);
         C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         buffToImage();
 
         Gui::target(GFX_TOP);
         Gui::drawSolidRect(0, 0, 400, 240, COLOR_BLACK);
-        Gui::drawImageAt(
-            image.lock().get(), image_pos_x, image_pos_y, nullptr, camera_scale, camera_scale);
+        Gui::drawImageAt(image, 40, 0);
 
         Gui::target(GFX_BOTTOM);
         Gui::backgroundBottom(false);
@@ -257,16 +155,18 @@ void QRData<Size>::drawThread()
     LightEvent_Signal(&drawThreadDone);
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::captureThread()
+void QRData::captureThread()
 {
     Handle events[3] = {0};
     events[0]        = exitEvent;
     u32 transferUnit;
 
-    std::unique_ptr<u16[]> buffer = std::unique_ptr<u16[]>(new u16[camera_width * camera_height]);
+    u16* buffer;
+    {
+        buffer = frame.lock()->captureTarget();
+    }
     camInit();
-    CAMU_SetSize(SELECT_OUT1, camera_size, CONTEXT_A);
+    CAMU_SetSize(SELECT_OUT1, CAMERA_SIZE, CONTEXT_A);
     CAMU_SetOutputFormat(SELECT_OUT1, OUTPUT_RGB_565, CONTEXT_A);
     CAMU_SetFrameRate(SELECT_OUT1, FRAME_RATE_30);
     CAMU_SetNoiseFilter(SELECT_OUT1, true);
@@ -278,11 +178,11 @@ void QRData<Size>::captureThread()
     CAMU_Activate(SELECT_OUT1);
     CAMU_GetBufferErrorInterruptEvent(&events[2], PORT_CAM1);
     CAMU_SetTrimming(PORT_CAM1, false);
-    CAMU_GetMaxBytes(&transferUnit, camera_width, camera_height);
-    CAMU_SetTransferBytes(PORT_CAM1, transferUnit, camera_width, camera_height);
+    CAMU_GetMaxBytes(&transferUnit, ScannerFrame::CAMERA_WIDTH, ScannerFrame::CAMERA_HEIGHT);
+    CAMU_SetTransferBytes(
+        PORT_CAM1, transferUnit, ScannerFrame::CAMERA_WIDTH, ScannerFrame::CAMERA_HEIGHT);
     CAMU_ClearBuffer(PORT_CAM1);
-    CAMU_SetReceiving(&events[1], buffer.get(), PORT_CAM1,
-        camera_width * camera_height * sizeof(u16), (s16)transferUnit);
+    CAMU_SetReceiving(&events[1], buffer, PORT_CAM1, ScannerFrame::CAMERA_BYTES, (s16)transferUnit);
     CAMU_StartCapture(PORT_CAM1);
     bool cancel = false;
     while (!cancel)
@@ -295,25 +195,23 @@ void QRData<Size>::captureThread()
                 cancel = true;
                 break;
             case 1:
-                LightSemaphore_Acquire(&letHandlerRun, 1);
                 svcCloseHandle(events[1]);
                 events[1] = 0;
+                // The camera wrote this buffer without going through the CPU cache. It becomes
+                // the immutable published frame as soon as its stale cache lines are discarded.
+                GSPGPU_InvalidateDataCache(buffer, ScannerFrame::CAMERA_BYTES);
                 {
-                    auto lockedBuffer = cameraBuffer.lock();
-                    memcpy(lockedBuffer->data(), buffer.get(),
-                        camera_width * camera_height * sizeof(u16));
-                    GSPGPU_FlushDataCache(
-                        lockedBuffer->data(), camera_width * camera_height * sizeof(u16));
+                    buffer = frame.lock()->publishCapture();
                 }
-                CAMU_SetReceiving(&events[1], buffer.get(), PORT_CAM1,
-                    camera_width * camera_height * sizeof(u16), transferUnit);
+                CAMU_SetReceiving(
+                    &events[1], buffer, PORT_CAM1, ScannerFrame::CAMERA_BYTES, (s16)transferUnit);
                 break;
             case 2:
                 svcCloseHandle(events[1]);
                 events[1] = 0;
                 CAMU_ClearBuffer(PORT_CAM1);
-                CAMU_SetReceiving(&events[1], buffer.get(), PORT_CAM1,
-                    camera_width * camera_height * sizeof(u16), transferUnit);
+                CAMU_SetReceiving(
+                    &events[1], buffer, PORT_CAM1, ScannerFrame::CAMERA_BYTES, (s16)transferUnit);
                 CAMU_StartCapture(PORT_CAM1);
                 break;
             default:
@@ -344,12 +242,8 @@ void QRData<Size>::captureThread()
     LightEvent_Signal(&captureThreadDone);
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::joinThreads()
+void QRData::joinThreads()
 {
-    // The draw thread parks on the semaphore that handler() normally feeds, so it has to be let
-    // through one last time before it can observe done() and leave.
-    LightSemaphore_Release(&letHandlerRun, 10);
     LightEvent_Wait(&drawThreadDone);
     if (capturing)
     {
@@ -357,13 +251,11 @@ void QRData<Size>::joinThreads()
     }
 }
 
-template <CAMU_Size Size>
-void QRData<Size>::handler(std::vector<u8>& out)
+void QRData::handler(std::vector<u8>& out)
 {
     hidScanInput();
     if (hidKeysDown() & KEY_B)
     {
-        cancel = true;
         finish();
         return;
     }
@@ -371,7 +263,7 @@ void QRData<Size>::handler(std::vector<u8>& out)
     if (!capturing)
     {
         // create cam thread
-        if (Threads::create(&captureHelp<Size>, this, 0x10000, 0x1A))
+        if (Threads::create(&captureHelp, this, 0x10000, 0x1A))
         {
             capturing = true;
         }
@@ -387,45 +279,43 @@ void QRData<Size>::handler(std::vector<u8>& out)
         return;
     }
 
-    int w, h;
-    u8* image = (u8*)quirc_begin(data, &w, &h);
+    u8* image = (u8*)quirc_begin(data, nullptr, nullptr);
+    bool processed;
     {
-        auto lockedBuffer = cameraBuffer.lock();
-        for (ssize_t x = 0; x < w; x++)
-        {
-            for (ssize_t y = 0; y < h; y++)
-            {
-                u16 px           = lockedBuffer.get()[y * camera_width + x];
-                image[y * w + x] = (u8)(((((px >> 11) & 0x1F) << 3) + (((px >> 5) & 0x3F) << 2) +
-                                            ((px & 0x1F) << 3)) /
-                                        3);
-            }
-        }
+        auto lockedFrame = frame.lock();
+        processed        = lockedFrame->copyLuma(
+            std::span<u8, ScannerFrame::CAMERA_PIXELS>{image, ScannerFrame::CAMERA_PIXELS});
     }
+    if (!processed)
+    {
+        // The camera produces 30 frames per second. Do not spin or ask quirc to identify the
+        // same frame repeatedly while waiting for the next one.
+        svcSleepThread(1000000);
+        return;
+    }
+
     quirc_end(data);
-    if (quirc_count(data) > 0)
+    for (int i = 0; i < quirc_count(data); i++)
     {
         struct quirc_code code;
         struct quirc_data scan_data;
-        quirc_extract(data, 0, &code);
+        quirc_extract(data, i, &code);
         if (!quirc_decode(&code, &scan_data))
         {
             finish();
             out.resize(scan_data.payload_len);
             std::copy(scan_data.payload, scan_data.payload + scan_data.payload_len, out.begin());
+            return;
         }
     }
-
-    LightSemaphore_Release(&letHandlerRun, 10);
 }
 
 std::vector<u8> QR_Internal::scan()
 {
-    static constexpr CAMU_Size CAMERA_SIZE    = SIZE_VGA;
-    std::vector<u8> out                       = {};
-    std::unique_ptr<QRData<CAMERA_SIZE>> data = std::make_unique<QRData<CAMERA_SIZE>>();
+    std::vector<u8> out          = {};
+    std::unique_ptr<QRData> data = std::make_unique<QRData>();
     aptSetHomeAllowed(false);
-    if (Threads::create<&QRData<CAMERA_SIZE>::drawThread>(0x10000, data.get()))
+    if (Threads::create<&QRData::drawThread>(0x10000, data.get()))
     {
         while (!data->done())
         {
