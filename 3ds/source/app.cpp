@@ -67,12 +67,10 @@ namespace
     // Never opened: the hb:ldr connection above HBLDR_SetTarget is commented out, so this
     // stays zero and the chainload path fails rather than closing a handle it never had.
     Handle hbldrHandle;
-    std::atomic_flag moveIcon           = ATOMIC_FLAG_INIT;
-    std::atomic_flag doCartScan         = ATOMIC_FLAG_INIT;
-    std::atomic_flag continueI18N       = ATOMIC_FLAG_INIT;
-    std::atomic<bool> iconThreadAlive   = false;
-    std::atomic<bool> cartScanAlive     = false;
-    std::atomic<bool> i18nPrefetchAlive = false;
+    std::atomic_flag moveIcon         = ATOMIC_FLAG_INIT;
+    std::atomic_flag doCartScan       = ATOMIC_FLAG_INIT;
+    std::atomic<bool> iconThreadAlive = false;
+    std::atomic<bool> cartScanAlive   = false;
     // Held for as long as soc is up, and freed with it. It used to be allocated and never
     // released at all.
     u32* socketBuffer = nullptr;
@@ -115,15 +113,6 @@ namespace
         if (!waitForStop(cartScanAlive))
         {
             Logging::warning("The cart scan thread did not stop");
-        }
-    }
-
-    void stopI18NPrefetch()
-    {
-        continueI18N.clear();
-        if (!waitForStop(i18nPrefetchAlive))
-        {
-            Logging::warning("The i18n prefetch task did not stop");
         }
     }
 
@@ -649,26 +638,6 @@ namespace
         iconThreadAlive = false;
     }
 
-    void i18nThread()
-    {
-        static constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
-            pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
-            pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
-            pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
-        for (const auto& i : languages)
-        {
-            if (!continueI18N.test())
-            {
-                break;
-            }
-            i18n::init(i);
-        }
-
-        // i18n::exit frees what this wrote, and it is torn down as soon as the prefetch
-        // token is released, so the release has to see this.
-        i18nPrefetchAlive = false;
-    }
-
     Result rebootToPKSM(const std::string& execPath)
     {
         Result res = -1;
@@ -787,6 +756,9 @@ Result App::init(const std::string& execPath)
                 // Stopping it here rather than at teardown costs nothing: the handshake is
                 // idempotent, so the token's release is a no-op afterwards.
                 stopIconThread();
+                // Only the language the user reads. The other twelve materialize on first
+                // use through checkInitialized, which is what the interface already does
+                // for a save written in a language that is not this one.
                 i18n::init(Configuration::getInstance().language());
             },
             i18n::exit) &&
@@ -842,16 +814,7 @@ Result App::init(const std::string& execPath)
                     cartScanAlive = false;
                 }
             },
-            stopCartScan) &&
-        subsystems.acquire(
-            "i18n prefetch",
-            []
-            {
-                continueI18N.test_and_set();
-                i18nPrefetchAlive = true;
-                Threads::executeTask(i18nThread);
-            },
-            stopI18NPrefetch);
+            stopCartScan);
 
     if (!contentUp)
     {
