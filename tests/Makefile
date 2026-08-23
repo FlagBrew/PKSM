@@ -9,7 +9,7 @@ INCLUDE  := -I../common/include -I../common/include/gui -I../common/include/util
 BUILD   := build
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/CameraFrameTests \
 	$(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
-	$(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
+	$(BUILD)/SaveIndexTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
 
 QUIRC_OBJECTS := $(BUILD)/quirc.o $(BUILD)/quirc_decode.o $(BUILD)/quirc_identify.o \
 	$(BUILD)/quirc_version_db.o
@@ -43,6 +43,9 @@ $(BUILD)/GpssPageTests: GpssPageTests.cpp ../common/source/GpssPage.cpp \
 
 $(BUILD)/PresenterTests: PresenterTests.cpp ../common/source/Presenter.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^ -pthread
+
+$(BUILD)/SaveIndexTests: SaveIndexTests.cpp ../common/source/SaveIndex.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -Ifakes -I../common/include/gui -o $@ $^
