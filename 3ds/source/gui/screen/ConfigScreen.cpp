@@ -128,6 +128,17 @@ ConfigScreen::ConfigScreen()
     initButtons();
 }
 
+void ConfigScreen::changeLanguage(pksm::Language language)
+{
+    Gui::clearText();
+    if (!i18n::isInitialized(language))
+    {
+        Gui::waitFrame(i18n::localize("LANGUAGE_CHANGING"));
+    }
+    Configuration::getInstance().language(language);
+    initButtons();
+}
+
 void ConfigScreen::initButtons()
 {
     tabs.clear();
@@ -173,9 +184,7 @@ void ConfigScreen::initButtons()
         37, 52, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::JPN);
-            initButtons();
+            changeLanguage(pksm::Language::JPN);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -185,9 +194,7 @@ void ConfigScreen::initButtons()
         37, 74, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::ENG);
-            initButtons();
+            changeLanguage(pksm::Language::ENG);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -197,9 +204,7 @@ void ConfigScreen::initButtons()
         37, 96, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::FRE);
-            initButtons();
+            changeLanguage(pksm::Language::FRE);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -209,9 +214,7 @@ void ConfigScreen::initButtons()
         37, 118, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::GER);
-            initButtons();
+            changeLanguage(pksm::Language::GER);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -221,9 +224,7 @@ void ConfigScreen::initButtons()
         37, 140, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::ITA);
-            initButtons();
+            changeLanguage(pksm::Language::ITA);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -233,9 +234,7 @@ void ConfigScreen::initButtons()
         37, 162, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::SPA);
-            initButtons();
+            changeLanguage(pksm::Language::SPA);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -247,9 +246,7 @@ void ConfigScreen::initButtons()
         177, 52, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::CHS);
-            initButtons();
+            changeLanguage(pksm::Language::CHS);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -259,9 +256,7 @@ void ConfigScreen::initButtons()
         177, 74, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::KOR);
-            initButtons();
+            changeLanguage(pksm::Language::KOR);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -271,9 +266,7 @@ void ConfigScreen::initButtons()
         177, 96, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::NL);
-            initButtons();
+            changeLanguage(pksm::Language::NL);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -283,9 +276,7 @@ void ConfigScreen::initButtons()
         177, 118, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::PT);
-            initButtons();
+            changeLanguage(pksm::Language::PT);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,
@@ -295,9 +286,7 @@ void ConfigScreen::initButtons()
         177, 140, 8, 8,
         [this]()
         {
-            Gui::clearText();
-            Configuration::getInstance().language(pksm::Language::RO);
-            initButtons();
+            changeLanguage(pksm::Language::RO);
             return false;
         },
         ui_sheet_emulated_button_lang_enabled_idx, "", 0.0f, COLOR_BLACK,

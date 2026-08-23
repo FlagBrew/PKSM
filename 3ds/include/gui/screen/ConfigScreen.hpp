@@ -27,6 +27,7 @@
 #ifndef CONFIGSCREEN_HPP
 #define CONFIGSCREEN_HPP
 
+#include "enums/Language.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
 #include <array>
@@ -47,6 +48,7 @@ private:
     std::vector<std::unique_ptr<ToggleButton>> tabs;
     std::array<std::vector<std::unique_ptr<Button>>, 3> tabButtons;
     void back(void);
+    void changeLanguage(pksm::Language language);
     void initButtons(void);
     int currentTab          = 0;
     bool justSwitched       = true;

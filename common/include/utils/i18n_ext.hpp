@@ -35,6 +35,7 @@ namespace i18n
 {
     void initGui(pksm::Language lang);
     void exitGui(pksm::Language lang);
+    [[nodiscard]] bool isInitialized(pksm::Language lang);
     const std::string& localize(pksm::Language lang, std::string_view index);
 
     const std::string& pouch(pksm::Language lang, pksm::Sav::Pouch pouch);
