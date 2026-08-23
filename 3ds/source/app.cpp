@@ -446,6 +446,7 @@ namespace
                     }
                     while (!power && doCartScan.test())
                     {
+                        svcSleepThread(1'000'000);
                         FSUSER_CardSlotGetCardIFPowerStatus(&power);
                     }
                     svcSleepThread(500'000'000);
@@ -720,7 +721,7 @@ Result App::init(const std::string& execPath)
             {
                 moveIcon.test_and_set();
                 iconThreadAlive = true;
-                if (!Threads::create(iconThread))
+                if (!Threads::foreground(iconThread))
                 {
                     iconThreadAlive = false;
                 }
@@ -809,7 +810,7 @@ Result App::init(const std::string& execPath)
             {
                 doCartScan.test_and_set();
                 cartScanAlive = true;
-                if (!Threads::create(cartScan))
+                if (!Threads::background(cartScan))
                 {
                     cartScanAlive = false;
                 }

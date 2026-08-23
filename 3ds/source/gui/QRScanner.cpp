@@ -263,7 +263,7 @@ void QRData::handler(std::vector<u8>& out)
     if (!capturing)
     {
         // create cam thread
-        if (Threads::create(&captureHelp, this, 0x10000, 0x1A))
+        if (Threads::atPriority(&captureHelp, this, 0x10000, 0x1A))
         {
             capturing = true;
         }
@@ -315,7 +315,7 @@ std::vector<u8> QR_Internal::scan()
     std::vector<u8> out          = {};
     std::unique_ptr<QRData> data = std::make_unique<QRData>();
     aptSetHomeAllowed(false);
-    if (Threads::create<&QRData::drawThread>(0x10000, data.get()))
+    if (Threads::background<&QRData::drawThread>(0x10000, data.get()))
     {
         while (!data->done())
         {

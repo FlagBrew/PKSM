@@ -344,7 +344,7 @@ Result Fetch::init()
     }
     multiHandle   = curl_multi_init();
     threadRunning = true;
-    if (!multiHandle || !Threads::create(8 * 1024, mainThread))
+    if (!multiHandle || !Threads::background(8 * 1024, mainThread))
     {
         threadRunning = false;
         curl_global_cleanup();

@@ -1107,7 +1107,7 @@ Result Gui::init(void)
     hidSetRepeatParameters(10, 10);
 
     LightEvent_Init(&fontsLoaded, RESET_STICKY);
-    fontLoaderStarted = Threads::create(loadRemainingFonts);
+    fontLoaderStarted = Threads::background(loadRemainingFonts);
     if (!fontLoaderStarted)
     {
         Logging::warning("Could not start the font loader thread");

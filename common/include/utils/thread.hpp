@@ -48,11 +48,16 @@ namespace Threads
         return init(workers, workers);
     }
 
-    // stackSize and priority will be ignored on systems that don't provide explicit setting of
-    // them. KEEP THIS IN MIND IF YOU ARE PORTING. priority is an absolute OS priority; leave it
-    // empty to get one step above the calling thread.
-    bool create(void (*entrypoint)(void*), void* arg = nullptr,
-        std::optional<size_t> stackSize = std::nullopt, std::optional<int> priority = std::nullopt);
+    // stackSize will be ignored on systems that don't provide explicit setting of it. KEEP THIS IN
+    // MIND IF YOU ARE PORTING. Background threads run one priority step below their caller;
+    // foreground threads run one step above it.
+    bool background(void (*entrypoint)(void*), void* arg = nullptr,
+        std::optional<size_t> stackSize = std::nullopt);
+    bool foreground(void (*entrypoint)(void*), void* arg = nullptr,
+        std::optional<size_t> stackSize = std::nullopt);
+    // For hardware-facing threads whose priority is part of the platform contract.
+    bool atPriority(
+        void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize, int priority);
     // Executes task on a worker thread with stack size of 0x8000 (if settable).
     void executeTask(void (*task)(void*), void* arg);
 
@@ -108,10 +113,10 @@ namespace Threads
         std::pair<void (*)(void*), void*> getFuncAndArg(EPFunc&& entrypoint)
             requires std::invocable<EPFunc> &&
                      std::is_convertible_v<EPFunc, std::invoke_result_t<EPFunc> (*)()> &&
-                     (sizeof(std::invoke_result_t<EPFunc>(*)()) == sizeof(void*))
+                     (sizeof(std::invoke_result_t<EPFunc> (*)()) == sizeof(void*))
         {
             return {+[](void* a)
-                    { std::invoke(reinterpret_cast<std::invoke_result_t<EPFunc> (*)()>(a)); },
+                { std::invoke(reinterpret_cast<std::invoke_result_t<EPFunc> (*)()>(a)); },
                 reinterpret_cast<void*>(
                     static_cast<std::invoke_result_t<EPFunc> (*)()>(entrypoint))};
         }
@@ -139,7 +144,7 @@ namespace Threads
         {
         private:
             template <typename C, typename T>
-            static C declclass(T C::*m);
+            static C declclass(T C::* m);
 
         public:
             using type = decltype(declclass(std::declval<MF>()));
@@ -150,7 +155,7 @@ namespace Threads
     } // namespace internal
 
     template <typename EPFunc, typename... Args>
-    bool create(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
+    bool background(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
         requires requires {
             internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
                 std::forward<decltype(args)>(args)...);
@@ -158,11 +163,11 @@ namespace Threads
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
-        return create(func.first, func.second, stackSize);
+        return background(func.first, func.second, stackSize);
     }
 
     template <typename EPFunc, typename... Args>
-    bool create(EPFunc&& entrypoint, Args&&... args)
+    bool background(EPFunc&& entrypoint, Args&&... args)
         requires requires {
             internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
                 std::forward<decltype(args)>(args)...);
@@ -170,7 +175,31 @@ namespace Threads
     {
         auto func = internal::getFuncAndArg(
             std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
-        return create(func.first, func.second, std::nullopt);
+        return background(func.first, func.second, std::nullopt);
+    }
+
+    template <typename EPFunc, typename... Args>
+    bool foreground(std::optional<size_t> stackSize, EPFunc&& entrypoint, Args&&... args)
+        requires requires {
+            internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                std::forward<decltype(args)>(args)...);
+        }
+    {
+        auto func = internal::getFuncAndArg(
+            std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+        return foreground(func.first, func.second, stackSize);
+    }
+
+    template <typename EPFunc, typename... Args>
+    bool foreground(EPFunc&& entrypoint, Args&&... args)
+        requires requires {
+            internal::getFuncAndArg(std::forward<decltype(entrypoint)>(entrypoint),
+                std::forward<decltype(args)>(args)...);
+        }
+    {
+        auto func = internal::getFuncAndArg(
+            std::forward<decltype(entrypoint)>(entrypoint), std::forward<decltype(args)>(args)...);
+        return foreground(func.first, func.second, std::nullopt);
     }
 
     template <typename EPFunc, typename... Args>
@@ -186,18 +215,33 @@ namespace Threads
     }
 
     template <auto MP>
-    bool create(std::optional<size_t> stackSize,
+    bool background(std::optional<size_t> stackSize,
         internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
         requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     {
-        return create(stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
+        return background(stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
     }
 
     template <auto MP>
-    bool create(internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
+    bool background(internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
         requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
     {
-        return create<MP>(std::nullopt, cv);
+        return background<MP>(std::nullopt, cv);
+    }
+
+    template <auto MP>
+    bool foreground(std::optional<size_t> stackSize,
+        internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
+        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
+    {
+        return foreground(stackSize, +[](decltype(cv) cv) { return std::invoke(MP, cv); }, cv);
+    }
+
+    template <auto MP>
+    bool foreground(internal::member_pointer_class_t<std::remove_cvref_t<decltype(MP)>>* cv)
+        requires std::is_member_function_pointer_v<std::remove_cvref_t<decltype(MP)>>
+    {
+        return foreground<MP>(std::nullopt, cv);
     }
 
     template <auto MP>
