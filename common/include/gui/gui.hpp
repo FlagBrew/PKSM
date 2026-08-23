@@ -109,6 +109,9 @@ namespace Gui
     void setDoHomeDraw(void);
     void drawNoHome(void);
     void drawSelector(float x, float y);
+    // Horizontal separator between the buttons stacked in the right-hand column of the
+    // savebox sprite. The sprite itself carries no divider, so screens draw one per gap.
+    void saveboxDivider(float y);
     u8 transparencyWaver();
 
     // Used to get text width/number of lines

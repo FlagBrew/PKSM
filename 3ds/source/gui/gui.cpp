@@ -2330,6 +2330,13 @@ void Gui::error(const std::string& message, Result errorCode)
     }
 }
 
+void Gui::saveboxDivider(float y)
+{
+    // Matches the savebox's own border colour, and is 1px tall like the row separators
+    // the mirrored halves of the sprite produce on the left-hand list.
+    Gui::drawSolidRect(200, y, 96, 1, PKSM_Color(26, 35, 126, 255));
+}
+
 void Gui::drawSelector(float x, float y)
 {
     static constexpr int w     = 2;

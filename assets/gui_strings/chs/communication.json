@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "您想要发送更改的文件",
-    "BRIDGE_SHOULD_SEND_2": "到原始客户端吗?",
+    "TRANSFER_SHOULD_SEND_1": "您想要发送更改的文件",
+    "TRANSFER_SHOULD_SEND_2": "到原始客户端吗?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "下载 {:s}...",
     "GPSS_DOWNLOAD": "下载此GPSS Pokémon?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "你的下载代码是",
     "SHARE_SEND_CONFIRM": "分享这个 Pokémon?",
     "UPLOAD_GROUP": "Upload group to GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Receiver address (IP or IP:port)",
     "WIRELESS_IP": "IP地址: {:s}",
+    "WIRELESS_PIN_HINT": "Receiver PIN",
+    "WIRELESS_SENDING": "Sending save...",
     "WIRELESS_WARNING": "这将锁定您的主机直到收到存档."
 }

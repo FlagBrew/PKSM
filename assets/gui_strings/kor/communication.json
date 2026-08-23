@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "변경된 파일을 기준 클라이언트로",
-    "BRIDGE_SHOULD_SEND_2": "보내겠습니까?",
+    "TRANSFER_SHOULD_SEND_1": "변경된 파일을 기준 클라이언트로",
+    "TRANSFER_SHOULD_SEND_2": "보내겠습니까?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Downloading {:s}...",
     "GPSS_DOWNLOAD": "Download this GPSS Pokémon?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Your download code is (Please translate this)",
     "SHARE_SEND_CONFIRM": "Share this Pokémon?",
     "UPLOAD_GROUP": "Upload group to GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Receiver address (IP or IP:port)",
     "WIRELESS_IP": "IP 주소: {:s}",
+    "WIRELESS_PIN_HINT": "Receiver PIN",
+    "WIRELESS_SENDING": "Sending save...",
     "WIRELESS_WARNING": "이것은 세이브파일을 받을 때까지 기기를 잠급니다."
 }

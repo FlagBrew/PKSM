@@ -37,6 +37,7 @@
 #include "ScreenStack.hpp"
 #include "Title.hpp"
 #include "TitleLoadScreen.hpp"
+#include "WirelessTransfer.hpp"
 
 namespace
 {
@@ -83,13 +84,23 @@ SaveLoadScreen::SaveLoadScreen()
 {
     oldLang = Configuration::getInstance().language();
     buttons.push_back(std::make_unique<Button>(
-        200, 147, 96, 51,
+        200, 130, 96, 33,
         [this]()
         {
             mustUpdateTitles = true;
             ScreenStack::push(std::make_unique<ExtraSavesSubScreen>(
                 calcSaveGroupFromSystem(systemGroup, saveGroup)));
             return true;
+        },
+        ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
+    buttons.push_back(std::make_unique<Button>(
+        200, 164, 96, 34,
+        [this]()
+        {
+            // a received save is stored on the SD card, so the list behind this screen has to
+            // pick it up on the way back
+            mustUpdateTitles = true;
+            return WirelessTransfer::receiveSave();
         },
         ui_sheet_res_null_idx, "", 0.0f, COLOR_BLACK));
     buttons.push_back(std::make_unique<AccelButton>(
@@ -105,7 +116,7 @@ SaveLoadScreen::SaveLoadScreen()
         24, 181, 175, 16, [this]() { return this->setSelectedSave(5); }, ui_sheet_res_null_idx, "",
         0.0f, COLOR_BLACK, 10, 10));
     buttons.push_back(std::make_unique<Button>(
-        200, 95, 96, 51, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
+        200, 95, 96, 34, [this]() { return this->loadSave(); }, ui_sheet_res_null_idx, "", 0.0f,
         COLOR_BLACK));
 
     tabs.push_back(std::make_unique<ToggleButton>(
@@ -381,6 +392,8 @@ void SaveLoadScreen::drawBottom() const
 
     Gui::backgroundBottom(true);
     Gui::sprite(ui_sheet_gameselector_savebox_idx, 22, 94);
+    Gui::saveboxDivider(129);
+    Gui::saveboxDivider(163);
 
     for (const auto& tabButton : tabs)
     {
@@ -435,10 +448,12 @@ void SaveLoadScreen::drawBottom() const
         Gui::drawSolidTriangle(189, 191, 197, 191, 193, 196, PKSM_Color(0x0f, 0x16, 0x59, 255));
     }
 
-    Gui::text(i18n::localize("LOADER_LOAD"), 248, 113, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
-    Gui::text(i18n::localize("ADD_SAVE"), 248, 172, FONT_SIZE_14, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::CENTER);
+    Gui::text(i18n::localize("LOADER_LOAD"), 248, 112, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::CENTER, TextWidthAction::WRAP, 94);
+    Gui::text(i18n::localize("ADD_SAVE"), 248, 146, FONT_SIZE_12, COLOR_WHITE, TextPosX::CENTER,
+        TextPosY::CENTER, TextWidthAction::WRAP, 94);
+    Gui::text(i18n::localize("LOADER_WIRELESS"), 248, 181, FONT_SIZE_12, COLOR_WHITE,
+        TextPosX::CENTER, TextPosY::CENTER, TextWidthAction::WRAP, 94);
 
     Gui::text(i18n::localize("LOADER_INSTRUCTIONS_BOTTOM"), 160, 223, FONT_SIZE_11, COLOR_WHITE,
         TextPosX::CENTER, TextPosY::TOP);
@@ -729,7 +744,7 @@ void SaveLoadScreen::update(touchPosition* touch)
             saveGroup = 0;
             tabs[u8(systemGroup)]->setState(true);
         }
-        if (buttons[0]->update(touch))
+        if (buttons[0]->update(touch) || buttons[1]->update(touch))
         {
             return;
         }

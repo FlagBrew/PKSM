@@ -7,9 +7,11 @@ INCLUDE  := -I../common/include -I../common/include/gui -I../common/include/util
 	-I../core/include -I../external -I../external/qrgen -I../3ds/include
 
 BUILD   := build
+
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/CameraFrameTests \
 	$(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
-	$(BUILD)/SaveIndexTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests
+	$(BUILD)/SaveIndexTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests \
+  $(BUILD)/TransferProtocolTests
 
 QUIRC_OBJECTS := $(BUILD)/quirc.o $(BUILD)/quirc_decode.o $(BUILD)/quirc_identify.o \
 	$(BUILD)/quirc_version_db.o
@@ -51,6 +53,10 @@ $(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -Ifakes -I../common/include/gui -o $@ $^
 
 $(BUILD)/SubsystemsTests: SubsystemsTests.cpp ../common/source/Subsystems.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/TransferProtocolTests: TransferProtocolTests.cpp \
+		../common/source/utils/TransferProtocol.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD):

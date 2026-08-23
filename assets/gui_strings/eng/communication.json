@@ -1,6 +1,6 @@
 {
-    "BRIDGE_SHOULD_SEND_1": "Would you like to send the changed file",
-    "BRIDGE_SHOULD_SEND_2": "to the original client?",
+    "TRANSFER_SHOULD_SEND_1": "Would you like to send the changed file",
+    "TRANSFER_SHOULD_SEND_2": "to a wireless receiver?",
     "CLOUD_BOX": "Cloud {:d}",
     "DOWNLOADING_FILE": "Downloading {:s}...",
     "GPSS_DOWNLOAD": "Download this GPSS Pok\u00e9mon?",
@@ -10,6 +10,9 @@
     "SHARE_DOWNLOAD_CODE": "Your download code is",
     "SHARE_SEND_CONFIRM": "Share this Pok\u00E9mon?",
     "UPLOAD_GROUP": "Upload group to GPSS?",
+    "WIRELESS_ADDRESS_HINT": "Receiver address (IP or IP:port)",
     "WIRELESS_IP": "IP Address: {:s}",
+    "WIRELESS_PIN_HINT": "Receiver PIN",
+    "WIRELESS_SENDING": "Sending save...",
     "WIRELESS_WARNING": "This will lock your console until a save is received."
 }

@@ -40,12 +40,6 @@
 
 class Title;
 
-bool isLoadedSaveFromBridge(void);
-bool receiveSaveFromBridge(void);
-bool sendSaveToBridge(void);
-void setLoadedSaveFromBridge(bool v);
-void backupBridgeChanges(void);
-
 namespace TitleLoader
 {
     void scanTitles(void);
