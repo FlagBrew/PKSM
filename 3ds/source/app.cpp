@@ -27,6 +27,7 @@
 #include "app.hpp"
 #include "appIcon.hpp"
 #include "Archive.hpp"
+#include "AssetStore.hpp"
 #include "banks.hpp"
 #include "Button.hpp"
 #include "Configuration.hpp"
@@ -34,7 +35,6 @@
 #include "gui.hpp"
 #include "GuiPresenter.hpp"
 #include "i18n_ext.hpp"
-#include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
 #include "PkmUtils.hpp"
@@ -45,7 +45,6 @@
 #include "Subsystems.hpp"
 #include "thread.hpp"
 #include "TitleLoadScreen.hpp"
-#include "utils/crypto.hpp"
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
 #include "utils/server.hpp"
@@ -68,12 +67,10 @@ namespace
     // Never opened: the hb:ldr connection above HBLDR_SetTarget is commented out, so this
     // stays zero and the chainload path fails rather than closing a handle it never had.
     Handle hbldrHandle;
-    std::atomic_flag moveIcon           = ATOMIC_FLAG_INIT;
-    std::atomic_flag doCartScan         = ATOMIC_FLAG_INIT;
-    std::atomic_flag continueI18N       = ATOMIC_FLAG_INIT;
-    std::atomic<bool> iconThreadAlive   = false;
-    std::atomic<bool> cartScanAlive     = false;
-    std::atomic<bool> i18nPrefetchAlive = false;
+    std::atomic_flag moveIcon         = ATOMIC_FLAG_INIT;
+    std::atomic_flag doCartScan       = ATOMIC_FLAG_INIT;
+    std::atomic<bool> iconThreadAlive = false;
+    std::atomic<bool> cartScanAlive   = false;
     // Held for as long as soc is up, and freed with it. It used to be allocated and never
     // released at all.
     u32* socketBuffer = nullptr;
@@ -119,15 +116,6 @@ namespace
         }
     }
 
-    void stopI18NPrefetch()
-    {
-        continueI18N.clear();
-        if (!waitForStop(i18nPrefetchAlive))
-        {
-            Logging::warning("The i18n prefetch task did not stop");
-        }
-    }
-
     // What the console error screen says when a step does not come up. The subsystem's own
     // name carries it, so adding a step to the sequence needs nothing here.
     std::string startupErrorMessage(std::string_view name)
@@ -146,93 +134,10 @@ namespace
             std::string(name), event == pksm::Subsystems::Event::Acquired ? "init ok" : "exited");
     }
 
-    struct asset
-    {
-        std::string url;
-        std::string path;
-        decltype(pksm::crypto::sha256({})) hash;
-    };
-
-    asset assets[2] = {
-        {CDN_URL "assets/pkm_spritesheet.t3x",   "/3ds/PKSM/assets/pkm_spritesheet.t3x",
-         {0xc5, 0x4b, 0x46, 0x4d, 0xe9, 0xe5, 0x6f, 0x5b, 0x04, 0xc7, 0xd6, 0x79, 0xbd, 0xf0,
-                0xb9, 0xb6, 0xc8, 0x4d, 0xbe, 0xa5, 0x55, 0x5b, 0xb7, 0xae, 0x62, 0x86, 0x2b, 0x18,
-                0x62, 0x08, 0x10, 0x32}},
-        {CDN_URL "assets/types_spritesheet.t3x", "/3ds/PKSM/assets/types_spritesheet.t3x",
-         {0x9f, 0xba, 0xa1, 0x0f, 0xe2, 0x05, 0xce, 0x57, 0xcf, 0x87, 0x32, 0xc3, 0x7f, 0x72,
-                0x42, 0x02, 0x04, 0xf9, 0x06, 0xd7, 0x5c, 0x65, 0xff, 0xae, 0xe8, 0xbf, 0x61, 0x5a,
-                0x08, 0xe4, 0x86, 0x85}}
-    };
-
-    bool matchSha256HashFromFile(
-        const std::string& path, const decltype(pksm::crypto::sha256({}))& sha)
-    {
-        bool match = false;
-        auto in    = Archive::sd().file(path, FS_OPEN_READ);
-        if (in)
-        {
-            size_t size = in->size();
-            char* data  = new char[size];
-            in->read(data, size);
-            auto hash = pksm::crypto::sha256({(u8*)data, size});
-            delete[] data;
-            match = sha == hash;
-            in->close();
-        }
-        return match;
-    }
-
-    bool assetsMatch(void)
-    {
-        for (const auto& item : assets)
-        {
-            if (!io::exists(item.path))
-            {
-                return false;
-            }
-            if (!matchSha256HashFromFile(item.path, item.hash))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    Result downloadAdditionalAssets(void)
-    {
-        Result res = 0;
-
-        for (const auto& item : assets)
-        {
-            bool downloadAsset = true;
-            if (io::exists(item.path))
-            {
-                if (matchSha256HashFromFile(item.path, item.hash))
-                {
-                    downloadAsset = false;
-                }
-                else
-                {
-                    std::remove(item.path.c_str());
-                }
-            }
-            if (downloadAsset)
-            {
-                u32 status;
-                ACU_GetWifiStatus(&status);
-                if (status == 0)
-                {
-                    return -1;
-                }
-                Result res1 = Fetch::download(item.url, item.path);
-                if (R_FAILED(res1))
-                {
-                    return res1;
-                }
-            }
-        }
-        return res;
-    }
+    // Everything about the downloaded spritesheets: what they should be, and whether
+    // they are. Asked once on the way up, and again after the GUI is drawing with them -
+    // the second time from the memo, without touching the SD card.
+    AssetStore assetStore;
 
     Result consoleDisplayError(const std::string& message, Result res)
     {
@@ -541,6 +446,7 @@ namespace
                     }
                     while (!power && doCartScan.test())
                     {
+                        svcSleepThread(1'000'000);
                         FSUSER_CardSlotGetCardIFPowerStatus(&power);
                     }
                     svcSleepThread(500'000'000);
@@ -733,26 +639,6 @@ namespace
         iconThreadAlive = false;
     }
 
-    void i18nThread()
-    {
-        static constexpr pksm::Language languages[] = {pksm::Language::JPN, pksm::Language::ENG,
-            pksm::Language::FRE, pksm::Language::ITA, pksm::Language::GER, pksm::Language::SPA,
-            pksm::Language::KOR, pksm::Language::CHS, pksm::Language::CHT, pksm::Language::NL,
-            pksm::Language::PT, pksm::Language::RU, pksm::Language::RO};
-        for (const auto& i : languages)
-        {
-            if (!continueI18N.test())
-            {
-                break;
-            }
-            i18n::init(i);
-        }
-
-        // i18n::exit frees what this wrote, and it is torn down as soon as the prefetch
-        // token is released, so the release has to see this.
-        i18nPrefetchAlive = false;
-    }
-
     Result rebootToPKSM(const std::string& execPath)
     {
         Result res = -1;
@@ -835,7 +721,7 @@ Result App::init(const std::string& execPath)
             {
                 moveIcon.test_and_set();
                 iconThreadAlive = true;
-                if (!Threads::create(iconThread))
+                if (!Threads::foreground(iconThread))
                 {
                     iconThreadAlive = false;
                 }
@@ -860,7 +746,7 @@ Result App::init(const std::string& execPath)
             "soc", [] { return socInit(socketBuffer, SOC_BUFFERSIZE) == 0; }, socExit) &&
         subsystems.acquire("network", Fetch::init, Fetch::exit) &&
         subsystems.acquire("server", Server::init, Server::exit) &&
-        subsystems.acquire("assets", downloadAdditionalAssets) &&
+        subsystems.acquire("assets", [] { return assetStore.ensure(); }) &&
         subsystems.acquire("gui", Gui::init, Gui::exit) &&
         subsystems.acquire(
             "i18n",
@@ -871,6 +757,9 @@ Result App::init(const std::string& execPath)
                 // Stopping it here rather than at teardown costs nothing: the handshake is
                 // idempotent, so the token's release is a no-op afterwards.
                 stopIconThread();
+                // Only the language the user reads. The other twelve materialize on first
+                // use through checkInitialized, which is what the interface already does
+                // for a save written in a language that is not this one.
                 i18n::init(Configuration::getInstance().language());
             },
             i18n::exit) &&
@@ -889,7 +778,7 @@ Result App::init(const std::string& execPath)
     }
 
     // Not lifetime: two decisions that can end this run by rebooting into a new build.
-    if (!assetsMatch())
+    if (assetStore.verdict() != AssetStore::Verdict::Ok)
     {
         Gui::warn("Additional assets are not correct.\nPress A to start PKSM update");
         if (!update(execPath))
@@ -921,21 +810,12 @@ Result App::init(const std::string& execPath)
             {
                 doCartScan.test_and_set();
                 cartScanAlive = true;
-                if (!Threads::create(cartScan))
+                if (!Threads::background(cartScan))
                 {
                     cartScanAlive = false;
                 }
             },
-            stopCartScan) &&
-        subsystems.acquire(
-            "i18n prefetch",
-            []
-            {
-                continueI18N.test_and_set();
-                i18nPrefetchAlive = true;
-                Threads::executeTask(i18nThread);
-            },
-            stopI18NPrefetch);
+            stopCartScan);
 
     if (!contentUp)
     {

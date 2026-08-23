@@ -97,6 +97,21 @@ namespace
 
     float magicFun = 0;
 
+    // Citro2d keeps the later draw visible when depths are equal. Graphics receive monotonically
+    // increasing depths; a queued text batch takes the next depth when it is flushed, keeping text
+    // above the graphics in its visual layer without defeating batching.
+    constexpr float DRAW_DEPTH_STEP = 1.0f / (C2D_DEFAULT_MAX_OBJECTS + 1);
+    float currentDrawDepth          = 0.0f;
+
+    float nextDrawDepth()
+    {
+        currentDrawDepth += DRAW_DEPTH_STEP;
+        return currentDrawDepth;
+    }
+
+    // Reset at the first target of each frame and populated lazily by the first Pokemon draw.
+    std::optional<bool> magicDayThisFrame;
+
     bool textMode = false;
     bool inFrame  = false;
 
@@ -639,35 +654,31 @@ namespace
 void Gui::drawImageAt(const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
     float scaleX, float scaleY, float rotation)
 {
-    flushText();
     C2D_DrawImageAtRotated(img, x + scaleX * img.subtex->width / 2,
-        y + scaleY * img.subtex->height / 2, 0.5f, rotation, tint, scaleX, scaleY);
+        y + scaleY * img.subtex->height / 2, nextDrawDepth(), rotation, tint, scaleX, scaleY);
 }
 
 void Gui::drawSolidCircle(float x, float y, float rad, PKSM_Color color)
 {
-    flushText();
-    C2D_DrawCircleSolid(x, y, 0.5f, rad, colorToFormat(color));
+    C2D_DrawCircleSolid(x, y, nextDrawDepth(), rad, colorToFormat(color));
 }
 
 void Gui::drawSolidRect(float x, float y, float w, float h, PKSM_Color color)
 {
-    flushText();
-    C2D_DrawRectSolid(x, y, 0.5f, w, h, colorToFormat(color));
+    C2D_DrawRectSolid(x, y, nextDrawDepth(), w, h, colorToFormat(color));
 }
 
 void Gui::drawSolidTriangle(
     float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color)
 {
-    flushText();
     C2D_DrawTriangle(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), x3, y3,
-        colorToFormat(color), 0.5f);
+        colorToFormat(color), nextDrawDepth());
 }
 
 void Gui::drawLine(float x1, float y1, float x2, float y2, float width, PKSM_Color color)
 {
-    flushText();
-    C2D_DrawLine(x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), width, 0.5f);
+    C2D_DrawLine(
+        x1, y1, colorToFormat(color), x2, y2, colorToFormat(color), width, nextDrawDepth());
     // float angle = atan2f(y2 - y1, x2 - x1) + C3D_Angle(.25);
     // float dy    = width / 2 * sinf(angle);
     // float dx    = width / 2 * cosf(angle);
@@ -786,6 +797,7 @@ void Gui::drawNoHome()
 
 void Gui::target(gfxScreen_t screen)
 {
+    currentDrawDepth = 0.0f;
     if (screen == GFX_BOTTOM)
     {
         currentText = &bottomText;
@@ -793,6 +805,8 @@ void Gui::target(gfxScreen_t screen)
     }
     else
     {
+        // Every rendering entry point begins with the top target, making this the frame seam.
+        magicDayThisFrame.reset();
         currentText = &topText;
         C2D_SceneBegin(g_renderTargetTop);
     }
@@ -816,7 +830,7 @@ void Gui::flushText()
     if (textMode)
     {
         currentText->optimize();
-        currentText->draw();
+        currentText->draw(nextDrawDepth());
         currentText->clear();
     }
     textMode = false;
@@ -926,7 +940,7 @@ void Gui::text(std::shared_ptr<TextParse::Text> text, float x, float y, FontSize
             break;
     }
 
-    currentText->addText(text, x, y, 0.5f, sizeX, sizeY, positionX, color);
+    currentText->addText(text, x, y, sizeX, sizeY, positionX, color);
 }
 
 void Gui::text(const std::string& str, float x, float y, FontSize size, PKSM_Color color,
@@ -1076,7 +1090,7 @@ Result Gui::init(void)
     }
 
     // The UI sheet ships in romfs, so a missing one is a broken build rather than the
-    // missing-assets case below, which downloadAdditionalAssets and assetsMatch handle.
+    // missing-assets case below, which AssetStore handles.
     spritesheet_ui = C2D_SpriteSheetLoad("romfs:/gfx/ui_sheet.t3x");
     if (!spritesheet_ui)
     {
@@ -1107,7 +1121,7 @@ Result Gui::init(void)
     hidSetRepeatParameters(10, 10);
 
     LightEvent_Init(&fontsLoaded, RESET_STICKY);
-    fontLoaderStarted = Threads::create(loadRemainingFonts);
+    fontLoaderStarted = Threads::background(loadRemainingFonts);
     if (!fontLoaderStarted)
     {
         Logging::warning("Could not start the font loader thread");
@@ -1695,8 +1709,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(239, 202, 43, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(246, 230, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(244, 212, 81, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x,
-            y, 0.5f, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_top_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_bg_bottom_yellow_idx)
     {
@@ -1705,8 +1719,8 @@ void Gui::sprite(int key, int x, int y)
         C2D_SetImageTint(&tint, C2D_TopRight, C2D_Color32(246, 230, 158, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotLeft, C2D_Color32(242, 211, 78, 255), 1);
         C2D_SetImageTint(&tint, C2D_BotRight, C2D_Color32(242, 221, 131, 255), 1);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx),
-            x, y, 0.5f, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_bg_bottom_greyscale_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_button_lang_disabled_idx)
     {
@@ -1720,23 +1734,23 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
-        C2D_DrawImageAt(
+        Gui::drawImageAt(
             C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_stripe_move_editor_row_idx), x, y,
-            0.5f, &tint);
+            &tint);
     }
     else if (key == ui_sheet_emulated_button_filter_positive_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, C2D_Color32(0x10, 0x87, 0x1e, 255), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x,
-            y, 0.5f, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_plus_small_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_button_filter_negative_idx)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, C2D_Color32(0xbd, 0x30, 0x26, 255), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x,
-            y, 0.5f, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_button_minus_small_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_button_tabs_3_unselected_idx)
     {
@@ -1746,8 +1760,8 @@ void Gui::sprite(int key, int x, int y)
     {
         C2D_ImageTint tint;
         C2D_PlainImageTint(&tint, colorToFormat(COLOR_DARKGREY), 1.0f);
-        C2D_DrawImageAt(C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y,
-            0.5f, &tint);
+        Gui::drawImageAt(
+            C2D_SpriteSheetGetImage(spritesheet_ui, ui_sheet_checkbox_blank_idx), x, y, &tint);
     }
     else if (key == ui_sheet_emulated_button_tabs_2_unselected_idx)
     {
@@ -1939,20 +1953,20 @@ void Gui::pkm(pksm::Species species, int form, pksm::Generation generation, pksm
 {
     static C2D_ImageTint tint;
     C2D_PlainImageTint(&tint, colorToFormat(color), blend);
-    Date date = Date::today();
+    if (!magicDayThisFrame.has_value())
+    {
+        Date date         = Date::today();
+        magicDayThisFrame = date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
+                            date.month() == ((u16)(~magicNumber) ^ 0xB542);
+    }
 
     auto drawImageAt = [&](const C2D_Image& img, float x, float y, const C2D_ImageTint* tint,
                            float scaleX, float scaleY)
     {
-        return Gui::drawImageAt(img, x, y, tint, scaleX, scaleY,
-            date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
-                    date.month() == ((u16)(~magicNumber) ^ 0xB542)
-                ? magicFun
-                : 0);
+        return Gui::drawImageAt(img, x, y, tint, scaleX, scaleY, *magicDayThisFrame ? magicFun : 0);
     };
 
-    // if (date.day() == ((u16)(~magicNumber >> 16) ^ 0x3826) &&
-    //     date.month() == ((u16)(~magicNumber) ^ 0xB542))
+    // if (*magicDayThisFrame)
     // {
     //     Gui::drawImageAt(C2D_SpriteSheetGetImage(spritesheet_pkm, (u8)(~magicNumber >> 13) ^
     //     184),

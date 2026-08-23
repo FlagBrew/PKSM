@@ -183,22 +183,22 @@ namespace TextParse
         ScreenText() { glyphs.reserve(1024); }
 
         // y is always from baseline
-        void addText(const std::shared_ptr<Text>& text, float x, float y, float z, FontSize sizeX,
+        void addText(const std::shared_ptr<Text>& text, float x, float y, FontSize sizeX,
             FontSize sizeY, TextPosX textPos, PKSM_Color color = COLOR_BLACK);
         void optimize();
-        void draw() const;
+        void draw(float z) const;
         void clear();
 
     private:
         struct DrawableGlyph
         {
-            DrawableGlyph(const Glyph& glyph, float x, float y, float z, FontSize sizeX,
-                FontSize sizeY, PKSM_Color color = COLOR_BLACK)
-                : x(x), y(y), z(z), sizeX(sizeX), sizeY(sizeY), color(color), glyph(glyph)
+            DrawableGlyph(const Glyph& glyph, float x, float y, FontSize sizeX, FontSize sizeY,
+                PKSM_Color color = COLOR_BLACK)
+                : x(x), y(y), sizeX(sizeX), sizeY(sizeY), color(color), glyph(glyph)
             {
             }
 
-            float x, y, z;
+            float x, y;
             FontSize sizeX;
             FontSize sizeY;
             PKSM_Color color;

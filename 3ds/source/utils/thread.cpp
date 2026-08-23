@@ -34,7 +34,9 @@
 
 namespace
 {
-    constexpr int MIN_HANDLES = 2;
+    constexpr int MIN_HANDLES           = 2;
+    constexpr s32 HIGHEST_USER_PRIORITY = 0x18;
+    constexpr s32 LOWEST_USER_PRIORITY  = 0x3F;
     Thread reaperThread;
     // Exit event, "update your list" event, and threads themselves
     DataMutex<std::pair<SmallVector<Thread, Threads::MAX_THREADS>,
@@ -101,6 +103,41 @@ namespace
     std::atomic<u8> freeWorkers = 0;
     u8 maxWorkers               = 0;
     u8 minWorkers               = 0;
+
+    bool createThread(
+        void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize, int priority)
+    {
+        auto lockedThreads = threads.lock();
+        if (lockedThreads->first.size() >= Threads::MAX_THREADS)
+        {
+            return false;
+        }
+        Thread thread = threadCreate(
+            entrypoint, arg, stackSize.value_or(Threads::DEFAULT_STACK), priority, -2, false);
+
+        if (thread)
+        {
+            lockedThreads->first.emplace_back(thread);
+            lockedThreads->second.emplace_back(threadGetHandle(thread));
+            svcSignalEvent(lockedThreads->second[1]);
+            return true;
+        }
+
+        return false;
+    }
+
+    bool createRelative(
+        void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize, s32 priorityOffset)
+    {
+        s32 callerPriority;
+        if (R_FAILED(svcGetThreadPriority(&callerPriority, CUR_THREAD_HANDLE)))
+        {
+            return false;
+        }
+        return createThread(entrypoint, arg, stackSize,
+            std::clamp(
+                callerPriority + priorityOffset, HIGHEST_USER_PRIORITY, LOWEST_USER_PRIORITY));
+    }
 
     void taskWorkerThread()
     {
@@ -196,11 +233,11 @@ bool Threads::init(u8 min, u8 max)
         LightSemaphore_Init(&moreTasks, 0, 10000);
     }
 
-    // Outside the lock: Threads::create takes it too, so spawning the initial workers while
+    // Outside the lock: Threads::background takes it too, so spawning the initial workers while
     // still holding it deadlocked for any min above zero.
     for (int i = 0; i < minWorkers; i++)
     {
-        if (!Threads::create(WORKER_STACK, taskWorkerThread))
+        if (!Threads::background(WORKER_STACK, taskWorkerThread))
         {
             // The reaper is up by now, so this unwinds the same way any shutdown does.
             Threads::exit();
@@ -210,29 +247,20 @@ bool Threads::init(u8 min, u8 max)
     return true;
 }
 
-bool Threads::create(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize,
-    std::optional<int> priority)
+bool Threads::background(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
 {
-    auto lockedThreads = threads.lock();
-    if (lockedThreads->first.size() >= Threads::MAX_THREADS)
-    {
-        return false;
-    }
-    s32 prio = 0;
-    svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    prio = priority.value_or(prio - 1);
-    Thread thread =
-        threadCreate(entrypoint, arg, stackSize.value_or(DEFAULT_STACK), prio, -2, false);
+    return createRelative(entrypoint, arg, stackSize, 1);
+}
 
-    if (thread)
-    {
-        lockedThreads->first.emplace_back(thread);
-        lockedThreads->second.emplace_back(threadGetHandle(thread));
-        svcSignalEvent(lockedThreads->second[1]);
-        return true;
-    }
+bool Threads::foreground(void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize)
+{
+    return createRelative(entrypoint, arg, stackSize, -1);
+}
 
-    return false;
+bool Threads::atPriority(
+    void (*entrypoint)(void*), void* arg, std::optional<size_t> stackSize, int priority)
+{
+    return createThread(entrypoint, arg, stackSize, priority);
 }
 
 void Threads::executeTask(void (*task)(void*), void* arg)
@@ -241,7 +269,7 @@ void Threads::executeTask(void (*task)(void*), void* arg)
     LightSemaphore_Release(&moreTasks, 1);
     if (numWorkers < maxWorkers && freeWorkers == 0)
     {
-        Threads::create(WORKER_STACK, taskWorkerThread);
+        Threads::background(WORKER_STACK, taskWorkerThread);
     }
 }
 

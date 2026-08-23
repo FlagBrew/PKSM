@@ -398,7 +398,7 @@ void Server::init()
 
     serverRunning.test_and_set();
     LightEvent_Init(&serverThreadDone, RESET_STICKY);
-    serverThreadStarted = Threads::create(networkLoop);
+    serverThreadStarted = Threads::background(networkLoop);
     if (!serverThreadStarted)
     {
         serverRunning.clear();

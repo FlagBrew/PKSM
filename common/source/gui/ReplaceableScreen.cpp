@@ -44,6 +44,9 @@ void ReplaceableScreen::doTopDraw() const
         if (!overlay->willReplaceTop())
         {
             drawTop();
+            // Overlay dimmers are translucent, so finish the underlying text before compositing
+            // the next visual layer.
+            Gui::flushText();
         }
         overlay->doTopDraw();
     }
@@ -60,6 +63,7 @@ void ReplaceableScreen::doBottomDraw() const
         if (!overlay->willReplaceBottom())
         {
             drawBottom();
+            Gui::flushText();
         }
         overlay->doBottomDraw();
     }

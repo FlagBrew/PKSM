@@ -72,7 +72,7 @@ namespace
     void fillBuffers(int channel, std::unique_ptr<Decoder>& decoder)
     {
         for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
-             buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
+            buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
         {
             if (buffers[buffer].status == NDSP_WBUF_DONE)
             {
@@ -114,7 +114,7 @@ namespace
 
             // Set all channels into the done state to be decoded into
             for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
-                 buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
+                buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
             {
                 buffers[buffer].status = NDSP_WBUF_DONE;
             }
@@ -292,7 +292,7 @@ void Sound::exit()
 void Sound::start()
 {
     playing = true;
-    Threads::create(16 * 1024, soundThread);
+    Threads::background(16 * 1024, soundThread);
 }
 
 void Sound::stop()

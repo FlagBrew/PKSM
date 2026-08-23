@@ -320,6 +320,16 @@ void EditSelectorScreen::drawBottom() const
         }
     }
 
+    // The editor writes to the box while it owns the frame, and it can move the box
+    // index too, so both have to be picked up on the first draw after it gives back.
+    if (refillOnResume)
+    {
+        boxView.invalidate();
+        partyView.invalidate();
+        refillOnResume = false;
+    }
+    boxView.box(box);
+
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 45 + row * 30;
@@ -337,11 +347,10 @@ void EditSelectorScreen::drawBottom() const
             }
             else
             {
-                std::unique_ptr<pksm::PKX> pokemon =
-                    TitleLoader::save->pkm(box, row * (maxPkmInBox / 5) + column);
-                if (pokemon->species() != pksm::Species::None)
+                const pksm::PKX& pokemon = boxView.at(row * (maxPkmInBox / 5) + column);
+                if (pokemon.species() != pksm::Species::None)
                 {
-                    Gui::pkm(*pokemon, x, y);
+                    Gui::pkm(pokemon, x, y);
                 }
                 if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
@@ -359,12 +368,12 @@ void EditSelectorScreen::drawBottom() const
 
     for (int i = 0; i < TitleLoader::save->partyCount(); i++)
     {
-        int x                              = (i % 2 == 0 ? 221 : 271);
-        int y                              = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
-        std::unique_ptr<pksm::PKX> pokemon = TitleLoader::save->pkm(i);
-        if (pokemon->species() != pksm::Species::None)
+        int x                    = (i % 2 == 0 ? 221 : 271);
+        int y                    = (i % 2 == 0 ? 50 + 45 * (i / 2) : 66 + 45 * (i / 2));
+        const pksm::PKX& pokemon = partyView.at(i);
+        if (pokemon.species() != pksm::Species::None)
         {
-            Gui::pkm(*pokemon, x, y);
+            Gui::pkm(pokemon, x, y);
         }
     }
 
@@ -429,6 +438,11 @@ void EditSelectorScreen::drawBottom() const
 
 void EditSelectorScreen::update(touchPosition* touch)
 {
+    // Every path that writes to the box from this screen runs from here, so a frame
+    // that took no input cannot have changed it. Refill on the frames that did, on
+    // scope exit so that the early returns the write paths take are covered too.
+    ScopedRefill refill((hidKeysHeld() | hidKeysDown() | hidKeysUp()) != 0, boxView, &partyView);
+
     if (justSwitched)
     {
         if (keysHeld() & KEY_TOUCH)
@@ -744,7 +758,8 @@ bool EditSelectorScreen::editPokemon()
     {
         if (box * maxPkmInBox + cursorPos - 1 < TitleLoader::save->maxSlot())
         {
-            justSwitched = true;
+            refillOnResume = true;
+            justSwitched   = true;
             ScreenStack::push(std::make_unique<EditorScreen>(
                 TitleLoader::save->pkm(box, cursorPos - 1), box, cursorPos - 1));
             return true;
@@ -752,7 +767,8 @@ bool EditSelectorScreen::editPokemon()
     }
     else if (cursorPos > maxPkmInBox)
     {
-        justSwitched = true;
+        refillOnResume = true;
+        justSwitched   = true;
         ScreenStack::push(
             std::make_unique<EditorScreen>(TitleLoader::save->pkm(cursorPos - (maxPkmInBox + 1)),
                 EditorScreen::PARTY_MAGIC_NUM, cursorPos - (maxPkmInBox + 1)));

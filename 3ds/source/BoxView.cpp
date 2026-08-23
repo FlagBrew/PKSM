@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,37 +24,23 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef CONFIGSCREEN_HPP
-#define CONFIGSCREEN_HPP
+#include "BoxView.hpp"
+#include "Bank.hpp"
+#include "banks.hpp"
+#include "loader.hpp"
+#include "sav/Sav.hpp"
 
-#include "enums/Language.hpp"
-#include "Screen.hpp"
-#include "ToggleButton.hpp"
-#include <array>
-#include <bitset>
-#include <vector>
-
-class Button;
-
-class ConfigScreen : public Screen
+std::unique_ptr<pksm::PKX> SaveBoxView::materialize(int box, int slot) const
 {
-public:
-    ConfigScreen(void);
-    void update(touchPosition* touch) override;
-    void drawTop(void) const override;
-    void drawBottom(void) const override;
+    return TitleLoader::save->pkm(u8(box), u8(slot));
+}
 
-private:
-    std::vector<std::unique_ptr<ToggleButton>> tabs;
-    std::array<std::vector<std::unique_ptr<Button>>, 3> tabButtons;
-    void back(void);
-    void changeLanguage(pksm::Language language);
-    void initButtons(void);
-    int currentTab          = 0;
-    bool justSwitched       = true;
-    bool showBackupsChanged = false;
-    bool useExtDataChanged  = false;
-    bool titleIdsChanged    = false;
-};
+std::unique_ptr<pksm::PKX> BankBoxView::materialize(int box, int slot) const
+{
+    return Banks::bank->pkm(box, slot);
+}
 
-#endif
+std::unique_ptr<pksm::PKX> PartyView::materialize(int, int slot) const
+{
+    return TitleLoader::save->pkm(u8(slot));
+}

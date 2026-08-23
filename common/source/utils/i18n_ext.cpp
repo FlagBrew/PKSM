@@ -58,6 +58,16 @@ namespace i18n
         gui.erase(lang);
     }
 
+    bool isInitialized(pksm::Language lang)
+    {
+        auto found = languages.find(lang);
+        if (found == languages.end())
+        {
+            found = languages.find(pksm::Language::ENG);
+        }
+        return found->second == LangState::INITIALIZED;
+    }
+
     const std::string& localize(pksm::Language lang, std::string_view v)
     {
         checkInitialized(lang);

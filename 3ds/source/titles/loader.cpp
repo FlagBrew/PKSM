@@ -33,6 +33,7 @@
 #include "io.hpp"
 #include "Presenter.hpp"
 #include "sav/Sav.hpp"
+#include "SaveIndex.hpp"
 #include "Title.hpp"
 #include "utils/crypto.hpp"
 #include "utils/logging.hpp"
@@ -59,8 +60,6 @@ namespace
         u8 arm7Registers[8]; // Might be RTC?
         u8 padding4[0x198];  // Get it to the proper size
     };
-
-    std::unordered_map<std::u16string, std::shared_ptr<Directory>> directories;
 
     constexpr char langIds[8] = {
         'E', // USA
@@ -161,150 +160,9 @@ namespace
         return "main";
     }
 
-    std::string idToSaveName(std::u16string_view id)
-    {
-        if (id.size() == 3 || id.size() == 4)
-        {
-            if (id.substr(0, 3) == u"ADA")
-            {
-                return "POKEMON D.sav";
-            }
-            if (id.substr(0, 3) == u"APA")
-            {
-                return "POKEMON P.sav";
-            }
-            if (id.substr(0, 3) == u"CPU")
-            {
-                return "POKEMON PL.sav";
-            }
-            if (id.substr(0, 3) == u"IPK")
-            {
-                return "POKEMON HG.sav";
-            }
-            if (id.substr(0, 3) == u"IPG")
-            {
-                return "POKEMON SS.sav";
-            }
-            if (id.substr(0, 3) == u"IRB")
-            {
-                return "POKEMON B.sav";
-            }
-            if (id.substr(0, 3) == u"IRA")
-            {
-                return "POKEMON W.sav";
-            }
-            if (id.substr(0, 3) == u"IRE")
-            {
-                return "POKEMON B2.sav";
-            }
-            if (id.substr(0, 3) == u"IRD")
-            {
-                return "POKEMON W2.sav";
-            }
-        }
-        for (size_t i = 0; i < 7; i++)
-        {
-            const auto& tid          = vcTitleIds[i];
-            std::u16string chkPrefix = Title::tidToCheckpointPrefix<std::u16string>(tid);
-            if (chkPrefix == id)
-            {
-                return "sav.dat";
-            }
-        }
-        for (size_t i = 7; i < vcTitleIds.size(); i++)
-        {
-            const auto& tid          = vcTitleIds[i];
-            std::u16string chkPrefix = Title::tidToCheckpointPrefix<std::u16string>(tid);
-            if (chkPrefix == id)
-            {
-                return "00000001.sav";
-            }
-        }
-        return "main";
-    }
-
     bool saveIsFile;
     std::string saveFileName;
     std::shared_ptr<Title> loadedTitle;
-
-    std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::u16string& id)
-    {
-        Logging::debug("Scanning directory: {} for ID: {}", StringUtils::UTF16toUTF8(dir),
-            StringUtils::UTF16toUTF8(id));
-        if (directories.count(dir) == 0)
-        {
-            std::shared_ptr<Directory> d = Archive::sd().directory(dir);
-            if (d && d->loaded())
-            {
-                directories.emplace(dir, d);
-            }
-            else
-            {
-                Logging::debug(
-                    "Directory not loaded or doesn't exist: {}", StringUtils::UTF16toUTF8(dir));
-                return {};
-            }
-        }
-        else
-        {
-            // Attempt to re-read directory
-            if (!directories[dir]->loaded())
-            {
-                std::shared_ptr<Directory> d = Archive::sd().directory(dir);
-                if (d && d->loaded())
-                {
-                    directories[dir] = d;
-                }
-                else
-                {
-                    Logging::debug("Failed to reload directory: {}", StringUtils::UTF16toUTF8(dir));
-                    return {};
-                }
-            }
-        }
-        std::vector<std::string> ret;
-        auto& directory = directories[dir];
-        if (directory->loaded())
-        {
-            Logging::debug("Directory loaded with {} items", directory->count());
-            for (size_t j = 0; j < directory->count(); j++)
-            {
-                if (directory->folder(j))
-                {
-                    std::u16string fileName = directory->item(j);
-                    if (fileName.substr(0, id.size()) == id)
-                    {
-                        auto subdir = Archive::sd().directory(dir + u"/" + fileName);
-                        if (subdir && subdir->loaded())
-                        {
-                            for (size_t k = 0; k < subdir->count(); k++)
-                            {
-                                if (subdir->folder(k))
-                                {
-                                    std::string savePath =
-                                        StringUtils::UTF16toUTF8(
-                                            dir + u"/" + fileName + u"/" + subdir->item(k) + u"/") +
-                                        idToSaveName(id);
-                                    if (io::exists(savePath))
-                                    {
-                                        Logging::debug("Found save at: {}", savePath);
-                                        ret.emplace_back(savePath);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Logging::debug("Found {} saves for ID: {}", ret.size(), StringUtils::UTF16toUTF8(id));
-        return ret;
-    }
-
-    std::vector<std::string> scanDirectoryFor(const std::u16string& dir, const std::string& id)
-    {
-        return scanDirectoryFor(dir, StringUtils::UTF8toUTF16(id));
-    }
 
     // file must be at header address. On return, will be at the end of the save described by the
     // header.
@@ -492,51 +350,27 @@ void TitleLoader::scanSaves(void)
 {
     Logging::info("TitleLoader::scanSaves - Starting save scanning");
     pksm::present::busy(pksm::Task::ScanSaves);
-    auto scan = [](auto& tids)
+
+    std::vector<std::string> ids;
+    ids.reserve(vcTitleIds.size() + ctrTitleIds.size() + nxTitleIds.size() +
+                std::size(dsIds) * std::size(langIds));
+    const auto appendTitleIds = [&ids](const auto& tids)
     {
         for (const auto& tid : tids)
         {
-            if (!continueScan.test())
-            {
-                Logging::debug("TitleLoader::scanSaves - Scan interrupted");
-                return;
-            }
-            std::string id = std::format("0x{:05X}", ((u32)tid) >> 8);
-            Logging::debug("TitleLoader::scanSaves - Scanning for title ID: {}", id);
-            std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
-            if (Configuration::getInstance().showBackups())
-            {
-                Logging::debug("TitleLoader::scanSaves - Including PKSM backups for ID: {}", id);
-                std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
-                saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
-            }
-            if (!continueScan.test())
-            {
-                Logging::debug("TitleLoader::scanSaves - Scan interrupted after backup check");
-                return;
-            }
-            auto extraSaves = Configuration::getInstance().extraSaves(id);
-            if (!extraSaves.empty())
-            {
-                Logging::debug("TitleLoader::scanSaves - Adding {} extra saves for ID: {}",
-                    extraSaves.size(), id);
-                for (const auto& save : extraSaves)
-                {
-                    if (io::exists(save))
-                    {
-                        saves.emplace_back(save);
-                    }
-                    else
-                    {
-                        Logging::warning(
-                            "TitleLoader::scanSaves - Extra save doesn't exist: {}", save);
-                    }
-                }
-            }
-            sdSaves.lock().get()[id] = std::move(saves);
-            sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
+            ids.emplace_back(std::format("0x{:05X}", ((u32)tid) >> 8));
         }
     };
+    appendTitleIds(vcTitleIds);
+    appendTitleIds(ctrTitleIds);
+    appendTitleIds(nxTitleIds);
+    for (const auto game : dsIds)
+    {
+        for (const auto language : langIds)
+        {
+            ids.emplace_back(std::string{game} + language);
+        }
+    }
 
     {
         sdSaves.lock()->clear();
@@ -544,49 +378,86 @@ void TitleLoader::scanSaves(void)
         Logging::debug("TitleLoader::scanSaves - Cleared existing save cache");
     }
 
-    scan(vcTitleIds);
-    scan(ctrTitleIds);
-    scan(nxTitleIds);
-
-    for (size_t game = 0; game < 9; game++)
+    std::vector<SaveIndex::Target> targets;
+    targets.reserve(ids.size());
+    for (const auto& id : ids)
     {
-        for (size_t lang = 0; lang < 8; lang++)
+        targets.emplace_back(id, idToSaveName(id));
+    }
+
+    static constexpr std::array<std::string_view, 2> roots = {
+        "/3ds/Checkpoint/saves", "/3ds/PKSM/backups"};
+    const size_t rootCount = Configuration::getInstance().showBackups() ? roots.size() : 1;
+    Logging::debug("TitleLoader::scanSaves - Indexing {} save directories", rootCount);
+
+    const auto readDirectory = [](const std::string& path) -> std::optional<SaveIndex::Directory>
+    {
+        Logging::debug("TitleLoader::scanSaves - Reading directory: {}", path);
+        auto directory = Archive::sd().directory(StringUtils::UTF8toUTF16(path));
+        if (!directory || !directory->loaded())
         {
-            if (!continueScan.test())
+            Logging::debug("TitleLoader::scanSaves - Directory not loaded or missing: {}", path);
+            return std::nullopt;
+        }
+
+        SaveIndex::Directory entries;
+        entries.reserve(directory->count());
+        for (size_t i = 0; i < directory->count(); i++)
+        {
+            entries.emplace_back(
+                StringUtils::UTF16toUTF8(directory->item(i)), directory->folder(i));
+        }
+        Logging::debug("TitleLoader::scanSaves - Directory loaded with {} items", entries.size());
+        return entries;
+    };
+    const auto fileExists = [](const std::string& path)
+    {
+        if (io::exists(path))
+        {
+            Logging::debug("TitleLoader::scanSaves - Found save at: {}", path);
+            return true;
+        }
+        return false;
+    };
+    const SaveIndex index = SaveIndex::build(std::span{roots}.first(rootCount), targets,
+        readDirectory, fileExists, [] { return continueScan.test(); });
+
+    if (!continueScan.test())
+    {
+        Logging::debug("TitleLoader::scanSaves - Scan interrupted while indexing directories");
+        return;
+    }
+
+    for (const auto& id : ids)
+    {
+        if (!continueScan.test())
+        {
+            Logging::debug("TitleLoader::scanSaves - Scan interrupted");
+            return;
+        }
+
+        std::vector<std::string> saves = index.saves(id);
+        Logging::debug(
+            "TitleLoader::scanSaves - Found {} indexed saves for ID: {}", saves.size(), id);
+        const auto extraSaves = Configuration::getInstance().extraSaves(id);
+        if (!extraSaves.empty())
+        {
+            Logging::debug(
+                "TitleLoader::scanSaves - Adding {} extra saves for ID: {}", extraSaves.size(), id);
+            for (const auto& save : extraSaves)
             {
-                Logging::debug(
-                    "TitleLoader::scanSaves - Scan interrupted during DS title processing");
-                return;
-            }
-            std::string id = std::string(dsIds[game]) + langIds[lang];
-            Logging::debug("TitleLoader::scanSaves - Scanning for DS title ID: {}", id);
-            std::vector<std::string> saves = scanDirectoryFor(u"/3ds/Checkpoint/saves", id);
-            if (Configuration::getInstance().showBackups())
-            {
-                std::vector<std::string> moreSaves = scanDirectoryFor(u"/3ds/PKSM/backups", id);
-                saves.insert(saves.end(), moreSaves.begin(), moreSaves.end());
-            }
-            auto extraSaves = Configuration::getInstance().extraSaves(id);
-            if (!extraSaves.empty())
-            {
-                Logging::debug("TitleLoader::scanSaves - Adding {} extra saves for DS ID: {}",
-                    extraSaves.size(), id);
-                for (const auto& save : extraSaves)
+                if (io::exists(save))
                 {
-                    if (io::exists(save))
-                    {
-                        saves.emplace_back(save);
-                    }
-                    else
-                    {
-                        Logging::warning(
-                            "TitleLoader::scanSaves - Extra save doesn't exist: {}", save);
-                    }
+                    saves.emplace_back(save);
+                }
+                else
+                {
+                    Logging::warning("TitleLoader::scanSaves - Extra save doesn't exist: {}", save);
                 }
             }
-            sdSaves.lock().get()[id] = std::move(saves);
-            sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
         }
+        sdSaves.lock().get()[id] = std::move(saves);
+        sdSavesVersion.fetch_add(1, std::memory_order_relaxed);
     }
     Logging::info("TitleLoader::scanSaves - Save scanning complete");
 }

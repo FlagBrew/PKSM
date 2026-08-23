@@ -68,6 +68,8 @@ void Instructions::addCircle(bool top, int x, int y, int radius, PKSM_Color colo
 
 void Instructions::drawTop() const
 {
+    // The dimmer must blend over text already queued by the underlying screen.
+    Gui::flushText();
     dim();
 
     for (const auto& box : boxes)
@@ -103,6 +105,7 @@ void Instructions::drawTop() const
 
 void Instructions::drawBottom() const
 {
+    Gui::flushText();
     dim();
 
     for (const auto& box : boxes)

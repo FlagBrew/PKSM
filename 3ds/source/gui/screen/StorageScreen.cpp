@@ -213,6 +213,7 @@ StorageScreen::StorageScreen()
                 return false;
             }
 
+            refillOnResume = true;
             ScreenStack::push(std::make_unique<CloudScreen>(storageBox, filter));
             justSwitched = true;
             return true;
@@ -253,8 +254,23 @@ StorageScreen::StorageScreen()
     boxBox = TitleLoader::save->currentBox() % TitleLoader::save->maxBoxes();
 }
 
+// Refill when this screen was not the only thing that could have written to a box
+// since the last draw: an overlay of ours takes the update, and a screen it pushed
+// takes the whole frame.
+void StorageScreen::refillDisplacedViews() const
+{
+    if (refillOnResume || (overlay && overlay->willHandleUpdate()))
+    {
+        saveBoxView.invalidate();
+        bankBoxView.invalidate();
+        refillOnResume = false;
+    }
+}
+
 void StorageScreen::drawBottom() const
 {
+    refillDisplacedViews();
+
     u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
                          TitleLoader::save->language() != pksm::Language::JPN)
                        ? 20
@@ -287,6 +303,9 @@ void StorageScreen::drawBottom() const
         }
     }
 
+    // Something else may have moved the box index while this screen was not updating.
+    saveBoxView.box(boxBox);
+
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 45 + row * 30;
@@ -312,12 +331,11 @@ void StorageScreen::drawBottom() const
             }
             else
             {
-                std::unique_ptr<pksm::PKX> pokemon =
-                    TitleLoader::save->pkm(boxBox, row * (maxPkmInBox / 5) + column);
-                if (pokemon->species() != pksm::Species::None)
+                const pksm::PKX& pokemon = saveBoxView.at(row * (maxPkmInBox / 5) + column);
+                if (pokemon.species() != pksm::Species::None)
                 {
-                    float blend = *pokemon == *filter ? 0.0f : 0.5f;
-                    Gui::pkm(*pokemon, x, y, 1.0f, COLOR_BLACK, blend);
+                    float blend = pokemon == *filter ? 0.0f : 0.5f;
+                    Gui::pkm(pokemon, x, y, 1.0f, COLOR_BLACK, blend);
                 }
                 if (TitleLoader::save->generation() == pksm::Generation::LGPE)
                 {
@@ -421,6 +439,8 @@ void StorageScreen::drawBottom() const
 
 void StorageScreen::drawTop() const
 {
+    refillDisplacedViews();
+
     Gui::sprite(ui_sheet_emulated_bg_top_green, 0, 0);
     Gui::sprite(ui_sheet_bg_style_top_idx, 0, 0);
     Gui::backgroundAnimatedTop();
@@ -443,6 +463,8 @@ void StorageScreen::drawTop() const
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 36, 220);
     Gui::sprite(ui_sheet_storagemenu_cross_idx, 246, 220);
 
+    bankBoxView.box(storageBox);
+
     for (u8 row = 0; row < 5; row++)
     {
         u16 y = 66 + row * 30;
@@ -457,11 +479,11 @@ void StorageScreen::drawTop() const
             {
                 Gui::drawSolidRect(x, y, 34, 30, COLOR_GREEN_HIGHLIGHT);
             }
-            auto pkm = Banks::bank->pkm(storageBox, row * 6 + column);
-            if (pkm->species() != pksm::Species::None)
+            const pksm::PKX& pkm = bankBoxView.at(row * 6 + column);
+            if (pkm.species() != pksm::Species::None)
             {
-                float blend = *pkm == *filter ? 0.0f : 0.5f;
-                Gui::pkm(*pkm, x, y, 1.0f, COLOR_BLACK, blend);
+                float blend = pkm == *filter ? 0.0f : 0.5f;
+                Gui::pkm(pkm, x, y, 1.0f, COLOR_BLACK, blend);
             }
         }
     }
@@ -616,6 +638,12 @@ void StorageScreen::drawTop() const
 
 void StorageScreen::update(touchPosition* touch)
 {
+    // Every path that writes to a box from this screen runs from here, so a frame that
+    // took no input cannot have changed one. Refill on the frames that did, on scope
+    // exit so that the early returns the write paths take are covered too.
+    ScopedRefill refill(
+        (hidKeysHeld() | hidKeysDown() | hidKeysUp()) != 0, saveBoxView, &bankBoxView);
+
     u8 maxPkmInBox = (TitleLoader::save->generation() <= pksm::Generation::TWO &&
                          TitleLoader::save->language() != pksm::Language::JPN)
                        ? 20
