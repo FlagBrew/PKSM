@@ -680,7 +680,14 @@ Result App::init(const std::string& execPath)
     // there is something to report a failure on.
     const bool platformUp =
         subsystems.acquire("hid", hidInit, hidExit) &&
-        subsystems.acquire("gfx", gfxInitDefault, gfxExit) &&
+        subsystems.acquire("gfx", gfxInitDefault,
+            []
+            {
+                // Last chance to stop printing: gfxExit frees the framebuffer the console
+                // writes into, and the steps below this one still report going down.
+                Logging::detachConsole();
+                gfxExit();
+            }) &&
         // The observer logs every later step, so it goes in as soon as there is a log to
         // write to. hid and gfx come up before it and are not logged, as before.
         subsystems.acquire(
@@ -747,7 +754,15 @@ Result App::init(const std::string& execPath)
         subsystems.acquire("network", Fetch::init, Fetch::exit) &&
         subsystems.acquire("server", Server::init, Server::exit) &&
         subsystems.acquire("assets", [] { return assetStore.ensure(); }) &&
-        subsystems.acquire("gui", Gui::init, Gui::exit) &&
+        subsystems.acquire("gui", Gui::init,
+            []
+            {
+                Gui::exit();
+                // citro3d is gone and the bottom screen is nobody's; make it the log
+                // console again so the rest of the teardown prints somewhere real
+                // instead of scribbling 16-bit text into the GUI's framebuffer.
+                Logging::attachConsole();
+            }) &&
         subsystems.acquire(
             "i18n",
             []
@@ -822,6 +837,10 @@ Result App::init(const std::string& execPath)
         const auto& failure = *subsystems.failure();
         return consoleDisplayError(startupErrorMessage(failure.name), failure.status);
     }
+
+    // The GUI takes both screens from here on, so the startup console stops drawing. It
+    // comes back when the GUI goes down.
+    Logging::detachConsole();
 
     // reinitialize both screens. The top screen format is restored explicitly because the
     // ext data corruption prompt (confirmExtdataReset) may have switched it to console mode.

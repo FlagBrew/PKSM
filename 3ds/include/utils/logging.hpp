@@ -47,6 +47,9 @@ namespace Logging
     void initFileLogging(void);
     void exit(void);
 
+    void attachConsole(void);
+    void detachConsole(void);
+
     void log(LogLevel level, const std::string& message);
     void trace(const std::string& message);
     void debug(const std::string& message);

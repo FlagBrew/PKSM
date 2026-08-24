@@ -47,6 +47,9 @@ namespace
     std::chrono::steady_clock::time_point startTime;
     std::string logFilePath;
 
+    // False while the GUI owns the bottom screen, and once gfx is gone for good.
+    bool consoleAttached = false;
+
     std::mutex logMutex;
     constexpr size_t LOG_BUFFER_SIZE = 8192;
     // applicationLogs is only what /logs/memory serves; the file on the SD card is
@@ -70,6 +73,12 @@ namespace
         applicationLogs.erase(0, cut == std::string::npos ? applicationLogs.size() : cut + 1);
     }
 
+    std::string versionInfo()
+    {
+        return std::format(
+            "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
+    }
+
     void flushLogBuffer()
     {
         if (logBuffer.empty())
@@ -85,18 +94,16 @@ namespace
     }
 }
 
-void Logging::init()
+void Logging::attachConsole()
 {
-    startTime = std::chrono::steady_clock::now();
-
     consoleInit(GFX_BOTTOM, &headerConsole);
     consoleInit(GFX_BOTTOM, &logConsole);
 
-    // Configure header console to use just the top line
-    consoleSetWindow(&headerConsole, 0, 0, 40, 1);
-
-    // Configure log console to use the remaining space
-    consoleSetWindow(&logConsole, 0, 1, 40, 29);
+    // libctru counts window rows and columns from 1, and consoleSetWindow silently clamps a
+    // 0 up to 1: asking for row 0 put the log window on top of the header instead of under
+    // it, which cost the version line and left the bottom row of the screen unused.
+    consoleSetWindow(&headerConsole, 1, 1, 40, 1); // the top line, nothing else
+    consoleSetWindow(&logConsole, 1, 2, 40, 29);   // the other 29, down to the last one
 
     ConsoleFont font;
     font.gfx         = (u8*)console_font_8x8;
@@ -105,6 +112,27 @@ void Logging::init()
 
     consoleSetFont(&headerConsole, &font);
     consoleSetFont(&logConsole, &font);
+
+    consoleAttached = true;
+
+    std::string version = versionInfo();
+    consoleSelect(&headerConsole);
+    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
+        41 - static_cast<int>(version.length()), version.c_str());
+    consoleSelect(&logConsole);
+    gfxFlushBuffers();
+}
+
+void Logging::detachConsole()
+{
+    consoleAttached = false;
+}
+
+void Logging::init()
+{
+    startTime = std::chrono::steady_clock::now();
+
+    attachConsole();
 
     // Get current date for log filename
     auto now        = std::chrono::system_clock::now();
@@ -124,12 +152,7 @@ void Logging::init()
 
     logBuffer.reserve(LOG_BUFFER_SIZE);
 
-    std::string versionInfo = std::format(
-        "PKSM v{:d}.{:d}.{:d}-{:s}", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO, GIT_REV);
-    consoleSelect(&headerConsole);
-    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
-        40 - static_cast<int>(versionInfo.length()), versionInfo.c_str());
-    info(versionInfo);
+    info(versionInfo());
 
     Server::registerHandler("/logs/memory",
         [](const std::string& path, const std::string& requestData) -> Server::HttpResponse
@@ -175,6 +198,11 @@ void Logging::startupLog(const std::string& category, const std::string& message
         << std::setw(4) << (int)((seconds - (int)seconds) * 10000 + 0.5) << "]";
     std::string formattedText = oss.str() + " " + category + ": " + message;
     info(category + ": " + message);
+
+    if (!consoleAttached)
+    {
+        return;
+    }
 
     consoleSelect(&logConsole);
     printf("%s\n", formattedText.c_str());
