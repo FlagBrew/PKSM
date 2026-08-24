@@ -27,35 +27,30 @@
 #ifndef MOVEOVERLAY_HPP
 #define MOVEOVERLAY_HPP
 
-#include "Hid.hpp"
+#include "ListPickerOverlay.hpp"
 #include "pkx/IPKFilterable.hpp"
-#include "ReplaceableScreen.hpp"
-#include <variant>
+#include <string>
+#include <utility>
+#include <vector>
 
-class Button;
-
-class MoveOverlay : public ReplaceableScreen
+class MoveOverlay : public ListPickerOverlay
 {
 public:
     MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& pkm, int moveIndex);
-    void drawTop() const override;
 
-    bool replacesTop() const override { return true; }
+protected:
+    size_t entryCount() const override { return moves.size(); }
 
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
+    void filter(const std::string& search) override;
+    bool commit() override;
+    void discard() override;
+    std::string entryLine(size_t index) const override;
 
 private:
-    void searchBar();
     pksm::IPKFilterable& object;
-    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<pksm::Move, std::string>> moves;
     std::vector<std::pair<pksm::Move, std::string>> validMoves;
-    std::string searchString    = "";
-    std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
     int moveIndex;
-    bool justSwitched = true;
 };
 
 #endif

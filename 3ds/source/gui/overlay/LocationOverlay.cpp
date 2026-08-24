@@ -25,164 +25,73 @@
  */
 
 #include "LocationOverlay.hpp"
-#include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
 #include "pkx/PKX.hpp"
 #include "utils.hpp"
+#include <algorithm>
+#include <map>
 
 LocationOverlay::LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+    : ListPickerOverlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK"),
+          i18n::localize(met ? "MET_LOCATION" : "EGG_LOCATION")),
       pkm(pkm),
-      hid(20, 2),
-      validLocations(i18n::rawLocations(
-          Configuration::getInstance().language(), (pksm::Generation)pkm.version())),
-      locations(validLocations),
       met(met)
 {
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-    searchButton = std::make_unique<ClickButton>(
-        75, 30, 170, 23,
-        [this]()
-        {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
-    hid.update(locations.size());
-    hid.select(std::distance(locations.begin(),
-        std::find_if(locations.begin(), locations.end(),
-            [&pkm, met](const std::pair<u16, std::string>& pair)
-            { return pair.first == (met ? pkm.metLocation() : pkm.eggLocation()); })));
-}
-
-void LocationOverlay::drawBottom() const
-{
-    dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
-    searchButton->draw();
-    Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
-}
-
-void LocationOverlay::drawTop() const
-{
-    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
-    int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
-    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
-    // Stupid non random-access iterators
-    std::map<u16, std::string>::const_iterator locIt = locations.begin();
-    for (size_t i = 0; i < hid.page() * hid.maxVisibleEntries(); i++)
+    const std::map<u16, std::string>& rawLocations = i18n::rawLocations(
+        Configuration::getInstance().language(), (pksm::Generation)pkm.version());
+    validLocations.reserve(rawLocations.size());
+    for (const auto& location : rawLocations)
     {
-        ++locIt;
+        validLocations.emplace_back(location.first, &location.second);
     }
-    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
+    locations = validLocations;
+
+    hid.update(locations.size());
+    u16 current = met ? pkm.metLocation() : pkm.eggLocation();
+    hid.select(std::distance(
+        locations.begin(), std::find_if(locations.begin(), locations.end(),
+                               [current](const std::pair<u16, const std::string*>& location)
+                               { return location.first == current; })));
+}
+
+std::string LocationOverlay::entryLine(size_t index) const
+{
+    return std::to_string(locations[index].first) + " - " + *locations[index].second;
+}
+
+void LocationOverlay::filter(const std::string& search)
+{
+    if (search.empty())
     {
-        x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        if (hid.page() * hid.maxVisibleEntries() + i < locations.size())
+        locations = validLocations;
+        return;
+    }
+    locations.clear();
+    for (const auto& location : validLocations)
+    {
+        std::string locName = location.second->substr(0, search.size());
+        StringUtils::toLower(locName);
+        if (locName == search)
         {
-            Gui::text(std::to_string(locIt->first) + " - " + locIt->second, x,
-                (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
-                TextPosX::LEFT, TextPosY::TOP);
-            ++locIt;
+            locations.emplace_back(location);
+        }
+    }
+}
+
+bool LocationOverlay::commit()
+{
+    if (!locations.empty())
+    {
+        if (met)
+        {
+            pkm.metLocation(locations[hid.fullIndex()].first);
         }
         else
         {
-            break;
+            pkm.eggLocation(locations[hid.fullIndex()].first);
         }
     }
-}
-
-void LocationOverlay::update(touchPosition* touch)
-{
-    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
-    {
-        return;
-    }
-    else if (justSwitched)
-    {
-        justSwitched = false;
-    }
-
-    if (hidKeysDown() & KEY_X)
-    {
-        searchBar();
-    }
-    searchButton->update(touch);
-
-    if (!searchString.empty() && searchString != oldSearchString)
-    {
-        locations.clear();
-        for (auto i = validLocations.begin(); i != validLocations.end(); i++)
-        {
-            std::string locName = i->second.substr(0, searchString.size());
-            StringUtils::toLower(locName);
-            if (locName == searchString)
-            {
-                locations.emplace(*i);
-            }
-        }
-        oldSearchString = searchString;
-    }
-    else if (searchString.empty() && !oldSearchString.empty())
-    {
-        locations       = validLocations;
-        oldSearchString = searchString = "";
-    }
-    if (hid.fullIndex() >= locations.size())
-    {
-        hid.select(0);
-    }
-
-    hid.update(locations.size());
-    u32 downKeys = hidKeysDown();
-    if (downKeys & KEY_A)
-    {
-        if (locations.size() > 0)
-        {
-            auto locIt = locations.begin();
-            for (size_t i = 0; i < hid.fullIndex(); i++)
-            {
-                locIt++;
-            }
-            if (met)
-            {
-                pkm.metLocation(locIt->first);
-            }
-            else
-            {
-                pkm.eggLocation(locIt->first);
-            }
-        }
-        parent->removeOverlay();
-        return;
-    }
-    else if (downKeys & KEY_B)
-    {
-        parent->removeOverlay();
-        return;
-    }
-}
-
-void LocationOverlay::searchBar()
-{
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
-    swkbdSetHintText(&state, i18n::localize(met ? "MET_LOCATION" : "EGG_LOCATION").c_str());
-    swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
-    char input[25]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24]       = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        searchString = input;
-        StringUtils::toLower(searchString);
-    }
+    return true;
 }

@@ -25,7 +25,6 @@
  */
 
 #include "MoveOverlay.hpp"
-#include "ClickButton.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
@@ -66,12 +65,11 @@ namespace
 }
 
 MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, int moveIndex)
-    : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
+    : ListPickerOverlay(screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK"),
+          i18n::localize("MOVE")),
       object(object),
-      hid(20, 2),
       moveIndex(moveIndex)
 {
-    instructions.addBox(false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
     const std::vector<std::string>& rawMoves =
         i18n::rawMoves(Configuration::getInstance().language());
     pksm::Generation gen = !object.isFilter() ? object.generation() : pksm::Generation::EIGHT;
@@ -115,138 +113,55 @@ MoveOverlay::MoveOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object,
         hid.select((u16)index(moves, i18n::move(Configuration::getInstance().language(),
                                          object.relearnMove(moveIndex - 4))));
     }
-    searchButton = std::make_unique<ClickButton>(
-        75, 30, 170, 23,
-        [this]()
-        {
-            searchBar();
-            return false;
-        },
-        ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
 }
 
-void MoveOverlay::drawBottom() const
+std::string MoveOverlay::entryLine(size_t index) const
 {
-    dim();
-    Gui::text(i18n::localize("EDITOR_INST"), 160, 115, FONT_SIZE_18, COLOR_WHITE, TextPosX::CENTER,
-        TextPosY::TOP);
-    searchButton->draw();
-    Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    return std::to_string(u16(moves[index].first)) + " - " + moves[index].second;
 }
 
-void MoveOverlay::drawTop() const
+void MoveOverlay::filter(const std::string& search)
 {
-    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
-    int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
-    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
-    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
+    if (search.empty())
     {
-        x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        if (hid.page() * hid.maxVisibleEntries() + i < moves.size())
-        {
-            Gui::text(std::to_string(u16(moves[hid.page() * hid.maxVisibleEntries() + i].first)) +
-                          " - " + moves[hid.page() * hid.maxVisibleEntries() + i].second,
-                x, (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
-                TextPosX::LEFT, TextPosY::TOP);
-        }
-        else
-        {
-            break;
-        }
-    }
-}
-
-void MoveOverlay::update(touchPosition* touch)
-{
-    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
-    {
+        moves = validMoves;
         return;
     }
-    else if (justSwitched)
+    moves.clear();
+    moves.emplace_back(validMoves[0]);
+    for (size_t i = 1; i < validMoves.size(); i++)
     {
-        justSwitched = false;
-    }
-
-    if (hidKeysDown() & KEY_X)
-    {
-        searchBar();
-    }
-    searchButton->update(touch);
-
-    if (!searchString.empty() && searchString != oldSearchString)
-    {
-        moves.clear();
-        moves.emplace_back(validMoves[0]);
-        for (size_t i = 1; i < validMoves.size(); i++)
+        std::string itemName = validMoves[i].second.substr(0, search.size());
+        StringUtils::toLower(itemName);
+        if (itemName == search)
         {
-            std::string itemName = validMoves[i].second.substr(0, searchString.size());
-            StringUtils::toLower(itemName);
-            if (itemName == searchString)
-            {
-                moves.emplace_back(validMoves[i]);
-            }
+            moves.emplace_back(validMoves[i]);
         }
-        oldSearchString = searchString;
-    }
-    else if (searchString.empty() && !oldSearchString.empty())
-    {
-        moves           = validMoves;
-        oldSearchString = searchString = "";
-    }
-    if (hid.fullIndex() >= moves.size())
-    {
-        hid.select(0);
-    }
-
-    hid.update(moves.size());
-    u32 downKeys = hidKeysDown();
-    if (downKeys & KEY_A)
-    {
-        if (moveIndex < 4)
-        {
-            object.move(moveIndex, moves[hid.fullIndex()].first);
-        }
-        else
-        {
-            object.relearnMove(moveIndex - 4, moves[hid.fullIndex()].first);
-        }
-        if (!object.isFilter())
-        {
-            static_cast<pksm::PKX&>(object).fixMoves();
-            static_cast<pksm::PKX&>(object).healPP();
-        }
-        parent->removeOverlay();
-        return;
-    }
-    else if (downKeys & KEY_B)
-    {
-        if (!object.isFilter())
-        {
-            static_cast<pksm::PKX&>(object).fixMoves();
-        }
-        parent->removeOverlay();
-        return;
     }
 }
 
-void MoveOverlay::searchBar()
+bool MoveOverlay::commit()
 {
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 20);
-    swkbdSetHintText(&state, i18n::localize("MOVE").c_str());
-    swkbdSetValidation(&state, SWKBD_ANYTHING, 0, 0);
-    char input[25]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24]       = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
+    if (moveIndex < 4)
     {
-        searchString = input;
-        StringUtils::toLower(searchString);
+        object.move(moveIndex, moves[hid.fullIndex()].first);
+    }
+    else
+    {
+        object.relearnMove(moveIndex - 4, moves[hid.fullIndex()].first);
+    }
+    if (!object.isFilter())
+    {
+        static_cast<pksm::PKX&>(object).fixMoves();
+        static_cast<pksm::PKX&>(object).healPP();
+    }
+    return true;
+}
+
+void MoveOverlay::discard()
+{
+    if (!object.isFilter())
+    {
+        static_cast<pksm::PKX&>(object).fixMoves();
     }
 }

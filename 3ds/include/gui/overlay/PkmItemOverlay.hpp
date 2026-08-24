@@ -27,33 +27,28 @@
 #ifndef PKMITEMOVERLAY_HPP
 #define PKMITEMOVERLAY_HPP
 
-#include "Hid.hpp"
+#include "ListPickerOverlay.hpp"
 #include "pkx/PKX.hpp"
-#include "ReplaceableScreen.hpp"
+#include <string>
+#include <utility>
+#include <vector>
 
-class Button;
-
-class PkmItemOverlay : public ReplaceableScreen
+class PkmItemOverlay : public ListPickerOverlay
 {
 public:
     PkmItemOverlay(ReplaceableScreen& screen, pksm::PKX& pkm);
-    void drawTop() const override;
 
-    bool replacesTop() const override { return true; }
+protected:
+    size_t entryCount() const override { return items.size(); }
 
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
+    void filter(const std::string& search) override;
+    bool commit() override;
+    std::string entryLine(size_t index) const override;
 
 private:
-    void searchBar();
     pksm::PKX& pkm;
-    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<int, std::string>> items;
     std::vector<std::pair<int, std::string>> validItems;
-    std::string searchString    = "";
-    std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
-    bool justSwitched = true;
 };
 
 #endif

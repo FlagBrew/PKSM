@@ -24,35 +24,29 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SPECIESOVERLAY_HPP
-#define SPECIESOVERLAY_HPP
+#include "ListPickerOverlay.hpp"
+#include "gui.hpp"
 
-#include "enums/Species.hpp"
-#include "pkx/IPKFilterable.hpp"
-#include "SearchableOverlay.hpp"
-#include <set>
-#include <string>
-#include <vector>
-
-// The species picker draws a grid of sprites rather than a list, so it builds on
-// the search machinery directly instead of on ListPickerOverlay.
-class SpeciesOverlay : public SearchableOverlay<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL>
+void ListPickerOverlay::drawTop() const
 {
-public:
-    SpeciesOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u8 origLevel = 0);
-    void drawTop() const override;
-
-protected:
-    size_t entryCount() const override { return dispPkm.size(); }
-
-    void filter(const std::string& search) override;
-    bool commit() override;
-
-private:
-    const std::set<pksm::Species>& availableSpecies() const;
-    pksm::IPKFilterable& object;
-    std::vector<pksm::Species> dispPkm;
-    u8 origLevel;
-};
-
-#endif
+    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
+    const size_t rows = hid.maxVisibleEntries() / 2;
+    int x             = hid.index() < rows ? 2 : 200;
+    int y             = (hid.index() % rows) * 24;
+    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
+    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
+    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
+    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
+    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
+    {
+        size_t entry = hid.page() * hid.maxVisibleEntries() + i;
+        if (entry >= entryCount())
+        {
+            break;
+        }
+        x = i < rows ? 4 : 203;
+        Gui::text(entryLine(entry), x, (i % rows) * 24 + 4, FONT_SIZE_14, COLOR_WHITE,
+            TextPosX::LEFT, TextPosY::TOP);
+    }
+}

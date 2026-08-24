@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,155 +26,101 @@
 
 #include "BagItemOverlay.hpp"
 #include "gui.hpp"
+#include "i18n_ext.hpp"
 #include "loader.hpp"
 #include "sav/Item.hpp"
 #include "sav/Sav.hpp"
 #include "utils/utils.hpp"
 
-void BagItemOverlay::drawBottom() const
+BagItemOverlay::BagItemOverlay(ReplaceableScreen& screen,
+    std::vector<std::pair<const std::string*, int>>& items, size_t selected,
+    std::pair<pksm::Sav::Pouch, int> pouch, int slot, int& firstEmpty)
+    : ListPickerOverlay(screen,
+          i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' +
+              i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK"),
+          i18n::localize("ITEM")),
+      validItems(items),
+      items(items),
+      pouch(pouch),
+      slot(slot),
+      firstEmpty(firstEmpty)
 {
-    dim();
-    searchButton->draw();
-    Gui::sprite(ui_sheet_icon_search_idx, 79, 33);
-    Gui::text(searchString, 95, 32, FONT_SIZE_12, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+    hid.update(items.size());
+    hid.select(selected);
 }
 
-void BagItemOverlay::drawTop() const
+std::string BagItemOverlay::entryLine(size_t index) const
 {
-    Gui::sprite(ui_sheet_part_editor_10x2_idx, 0, 0);
-    int x = hid.index() < hid.maxVisibleEntries() / 2 ? 2 : 200;
-    int y = (hid.index() % (hid.maxVisibleEntries() / 2)) * 24;
-    Gui::drawSolidRect(x, y, 198, 23, COLOR_MASKBLACK);
-    Gui::drawSolidRect(x, y, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y, 1, 23, COLOR_YELLOW);
-    Gui::drawSolidRect(x, y + 22, 198, 1, COLOR_YELLOW);
-    Gui::drawSolidRect(x + 197, y, 1, 23, COLOR_YELLOW);
-    for (size_t i = 0; i < hid.maxVisibleEntries(); i++)
-    {
-        if (i + hid.page() * hid.maxVisibleEntries() >= items.size())
-        {
-            break;
-        }
-        x = i < hid.maxVisibleEntries() / 2 ? 4 : 203;
-        Gui::text(*items[i + hid.page() * hid.maxVisibleEntries()].first, x,
-            (i % (hid.maxVisibleEntries() / 2)) * 24 + 4, FONT_SIZE_14, COLOR_WHITE, TextPosX::LEFT,
-            TextPosY::TOP);
-    }
+    return *items[index].first;
 }
 
-void BagItemOverlay::update(touchPosition* touch)
+void BagItemOverlay::filter(const std::string& search)
 {
-    if (justSwitched && (hidKeysHeld() & KEY_TOUCH))
+    if (search.empty())
     {
+        items = validItems;
         return;
     }
-    else if (justSwitched)
+    items.clear();
+    if (!validItems.empty())
     {
-        justSwitched = false;
+        items.emplace_back(validItems[0]);
     }
-
-    if (hidKeysDown() & KEY_X)
+    for (auto& it : validItems)
     {
-        searchBar();
-    }
-    searchButton->update(touch);
-
-    if (!searchString.empty() && searchString != oldSearchString)
-    {
-        items.clear();
-        if (!validItems.empty())
+        std::string lowerName = *it.first;
+        StringUtils::toLower(lowerName);
+        if (lowerName.find(search) != std::string::npos)
         {
-            items.emplace_back(validItems[0]);
+            items.emplace_back(it);
         }
+    }
+}
 
-        for (auto& it : validItems)
+bool BagItemOverlay::commit()
+{
+    if (hid.fullIndex() == 0)
+    {
+        if (firstEmpty != slot)
         {
-            std::string lowerName = *it.first;
-            StringUtils::toLower(lowerName);
-            if (lowerName.find(searchString) != std::string::npos)
+            static pksm::Item4 emptyItem;
+            firstEmpty--;
+            for (int i = slot; i < firstEmpty; i++)
             {
-                items.emplace_back(it);
+                auto item = TitleLoader::save->item(pouch.first, i + 1);
+                TitleLoader::save->item(*item, pouch.first, i);
             }
+            TitleLoader::save->item(emptyItem, pouch.first, firstEmpty);
         }
-        oldSearchString = searchString;
     }
-    else if (searchString.empty() && !oldSearchString.empty())
+    else
     {
-        items           = validItems;
-        oldSearchString = searchString = "";
-    }
-    if (hid.fullIndex() >= items.size())
-    {
-        hid.select(0);
-    }
-    u32 downKeys = hidKeysDown();
-    hid.update(items.size());
-    if (downKeys & KEY_A)
-    {
-        if (hid.fullIndex() == 0)
+        auto item = TitleLoader::save->item(pouch.first, slot);
+        if (item->generation() == pksm::Generation::ONE)
         {
-            if (firstEmpty != slot)
-            {
-                static pksm::Item4 emptyItem;
-                firstEmpty--;
-                for (int i = slot; i < firstEmpty; i++)
-                {
-                    auto item = TitleLoader::save->item(pouch.first, i + 1);
-                    TitleLoader::save->item(*item, pouch.first, i);
-                }
-                TitleLoader::save->item(emptyItem, pouch.first, firstEmpty);
-            }
+            ((pksm::Item1*)item.get())->id1(items[hid.fullIndex()].second);
+        }
+        else if (item->generation() == pksm::Generation::TWO)
+        {
+            ((pksm::Item2*)item.get())->id2(items[hid.fullIndex()].second);
+        }
+        else if (item->generation() == pksm::Generation::THREE)
+        {
+            ((pksm::Item3*)item.get())->id3(items[hid.fullIndex()].second);
         }
         else
         {
-            auto item = TitleLoader::save->item(pouch.first, slot);
-            if (item->generation() == pksm::Generation::ONE)
-            {
-                ((pksm::Item1*)item.get())->id1(items[hid.fullIndex()].second);
-            }
-            else if (item->generation() == pksm::Generation::TWO)
-            {
-                ((pksm::Item2*)item.get())->id2(items[hid.fullIndex()].second);
-            }
-            else if (item->generation() == pksm::Generation::THREE)
-            {
-                ((pksm::Item3*)item.get())->id3(items[hid.fullIndex()].second);
-            }
-            else
-            {
-                item->id(items[hid.fullIndex()].second);
-            }
-            if (item->count() == 0)
-            {
-                item->count(1);
-            }
-            TitleLoader::save->item(*item, pouch.first, slot);
-            if (slot == firstEmpty)
-            {
-                firstEmpty = std::min(firstEmpty + 1, pouch.second);
-            }
+            item->id(items[hid.fullIndex()].second);
         }
-        parent->removeOverlay();
+        if (item->count() == 0)
+        {
+            item->count(1);
+        }
+        TitleLoader::save->item(*item, pouch.first, slot);
+        if (slot == firstEmpty)
+        {
+            firstEmpty = std::min(firstEmpty + 1, pouch.second);
+        }
     }
-    else if (downKeys & KEY_B)
-    {
-        parent->removeOverlay();
-    }
-}
-
-void BagItemOverlay::searchBar()
-{
-    SwkbdState state;
-    swkbdInit(&state, SWKBD_TYPE_NORMAL, 2, 24);
-    swkbdSetHintText(&state, i18n::localize("ITEM").c_str());
-    swkbdSetValidation(&state, SWKBD_NOTBLANK_NOTEMPTY, 0, 0);
-    char input[25]  = {0};
-    SwkbdButton ret = swkbdInputText(&state, input, sizeof(input));
-    input[24]       = '\0';
-    if (ret == SWKBD_BUTTON_CONFIRM)
-    {
-        std::string tempString(input);
-        StringUtils::toLower(tempString);
-        searchString = tempString;
-    }
+    return true;
 }

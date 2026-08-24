@@ -27,35 +27,29 @@
 #ifndef LOCATIONOVERLAY_HPP
 #define LOCATIONOVERLAY_HPP
 
-#include "Hid.hpp"
+#include "ListPickerOverlay.hpp"
 #include "pkx/PKX.hpp"
-#include "ReplaceableScreen.hpp"
-#include <map>
-#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-class Button;
-
-class LocationOverlay : public ReplaceableScreen
+class LocationOverlay : public ListPickerOverlay
 {
 public:
     LocationOverlay(ReplaceableScreen& screen, pksm::PKX& pkm, bool met);
-    void drawTop() const override;
 
-    bool replacesTop() const override { return true; }
+protected:
+    size_t entryCount() const override { return locations.size(); }
 
-    void drawBottom() const override;
-    void update(touchPosition* touch) override;
+    void filter(const std::string& search) override;
+    bool commit() override;
+    std::string entryLine(size_t index) const override;
 
 private:
-    void searchBar();
     pksm::PKX& pkm;
-    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    const std::map<u16, std::string>& validLocations;
-    std::map<u16, std::string> locations;
-    std::string searchString    = "";
-    std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
-    bool justSwitched = true;
+    // The i18n tables outlive the overlay, so entries borrow their names.
+    std::vector<std::pair<u16, const std::string*>> validLocations;
+    std::vector<std::pair<u16, const std::string*>> locations;
     bool met;
 };
 

@@ -24,35 +24,28 @@
  *         reasonable ways as different from the original version.
  */
 
-#ifndef SPECIESOVERLAY_HPP
-#define SPECIESOVERLAY_HPP
+#ifndef LISTPICKEROVERLAY_HPP
+#define LISTPICKEROVERLAY_HPP
 
-#include "enums/Species.hpp"
-#include "pkx/IPKFilterable.hpp"
 #include "SearchableOverlay.hpp"
-#include <set>
-#include <string>
-#include <vector>
 
-// The species picker draws a grid of sprites rather than a list, so it builds on
-// the search machinery directly instead of on ListPickerOverlay.
-class SpeciesOverlay : public SearchableOverlay<HidDirection::HORIZONTAL, HidDirection::HORIZONTAL>
+// A searchable picker drawn as two columns of ten text rows on the top screen.
+// Subclasses provide the text of each entry; everything else about browsing is
+// inherited from SearchableOverlay.
+class ListPickerOverlay : public SearchableOverlay<HidDirection::VERTICAL, HidDirection::HORIZONTAL>
 {
 public:
-    SpeciesOverlay(ReplaceableScreen& screen, pksm::IPKFilterable& object, u8 origLevel = 0);
+    ListPickerOverlay(ReplaceableScreen& screen, const std::string& instructionText,
+        const std::string& searchHint)
+        : SearchableOverlay(screen, instructionText, searchHint, 20, 2)
+    {
+    }
+
     void drawTop() const override;
 
 protected:
-    size_t entryCount() const override { return dispPkm.size(); }
-
-    void filter(const std::string& search) override;
-    bool commit() override;
-
-private:
-    const std::set<pksm::Species>& availableSpecies() const;
-    pksm::IPKFilterable& object;
-    std::vector<pksm::Species> dispPkm;
-    u8 origLevel;
+    // Text of the entry at index, which counts from the start of the filtered entries.
+    virtual std::string entryLine(size_t index) const = 0;
 };
 
 #endif

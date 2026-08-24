@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,66 +27,34 @@
 #ifndef BAGITEMOVERLAY_HPP
 #define BAGITEMOVERLAY_HPP
 
-#include "ClickButton.hpp"
-#include "Configuration.hpp"
-#include "Hid.hpp"
-#include "ReplaceableScreen.hpp"
+#include "ListPickerOverlay.hpp"
 #include "sav/Sav.hpp"
-#include "spritesheets.h"
 #include <string>
+#include <utility>
 #include <vector>
 
-class BagItemOverlay : public ReplaceableScreen
+class BagItemOverlay : public ListPickerOverlay
 {
 public:
     BagItemOverlay(ReplaceableScreen& screen,
         std::vector<std::pair<const std::string*, int>>& items, size_t selected,
-        std::pair<pksm::Sav::Pouch, int> pouch, int slot, int& firstEmpty)
-        : ReplaceableScreen(
-              &screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("L_PAGE_PREV") + '\n' +
-                           i18n::localize("R_PAGE_NEXT") + '\n' + i18n::localize("B_BACK")),
-          validItems(items),
-          items(items),
-          pouch(pouch),
-          hid(20, 2),
-          origItem(selected),
-          slot(slot),
-          firstEmpty(firstEmpty)
-    {
-        instructions.addBox(
-            false, 75, 30, 170, 23, COLOR_GREY, i18n::localize("SEARCH"), COLOR_WHITE);
-        searchButton = std::make_unique<ClickButton>(
-            75, 30, 170, 23,
-            [this]()
-            {
-                searchBar();
-                return false;
-            },
-            ui_sheet_emulated_box_search_idx, "", 0, COLOR_BLACK);
-        hid.update(items.size());
-        hid.select(selected);
-    }
+        std::pair<pksm::Sav::Pouch, int> pouch, int slot, int& firstEmpty);
 
-    void drawTop() const override;
-    void drawBottom() const override;
+protected:
+    size_t entryCount() const override { return items.size(); }
 
-    bool replacesTop() const override { return true; }
+    void filter(const std::string& search) override;
+    bool commit() override;
+    std::string entryLine(size_t index) const override;
 
-    void update(touchPosition* touch) override;
+    std::string bottomInstructions() const override { return ""; }
 
 private:
-    void searchBar();
     const std::vector<std::pair<const std::string*, int>> validItems;
     std::vector<std::pair<const std::string*, int>> items;
     std::pair<pksm::Sav::Pouch, int> pouch;
-    std::string searchString    = "";
-    std::string oldSearchString = "";
-    std::unique_ptr<Button> searchButton;
-    Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
-    int origItem;
     int slot;
     int& firstEmpty;
-    bool justSwitched = true;
 };
 
 #endif
