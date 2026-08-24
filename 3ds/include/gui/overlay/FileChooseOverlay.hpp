@@ -27,10 +27,9 @@
 #ifndef FILECHOOSEOVERLAY_HPP
 #define FILECHOOSEOVERLAY_HPP
 
+#include "DirectoryBrowser.hpp"
 #include "Hid.hpp"
 #include "ReplaceableScreen.hpp"
-#include "STDirectory.hpp"
-#include <vector>
 
 class FileChooseOverlay : public ReplaceableScreen
 {
@@ -46,12 +45,8 @@ public:
     void drawBottom() const override { dim(); }
 
 private:
-    void updateEntries();
-    std::string currDirString;
-    const std::string rootString;
-    STDirectory currDir;
+    DirectoryBrowser browser;
     std::string& string;
-    std::vector<std::pair<std::string, bool>> currFiles;
     Hid<HidDirection::HORIZONTAL, HidDirection::VERTICAL> hid;
 };
 

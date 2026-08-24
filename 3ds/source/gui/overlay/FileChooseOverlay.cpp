@@ -28,22 +28,24 @@
 #include "Configuration.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
-#include <algorithm>
 
 FileChooseOverlay::FileChooseOverlay(
     ReplaceableScreen& screen, std::string& retString, const std::string& rootString)
     : ReplaceableScreen(&screen, i18n::localize("A_SELECT") + '\n' + i18n::localize("B_BACK")),
-      currDirString("/"),
-      rootString(rootString),
-      currDir("/"),
+      browser(rootString),
       string(retString),
       hid(9, 1)
 {
-    updateEntries();
+    if (!browser.good())
+    {
+        Gui::warn(i18n::localize("FOLDER_DOESNT_EXIST"));
+    }
 }
 
 void FileChooseOverlay::drawTop() const
 {
+    const auto& entries = browser.entries();
+
     // slight change to stripy top
     Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
     for (int x = -240; x < 400; x += 7)
@@ -52,7 +54,7 @@ void FileChooseOverlay::drawTop() const
     }
     Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 
-    if (!currFiles.empty())
+    if (!entries.empty())
     {
         Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
         Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
@@ -61,105 +63,73 @@ void FileChooseOverlay::drawTop() const
     for (size_t i = hid.page() * hid.maxVisibleEntries();
          i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
-        if (i >= currFiles.size())
+        if (i >= entries.size())
         {
             break;
         }
         else
         {
-            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
+            Gui::sprite(entries[i].directory ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
                 3, 23 + i % hid.maxVisibleEntries() * 25);
         }
     }
     for (size_t i = hid.page() * hid.maxVisibleEntries();
          i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
-        if (i >= currFiles.size())
+        if (i >= entries.size())
         {
             break;
         }
         else
         {
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
+            Gui::text(entries[i].name, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
                 COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
 
     // Leaving space for the icon
-    Gui::text(currDirString, 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
-}
-
-void FileChooseOverlay::updateEntries()
-{
-    hid.select(0);
-    currFiles.clear();
-    if (!currDir.good())
-    {
-        Gui::warn(i18n::localize("FOLDER_DOESNT_EXIST"));
-        return;
-    }
-    for (size_t i = 0; i < currDir.count(); i++)
-    {
-        std::string item = currDir.item(i);
-        if (item != "." && item != "..")
-        {
-            currFiles.push_back(std::make_pair(item, currDir.folder(i)));
-        }
-    }
-    std::sort(currFiles.begin(), currFiles.end(),
-        [this](
-            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second)
-        {
-            if ((first.second && second.second) || (!first.second && !second.second))
-            {
-                return first.first < second.first;
-            }
-            else if (first.second)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        });
+    Gui::text(browser.path(), 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
 }
 
 void FileChooseOverlay::update(touchPosition* touch)
 {
-    hid.update(currFiles.size());
+    hid.update(browser.entries().size());
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString == rootString)
+        if (browser.atRoot())
         {
             parent->removeOverlay();
             return;
         }
-        else
+        else if (browser.leave())
         {
-            currDirString = currDirString.substr(
-                0, currDirString.substr(0, currDirString.size() - 1).find_last_of('/') + 1);
-            currDir = STDirectory(currDirString);
-            updateEntries();
+            hid.select(0);
         }
     }
     else if (down & KEY_A)
     {
-        if (!currFiles.empty())
+        const auto& entries = browser.entries();
+        if (!entries.empty())
         {
-            if (currFiles[hid.fullIndex()].second)
+            const size_t index = hid.fullIndex();
+            if (entries[index].directory)
             {
-                currDirString += currFiles[hid.fullIndex()].first + '/';
-                currDir        = STDirectory(currDirString);
-                updateEntries();
+                if (browser.enter(index))
+                {
+                    hid.select(0);
+                }
+                else
+                {
+                    Gui::warn(i18n::localize("FOLDER_DOESNT_EXIST"));
+                }
             }
             else
             {
                 if (Gui::showChoiceMessage((i18n::localize("FILE_CONFIRM_CHOICE") + '\n') + '\'' +
-                                           currFiles[hid.fullIndex()].first + '\''))
+                                           entries[index].name + '\''))
                 {
-                    string = currDirString + currFiles[hid.fullIndex()].first;
+                    string = browser.pathOf(index);
                     parent->removeOverlay();
                 }
             }

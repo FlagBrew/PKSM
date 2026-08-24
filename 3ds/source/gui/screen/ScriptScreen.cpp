@@ -138,30 +138,26 @@ namespace
 }
 
 ScriptScreen::ScriptScreen()
-    : currDirString("romfs:" + getScriptDir(TitleLoader::save->version())),
-      currDir(currDirString),
+    : browser("romfs:" + getScriptDir(TitleLoader::save->version())),
       hid(8, 1),
       sdSearch(false),
       cScripts(false)
 {
-    if (!currDir.good())
+    if (!browser.good() && browser.reroot("/3ds/PKSM" + getScriptDir(TitleLoader::save->version())))
     {
-        std::string tmp = "/3ds/PKSM" + getScriptDir(TitleLoader::save->version());
-        currDir         = STDirectory(tmp);
-        if (!currDir.good())
-        {
-            currDir = STDirectory(currDirString);
-        }
-        else
-        {
-            currDirString = tmp;
-        }
+        sdSearch = true;
     }
-    updateEntries();
+}
+
+const std::string& ScriptScreen::emptyLabel() const
+{
+    return i18n::localize(browser.good() ? "EMPTY" : "FOLDER_DOESNT_EXIST");
 }
 
 void ScriptScreen::drawTop() const
 {
+    const auto& entries = browser.entries();
+
     // slight change to stripy top
     Gui::drawSolidRect(0, 0, 400, 240, PKSM_Color(26, 35, 126, 255));
     for (int x = -240; x < 400; x += 7)
@@ -171,25 +167,31 @@ void ScriptScreen::drawTop() const
     Gui::drawSolidRect(0, 0, 400, 25, PKSM_Color(15, 22, 89, 255));
 
     // Leaving space for the icon
-    Gui::text(currDirString, 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
+    Gui::text(browser.path(), 15, 2, FONT_SIZE_11, COLOR_YELLOW, TextPosX::LEFT, TextPosY::TOP);
     Gui::text(i18n::localize("SCRIPTS_INST1"), 200, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP, TextWidthAction::SQUISH, 398);
 
     Gui::drawSolidRect(0, 20 + hid.index() * 25, 400, 25, PKSM_Color(128, 128, 128, 255));
     Gui::drawSolidRect(1, 21 + hid.index() * 25, 398, 23, COLOR_MASKBLACK);
 
+    if (entries.empty())
+    {
+        Gui::text(emptyLabel(), 30, 24, FONT_SIZE_11, COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
+        return;
+    }
+
     for (size_t i = hid.page() * hid.maxVisibleEntries();
          i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
-        if (i >= currFiles.size())
+        if (i >= entries.size())
         {
             break;
         }
         else
         {
-            Gui::sprite(currFiles[i].second ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
+            Gui::sprite(entries[i].directory ? ui_sheet_icon_folder_idx : ui_sheet_icon_script_idx,
                 3, 23 + i % hid.maxVisibleEntries() * 25);
-            Gui::text(currFiles[i].first, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
+            Gui::text(entries[i].name, 30, 24 + (i % hid.maxVisibleEntries() * 25), FONT_SIZE_11,
                 COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP);
         }
     }
@@ -203,47 +205,44 @@ void ScriptScreen::drawBottom() const
     Gui::text(i18n::localize("SCRIPTS_INST2"), 160, 224, FONT_SIZE_9, COLOR_WHITE, TextPosX::CENTER,
         TextPosY::TOP, TextWidthAction::SQUISH, 318);
 
-    if (!currFiles.empty())
-    {
-        Gui::text(currFiles[hid.fullIndex()].first, 30, 44, FONT_SIZE_11, COLOR_WHITE,
-            TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
-    }
+    const auto& entries = browser.entries();
+    Gui::text(entries.empty() ? emptyLabel() : entries[hid.fullIndex()].name, 30, 44, FONT_SIZE_11,
+        COLOR_WHITE, TextPosX::LEFT, TextPosY::TOP, TextWidthAction::SCROLL, 260.0f);
 }
 
 void ScriptScreen::update(touchPosition* touch)
 {
-    hid.update(currFiles.size());
+    hid.update(browser.entries().size());
     u32 down = hidKeysDown();
     if (down & KEY_B)
     {
-        if (currDirString == (sdSearch ? "/3ds/PKSM" : "romfs:") +
-                                 (cScripts ? std::string("/scripts/universal")
-                                           : getScriptDir(TitleLoader::save->version())))
+        if (browser.atRoot())
         {
             ScreenStack::requestPop();
             return;
         }
-        else
+        else if (browser.leave())
         {
-            currDirString = currDirString.substr(0, currDirString.find_last_of('/'));
-            currDir       = STDirectory(currDirString);
-            updateEntries();
+            hid.select(0);
         }
     }
     else if (down & KEY_A)
     {
-        if (currDir.good() && currDir.count() > 0)
+        const auto& entries = browser.entries();
+        if (!entries.empty())
         {
-            if (currFiles[hid.fullIndex()].second)
+            const size_t index = hid.fullIndex();
+            if (entries[index].directory)
             {
-                currDirString += '/' + currFiles[hid.fullIndex()].first;
-                currDir        = STDirectory(currDirString);
-                updateEntries();
+                if (browser.enter(index))
+                {
+                    hid.select(0);
+                }
             }
             else
             {
                 if (Gui::showChoiceMessage(i18n::localize("SCRIPTS_CONFIRM_USE") + "\n" +
-                                           ('\'' + currFiles[hid.fullIndex()].first + '\'')))
+                                           ('\'' + entries[index].name + '\'')))
                 {
                     applyScript();
                 }
@@ -255,13 +254,10 @@ void ScriptScreen::update(touchPosition* touch)
         std::string dirString = (!sdSearch ? "/3ds/PKSM" : "romfs:") +
                                 (cScripts ? std::string("/scripts/universal")
                                           : getScriptDir(TitleLoader::save->version()));
-        STDirectory dir = STDirectory(dirString);
-        if (dir.good())
+        if (browser.reroot(dirString))
         {
-            sdSearch      = !sdSearch;
-            currDirString = dirString;
-            currDir       = dir;
-            updateEntries();
+            sdSearch = !sdSearch;
+            hid.select(0);
         }
         else
         {
@@ -273,13 +269,10 @@ void ScriptScreen::update(touchPosition* touch)
         std::string dirString = (sdSearch ? "/3ds/PKSM" : "romfs:") +
                                 (!cScripts ? std::string("/scripts/universal")
                                            : getScriptDir(TitleLoader::save->version()));
-        STDirectory dir = STDirectory(dirString);
-        if (dir.good())
+        if (browser.reroot(dirString))
         {
-            cScripts      = !cScripts;
-            currDirString = dirString;
-            currDir       = dir;
-            updateEntries();
+            cScripts = !cScripts;
+            hid.select(0);
         }
         else
         {
@@ -288,49 +281,9 @@ void ScriptScreen::update(touchPosition* touch)
     }
 }
 
-void ScriptScreen::updateEntries()
-{
-    hid.select(0);
-    currFiles.clear();
-    if (!currDir.good())
-    {
-        currFiles.push_back({i18n::localize("FOLDER_DOESNT_EXIST"), false});
-        return;
-    }
-    for (size_t i = 0; i < currDir.count(); i++)
-    {
-        std::string item = currDir.item(i);
-        if (item != "." && item != "..")
-        {
-            currFiles.push_back(std::make_pair(item, currDir.folder(i)));
-        }
-    }
-    if (currFiles.empty())
-    {
-        currFiles.push_back({i18n::localize("EMPTY"), false});
-    }
-    std::sort(currFiles.begin(), currFiles.end(),
-        [this](
-            const std::pair<std::string, bool>& first, const std::pair<std::string, bool>& second)
-        {
-            if ((first.second && second.second) || (!first.second && !second.second))
-            {
-                return first.first < second.first;
-            }
-            else if (first.second)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        });
-}
-
 void ScriptScreen::applyScript()
 {
-    std::string scriptFile = currDirString + '/' + currFiles[hid.fullIndex()].first;
+    std::string scriptFile = browser.pathOf(hid.fullIndex());
     if (scriptFile.rfind(".c") == scriptFile.size() - 2)
     {
         parsePicoCScript(scriptFile);

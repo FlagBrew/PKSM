@@ -3,13 +3,15 @@
 
 CXX      ?= g++
 CXXFLAGS := -std=gnu++20 -g -Wall -Wextra -Werror -Og
-INCLUDE  := -I../common/include -I../common/include/gui -I../common/include/utils \
-	-I../core/include -I../external -I../external/qrgen -I../3ds/include
+INCLUDE  := -I../common/include -I../common/include/gui -I../common/include/io \
+	-I../common/include/utils -I../core/include -I../external -I../external/qrgen \
+	-I../3ds/include
 
 BUILD   := build
 
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/CameraFrameTests \
-	$(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
+	$(BUILD)/ConfigurationFileTests $(BUILD)/DirectoryBrowserTests \
+	$(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
 	$(BUILD)/SaveIndexTests $(BUILD)/SaveRecognitionTests $(BUILD)/ScreenStackTests \
 	$(BUILD)/SubsystemsTests \
   $(BUILD)/TransferProtocolTests
@@ -38,6 +40,10 @@ $(BUILD)/quirc_%.o: ../common/source/quirc/%.c | $(BUILD)
 
 $(BUILD)/ConfigurationFileTests: ConfigurationFileTests.cpp \
 		../common/source/ConfigurationFile.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/DirectoryBrowserTests: DirectoryBrowserTests.cpp \
+		../common/source/io/DirectoryBrowser.cpp ../common/source/io/STDirectory.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD)/GpssPageTests: GpssPageTests.cpp ../common/source/GpssPage.cpp \

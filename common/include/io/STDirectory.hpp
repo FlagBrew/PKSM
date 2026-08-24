@@ -27,9 +27,6 @@
 #ifndef STDIRECTORY_HPP
 #define STDIRECTORY_HPP
 
-#include "types.h"
-#include <dirent.h>
-#include <errno.h>
 #include <string>
 #include <vector>
 
@@ -46,7 +43,6 @@ class STDirectory
 public:
     explicit STDirectory(const std::string& root);
 
-    Result error(void);
     std::string item(size_t index);
     bool folder(size_t index);
     bool good(void);
@@ -54,7 +50,6 @@ public:
 
 private:
     std::vector<STDirectoryEntry> mList;
-    Result mError;
     bool mGood;
 };
 

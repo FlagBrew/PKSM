@@ -25,38 +25,30 @@
  */
 
 #include "STDirectory.hpp"
+#include <dirent.h>
 #include <string.h>
 
-STDirectory::STDirectory(const std::string& root) : mError(0), mGood(false)
+STDirectory::STDirectory(const std::string& root) : mGood(false)
 {
     DIR* dir = opendir(root.c_str());
 
     if (dir == NULL)
     {
-        mError = (Result)errno;
-        closedir(dir);
         return;
     }
-    else
+
+    struct dirent* ent;
+    while ((ent = readdir(dir)))
     {
-        struct dirent* ent;
-        while ((ent = readdir(dir)))
+        // Don't insert the implicit . and .. folders because ew
+        if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, ".."))
         {
-            // Don't insert the implicit . and .. folders because ew
-            if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, ".."))
-            {
-                mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);
-            }
+            mList.emplace_back(ent->d_name, ent->d_type == DT_DIR);
         }
     }
 
     closedir(dir);
     mGood = true;
-}
-
-Result STDirectory::error(void)
-{
-    return mError;
 }
 
 bool STDirectory::good(void)

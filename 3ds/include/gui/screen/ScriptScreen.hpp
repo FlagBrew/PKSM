@@ -27,9 +27,9 @@
 #ifndef SCRIPTSCREEN_HPP
 #define SCRIPTSCREEN_HPP
 
+#include "DirectoryBrowser.hpp"
 #include "Hid.hpp"
 #include "Screen.hpp"
-#include "STDirectory.hpp"
 
 #define PICOC_STACKSIZE (32 * 1024)
 
@@ -43,12 +43,11 @@ public:
     void update(touchPosition* touch) override;
 
 private:
-    void updateEntries();
+    // What the list says when it has nothing to list.
+    const std::string& emptyLabel() const;
     void applyScript();
     void parsePicoCScript(std::string& file);
-    std::string currDirString;
-    STDirectory currDir;
-    std::vector<std::pair<std::string, bool>> currFiles;
+    DirectoryBrowser browser;
     Hid<HidDirection::HORIZONTAL, HidDirection::VERTICAL> hid;
     bool sdSearch, cScripts;
 };
