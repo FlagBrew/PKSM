@@ -82,6 +82,8 @@ namespace
                 return {i18n::localize("SAVE_INVALID"), true};
             case Notice::SaveFileInvalid:
                 return {report.detail + '\n' + i18n::localize("SAVE_INVALID")};
+            case Notice::SaveNotASaveFile:
+                return {report.detail + '\n' + i18n::localize("NOT_A_SAVE_FILE")};
             case Notice::SaveWrongSize:
                 return {i18n::localize("WRONG_SIZE"), true};
             case Notice::SaveWrongSizeReport:

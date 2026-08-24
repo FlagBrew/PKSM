@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "Utilisez le script universel \"injector.c\"",
     "WC_LGPE": "Les sauvegardes de LGPE ne stockent pas de CM",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "Ce n'est pas un fichier de sauvegarde. PKSM a besoin de la sauvegarde, pas du jeu.",
     "WRONG_SIZE": "Mauvaise taille pour ce jeu !"
 }

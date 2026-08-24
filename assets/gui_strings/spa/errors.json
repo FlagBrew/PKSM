@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "Utilice el script universal \"injector.c\"",
     "WC_LGPE": "¡Los archivos de guardado de LGPE no guardan las Wonder Card!",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "Esto no es un archivo de guardado. PKSM necesita la partida guardada, no el juego.",
     "WRONG_SIZE": "¡El tamaño no corresponde a este juego!"
 }

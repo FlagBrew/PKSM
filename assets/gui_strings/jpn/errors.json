@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "普遍スクリプト「injector.c」を使用してください",
     "WC_LGPE": "LGPEは不思議なカードを保存できません!",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "セーブファイルではありません。ゲーム本体ではなくセーブデータを選んでください。",
     "WRONG_SIZE": "サイズがゲームに合いません!"
 }

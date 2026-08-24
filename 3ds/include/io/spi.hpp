@@ -90,7 +90,7 @@ typedef enum
     FLASH_512KB_1   = 6,
     FLASH_512KB_2   = 7,
     FLASH_1MB       = 8,
-    FLASH_8MB       = 9, // <- can't restore savegames, and maybe not read them atm
+    FLASH_8MB       = 9, // <- must be unlocked (SPIUnlock) then erase-sector + page-program
     FLASH_STD_DUMMY = 4,
 
     FLASH_512KB_INFRARED = 10,
@@ -114,6 +114,8 @@ Result SPIWriteSaveData(CardType type, u32 offset, void* data, u32 size);
 Result SPIReadSaveData(CardType type, u32 offset, void* data, u32 size);
 
 Result SPIEraseSector(CardType type, u32 offset);
+// Frees the 8MB cart's array for writing. A no-op for every other chip; reads never need it.
+Result SPIUnlock(CardType type);
 
 #ifdef __cplusplus
 }

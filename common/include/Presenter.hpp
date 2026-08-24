@@ -61,8 +61,9 @@ namespace pksm
         SaveBothCmacsInvalid,
         SaveOpenFailed, // code
         SaveInvalid,
-        SaveFileInvalid, // detail: the file name
-        SaveWrongSize,   // code
+        SaveFileInvalid,  // detail: the file name
+        SaveNotASaveFile, // detail: the file name
+        SaveWrongSize,    // code
         SaveWrongSizeReport,
         SaveCommitFailed,  // code
         SecureValueFailed, // code

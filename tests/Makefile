@@ -10,7 +10,8 @@ BUILD   := build
 
 TARGETS := $(BUILD)/BankFileTests $(BUILD)/CameraFrameTests \
 	$(BUILD)/ConfigurationFileTests $(BUILD)/GpssPageTests $(BUILD)/PresenterTests \
-	$(BUILD)/SaveIndexTests $(BUILD)/ScreenStackTests $(BUILD)/SubsystemsTests \
+	$(BUILD)/SaveIndexTests $(BUILD)/SaveRecognitionTests $(BUILD)/ScreenStackTests \
+	$(BUILD)/SubsystemsTests \
   $(BUILD)/TransferProtocolTests
 
 QUIRC_OBJECTS := $(BUILD)/quirc.o $(BUILD)/quirc_decode.o $(BUILD)/quirc_identify.o \
@@ -47,6 +48,10 @@ $(BUILD)/PresenterTests: PresenterTests.cpp ../common/source/Presenter.cpp | $(B
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^ -pthread
 
 $(BUILD)/SaveIndexTests: SaveIndexTests.cpp ../common/source/SaveIndex.cpp | $(BUILD)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+$(BUILD)/SaveRecognitionTests: SaveRecognitionTests.cpp \
+		../core/source/sav/SaveRecognition.cpp | $(BUILD)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
 $(BUILD)/ScreenStackTests: ScreenStackTests.cpp ../common/source/gui/ScreenStack.cpp | $(BUILD)

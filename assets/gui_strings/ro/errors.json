@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "Save-urile LGPE nu țin Wonder Cards!",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "Acesta nu este un fișier de salvare. PKSM are nevoie de salvare, nu de joc.",
     "WRONG_SIZE": "Mărime incorectă pentru acest joc!"
 }

@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "LGPE存档不存储神秘卡片!",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "这不是存档文件。PKSM 需要的是存档，而不是游戏本身。",
     "WRONG_SIZE": "这个游戏的大小错误!"
 }

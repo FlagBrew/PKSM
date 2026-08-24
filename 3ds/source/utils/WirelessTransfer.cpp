@@ -640,12 +640,14 @@ namespace
             Logging::error("WirelessTransfer - Failed to open {} for writing: {}", path, errno);
             return false;
         }
-        size_t written = fwrite(save.rawData().get(), 1, save.getLength(), output);
+        // A save that arrived wrapped in emulator or dumper data is written back whole, so
+        // the file stays loadable by whatever produced it.
+        const size_t length = save.getEntireLengthIncludingFooter();
+        size_t written      = fwrite(save.rawData().get(), 1, length, output);
         fclose(output);
-        if (written != save.getLength())
+        if (written != length)
         {
-            Logging::error(
-                "WirelessTransfer - Wrote {} of {} bytes to {}", written, save.getLength(), path);
+            Logging::error("WirelessTransfer - Wrote {} of {} bytes to {}", written, length, path);
             remove(path.c_str());
             return false;
         }
@@ -831,7 +833,7 @@ bool WirelessTransfer::sendSave()
     }
     metadata.fileName = safeFileName(metadata.fileName);
 
-    size_t payloadSize = TitleLoader::save->getLength();
+    size_t payloadSize = TitleLoader::save->getEntireLengthIncludingFooter();
     nlohmann::json metadataJson;
     metadataJson["titleId"]        = metadata.titleId;
     metadataJson["titleName"]      = metadata.titleName;

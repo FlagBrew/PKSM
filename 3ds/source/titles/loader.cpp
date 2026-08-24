@@ -483,7 +483,10 @@ void TitleLoader::backupSave(const std::string& id)
     {
         Logging::info("TitleLoader::backupSave - Writing backup to: {}", path);
         TitleLoader::save->finishEditing();
-        fwrite(TitleLoader::save->rawData().get(), 1, TitleLoader::save->getLength(), out);
+        // Whatever an emulator or dumper appended to the save is part of the file it
+        // expects to read back, so the backup keeps it.
+        fwrite(TitleLoader::save->rawData().get(), 1,
+            TitleLoader::save->getEntireLengthIncludingFooter(), out);
         fclose(out);
         TitleLoader::save->beginEditing();
         if (Configuration::getInstance().showBackups())
@@ -768,22 +771,27 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
     else
     {
         Logging::debug("TitleLoader::load - Loading from DS game card");
-        u32 cap = SPIGetCapacity(title->SPICardType());
-        if (cap != 524288)
+        static constexpr u32 DS_SAVE_SIZE = 0x80000;
+        const u32 cap                     = SPIGetCapacity(title->SPICardType());
+        Logging::debug("TitleLoader::load - DS card reports a {} byte save chip", cap);
+        // Every Pokemon DS game writes 512KB. A chip that reports more than that is a
+        // reissue or a replacement flash part with room to spare, and the save still sits
+        // at the front of it, so only the part the game uses gets read.
+        if (cap < DS_SAVE_SIZE)
         {
-            Logging::warning("TitleLoader::load - Unexpected DS save size: {} bytes", cap);
+            Logging::warning("TitleLoader::load - DS save chip too small: {} bytes", cap);
             pksm::present::show(pksm::Notice::SaveWrongSizeReport);
             return false;
         }
 
-        std::shared_ptr<u8[]> data = std::shared_ptr<u8[]>(new u8[cap]);
-        u32 sectorSize             = (cap < 0x10000) ? cap : 0x10000;
+        std::shared_ptr<u8[]> data      = std::shared_ptr<u8[]>(new u8[DS_SAVE_SIZE]);
+        static constexpr u32 sectorSize = 0x10000;
 
         Result res = 0;
-        for (u32 i = 0; i < cap / sectorSize; ++i)
+        for (u32 i = 0; i < DS_SAVE_SIZE / sectorSize; ++i)
         {
-            Logging::debug(
-                "TitleLoader::load - Reading DS save sector {} of {}", i + 1, cap / sectorSize);
+            Logging::debug("TitleLoader::load - Reading DS save sector {} of {}", i + 1,
+                DS_SAVE_SIZE / sectorSize);
             res = SPIReadSaveData(
                 title->SPICardType(), sectorSize * i, &data[sectorSize * i], sectorSize);
             if (R_FAILED(res))
@@ -799,7 +807,7 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title)
             return false;
         }
 
-        save = pksm::Sav::getSave(data, cap);
+        save = pksm::Sav::getSave(data, DS_SAVE_SIZE);
         if (!save)
         {
             Logging::error("TitleLoader::load - Invalid DS save format");
@@ -832,10 +840,14 @@ bool TitleLoader::load(const std::shared_ptr<Title>& title, const std::string& s
         fseek(in, 0, SEEK_END);
         size = ftell(in);
         rewind(in);
-        if (size > 0x200000) // Sane limit for save size as of SWSH 1.1.0
+        // Bigger than any save PKSM can read, so whatever was picked, it is not one. The
+        // limit is a round number above the largest supported save (SWSH 1.1.0), which
+        // leaves room for the trailing data emulators and dumpers append.
+        static constexpr u32 LARGEST_SAVE = 0x200000;
+        if (size > LARGEST_SAVE)
         {
-            Logging::error("TitleLoader::load - Save file too large: {} bytes", size);
-            pksm::present::show(pksm::Notice::SaveWrongSize, size);
+            Logging::error("TitleLoader::load - File too large to be a save: {} bytes", size);
+            pksm::present::show(pksm::Notice::SaveNotASaveFile, 0, savePath);
             loadedTitle  = nullptr;
             saveFileName = "";
             fclose(in);
@@ -935,7 +947,7 @@ void TitleLoader::saveToTitle(bool ask)
                 if (out)
                 {
                     Logging::debug("TitleLoader::saveToTitle - Writing save to CTR card");
-                    out->write(save->rawData().get(), save->getLength());
+                    out->write(save->rawData().get(), save->getEntireLengthIncludingFooter());
                     if (R_FAILED(res = archive.commit()))
                     {
                         Logging::error(
@@ -960,12 +972,27 @@ void TitleLoader::saveToTitle(bool ask)
             else
             {
                 Logging::debug("TitleLoader::saveToTitle - Writing save to DS card");
-                res          = 0;
-                u32 pageSize = SPIGetPageSize(title->SPICardType());
+                res                        = 0;
+                const CardType spiCardType = title->SPICardType();
+                const u32 pageSize         = SPIGetPageSize(spiCardType);
+                // A cart with no SPI chip reports no page size, and the loop below divides by it.
+                if (pageSize == 0)
+                {
+                    Logging::error("TitleLoader::saveToTitle - DS card reports no page size");
+                    pksm::present::show(pksm::Notice::SaveWrongSizeReport);
+                    return;
+                }
+                // The 8MB flash cart ships write-protected. Detection already unlocks it, but a
+                // restore is never worth gating on that having happened: the frames are short and
+                // repeating them costs nothing.
+                if (spiCardType == FLASH_8MB)
+                {
+                    SPIUnlock(spiCardType);
+                }
                 for (u32 i = 0; i < save->getLength() / pageSize; ++i)
                 {
-                    res = SPIWriteSaveData(title->SPICardType(), pageSize * i,
-                        &save->rawData()[pageSize * i], pageSize);
+                    res = SPIWriteSaveData(
+                        spiCardType, pageSize * i, &save->rawData()[pageSize * i], pageSize);
                     if (R_FAILED(res))
                     {
                         Logging::error(
@@ -1228,7 +1255,8 @@ void TitleLoader::saveToTitle(bool ask)
                             {
                                 Logging::debug(
                                     "TitleLoader::saveToTitle - Writing standard save file");
-                                out->write(save->rawData().get(), save->getLength());
+                                out->write(
+                                    save->rawData().get(), save->getEntireLengthIncludingFooter());
                             }
                             if (!title->gba() && R_FAILED(res = archive.commit()))
                             {
@@ -1309,7 +1337,7 @@ void TitleLoader::saveChanges()
         FILE* out = fopen(saveFileName.c_str(), "wb");
         if (out)
         {
-            fwrite(save->rawData().get(), 1, save->getLength(), out);
+            fwrite(save->rawData().get(), 1, save->getEntireLengthIncludingFooter(), out);
             fclose(out);
             Logging::info("TitleLoader::saveChanges - Successfully saved to file");
         }
@@ -1431,15 +1459,25 @@ bool TitleLoader::scanCard()
             if (title->load(0, MEDIATYPE_GAME_CARD, cardType))
             {
                 Logging::debug("TitleLoader::scanCard - Successfully loaded DS title info");
-                ret                            = true;
-                CardType spiCardType           = title->SPICardType();
-                u32 saveSize                   = SPIGetCapacity(spiCardType);
-                u32 sectorSize                 = (saveSize < 0x10000) ? saveSize : 0x10000;
-                std::shared_ptr<u8[]> saveFile = std::shared_ptr<u8[]>(new u8[saveSize]);
+                ret                  = true;
+                CardType spiCardType = title->SPICardType();
+                // The Pokemon DS games all write 512KB. Reading the chip's own reported
+                // capacity instead would hand a short buffer to a check that looks near
+                // the end of a 512KB save, so the size the games use is what gets read.
+                static constexpr u32 saveSize   = 0x80000;
+                static constexpr u32 sectorSize = 0x10000;
+                const u32 capacity              = SPIGetCapacity(spiCardType);
+                std::shared_ptr<u8[]> saveFile  = std::shared_ptr<u8[]>(new u8[saveSize]());
 
                 Logging::debug(
-                    "TitleLoader::scanCard - Reading DS save of size: {} bytes", saveSize);
-                for (u32 i = 0; i < saveSize / sectorSize; ++i)
+                    "TitleLoader::scanCard - DS card reports a {} byte save chip", capacity);
+                const bool bigEnough = capacity >= saveSize;
+                if (!bigEnough)
+                {
+                    Logging::warning(
+                        "TitleLoader::scanCard - DS save chip too small for a Pokemon save");
+                }
+                for (u32 i = 0; bigEnough && i < saveSize / sectorSize; ++i)
                 {
                     res = SPIReadSaveData(
                         spiCardType, sectorSize * i, &saveFile[sectorSize * i], sectorSize);
@@ -1451,7 +1489,7 @@ bool TitleLoader::scanCard()
                     }
                 }
 
-                if (R_SUCCEEDED(res) && pksm::Sav::isValidDSSave(saveFile))
+                if (bigEnough && R_SUCCEEDED(res) && pksm::Sav::isValidDSSave(saveFile, saveSize))
                 {
                     Logging::info("TitleLoader::scanCard - Found valid DS Pokémon save");
                     cardTitle = std::move(title);

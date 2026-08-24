@@ -86,5 +86,6 @@
     "USE_INJECTOR_C": "Benutze das universal skript \"injector.c\"",
     "WC_LGPE": "LGPE Speicherstände speichern keine Wunderkarten!",
     "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
+    "NOT_A_SAVE_FILE": "Das ist keine Speicherdatei. PKSM braucht den Spielstand, nicht das Spiel selbst.",
     "WRONG_SIZE": "Falsche Größe für dieses Spiel!"
 }
