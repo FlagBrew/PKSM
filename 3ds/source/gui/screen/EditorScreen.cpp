@@ -100,6 +100,7 @@ EditorScreen::EditorScreen(std::unique_ptr<pksm::PKX> pokemon, int box, int inde
             pkm->TID(TitleLoader::save->TID());
             pkm->SID(TitleLoader::save->SID());
             pkm->otName(TitleLoader::save->otName());
+            pkm->otNameTrash(TitleLoader::save->otNameTrash());
             pkm->otGender(TitleLoader::save->gender());
             pkm->version(TitleLoader::save->version());
             switch (pkm->version())
@@ -947,6 +948,7 @@ bool EditorScreen::setSaveInfo()
     if (TitleLoader::save)
     {
         pkm->otName(TitleLoader::save->otName());
+        pkm->otNameTrash(TitleLoader::save->otNameTrash());
         pkm->TID(TitleLoader::save->TID());
         pkm->SID(TitleLoader::save->SID());
         pkm->otGender(TitleLoader::save->gender());

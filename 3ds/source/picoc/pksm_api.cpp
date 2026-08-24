@@ -1035,6 +1035,7 @@ void pkx_generate(
         pkm->TID(TitleLoader::save->TID());
         pkm->SID(TitleLoader::save->SID());
         pkm->otName(TitleLoader::save->otName());
+        pkm->otNameTrash(TitleLoader::save->otNameTrash());
         pkm->otGender(TitleLoader::save->gender());
         pkm->version(TitleLoader::save->version());
         switch (pkm->version())
