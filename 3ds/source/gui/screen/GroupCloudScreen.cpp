@@ -38,6 +38,7 @@
 #include "io.hpp"
 #include "loader.hpp"
 #include "nlohmann/json.hpp"
+#include "PkmSummary.hpp"
 #include "pkx/PK7.hpp"
 #include "pkx/PKFilter.hpp"
 #include "QRScanner.hpp"
@@ -46,7 +47,6 @@
 #include "utils/format.hpp"
 #include "website.h"
 #include <algorithm>
-#include <format>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)
     : GpssScreen(i18n::localize("A_PICKUP") + '\n' + i18n::localize("X_SHARE") + '\n' +
@@ -246,14 +246,6 @@ void GroupCloudScreen::drawTop() const
         y += 30;
     }
 
-    Gui::sprite(ui_sheet_stripe_separator_idx, 274, 97);
-    Gui::sprite(ui_sheet_stripe_separator_idx, 274, 137);
-    Gui::sprite(ui_sheet_stripe_separator_idx, 274, 177);
-    Gui::sprite(ui_sheet_point_big_idx, 265, 66);
-    Gui::sprite(ui_sheet_point_big_idx, 265, 103);
-    Gui::sprite(ui_sheet_point_big_idx, 265, 146);
-    Gui::sprite(ui_sheet_point_big_idx, 265, 186);
-
     if (cloudChosen)
     {
         if (cursorIndex == 0)
@@ -289,73 +281,7 @@ void GroupCloudScreen::drawTop() const
         }
     }
 
-    if (infoMon)
-    {
-        Gui::text(
-            infoMon->nickname(), 276, 61, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        std::string info = "#" + std::to_string(size_t(infoMon->species()));
-        Gui::text(info, 273, 77, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info      = i18n::localize("LV") + std::to_string(infoMon->level());
-        auto text = Gui::parseText(info, FONT_SIZE_12, 0.0f);
-        int width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(text, 375 - width, 77, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT,
-            TextPosY::TOP);
-        switch (infoMon->gender())
-        {
-            case pksm::Gender::Male:
-                Gui::sprite(ui_sheet_icon_male_idx, 362 - width, 80);
-                break;
-            case pksm::Gender::Female:
-                Gui::sprite(ui_sheet_icon_female_idx, 364 - width, 80);
-                break;
-            case pksm::Gender::Genderless:
-                Gui::sprite(ui_sheet_icon_genderless_idx, 364 - width, 80);
-                break;
-            case pksm::Gender::INVALID:
-                break;
-        }
-        if (infoMon->shiny())
-        {
-            Gui::sprite(ui_sheet_icon_shiny_idx, 352 - width, 81);
-        }
-
-        Gui::text(infoMon->species().localize(Configuration::getInstance().language()), 276, 98,
-            FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        pksm::Type firstType  = infoMon->type1();
-        pksm::Type secondType = infoMon->type2();
-        if (firstType != secondType)
-        {
-            Gui::type(Configuration::getInstance().language(), firstType, 276, 115);
-            Gui::type(Configuration::getInstance().language(), secondType, 325, 115);
-        }
-        else
-        {
-            Gui::type(Configuration::getInstance().language(), firstType, 300, 115);
-        }
-
-        info = infoMon->otName() + '\n' + i18n::localize("LOADER_ID") +
-               std::to_string(infoMon->versionTID());
-        Gui::text(info, 276, 141, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-
-        Gui::text(infoMon->generation() >= pksm::Generation::THREE
-                      ? infoMon->nature().localize(Configuration::getInstance().language())
-                      : "—",
-            276, 181, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info  = i18n::localize("IV") + ": ";
-        text  = Gui::parseText(info, FONT_SIZE_12, 0.0f);
-        width = text->maxWidth(FONT_SIZE_12);
-        Gui::text(
-            text, 276, 197, FONT_SIZE_12, FONT_SIZE_12, COLOR_BLACK, TextPosX::LEFT, TextPosY::TOP);
-        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::HP),
-            infoMon->iv(pksm::Stat::ATK), infoMon->iv(pksm::Stat::DEF));
-        Gui::text(info, 276 + width + 70 / 2, 197, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-            TextPosY::TOP);
-        info = std::format("{:2d}/{:2d}/{:2d}", infoMon->iv(pksm::Stat::SPATK),
-            infoMon->iv(pksm::Stat::SPDEF), infoMon->iv(pksm::Stat::SPD));
-        Gui::text(info, 276 + width + 70 / 2, 209, FONT_SIZE_12, COLOR_BLACK, TextPosX::CENTER,
-            TextPosY::TOP);
-        Gui::format(*infoMon, 276, 213);
-    }
+    PkmSummary::draw(infoMon.get());
 }
 
 void GroupCloudScreen::update(touchPosition* touch)
