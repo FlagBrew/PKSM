@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "Trovato aggiornamento, non è stato possibile scaricarlo.",
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "I salvataggi di LGPE non memorizzano Doni Segreti!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "Dimensione sbagliata per questo salvataggio!"
 }

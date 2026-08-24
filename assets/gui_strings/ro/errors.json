@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "Update găsit, dar nu a fost downloadat.",
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "Save-urile LGPE nu țin Wonder Cards!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "Mărime incorectă pentru acest joc!"
 }

@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "Update found, but could not download.",
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "레츠고 피카츄/이브이에서는 원더 카드를 저장하지 않습니다!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "세이브파일의 크기가 해당 게임에 호환되지 않습니다!"
 }

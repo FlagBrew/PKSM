@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "更新发现，但无法下载。",
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "LGPE存档不存储神秘卡片!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "这个游戏的大小错误!"
 }

@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "MAJ trouvé, mais le téléchargement a échoué.",
     "USE_INJECTOR_C": "Utilisez le script universel \"injector.c\"",
     "WC_LGPE": "Les sauvegardes de LGPE ne stockent pas de CM",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "Mauvaise taille pour ce jeu !"
 }

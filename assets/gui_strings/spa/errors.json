@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "Actualización encontrada, pero no se pudo descargar.",
     "USE_INJECTOR_C": "Utilice el script universal \"injector.c\"",
     "WC_LGPE": "¡Los archivos de guardado de LGPE no guardan las Wonder Card!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "¡El tamaño no corresponde a este juego!"
 }

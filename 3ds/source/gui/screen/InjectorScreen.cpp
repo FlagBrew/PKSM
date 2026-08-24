@@ -33,6 +33,7 @@
 #include "nlohmann/json.hpp"
 #include "ScreenStack.hpp"
 #include "ToggleButton.hpp"
+#include "utils/format.hpp"
 #include "wcx/WC6.hpp"
 #include "wcx/WC7.hpp"
 #include <format>
@@ -72,8 +73,8 @@ InjectorScreen::InjectorScreen(nlohmann::json myIds)
             gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
         }
     }
-    emptySlot =
-        currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
+    giftListFull = currentCards == TitleLoader::save->maxWondercards();
+    emptySlot    = giftListFull ? currentCards - 1 : currentCards;
 
     const std::string& langString = i18n::langString(Configuration::getInstance().language());
     if (ids->find(langString) != ids->end())
@@ -113,8 +114,8 @@ InjectorScreen::InjectorScreen(std::unique_ptr<pksm::WCX> wcx)
             gifts.emplace_back(gift->title(), "", -1, -1, pksm::Gender::Genderless);
         }
     }
-    emptySlot =
-        currentCards == TitleLoader::save->maxWondercards() ? currentCards - 1 : currentCards;
+    giftListFull = currentCards == TitleLoader::save->maxWondercards();
+    emptySlot    = giftListFull ? currentCards - 1 : currentCards;
 
     lang = pksm::Language::UNUSED;
 
@@ -552,6 +553,12 @@ void InjectorScreen::update(touchPosition* touch)
             if (overwriteCard)
             {
                 tmpSlot = slot - 1;
+            }
+            else if (giftListFull &&
+                     !Gui::showChoiceMessage(pksm::format(i18n::localize("WC_LIST_FULL"),
+                         TitleLoader::save->maxWondercards(), tmpSlot + 1)))
+            {
+                return;
             }
             TitleLoader::save->mysteryGift(*wondercard, tmpSlot);
             if (adaptLanguage && getSafeLanguage(TitleLoader::save->generation(), lang) == lang)

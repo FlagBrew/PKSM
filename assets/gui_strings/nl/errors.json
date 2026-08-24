@@ -85,5 +85,6 @@
     "UPDATE_FOUND_BUT_FAILED_DOWNLOAD": "Update gevonden, maar kon niet downloaden.",
     "USE_INJECTOR_C": "Use the universal script \"injector.c\"",
     "WC_LGPE": "LGPE saves bewaren geen Wonder Cards!",
+    "WC_LIST_FULL": "All {:d} Wonder Card slots are full.\nInject over slot {:d}?",
     "WRONG_SIZE": "Verkeerde grote voor dit spel!"
 }

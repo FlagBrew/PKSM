@@ -69,6 +69,8 @@ private:
     std::vector<MysteryGift::giftData> gifts;
     int emptySlot;
     int slot;
+    // The save is out of free Wonder Card slots, so injecting overwrites one
+    bool giftListFull = false;
     // For multi-item injects
     int item            = 0;
     pksm::Language lang = pksm::Language::JPN;
