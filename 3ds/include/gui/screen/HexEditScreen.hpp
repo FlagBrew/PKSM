@@ -182,6 +182,7 @@ private:
 
     std::pair<const std::string*, SecurityLevel> describe(int i) const;
     bool toggleBit(int selected, int offset);
+    bool setStatusValue(int selected, u8 value);
     bool editNumber(bool high, bool up);
     bool checkValue(void);
     void drawMeaning(void) const;
