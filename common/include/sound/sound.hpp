@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,18 +28,16 @@
 #define SOUND_HPP
 
 #include "types.h"
-#include <string>
 
+// Background music. Songs come from /3ds/PKSM/songs; everything about decoding,
+// buffering and the audio hardware lives behind these three calls.
 namespace Sound
 {
     Result init(void);
-    void registerEffect(const std::string& effectName, const std::string& fileName);
-    void exit(void);
 
     void start(void);
-    void stop(void);
 
-    void playEffect(const std::string& effectName);
+    void exit(void);
 }
 
 #endif

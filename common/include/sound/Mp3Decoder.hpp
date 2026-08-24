@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2022 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,48 +23,48 @@
  *         or requiring that modified versions of such material be marked in
  *         reasonable ways as different from the original version.
  */
-#define DR_WAV_IMPLEMENTATION
-#include "wav.hpp"
 
-WavDecoder::WavDecoder(const std::string& filename)
+#ifndef MP3DECODER_HPP
+#define MP3DECODER_HPP
+
+#include "types.h"
+#include <memory>
+#include <mpg123.h>
+#include <string>
+
+// One open MP3 stream. Sound is the only caller: it opens a song, asks for its
+// format once, then pulls PCM until the stream runs dry.
+class Mp3Decoder
 {
-    pWav        = drwav_open_file(filename.c_str());
-    wavprogress = 0;
-    if (pWav == NULL)
-        return;
+public:
+    // mpg123 wants one process-wide setup and teardown
+    static bool initLibrary();
+    static void exitLibrary();
 
-    initialized = true;
-}
+    // nullptr when the file is not a playable MP3
+    static std::unique_ptr<Mp3Decoder> open(const std::string& fileName);
 
-WavDecoder::~WavDecoder(void)
-{
-    drwav_close(pWav);
-    initialized = false;
-}
+    ~Mp3Decoder();
 
-uint32_t WavDecoder::pos(void)
-{
-    return wavprogress;
-}
+    Mp3Decoder(const Mp3Decoder&)            = delete;
+    Mp3Decoder& operator=(const Mp3Decoder&) = delete;
 
-uint32_t WavDecoder::length(void)
-{
-    return pWav->totalSampleCount;
-}
+    // Number of PCM samples written; 0 once the stream is over
+    u32 decode(void* buffer, size_t bufferSize);
 
-uint32_t WavDecoder::decode(void* buffer, size_t bufferSize)
-{
-    uint64_t out = drwav_read_s16(pWav, bufferSize, reinterpret_cast<drwav_int16*>(buffer));
-    wavprogress += out;
-    return out;
-}
+    bool stereo() const { return channels > 1; }
 
-bool WavDecoder::stereo(void)
-{
-    return pWav->channels - 1;
-}
+    u32 sampleRate() const { return rate; }
 
-uint32_t WavDecoder::sampleRate(void)
-{
-    return pWav->sampleRate;
-}
+private:
+    Mp3Decoder(mpg123_handle* handle, long sampleRate, int channelCount)
+        : mh(handle), rate(sampleRate), channels(channelCount)
+    {
+    }
+
+    mpg123_handle* mh;
+    long rate;
+    int channels;
+};
+
+#endif

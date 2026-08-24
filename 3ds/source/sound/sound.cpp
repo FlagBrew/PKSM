@@ -1,6 +1,6 @@
 /*
  *   This file is part of PKSM
- *   Copyright (C) 2016-2025 Bernardo Giordano, Admiral Fish, piepie62
+ *   Copyright (C) 2016-2026 Bernardo Giordano, Admiral Fish, piepie62
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,8 +26,7 @@
 
 #include "sound.hpp"
 #include "Configuration.hpp"
-#include "Decoder.hpp"
-#include "io.hpp"
+#include "Mp3Decoder.hpp"
 #include "random.hpp"
 #include "STDirectory.hpp"
 #include "thread.hpp"
@@ -35,28 +34,31 @@
 #include <3ds.h>
 #include <array>
 #include <atomic>
-#include <unordered_map>
+#include <string>
+#include <vector>
 
 namespace
 {
-    // Size of a single wave buffer's memory in bytes
-    constexpr size_t BUFFER_SIZE         = 32 * 1024;
-    constexpr size_t NUM_CHANNELS        = 24;
-    constexpr size_t BUFFERS_PER_CHANNEL = 2;
-    s16* bufferMem                       = nullptr;
-    std::array<ndspWaveBuf, NUM_CHANNELS * BUFFERS_PER_CHANNEL> buffers;
-    std::array<std::unique_ptr<Decoder>, NUM_CHANNELS> decoders;
-    // 0 is reserved for the background music
-    std::atomic_flag occupiedChannels[NUM_CHANNELS];
+    constexpr const char* SONG_DIR = "/3ds/PKSM/songs";
+
+    // The background music is the only thing PKSM plays, so it owns the one NDSP
+    // channel and the two wave buffers that feed it
+    constexpr int BGM_CHANNEL    = 0;
+    constexpr size_t BUFFER_SIZE = 32 * 1024;
+    constexpr size_t NUM_BUFFERS = 2;
+
+    s16* bufferMem = nullptr;
+    std::array<ndspWaveBuf, NUM_BUFFERS> buffers;
+    std::unique_ptr<Mp3Decoder> decoder;
     LightEvent frameEvent;
 
-    std::unordered_map<std::string, std::string> effects; // effect name to file name
     std::vector<std::string> bgm;
-    size_t currentSong         = 0;
+    size_t currentSong = 0;
+    // Only set once init has claimed NDSP and the buffers; without songs there is
+    // nothing to start or tear down
+    bool ready                 = false;
     std::atomic<bool> playing  = false;
     std::atomic<bool> finished = true;
-    // Written by soundThread, read by the main thread in playEffect
-    std::atomic<u8> currentVolume = 0;
 
     void ndspFrameCallback(void*)
     {
@@ -69,64 +71,39 @@ namespace
         LightEvent_Signal(&frameEvent);
     }
 
-    void fillBuffers(int channel, std::unique_ptr<Decoder>& decoder)
+    void fillBuffers()
     {
-        for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
-            buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
+        for (auto& buffer : buffers)
         {
-            if (buffers[buffer].status == NDSP_WBUF_DONE)
+            if (buffer.status == NDSP_WBUF_DONE)
             {
-                // Decode data into the done buffer
-                buffers[buffer].nsamples =
-                    decoder->decode((void*)buffers[buffer].data_pcm16, BUFFER_SIZE);
+                buffer.nsamples = decoder->decode((void*)buffer.data_pcm16, BUFFER_SIZE);
                 // Correct size for stereo mode
                 if (decoder->stereo())
                 {
-                    buffers[buffer].nsamples /= 2;
+                    buffer.nsamples /= 2;
                 }
                 // Flush data if we actually decoded anything
-                if (buffers[buffer].nsamples > 0)
+                if (buffer.nsamples > 0)
                 {
-                    DSP_FlushDataCache(buffers[buffer].data_pcm16, BUFFER_SIZE);
-                    ndspChnWaveBufAdd(channel, &buffers[buffer]);
+                    DSP_FlushDataCache(buffer.data_pcm16, BUFFER_SIZE);
+                    ndspChnWaveBufAdd(BGM_CHANNEL, &buffer);
                 }
-                // Otherwise, we're done! Make sure to break to not use the now-null decoder
+                // Otherwise the song is over: drop the decoder and stop touching it
                 else
                 {
-                    buffers[buffer].status = NDSP_WBUF_DONE;
-                    decoder                = nullptr;
+                    buffer.status = NDSP_WBUF_DONE;
+                    decoder       = nullptr;
                     break;
                 }
             }
         }
     }
 
-    void setDecoder(int channel, std::unique_ptr<Decoder> decoder)
+    // Picks the next playable song, dropping entries that stopped decoding
+    std::unique_ptr<Mp3Decoder> nextSong()
     {
-        if (decoder)
-        {
-            ndspChnReset(channel);
-            ndspChnSetInterp(
-                channel, decoder->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
-            ndspChnSetRate(channel, decoder->sampleRate());
-            ndspChnSetFormat(
-                channel, decoder->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
-
-            // Set all channels into the done state to be decoded into
-            for (size_t buffer = channel * BUFFERS_PER_CHANNEL;
-                buffer < (channel + 1) * BUFFERS_PER_CHANNEL; buffer++)
-            {
-                buffers[buffer].status = NDSP_WBUF_DONE;
-            }
-
-            fillBuffers(channel, decoder);
-            decoders[channel] = std::move(decoder);
-        }
-    }
-
-    std::unique_ptr<Decoder> getNextBgm()
-    {
-        std::unique_ptr<Decoder> ret = nullptr;
+        std::unique_ptr<Mp3Decoder> ret = nullptr;
         while (!ret && !bgm.empty())
         {
             if (Configuration::getInstance().randomMusic())
@@ -137,8 +114,8 @@ namespace
             {
                 currentSong = (currentSong + 1) % bgm.size();
             }
-            ret = Decoder::get(bgm[currentSong]);
-            if (!(ret && ret->good()))
+            ret = Mp3Decoder::open(bgm[currentSong]);
+            if (!ret)
             {
                 bgm.erase(bgm.begin() + currentSong);
             }
@@ -146,76 +123,93 @@ namespace
         return ret;
     }
 
+    void playSong(std::unique_ptr<Mp3Decoder> song)
+    {
+        if (!song)
+        {
+            return;
+        }
+
+        ndspChnReset(BGM_CHANNEL);
+        ndspChnSetInterp(BGM_CHANNEL, song->stereo() ? NDSP_INTERP_POLYPHASE : NDSP_INTERP_LINEAR);
+        ndspChnSetRate(BGM_CHANNEL, song->sampleRate());
+        ndspChnSetFormat(
+            BGM_CHANNEL, song->stereo() ? NDSP_FORMAT_STEREO_PCM16 : NDSP_FORMAT_MONO_PCM16);
+
+        // Set both buffers into the done state to be decoded into
+        for (auto& buffer : buffers)
+        {
+            buffer.status = NDSP_WBUF_DONE;
+        }
+
+        decoder = std::move(song);
+        fillBuffers();
+    }
+
     void soundThread()
     {
         finished = false;
         while (playing)
         {
-            // Get volume for later usage
             u8 volume = 0;
             HIDUSER_GetSoundVolume(&volume);
-            currentVolume = volume;
-            // Explicitly do the BGM channel with its special handling:
-            // Replace the song if the volume slider is pushed all the way down and we haven't
-            // already replaced it or the decoder is gone and the channel is done or paused
-            bool replaceBGM = (volume == 0 && bgm.size() > 1 && !ndspChnIsPaused(0)) ||
-                              (!decoders[0] && (!ndspChnIsPlaying(0) || ndspChnIsPaused(0)));
-            // If the decoder still exists and we're not about to replace it, fill the buffers
-            if (!replaceBGM && decoders[0])
+
+            // Replace the song if the volume slider is pushed all the way down and we
+            // haven't already replaced it, or the decoder is gone and the channel is
+            // done or paused
+            bool replaceSong =
+                (volume == 0 && bgm.size() > 1 && !ndspChnIsPaused(BGM_CHANNEL)) ||
+                (!decoder && (!ndspChnIsPlaying(BGM_CHANNEL) || ndspChnIsPaused(BGM_CHANNEL)));
+            if (!replaceSong && decoder)
             {
-                fillBuffers(0, decoders[0]);
+                fillBuffers();
             }
-            // Otherwise, if there's anything to replace it with, then do so
             else if (!bgm.empty())
             {
-                setDecoder(0, getNextBgm());
+                playSong(nextSong());
             }
 
             // Pause the song if the volume slider is all the way down
-            if (volume == 0)
-            {
-                ndspChnSetPaused(0, true);
-            }
-            else
-            {
-                ndspChnSetPaused(0, false);
-            }
-
-            // And fill all the other buffers
-            for (size_t channel = 1; channel < NUM_CHANNELS; channel++)
-            {
-                // If the decoder still exists, fill the buffers
-                if (decoders[channel])
-                {
-                    fillBuffers(channel, decoders[channel]);
-                }
-                // Otherwise, once it's done playing, add the channel back into the pool
-                else if (!ndspChnIsPlaying(channel))
-                {
-                    occupiedChannels[channel].clear();
-                }
-            }
+            ndspChnSetPaused(BGM_CHANNEL, volume == 0);
 
             LightEvent_Wait(&frameEvent);
         }
         finished = true;
     }
+
+    void stopThread()
+    {
+        if (playing)
+        {
+            playing = false;
+            // Signal and wait for sound thread to end
+            LightEvent_Signal(&frameEvent);
+            while (!finished)
+            {
+                svcSleepThread(125000000);
+            }
+            ndspChnReset(BGM_CHANNEL);
+        }
+    }
 }
 
 Result Sound::init()
 {
-    STDirectory dir("/3ds/PKSM/songs");
+    if (!Mp3Decoder::initLibrary())
+    {
+        return -1;
+    }
+    Logging::startupLog("sound", "decoder init ok");
+
+    STDirectory dir(SONG_DIR);
     if (dir.good())
     {
         for (size_t i = 0; i < dir.count(); i++)
         {
-            if (!dir.folder(i))
+            std::string path = std::string(SONG_DIR) + "/" + dir.item(i);
+            if (!dir.folder(i) && Mp3Decoder::open(path))
             {
-                auto decoder = Decoder::get("/3ds/PKSM/songs/" + dir.item(i));
-                if (decoder && decoder->good())
-                {
-                    bgm.push_back("/3ds/PKSM/songs/" + dir.item(i));
-                }
+                bgm.push_back(path);
             }
         }
     }
@@ -223,116 +217,64 @@ Result Sound::init()
     if (bgm.empty())
     {
         Logging::startupLog("sound", "no bgm found");
+        Mp3Decoder::exitLibrary();
         return 0;
     }
-    else
-    {
-        Logging::startupLog("sound", "loaded {} songs", bgm.size());
-    }
-
-    if (!Decoder::init())
-    {
-        return -1;
-    }
-    Logging::startupLog("sound", "decoder init ok");
+    Logging::startupLog("sound", "loaded {} songs", bgm.size());
 
     LightEvent_Init(&frameEvent, RESET_ONESHOT);
-    Logging::startupLog("sound", "frameEvent init ok");
 
     Result res = ndspInit();
-    ndspSetCallback(ndspFrameCallback, nullptr);
     if (R_FAILED(res))
     {
+        Mp3Decoder::exitLibrary();
         return res;
     }
+    ndspSetCallback(ndspFrameCallback, nullptr);
     Logging::startupLog("sound", "ndsp init ok");
 
-    bufferMem = (s16*)linearAlloc(BUFFER_SIZE * BUFFERS_PER_CHANNEL * NUM_CHANNELS);
+    bufferMem = (s16*)linearAlloc(BUFFER_SIZE * NUM_BUFFERS);
     if (!bufferMem)
     {
+        ndspExit();
+        Mp3Decoder::exitLibrary();
         return -1;
     }
-    Logging::startupLog("sound", "bufferMem alloc ok");
 
-    for (size_t buffer = 0; buffer < NUM_CHANNELS * BUFFERS_PER_CHANNEL; buffer++)
+    for (size_t buffer = 0; buffer < NUM_BUFFERS; buffer++)
     {
         buffers[buffer].data_pcm16 = bufferMem + buffer * BUFFER_SIZE / sizeof(s16);
         buffers[buffer].status     = NDSP_WBUF_DONE;
         buffers[buffer].nsamples   = 0;
     }
     ndspSetOutputMode(NDSP_OUTPUT_STEREO);
+    ready = true;
     Logging::startupLog("sound", "init ok");
 
     return 0;
 }
 
-void Sound::registerEffect(const std::string& effectName, const std::string& fileName)
-{
-    if (io::exists(fileName))
-    {
-        auto dec = Decoder::get(fileName);
-        if (dec && dec->good())
-        {
-            effects.emplace(effectName, fileName);
-        }
-    }
-}
-
-void Sound::exit()
-{
-    stop();
-    if (bufferMem != nullptr)
-    {
-        linearFree(bufferMem);
-    }
-    ndspExit();
-    Decoder::exit();
-}
-
 void Sound::start()
 {
+    if (!ready)
+    {
+        return;
+    }
     playing = true;
     Threads::background(16 * 1024, soundThread);
 }
 
-void Sound::stop()
+void Sound::exit()
 {
-    if (playing)
+    if (!ready)
     {
-        playing = false;
-        // Signal and wait for sound thread to end
-        LightEvent_Signal(&frameEvent);
-        while (!finished)
-        {
-            svcSleepThread(125000000);
-        }
-        for (size_t i = 0; i < NUM_CHANNELS; i++)
-        {
-            ndspChnReset(i);
-        }
+        return;
     }
-}
-
-void Sound::playEffect(const std::string& effectName)
-{
-    if (currentVolume > 0)
-    {
-        auto effect = effects.find(effectName);
-        if (effect != effects.end())
-        {
-            auto decoder = Decoder::get(effect->second);
-            if (decoder && decoder->good())
-            {
-                // First channel is reserved for BGM
-                for (size_t channel = 1; channel < NUM_CHANNELS; channel++)
-                {
-                    if (!occupiedChannels[channel].test_and_set())
-                    {
-                        setDecoder(channel, std::move(decoder));
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    stopThread();
+    decoder = nullptr;
+    linearFree(bufferMem);
+    bufferMem = nullptr;
+    ndspExit();
+    Mp3Decoder::exitLibrary();
+    ready = false;
 }

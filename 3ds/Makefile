@@ -63,7 +63,6 @@ FORMATSOURCES	:=	../common/source \
 					../common/source/picoc \
 					../common/source/picoc/cstdlib \
 					../common/source/sound \
-					../common/source/sound/decoder \
 					../common/source/utils \
 					source \
 					source/gui \
@@ -92,7 +91,6 @@ FORMATINCLUDES	:=	../common/include \
 					../common/include/gui \
 					../common/include/io \
 					../common/include/sound \
-					../common/include/sound/decoder \
 					../common/include/utils \
 					include \
 					include/gui \
