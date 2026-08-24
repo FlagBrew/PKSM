@@ -24,8 +24,8 @@
  *         reasonable ways as different from the original version.
  */
 
-#include "BankChoice.hpp"
 #include "banks.hpp"
+#include "BankSelectionScreen.hpp"
 #include "base64.hpp"
 #include "BoxChoice.hpp"
 #include "BZ2.hpp"
@@ -699,7 +699,7 @@ void bank_get_size(
 void bank_select(
     struct ParseState* Parser, struct Value* ReturnValue, struct Value** Param, int NumArgs)
 {
-    BankChoice screen;
+    BankSelectionScreen screen;
     Gui::runScreen(screen);
 }
 

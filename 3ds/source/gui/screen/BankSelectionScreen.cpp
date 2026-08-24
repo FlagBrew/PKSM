@@ -28,13 +28,12 @@
 #include "banks.hpp"
 #include "Configuration.hpp"
 #include "gui.hpp"
-#include "i18n_ext.hpp"
 #include "ScreenStack.hpp"
 #include "utils/format.hpp"
 #include <algorithm>
 
-BankSelectionScreen::BankSelectionScreen(int& storageBox)
-    : hid(20, 2), strings(Banks::bankNames()), storageBox(storageBox)
+BankSelectionScreen::BankSelectionScreen()
+    : RunnableScreen(nullptr), hid(20, 2), strings(Banks::bankNames())
 {
     int newBankNum = 0;
     while (std::find_if(strings.begin(), strings.end(),
@@ -48,6 +47,24 @@ BankSelectionScreen::BankSelectionScreen(int& storageBox)
     hid.select(std::distance(strings.begin(),
         std::find_if(strings.begin(), strings.end(),
             [](const std::pair<std::string, int>& v) { return v.first == Banks::bank->name(); })));
+}
+
+BankSelectionScreen::BankSelectionScreen(int& storageBox) : BankSelectionScreen()
+{
+    this->storageBox = &storageBox;
+    onScreenStack    = true;
+}
+
+void BankSelectionScreen::finish()
+{
+    if (onScreenStack)
+    {
+        ScreenStack::requestPop();
+    }
+    else
+    {
+        done = true;
+    }
 }
 
 void BankSelectionScreen::drawBottom() const
@@ -101,18 +118,21 @@ void BankSelectionScreen::update(touchPosition* touch)
             {
                 Banks::bank->save();
             }
-            if (Banks::loadBank(res.first, res.second))
+            if (Banks::loadBank(res.first, res.second) && storageBox)
             {
-                storageBox = 0;
+                *storageBox = 0;
             }
         }
-        ScreenStack::requestPop();
+        finish();
         return;
     }
     else if (downKeys & KEY_B)
     {
-        ScreenStack::requestPop();
-        return;
+        if (onScreenStack)
+        {
+            finish();
+            return;
+        }
     }
     else if (downKeys & KEY_X)
     {
@@ -163,7 +183,12 @@ void BankSelectionScreen::renameBank()
         {
             if (hid.fullIndex() != strings.size() - 1)
             {
-                Gui::waitFrame(i18n::localize("RENAMING_BANK"));
+                // Only the screen stack path owns its frame; Gui::runScreen draws
+                // this screen inside a frame that waitFrame must not interrupt.
+                if (onScreenStack)
+                {
+                    Gui::waitFrame(i18n::localize("RENAMING_BANK"));
+                }
                 Banks::renameBank(strings[hid.fullIndex()].first, string);
             }
             strings[hid.fullIndex()].first = string;

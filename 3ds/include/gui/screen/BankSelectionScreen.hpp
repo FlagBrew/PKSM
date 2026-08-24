@@ -28,14 +28,19 @@
 #define BANKSELECTIONSCREEN_HPP
 
 #include "Hid.hpp"
-#include "Screen.hpp"
+#include "RunnableScreen.hpp"
 #include <string>
 #include <vector>
 
-class BankSelectionScreen : public Screen
+class BankSelectionScreen : public RunnableScreen<std::nullptr_t>
 {
 public:
-    BankSelectionScreen(int& storageBox);
+    // Modal use: driven by Gui::runScreen, which stops as soon as a bank is
+    // picked. B does nothing, because the caller expects a choice.
+    BankSelectionScreen();
+    // Screen stack use: pushed over the storage screen, which needs its box
+    // index reset whenever the loaded bank actually changes. B backs out.
+    explicit BankSelectionScreen(int& storageBox);
     void drawTop() const override;
     void drawBottom() const override;
     void update(touchPosition* touch) override;
@@ -43,10 +48,11 @@ public:
 private:
     void renameBank();
     void resizeBank();
+    void finish();
     Hid<HidDirection::VERTICAL, HidDirection::HORIZONTAL> hid;
     std::vector<std::pair<std::string, int>> strings;
-    int& storageBox;
-    bool finished = false;
+    int* storageBox    = nullptr;
+    bool onScreenStack = false;
 };
 
 #endif
