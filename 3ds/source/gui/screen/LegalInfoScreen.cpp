@@ -35,7 +35,6 @@
 #include "pkx/PKX.hpp"
 #include "sav/Sav.hpp"
 #include "ScreenStack.hpp"
-#include "website.h"
 
 LegalInfoScreen::LegalInfoScreen(const std::string& string, pksm::PKX& pk)
     : ScrollingTextScreen(string, pk)

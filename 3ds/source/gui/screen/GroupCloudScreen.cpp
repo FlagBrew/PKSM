@@ -45,7 +45,6 @@
 #include "sav/Sav.hpp"
 #include "ScreenStack.hpp"
 #include "utils/format.hpp"
-#include "website.h"
 #include <algorithm>
 
 GroupCloudScreen::GroupCloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)

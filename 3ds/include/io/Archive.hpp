@@ -36,6 +36,7 @@ class Archive
 {
 private:
     static Result createPKSMExtdataArchive(const std::string& execPath);
+    static Archive extdata(u32 extdata, bool pxi);
 
 public:
     Archive(FS_ArchiveID id, FS_Path path, bool pxi);
@@ -60,7 +61,6 @@ public:
     static Archive save(FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi);
     static Archive saveAndContents(
         FS_MediaType mediatype, u32 lowid, u32 highid, bool pxi, u32 pathWord4 = 0);
-    static Archive extdata(u32 extdata, bool pxi);
 
     // As these do manual directory traversal, an FS_Path overload is not possible
     static Result moveDir(

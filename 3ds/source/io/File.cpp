@@ -109,11 +109,6 @@ u32 File::write(const void* buf, u32 sz)
     return wt;
 }
 
-bool File::eof(void) const
-{
-    return mOffset >= mSize;
-}
-
 u64 File::offset(void) const
 {
     return mOffset;

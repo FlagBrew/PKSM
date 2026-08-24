@@ -31,22 +31,11 @@
 #include "SaveGroups.hpp"
 #include "Screen.hpp"
 #include "ToggleButton.hpp"
-#include <arpa/inet.h>
 #include <array>
-#include <errno.h>
-#include <fcntl.h>
-#include <list>
-#include <malloc.h>
 #include <memory>
-#include <netinet/in.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <unordered_map>
-
-#define SOC_ALIGN 0x1000
-#define SOC_BUFFERSIZE 0x100000
+#include <string>
+#include <utility>
+#include <vector>
 
 class Button;
 

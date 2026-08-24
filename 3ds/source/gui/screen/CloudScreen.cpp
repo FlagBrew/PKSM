@@ -47,7 +47,6 @@
 #include "sav/Sav.hpp"
 #include "ScreenStack.hpp"
 #include "utils/format.hpp"
-#include "website.h"
 #include <format>
 
 CloudScreen::CloudScreen(int storageBox, std::shared_ptr<pksm::PKFilter> filter)

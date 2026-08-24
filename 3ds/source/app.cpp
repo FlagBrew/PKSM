@@ -48,7 +48,6 @@
 #include "utils/format.hpp"
 #include "utils/logging.hpp"
 #include "utils/server.hpp"
-#include "website.h"
 #include <3ds.h>
 #include <array>
 #include <atomic>

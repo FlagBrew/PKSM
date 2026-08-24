@@ -44,7 +44,6 @@
 #include "ScreenStack.hpp"
 #include "VersionOverlay.hpp"
 #include "ViewOverlay.hpp"
-#include "website.h"
 
 MiscEditScreen::MiscEditScreen(pksm::PKX& pkm) : pkm(pkm)
 {

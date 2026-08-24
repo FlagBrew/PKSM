@@ -98,9 +98,6 @@ namespace Gui
     void drawSolidTriangle(
         float x1, float y1, float x2, float y2, float x3, float y3, PKSM_Color color);
     void drawLine(float x1, float y1, float x2, float y2, float thickness, PKSM_Color color);
-    void drawSolidPolygon(const std::vector<std::pair<float, float>>& points, PKSM_Color color);
-    void drawLinedPolygon(
-        const std::vector<std::pair<float, float>>& points, float width, PKSM_Color color);
 
     void backgroundTop(bool stripes);
     void backgroundBottom(bool stripes);

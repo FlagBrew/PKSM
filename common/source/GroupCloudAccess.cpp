@@ -82,17 +82,6 @@ bool GroupCloudAccess::isLegal(size_t groupIndex, size_t pokeIndex) const
     return found && found->legal;
 }
 
-std::unique_ptr<pksm::PKX> GroupCloudAccess::fetchPkm(size_t groupIndex, size_t pokeIndex) const
-{
-    const auto* found = mon(groupIndex, pokeIndex);
-    if (!found)
-    {
-        return emptyPkm();
-    }
-    GpssBrowser::countDownload("pokemon", found->downloadCode);
-    return found->pkm->clone();
-}
-
 std::vector<std::unique_ptr<pksm::PKX>> GroupCloudAccess::group(size_t groupIndex) const
 {
     std::vector<std::unique_ptr<pksm::PKX>> ret;

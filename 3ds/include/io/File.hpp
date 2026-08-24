@@ -47,7 +47,6 @@ public:
     ~File() { close(); }
 
     Result close();
-    bool eof() const;
     u64 offset() const;
     u32 read(void* buf, u32 size);
     Result result() const;

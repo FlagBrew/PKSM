@@ -27,7 +27,6 @@
 #ifndef WEBSITE_H
 #define WEBSITE_H
 
-#define WEBSITE_URL "http://localhost/"
 #define CDN_URL "https://cdn.sigkill.tech/"
 
 #endif

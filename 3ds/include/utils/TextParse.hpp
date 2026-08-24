@@ -165,7 +165,6 @@ namespace TextParse
         FontType fontForCodepoint(u32 codepoint);
 #if defined(__3DS__)
         std::unordered_map<C2D_Font, std::vector<C3D_Tex>> glyphSheets;
-        void makeGlyphSheets(C2D_Font font);
 #endif
         void parseWord(std::pair<std::vector<Glyph>, std::vector<float>>& output,
             std::string::const_iterator& str, float maxWidth);

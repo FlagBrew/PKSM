@@ -50,7 +50,6 @@ public:
     // A Pokémon without copying it, or nullptr if there is none there. For the draw path, which
     // asks for every Pokémon on the page every frame.
     const pksm::PKX* peek(size_t groupIndex, size_t pkm) const;
-    std::unique_ptr<pksm::PKX> fetchPkm(size_t groupIndex, size_t pkm) const;
     bool isLegal(size_t groupIndex, size_t pkm) const;
 
     // Which page is on screen and how to turn it. Paging is the browser's job; this class only
