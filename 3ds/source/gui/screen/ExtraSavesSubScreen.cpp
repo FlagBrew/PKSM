@@ -30,6 +30,7 @@
 #include "GameVersion.hpp"
 #include "gui.hpp"
 #include "i18n_ext.hpp"
+#include "loader.hpp"
 #include "ScreenStack.hpp"
 #include "Species.hpp"
 #include "Title.hpp"
@@ -554,6 +555,7 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
                 selectedGame ? groupToId2(group) : groupToId1(group), currentSaves);
         }
         updateConfig = false;
+        savesChanged = true;
         updateSaves();
         addString.clear();
     }
@@ -655,6 +657,13 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
     }
     else if (down & KEY_B)
     {
+        // the save lists everywhere else are built from the scan cache, so refresh it before
+        // whichever screen pushed this one redraws
+        if (savesChanged)
+        {
+            TitleLoader::scanSaves();
+            savesChanged = false;
+        }
         ScreenStack::requestPop();
         return;
     }

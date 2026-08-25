@@ -54,6 +54,7 @@ private:
     int selectedGame = 0; // i'm pulling a sneaky where i can keep the existing code by using
                           // promotion and handle RGB
     bool updateConfig = false;
+    bool savesChanged = false;
 };
 
 #endif

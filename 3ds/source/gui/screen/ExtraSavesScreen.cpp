@@ -28,7 +28,6 @@
 #include "Configuration.hpp"
 #include "ExtraSavesSubScreen.hpp"
 #include "gui.hpp"
-#include "loader.hpp"
 #include "ScreenStack.hpp"
 #include "Species.hpp"
 #include "thread.hpp"
@@ -491,7 +490,6 @@ void ExtraSavesScreen::update(touchPosition* touch)
     }
     else if (downKeys & KEY_B)
     {
-        TitleLoader::scanSaves();
         ScreenStack::requestPop();
         return;
     }
