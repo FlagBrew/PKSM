@@ -67,7 +67,9 @@ std::string ItemName(u16 itemId, ::pksm::Generation storageFormat) {
         return "None";
     }
     const std::string* name;
-    if (storageFormat == ::pksm::Generation::TWO) {
+    if (storageFormat == ::pksm::Generation::ONE) {
+        name = &i18n::item1(CurrentLanguage(), static_cast<u8>(itemId));
+    } else if (storageFormat == ::pksm::Generation::TWO) {
         name = &i18n::item2(CurrentLanguage(), static_cast<u8>(itemId));
     } else if (storageFormat == ::pksm::Generation::THREE) {
         name = &i18n::item3(CurrentLanguage(), itemId);
@@ -78,6 +80,45 @@ std::string ItemName(u16 itemId, ::pksm::Generation storageFormat) {
         return "Item #" + std::to_string(itemId);
     }
     return *name;
+}
+
+std::string PouchName(::pksm::Sav::Pouch pouch, ::pksm::Generation storageFormat) {
+    using Pouch = ::pksm::Sav::Pouch;
+    switch (pouch) {
+        case Pouch::NormalItem:
+            return "Items";
+        case Pouch::KeyItem:
+            return "Key Items";
+        case Pouch::TM:
+            return "TMs";
+        case Pouch::Mail:
+            return "Mail";
+        case Pouch::Medicine:
+            return "Medicine";
+        case Pouch::Berry:
+            return "Berries";
+        case Pouch::Ball:
+            return "Poké Balls";
+        case Pouch::Battle:
+            return "Battle Items";
+        case Pouch::Candy:
+            return storageFormat == ::pksm::Generation::NINE ? "Materials" : "Candies";
+        case Pouch::ZCrystals:
+            return storageFormat == ::pksm::Generation::LGPE ? "Power-Ups" : "Z-Crystals";
+        case Pouch::Treasure:
+            return "Treasures";
+        case Pouch::Ingredient:
+            return storageFormat == ::pksm::Generation::NINE ? "Picnic Items" : "Ingredients";
+        case Pouch::PCItem:
+            return "PC Items";
+        case Pouch::RotomPower:
+            return "Rotom Powers";
+        case Pouch::CatchingItem:
+            return "Catching Items";
+        case Pouch::MegaStones:
+            return "Mega Stones";
+    }
+    return "Pouch #" + std::to_string(static_cast<int>(pouch));
 }
 
 }  // namespace pksm::strings

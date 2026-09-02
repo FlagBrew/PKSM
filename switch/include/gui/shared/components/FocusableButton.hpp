@@ -22,6 +22,7 @@ private:
     pksm::ui::PulsingOutline::Ref outline;
     std::function<void()> onClickCallback;
     std::function<void()> onCancelCallback;
+    std::function<void()> onFocusCallback;
     std::string helpText;  // Text to show for A button in help
     bool disabled;  // Whether the button is disabled
     // UI Elements
@@ -69,6 +70,8 @@ public:
     void SetContentFont(const std::string& font);
     void SetOnClick(std::function<void()> callback) { onClickCallback = callback; }
     void SetOnCancel(std::function<void()> callback) { onCancelCallback = callback; }
+    // Fires when focus arrives, whether by navigation or touch
+    void SetOnFocus(std::function<void()> callback) { onFocusCallback = callback; }
 
     // Disable/enable the button
     void SetDisabled(bool disabled);

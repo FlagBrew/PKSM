@@ -5,6 +5,7 @@
 #include "data/providers/SaveDataAccessor.hpp"
 #include "data/providers/SwitchSaveDataProvider.hpp"
 #include "data/providers/SwitchTitleDataProvider.hpp"
+#include "data/providers/BagDataProvider.hpp"
 #include "data/providers/BoxDataProvider.hpp"
 #include "data/providers/SwitchSaveDataWriter.hpp"
 #include "gui/boot/BootFlow.hpp"
@@ -94,7 +95,8 @@ PKSMApplication::PKSMApplication(
     ISaveDataAccessor::Ref saveDataAccessor,
     IBoxDataProvider::Ref boxDataProvider,
     IStorageHand::Ref storageHand,
-    IBoxNameEditor::Ref boxNameEditor
+    IBoxNameEditor::Ref boxNameEditor,
+    IBagDataProvider::Ref bagDataProvider
 )
   : pu::ui::Application(renderer),
     accountManager(std::move(accountManager)),
@@ -103,7 +105,8 @@ PKSMApplication::PKSMApplication(
     saveDataAccessor(std::move(saveDataAccessor)),
     boxDataProvider(std::move(boxDataProvider)),
     storageHand(std::move(storageHand)),
-    boxNameEditor(std::move(boxNameEditor)) {
+    boxNameEditor(std::move(boxNameEditor)),
+    bagDataProvider(std::move(bagDataProvider)) {
     // Add render callback to process account updates
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
@@ -203,6 +206,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto titleProvider = SwitchTitleDataProvider::New(saveProvider);
         auto saveDataAccessor = SaveDataAccessor::New(saveProvider, saveWriter);
         auto boxDataProvider = BoxDataProvider::New(saveDataAccessor);
+        auto bagDataProvider = BagDataProvider::New(saveDataAccessor);
         logBootPhase("data providers");
         LOG_MEMORY();  // Memory after data provider initialization
 
@@ -218,7 +222,8 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
             saveDataAccessor,
             boxDataProvider,
             boxDataProvider,
-            boxDataProvider
+            boxDataProvider,
+            bagDataProvider
         );
 
         LOG_DEBUG("Preparing application...");
@@ -251,8 +256,9 @@ void PKSMApplication::ShowMainMenu() {
 void PKSMApplication::ShowTitleLoadScreen() {
     // Release the Sav and storage textures back to the applet heap; everything rebuilds on demand
     saveDataAccessor->unloadSave();
-    if (storageScreen) {
+    if (storageScreen || bagScreen) {
         storageScreen = nullptr;
+        bagScreen = nullptr;
         utils::PokemonSpriteManager::ClearCache();
         utils::ItemSpriteManager::ClearCache();
     }
@@ -426,6 +432,24 @@ void PKSMApplication::ShowStorageScreen() {
     this->LoadLayout(this->storageScreen);
 }
 
+void PKSMApplication::ShowBagScreen() {
+    // Built per loaded save, like the storage screen
+    if (!bagScreen) {
+        const u64 t0 = armGetSystemTick();
+        bagScreen = pksm::layout::BagScreen::New(
+            [this]() { this->ShowMainMenu(); },
+            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
+            [this]() { this->EndOverlay(); },
+            saveDataAccessor,
+            bagDataProvider
+        );
+        LOG_MEMORY();
+        LOG_DEBUG("Bag screen construct: " + std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms");
+    }
+    LOG_DEBUG("Switching to bag screen");
+    this->LoadLayout(this->bagScreen);
+}
+
 void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
     LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
 
@@ -468,7 +492,7 @@ void PKSMApplication::OnLoad() {
             {pksm::ui::MenuButtonType::Storage, [this]() { this->ShowStorageScreen(); }},
             {pksm::ui::MenuButtonType::Editor, [this]() { LOG_DEBUG("Editor button pressed (not implemented)"); }},
             {pksm::ui::MenuButtonType::Events, [this]() { LOG_DEBUG("Events button pressed (not implemented)"); }},
-            {pksm::ui::MenuButtonType::Bag, [this]() { LOG_DEBUG("Bag button pressed (not implemented)"); }},
+            {pksm::ui::MenuButtonType::Bag, [this]() { this->ShowBagScreen(); }},
             {pksm::ui::MenuButtonType::Scripts, [this]() { LOG_DEBUG("Scripts button pressed (not implemented)"); }},
             {pksm::ui::MenuButtonType::Settings, [this]() { LOG_DEBUG("Settings button pressed (not implemented)"); }}
         };

@@ -108,9 +108,13 @@ void pksm::ui::FocusableButton::OnInput(
 
 void pksm::ui::FocusableButton::SetFocused(bool focus) {
     LOG_TRACE("FocusableButton SetFocused: " + std::to_string(focus));
+    const bool gained = focus && !this->focused;
     this->focused = focus;
     background->SetColor(focus ? focusedColor : normalColor);
     pulsingOutline->SetVisible(focused);
+    if (gained && onFocusCallback) {
+        onFocusCallback();
+    }
 }
 
 bool pksm::ui::FocusableButton::IsFocused() const {

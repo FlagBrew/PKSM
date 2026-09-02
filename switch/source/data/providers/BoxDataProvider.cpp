@@ -53,10 +53,7 @@ BoxDataProvider::BoxDataProvider(SaveDataAccessor::Ref saveDataAccessor)
   : saveDataAccessor(std::move(saveDataAccessor)) {}
 
 ::pksm::Sav* BoxDataProvider::CurrentSav(const pksm::saves::SaveData::Ref& saveData) const {
-    if (!saveData || saveData != saveDataAccessor->getCurrentSaveData()) {
-        return nullptr;
-    }
-    return saveDataAccessor->currentSav();
+    return saveDataAccessor->savFor(saveData);
 }
 
 std::unique_ptr<::pksm::PKX>

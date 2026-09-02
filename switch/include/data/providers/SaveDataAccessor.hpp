@@ -38,6 +38,11 @@ public:
     // Borrowed view of the live save; ownership stays here
     ::pksm::Sav* currentSav() const { return sav.get(); }
 
+    // The live Sav only when saveData is the save this accessor currently owns
+    ::pksm::Sav* savFor(const pksm::saves::SaveData::Ref& saveData) const {
+        return saveData && saveData == currentSave ? sav.get() : nullptr;
+    }
+
     void markDirty() { hasChanges = true; }
 
     // ISaveDataAccessor interface implementation

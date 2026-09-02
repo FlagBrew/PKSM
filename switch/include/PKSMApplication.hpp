@@ -6,9 +6,11 @@
 #include <switch.h>
 
 #include "data/AccountManager.hpp"
+#include "data/providers/interfaces/IBagDataProvider.hpp"
 #include "data/providers/interfaces/IBoxDataProvider.hpp"
 #include "data/providers/interfaces/IBoxNameEditor.hpp"
 #include "data/providers/interfaces/IStorageHand.hpp"
+#include "gui/screens/bag-screen/BagScreen.hpp"
 #include "gui/screens/main-menu/MainMenu.hpp"
 #include "gui/screens/storage-screen/StorageScreen.hpp"
 #include "gui/screens/title-load-screen/TitleLoadScreen.hpp"
@@ -21,6 +23,7 @@ private:
     pksm::layout::MainMenu::Ref mainMenu;
     pksm::layout::TitleLoadScreen::Ref titleLoadScreen;
     pksm::layout::StorageScreen::Ref storageScreen;
+    pksm::layout::BagScreen::Ref bagScreen;
 
     // Data providers and managers
     std::unique_ptr<pksm::data::AccountManager> accountManager;
@@ -30,6 +33,7 @@ private:
     IBoxDataProvider::Ref boxDataProvider;
     IStorageHand::Ref storageHand;
     IBoxNameEditor::Ref boxNameEditor;
+    IBagDataProvider::Ref bagDataProvider;
 
     // Initialize renderer options with basic configuration
     static pu::ui::render::RendererInitOptions CreateRendererOptions();
@@ -47,6 +51,7 @@ private:
     void ShowMainMenu();
     void ShowTitleLoadScreen();
     void ShowStorageScreen();
+    void ShowBagScreen();
     void HandleMainMenuBack();
 
     // Save handling
@@ -81,7 +86,8 @@ public:
         ISaveDataAccessor::Ref saveDataAccessor,
         IBoxDataProvider::Ref boxDataProvider,
         IStorageHand::Ref storageHand,
-        IBoxNameEditor::Ref boxNameEditor
+        IBoxNameEditor::Ref boxNameEditor,
+        IBagDataProvider::Ref bagDataProvider
     );
     PU_SMART_CTOR(PKSMApplication)
 
