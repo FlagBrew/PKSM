@@ -93,6 +93,11 @@ APP_AUTHOR  := FlagBrew
 
 APP_VERSION := $(VER_MAJOR).$(VER_MINOR).$(VER_MICRO)
 
+# Baked into the boot banner: the built revision and the libnx behind it (libnx has no version header)
+GIT_REV		:= $(or $(shell git rev-parse --short HEAD 2>/dev/null),unknown)
+LIBNX_VERSION	:= $(or $(lastword $(shell dkp-pacman -Q libnx 2>/dev/null || pacman -Q libnx 2>/dev/null)),unknown)
+DEFINES		:= -DPKSM_GIT_REV=\"$(GIT_REV)\" -DPKSM_LIBNX_VERSION=\"$(LIBNX_VERSION)\"
+
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -288,6 +293,9 @@ endif
 $(OUTPUT).elf	:	$(OFILES)
 
 $(OFILES_SRC)	: $(HFILES_BIN)
+
+# Logger.cpp bakes in GIT_REV; recompile it whenever HEAD moves (the reflog is written on commit and checkout)
+Logger.o	: $(wildcard $(shell git rev-parse --git-path logs/HEAD 2>/dev/null))
 
 #---------------------------------------------------------------------------------
 # you need a rule like this for each extension you use as binary data

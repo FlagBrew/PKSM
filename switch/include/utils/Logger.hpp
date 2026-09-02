@@ -16,6 +16,7 @@ public:
     static void Error(const std::string& message);
     static void LogMemoryInfo();
     static void LogOutputMode();
+    static void LogEnvironment();
     static void Flush();
 
     // Runtime knobs: file logging to sdmc:/switch/PKSM/pksm.log (previous

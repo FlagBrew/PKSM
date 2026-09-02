@@ -133,6 +133,26 @@ void StopFlushThread() {
     g_flush_thread_running = false;
 }
 
+const char* AppletTypeName(AppletType type) {
+    switch (type) {
+        case AppletType_Application:
+            return "Application";
+        case AppletType_SystemApplet:
+            return "SystemApplet";
+        case AppletType_LibraryApplet:
+            return "LibraryApplet";
+        case AppletType_OverlayApplet:
+            return "OverlayApplet";
+        case AppletType_SystemApplication:
+            return "SystemApplication";
+        case AppletType_None:
+            return "None";
+        case AppletType_Default:
+            return "Default";
+    }
+    return "Unknown";
+}
+
 }  // namespace
 
 void Logger::Initialize() {
@@ -185,6 +205,16 @@ void Logger::Flush() {
 void Logger::LogOutputMode() {
     Log(Level::Debug, g_console_initialized ? "Logger mode: nxlink console (1ms sleep per line!)"
                                             : "Logger mode: file only");
+}
+
+void Logger::LogEnvironment() {
+    const u32 hos = hosversionGet();
+    std::stringstream ss;
+    ss << "PKSM " << PKSM_VERSION << " (" << PKSM_GIT_REV << "), libnx " << PKSM_LIBNX_VERSION
+       << ", firmware " << HOSVER_MAJOR(hos) << "." << HOSVER_MINOR(hos) << "." << HOSVER_MICRO(hos)
+       << (hosversionIsAtmosphere() ? " (Atmosphere)" : "") << ", applet type "
+       << AppletTypeName(appletGetAppletType());
+    Info(ss.str());
 }
 
 void Logger::Finalize() {
@@ -251,7 +281,7 @@ void Logger::Log(Level level, const std::string& message) {
     ss << message << "\n";
     const std::string line = ss.str();
 
-    std::lock_guard<std::mutex> lg(g_log_mutex);
+    std::unique_lock<std::mutex> lk(g_log_mutex);
 
 #ifndef NDEBUG
     if (g_console_initialized) {
@@ -268,7 +298,13 @@ void Logger::Log(Level level, const std::string& message) {
     if (OUTPUT_TO_FILE != 0) {
         EnsureFlushThreadStartedLocked();
         g_pending_lines.push_back(line);
-        if (g_pending_lines.size() >= 128) {
+        if (level == Level::Error) {
+            // An error is usually the last line before a crash; don't leave it to the 3s flush
+            std::vector<std::string> pending;
+            FlushPendingToFileLocked(pending);
+            lk.unlock();
+            FlushLinesToFile(pending);
+        } else if (g_pending_lines.size() >= 128) {
             g_log_cv.notify_all();
         }
     }

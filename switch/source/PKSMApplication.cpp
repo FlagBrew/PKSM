@@ -122,6 +122,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         // Initialize logger first
         utils::Logger::Initialize();
         utils::Logger::LogOutputMode();
+        utils::Logger::LogEnvironment();
         LOG_INFO("Initializing PKSM...");
         LOG_MEMORY();  // Initial memory state
 
@@ -225,6 +226,8 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         LOG_INFO("PKSM initialization complete");
         LOG_MEMORY();  // Final initialization memory state
+        // Boot milestones flush synchronously: a crash before the timed flush would lose them
+        utils::Logger::Flush();
         return app;
     } catch (const std::exception& e) {
         LOG_ERROR("Failed to initialize application: " + std::string(e.what()));
@@ -499,6 +502,7 @@ void PKSMApplication::OnLoad() {
         this->ShowTitleLoadScreen();
 
         LOG_DEBUG("Application loaded successfully");
+        utils::Logger::Flush();
     } catch (const std::exception& e) {
         LOG_ERROR("Failed to load application: " + std::string(e.what()));
         throw;

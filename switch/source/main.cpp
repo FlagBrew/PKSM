@@ -14,7 +14,10 @@ int main(int argc, char* argv[]) {
             pksm::utils::Logger::Finalize();
             return 1;
         }
-        app->ShowWithFadeIn();
+        // The fade-in presents the first frames; flush before the main loop takes over
+        app->FadeIn();
+        pksm::utils::Logger::Flush();
+        app->Show();
 
         // Cleanup
         pksm::utils::Logger::Finalize();
