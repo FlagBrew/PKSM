@@ -11,6 +11,7 @@
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/AssetDownloader.hpp"
+#include "utils/ItemSpriteManager.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PokemonSpriteManager.hpp"
 
@@ -166,13 +167,16 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         if (!utils::PokemonSpriteManager::Initialize(
                 utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::PokemonSprites)
+            ) ||
+            !utils::ItemSpriteManager::Initialize(
+                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::ItemSprites)
             )) {
-            LOG_ERROR("Failed to initialize Pokemon sprite manager");
+            LOG_ERROR("Failed to initialize the sprite sheets");
             bootProgress.Release();
             renderer->Finalize();
             return nullptr;
         }
-        logBootPhase("sprite sheet");
+        logBootPhase("sprite sheets");
 
         auto recordingInitResult = appletInitializeGamePlayRecording();
         if (R_FAILED(recordingInitResult)) {
@@ -250,6 +254,7 @@ void PKSMApplication::ShowTitleLoadScreen() {
     if (storageScreen) {
         storageScreen = nullptr;
         utils::PokemonSpriteManager::ClearCache();
+        utils::ItemSpriteManager::ClearCache();
     }
     LOG_MEMORY();
     LOG_DEBUG("Switching to title load screen");

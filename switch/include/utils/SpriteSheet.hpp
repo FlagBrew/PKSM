@@ -24,6 +24,9 @@ public:
     bool Load(const std::string& path);
     SpriteRef Get(u32 key);
 
+    // Nearest keeps pixel art crisp when drawn at an integer multiple; the renderer default is linear
+    void SetScaleMode(SDL_ScaleMode mode) { scaleMode = mode; }
+
     // Drop cached textures; sprites still on screen survive through their shared handles
     void ReleaseSprites();
 
@@ -62,6 +65,7 @@ private:
     s32 stagedPage = -1;
     std::unordered_map<u32, CachedSprite> sprites;
     std::list<u32> lru;  // front = most recent
+    SDL_ScaleMode scaleMode = SDL_ScaleModeLinear;
     u16 spriteWidth = 0;
     u16 spriteHeight = 0;
     u16 cellStride = 0;

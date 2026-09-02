@@ -94,7 +94,7 @@ bool SpriteSheet::Load(const std::string& path) {
     staging.resize(pageBytes);
 
     LOG_DEBUG(
-        "Spritesheet loaded: " + std::to_string(spriteCount) + " sprites, " + std::to_string(pageCount) +
+        "Spritesheet " + path + " loaded: " + std::to_string(spriteCount) + " sprites, " + std::to_string(pageCount) +
         " pages, " + std::to_string(size) + " bytes, " +
         std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms"
     );
@@ -159,6 +159,7 @@ SpriteRef SpriteSheet::Get(u32 key) {
         return {};
     }
     SDL_SetTextureBlendMode(texture, sdl::BlendModeBlend());
+    SDL_SetTextureScaleMode(texture, scaleMode);
 
     if (sprites.size() >= MAX_CACHED_SPRITES) {
         sprites.erase(lru.back());

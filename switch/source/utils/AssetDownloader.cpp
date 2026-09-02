@@ -14,7 +14,7 @@ namespace {
 
 constexpr const char* SD_ASSETS_DIR = "sdmc:/switch/PKSM/assets";
 constexpr const char* RELEASE_BASE =
-    "https://github.com/Omar-Kay/PKResources/releases/download/switch-assets-v1/";
+    "https://github.com/Omar-Kay/PKResources/releases/download/switch-assets-v2/";
 
 struct AssetSpec {
     AssetDownloader::Asset asset;
@@ -27,6 +27,8 @@ constexpr AssetSpec ASSETS[] = {
      "9a975fe84da9cfa3d809a1a63079f929cf662f7fc92a6627b8041eef0a12a012"},
     {AssetDownloader::Asset::BoxArt, "basprites.pkss",
      "142b932923851795155ffc551ff844ddb6415a21ab3f1d8d4e3cb79bdfd240f4"},
+    {AssetDownloader::Asset::ItemSprites, "pokeitems.pkss",
+     "cd128cc55d43acf8f190fee04680dff635b253fddb5bbcb49a003930ce9cf612"},
 };
 constexpr size_t ASSET_COUNT = sizeof(ASSETS) / sizeof(ASSETS[0]);
 
