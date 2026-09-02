@@ -102,6 +102,8 @@ public:
     void SetOnSelect(std::function<void()> callback) { onSelectCallback = callback; }
 
     // Grid state queries
+    using IGrid::IsFirstInRow;
+    using IGrid::IsLastInRow;
     bool IsFirstInRow() const { return selectedIndex % itemsPerRow == 0; }
     bool IsLastInRow() const {
         return (selectedIndex + 1) % itemsPerRow == 0 || selectedIndex == gameImages.size() - 1;
