@@ -41,6 +41,9 @@ void PKSMApplication::ConfigureFonts(pu::ui::render::RendererInitOptions& render
     LOG_DEBUG("Configuring fonts...");
 
     renderer_opts.AddDefaultFontPath("romfs:/gfx/fonts/dinnextw1g_light.ttf");
+    // The console's own font fills the glyphs DIN lacks (★, CJK); faces are tried in order
+    renderer_opts.AddDefaultSharedFont(PlSharedFontType_Standard);
+    renderer_opts.SetDefaultSharedFontScale(pksm::ui::global::FALLBACK_FONT_SCALE);
 
     pksm::ui::FontManager::ConfigureRendererFontSizes(renderer_opts);
 

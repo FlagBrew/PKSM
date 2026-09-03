@@ -30,6 +30,8 @@ public:
         for (const auto& size : sizes) {
             auto font = std::make_shared<pu::ttf::Font>(size);
             font->LoadFromFile(fontPath);
+            // Same fallback as the default font: the console's font for glyphs this one lacks
+            pu::ui::render::LoadSingleSharedFontInFont(font, PlSharedFontType_Standard, pksm::ui::global::FALLBACK_FONT_SCALE);
             pu::ui::render::AddFont(nameGenerator(size), font);
         }
     }

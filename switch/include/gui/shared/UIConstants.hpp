@@ -32,6 +32,10 @@ inline std::string MakeSwitchButtonFontName(const u32 font_size) {
     return "SwitchButtonFont@" + std::to_string(font_size);
 }
 
+// The console's font stands in for glyphs DIN lacks; its glyphs fill the em box, so it is
+// opened at this fraction of the size to sit at DIN's cap height
+constexpr float FALLBACK_FONT_SCALE = 0.85f;
+
 // Switch Button Glyphs
 enum class ButtonGlyph {
     A,
