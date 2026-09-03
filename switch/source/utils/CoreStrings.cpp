@@ -117,8 +117,20 @@ std::string PouchName(::pksm::Sav::Pouch pouch, ::pksm::Generation storageFormat
             return "Catching Items";
         case Pouch::MegaStones:
             return "Mega Stones";
+        case Pouch::Recipe:
+            return "Recipes";
+        case Pouch::Donut:
+            return "Donuts";
     }
     return "Pouch #" + std::to_string(static_cast<int>(pouch));
+}
+
+std::string DonutName(u16 donutId) {
+    const auto& name = i18n::donut(CurrentLanguage(), donutId);
+    if (name.empty()) {
+        return "Donut #" + std::to_string(donutId);
+    }
+    return name;
 }
 
 }  // namespace pksm::strings

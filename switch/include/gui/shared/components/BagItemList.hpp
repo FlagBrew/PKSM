@@ -73,8 +73,12 @@ public:
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
 
-    // storageFormat keys the item sprites; selection restarts at the top
-    void SetDataSource(const std::vector<bag::Slot>& items, ::pksm::Generation storageFormat);
+    // storageFormat and pouch key the sprites; selection restarts at the top
+    void SetDataSource(
+        const std::vector<bag::Slot>& items,
+        ::pksm::Generation storageFormat,
+        ::pksm::Sav::Pouch pouch
+    );
 
     // Ignore input (help overlay)
     void SetDisabled(bool disabled) { this->disabled = disabled; }

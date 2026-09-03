@@ -2,6 +2,7 @@
 
 #include <switch.h>
 
+#include "utils/ItemSpriteManager.hpp"
 #include "utils/Logger.hpp"
 
 pksm::ui::BagItemList::BagItemList(
@@ -35,7 +36,11 @@ pksm::ui::BagItemList::BagItemList(
     SetFocusManager(parentFocusManager);
 }
 
-void pksm::ui::BagItemList::SetDataSource(const std::vector<bag::Slot>& items, ::pksm::Generation storageFormat) {
+void pksm::ui::BagItemList::SetDataSource(
+    const std::vector<bag::Slot>& items,
+    ::pksm::Generation storageFormat,
+    ::pksm::Sav::Pouch pouch
+) {
     const u64 tTeardown = armGetSystemTick();
     const size_t oldRows = rows.size();
     for (auto& row : rows) {
@@ -51,7 +56,11 @@ void pksm::ui::BagItemList::SetDataSource(const std::vector<bag::Slot>& items, :
         const auto position = CalculateItemPosition(i);
         auto row = BagItemRow::New(position.first, position.second, width, rowHeight);
         row->SetName("BagItemRow " + std::to_string(i));
-        row->SetItem(items[i].itemId, storageFormat, items[i].name, items[i].count);
+        const auto& slot = items[i];
+        const u32 spriteKey = pouch == ::pksm::Sav::Pouch::Donut
+            ? utils::ItemSpriteManager::DonutKey(slot.itemId, slot.variant)
+            : utils::ItemSpriteManager::ItemKey(slot.itemId, storageFormat);
+        row->SetItem(spriteKey, slot.name, slot.detail.empty() ? "×" + std::to_string(slot.count) : slot.detail);
         row->SetOnTouchSelect([this, i]() { SetSelectedIndex(i); });
         if (auto fm = this->focusManager.lock()) {
             fm->RegisterFocusable(row);

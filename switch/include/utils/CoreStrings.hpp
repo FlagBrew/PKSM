@@ -32,4 +32,7 @@ std::string ItemName(u16 itemId, ::pksm::Generation storageFormat);
 // sit in the Z-Crystal pouch, SV's Materials in Candy and its Picnic set in Ingredient
 std::string PouchName(::pksm::Sav::Pouch pouch, ::pksm::Generation storageFormat);
 
+// Legends Z-A donut by its save index
+std::string DonutName(u16 donutId);
+
 }  // namespace pksm::strings

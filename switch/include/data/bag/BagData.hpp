@@ -10,9 +10,11 @@
 namespace pksm::bag {
 
 struct Slot {
-    u16 itemId;  // Format-native, like strings::ItemName
+    u16 itemId;  // Format-native, like strings::ItemName; a donut's index for Pouch::Donut
     u16 count;
     std::string name;
+    std::string detail;  // Shown instead of ×count when set (donuts: quality and level boost)
+    u8 variant = 0;      // Art variant where one id has several looks (a donut's stars)
 };
 
 struct Pouch {

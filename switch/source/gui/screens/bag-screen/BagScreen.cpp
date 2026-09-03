@@ -161,9 +161,10 @@ void BagScreen::ShowPouch(size_t index) {
     const auto& pouch = bag.pouches[index];
     pouchMarker->SetY(PouchY(index));
     pouchTitles[index]->SetVisible(true);
-    pouchCount->SetText(std::to_string(pouch.items.size()) + (pouch.items.size() == 1 ? " item" : " items"));
+    const std::string noun = pouch.pouch == ::pksm::Sav::Pouch::Donut ? " donut" : " item";
+    pouchCount->SetText(std::to_string(pouch.items.size()) + noun + (pouch.items.size() == 1 ? "" : "s"));
     pouchCount->SetX(LIST_X + ListWidth() - pouchCount->GetWidth());
-    itemList->SetDataSource(pouch.items, bag.storageFormat);
+    itemList->SetDataSource(pouch.items, bag.storageFormat, pouch.pouch);
     itemList->SetVisible(!pouch.items.empty());
     emptyNotice->SetVisible(pouch.items.empty());
     LOG_DEBUG(

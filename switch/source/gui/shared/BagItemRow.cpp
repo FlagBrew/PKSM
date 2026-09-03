@@ -59,19 +59,13 @@ pu::i32 pksm::ui::BagItemRow::GetHeight() {
     return height;
 }
 
-void pksm::ui::BagItemRow::SetItem(
-    u16 itemId,
-    ::pksm::Generation storageFormat,
-    const std::string& itemName,
-    u16 quantity
-) {
-    this->itemId = itemId;
-    this->storageFormat = storageFormat;
+void pksm::ui::BagItemRow::SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail) {
+    this->spriteKey = spriteKey;
     spriteResolved = false;
     name = itemName;
-    count = "×" + std::to_string(quantity);
+    this->detail = detail;
     nameTexture = nullptr;
-    countTexture = nullptr;
+    detailTexture = nullptr;
 }
 
 void pksm::ui::BagItemRow::SetSelected(bool select) {
@@ -114,12 +108,12 @@ void pksm::ui::BagItemRow::OnRender(pu::ui::render::Renderer::Ref& drawer, const
     }
     background->OnRender(drawer, x, y);
     if (!spriteResolved) {
-        sprite->SetImage(utils::ItemSpriteManager::GetItemSprite(itemId, storageFormat));
+        sprite->SetImage(utils::ItemSpriteManager::GetSprite(spriteKey));
         spriteResolved = true;
     }
     sprite->OnRender(drawer, x + sprite->GetX(), y + sprite->GetY());
     DrawText(drawer, nameTexture, name, x, y, false);
-    DrawText(drawer, countTexture, count, x, y, true);
+    DrawText(drawer, detailTexture, detail, x, y, true);
 }
 
 void pksm::ui::BagItemRow::OnInput(

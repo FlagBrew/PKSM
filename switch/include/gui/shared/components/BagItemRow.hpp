@@ -4,7 +4,6 @@
 #include <pu/Plutonium>
 #include <string>
 
-#include "enums/Generation.hpp"
 #include "gui/shared/components/ShakeableWithOutline.hpp"
 #include "gui/shared/components/SpriteImage.hpp"
 #include "input/TouchInputHandler.hpp"
@@ -12,7 +11,7 @@
 
 namespace pksm::ui {
 
-// One bag slot as a row: sprite, name and quantity.
+// One bag slot as a row: sprite, name and a detail (a quantity, a donut's quality).
 // Sprite and text are resolved on first draw, so rows scrolled out of view never pay for them.
 class BagItemRow : public pu::ui::elm::Element, public IFocusable, public ShakeableWithOutline {
 private:
@@ -32,12 +31,11 @@ private:
     pu::ui::elm::Rectangle::Ref background;
     SpriteImage::Ref sprite;
     bool spriteResolved = false;
-    u16 itemId = 0;
-    ::pksm::Generation storageFormat;
+    u32 spriteKey = 0;
     std::string name;
-    std::string count;
+    std::string detail;
     pu::sdl2::TextureHandle::Ref nameTexture;
-    pu::sdl2::TextureHandle::Ref countTexture;
+    pu::sdl2::TextureHandle::Ref detailTexture;
 
     std::function<void()> onTouchSelectCallback;
     pksm::input::TouchInputHandler touchHandler;
@@ -64,8 +62,8 @@ public:
     void
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
-    // storageFormat keys the sprite sheet
-    void SetItem(u16 itemId, ::pksm::Generation storageFormat, const std::string& itemName, u16 quantity);
+    // spriteKey is an ItemSpriteManager key; detail is the right-aligned text (a count, a quality)
+    void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail);
 
     // The cursor row; stays highlighted while focus is elsewhere
     void SetSelected(bool selected);
