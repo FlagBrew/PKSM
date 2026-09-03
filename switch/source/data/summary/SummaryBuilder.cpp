@@ -292,7 +292,8 @@ SummaryData BuildSummary(const ::pksm::PKX& pk) {
     }
     const bool hasHeldItem = fmt != Format::G1 && fmt != Format::LGPE && fmt != Format::PLA;
     if (hasHeldItem) {
-        addRow("Item", strings::ItemName(pk.heldItem(), pk.generation()));
+        // heldItem() is national in every format (core converts Gen 2/3), unlike the bag's ids
+        addRow("Item", strings::ItemName(pk.heldItem()));
     }
     if (fmt == Format::LGPE) {
         addRow("CP", std::to_string(static_cast<const ::pksm::PB7&>(pk).CP()));
