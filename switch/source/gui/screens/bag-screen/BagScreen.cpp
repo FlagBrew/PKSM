@@ -2,7 +2,9 @@
 
 #include <switch.h>
 
+#include "gui/shared/components/SpriteImage.hpp"
 #include "utils/Logger.hpp"
+#include "utils/PouchGlyphs.hpp"
 
 namespace pksm::layout {
 
@@ -99,6 +101,14 @@ void BagScreen::InitializePouchColumn() {
         focusManager->RegisterFocusable(button);
         this->Add(button);
         pouchButtons.push_back(button);
+        // Drawn over the button, left of its centred name
+        this->Add(pksm::ui::SpriteImage::New(
+            SIDE_MARGIN + GLYPH_INSET,
+            PouchY(i) + (POUCH_HEIGHT - GLYPH_SIZE) / 2,
+            GLYPH_SIZE,
+            GLYPH_SIZE,
+            utils::PouchGlyphs::Get(bag.pouches[i].pouch, bag.storageFormat)
+        ));
 
         auto title = AddText(
             LIST_X,

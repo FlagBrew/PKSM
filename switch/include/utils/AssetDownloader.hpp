@@ -11,7 +11,7 @@ namespace pksm::utils {
 // hashes pinned here; romfs ships no sheets.
 class AssetDownloader {
 public:
-    enum class Asset { PokemonSprites, BoxArt, ItemSprites };
+    enum class Asset { PokemonSprites, BoxArt, ItemSprites, PouchGlyphs };
 
     // Hash-check the SD copies once; ResolvedPath answers from this scan
     static void Refresh();

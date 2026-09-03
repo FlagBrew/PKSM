@@ -15,6 +15,7 @@
 #include "utils/ItemSpriteManager.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PokemonSpriteManager.hpp"
+#include "utils/PouchGlyphs.hpp"
 
 namespace pksm {
 
@@ -176,6 +177,9 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
             ) ||
             !utils::ItemSpriteManager::Initialize(
                 utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::ItemSprites)
+            ) ||
+            !utils::PouchGlyphs::Initialize(
+                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::PouchGlyphs)
             )) {
             LOG_ERROR("Failed to initialize the sprite sheets");
             bootProgress.Release();
@@ -264,6 +268,7 @@ void PKSMApplication::ShowTitleLoadScreen() {
         bagScreen = nullptr;
         utils::PokemonSpriteManager::ClearCache();
         utils::ItemSpriteManager::ClearCache();
+        utils::PouchGlyphs::ClearCache();
     }
     LOG_MEMORY();
     LOG_DEBUG("Switching to title load screen");

@@ -29,6 +29,8 @@ constexpr AssetSpec ASSETS[] = {
      "142b932923851795155ffc551ff844ddb6415a21ab3f1d8d4e3cb79bdfd240f4"},
     {AssetDownloader::Asset::ItemSprites, "pokeitems.pkss",
      "81f244553971906966a4a757f9cedb27bb521bd699d1b21be9ddaef5d8177225"},
+    {AssetDownloader::Asset::PouchGlyphs, "pouchglyphs.pkss",
+     "98b73aaf311adc9ad8f18dd93c85f1851860a24d7fb6d9c4107ff55fc363f986"},
 };
 constexpr size_t ASSET_COUNT = sizeof(ASSETS) / sizeof(ASSETS[0]);
 

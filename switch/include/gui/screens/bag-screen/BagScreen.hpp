@@ -54,6 +54,8 @@ private:
     static constexpr pu::i32 POUCH_WIDTH = 400;
     static constexpr pu::i32 POUCH_HEIGHT = 72;
     static constexpr pu::i32 POUCH_SPACING = 12;
+    static constexpr pu::i32 GLYPH_SIZE = 44;
+    static constexpr pu::i32 GLYPH_INSET = 16;
     static constexpr pu::i32 MARKER_WIDTH = 8;
     static constexpr pu::i32 MARKER_GAP = 10;
     static constexpr pu::i32 LIST_X = 600;
