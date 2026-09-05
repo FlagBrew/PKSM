@@ -1,5 +1,6 @@
 #include "gui/shared/components/BagItemList.hpp"
 
+#include <algorithm>
 #include <switch.h>
 
 #include "utils/ItemSpriteManager.hpp"
@@ -122,6 +123,7 @@ void pksm::ui::BagItemList::SetFocused(bool focus) {
     scrollView->SetFocused(focus);
     if (!focus) {
         inputHandler.ClearState();
+        pageRepeat.Reset();  // a hold cannot span a focus change
     } else if (selectedIndex < rows.size()) {
         rows[selectedIndex]->RequestFocus();
     }
@@ -148,7 +150,11 @@ void pksm::ui::BagItemList::OnInput(
         return;
     }
     if (focused) {
-        inputHandler.HandleInput(keys_down, keys_held);
+        // The right stick pages; the row-by-row handler must not also step on it
+        inputHandler.HandleInput(keys_down & ~PAGE_BUTTONS, keys_held & ~PAGE_BUTTONS);
+        if (pageRepeat.Update(keys_down & PAGE_BUTTONS, keys_held & PAGE_BUTTONS)) {
+            PageBy((keys_held & HidNpadButton_StickRDown) ? 1 : -1);
+        }
     }
     // The scroll view owns touch for its rows
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
@@ -161,4 +167,18 @@ void pksm::ui::BagItemList::SetRowDetail(size_t index, const std::string& detail
     if (index < rows.size()) {
         rows[index]->SetDetail(detail, edited);
     }
+}
+
+void pksm::ui::BagItemList::PageBy(int pages) {
+    if (rows.empty()) {
+        return;
+    }
+    const int visible = std::max<pu::i32>(1, height / (rowHeight + ROW_SPACING));
+    const int last = static_cast<int>(rows.size()) - 1;
+    const int target = std::clamp(static_cast<int>(selectedIndex) + pages * visible, 0, last);
+    if (target == static_cast<int>(selectedIndex)) {
+        rows[selectedIndex]->shakeOutOfBounds(pages > 0 ? ShakeDirection::DOWN : ShakeDirection::UP);
+        return;
+    }
+    SetSelectedIndex(static_cast<size_t>(target));
 }

@@ -8,6 +8,7 @@
 #include "gui/shared/components/BagItemRow.hpp"
 #include "gui/shared/components/IGrid.hpp"
 #include "gui/shared/components/ScrollView.hpp"
+#include "input/HoldRepeat.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
 
@@ -29,9 +30,12 @@ private:
     std::vector<BagItemRow::Ref> rows;
     ScrollView::Ref scrollView;
     pksm::input::DirectionalInputHandler inputHandler;
+    pksm::input::HoldRepeat pageRepeat{350, 120};
     std::function<void()> onFocusChangedCallback;
 
     void EnsureRowVisible(size_t index, bool animated = true);
+    // Moves the cursor a screenful of rows; shakes at the ends
+    void PageBy(int pages);
 
     // IGrid layout
     pu::i32 GetItemWidth() const override { return width; }
@@ -81,6 +85,8 @@ public:
         size_t selected = 0
     );
     size_t GetSelectedIndex() const { return selectedIndex; }
+    // The right stick pages the list; a parent keeps it out of its own directional handling
+    static constexpr u64 PAGE_BUTTONS = HidNpadButton_StickRUp | HidNpadButton_StickRDown;
     // Redraws one row's right-hand text; edited tints it
     void SetRowDetail(size_t index, const std::string& detail, bool edited);
 

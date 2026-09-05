@@ -266,7 +266,9 @@ void BagScreen::OnInput(u64 down, u64 up, u64 held) {
         return;
     }
     if (itemList->IsFocused()) {
-        listDirectionalHandler.HandleInput(down, held);
+        // The list pages on the right stick; it must not also count as directional input here
+        constexpr u64 PAGE = ui::BagItemList::PAGE_BUTTONS;
+        listDirectionalHandler.HandleInput(down & ~PAGE, held & ~PAGE);
         HandleHolds(down, held);
     } else {
         pouchDirectionalHandler.HandleInput(down, held);
@@ -419,6 +421,7 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             items.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove Item"});
         }
+        items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Pouches"});
     } else {
         items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open Pouch"});
