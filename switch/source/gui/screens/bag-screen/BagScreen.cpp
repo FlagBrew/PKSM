@@ -249,15 +249,14 @@ void BagScreen::UpdateHelpItems() {
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove"});
         }
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Pouches"});
     } else {
         if (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open"});
         }
         helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back"});
     }
+    // The footer keeps to what a newcomer needs; B out of the list and the d-pad go without saying
     helpItems.push_back({{pksm::ui::global::ButtonGlyph::L, pksm::ui::global::ButtonGlyph::R}, "Switch Pouch"});
-    helpItems.push_back({{pksm::ui::global::ButtonGlyph::DPad}, "Navigate"});
     helpFooter->SetHelpItems(helpItems);
 }
 
@@ -428,7 +427,7 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Main Menu"});
     }
     items.push_back({{pksm::ui::global::ButtonGlyph::L, pksm::ui::global::ButtonGlyph::R}, "Switch Pouch"});
-    items.push_back({{pksm::ui::global::ButtonGlyph::DPad}, "Navigate"});
+    items.push_back({{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Navigate"});
     return items;
 }
 
