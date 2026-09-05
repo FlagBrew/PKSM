@@ -10,8 +10,8 @@ namespace pksm::utils {
 using KeyboardValidator = std::function<std::optional<std::string>(const std::string&)>;
 
 // Blocking system keyboard for a single line; nullopt when cancelled.
-// maxLength is in characters, not bytes.
+// maxLength is in characters, not bytes. numeric shows the number pad only.
 std::optional<std::string> ShowKeyboard(const std::string& headerText, const std::string& initialText,
-    size_t maxLength, KeyboardValidator validator = {});
+    size_t maxLength, KeyboardValidator validator = {}, bool numeric = false);
 
 }  // namespace pksm::utils

@@ -31,7 +31,7 @@ private:
     pksm::input::DirectionalInputHandler inputHandler;
     std::function<void()> onFocusChangedCallback;
 
-    void EnsureRowVisible(size_t index);
+    void EnsureRowVisible(size_t index, bool animated = true);
 
     // IGrid layout
     pu::i32 GetItemWidth() const override { return width; }
@@ -73,12 +73,16 @@ public:
     void SetFocused(bool focused) override;
     bool IsFocused() const override;
 
-    // storageFormat and pouch key the sprites; selection restarts at the top
+    // storageFormat and pouch key the sprites; the cursor lands on selected (clamped to the rows)
     void SetDataSource(
         const std::vector<bag::Slot>& items,
         ::pksm::Generation storageFormat,
-        ::pksm::Sav::Pouch pouch
+        ::pksm::Sav::Pouch pouch,
+        size_t selected = 0
     );
+    size_t GetSelectedIndex() const { return selectedIndex; }
+    // Redraws one row's right-hand text; edited tints it
+    void SetRowDetail(size_t index, const std::string& detail, bool edited);
 
     // Ignore input (help overlay)
     void SetDisabled(bool disabled) { this->disabled = disabled; }

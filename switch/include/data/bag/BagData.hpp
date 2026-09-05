@@ -15,12 +15,14 @@ struct Slot {
     std::string name;
     std::string detail;  // Shown instead of ×count when set (donuts: quality and level boost)
     u8 variant = 0;      // Art variant where one id has several looks (a donut's stars)
+    u16 slot = 0;        // The save's slot this row came from, what an edit addresses
 };
 
 struct Pouch {
     ::pksm::Sav::Pouch pouch;
     std::string name;
     size_t capacity;
+    u16 maxCount = 0;         // Largest quantity one slot holds in-game; 1 means one of each, not a stack
     std::vector<Slot> items;  // Owned items in save order
 };
 

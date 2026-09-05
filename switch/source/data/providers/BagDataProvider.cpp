@@ -25,6 +25,37 @@ std::string DonutDetail(const ::pksm::SavZA::Donut& donut) {
     return "★" + std::to_string(donut.stars) + "  Lv +" + std::to_string(donut.levelBoost);
 }
 
+// One pouch as the save holds it. Gen 9 saves index slots by item id, so every item the pouch
+// can hold has a slot and owned ones carry a count; the rest keep contiguous slot arrays
+pksm::bag::Pouch ReadPouch(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch, int capacity) {
+    const auto storageFormat = sav.generation();
+    pksm::bag::Pouch view{
+        pouch, pksm::strings::PouchName(pouch, storageFormat), static_cast<size_t>(capacity), sav.maxCount(pouch), {}
+    };
+    for (int slot = 0; slot < capacity; slot++) {
+        const auto item = sav.item(pouch, static_cast<u16>(slot));
+        if (!item) {
+            break;
+        }
+        const u16 id = NativeItemId(*item);
+        if (id != 0 && item->count() > 0) {
+            view.items.push_back(
+                {id, item->count(), pksm::strings::ItemName(id, storageFormat), {}, 0, static_cast<u16>(slot)}
+            );
+        }
+    }
+    return view;
+}
+
+int PouchCapacity(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch) {
+    for (const auto& [candidate, capacity] : sav.pouches()) {
+        if (candidate == pouch) {
+            return capacity;
+        }
+    }
+    return 0;
+}
+
 }  // namespace
 
 BagDataProvider::BagDataProvider(SaveDataAccessor::Ref saveDataAccessor)
@@ -38,16 +69,7 @@ pksm::bag::BagData BagDataProvider::GetBag(const pksm::saves::SaveData::Ref& sav
     }
     bag.storageFormat = sav->generation();
     for (const auto& [pouch, capacity] : sav->pouches()) {
-        pksm::bag::Pouch view{pouch, pksm::strings::PouchName(pouch, bag.storageFormat), static_cast<size_t>(capacity), {}};
-        // Switch-era saves list every item a pouch can hold; owned ones carry a count
-        for (int slot = 0; slot < capacity; slot++) {
-            const auto item = sav->item(pouch, static_cast<u16>(slot));
-            const u16 id = item ? NativeItemId(*item) : 0;
-            if (id != 0 && item->count() > 0) {
-                view.items.push_back({id, item->count(), pksm::strings::ItemName(id, bag.storageFormat)});
-            }
-        }
-        bag.pouches.push_back(std::move(view));
+        bag.pouches.push_back(ReadPouch(*sav, pouch, capacity));
     }
     // Legends Z-A keeps Mega Dimension donuts outside the item pouches
     if (sav->version() == ::pksm::GameVersion::ZA) {
@@ -57,10 +79,40 @@ pksm::bag::BagData BagDataProvider::GetBag(const pksm::saves::SaveData::Ref& sav
             constexpr auto POUCH = ::pksm::Sav::Pouch::Donut;
             pksm::bag::Pouch view{POUCH, pksm::strings::PouchName(POUCH, bag.storageFormat), ::pksm::SavZA::DONUT_SLOTS, {}};
             for (const auto& donut : za->donuts()) {
-                view.items.push_back({donut.id, 1, pksm::strings::DonutName(donut.id), DonutDetail(donut), donut.stars});
+                view.items.push_back(
+                    {donut.id, 1, pksm::strings::DonutName(donut.id), DonutDetail(donut), donut.stars, 0}
+                );
             }
             bag.pouches.push_back(std::move(view));
         }
     }
     return bag;
+}
+
+std::optional<pksm::bag::Pouch> BagDataProvider::SetCount(
+    const pksm::saves::SaveData::Ref& saveData,
+    ::pksm::Sav::Pouch pouch,
+    u16 slot,
+    u16 count
+) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (slot >= capacity) {
+        return std::nullopt;
+    }
+    if (count > 0 || sav->pouchIndexedByItem(pouch)) {
+        // A slot that is the item's own just reads as unowned once emptied
+        auto item = sav->item(pouch, slot);
+        item->count(count);
+        sav->item(*item, pouch, slot);
+    } else {
+        // Slot arrays stay contiguous: pull the later slots up and clear the last one
+        for (int to = slot; to + 1 < capacity; to++) {
+            sav->item(*sav->item(pouch, static_cast<u16>(to + 1)), pouch, static_cast<u16>(to));
+        }
+        // An empty item of any format converts to an empty one of this format, flags and all
+        sav->item(::pksm::Item1{}, pouch, static_cast<u16>(capacity - 1));
+    }
+    saveDataAccessor->markDirty();
+    return ReadPouch(*sav, pouch, capacity);
 }

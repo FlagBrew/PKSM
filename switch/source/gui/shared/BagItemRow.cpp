@@ -64,7 +64,14 @@ void pksm::ui::BagItemRow::SetItem(u32 spriteKey, const std::string& itemName, c
     spriteResolved = false;
     name = itemName;
     this->detail = detail;
+    edited = false;
     nameTexture = nullptr;
+    detailTexture = nullptr;
+}
+
+void pksm::ui::BagItemRow::SetDetail(const std::string& detail, bool edited) {
+    this->detail = detail;
+    this->edited = edited;
     detailTexture = nullptr;
 }
 
@@ -86,12 +93,13 @@ void pksm::ui::BagItemRow::DrawText(
     pu::ui::render::Renderer::Ref& drawer,
     pu::sdl2::TextureHandle::Ref& texture,
     const std::string& text,
+    pu::ui::Color color,
     pu::i32 rowX,
     pu::i32 rowY,
     bool alignRight
 ) {
     if (!texture) {
-        texture = pu::sdl2::TextureHandle::New(pu::ui::render::RenderText(RowFont(), text, global::TEXT_WHITE));
+        texture = pu::sdl2::TextureHandle::New(pu::ui::render::RenderText(RowFont(), text, color));
     }
     int textWidth = 0;
     int textHeight = 0;
@@ -112,8 +120,8 @@ void pksm::ui::BagItemRow::OnRender(pu::ui::render::Renderer::Ref& drawer, const
         spriteResolved = true;
     }
     sprite->OnRender(drawer, x + sprite->GetX(), y + sprite->GetY());
-    DrawText(drawer, nameTexture, name, x, y, false);
-    DrawText(drawer, detailTexture, detail, x, y, true);
+    DrawText(drawer, nameTexture, name, global::TEXT_WHITE, x, y, false);
+    DrawText(drawer, detailTexture, detail, edited ? EDITED_TEXT_COLOR : global::TEXT_WHITE, x, y, true);
 }
 
 void pksm::ui::BagItemRow::OnInput(

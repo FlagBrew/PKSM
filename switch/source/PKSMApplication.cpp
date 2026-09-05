@@ -448,6 +448,9 @@ void PKSMApplication::ShowBagScreen() {
             [this]() { this->ShowMainMenu(); },
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
+            [this](const std::string& title, const std::string& message, const std::string& confirmLabel) {
+                return this->CreateShowDialog(title, message, {confirmLabel, "Cancel"}, true) == 0;
+            },
             saveDataAccessor,
             bagDataProvider
         );

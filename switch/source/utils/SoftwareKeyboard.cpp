@@ -43,7 +43,7 @@ SwkbdTextCheckResult ValidateText(char* tmp_string, size_t tmp_string_size) {
 namespace pksm::utils {
 
 std::optional<std::string> ShowKeyboard(const std::string& headerText, const std::string& initialText,
-    size_t maxLength, KeyboardValidator validator) {
+    size_t maxLength, KeyboardValidator validator, bool numeric) {
     SwkbdConfig kbd;
     Result rc = swkbdCreate(&kbd, 0);
     if (R_FAILED(rc)) {
@@ -54,6 +54,9 @@ std::optional<std::string> ShowKeyboard(const std::string& headerText, const std
     }
     const std::string prefill = ClampToChars(initialText, maxLength);
     swkbdConfigMakePresetDefault(&kbd);
+    if (numeric) {
+        swkbdConfigSetType(&kbd, SwkbdType_NumPad);
+    }
     swkbdConfigSetHeaderText(&kbd, headerText.c_str());
     swkbdConfigSetInitialText(&kbd, prefill.c_str());
     swkbdConfigSetStringLenMax(&kbd, static_cast<u32>(maxLength));

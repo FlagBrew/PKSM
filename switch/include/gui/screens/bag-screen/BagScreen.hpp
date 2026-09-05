@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_set>
+
 #include <functional>
 #include <pu/Plutonium>
 #include <vector>
@@ -11,6 +13,7 @@
 #include "gui/shared/components/BagItemList.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
 #include "gui/shared/components/FocusableButton.hpp"
+#include "input/HoldRepeat.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
 #include "input/visual-feedback/FocusManager.hpp"
@@ -24,6 +27,8 @@ public:
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
+        std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
+            requestConfirmation,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBagDataProvider::Ref bagDataProvider
     );
@@ -33,10 +38,17 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(176, 112, 16, 255);
     std::function<void()> onBack;
+    // Blocking yes/no prompt; Plutonium dialogs are application-level
+    std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
+        requestConfirmation;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBagDataProvider::Ref bagDataProvider;
 
     pksm::bag::BagData bag;
+    // Per pouch, the (item, count) stacks as read from the save: a row not among them is edited
+    std::vector<std::unordered_set<u32>> originalStacks;
+    // ZL/ZR: by one, then by ten and a hundred the longer the hold
+    pksm::input::HoldRepeat adjustRepeat{450, 90};
     static constexpr size_t NO_POUCH = SIZE_MAX;
     size_t currentPouch = NO_POUCH;
 
@@ -87,6 +99,16 @@ private:
     void StepPouch(int delta);
     void HandleBackButton();
     void UpdateHelpItems();
+
+    // Editing the focused row; every write goes through the provider and refreshes the pouch
+    bool CanEditCount() const;
+    void AdjustCount(int delta);
+    void HandleHolds(u64 down, u64 held);
+    void PromptCount();
+    void RemoveItem();
+    void ApplyPouch(pksm::bag::Pouch pouch, size_t selected);
+    static u32 StackKey(const pksm::bag::Slot& slot);
+    bool IsEdited(const pksm::bag::Slot& slot) const;
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

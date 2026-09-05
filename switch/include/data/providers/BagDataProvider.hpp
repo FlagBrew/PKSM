@@ -13,4 +13,6 @@ public:
     PU_SMART_CTOR(BagDataProvider)
 
     pksm::bag::BagData GetBag(const pksm::saves::SaveData::Ref& saveData) const override;
+    std::optional<pksm::bag::Pouch>
+    SetCount(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 slot, u16 count) override;
 };

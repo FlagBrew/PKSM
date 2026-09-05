@@ -21,6 +21,7 @@ private:
     static constexpr u32 OUTLINE_BORDER_WIDTH = 4;
     static constexpr pu::ui::Color DEFAULT_BG_COLOR = pu::ui::Color(0, 0, 0, 60);
     static constexpr pu::ui::Color SELECTED_BG_COLOR = pu::ui::Color(255, 255, 255, 70);
+    static constexpr pu::ui::Color EDITED_TEXT_COLOR = pu::ui::Color(255, 214, 90, 255);
 
     bool focused = false;
     bool selected = false;
@@ -34,6 +35,7 @@ private:
     u32 spriteKey = 0;
     std::string name;
     std::string detail;
+    bool edited = false;  // Tints the detail until the save is written
     pu::sdl2::TextureHandle::Ref nameTexture;
     pu::sdl2::TextureHandle::Ref detailTexture;
 
@@ -45,6 +47,7 @@ private:
         pu::ui::render::Renderer::Ref& drawer,
         pu::sdl2::TextureHandle::Ref& texture,
         const std::string& text,
+        pu::ui::Color color,
         pu::i32 rowX,
         pu::i32 rowY,
         bool alignRight
@@ -64,6 +67,8 @@ public:
 
     // spriteKey is an ItemSpriteManager key; detail is the right-aligned text (a count, a quality)
     void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail);
+    // Re-rasterizes only the detail; edited draws it in the edited tint
+    void SetDetail(const std::string& detail, bool edited);
 
     // The cursor row; stays highlighted while focus is elsewhere
     void SetSelected(bool selected);

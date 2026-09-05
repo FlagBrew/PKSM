@@ -39,7 +39,8 @@ pksm::ui::BagItemList::BagItemList(
 void pksm::ui::BagItemList::SetDataSource(
     const std::vector<bag::Slot>& items,
     ::pksm::Generation storageFormat,
-    ::pksm::Sav::Pouch pouch
+    ::pksm::Sav::Pouch pouch,
+    size_t selected
 ) {
     const u64 tTeardown = armGetSystemTick();
     const size_t oldRows = rows.size();
@@ -78,11 +79,12 @@ void pksm::ui::BagItemList::SetDataSource(
         std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms, " + std::to_string(oldRows) +
         " old rows torn down in " + std::to_string(armTicksToNs(t0 - tTeardown) / 1000000) + " ms"
     );
-    selectedIndex = 0;
+    selectedIndex = rows.empty() ? 0 : std::min(selected, rows.size() - 1);
     if (!rows.empty()) {
-        rows[0]->SetSelected(true);
+        rows[selectedIndex]->SetSelected(true);
+        EnsureRowVisible(selectedIndex, false);  // a rebuilt list appears in place, no glide
         if (focused) {
-            rows[0]->RequestFocus();
+            rows[selectedIndex]->RequestFocus();
         }
     }
 }
@@ -100,15 +102,15 @@ void pksm::ui::BagItemList::SetSelectedIndex(size_t index) {
     }
 }
 
-void pksm::ui::BagItemList::EnsureRowVisible(size_t index) {
+void pksm::ui::BagItemList::EnsureRowVisible(size_t index, bool animated) {
     // Row extents in scroll-content coordinates, outline included
     const pu::i32 top = static_cast<pu::i32>(index) * (rowHeight + ROW_SPACING);
     const pu::i32 bottom = top + rowHeight + (OUTLINE_PADDING * 2);
     const pu::i32 offset = scrollView->GetScrollOffset();
     if (top < offset) {
-        scrollView->ScrollToOffset(top, true);
+        scrollView->ScrollToOffset(top, animated);
     } else if (bottom > offset + scrollView->GetHeight()) {
-        scrollView->ScrollToOffset(bottom - scrollView->GetHeight(), true);
+        scrollView->ScrollToOffset(bottom - scrollView->GetHeight(), animated);
     }
 }
 
@@ -152,5 +154,11 @@ void pksm::ui::BagItemList::OnInput(
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
     if (touch_pos.IsEmpty() && selectedIndex < rows.size()) {
         rows[selectedIndex]->OnInput(keys_down, keys_up, keys_held, touch_pos);
+    }
+}
+
+void pksm::ui::BagItemList::SetRowDetail(size_t index, const std::string& detail, bool edited) {
+    if (index < rows.size()) {
+        rows[index]->SetDetail(detail, edited);
     }
 }
