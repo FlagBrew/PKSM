@@ -112,12 +112,10 @@ void AnimatedBackground::RenderStaticBackground(
     pu::i32 xPos = (screenWidth - renderWidth) / 2;
     pu::i32 yPos = (screenHeight - renderHeight) / 2;
 
-    // Create render options
-    pu::ui::render::TextureRenderOptions opts;
-    opts.width = renderWidth;
-    opts.height = renderHeight;
-
-    // Render the static background
+    // Render the static background. The options struct has no default member values, so it
+    // must come from a helper: left to the stack, its alpha and rotation are whatever the
+    // compiler last put there, and the pattern quietly vanished when the toolchain changed
+    const auto opts = pu::ui::render::TextureRenderOptions::WithCustomDimensions(renderWidth, renderHeight);
     drawer->RenderTexture(static_bg_texture->Get(), xPos, yPos, opts);
 }
 
@@ -214,10 +212,7 @@ void AnimatedBackground::OnRender(pu::ui::render::Renderer::Ref& drawer, const p
         // Center vertically and add bobbing offset
         pu::i32 yOffset = (screenHeight - scaledHeight) / 2 + static_cast<pu::i32>(bg_y_offsets[layer]);
 
-        // Create render options for the texture
-        pu::ui::render::TextureRenderOptions opts;
-        opts.width = scaledWidth;
-        opts.height = scaledHeight;
+        const auto opts = pu::ui::render::TextureRenderOptions::WithCustomDimensions(scaledWidth, scaledHeight);
 
         // Calculate how many textures we need to cover the screen plus extra for smooth scrolling
         int numTextures = (screenWidth / scaledWidth) + 3;  // +3 to ensure smooth transitions

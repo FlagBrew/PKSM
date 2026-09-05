@@ -115,10 +115,10 @@ void MenuButton::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x
         const pu::i32 iconX = x + ((width - ICON_SIZE) / 2);
         const pu::i32 iconY = startY;
 
-        pu::ui::render::TextureRenderOptions opts;
-        opts.width = ICON_SIZE;
-        opts.height = ICON_SIZE;
-        opts.alpha_mod = focused ? FOCUSED_ALPHA : UNFOCUSED_ALPHA;
+        // The options struct has no default member values; a helper fills every field
+        const auto opts = pu::ui::render::TextureRenderOptions::WithCustomAlphaAndDimensions(
+            focused ? FOCUSED_ALPHA : UNFOCUSED_ALPHA, ICON_SIZE, ICON_SIZE
+        );
         drawer->RenderTexture(icon->Get(), iconX, iconY, opts);
 
         // Update text position to be below icon
