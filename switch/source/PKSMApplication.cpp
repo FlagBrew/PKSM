@@ -16,6 +16,7 @@
 #include "utils/Logger.hpp"
 #include "utils/PokemonSpriteManager.hpp"
 #include "utils/PouchGlyphs.hpp"
+#include "utils/TextTextureCache.hpp"
 
 namespace pksm {
 
@@ -269,6 +270,7 @@ void PKSMApplication::ShowTitleLoadScreen() {
         utils::PokemonSpriteManager::ClearCache();
         utils::ItemSpriteManager::ClearCache();
         utils::PouchGlyphs::ClearCache();
+        utils::TextTextureCache::Clear();
     }
     LOG_MEMORY();
     LOG_DEBUG("Switching to title load screen");

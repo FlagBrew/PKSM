@@ -1,4 +1,6 @@
 #pragma once
+
+#include <functional>
 #include <pu/Plutonium>
 
 #include "input/visual-feedback/interfaces/IFocusable.hpp"
@@ -22,6 +24,9 @@ public:
     void SetContentHeight(pu::i32 height);
     void ScrollToOffset(pu::i32 offset, bool animated = false);
     pu::i32 GetScrollOffset() const { return scrollOffset; }
+    // Called with the new offset once per frame in which the view moved, by any means; a move
+    // is reported at the start of the next OnRender, before the children draw at it
+    void SetOnScrolled(std::function<void(pu::i32 offset)> callback) { onScrolled = std::move(callback); }
 
     // Viewport management
     pu::i32 GetX() override;
@@ -52,6 +57,8 @@ private:
     pu::i32 scrollOffset;
     pu::i32 contentHeight;
     pu::i32 availableHeight;
+    std::function<void(pu::i32)> onScrolled;
+    pu::i32 notifiedOffset = -1;  // the offset the callback last saw
 
     // Animation state
     bool isAnimatingScroll;

@@ -108,6 +108,13 @@ void pksm::ui::ScrollView::OnRender(pu::ui::render::Renderer::Ref& drawer, const
     else if (hasMomentum) {
         UpdateScrollMomentum();
     }
+    // Animation, momentum, drags and jumps all settle here, so one check covers them
+    if (scrollOffset != notifiedOffset) {
+        notifiedOffset = scrollOffset;
+        if (onScrolled) {
+            onScrolled(scrollOffset);
+        }
+    }
 
     // Set up clipping rect
     SDL_Rect clipRect = {

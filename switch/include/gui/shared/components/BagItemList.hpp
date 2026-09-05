@@ -14,11 +14,17 @@
 
 namespace pksm::ui {
 
-// Scrolling single-column list of bag rows; Up/Down move the cursor, the parent owns Left
+// Scrolling single-column list of bag rows; Up/Down move the cursor, the parent owns Left.
+// Rows are pooled: a row is built and registered for focus once and then rebound to whatever
+// item lands at its index, so switching pouches never pays for teardown or registration.
+// Only rows near the visible window hold textures; the rest release theirs as they scroll
+// away, so the sprite and text caches are the only long-term owners and a texture dies one at
+// a time on eviction rather than by the hundred on a pouch switch.
 class BagItemList : public IFocusable, public IGrid {
 private:
     static constexpr pu::i32 ROW_SPACING = 12;
     static constexpr pu::i32 OUTLINE_PADDING = 4;
+    static constexpr size_t RELEASE_MARGIN = 8;  // rows kept resolved beyond the visible window
 
     bool focused = false;
     bool disabled = false;
@@ -27,13 +33,15 @@ private:
     pu::i32 width;
     pu::i32 height;
     pu::i32 rowHeight;
-    std::vector<BagItemRow::Ref> rows;
+    std::vector<BagItemRow::Ref> rows;  // The pool; the first shown rows are in use
+    size_t shown = 0;
     ScrollView::Ref scrollView;
     pksm::input::DirectionalInputHandler inputHandler;
     pksm::input::HoldRepeat pageRepeat{350, 120};
     std::function<void()> onFocusChangedCallback;
 
     void EnsureRowVisible(size_t index, bool animated = true);
+    void ReleaseOffscreenRows(pu::i32 scrollOffset);
     // Moves the cursor a screenful of rows; shakes at the ends
     void PageBy(int pages);
 
@@ -64,9 +72,9 @@ public:
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // IGrid implementation
-    size_t GetItemCount() const override { return rows.size(); }
+    size_t GetItemCount() const override { return shown; }
     ShakeableWithOutline::Ref GetItemAtIndex(size_t index) override {
-        if (index < rows.size()) {
+        if (index < shown) {
             return rows[index];
         }
         return nullptr;

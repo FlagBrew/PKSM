@@ -12,7 +12,8 @@
 namespace pksm::ui {
 
 // One bag slot as a row: sprite, name and a detail (a quantity, a donut's quality).
-// Sprite and text are resolved on first draw, so rows scrolled out of view never pay for them.
+// Sprite and text are resolved on first draw, so rows scrolled out of view never pay for them;
+// text comes from the shared TextTextureCache, so a row never owns a texture outright.
 class BagItemRow : public pu::ui::elm::Element, public IFocusable, public ShakeableWithOutline {
 private:
     static constexpr pu::i32 SPRITE_SIZE = 64;
@@ -69,6 +70,8 @@ public:
     void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail);
     // Re-rasterizes only the detail; edited draws it in the edited tint
     void SetDetail(const std::string& detail, bool edited);
+    // Drops the sprite and text textures; they come back from the caches on the next draw
+    void Release();
 
     // The cursor row; stays highlighted while focus is elsewhere
     void SetSelected(bool selected);

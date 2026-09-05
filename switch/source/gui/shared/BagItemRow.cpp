@@ -2,6 +2,7 @@
 
 #include "gui/shared/UIConstants.hpp"
 #include "utils/ItemSpriteManager.hpp"
+#include "utils/TextTextureCache.hpp"
 
 namespace {
 
@@ -61,10 +62,15 @@ pu::i32 pksm::ui::BagItemRow::GetHeight() {
 
 void pksm::ui::BagItemRow::SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail) {
     this->spriteKey = spriteKey;
-    spriteResolved = false;
     name = itemName;
     this->detail = detail;
     edited = false;
+    Release();
+}
+
+void pksm::ui::BagItemRow::Release() {
+    sprite->SetImage({});
+    spriteResolved = false;
     nameTexture = nullptr;
     detailTexture = nullptr;
 }
@@ -99,7 +105,7 @@ void pksm::ui::BagItemRow::DrawText(
     bool alignRight
 ) {
     if (!texture) {
-        texture = pu::sdl2::TextureHandle::New(pu::ui::render::RenderText(RowFont(), text, color));
+        texture = utils::TextTextureCache::Get(RowFont(), text, color);
     }
     int textWidth = 0;
     int textHeight = 0;

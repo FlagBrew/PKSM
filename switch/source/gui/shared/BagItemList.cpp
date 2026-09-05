@@ -34,6 +34,8 @@ pksm::ui::BagItemList::BagItemList(
     inputHandler.SetOnMoveDown([this]() { IGrid::MoveDown(); });
     inputHandler.SetOnMoveRight([this]() { IGrid::MoveRight(); });
 
+    scrollView->SetOnScrolled([this](pu::i32 offset) { ReleaseOffscreenRows(offset); });
+
     SetFocusManager(parentFocusManager);
 }
 
@@ -43,45 +45,46 @@ void pksm::ui::BagItemList::SetDataSource(
     ::pksm::Sav::Pouch pouch,
     size_t selected
 ) {
-    const u64 tTeardown = armGetSystemTick();
-    const size_t oldRows = rows.size();
-    for (auto& row : rows) {
-        if (auto fm = this->focusManager.lock()) {
-            fm->UnregisterFocusable(row);
-        }
-    }
-    rows.clear();
-    scrollView->Clear();
-
     const u64 t0 = armGetSystemTick();
-    for (size_t i = 0; i < items.size(); i++) {
+    const size_t built = rows.size();
+    while (rows.size() < items.size()) {
+        const size_t i = rows.size();
         const auto position = CalculateItemPosition(i);
         auto row = BagItemRow::New(position.first, position.second, width, rowHeight);
         row->SetName("BagItemRow " + std::to_string(i));
-        const auto& slot = items[i];
-        const u32 spriteKey = pouch == ::pksm::Sav::Pouch::Donut
-            ? utils::ItemSpriteManager::DonutKey(slot.itemId, slot.variant)
-            : utils::ItemSpriteManager::ItemKey(slot.itemId, storageFormat);
-        row->SetItem(spriteKey, slot.name, slot.detail.empty() ? "×" + std::to_string(slot.count) : slot.detail);
         row->SetOnTouchSelect([this, i]() { SetSelectedIndex(i); });
         if (auto fm = this->focusManager.lock()) {
             fm->RegisterFocusable(row);
         }
         rows.push_back(row);
-        scrollView->Add(row);
     }
+    // Only the rows in use live in the scroll view; the rest of the pool sits idle
+    scrollView->Clear();
+    for (size_t i = 0; i < items.size(); i++) {
+        const auto& slot = items[i];
+        const u32 spriteKey = pouch == ::pksm::Sav::Pouch::Donut
+            ? utils::ItemSpriteManager::DonutKey(slot.itemId, slot.variant)
+            : utils::ItemSpriteManager::ItemKey(slot.itemId, storageFormat);
+        rows[i]->SetItem(spriteKey, slot.name, slot.detail.empty() ? "×" + std::to_string(slot.count) : slot.detail);
+        rows[i]->SetSelected(false);
+        scrollView->Add(rows[i]);
+    }
+    for (size_t i = items.size(); i < shown; i++) {
+        rows[i]->Release();
+        rows[i]->SetSelected(false);
+    }
+    shown = items.size();
 
     scrollView->SetContentHeight(
-        rows.empty() ? 0 : static_cast<pu::i32>(rows.size()) * (rowHeight + ROW_SPACING) - ROW_SPACING + OUTLINE_PADDING * 2
+        shown == 0 ? 0 : static_cast<pu::i32>(shown) * (rowHeight + ROW_SPACING) - ROW_SPACING + OUTLINE_PADDING * 2
     );
     scrollView->ScrollToOffset(0, false);
     LOG_DEBUG(
-        "Bag rows: " + std::to_string(rows.size()) + " built in " +
-        std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms, " + std::to_string(oldRows) +
-        " old rows torn down in " + std::to_string(armTicksToNs(t0 - tTeardown) / 1000000) + " ms"
+        "Bag rows: " + std::to_string(shown) + " shown, " + std::to_string(rows.size() - built) + " newly built, " +
+        std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms"
     );
-    selectedIndex = rows.empty() ? 0 : std::min(selected, rows.size() - 1);
-    if (!rows.empty()) {
+    selectedIndex = shown == 0 ? 0 : std::min(selected, shown - 1);
+    if (shown > 0) {
         rows[selectedIndex]->SetSelected(true);
         EnsureRowVisible(selectedIndex, false);  // a rebuilt list appears in place, no glide
         if (focused) {
@@ -91,7 +94,7 @@ void pksm::ui::BagItemList::SetDataSource(
 }
 
 void pksm::ui::BagItemList::SetSelectedIndex(size_t index) {
-    if (index >= rows.size() || index == selectedIndex) {
+    if (index >= shown || index == selectedIndex) {
         return;
     }
     rows[selectedIndex]->SetSelected(false);
@@ -124,7 +127,7 @@ void pksm::ui::BagItemList::SetFocused(bool focus) {
     if (!focus) {
         inputHandler.ClearState();
         pageRepeat.Reset();  // a hold cannot span a focus change
-    } else if (selectedIndex < rows.size()) {
+    } else if (selectedIndex < shown) {
         rows[selectedIndex]->RequestFocus();
     }
     if (onFocusChangedCallback) {
@@ -158,27 +161,38 @@ void pksm::ui::BagItemList::OnInput(
     }
     // The scroll view owns touch for its rows
     scrollView->OnInput(keys_down, keys_up, keys_held, touch_pos);
-    if (touch_pos.IsEmpty() && selectedIndex < rows.size()) {
+    if (touch_pos.IsEmpty() && selectedIndex < shown) {
         rows[selectedIndex]->OnInput(keys_down, keys_up, keys_held, touch_pos);
     }
 }
 
 void pksm::ui::BagItemList::SetRowDetail(size_t index, const std::string& detail, bool edited) {
-    if (index < rows.size()) {
+    if (index < shown) {
         rows[index]->SetDetail(detail, edited);
     }
 }
 
 void pksm::ui::BagItemList::PageBy(int pages) {
-    if (rows.empty()) {
+    if (shown == 0) {
         return;
     }
     const int visible = std::max<pu::i32>(1, height / (rowHeight + ROW_SPACING));
-    const int last = static_cast<int>(rows.size()) - 1;
+    const int last = static_cast<int>(shown) - 1;
     const int target = std::clamp(static_cast<int>(selectedIndex) + pages * visible, 0, last);
     if (target == static_cast<int>(selectedIndex)) {
         rows[selectedIndex]->shakeOutOfBounds(pages > 0 ? ShakeDirection::DOWN : ShakeDirection::UP);
         return;
     }
     SetSelectedIndex(static_cast<size_t>(target));
+}
+
+void pksm::ui::BagItemList::ReleaseOffscreenRows(pu::i32 offset) {
+    const pu::i32 stride = rowHeight + ROW_SPACING;
+    const size_t first = static_cast<size_t>(std::max<pu::i32>(0, offset / stride));
+    const size_t last = static_cast<size_t>(std::max<pu::i32>(0, (offset + height) / stride));
+    for (size_t i = 0; i < shown; i++) {
+        if (i + RELEASE_MARGIN < first || i > last + RELEASE_MARGIN) {
+            rows[i]->Release();
+        }
+    }
 }
