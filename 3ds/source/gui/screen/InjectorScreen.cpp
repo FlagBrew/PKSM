@@ -136,7 +136,8 @@ void InjectorScreen::makeButtons()
             {
                 langButtons.push_back(std::make_unique<EnablableToggleButton>(
                     x, y, 38, 23, [this, langVal]() { return this->setLanguage(langVal); },
-                    [this, langVal]() {
+                    [this, langVal]()
+                    {
                         return this->lang == pksm::Language::UNUSED ||
                                !this->isLangAvailable(langVal);
                     },

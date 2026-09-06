@@ -181,7 +181,7 @@ void ScriptScreen::drawTop() const
     }
 
     for (size_t i = hid.page() * hid.maxVisibleEntries();
-         i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
+        i < (hid.page() + 1) * hid.maxVisibleEntries(); i++)
     {
         if (i >= entries.size())
         {

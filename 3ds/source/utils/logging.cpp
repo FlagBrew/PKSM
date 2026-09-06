@@ -117,8 +117,8 @@ void Logging::attachConsole()
 
     std::string version = versionInfo();
     consoleSelect(&headerConsole);
-    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET,
-        41 - static_cast<int>(version.length()), version.c_str());
+    printf("\x1b[1;%dH" CONSOLE_YELLOW "%s" CONSOLE_RESET, 41 - static_cast<int>(version.length()),
+        version.c_str());
     consoleSelect(&logConsole);
     gfxFlushBuffers();
 }

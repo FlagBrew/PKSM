@@ -137,7 +137,7 @@ void BagScreen::drawBottom() const
     }
 
     for (int i = firstItem > 0 ? -1 : 0;
-         i <= std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
+        i <= std::min(std::min(firstEmpty - firstItem, 7), limits[currentPouch].second); i++)
     {
         auto item = TitleLoader::save->item(limits[currentPouch].first, firstItem + i);
         Gui::sprite(ui_sheet_emulated_button_item_idx, 117, 15 + 30 * i);
@@ -191,7 +191,7 @@ void BagScreen::drawBottom() const
         mod = 1;
     }
     for (int i = 0;
-         i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
+        i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
         if (canEdit(limits[currentPouch].first,
                 *TitleLoader::save->item(limits[currentPouch].first, firstItem + i)))
@@ -347,7 +347,7 @@ void BagScreen::update(touchPosition* touch)
         mod = 1;
     }
     for (int i = 0;
-         i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
+        i < std::min(std::min(firstEmpty - firstItem + mod, 7), limits[currentPouch].second); i++)
     {
         amountButtons[i * 3]->update(touch);
         amountButtons[i * 3 + 1]->update(touch);
