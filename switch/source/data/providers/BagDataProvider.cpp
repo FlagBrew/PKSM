@@ -239,3 +239,22 @@ BagDataProvider::Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Po
     saveDataAccessor->markDirty();
     return ReadPouch(*sav, pouch, capacity);
 }
+
+std::optional<pksm::bag::Pouch>
+BagDataProvider::Move(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 fromSlot, u16 toSlot) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (fromSlot >= capacity || toSlot >= capacity || sav->pouchIndexedByItem(pouch)) {
+        return std::nullopt;
+    }
+    if (fromSlot != toSlot) {
+        const auto moving = sav->item(pouch, fromSlot);
+        const int step = toSlot > fromSlot ? 1 : -1;
+        for (int slot = fromSlot; slot != toSlot; slot += step) {
+            sav->item(*sav->item(pouch, static_cast<u16>(slot + step)), pouch, static_cast<u16>(slot));
+        }
+        sav->item(*moving, pouch, toSlot);
+        saveDataAccessor->markDirty();
+    }
+    return ReadPouch(*sav, pouch, capacity);
+}

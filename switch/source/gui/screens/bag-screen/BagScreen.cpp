@@ -108,7 +108,10 @@ BagScreen::BagScreen(
     const auto listFocused = [this]() { return itemList->IsFocused(); };
     buttonHandler.RegisterButton(HidNpadButton_A, nullptr, [this]() { PromptCount(); }, listFocused);
     buttonHandler.RegisterButton(HidNpadButton_X, nullptr, [this]() { RemoveItem(); }, listFocused);
+    buttonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() { LiftItem(); }, listFocused);
     buttonHandler.RegisterButton(HidNpadButton_Plus, nullptr, [this]() { OpenPicker(); });
+    carryButtonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() { DropItem(); });
+    carryButtonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { PutBack(); });
     pickerButtonHandler.RegisterButton(HidNpadButton_A, nullptr, [this]() { PickItem(); });
     pickerButtonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { CancelPicker(); });
     pickerButtonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() { SearchPicker(); }, [this]() {
@@ -300,6 +303,12 @@ void BagScreen::UpdateHelpItems() {
         helpFooter->SetHelpItems(helpItems);
         return;
     }
+    if (liftedFrom != NOT_LIFTED) {
+        helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Drop"});
+        helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Put Back"});
+        helpFooter->SetHelpItems(helpItems);
+        return;
+    }
     if (itemList->IsFocused()) {
         if (CanEditCount()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Set Quantity"});
@@ -307,6 +316,9 @@ void BagScreen::UpdateHelpItems() {
         }
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove"});
+        }
+        if (CanLift()) {
+            helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move"});
         }
     } else {
         if (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty()) {
@@ -322,12 +334,23 @@ void BagScreen::UpdateHelpItems() {
     helpFooter->SetHelpItems(helpItems);
 }
 
+void BagScreen::UpdatePouchColumn() {
+    const bool reachable = !isHelpOverlayVisible && !picker->IsOpen() && liftedFrom == NOT_LIFTED;
+    for (auto& button : pouchButtons) {
+        button->SetDisabled(!reachable);
+    }
+}
+
 void BagScreen::OnInput(u64 down, u64 up, u64 held) {
     if (HandleHelpInput(down)) {
         return;
     }
     if (picker->IsOpen()) {
         pickerButtonHandler.HandleInput(down, up, held);  // its list moves itself
+        return;
+    }
+    if (liftedFrom != NOT_LIFTED) {
+        carryButtonHandler.HandleInput(down, up, held);  // the list carries the row on its own Up/Down
         return;
     }
     if (itemList->IsFocused()) {
@@ -369,7 +392,8 @@ void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
         return;
     }
     if (!sameRows) {
-        // A removal shifts the rows; a quantity change only re-rasterizes its own detail
+        // A removal shifts the rows; a quantity change only re-rasterizes its own detail, and
+        // after a move the rows already stand in the save's new order
         itemList->SetDataSource(items, bag.storageFormat, bag.pouches[currentPouch].pouch, selected, true);
         const std::string noun = bag.pouches[currentPouch].pouch == ::pksm::Sav::Pouch::Donut ? " donut" : " item";
         pouchCount->SetText(std::to_string(items.size()) + noun + (items.size() == 1 ? "" : "s"));
@@ -471,12 +495,10 @@ void BagScreen::OpenPicker() {
                            : bagDataProvider->GetAddable(saveDataAccessor->getCurrentSaveData(), pouch.pouch);
     const size_t count = candidates.size();
     ShowPouchView(false);
-    for (auto& button : pouchButtons) {
-        button->SetDisabled(true);  // a tap on the column would change the pouch under the picker
-    }
     picker->Open(
         pouch.name, std::move(candidates), bag.storageFormat, pouch.pouch, full ? "This pouch is full" : "Nothing left to add"
     );
+    UpdatePouchColumn();
     UpdateHelpItems();
     LOG_DEBUG(
         "Picker for " + pouch.name + ": " + std::to_string(count) + " candidates, " +
@@ -486,9 +508,7 @@ void BagScreen::OpenPicker() {
 
 void BagScreen::LeavePicker() {
     picker->Close();
-    for (auto& button : pouchButtons) {
-        button->SetDisabled(false);
-    }
+    UpdatePouchColumn();
 }
 
 void BagScreen::RestorePouchView(bool toList) {
@@ -575,6 +595,61 @@ void BagScreen::RemoveItem() {
     }
 }
 
+bool BagScreen::CanLift() const {
+    if (currentPouch >= bag.pouches.size()) {
+        return false;
+    }
+    const auto& pouch = bag.pouches[currentPouch];
+    return !pouch.indexedByItem && pouch.pouch != ::pksm::Sav::Pouch::Donut && pouch.items.size() > 1;
+}
+
+void BagScreen::LiftItem() {
+    const size_t index = itemList->GetSelectedIndex();
+    if (!CanLift() || index >= bag.pouches[currentPouch].items.size()) {
+        if (auto row = itemList->GetItemAtIndex(index)) {
+            row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
+        }
+        return;
+    }
+    adjustRepeat.Reset();
+    liftedFrom = index;
+    itemList->SetCarrying(true);
+    UpdatePouchColumn();
+    UpdateHelpItems();
+}
+
+void BagScreen::DropItem() {
+    // The pouch still lists the save's order: the carry so far was only on screen
+    const auto& pouch = bag.pouches[currentPouch];
+    const size_t index = itemList->GetSelectedIndex();
+    if (index == liftedFrom) {
+        EndCarry();  // dropped where it was lifted: nothing to write
+        return;
+    }
+    auto updated = bagDataProvider->Move(
+        saveDataAccessor->getCurrentSaveData(), pouch.pouch, pouch.items[liftedFrom].slot, pouch.items[index].slot
+    );
+    if (!updated) {
+        LOG_ERROR("Bag refused to move slot " + std::to_string(pouch.items[liftedFrom].slot) + " in " + pouch.name);
+        PutBack();
+        return;
+    }
+    EndCarry();
+    ApplyPouch(std::move(*updated), index);
+}
+
+void BagScreen::PutBack() {
+    itemList->SetSelectedIndex(liftedFrom);  // carries the row home
+    EndCarry();
+}
+
+void BagScreen::EndCarry() {
+    liftedFrom = NOT_LIFTED;
+    itemList->SetCarrying(false);
+    UpdatePouchColumn();
+    UpdateHelpItems();
+}
+
 std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
     std::vector<pksm::ui::HelpItem> items;
     if (picker->IsOpen()) {
@@ -586,6 +661,15 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         items.push_back({{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Navigate"});
         return items;
     }
+    if (liftedFrom != NOT_LIFTED) {
+        items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Drop Here"});
+        items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Put Back"});
+        items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
+        items.push_back(
+            {{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Carry"}
+        );
+        return items;
+    }
     if (itemList->IsFocused()) {
         if (CanEditCount()) {
             items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Set Quantity"});
@@ -593,6 +677,9 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         }
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             items.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove Item"});
+        }
+        if (CanLift()) {
+            items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move Item"});
         }
         items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Pouches"});
@@ -609,17 +696,13 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
 }
 
 void BagScreen::OnHelpOverlayShown() {
-    for (auto& button : pouchButtons) {
-        button->SetDisabled(true);
-    }
+    UpdatePouchColumn();
     itemList->SetDisabled(true);
     picker->SetDisabled(true);
 }
 
 void BagScreen::OnHelpOverlayHidden() {
-    for (auto& button : pouchButtons) {
-        button->SetDisabled(!picker->IsOpen());  // the column stays out of reach behind the picker
-    }
+    UpdatePouchColumn();
     itemList->SetDisabled(false);
     picker->SetDisabled(false);
 }

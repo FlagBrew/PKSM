@@ -22,10 +22,12 @@ private:
     static constexpr u32 OUTLINE_BORDER_WIDTH = 4;
     static constexpr pu::ui::Color DEFAULT_BG_COLOR = pu::ui::Color(0, 0, 0, 60);
     static constexpr pu::ui::Color SELECTED_BG_COLOR = pu::ui::Color(255, 255, 255, 70);
+    static constexpr pu::ui::Color LIFTED_BG_COLOR = pu::ui::Color(255, 214, 90, 90);
     static constexpr pu::ui::Color EDITED_TEXT_COLOR = pu::ui::Color(255, 214, 90, 255);
 
     bool focused = false;
     bool selected = false;
+    bool lifted = false;
     pu::i32 x;
     pu::i32 y;
     pu::i32 width;
@@ -43,6 +45,7 @@ private:
     std::function<void()> onTouchSelectCallback;
     pksm::input::TouchInputHandler touchHandler;
 
+    void UpdateBackground();
     // Draws the text vertically centered; alignRight anchors it to the row's right padding
     void DrawText(
         pu::ui::render::Renderer::Ref& drawer,
@@ -72,9 +75,13 @@ public:
     void SetDetail(const std::string& detail, bool edited);
     // Drops the sprite and text textures; they come back from the caches on the next draw
     void Release();
+    // Trades what the two rows show, textures included: a carried row changes place without a redraw
+    void SwapContent(BagItemRow& other);
 
     // The cursor row; stays highlighted while focus is elsewhere
     void SetSelected(bool selected);
+    // Picked up by the cursor, drawn as such until it is dropped or put back
+    void SetLifted(bool lifted);
 
     // IFocusable implementation
     void SetFocused(bool focus) override;

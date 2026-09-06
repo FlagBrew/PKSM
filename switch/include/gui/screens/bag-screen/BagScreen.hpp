@@ -63,6 +63,9 @@ private:
     // Stands in for the list while an item is being added
     pksm::ui::ItemPicker::Ref picker;
     bool pickerFromList = false;  // where focus returns when the picker closes without a choice
+    // The row Y picked up, by its index before the carry; the list carries it, the save is untouched until the drop
+    static constexpr size_t NOT_LIFTED = SIZE_MAX;
+    size_t liftedFrom = NOT_LIFTED;
 
     // Layout constants
     static constexpr pu::i32 SIDE_MARGIN = 80;
@@ -84,11 +87,12 @@ private:
     pksm::input::FocusManager::Ref itemListFocusManager;
     pksm::input::FocusManager::Ref pickerFocusManager;
 
-    // Input handlers; the picker's buttons replace the others while it is open
+    // Input handlers; the picker's buttons replace the others while it is open, the carry's while a row is lifted
     pksm::input::DirectionalInputHandler pouchDirectionalHandler;
     pksm::input::DirectionalInputHandler listDirectionalHandler;
     pksm::input::ButtonInputHandler buttonHandler;
     pksm::input::ButtonInputHandler pickerButtonHandler;
+    pksm::input::ButtonInputHandler carryButtonHandler;
 
     static constexpr pu::i32 PouchY(size_t index) {
         return TOP_MARGIN + static_cast<pu::i32>(index) * (POUCH_HEIGHT + POUCH_SPACING);
@@ -107,6 +111,8 @@ private:
     void StepPouch(int delta);
     void HandleBackButton();
     void UpdateHelpItems();
+    // The column is out of reach while the help overlay, the picker or a carry owns the screen
+    void UpdatePouchColumn();
 
     // Editing the focused row; every write goes through the provider and refreshes the pouch
     bool CanEditCount() const;
@@ -128,6 +134,14 @@ private:
     void PickItem();
     void SearchPicker();
     void ClearSearch();
+
+    // Moving a row where the game keeps a slot array: Y lifts it, the cursor carries it, Y drops
+    // it into the save and B puts it back where it was
+    bool CanLift() const;
+    void LiftItem();
+    void DropItem();
+    void PutBack();
+    void EndCarry();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

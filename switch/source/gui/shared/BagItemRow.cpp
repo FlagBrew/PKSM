@@ -1,5 +1,7 @@
 #include "gui/shared/components/BagItemRow.hpp"
 
+#include <utility>
+
 #include "gui/shared/UIConstants.hpp"
 #include "utils/ItemSpriteManager.hpp"
 #include "utils/TextTextureCache.hpp"
@@ -81,9 +83,29 @@ void pksm::ui::BagItemRow::SetDetail(const std::string& detail, bool edited) {
     detailTexture = nullptr;
 }
 
+void pksm::ui::BagItemRow::SwapContent(BagItemRow& other) {
+    std::swap(spriteKey, other.spriteKey);
+    std::swap(name, other.name);
+    std::swap(detail, other.detail);
+    std::swap(edited, other.edited);
+    std::swap(spriteResolved, other.spriteResolved);
+    std::swap(nameTexture, other.nameTexture);
+    std::swap(detailTexture, other.detailTexture);
+    std::swap(sprite, other.sprite);  // same place in every row, so the image goes with the key
+}
+
 void pksm::ui::BagItemRow::SetSelected(bool select) {
     selected = select;
-    background->SetColor(select ? SELECTED_BG_COLOR : DEFAULT_BG_COLOR);
+    UpdateBackground();
+}
+
+void pksm::ui::BagItemRow::SetLifted(bool lift) {
+    lifted = lift;
+    UpdateBackground();
+}
+
+void pksm::ui::BagItemRow::UpdateBackground() {
+    background->SetColor(lifted ? LIFTED_BG_COLOR : selected ? SELECTED_BG_COLOR : DEFAULT_BG_COLOR);
 }
 
 void pksm::ui::BagItemRow::SetFocused(bool focus) {

@@ -49,6 +49,7 @@ void pksm::ui::BagItemList::SetDataSource(
     const u64 t0 = armGetSystemTick();
     const pu::i32 previousOffset = scrollView->GetScrollOffset();
     const size_t built = rows.size();
+    SetCarrying(false);
     while (rows.size() < items.size()) {
         const size_t i = rows.size();
         const auto position = CalculateItemPosition(i);
@@ -103,6 +104,15 @@ void pksm::ui::BagItemList::SetDataSource(
 void pksm::ui::BagItemList::SetSelectedIndex(size_t index) {
     if (index >= shown || index == selectedIndex) {
         return;
+    }
+    if (carrying) {
+        // The carried content walks over one row at a time; each row passed slides back by one
+        const int step = index > selectedIndex ? 1 : -1;
+        for (int i = static_cast<int>(selectedIndex); i != static_cast<int>(index); i += step) {
+            rows[i]->SwapContent(*rows[i + step]);
+        }
+        rows[selectedIndex]->SetLifted(false);
+        rows[index]->SetLifted(true);
     }
     rows[selectedIndex]->SetSelected(false);
     selectedIndex = index;
@@ -176,6 +186,13 @@ void pksm::ui::BagItemList::OnInput(
 void pksm::ui::BagItemList::SetRowDetail(size_t index, const std::string& detail, bool edited) {
     if (index < shown) {
         rows[index]->SetDetail(detail, edited);
+    }
+}
+
+void pksm::ui::BagItemList::SetCarrying(bool carry) {
+    carrying = carry;
+    if (selectedIndex < shown) {
+        rows[selectedIndex]->SetLifted(carry);
     }
 }
 

@@ -35,6 +35,7 @@ private:
     pu::i32 rowHeight;
     std::vector<BagItemRow::Ref> rows;  // The pool; the first shown rows are in use
     size_t shown = 0;
+    bool carrying = false;  // The cursor row goes along with the cursor
     ScrollView::Ref scrollView;
     pksm::input::DirectionalInputHandler inputHandler;
     pksm::input::HoldRepeat pageRepeat{350, 120};
@@ -100,6 +101,10 @@ public:
     static constexpr u64 PAGE_BUTTONS = HidNpadButton_StickRUp | HidNpadButton_StickRDown;
     // Redraws one row's right-hand text; edited tints it
     void SetRowDetail(size_t index, const std::string& detail, bool edited);
+    // While carrying, the cursor takes its row along: a move shifts the rows in between back by
+    // one, and the carried row draws as lifted. What the new order means for the save is the
+    // parent's to decide
+    void SetCarrying(bool carrying);
 
     // Ignore input (help overlay)
     void SetDisabled(bool disabled) { this->disabled = disabled; }

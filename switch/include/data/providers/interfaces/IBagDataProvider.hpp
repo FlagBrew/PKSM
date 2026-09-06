@@ -35,4 +35,10 @@ public:
     // nothing when the item is not the pouch's, already held, or the pouch is full
     virtual std::optional<pksm::bag::Pouch>
     Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 itemId, u16 count) = 0;
+
+    // Moves the item at fromSlot to toSlot, the slots between closing up behind it. Returns the
+    // pouch as the save now holds it, or nothing when saveData is not the live save, the pouch
+    // indexes by item (its slots never move), or a slot is past the pouch
+    virtual std::optional<pksm::bag::Pouch>
+    Move(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 fromSlot, u16 toSlot) = 0;
 };
