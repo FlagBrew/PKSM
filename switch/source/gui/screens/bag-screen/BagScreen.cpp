@@ -40,14 +40,14 @@ BagScreen::BagScreen(
     std::function<void()> onBack,
     std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
     std::function<void()> onHideOverlay,
-    std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
-        requestConfirmation,
+    std::function<int(const std::string& title, const std::string& message, const std::vector<std::string>& options)>
+        requestChoice,
     ISaveDataAccessor::Ref saveDataAccessor,
     IBagDataProvider::Ref bagDataProvider
 )
   : BaseLayout(onShowOverlay, onHideOverlay),
     onBack(onBack),
-    requestConfirmation(requestConfirmation),
+    requestChoice(requestChoice),
     saveDataAccessor(saveDataAccessor),
     bagDataProvider(bagDataProvider) {
     LOG_DEBUG("Initializing BagScreen...");
@@ -108,7 +108,14 @@ BagScreen::BagScreen(
     const auto listFocused = [this]() { return itemList->IsFocused(); };
     buttonHandler.RegisterButton(HidNpadButton_A, nullptr, [this]() { PromptCount(); }, listFocused);
     buttonHandler.RegisterButton(HidNpadButton_X, nullptr, [this]() { RemoveItem(); }, listFocused);
-    buttonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() { LiftItem(); }, listFocused);
+    // The handler keeps one callback per button, so Y serves the list and the column from one
+    buttonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() {
+        if (itemList->IsFocused()) {
+            LiftItem();
+        } else {
+            SortPouch();
+        }
+    });
     buttonHandler.RegisterButton(HidNpadButton_Plus, nullptr, [this]() { OpenPicker(); });
     carryButtonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() { DropItem(); });
     carryButtonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { PutBack(); });
@@ -317,12 +324,15 @@ void BagScreen::UpdateHelpItems() {
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove"});
         }
-        if (CanLift()) {
+        if (CanReorder()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move"});
         }
     } else {
         if (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open"});
+        }
+        if (CanReorder()) {
+            helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort"});
         }
         helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back"});
     }
@@ -587,7 +597,7 @@ void BagScreen::RemoveItem() {
         return;
     }
     const auto& slot = pouch.items[index];
-    if (!requestConfirmation("Remove Item", "Remove " + slot.name + " from the bag?", "Remove")) {
+    if (requestChoice("Remove Item", "Remove " + slot.name + " from the bag?", {"Remove", "Cancel"}) != 0) {
         return;
     }
     if (auto updated = bagDataProvider->SetCount(saveDataAccessor->getCurrentSaveData(), pouch.pouch, slot.slot, 0)) {
@@ -595,7 +605,7 @@ void BagScreen::RemoveItem() {
     }
 }
 
-bool BagScreen::CanLift() const {
+bool BagScreen::CanReorder() const {
     if (currentPouch >= bag.pouches.size()) {
         return false;
     }
@@ -605,7 +615,7 @@ bool BagScreen::CanLift() const {
 
 void BagScreen::LiftItem() {
     const size_t index = itemList->GetSelectedIndex();
-    if (!CanLift() || index >= bag.pouches[currentPouch].items.size()) {
+    if (!CanReorder() || index >= bag.pouches[currentPouch].items.size()) {
         if (auto row = itemList->GetItemAtIndex(index)) {
             row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
         }
@@ -650,6 +660,29 @@ void BagScreen::EndCarry() {
     UpdateHelpItems();
 }
 
+void BagScreen::SortPouch() {
+    const auto& pouch = bag.pouches[currentPouch];
+    if (!CanReorder()) {
+        pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
+        return;
+    }
+    std::vector<std::string> options{"Name", "Number"};
+    std::vector<pksm::bag::SortOrder> orders{pksm::bag::SortOrder::Name, pksm::bag::SortOrder::Number};
+    if (pouch.maxCount > 1) {  // one-of-each pouches have no quantities to order by
+        options.push_back("Quantity");
+        orders.push_back(pksm::bag::SortOrder::Quantity);
+    }
+    options.push_back("Cancel");
+    const int choice = requestChoice("Sort " + pouch.name, "Put the items in order by", options);
+    if (choice < 0) {
+        return;
+    }
+    if (auto updated = bagDataProvider->Sort(saveDataAccessor->getCurrentSaveData(), pouch.pouch, orders[choice])) {
+        bag.pouches[currentPouch] = std::move(*updated);
+        ShowPouch(currentPouch);  // every row moved: rebind from the top
+    }
+}
+
 std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
     std::vector<pksm::ui::HelpItem> items;
     if (picker->IsOpen()) {
@@ -678,13 +711,16 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
             items.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove Item"});
         }
-        if (CanLift()) {
+        if (CanReorder()) {
             items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move Item"});
         }
         items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Pouches"});
     } else {
         items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open Pouch"});
+        if (CanReorder()) {
+            items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort Pouch"});
+        }
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Main Menu"});
     }
     if (CanAdd()) {

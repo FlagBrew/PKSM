@@ -32,4 +32,7 @@ struct BagData {
     std::vector<Pouch> pouches;
 };
 
+// The orders a pouch can be put in: by name, by the game's own item number, or most held first
+enum class SortOrder { Name, Number, Quantity };
+
 }  // namespace pksm::bag

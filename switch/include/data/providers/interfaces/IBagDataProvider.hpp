@@ -41,4 +41,10 @@ public:
     // indexes by item (its slots never move), or a slot is past the pouch
     virtual std::optional<pksm::bag::Pouch>
     Move(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 fromSlot, u16 toSlot) = 0;
+
+    // Rewrites the pouch's items in the given order, packed from its first slot. Returns the
+    // pouch as the save now holds it, or nothing when saveData is not the live save or the
+    // pouch indexes by item
+    virtual std::optional<pksm::bag::Pouch>
+    Sort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, pksm::bag::SortOrder order) = 0;
 };

@@ -28,8 +28,9 @@ public:
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
-        std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
-            requestConfirmation,
+        std::function<
+            int(const std::string& title, const std::string& message, const std::vector<std::string>& options)>
+            requestChoice,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBagDataProvider::Ref bagDataProvider
     );
@@ -39,9 +40,10 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(176, 112, 16, 255);
     std::function<void()> onBack;
-    // Blocking yes/no prompt; Plutonium dialogs are application-level
-    std::function<bool(const std::string& title, const std::string& message, const std::string& confirmLabel)>
-        requestConfirmation;
+    // Blocking choice among options, the last one cancelling; the index taken, negative for none.
+    // Plutonium dialogs are application-level
+    std::function<int(const std::string& title, const std::string& message, const std::vector<std::string>& options)>
+        requestChoice;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBagDataProvider::Ref bagDataProvider;
 
@@ -135,13 +137,14 @@ private:
     void SearchPicker();
     void ClearSearch();
 
-    // Moving a row where the game keeps a slot array: Y lifts it, the cursor carries it, Y drops
-    // it into the save and B puts it back where it was
-    bool CanLift() const;
+    // Reordering, where the game keeps a slot array. In the list Y lifts a row, the cursor carries
+    // it, Y drops it into the save and B puts it back where it was; on the pouch column Y sorts
+    bool CanReorder() const;
     void LiftItem();
     void DropItem();
     void PutBack();
     void EndCarry();
+    void SortPouch();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

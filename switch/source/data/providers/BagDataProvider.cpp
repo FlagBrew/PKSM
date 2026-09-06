@@ -1,6 +1,7 @@
 #include "data/providers/BagDataProvider.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <unordered_set>
 
 #include "sav/Item.hpp"
@@ -254,6 +255,67 @@ BagDataProvider::Move(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::P
             sav->item(*sav->item(pouch, static_cast<u16>(slot + step)), pouch, static_cast<u16>(slot));
         }
         sav->item(*moving, pouch, toSlot);
+        saveDataAccessor->markDirty();
+    }
+    return ReadPouch(*sav, pouch, capacity);
+}
+
+std::optional<pksm::bag::Pouch> BagDataProvider::Sort(
+    const pksm::saves::SaveData::Ref& saveData,
+    ::pksm::Sav::Pouch pouch,
+    pksm::bag::SortOrder order
+) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (capacity == 0 || sav->pouchIndexedByItem(pouch)) {
+        return std::nullopt;
+    }
+    struct Entry {
+        std::unique_ptr<::pksm::Item> item;
+        u16 id;
+        std::string name;  // ASCII-folded: the games order names without regard to case
+        int slot;
+    };
+    std::vector<Entry> owned;  // in save order, so equal keys keep it
+    int last = -1;             // the last slot in use; what the packed items leave behind is cleared
+    const auto storageFormat = sav->generation();
+    const bool byName = order == pksm::bag::SortOrder::Name;
+    for (int slot = 0; slot < capacity; slot++) {
+        auto item = sav->item(pouch, static_cast<u16>(slot));
+        if (!item) {
+            break;
+        }
+        const u16 id = NativeItemId(*item);
+        if (id != 0 && item->count() > 0) {
+            std::string name = byName ? pksm::strings::ItemName(id, storageFormat) : "";
+            std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
+            owned.push_back({std::move(item), id, std::move(name), slot});
+            last = slot;
+        }
+    }
+    std::stable_sort(owned.begin(), owned.end(), [order](const Entry& a, const Entry& b) {
+        switch (order) {
+            case pksm::bag::SortOrder::Name:
+                return a.name < b.name;
+            case pksm::bag::SortOrder::Number:
+                return a.id < b.id;
+            case pksm::bag::SortOrder::Quantity:
+                return a.item->count() > b.item->count();
+        }
+        return false;
+    });
+    // Already in order and packed: nothing to write, so no unsaved change either
+    bool moved = last + 1 != static_cast<int>(owned.size());
+    for (size_t slot = 0; slot < owned.size() && !moved; slot++) {
+        moved = owned[slot].slot != static_cast<int>(slot);
+    }
+    if (moved) {
+        for (size_t slot = 0; slot < owned.size(); slot++) {
+            sav->item(*owned[slot].item, pouch, static_cast<u16>(slot));
+        }
+        for (int slot = static_cast<int>(owned.size()); slot <= last; slot++) {
+            sav->item(::pksm::Item1{}, pouch, static_cast<u16>(slot));
+        }
         saveDataAccessor->markDirty();
     }
     return ReadPouch(*sav, pouch, capacity);
