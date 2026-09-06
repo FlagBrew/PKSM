@@ -3028,6 +3028,7 @@ void HexEditScreen::drawMeaning() const
                     break;
             }
             break;
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }

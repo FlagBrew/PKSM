@@ -121,6 +121,12 @@ namespace i18n
                 return i18n::localize(lang, "TREASURES");
             case pksm::Sav::Pouch::Ingredient:
                 return i18n::localize(lang, "INGREDIENTS");
+            case pksm::Sav::Pouch::MegaStones:
+                return i18n::localize(lang, "MEGA_STONES");
+            case pksm::Sav::Pouch::Recipe:
+                return i18n::localize(lang, "RECIPES");
+            case pksm::Sav::Pouch::Donut:
+                return i18n::localize(lang, "DONUTS");
         }
         return emptyString;
     }

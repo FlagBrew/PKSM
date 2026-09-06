@@ -1745,6 +1745,7 @@ void Gui::format(const pksm::PKX& pkm, int x, int y)
             break;
         case pksm::Generation::UNUSED:
         case pksm::Generation::EIGHT:
+        case pksm::Generation::NINE:
             break;
     }
 }

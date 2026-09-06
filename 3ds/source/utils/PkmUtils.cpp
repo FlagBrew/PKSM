@@ -181,6 +181,7 @@ namespace
             case pksm::Generation::LGPE:
                 lgpeSave = true;
                 break;
+            case pksm::Generation::NINE:
             case pksm::Generation::UNUSED:
                 break;
         }
@@ -402,6 +403,7 @@ std::unique_ptr<pksm::PKX> PkmUtils::getDefault(pksm::Generation gen)
             return g8Default->clone();
         case pksm::Generation::LGPE:
             return lgpeDefault->clone();
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }
@@ -448,6 +450,7 @@ void PkmUtils::setDefault(std::unique_ptr<pksm::PKX> pkm)
             lgpeDefault = std::unique_ptr<pksm::PB7>((pksm::PB7*)pkm.release());
             lgpeSave    = true;
             break;
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }

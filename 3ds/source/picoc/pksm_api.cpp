@@ -140,6 +140,7 @@ namespace
             case pksm::Generation::LGPE:
             case pksm::Generation::EIGHT:
                 return;
+            case pksm::Generation::NINE:
             case pksm::Generation::UNUSED:
                 break;
         }
@@ -918,6 +919,7 @@ void pkx_box_size(
         case pksm::Generation::EIGHT:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::BOX_LENGTH;
             break;
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }
@@ -962,6 +964,7 @@ void pkx_party_size(
         case pksm::Generation::EIGHT:
             ReturnValue->Val->Integer = pksm::GenToPkx<pksm::Generation::EIGHT>::PKX::PARTY_LENGTH;
             break;
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }
@@ -1026,6 +1029,7 @@ void pkx_generate(
                 data);
             break;
         // Should never happen
+        case pksm::Generation::NINE:
         case pksm::Generation::UNUSED:
             break;
     }
@@ -2346,6 +2350,7 @@ void sav_inject_wcx(
         case pksm::Generation::THREE:
         case pksm::Generation::ONE:
         case pksm::Generation::TWO:
+        case pksm::Generation::NINE:
             return;
     }
 
