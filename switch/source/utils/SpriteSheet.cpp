@@ -7,6 +7,7 @@
 
 #include "lz4.h"
 #include "utils/Logger.hpp"
+#include "utils/TextureGraveyard.hpp"
 #include "utils/SDLHelper.hpp"
 
 namespace pksm::utils {
@@ -173,6 +174,9 @@ SpriteRef SpriteSheet::Get(u32 key) {
 
 size_t SpriteSheet::ReleaseSprites() {
     const size_t released = sprites.size();
+    for (auto& [key, cached] : sprites) {
+        TextureGraveyard::Bury(std::move(cached.texture));
+    }
     sprites.clear();
     lru.clear();
     stagedPage = -1;

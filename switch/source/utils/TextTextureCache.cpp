@@ -1,5 +1,7 @@
 #include "utils/TextTextureCache.hpp"
 
+#include "utils/TextureGraveyard.hpp"
+
 namespace pksm::utils {
 
 std::list<TextTextureCache::Entry> TextTextureCache::order;
@@ -35,6 +37,9 @@ TextTextureCache::Get(const std::string& font, const std::string& text, pu::ui::
 
 size_t TextTextureCache::Clear() {
     const size_t released = order.size();
+    for (auto& entry : order) {
+        TextureGraveyard::Bury(std::move(entry.texture));
+    }
     index.clear();
     order.clear();
     return released;

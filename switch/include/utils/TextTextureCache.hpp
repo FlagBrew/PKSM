@@ -18,7 +18,7 @@ public:
     // Texture for text in the named font; rasterized on a miss
     static pu::sdl2::TextureHandle::Ref Get(const std::string& font, const std::string& text, pu::ui::Color color);
 
-    // Drops every cached texture (session teardown); returns how many
+    // Hands every cached texture to the graveyard (session teardown); returns how many
     static size_t Clear();
 
 private:

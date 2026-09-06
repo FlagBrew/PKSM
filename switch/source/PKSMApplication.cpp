@@ -17,6 +17,7 @@
 #include "utils/PokemonSpriteManager.hpp"
 #include "utils/PouchGlyphs.hpp"
 #include "utils/TextTextureCache.hpp"
+#include "utils/TextureGraveyard.hpp"
 
 namespace pksm {
 
@@ -124,6 +125,8 @@ PKSMApplication::PKSMApplication(
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveLoad(); });
+    // A title return's caches, spread thin; a frame nobody can interact with can spare more
+    AddRenderCallback([this]() { utils::TextureGraveyard::Drain(this->in_render_over ? 8 : 2); });
     // The error toast also ends on any button press; a no-op once the 3s timeout ended it
     SetOnInput([this](const u64 down, const u64, const u64, const pu::ui::TouchPoint) {
         if (down != 0 && errorToastActive) {
@@ -277,6 +280,8 @@ void PKSMApplication::ShowTitleLoadScreen() {
     saveDataAccessor->unloadSave();
     const u64 t1 = armGetSystemTick();
     if (storageScreen || bagScreen) {
+        // Screens before caches: the rows let go of shared handles cheaply while the caches still
+        // own them, so the caches bury sole-owned textures and the burst never lands here
         storageScreen = nullptr;
         bagScreen = nullptr;
         const u64 t2 = armGetSystemTick();
