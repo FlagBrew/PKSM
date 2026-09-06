@@ -79,8 +79,8 @@ SpriteRef ItemSpriteManager::GetSprite(u32 key) {
     return Sheet().Get(UNKNOWN_ITEM_KEY);
 }
 
-void ItemSpriteManager::ClearCache() {
-    Sheet().ReleaseSprites();
+size_t ItemSpriteManager::ClearCache() {
+    return Sheet().ReleaseSprites();
 }
 
 }  // namespace pksm::utils

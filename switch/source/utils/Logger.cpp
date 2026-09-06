@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <cstdio>
 #include <ctime>
+#include <malloc.h>
 #include <unistd.h>
 
 // libnx heap bounds, set up at startup by the runtime
@@ -331,18 +332,25 @@ void Logger::LogMemoryInfo() {
     // Calculate available memory
     u64 available = total - used;
 
-    // sbrk's high-water mark tracks actual malloc-heap claim (mallinfo is
-    // unreliable here)
+    // The break (sbrk) is the arena's claim on the fake heap, which the applet ceiling limits;
+    // newlib trims the top back when the free tail exceeds 128 KB, so it can fall as well as
+    // rise. mallinfo's in-use figure is live allocations inside that claim; the difference is
+    // free or fragmented space
     const u64 heapTotal = static_cast<u64>(fake_heap_end - fake_heap_start);
-    const u64 heapHighWater = static_cast<u64>(static_cast<char*>(sbrk(0)) - fake_heap_start);
+    const auto arena = mallinfo();
 
     std::stringstream ss;
     ss << "Memory - Total: " << (total / 1024 / 1024) << "MB, "
        << "Used: " << (used / 1024 / 1024) << "MB, "
        << "Available: " << (available / 1024 / 1024) << "MB"
        << " | Heap total: " << (heapTotal / 1024 / 1024) << "MB, "
-       << "high-water: " << (heapHighWater / 1024 / 1024) << "MB";
+       << "high-water: " << HeapClaimMB() << "MB, "
+       << "in use: " << (static_cast<u64>(arena.uordblks) / 1024 / 1024) << "MB";
     Debug(ss.str());
+}
+
+u64 Logger::HeapClaimMB() {
+    return static_cast<u64>(static_cast<char*>(sbrk(0)) - fake_heap_start) / 1024 / 1024;
 }
 
 }  // namespace pksm::utils

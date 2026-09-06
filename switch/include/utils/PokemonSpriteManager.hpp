@@ -15,7 +15,7 @@ public:
     static SpriteRef GetPokemonSprite(u16 species, u8 form = 0, bool shiny = false);
 
     // Drop the warm sprite textures (session teardown)
-    static void ClearCache();
+    static size_t ClearCache();  // returns how many sprites it dropped
 
 private:
     static SpriteSheet& Sheet();

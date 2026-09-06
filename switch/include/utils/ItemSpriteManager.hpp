@@ -22,7 +22,7 @@ public:
     static SpriteRef GetSprite(u32 key);
 
     // Drop the warm sprite textures (session teardown)
-    static void ClearCache();
+    static size_t ClearCache();  // returns how many sprites it dropped
 
 private:
     static SpriteSheet& Sheet();

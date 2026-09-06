@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace pksm::utils {
@@ -15,6 +16,8 @@ public:
     static void Warning(const std::string& message);
     static void Error(const std::string& message);
     static void LogMemoryInfo();
+    // The malloc arena's claim on the applet heap, in MB: what the heap ceiling is measured against
+    static std::uint64_t HeapClaimMB();
     static void LogOutputMode();
     static void LogEnvironment();
     static void Flush();

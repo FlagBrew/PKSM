@@ -27,8 +27,9 @@ public:
     // Nearest keeps pixel art crisp when drawn at an integer multiple; the renderer default is linear
     void SetScaleMode(SDL_ScaleMode mode) { scaleMode = mode; }
 
-    // Drop cached textures; sprites still on screen survive through their shared handles
-    void ReleaseSprites();
+    // Drops every cached texture; sprites still on screen survive through their shared
+    // handles. Returns how many
+    size_t ReleaseSprites();
 
     static constexpr u32 Key(u16 species, u8 form, bool shiny) {
         return (u32(species) << 12) | (u32(form) << 2) | (shiny ? 1 : 0);

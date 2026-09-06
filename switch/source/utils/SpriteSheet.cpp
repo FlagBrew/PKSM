@@ -171,12 +171,12 @@ SpriteRef SpriteSheet::Get(u32 key) {
     return {handle, {0, 0, spriteWidth, spriteHeight}};
 }
 
-void SpriteSheet::ReleaseSprites() {
+size_t SpriteSheet::ReleaseSprites() {
     const size_t released = sprites.size();
     sprites.clear();
     lru.clear();
     stagedPage = -1;
-    LOG_DEBUG("Released " + std::to_string(released) + " cached sprites");
+    return released;
 }
 
 }  // namespace pksm::utils

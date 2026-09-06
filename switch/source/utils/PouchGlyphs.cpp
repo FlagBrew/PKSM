@@ -83,8 +83,8 @@ SpriteRef PouchGlyphs::Get(::pksm::Sav::Pouch pouch, ::pksm::Generation storageF
     return Sheet().Get(GlyphFor(pouch, storageFormat));
 }
 
-void PouchGlyphs::ClearCache() {
-    Sheet().ReleaseSprites();
+size_t PouchGlyphs::ClearCache() {
+    return Sheet().ReleaseSprites();
 }
 
 }  // namespace pksm::utils

@@ -33,9 +33,11 @@ TextTextureCache::Get(const std::string& font, const std::string& text, pu::ui::
     return texture;
 }
 
-void TextTextureCache::Clear() {
+size_t TextTextureCache::Clear() {
+    const size_t released = order.size();
     index.clear();
     order.clear();
+    return released;
 }
 
 }  // namespace pksm::utils

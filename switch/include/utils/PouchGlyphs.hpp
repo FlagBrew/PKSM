@@ -18,7 +18,7 @@ public:
     static SpriteRef Get(::pksm::Sav::Pouch pouch, ::pksm::Generation storageFormat);
 
     // Drop the warm textures (session teardown)
-    static void ClearCache();
+    static size_t ClearCache();  // returns how many sprites it dropped
 
 private:
     static SpriteSheet& Sheet();

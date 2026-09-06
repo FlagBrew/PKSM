@@ -46,8 +46,8 @@ SpriteRef PokemonSpriteManager::GetPokemonSprite(u16 species, u8 form, bool shin
     return {};
 }
 
-void PokemonSpriteManager::ClearCache() {
-    Sheet().ReleaseSprites();
+size_t PokemonSpriteManager::ClearCache() {
+    return Sheet().ReleaseSprites();
 }
 
 }  // namespace pksm::utils

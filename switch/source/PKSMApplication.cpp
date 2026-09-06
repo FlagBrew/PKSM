@@ -35,6 +35,14 @@ pu::ui::render::RendererInitOptions PKSMApplication::CreateRendererOptions() {
     // Enable romfs for loading assets bundled with the NRO
     renderer_opts.init_romfs = true;
 
+    // The renderer's stages are where most of the boot heap goes; each one is measured
+    renderer_opts.SetInitStageCallback([](const char* stage) {
+        LOG_DEBUG(
+            "Renderer init " + std::string(stage) + ": heap claim " + std::to_string(utils::Logger::HeapClaimMB()) +
+            " MB"
+        );
+    });
+
     LOG_DEBUG("Renderer options created successfully");
     return renderer_opts;
 }
@@ -262,15 +270,27 @@ void PKSMApplication::ShowMainMenu() {
 }
 
 void PKSMApplication::ShowTitleLoadScreen() {
-    // Release the Sav and storage textures back to the applet heap; everything rebuilds on demand
+    // Release the Sav and storage textures back to the applet heap; everything rebuilds on demand.
+    // Freeing hundreds of textures at once is the title return's cost, so it is measured
+    const auto ms = [](u64 from, u64 to) { return std::to_string(armTicksToNs(to - from) / 1000000); };
+    const u64 t0 = armGetSystemTick();
     saveDataAccessor->unloadSave();
+    const u64 t1 = armGetSystemTick();
     if (storageScreen || bagScreen) {
         storageScreen = nullptr;
         bagScreen = nullptr;
-        utils::PokemonSpriteManager::ClearCache();
-        utils::ItemSpriteManager::ClearCache();
-        utils::PouchGlyphs::ClearCache();
-        utils::TextTextureCache::Clear();
+        const u64 t2 = armGetSystemTick();
+        const size_t sprites = utils::PokemonSpriteManager::ClearCache();
+        const size_t items = utils::ItemSpriteManager::ClearCache();
+        const size_t glyphs = utils::PouchGlyphs::ClearCache();
+        const size_t texts = utils::TextTextureCache::Clear();
+        const u64 t3 = armGetSystemTick();
+        LOG_DEBUG(
+            "Title return: save " + ms(t0, t1) + " ms, screens " + ms(t1, t2) + " ms, caches " + ms(t2, t3) + " ms (" +
+            std::to_string(sprites) + " sprites, " + std::to_string(items) + " items, " + std::to_string(glyphs) +
+            " glyphs, " + std::to_string(texts) + " texts)"
+        );
+        utils::Logger::Flush();  // a milestone worth having even if the app exits right after
     }
     LOG_MEMORY();
     LOG_DEBUG("Switching to title load screen");

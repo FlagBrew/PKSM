@@ -8,7 +8,7 @@
 namespace pksm::utils {
 
 // Rasterized text shared by everything that draws the same string in the same font and colour,
-// kept in a bounded least-recently-used cache. Destroying a texture costs a third of a
+// kept in a bounded least-recently-used cache. Destroying a texture costs a quarter of a
 // millisecond on the console, so a list that let every scrolled-past row keep its own text
 // paid hundreds of them at once when it changed; here an eviction is one texture at a time,
 // and the rows in view hold their entries alive whether or not the cache still does.
@@ -18,8 +18,8 @@ public:
     // Texture for text in the named font; rasterized on a miss
     static pu::sdl2::TextureHandle::Ref Get(const std::string& font, const std::string& text, pu::ui::Color color);
 
-    // Drop every cached texture (session teardown)
-    static void Clear();
+    // Drops every cached texture (session teardown); returns how many
+    static size_t Clear();
 
 private:
     static constexpr size_t CAPACITY = 96;  // a few screens of two-texture rows
