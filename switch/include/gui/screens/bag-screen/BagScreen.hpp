@@ -9,6 +9,7 @@
 #include "data/providers/interfaces/IBagDataProvider.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "gui/screens/bag-screen/BagHelp.hpp"
+#include "gui/screens/bag-screen/BagShortcuts.hpp"
 #include "gui/shared/ChoiceDialog.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
 #include "gui/shared/components/BagItemList.hpp"
@@ -58,6 +59,8 @@ private:
     pksm::ui::BagItemList::Ref itemList;
     // Stands in for the list while an item is being added
     pksm::ui::ItemPicker::Ref picker;
+    // The right stick's register/unregister where a game has a shortcut button and no favourite
+    std::unique_ptr<BagShortcuts> shortcuts;
     bool pickerFromList = false;  // where focus returns when the picker closes without a choice
     // The row Y picked up, by its index before the carry; the list carries it, the save is untouched until the drop
     static constexpr size_t NOT_LIFTED = SIZE_MAX;
@@ -112,15 +115,6 @@ private:
     // The game's marks on the cursor row: the right stick's click flips favourite, the left's the red dot
     const pksm::bag::Slot* CursorSlot() const;
     void ToggleMark(bool favoriteMark);
-    // Where a game has no favourite, the right stick registers a key item to its shortcut button
-    // instead: straight in when only one thing can happen, through the dialog when a slot must be
-    // chosen. Unregistering never asks
-    bool CanRegister() const;
-    std::string ShortcutAction() const;
-    void ToggleShortcut();
-    void ApplyShortcut(std::optional<pksm::bag::Pouch> updated);
-    void RefreshShortcuts();
-    void PushShortcutGlyphs();  // the row list's glyph per slot, from bag.shortcuts
 
     // Adding an item: Plus swaps the list for the picker, a choice lands as the cursor row
     bool CanAdd() const;

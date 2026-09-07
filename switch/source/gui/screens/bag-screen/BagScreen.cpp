@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <switch.h>
 
-#include "gui/screens/bag-screen/ShortcutLabels.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PouchGlyphs.hpp"
 #include "utils/SoftwareKeyboard.hpp"
@@ -37,11 +36,6 @@ std::string Noun(const pksm::bag::Pouch& pouch) {
     return pouch.pouch == ::pksm::Sav::Pouch::Donut ? "donut" : "item";
 }
 
-size_t HeldShortcuts(const std::vector<pksm::bag::Shortcut>& shortcuts) {
-    return static_cast<size_t>(std::count_if(shortcuts.begin(), shortcuts.end(), [](const pksm::bag::Shortcut& s) {
-        return s.itemId != 0;
-    }));
-}
 
 }  // namespace
 
@@ -84,7 +78,25 @@ BagScreen::BagScreen(
     );
     InitializePouchColumn();
     InitializeItemList();
-    PushShortcutGlyphs();
+    shortcuts = std::make_unique<BagShortcuts>(
+        bag,
+        itemList,
+        bagDataProvider,
+        saveDataAccessor,
+        BagShortcuts::Hooks{
+            .requestChoice = requestChoice,
+            .applyPouch =
+                [this](pksm::bag::Pouch pouch) { ApplyPouch(std::move(pouch), itemList->GetSelectedIndex(), true); },
+            .shakeCursor =
+                [this]() {
+                    if (auto row = itemList->GetItemAtIndex(itemList->GetSelectedIndex())) {
+                        row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);
+                    }
+                },
+            .beforeDialog = [this]() { adjustRepeat.Reset(); },
+        }
+    );
+    shortcuts->PushGlyphs();
     InitializePicker();
     InitializeHelpFooter();
 
@@ -273,7 +285,8 @@ BagHelpState BagScreen::HelpState() const {
         .canMarkSeen = bag.keepsNewMark && CursorSlot() != nullptr,
         .rowFavorite = CursorSlot() != nullptr && CursorSlot()->favorite,
         .rowNew = CursorSlot() != nullptr && CursorSlot()->isNew,
-        .shortcutAction = ShortcutAction(),
+        .shortcutAction =
+            currentPouch < bag.pouches.size() ? shortcuts->Action(bag.pouches[currentPouch], CursorSlot()) : "",
     };
 }
 
@@ -288,8 +301,8 @@ const pksm::bag::Slot* BagScreen::CursorSlot() const {
 
 void BagScreen::ToggleMark(bool favoriteMark) {
     const auto* slot = CursorSlot();
-    if (favoriteMark && CanRegister()) {
-        ToggleShortcut();
+    if (favoriteMark && slot && shortcuts->CanRegister(bag.pouches[currentPouch], slot)) {
+        shortcuts->Toggle(bag.pouches[currentPouch], *slot);
         return;
     }
     if (!slot || !(favoriteMark ? bag.keepsFavorite : bag.keepsNewMark)) {
@@ -314,92 +327,6 @@ void BagScreen::ToggleMark(bool favoriteMark) {
     });
     const size_t index = row == items.end() ? itemList->GetSelectedIndex() : static_cast<size_t>(row - items.begin());
     ApplyPouch(std::move(*updated), index, true);
-}
-
-bool BagScreen::CanRegister() const {
-    return !bag.keepsFavorite && !bag.shortcuts.empty() && CursorSlot() != nullptr &&
-           bag.pouches[currentPouch].pouch == ::pksm::Sav::Pouch::KeyItem;
-}
-
-std::string BagScreen::ShortcutAction() const {
-    if (!CanRegister()) {
-        return "";
-    }
-    const auto* slot = CursorSlot();
-    if (slot->shortcut >= 0) {
-        return "Unregister from " + ShortcutName(bag.shortcuts[slot->shortcut]);
-    }
-    if (bag.shortcuts.size() == 1 || HeldShortcuts(bag.shortcuts) == 0) {
-        return "Register to " + ShortcutName(bag.shortcuts.front());
-    }
-    return "Register…";
-}
-
-void BagScreen::ToggleShortcut() {
-    const auto* slot = CursorSlot();
-    const auto pouch = bag.pouches[currentPouch].pouch;
-    const u16 slotIndex = slot->slot;
-    const auto save = saveDataAccessor->getCurrentSaveData();
-    if (slot->shortcut >= 0) {
-        ApplyShortcut(bagDataProvider->Unregister(save, pouch, slotIndex));
-        return;
-    }
-    // One outcome, no prompt: a lone slot takes or replaces, an empty list takes the first slot
-    if (bag.shortcuts.size() == 1 || HeldShortcuts(bag.shortcuts) == 0) {
-        ApplyShortcut(bagDataProvider->Register(save, pouch, slotIndex, std::nullopt));
-        return;
-    }
-    // The held slots, then only the next free one: the games keep the list packed
-    std::vector<std::string> options;
-    std::vector<std::string> notes;
-    std::vector<u8> targets;
-    const bool positions = bag.shortcuts.front().button == pksm::bag::ShortcutButton::Position;
-    for (size_t i = 0; i < bag.shortcuts.size(); i++) {
-        const auto& shortcut = bag.shortcuts[i];
-        const bool free = shortcut.itemId == 0;
-        options.push_back((positions ? "" : ShortcutGlyph(shortcut) + "  ") + ShortcutLabel(shortcut));
-        notes.push_back(free ? "Free" : "Replaces " + shortcut.name);
-        targets.push_back(static_cast<u8>(i));
-        if (free) {
-            break;
-        }
-    }
-    options.push_back("Cancel");
-    adjustRepeat.Reset();  // the dialog swallows the release
-    const int choice = requestChoice({
-        "Register " + slot->name,
-        positions ? "Which position in the Ready menu?" : "Which button?",
-        std::move(options),
-        std::move(notes),
-        true,
-    });
-    if (choice < 0) {
-        return;
-    }
-    ApplyShortcut(bagDataProvider->Register(save, pouch, slotIndex, targets[choice]));
-}
-
-void BagScreen::ApplyShortcut(std::optional<pksm::bag::Pouch> updated) {
-    if (!updated) {
-        if (auto row = itemList->GetItemAtIndex(itemList->GetSelectedIndex())) {
-            row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // every shortcut slot is taken
-        }
-        return;
-    }
-    ApplyPouch(std::move(*updated), itemList->GetSelectedIndex(), true);
-}
-
-void BagScreen::RefreshShortcuts() {
-    bag.shortcuts = bagDataProvider->GetShortcuts(saveDataAccessor->getCurrentSaveData());
-    PushShortcutGlyphs();
-}
-
-void BagScreen::PushShortcutGlyphs() {
-    std::vector<std::string> glyphs;
-    for (const auto& shortcut : bag.shortcuts) {
-        glyphs.push_back(ShortcutGlyph(shortcut));
-    }
-    itemList->SetShortcutGlyphs(std::move(glyphs));
 }
 
 void BagScreen::UpdateHelpItems() {
@@ -451,7 +378,7 @@ void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected, bool rebind)
     const bool sameRows = !rebind && pouch.items.size() == bag.pouches[currentPouch].items.size();
     bag.pouches[currentPouch] = std::move(pouch);
     if (!bag.shortcuts.empty() && bag.pouches[currentPouch].pouch == ::pksm::Sav::Pouch::KeyItem) {
-        RefreshShortcuts();  // a removal or a registration changed the slots the rows show
+        shortcuts->Refresh();  // a removal or a registration changed the slots the rows show
     }
     const auto& items = bag.pouches[currentPouch].items;
     if (items.empty()) {
