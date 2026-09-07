@@ -11,13 +11,8 @@
 #include "gui/boot/BootFlow.hpp"
 #include "gui/shared/FontManager.hpp"
 #include "gui/shared/UIConstants.hpp"
-#include "utils/AssetDownloader.hpp"
-#include "utils/ItemSpriteManager.hpp"
 #include "utils/Logger.hpp"
-#include "utils/PokemonSpriteManager.hpp"
-#include "utils/PouchGlyphs.hpp"
-#include "utils/TextTextureCache.hpp"
-#include "utils/TextureGraveyard.hpp"
+#include "utils/TextureCaches.hpp"
 
 namespace pksm {
 
@@ -126,7 +121,7 @@ PKSMApplication::PKSMApplication(
     AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
     AddRenderCallback([this]() { this->ProcessPendingSaveLoad(); });
     // A title return's caches, spread thin; a frame nobody can interact with can spare more
-    AddRenderCallback([this]() { utils::TextureGraveyard::Drain(this->in_render_over ? 8 : 2); });
+    AddRenderCallback([this]() { utils::TextureCaches::Drain(this->in_render_over ? 8 : 2); });
     // The error toast also ends on any button press; a no-op once the 3s timeout ended it
     SetOnInput([this](const u64 down, const u64, const u64, const pu::ui::TouchPoint) {
         if (down != 0 && errorToastActive) {
@@ -184,15 +179,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         logBootPhase("asset bootstrap");
 
-        if (!utils::PokemonSpriteManager::Initialize(
-                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::PokemonSprites)
-            ) ||
-            !utils::ItemSpriteManager::Initialize(
-                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::ItemSprites)
-            ) ||
-            !utils::PouchGlyphs::Initialize(
-                utils::AssetDownloader::ResolvedPath(utils::AssetDownloader::Asset::PouchGlyphs)
-            )) {
+        if (!utils::TextureCaches::Initialize()) {
             LOG_ERROR("Failed to initialize the sprite sheets");
             bootProgress.Release();
             renderer->Finalize();
@@ -285,15 +272,12 @@ void PKSMApplication::ShowTitleLoadScreen() {
         storageScreen = nullptr;
         bagScreen = nullptr;
         const u64 t2 = armGetSystemTick();
-        const size_t sprites = utils::PokemonSpriteManager::ClearCache();
-        const size_t items = utils::ItemSpriteManager::ClearCache();
-        const size_t glyphs = utils::PouchGlyphs::ClearCache();
-        const size_t texts = utils::TextTextureCache::Clear();
+        const auto cleared = utils::TextureCaches::Clear();
         const u64 t3 = armGetSystemTick();
         LOG_DEBUG(
             "Title return: save " + ms(t0, t1) + " ms, screens " + ms(t1, t2) + " ms, caches " + ms(t2, t3) + " ms (" +
-            std::to_string(sprites) + " sprites, " + std::to_string(items) + " items, " + std::to_string(glyphs) +
-            " glyphs, " + std::to_string(texts) + " texts)"
+            std::to_string(cleared.sprites) + " sprites, " + std::to_string(cleared.items) + " items, " +
+            std::to_string(cleared.glyphs) + " glyphs, " + std::to_string(cleared.texts) + " texts)"
         );
         utils::Logger::Flush();  // a milestone worth having even if the app exits right after
     }
