@@ -25,6 +25,9 @@ struct BagHelpState {
     bool canMarkSeen;
     bool rowFavorite;
     bool rowNew;
+    // What the right stick does to the cursor row's shortcut where a game has one and no
+    // favourite, empty otherwise
+    std::string shortcutAction;
 };
 
 // The footer keeps to what a newcomer needs; the Minus overlay lists everything

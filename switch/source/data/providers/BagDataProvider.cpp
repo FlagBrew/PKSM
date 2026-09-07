@@ -6,6 +6,7 @@
 #include "data/bag/BagSorting.hpp"
 #include "data/bag/ItemMarks.hpp"
 #include "data/bag/NativeItems.hpp"
+#include "data/bag/Shortcuts.hpp"
 #include "sav/Item.hpp"
 #include "sav/SavZA.hpp"
 #include "utils/CoreStrings.hpp"
@@ -63,6 +64,7 @@ pksm::bag::Pouch ReadPouch(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch, int
             row.key = pksm::bag::BagSortKeyOf(sav, *item, row.slot.name, sort);
             row.slot.isNew = row.key.isNew;
             row.slot.favorite = row.key.favorite;
+            row.slot.shortcut = pouch == ::pksm::Sav::Pouch::KeyItem ? pksm::bag::ShortcutOf(sav, id) : -1;
             rows.push_back(std::move(row));
         }
     }
@@ -105,6 +107,7 @@ pksm::bag::BagData BagDataProvider::GetBag(const pksm::saves::SaveData::Ref& sav
     bag.storageFormat = sav->generation();
     bag.keepsNewMark = pksm::bag::KeepsNewMark(*sav);
     bag.keepsFavorite = pksm::bag::KeepsFavorite(*sav);
+    bag.shortcuts = pksm::bag::ShortcutsOf(*sav);
     for (const auto& [pouch, capacity] : sav->pouches()) {
         bag.pouches.push_back(ReadPouch(*sav, pouch, capacity));
     }
@@ -130,9 +133,12 @@ std::optional<pksm::bag::Pouch> BagDataProvider::SetCount(
     if (slot >= capacity) {
         return std::nullopt;
     }
+    auto item = sav->item(pouch, slot);
+    if (count == 0) {
+        sav->unregisterItem(pksm::bag::NativeItemId(*item));  // a removed item leaves its shortcut too
+    }
     if (count > 0 || sav->pouchIndexedByItem(pouch)) {
         // A slot that is the item's own just reads as unowned once emptied
-        auto item = sav->item(pouch, slot);
         item->count(count);
         sav->item(*item, pouch, slot);
     } else {
@@ -319,6 +325,51 @@ std::optional<pksm::bag::Pouch> BagDataProvider::SetMarks(
     sav->item(*item, pouch, slot);
     saveDataAccessor->markDirty();
     return ReadPouch(*sav, pouch, capacity);
+}
+
+std::optional<pksm::bag::Pouch> BagDataProvider::Register(
+    const pksm::saves::SaveData::Ref& saveData,
+    ::pksm::Sav::Pouch pouch,
+    u16 slot,
+    std::optional<u8> shortcut
+) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (slot >= capacity || pouch != ::pksm::Sav::Pouch::KeyItem || sav->registeredItemSlots() == 0 ||
+        (shortcut && *shortcut >= sav->registeredItemSlots())) {
+        return std::nullopt;
+    }
+    const u16 itemId = pksm::bag::NativeItemId(*sav->item(pouch, slot));
+    sav->unregisterItem(itemId);  // an item sits in one slot at most
+    if (shortcut) {
+        // The games keep the list packed, so a slot past the first free one is not on offer
+        u8 firstFree = 0;
+        while (firstFree < sav->registeredItemSlots() && sav->registeredItem(firstFree) != 0) {
+            firstFree++;
+        }
+        sav->registeredItem(itemId, std::min(*shortcut, firstFree));
+    } else if (!sav->registerItem(itemId)) {
+        return std::nullopt;
+    }
+    saveDataAccessor->markDirty();
+    return ReadPouch(*sav, pouch, capacity);
+}
+
+std::optional<pksm::bag::Pouch>
+BagDataProvider::Unregister(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 slot) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (slot >= capacity || sav->registeredItemSlots() == 0) {
+        return std::nullopt;
+    }
+    sav->unregisterItem(pksm::bag::NativeItemId(*sav->item(pouch, slot)));
+    saveDataAccessor->markDirty();
+    return ReadPouch(*sav, pouch, capacity);
+}
+
+std::vector<pksm::bag::Shortcut> BagDataProvider::GetShortcuts(const pksm::saves::SaveData::Ref& saveData) const {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    return sav ? pksm::bag::ShortcutsOf(*sav) : std::vector<pksm::bag::Shortcut>{};
 }
 
 std::optional<pksm::bag::BagData>

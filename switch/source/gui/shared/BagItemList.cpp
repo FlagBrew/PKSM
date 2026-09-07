@@ -72,7 +72,10 @@ void pksm::ui::BagItemList::SetDataSource(
         const std::string detail = !slot.detail.empty() ? slot.detail
             : slot.count > 0                            ? "×" + std::to_string(slot.count)
                                                         : "";
-        rows[i]->SetItem(spriteKey, slot.name, detail, slot.isNew, slot.favorite);
+        const std::string shortcut = slot.shortcut >= 0 && static_cast<size_t>(slot.shortcut) < shortcutGlyphs.size()
+            ? shortcutGlyphs[slot.shortcut]
+            : "";
+        rows[i]->SetItem(spriteKey, slot.name, detail, slot.isNew, slot.favorite, shortcut);
         rows[i]->SetSelected(false);
         scrollView->Add(rows[i]);
     }

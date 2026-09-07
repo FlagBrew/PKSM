@@ -1,5 +1,6 @@
 #include "data/bag/ItemMarks.hpp"
 
+
 namespace {
 
 bool IsSwordShield(const ::pksm::Sav& sav) {
@@ -28,24 +29,31 @@ bool KeepsFavorite(const ::pksm::Sav& sav) {
 }
 
 ItemMarks MarksOf(const ::pksm::Sav& sav, const ::pksm::Item& item) {
+    ItemMarks marks;
     switch (item.generation()) {
         case ::pksm::Generation::SEVEN:
-            return {static_cast<const ::pksm::Item7&>(item).newFlag(), false};
+            marks.isNew = static_cast<const ::pksm::Item7&>(item).newFlag();
+            break;
         case ::pksm::Generation::LGPE:
-            return {static_cast<const ::pksm::Item7b&>(item).newFlag(), false};
+            marks.isNew = static_cast<const ::pksm::Item7b&>(item).newFlag();
+            break;
         case ::pksm::Generation::EIGHT:
             if (IsSwordShield(sav)) {
                 const auto& item8 = static_cast<const ::pksm::Item8&>(item);
-                return {item8.newFlag(), item8.favoriteFlag()};
+                marks.isNew = item8.newFlag();
+                marks.favorite = item8.favoriteFlag();
             }
-            return {};
+            break;
         case ::pksm::Generation::NINE: {
             const auto& item9 = static_cast<const ::pksm::Item9a&>(item);
-            return {item9.newFlag(), item9.favoriteFlag()};
+            marks.isNew = item9.newFlag();
+            marks.favorite = item9.favoriteFlag();
+            break;
         }
         default:
-            return {};
+            break;
     }
+    return marks;
 }
 
 void SetMarks(const ::pksm::Sav& sav, ::pksm::Item& item, ItemMarks marks) {

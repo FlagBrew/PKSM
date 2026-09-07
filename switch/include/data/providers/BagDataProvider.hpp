@@ -26,6 +26,15 @@ public:
     std::optional<pksm::bag::Pouch>
     SetMarks(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 slot, bool isNew, bool favorite)
         override;
+    std::optional<pksm::bag::Pouch> Register(
+        const pksm::saves::SaveData::Ref& saveData,
+        ::pksm::Sav::Pouch pouch,
+        u16 slot,
+        std::optional<u8> shortcut
+    ) override;
+    std::optional<pksm::bag::Pouch>
+    Unregister(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 slot) override;
+    std::vector<pksm::bag::Shortcut> GetShortcuts(const pksm::saves::SaveData::Ref& saveData) const override;
     std::optional<pksm::bag::BagData>
     SetPouchSort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, size_t option) override;
 };

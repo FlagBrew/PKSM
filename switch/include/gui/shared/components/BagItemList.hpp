@@ -34,6 +34,7 @@ private:
     pu::i32 height;
     pu::i32 rowHeight;
     std::vector<BagItemRow::Ref> rows;  // The pool; the first shown rows are in use
+    std::vector<std::string> shortcutGlyphs;  // by shortcut slot
     size_t shown = 0;
     bool carrying = false;  // The cursor row goes along with the cursor
     ScrollView::Ref scrollView;
@@ -101,6 +102,9 @@ public:
     static constexpr u64 PAGE_BUTTONS = HidNpadButton_StickRUp | HidNpadButton_StickRDown;
     // Redraws one row's right-hand text; edited tints it
     void SetRowDetail(size_t index, const std::string& detail, bool edited);
+    // The glyph each shortcut slot shows on the row holding its item, by slot; takes effect on
+    // the next bind
+    void SetShortcutGlyphs(std::vector<std::string> glyphs) { shortcutGlyphs = std::move(glyphs); }
     // While carrying, the cursor takes its row along: a move shifts the rows in between back by
     // one, and the carried row draws as lifted. What the new order means for the save is the
     // parent's to decide

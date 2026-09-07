@@ -1,5 +1,6 @@
 #include "ScreenRouter.hpp"
 
+#include "gui/shared/DialogStyle.hpp"
 #include "utils/Logger.hpp"
 #include "utils/TextureCaches.hpp"
 
@@ -118,8 +119,19 @@ void ScreenRouter::ShowBagScreen() {
             [this]() { this->ShowMainMenu(); },
             [this](pu::ui::Overlay::Ref overlay) { this->app.StartOverlay(overlay); },
             [this]() { this->app.EndOverlay(); },
-            [this](const std::string& title, const std::string& message, const std::vector<std::string>& options) {
-                return this->app.CreateShowDialog(title, message, options, true);
+            [this](const pksm::ui::ChoiceDialog& choice) {
+                return this->app.CreateShowDialog(
+                    choice.title,
+                    choice.message,
+                    choice.options,
+                    true,
+                    {},
+                    [&choice](pu::ui::Dialog::Ref& dialog) {
+                        if (choice.vertical) {
+                            pksm::ui::StyleListDialog(dialog, choice.notes);
+                        }
+                    }
+                );
             },
             saveDataAccessor,
             bagDataProvider

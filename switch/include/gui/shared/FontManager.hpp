@@ -15,7 +15,8 @@ public:
     using FontNameGenerator = std::function<std::string(u32)>;
 
     // Register a font with all custom sizes
-    static void RegisterFont(const std::string& fontPath, const FontNameGenerator& nameGenerator) {
+    // buttonGlyphs adds the console's button font behind the face, for text that names a button
+    static void RegisterFont(const std::string& fontPath, const FontNameGenerator& nameGenerator, bool buttonGlyphs) {
         const std::vector<u32> sizes = {
             pksm::ui::global::FONT_SIZE_TITLE,
             pksm::ui::global::FONT_SIZE_HEADER,
@@ -32,6 +33,9 @@ public:
             font->LoadFromFile(fontPath);
             // Same fallback as the default font: the console's font for glyphs this one lacks
             pu::ui::render::LoadSingleSharedFontInFont(font, PlSharedFontType_Standard, pksm::ui::global::FALLBACK_FONT_SCALE);
+            if (buttonGlyphs) {
+                pu::ui::render::LoadSingleSharedFontInFont(font, PlSharedFontType_NintendoExt, pksm::ui::global::FALLBACK_FONT_SCALE);
+            }
             pu::ui::render::AddFont(nameGenerator(size), font);
         }
     }

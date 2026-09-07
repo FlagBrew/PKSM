@@ -18,6 +18,18 @@ struct Slot {
     u16 slot = 0;        // The save's slot this row came from, what an edit addresses
     bool isNew = false;  // The game's red dot: not looked at since it arrived
     bool favorite = false;
+    int shortcut = -1;  // The shortcut slot holding it, negative for none
+};
+
+// A slot of the game's shortcut button, as the game names it: Select in Gen 2 and 3, Y in Gen 4
+// with HeartGold's second slot on the touch screen, a position in Gen 6's Ready menu
+enum class ShortcutButton { Select, Y, TouchScreen, Position };
+
+struct Shortcut {
+    ShortcutButton button;
+    u8 position = 0;   // 1-based, for Position
+    u16 itemId = 0;    // Format-native; 0 when free
+    std::string name;  // Of the item held
 };
 
 struct Pouch {
@@ -39,6 +51,7 @@ struct BagData {
     // Marks the format keeps per item, so the bag can set them: the red dot and the favourite
     bool keepsNewMark = false;
     bool keepsFavorite = false;
+    std::vector<Shortcut> shortcuts;  // The shortcut slots in order, empty where the game has none
 };
 
 // The orders a pouch can be put in: by name, by the game's own item number, or most held first

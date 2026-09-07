@@ -59,6 +59,24 @@ public:
         bool favorite
     ) = 0;
 
+    // Registers the key item to the shortcut slot, replacing what it held, or to the first free
+    // one when none is given (BagData::shortcuts). Returns the pouch as the save now holds it, or
+    // nothing when saveData is not the live save, the game has no shortcut, the pouch is not the
+    // key items, or no slot is free
+    virtual std::optional<pksm::bag::Pouch> Register(
+        const pksm::saves::SaveData::Ref& saveData,
+        ::pksm::Sav::Pouch pouch,
+        u16 slot,
+        std::optional<u8> shortcut
+    ) = 0;
+
+    // Takes the key item off its shortcut slot; later slots close up, as the games keep them
+    virtual std::optional<pksm::bag::Pouch>
+    Unregister(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 slot) = 0;
+
+    // The shortcut slots as the save holds them now
+    virtual std::vector<pksm::bag::Shortcut> GetShortcuts(const pksm::saves::SaveData::Ref& saveData) const = 0;
+
     // Puts the pouch in one of its sortOptions and returns the bag as it now reads, since some
     // games keep one setting for every pouch; nothing when saveData is not the live save or the
     // pouch has no options

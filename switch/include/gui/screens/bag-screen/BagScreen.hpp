@@ -9,6 +9,7 @@
 #include "data/providers/interfaces/IBagDataProvider.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "gui/screens/bag-screen/BagHelp.hpp"
+#include "gui/shared/ChoiceDialog.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
 #include "gui/shared/components/BagItemList.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
@@ -28,9 +29,7 @@ public:
         std::function<void()> onBack,
         std::function<void(pu::ui::Overlay::Ref)> onShowOverlay,
         std::function<void()> onHideOverlay,
-        std::function<
-            int(const std::string& title, const std::string& message, const std::vector<std::string>& options)>
-            requestChoice,
+        std::function<int(const pksm::ui::ChoiceDialog&)> requestChoice,
         ISaveDataAccessor::Ref saveDataAccessor,
         IBagDataProvider::Ref bagDataProvider
     );
@@ -40,10 +39,9 @@ private:
     pu::ui::elm::Element::Ref background;
     pu::ui::Color bgColor = pu::ui::Color(176, 112, 16, 255);
     std::function<void()> onBack;
-    // Blocking choice among options, the last one cancelling; the index taken, negative for none.
-    // Plutonium dialogs are application-level
-    std::function<int(const std::string& title, const std::string& message, const std::vector<std::string>& options)>
-        requestChoice;
+    // Blocking choice among the request's options; the index taken, negative for none. Plutonium
+    // dialogs are application-level
+    std::function<int(const pksm::ui::ChoiceDialog&)> requestChoice;
     ISaveDataAccessor::Ref saveDataAccessor;
     IBagDataProvider::Ref bagDataProvider;
 
@@ -114,6 +112,15 @@ private:
     // The game's marks on the cursor row: the right stick's click flips favourite, the left's the red dot
     const pksm::bag::Slot* CursorSlot() const;
     void ToggleMark(bool favoriteMark);
+    // Where a game has no favourite, the right stick registers a key item to its shortcut button
+    // instead: straight in when only one thing can happen, through the dialog when a slot must be
+    // chosen. Unregistering never asks
+    bool CanRegister() const;
+    std::string ShortcutAction() const;
+    void ToggleShortcut();
+    void ApplyShortcut(std::optional<pksm::bag::Pouch> updated);
+    void RefreshShortcuts();
+    void PushShortcutGlyphs();  // the row list's glyph per slot, from bag.shortcuts
 
     // Adding an item: Plus swaps the list for the picker, a choice lands as the cursor row
     bool CanAdd() const;

@@ -41,6 +41,7 @@ void ConfigureFonts(pu::ui::render::RendererInitOptions& renderer_opts) {
     renderer_opts.AddDefaultFontPath("romfs:/gfx/fonts/dinnextw1g_light.ttf");
     // The console's own font fills the glyphs DIN lacks (★, CJK); faces are tried in order
     renderer_opts.AddDefaultSharedFont(PlSharedFontType_Standard);
+    renderer_opts.AddDefaultSharedFont(PlSharedFontType_NintendoExt);  // button glyphs in dialog text
     renderer_opts.SetDefaultSharedFontScale(pksm::ui::global::FALLBACK_FONT_SCALE);
 
     pksm::ui::FontManager::ConfigureRendererFontSizes(renderer_opts);
@@ -67,19 +68,22 @@ void RegisterAdditionalFonts() {
         // Register heavy font for all custom sizes
         pksm::ui::FontManager::RegisterFont(
             "romfs:/gfx/fonts/dinnextw1g_heavy.ttf",
-            pksm::ui::global::MakeHeavyFontName
+            pksm::ui::global::MakeHeavyFontName,
+            false
         );
 
         // Register medium font for all custom sizes
         pksm::ui::FontManager::RegisterFont(
             "romfs:/gfx/fonts/dinnextw1g_medium.ttf",
-            pksm::ui::global::MakeMediumFontName
+            pksm::ui::global::MakeMediumFontName,
+            true
         );
 
         // Register switch button font for all custom sizes
         pksm::ui::FontManager::RegisterFont(
             "romfs:/gfx/fonts/NintendoExtLE003-M.ttf",
-            pksm::ui::global::MakeSwitchButtonFontName
+            pksm::ui::global::MakeSwitchButtonFontName,
+            false
         );
 
         LOG_DEBUG("Additional fonts registered successfully");

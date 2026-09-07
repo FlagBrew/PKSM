@@ -11,8 +11,8 @@
 
 namespace pksm::ui {
 
-// One bag slot as a row: sprite, name, the game's marks (new, favourite) and a detail (a
-// quantity, a donut's quality).
+// One bag slot as a row: sprite, name, the game's marks (new, favourite, the shortcut button
+// holding it) and a detail (a quantity, a donut's quality).
 // Sprite and text are resolved on first draw, so rows scrolled out of view never pay for them;
 // text comes from the shared TextTextureCache, so a row never owns a texture outright.
 class BagItemRow : public pu::ui::elm::Element, public IFocusable, public ShakeableWithOutline {
@@ -28,6 +28,13 @@ private:
     static constexpr pu::ui::Color NEW_MARK_COLOR = pu::ui::Color(235, 75, 75, 255);
     static constexpr pu::ui::Color FAVORITE_MARK_COLOR = pu::ui::Color(255, 110, 150, 255);
     static constexpr pu::i32 MARK_GAP = 12;
+    // The shortcut pill: a heart on a solid cap, the button's glyph beside it, outlined
+    static constexpr pu::i32 PILL_HEIGHT = 38;
+    static constexpr pu::i32 PILL_BORDER = 3;
+    static constexpr pu::i32 PILL_CAP = 40;
+    static constexpr pu::i32 PILL_PAD_LEFT = 10;
+    static constexpr pu::i32 PILL_PAD_RIGHT = 12;
+    static constexpr pu::ui::Color PILL_CAP_INK = pu::ui::Color(42, 10, 20, 255);
 
     bool focused = false;
     bool selected = false;
@@ -44,16 +51,21 @@ private:
     std::string detail;
     bool isNew = false;
     bool favorite = false;
-    bool edited = false;  // Tints the detail until the save is written
+    std::string shortcut;  // The glyph of the shortcut button holding the item, empty for none
+    bool edited = false;   // Tints the detail until the save is written
     pu::sdl2::TextureHandle::Ref nameTexture;
     pu::sdl2::TextureHandle::Ref detailTexture;
     pu::sdl2::TextureHandle::Ref newMarkTexture;
     pu::sdl2::TextureHandle::Ref favoriteMarkTexture;
+    pu::sdl2::TextureHandle::Ref shortcutTexture;
+    pu::sdl2::TextureHandle::Ref pillHeartTexture;
 
     std::function<void()> onTouchSelectCallback;
     pksm::input::TouchInputHandler touchHandler;
 
     void UpdateBackground();
+    // Draws the shortcut pill with its left edge at pillX and returns its width
+    pu::i32 DrawShortcut(pu::ui::render::Renderer::Ref& drawer, pu::i32 pillX, pu::i32 rowY);
     // Draws the text vertically centered at textX (or against the row's right padding) and
     // returns its width, 0 for no text
     pu::i32 DrawText(
@@ -79,8 +91,15 @@ public:
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
     // spriteKey is an ItemSpriteManager key; detail is the right-aligned text (a count, a quality);
-    // the marks follow the name
-    void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail, bool isNew, bool favorite);
+    // the marks follow the name; shortcut is the button glyph of the slot holding the item
+    void SetItem(
+        u32 spriteKey,
+        const std::string& itemName,
+        const std::string& detail,
+        bool isNew,
+        bool favorite,
+        const std::string& shortcut
+    );
     // Re-rasterizes only the detail; edited draws it in the edited tint
     void SetDetail(const std::string& detail, bool edited);
     // Drops the sprite and text textures; they come back from the caches on the next draw

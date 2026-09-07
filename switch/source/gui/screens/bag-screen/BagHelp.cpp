@@ -85,6 +85,8 @@ std::vector<pksm::ui::HelpItem> BagOverlayHelp(const BagHelpState& state) {
             items.push_back(
                 {{ButtonGlyph::RightAnalogStick}, state.rowFavorite ? "Press: Unfavorite" : "Press: Favorite"}
             );
+        } else if (!state.shortcutAction.empty()) {
+            items.push_back({{ButtonGlyph::RightAnalogStick}, "Press: " + state.shortcutAction});
         }
         if (state.canMarkSeen) {
             items.push_back({{ButtonGlyph::LeftAnalogStick}, state.rowNew ? "Press: Mark Seen" : "Press: Mark Unseen"});
