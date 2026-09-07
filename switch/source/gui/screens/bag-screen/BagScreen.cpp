@@ -67,12 +67,7 @@ BagScreen::BagScreen(
 
     const u64 t0 = armGetSystemTick();
     bag = bagDataProvider->GetBag(saveDataAccessor->getCurrentSaveData());
-    for (const auto& pouch : bag.pouches) {
-        auto& stacks = originalStacks.emplace_back();
-        for (const auto& slot : pouch.items) {
-            stacks.insert(StackKey(slot));
-        }
-    }
+    editedStacks.Reset(bag);
     size_t itemCount = 0;
     for (const auto& pouch : bag.pouches) {
         itemCount += pouch.items.size();
@@ -207,7 +202,7 @@ void BagScreen::ShowPouch(size_t index) {
     pouchCount->SetX(LIST_X + ListWidth() - pouchCount->GetWidth());
     itemList->SetDataSource(pouch.items, bag.storageFormat, pouch.pouch);
     for (size_t i = 0; i < pouch.items.size(); i++) {
-        if (IsEdited(pouch.items[i])) {
+        if (editedStacks.IsEdited(index, pouch.items[i])) {
             itemList->SetRowDetail(i, "×" + std::to_string(pouch.items[i].count), true);
         }
     }
@@ -312,14 +307,6 @@ bool BagScreen::CanRemove() const {
     return currentPouch < bag.pouches.size() && bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut;
 }
 
-u32 BagScreen::StackKey(const pksm::bag::Slot& slot) {
-    return (static_cast<u32>(slot.itemId) << 16) | slot.count;
-}
-
-bool BagScreen::IsEdited(const pksm::bag::Slot& slot) const {
-    return !originalStacks[currentPouch].contains(StackKey(slot));
-}
-
 void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
     const bool sameRows = pouch.items.size() == bag.pouches[currentPouch].items.size();
     bag.pouches[currentPouch] = std::move(pouch);
@@ -341,7 +328,7 @@ void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
     }
     for (size_t i = 0; i < items.size(); i++) {
         // The edited row is redrawn either way: a count put back to the save's loses its tint
-        const bool edited = IsEdited(items[i]);
+        const bool edited = editedStacks.IsEdited(currentPouch, items[i]);
         if (edited || i == selected) {
             itemList->SetRowDetail(i, "×" + std::to_string(items[i].count), edited);
         }

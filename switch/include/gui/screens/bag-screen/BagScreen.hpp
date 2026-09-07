@@ -1,12 +1,11 @@
 #pragma once
 
-#include <unordered_set>
-
 #include <functional>
 #include <pu/Plutonium>
 #include <vector>
 
 #include "data/bag/BagData.hpp"
+#include "data/bag/EditedStacks.hpp"
 #include "data/providers/interfaces/IBagDataProvider.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
 #include "gui/screens/bag-screen/BagHelp.hpp"
@@ -49,8 +48,7 @@ private:
     IBagDataProvider::Ref bagDataProvider;
 
     pksm::bag::BagData bag;
-    // Per pouch, the (item, count) stacks as read from the save: a row not among them is edited
-    std::vector<std::unordered_set<u32>> originalStacks;
+    pksm::bag::EditedStacks editedStacks;
     // ZL/ZR: by one, then by ten and a hundred the longer the hold
     pksm::input::HoldRepeat adjustRepeat{450, 90};
     static constexpr size_t NO_POUCH = SIZE_MAX;
@@ -112,8 +110,6 @@ private:
     void PromptCount();
     void RemoveItem();
     void ApplyPouch(pksm::bag::Pouch pouch, size_t selected);
-    static u32 StackKey(const pksm::bag::Slot& slot);
-    bool IsEdited(const pksm::bag::Slot& slot) const;
 
     // Adding an item: Plus swaps the list for the picker, a choice lands as the cursor row
     bool CanAdd() const;
