@@ -36,10 +36,26 @@ PKSMApplication::PKSMApplication(
     storageHand(std::move(storageHand)),
     boxNameEditor(std::move(boxNameEditor)),
     bagDataProvider(std::move(bagDataProvider)) {
+    saveSession = std::make_unique<SaveSession>(
+        this->saveProvider,
+        this->saveDataAccessor,
+        *this->accountManager,
+        SaveSession::Hooks{
+            .showBlockingToast = [this](const std::string& message) { this->ShowBlockingToast(message); },
+            .keepInputBlocked = [this]() { this->KeepInputBlocked(); },
+            .endOverlay = [this]() { this->EndOverlay(); },
+            .showErrorToast = [this](const std::string& message) { this->ShowErrorToast(message); },
+            .requestChoice =
+                [this](const std::string& title, const std::string& message, const std::vector<std::string>& options) {
+                    return this->CreateShowDialog(title, message, options, true);
+                },
+            .onSaveLoaded = [this]() { this->ShowMainMenu(); },
+            .onSaveLeft = [this]() { this->ShowTitleLoadScreen(); },
+        }
+    );
     // Add render callback to process account updates
     AddRenderCallback([this]() { this->accountManager->ProcessPendingUpdates(); });
-    AddRenderCallback([this]() { this->ProcessPendingSaveAndExit(); });
-    AddRenderCallback([this]() { this->ProcessPendingSaveLoad(); });
+    AddRenderCallback([this]() { this->saveSession->Poll(); });
     // A title return's caches, spread thin; a frame nobody can interact with can spare more
     AddRenderCallback([this]() { utils::TextureCaches::Drain(this->in_render_over ? 8 : 2); });
     // The error toast also ends on any button press; a no-op once the 3s timeout ended it
@@ -183,28 +199,6 @@ void PKSMApplication::ShowTitleLoadScreen() {
     this->LoadLayout(this->titleLoadScreen);
 }
 
-void PKSMApplication::HandleMainMenuBack() {
-    if (saveDataAccessor->hasUnsavedChanges()) {
-        const int choice = this->CreateShowDialog(
-            "Unsaved Changes",
-            "Save the changes to this game's save file?",
-            {"Save", "Discard", "Cancel"},
-            true
-        );
-        if (choice == 0) {
-            ShowBlockingToast("Saving... Do not close the app or power off.");
-            LOG_DEBUG("Starting save write...");
-            LOG_MEMORY();
-            saveWriteResult = std::async(std::launch::async, [this]() { return saveDataAccessor->saveChanges(); });
-            return;
-        }
-        if (choice != 1) {
-            return;
-        }
-    }
-    this->ShowTitleLoadScreen();
-}
-
 pu::ui::Overlay::Ref PKSMApplication::MakeToastOverlay(const std::string& message) {
     // A lingering error toast would make StartOverlay a silent no-op
     if (errorToastActive) {
@@ -233,7 +227,10 @@ pu::ui::Overlay::Ref PKSMApplication::MakeToastOverlay(const std::string& messag
 
 void PKSMApplication::ShowBlockingToast(const std::string& message) {
     this->StartOverlay(MakeToastOverlay(message));
-    // OnRender consumes the render-over flag each frame, so waiters re-arm it until they finish
+    KeepInputBlocked();
+}
+
+void PKSMApplication::KeepInputBlocked() {
     this->in_render_over = true;
     this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
 }
@@ -242,84 +239,6 @@ void PKSMApplication::ShowErrorToast(const std::string& message) {
     // Ends after 3s or any button press (see the SetOnInput hook)
     this->StartOverlayWithTimeout(MakeToastOverlay(message), 3000);
     errorToastActive = true;
-}
-
-void PKSMApplication::ProcessPendingSaveAndExit() {
-    if (!saveWriteResult.valid()) {
-        return;
-    }
-    if (saveWriteResult.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
-        // Still writing: keep input blocked
-        this->in_render_over = true;
-        this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
-        return;
-    }
-
-    // A worker death (allocation failure) is a failed save with changes still loaded, not a crash
-    bool saved = false;
-    try {
-        saved = saveWriteResult.get();
-    } catch (const std::exception& e) {
-        LOG_ERROR("Save write threw: " + std::string(e.what()));
-    }
-    LOG_DEBUG(saved ? "Save write completed" : "Save write failed");
-    LOG_MEMORY();
-    // Flush now - a follow-up crash would lose the 3s flush window
-    utils::Logger::Flush();
-    this->EndOverlay();
-    if (!saved) {
-        this->CreateShowDialog(
-            "Save Failed",
-            "The save file could not be written. Your changes are still loaded.",
-            {"OK"},
-            true
-        );
-        return;
-    }
-    this->ShowTitleLoadScreen();
-}
-
-void PKSMApplication::ProcessPendingSaveLoad() {
-    if (!saveLoadResult.valid()) {
-        return;
-    }
-    if (saveLoadResult.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
-        // Still parsing: keep input blocked
-        this->in_render_over = true;
-        this->render_over_fn = [](pu::ui::render::Renderer::Ref&) { return true; };
-        return;
-    }
-
-    // A worker death (allocation failure) is just a failed load
-    std::optional<pksm::saves::LoadedSave> loaded;
-    try {
-        loaded = saveLoadResult.get();
-    } catch (const std::exception& e) {
-        LOG_ERROR("Save load threw: " + std::string(e.what()));
-    }
-    // Release the mount on every outcome
-    saveProvider->FinishLoad(*pendingSaveLoad);
-    pendingSaveLoad.reset();
-
-    const bool ok = saveDataAccessor->applySaveLoadResult(
-        pendingLoadTitle,
-        pendingLoadSaveName,
-        &pendingLoadUserId,
-        std::move(loaded)
-    );
-    pendingLoadTitle = nullptr;
-    this->EndOverlay();
-    if (ok) {
-        LOG_MEMORY();
-        this->ShowMainMenu();
-        LOG_DEBUG(
-            "Save selection to main menu: " +
-            std::to_string(armTicksToNs(armGetSystemTick() - pendingLoadStartTick) / 1000000) + " ms total"
-        );
-    } else {
-        LOG_ERROR("Failed to load save data");
-        ShowErrorToast("This save could not be loaded");
-    }
 }
 
 void PKSMApplication::ShowStorageScreen() {
@@ -369,25 +288,6 @@ void PKSMApplication::ShowBagScreen() {
     this->LoadLayout(this->bagScreen);
 }
 
-void PKSMApplication::OnSaveSelected(pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) {
-    LOG_DEBUG("Save selected: " + save->getName() + " for title: " + title->getName());
-
-    // Resolution and any console mount stay on the UI thread; the worker only reads+parses
-    auto userId = accountManager->GetCurrentAccount();
-    pendingLoadStartTick = armGetSystemTick();
-    pendingSaveLoad = saveProvider->ResolveLoad(title, save, &userId);
-    if (!pendingSaveLoad) {
-        saveDataAccessor->applySaveLoadResult(title, save->getName(), &userId, std::nullopt);
-        ShowErrorToast("This save could not be loaded");
-        return;
-    }
-    pendingLoadTitle = title;
-    pendingLoadSaveName = save->getName();
-    pendingLoadUserId = userId;
-    ShowBlockingToast("Loading save...");
-    saveLoadResult = std::async(std::launch::async, [this]() { return saveProvider->ExecuteLoad(*pendingSaveLoad); });
-}
-
 void PKSMApplication::OnLoad() {
     try {
         LOG_DEBUG("Loading title screen...");
@@ -401,7 +301,7 @@ void PKSMApplication::OnLoad() {
             *accountManager,
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
-            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { this->OnSaveSelected(title, save); }
+            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { saveSession->Load(title, save); }
         );
 
         // Create main menu with back callback and overlay handlers
@@ -418,7 +318,7 @@ void PKSMApplication::OnLoad() {
 
         LOG_DEBUG("Creating main menu...");
         mainMenu = pksm::layout::MainMenu::New(
-            [this]() { this->HandleMainMenuBack(); },
+            [this]() { saveSession->Leave(); },
             [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
             [this]() { this->EndOverlay(); },
             saveDataAccessor,  // Pass the save data accessor to the main menu
