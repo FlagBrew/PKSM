@@ -9,6 +9,7 @@
 #include "data/bag/BagData.hpp"
 #include "data/providers/interfaces/IBagDataProvider.hpp"
 #include "data/providers/interfaces/ISaveDataAccessor.hpp"
+#include "gui/screens/bag-screen/BagHelp.hpp"
 #include "gui/shared/components/AnimatedBackground.hpp"
 #include "gui/shared/components/BagItemList.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
@@ -112,12 +113,14 @@ private:
     void FocusItemList();
     void StepPouch(int delta);
     void HandleBackButton();
+    BagHelpState HelpState() const;
     void UpdateHelpItems();
     // The column is out of reach while the help overlay, the picker or a carry owns the screen
     void UpdatePouchColumn();
 
     // Editing the focused row; every write goes through the provider and refreshes the pouch
     bool CanEditCount() const;
+    bool CanRemove() const;
     void AdjustCount(int delta);
     void HandleHolds(u64 down, u64 held);
     void PromptCount();

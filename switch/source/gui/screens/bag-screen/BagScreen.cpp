@@ -298,54 +298,25 @@ void BagScreen::HandleBackButton() {
     }
 }
 
+BagHelpState BagScreen::HelpState() const {
+    return {
+        .pickerOpen = picker->IsOpen(),
+        .pickerHasRows = picker->HasRows(),
+        .pickerHasCandidates = picker->HasCandidates(),
+        .searching = !picker->GetSearch().empty(),
+        .carrying = liftedFrom != NOT_LIFTED,
+        .listFocused = itemList->IsFocused(),
+        .canEditCount = CanEditCount(),
+        .canRemove = CanRemove(),
+        .canReorder = CanReorder(),
+        .canSort = CanSort(),
+        .canAdd = CanAdd(),
+        .pouchOpenable = currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty(),
+    };
+}
+
 void BagScreen::UpdateHelpItems() {
-    std::vector<pksm::ui::HelpItem> helpItems;
-    if (picker->IsOpen()) {
-        if (picker->HasRows()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Add"});
-        }
-        if (picker->HasCandidates()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Search"});
-        }
-        if (!picker->GetSearch().empty()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::X}, "Clear Search"});
-        }
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Cancel"});
-        helpFooter->SetHelpItems(helpItems);
-        return;
-    }
-    if (liftedFrom != NOT_LIFTED) {
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Drop"});
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Put Back"});
-        helpFooter->SetHelpItems(helpItems);
-        return;
-    }
-    if (itemList->IsFocused()) {
-        if (CanEditCount()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Set Quantity"});
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::ZL, pksm::ui::global::ButtonGlyph::ZR}, "Adjust"});
-        }
-        if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove"});
-        }
-        if (CanReorder()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move"});
-        }
-    } else {
-        if (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open"});
-        }
-        if (CanSort()) {
-            helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort"});
-        }
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back"});
-    }
-    if (CanAdd()) {
-        helpItems.push_back({{pksm::ui::global::ButtonGlyph::Plus}, "Add"});
-    }
-    // The footer keeps to what a newcomer needs; B out of the list and the d-pad go without saying
-    helpItems.push_back({{pksm::ui::global::ButtonGlyph::L, pksm::ui::global::ButtonGlyph::R}, "Switch Pouch"});
-    helpFooter->SetHelpItems(helpItems);
+    helpFooter->SetHelpItems(BagFooterHelp(HelpState()));
 }
 
 void BagScreen::UpdatePouchColumn() {
@@ -384,6 +355,11 @@ bool BagScreen::CanEditCount() const {
     }
     const auto& pouch = bag.pouches[currentPouch];
     return pouch.maxCount > 1 && !pouch.items.empty();  // one-of-each pouches have nothing to set
+}
+
+// The same rule as CanAdd today: donuts are the game's to make and unmake
+bool BagScreen::CanRemove() const {
+    return currentPouch < bag.pouches.size() && bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut;
 }
 
 u32 BagScreen::StackKey(const pksm::bag::Slot& slot) {
@@ -594,7 +570,7 @@ void BagScreen::RemoveItem() {
     const auto& pouch = bag.pouches[currentPouch];
     const size_t index = itemList->GetSelectedIndex();
     adjustRepeat.Reset();  // the dialog swallows the release
-    if (pouch.pouch == ::pksm::Sav::Pouch::Donut || index >= pouch.items.size()) {
+    if (!CanRemove() || index >= pouch.items.size()) {
         if (auto row = itemList->GetItemAtIndex(index)) {
             row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);
         }
@@ -713,51 +689,7 @@ void BagScreen::ChoosePouchSort() {
 }
 
 std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
-    std::vector<pksm::ui::HelpItem> items;
-    if (picker->IsOpen()) {
-        items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Add Item"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Search by Name"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::X}, "Clear Search"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Cancel"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Navigate"});
-        return items;
-    }
-    if (liftedFrom != NOT_LIFTED) {
-        items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Drop Here"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Put Back"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
-        items.push_back(
-            {{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Carry"}
-        );
-        return items;
-    }
-    if (itemList->IsFocused()) {
-        if (CanEditCount()) {
-            items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Set Quantity"});
-            items.push_back({{pksm::ui::global::ButtonGlyph::ZL, pksm::ui::global::ButtonGlyph::ZR}, "Adjust Quantity"});
-        }
-        if (bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut) {
-            items.push_back({{pksm::ui::global::ButtonGlyph::X}, "Remove Item"});
-        }
-        if (CanReorder()) {
-            items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Move Item"});
-        }
-        items.push_back({{pksm::ui::global::ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
-        items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Pouches"});
-    } else {
-        items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open Pouch"});
-        if (CanSort()) {
-            items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort Pouch"});
-        }
-        items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Main Menu"});
-    }
-    if (CanAdd()) {
-        items.push_back({{pksm::ui::global::ButtonGlyph::Plus}, "Add Item"});
-    }
-    items.push_back({{pksm::ui::global::ButtonGlyph::L, pksm::ui::global::ButtonGlyph::R}, "Switch Pouch"});
-    items.push_back({{pksm::ui::global::ButtonGlyph::DPad, pksm::ui::global::ButtonGlyph::LeftAnalogStick}, "Navigate"});
-    return items;
+    return BagOverlayHelp(HelpState());
 }
 
 void BagScreen::OnHelpOverlayShown() {
