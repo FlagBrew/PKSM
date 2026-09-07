@@ -281,13 +281,18 @@ BagHelpState BagScreen::HelpState() const {
         .canSort = CanSort(),
         .canAdd = CanAdd(),
         .pouchOpenable = currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty(),
-        .canFavorite = bag.keepsFavorite && CursorSlot() != nullptr,
-        .canMarkSeen = bag.keepsNewMark && CursorSlot() != nullptr,
+        .canFavorite = bag.keepsFavorite && CursorMarkable(),
+        .canMarkSeen = bag.keepsNewMark && CursorMarkable(),
         .rowFavorite = CursorSlot() != nullptr && CursorSlot()->favorite,
         .rowNew = CursorSlot() != nullptr && CursorSlot()->isNew,
         .shortcutAction =
             currentPouch < bag.pouches.size() ? shortcuts->Action(bag.pouches[currentPouch], CursorSlot()) : "",
     };
+}
+
+// Donuts are baked in-game and carry no marks, whatever their save keeps for items
+bool BagScreen::CursorMarkable() const {
+    return CursorSlot() != nullptr && bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut;
 }
 
 const pksm::bag::Slot* BagScreen::CursorSlot() const {
@@ -305,7 +310,7 @@ void BagScreen::ToggleMark(bool favoriteMark) {
         shortcuts->Toggle(bag.pouches[currentPouch], *slot);
         return;
     }
-    if (!slot || !(favoriteMark ? bag.keepsFavorite : bag.keepsNewMark)) {
+    if (!CursorMarkable() || !(favoriteMark ? bag.keepsFavorite : bag.keepsNewMark)) {
         if (auto row = itemList->GetItemAtIndex(itemList->GetSelectedIndex())) {
             row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // nothing here to mark
         }
