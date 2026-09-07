@@ -109,7 +109,11 @@ private:
     void HandleHolds(u64 down, u64 held);
     void PromptCount();
     void RemoveItem();
-    void ApplyPouch(pksm::bag::Pouch pouch, size_t selected);
+    // rebind redraws every row even when their number held (a mark can reorder a sorted pouch)
+    void ApplyPouch(pksm::bag::Pouch pouch, size_t selected, bool rebind = false);
+    // The game's marks on the cursor row: the right stick's click flips favourite, the left's the red dot
+    const pksm::bag::Slot* CursorSlot() const;
+    void ToggleMark(bool favoriteMark);
 
     // Adding an item: Plus swaps the list for the picker, a choice lands as the cursor row
     bool CanAdd() const;

@@ -48,6 +48,17 @@ public:
     virtual std::optional<pksm::bag::Pouch>
     Sort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, pksm::bag::SortOrder order) = 0;
 
+    // Sets the slot's marks where the format keeps them (BagData::keepsNewMark, keepsFavorite).
+    // Returns the pouch as the save now holds it, or nothing when saveData is not the live save,
+    // the format has no such marks, or slot is past the pouch
+    virtual std::optional<pksm::bag::Pouch> SetMarks(
+        const pksm::saves::SaveData::Ref& saveData,
+        ::pksm::Sav::Pouch pouch,
+        u16 slot,
+        bool isNew,
+        bool favorite
+    ) = 0;
+
     // Puts the pouch in one of its sortOptions and returns the bag as it now reads, since some
     // games keep one setting for every pouch; nothing when saveData is not the live save or the
     // pouch has no options

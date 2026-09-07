@@ -105,6 +105,9 @@ BagScreen::BagScreen(
     const auto listFocused = [this]() { return itemList->IsFocused(); };
     buttonHandler.RegisterButton(HidNpadButton_A, nullptr, [this]() { PromptCount(); }, listFocused);
     buttonHandler.RegisterButton(HidNpadButton_X, nullptr, [this]() { RemoveItem(); }, listFocused);
+    // Stick clicks, kept out of the footer: the help overlay names them where a format keeps the marks
+    buttonHandler.RegisterButton(HidNpadButton_StickR, nullptr, [this]() { ToggleMark(true); }, listFocused);
+    buttonHandler.RegisterButton(HidNpadButton_StickL, nullptr, [this]() { ToggleMark(false); }, listFocused);
     // The handler keeps one callback per button, so Y serves the list and the column from one
     buttonHandler.RegisterButton(HidNpadButton_Y, nullptr, [this]() {
         if (itemList->IsFocused()) {
@@ -259,7 +262,46 @@ BagHelpState BagScreen::HelpState() const {
         .canSort = CanSort(),
         .canAdd = CanAdd(),
         .pouchOpenable = currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty(),
+        .canFavorite = bag.keepsFavorite && CursorSlot() != nullptr,
+        .canMarkSeen = bag.keepsNewMark && CursorSlot() != nullptr,
+        .rowFavorite = CursorSlot() != nullptr && CursorSlot()->favorite,
+        .rowNew = CursorSlot() != nullptr && CursorSlot()->isNew,
     };
+}
+
+const pksm::bag::Slot* BagScreen::CursorSlot() const {
+    if (currentPouch >= bag.pouches.size()) {
+        return nullptr;
+    }
+    const auto& items = bag.pouches[currentPouch].items;
+    const size_t index = itemList->GetSelectedIndex();
+    return index < items.size() ? &items[index] : nullptr;
+}
+
+void BagScreen::ToggleMark(bool favoriteMark) {
+    const auto* slot = CursorSlot();
+    if (!slot || !(favoriteMark ? bag.keepsFavorite : bag.keepsNewMark)) {
+        if (auto row = itemList->GetItemAtIndex(itemList->GetSelectedIndex())) {
+            row->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // nothing here to mark
+        }
+        return;
+    }
+    const auto& pouch = bag.pouches[currentPouch];
+    const u16 itemId = slot->itemId;
+    const bool isNew = favoriteMark ? slot->isNew : !slot->isNew;
+    const bool favorite = favoriteMark ? !slot->favorite : slot->favorite;
+    auto updated =
+        bagDataProvider->SetMarks(saveDataAccessor->getCurrentSaveData(), pouch.pouch, slot->slot, isNew, favorite);
+    if (!updated) {
+        return;
+    }
+    // A mark can move the row under a newest-first or favorites-first sort: rebind and follow it
+    const auto& items = updated->items;
+    const auto row = std::find_if(items.begin(), items.end(), [&](const pksm::bag::Slot& s) {
+        return s.itemId == itemId;
+    });
+    const size_t index = row == items.end() ? itemList->GetSelectedIndex() : static_cast<size_t>(row - items.begin());
+    ApplyPouch(std::move(*updated), index, true);
 }
 
 void BagScreen::UpdateHelpItems() {
@@ -307,8 +349,8 @@ bool BagScreen::CanRemove() const {
     return currentPouch < bag.pouches.size() && bag.pouches[currentPouch].pouch != ::pksm::Sav::Pouch::Donut;
 }
 
-void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
-    const bool sameRows = pouch.items.size() == bag.pouches[currentPouch].items.size();
+void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected, bool rebind) {
+    const bool sameRows = !rebind && pouch.items.size() == bag.pouches[currentPouch].items.size();
     bag.pouches[currentPouch] = std::move(pouch);
     const auto& items = bag.pouches[currentPouch].items;
     if (items.empty()) {

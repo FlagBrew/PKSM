@@ -81,6 +81,14 @@ std::vector<pksm::ui::HelpItem> BagOverlayHelp(const BagHelpState& state) {
         if (state.canReorder) {
             items.push_back({{ButtonGlyph::Y}, "Move Item"});
         }
+        if (state.canFavorite) {
+            items.push_back(
+                {{ButtonGlyph::RightAnalogStick}, state.rowFavorite ? "Press: Unfavorite" : "Press: Favorite"}
+            );
+        }
+        if (state.canMarkSeen) {
+            items.push_back({{ButtonGlyph::LeftAnalogStick}, state.rowNew ? "Press: Mark Seen" : "Press: Mark Unseen"});
+        }
         items.push_back({{ButtonGlyph::RightAnalogStick}, "Page Up/Down"});
         items.push_back({{ButtonGlyph::B}, "Back to Pouches"});
     } else {

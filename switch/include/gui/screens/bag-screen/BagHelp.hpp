@@ -20,6 +20,11 @@ struct BagHelpState {
     bool canSort;
     bool canAdd;
     bool pouchOpenable;
+    // The cursor row's marks, where the format keeps them; the stick clicks flip them
+    bool canFavorite;
+    bool canMarkSeen;
+    bool rowFavorite;
+    bool rowNew;
 };
 
 // The footer keeps to what a newcomer needs; the Minus overlay lists everything

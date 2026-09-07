@@ -102,6 +102,8 @@ pksm::bag::BagData BagDataProvider::GetBag(const pksm::saves::SaveData::Ref& sav
         return bag;
     }
     bag.storageFormat = sav->generation();
+    // Gen 9 keeps both marks beside every item; the older formats' red dot is not shown yet
+    bag.keepsNewMark = bag.keepsFavorite = bag.storageFormat == ::pksm::Generation::NINE;
     for (const auto& [pouch, capacity] : sav->pouches()) {
         bag.pouches.push_back(ReadPouch(*sav, pouch, capacity));
     }
@@ -296,6 +298,27 @@ std::optional<pksm::bag::Pouch> BagDataProvider::Sort(
         }
         saveDataAccessor->markDirty();
     }
+    return ReadPouch(*sav, pouch, capacity);
+}
+
+std::optional<pksm::bag::Pouch> BagDataProvider::SetMarks(
+    const pksm::saves::SaveData::Ref& saveData,
+    ::pksm::Sav::Pouch pouch,
+    u16 slot,
+    bool isNew,
+    bool favorite
+) {
+    ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
+    const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
+    if (slot >= capacity || sav->generation() != ::pksm::Generation::NINE) {
+        return std::nullopt;
+    }
+    auto item = sav->item(pouch, slot);
+    auto& item9 = static_cast<::pksm::Item9a&>(*item);
+    item9.newFlag(isNew);
+    item9.favoriteFlag(favorite);
+    sav->item(item9, pouch, slot);
+    saveDataAccessor->markDirty();
     return ReadPouch(*sav, pouch, capacity);
 }
 

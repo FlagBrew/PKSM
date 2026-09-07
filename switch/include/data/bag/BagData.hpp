@@ -36,6 +36,9 @@ struct Pouch {
 struct BagData {
     ::pksm::Generation storageFormat;  // Keys item names and sprites
     std::vector<Pouch> pouches;
+    // Marks the format keeps per item, so the bag can set them: the red dot and the favourite
+    bool keepsNewMark = false;
+    bool keepsFavorite = false;
 };
 
 // The orders a pouch can be put in: by name, by the game's own item number, or most held first
