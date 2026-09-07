@@ -35,18 +35,6 @@ private:
     IBoxNameEditor::Ref boxNameEditor;
     IBagDataProvider::Ref bagDataProvider;
 
-    // Initialize renderer options with basic configuration
-    static pu::ui::render::RendererInitOptions CreateRendererOptions();
-
-    // Configure font settings
-    static void ConfigureFonts(pu::ui::render::RendererInitOptions& renderer_opts);
-
-    // Configure input settings
-    static void ConfigureInput(pu::ui::render::RendererInitOptions& renderer_opts);
-
-    // Register additional fonts that require romfs to be mounted
-    static void RegisterAdditionalFonts();
-
     // Navigation methods
     void ShowMainMenu();
     void ShowTitleLoadScreen();

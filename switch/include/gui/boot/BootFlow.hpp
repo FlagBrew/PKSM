@@ -58,6 +58,16 @@ private:
     BootAction quitAction{ui::global::ButtonGlyph::Plus, "Quit"};
 };
 
+// The launch-to-first-interactive-frame gap lives in the boot's phases; each is logged as it ends
+class PhaseTimer {
+public:
+    PhaseTimer();
+    void Log(const char* phase);
+
+private:
+    u64 phaseStart;
+};
+
 // romfs ships no sprite art: boot gates on every asset verified on SD.
 // Returns false only when the user quits from the retry screen.
 bool RunAssetBootstrap(BootProgress& boot);

@@ -107,6 +107,16 @@ void BootProgress::Draw(bool withBar, bool withActions) {
     renderer->FinalizeRender();
 }
 
+PhaseTimer::PhaseTimer() : phaseStart(armGetSystemTick()) {}
+
+void PhaseTimer::Log(const char* phase) {
+    const u64 now = armGetSystemTick();
+    LOG_DEBUG(
+        "Boot phase " + std::string(phase) + ": " + std::to_string(armTicksToNs(now - phaseStart) / 1000000) + " ms"
+    );
+    phaseStart = now;
+}
+
 bool RunAssetBootstrap(BootProgress& boot) {
     boot.ShowPhase("Checking sprites");
     utils::AssetDownloader::Refresh();

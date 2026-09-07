@@ -9,92 +9,12 @@
 #include "data/providers/BoxDataProvider.hpp"
 #include "data/providers/SwitchSaveDataWriter.hpp"
 #include "gui/boot/BootFlow.hpp"
-#include "gui/shared/FontManager.hpp"
+#include "gui/boot/RendererSetup.hpp"
 #include "gui/shared/UIConstants.hpp"
 #include "utils/Logger.hpp"
 #include "utils/TextureCaches.hpp"
 
 namespace pksm {
-
-pu::ui::render::RendererInitOptions PKSMApplication::CreateRendererOptions() {
-    LOG_DEBUG("Creating renderer options...");
-    LOG_MEMORY();
-
-    // Initialize SDL with hardware acceleration and vsync
-    // This enables proper display, audio, and controller support
-    auto renderer_opts = pu::ui::render::RendererInitOptions(SDL_INIT_EVERYTHING, pu::ui::render::RendererHardwareFlags);
-
-    // Enable PNG/JPG loading for UI assets
-    renderer_opts.init_img = true;
-    renderer_opts.sdl_img_flags = IMG_INIT_PNG | IMG_INIT_JPG;
-
-    // Enable romfs for loading assets bundled with the NRO
-    renderer_opts.init_romfs = true;
-
-    // The renderer's stages are where most of the boot heap goes; each one is measured
-    renderer_opts.SetInitStageCallback([](const char* stage) {
-        LOG_DEBUG(
-            "Renderer init " + std::string(stage) + ": heap claim " + std::to_string(utils::Logger::HeapClaimMB()) +
-            " MB"
-        );
-    });
-
-    LOG_DEBUG("Renderer options created successfully");
-    return renderer_opts;
-}
-
-void PKSMApplication::ConfigureFonts(pu::ui::render::RendererInitOptions& renderer_opts) {
-    LOG_DEBUG("Configuring fonts...");
-
-    renderer_opts.AddDefaultFontPath("romfs:/gfx/fonts/dinnextw1g_light.ttf");
-    // The console's own font fills the glyphs DIN lacks (★, CJK); faces are tried in order
-    renderer_opts.AddDefaultSharedFont(PlSharedFontType_Standard);
-    renderer_opts.SetDefaultSharedFontScale(pksm::ui::global::FALLBACK_FONT_SCALE);
-
-    pksm::ui::FontManager::ConfigureRendererFontSizes(renderer_opts);
-
-    LOG_DEBUG("Fonts configured successfully");
-}
-
-void PKSMApplication::ConfigureInput(pu::ui::render::RendererInitOptions& renderer_opts) {
-    LOG_DEBUG("Configuring input...");
-
-    renderer_opts.SetInputPlayerCount(1);
-    renderer_opts.AddInputNpadStyleTag(HidNpadStyleSet_NpadStandard);
-    renderer_opts.AddInputNpadIdType(HidNpadIdType_Handheld);
-    renderer_opts.AddInputNpadIdType(HidNpadIdType_No1);
-
-    LOG_DEBUG("Input configured successfully");
-}
-
-void PKSMApplication::RegisterAdditionalFonts() {
-    LOG_DEBUG("Registering additional fonts...");
-
-    try {
-        // Register heavy font for all custom sizes
-        pksm::ui::FontManager::RegisterFont(
-            "romfs:/gfx/fonts/dinnextw1g_heavy.ttf",
-            pksm::ui::global::MakeHeavyFontName
-        );
-
-        // Register medium font for all custom sizes
-        pksm::ui::FontManager::RegisterFont(
-            "romfs:/gfx/fonts/dinnextw1g_medium.ttf",
-            pksm::ui::global::MakeMediumFontName
-        );
-
-        // Register switch button font for all custom sizes
-        pksm::ui::FontManager::RegisterFont(
-            "romfs:/gfx/fonts/NintendoExtLE003-M.ttf",
-            pksm::ui::global::MakeSwitchButtonFontName
-        );
-
-        LOG_DEBUG("Additional fonts registered successfully");
-    } catch (const std::exception& e) {
-        LOG_ERROR("Failed to register additional fonts: " + std::string(e.what()));
-        throw;
-    }
-}
 
 PKSMApplication::PKSMApplication(
     pu::ui::render::Renderer::Ref renderer,
@@ -141,32 +61,9 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         LOG_INFO("Initializing PKSM...");
         LOG_MEMORY();  // Initial memory state
 
-        // The launch-to-first-interactive-frame gap lives in these steps; keep them measured
-        u64 bootPhaseStart = armGetSystemTick();
-        auto logBootPhase = [&bootPhaseStart](const char* phase) {
-            const u64 now = armGetSystemTick();
-            LOG_DEBUG(
-                "Boot phase " + std::string(phase) + ": " +
-                std::to_string(armTicksToNs(now - bootPhaseStart) / 1000000) + " ms"
-            );
-            bootPhaseStart = now;
-        };
-
-        // Initialize renderer with all configurations
-        auto renderer_opts = CreateRendererOptions();
-        ConfigureFonts(renderer_opts);
-        ConfigureInput(renderer_opts);
-
-        LOG_DEBUG("Creating renderer...");
-        renderer = pu::ui::render::Renderer::New(renderer_opts);
-
-        LOG_DEBUG("Initializing renderer...");
-        renderer->Initialize();
-        LOG_MEMORY();  // Memory after renderer initialization
-
-        // Register additional fonts after romfs is mounted
-        RegisterAdditionalFonts();
-        logBootPhase("renderer + fonts");
+        boot::PhaseTimer phases;
+        renderer = boot::CreateRenderer();
+        phases.Log("renderer + fonts");
 
         boot::BootProgress bootProgress(renderer);
         if (!boot::RunAssetBootstrap(bootProgress)) {
@@ -177,7 +74,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
             return nullptr;
         }
 
-        logBootPhase("asset bootstrap");
+        phases.Log("asset bootstrap");
 
         if (!utils::TextureCaches::Initialize()) {
             LOG_ERROR("Failed to initialize the sprite sheets");
@@ -185,7 +82,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
             renderer->Finalize();
             return nullptr;
         }
-        logBootPhase("sprite sheets");
+        phases.Log("sprite sheets");
 
         auto recordingInitResult = appletInitializeGamePlayRecording();
         if (R_FAILED(recordingInitResult)) {
@@ -213,7 +110,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
         auto saveDataAccessor = SaveDataAccessor::New(saveProvider, saveWriter);
         auto boxDataProvider = BoxDataProvider::New(saveDataAccessor);
         auto bagDataProvider = BagDataProvider::New(saveDataAccessor);
-        logBootPhase("data providers");
+        phases.Log("data providers");
         LOG_MEMORY();  // Memory after data provider initialization
 
         // Create and prepare application
@@ -234,7 +131,7 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
 
         LOG_DEBUG("Preparing application...");
         app->Prepare();
-        logBootPhase("screens");
+        phases.Log("screens");
 
         // Warm the save-validation cache so first landing on a title doesn't pay it on input
         saveProvider->PrewarmValidationCache();
