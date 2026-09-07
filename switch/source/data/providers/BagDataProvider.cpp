@@ -60,6 +60,8 @@ pksm::bag::Pouch ReadPouch(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch, int
         if (id != 0 && item->count() > 0) {
             Row row{{id, item->count(), pksm::strings::ItemName(id, storageFormat), {}, 0, static_cast<u16>(slot)}};
             row.key = pksm::bag::BagSortKeyOf(sav, *item, row.slot.name, sort);
+        row.slot.isNew = row.key.isNew;
+        row.slot.favorite = row.key.favorite;
             rows.push_back(std::move(row));
         }
     }

@@ -11,7 +11,8 @@
 
 namespace pksm::ui {
 
-// One bag slot as a row: sprite, name and a detail (a quantity, a donut's quality).
+// One bag slot as a row: sprite, name, the game's marks (new, favourite) and a detail (a
+// quantity, a donut's quality).
 // Sprite and text are resolved on first draw, so rows scrolled out of view never pay for them;
 // text comes from the shared TextTextureCache, so a row never owns a texture outright.
 class BagItemRow : public pu::ui::elm::Element, public IFocusable, public ShakeableWithOutline {
@@ -24,6 +25,9 @@ private:
     static constexpr pu::ui::Color SELECTED_BG_COLOR = pu::ui::Color(255, 255, 255, 70);
     static constexpr pu::ui::Color LIFTED_BG_COLOR = pu::ui::Color(255, 214, 90, 90);
     static constexpr pu::ui::Color EDITED_TEXT_COLOR = pu::ui::Color(255, 214, 90, 255);
+    static constexpr pu::ui::Color NEW_MARK_COLOR = pu::ui::Color(235, 75, 75, 255);
+    static constexpr pu::ui::Color FAVORITE_MARK_COLOR = pu::ui::Color(255, 110, 150, 255);
+    static constexpr pu::i32 MARK_GAP = 12;
 
     bool focused = false;
     bool selected = false;
@@ -38,23 +42,28 @@ private:
     u32 spriteKey = 0;
     std::string name;
     std::string detail;
+    bool isNew = false;
+    bool favorite = false;
     bool edited = false;  // Tints the detail until the save is written
     pu::sdl2::TextureHandle::Ref nameTexture;
     pu::sdl2::TextureHandle::Ref detailTexture;
+    pu::sdl2::TextureHandle::Ref newMarkTexture;
+    pu::sdl2::TextureHandle::Ref favoriteMarkTexture;
 
     std::function<void()> onTouchSelectCallback;
     pksm::input::TouchInputHandler touchHandler;
 
     void UpdateBackground();
-    // Draws the text vertically centered; alignRight anchors it to the row's right padding
-    void DrawText(
+    // Draws the text vertically centered at textX (or against the row's right padding) and
+    // returns its width, 0 for no text
+    pu::i32 DrawText(
         pu::ui::render::Renderer::Ref& drawer,
         pu::sdl2::TextureHandle::Ref& texture,
         const std::string& text,
         pu::ui::Color color,
-        pu::i32 rowX,
+        pu::i32 textX,
         pu::i32 rowY,
-        bool alignRight
+        bool alignRight = false
     );
 
 public:
@@ -69,8 +78,9 @@ public:
     void
     OnInput(const u64 keys_down, const u64 keys_up, const u64 keys_held, const pu::ui::TouchPoint touch_pos) override;
 
-    // spriteKey is an ItemSpriteManager key; detail is the right-aligned text (a count, a quality)
-    void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail);
+    // spriteKey is an ItemSpriteManager key; detail is the right-aligned text (a count, a quality);
+    // the marks follow the name
+    void SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail, bool isNew, bool favorite);
     // Re-rasterizes only the detail; edited draws it in the edited tint
     void SetDetail(const std::string& detail, bool edited);
     // Drops the sprite and text textures; they come back from the caches on the next draw

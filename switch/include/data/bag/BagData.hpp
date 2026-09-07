@@ -16,6 +16,8 @@ struct Slot {
     std::string detail;  // Shown instead of ×count when set (donuts: quality and level boost)
     u8 variant = 0;      // Art variant where one id has several looks (a donut's stars)
     u16 slot = 0;        // The save's slot this row came from, what an edit addresses
+    bool isNew = false;  // The game's red dot: not looked at since it arrived
+    bool favorite = false;
 };
 
 struct Pouch {

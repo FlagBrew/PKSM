@@ -62,10 +62,18 @@ pu::i32 pksm::ui::BagItemRow::GetHeight() {
     return height;
 }
 
-void pksm::ui::BagItemRow::SetItem(u32 spriteKey, const std::string& itemName, const std::string& detail) {
+void pksm::ui::BagItemRow::SetItem(
+    u32 spriteKey,
+    const std::string& itemName,
+    const std::string& detail,
+    bool isNew,
+    bool favorite
+) {
     this->spriteKey = spriteKey;
     name = itemName;
     this->detail = detail;
+    this->isNew = isNew;
+    this->favorite = favorite;
     edited = false;
     Release();
 }
@@ -75,6 +83,8 @@ void pksm::ui::BagItemRow::Release() {
     spriteResolved = false;
     nameTexture = nullptr;
     detailTexture = nullptr;
+    newMarkTexture = nullptr;
+    favoriteMarkTexture = nullptr;
 }
 
 void pksm::ui::BagItemRow::SetDetail(const std::string& detail, bool edited) {
@@ -87,10 +97,14 @@ void pksm::ui::BagItemRow::SwapContent(BagItemRow& other) {
     std::swap(spriteKey, other.spriteKey);
     std::swap(name, other.name);
     std::swap(detail, other.detail);
+    std::swap(isNew, other.isNew);
+    std::swap(favorite, other.favorite);
     std::swap(edited, other.edited);
     std::swap(spriteResolved, other.spriteResolved);
     std::swap(nameTexture, other.nameTexture);
     std::swap(detailTexture, other.detailTexture);
+    std::swap(newMarkTexture, other.newMarkTexture);
+    std::swap(favoriteMarkTexture, other.favoriteMarkTexture);
     std::swap(sprite, other.sprite);  // same place in every row, so the image goes with the key
 }
 
@@ -117,17 +131,17 @@ bool pksm::ui::BagItemRow::IsFocused() const {
     return focused;
 }
 
-void pksm::ui::BagItemRow::DrawText(
+pu::i32 pksm::ui::BagItemRow::DrawText(
     pu::ui::render::Renderer::Ref& drawer,
     pu::sdl2::TextureHandle::Ref& texture,
     const std::string& text,
     pu::ui::Color color,
-    pu::i32 rowX,
+    pu::i32 textX,
     pu::i32 rowY,
     bool alignRight
 ) {
     if (text.empty()) {
-        return;  // a row need not have a detail
+        return 0;  // a row need not have a detail
     }
     if (!texture) {
         texture = utils::TextTextureCache::Get(RowFont(), text, color);
@@ -135,10 +149,13 @@ void pksm::ui::BagItemRow::DrawText(
     int textWidth = 0;
     int textHeight = 0;
     if (!texture->Get() || SDL_QueryTexture(texture->Get(), nullptr, nullptr, &textWidth, &textHeight) != 0) {
-        return;
+        return 0;
     }
-    const pu::i32 textX = alignRight ? rowX + width - PADDING - textWidth : rowX + (PADDING * 2) + SPRITE_SIZE;
+    if (alignRight) {
+        textX = textX + width - PADDING - textWidth;
+    }
     drawer->RenderTexture(texture->Get(), textX, rowY + (height - textHeight) / 2);
+    return textWidth;
 }
 
 void pksm::ui::BagItemRow::OnRender(pu::ui::render::Renderer::Ref& drawer, const pu::i32 x, const pu::i32 y) {
@@ -151,7 +168,15 @@ void pksm::ui::BagItemRow::OnRender(pu::ui::render::Renderer::Ref& drawer, const
         spriteResolved = true;
     }
     sprite->OnRender(drawer, x + sprite->GetX(), y + sprite->GetY());
-    DrawText(drawer, nameTexture, name, global::TEXT_WHITE, x, y, false);
+    pu::i32 cursor = x + (PADDING * 2) + SPRITE_SIZE;
+    cursor += DrawText(drawer, nameTexture, name, global::TEXT_WHITE, cursor, y);
+    // The game's marks trail the name: its red dot for an item not looked at, a heart for a favourite
+    if (isNew) {
+        cursor += MARK_GAP + DrawText(drawer, newMarkTexture, "●", NEW_MARK_COLOR, cursor + MARK_GAP, y);
+    }
+    if (favorite) {
+        DrawText(drawer, favoriteMarkTexture, "♥", FAVORITE_MARK_COLOR, cursor + MARK_GAP, y);
+    }
     DrawText(drawer, detailTexture, detail, edited ? EDITED_TEXT_COLOR : global::TEXT_WHITE, x, y, true);
 }
 
