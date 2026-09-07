@@ -51,6 +51,8 @@ public:
 
 private:
     void FinishPendingWrite();
+    // Lets the Sav go and hands the screens the leave
+    void ReleaseSave();
     void FinishPendingLoad();
 
     ISaveDataProvider::Ref saveProvider;

@@ -49,8 +49,8 @@ PKSMApplication::PKSMApplication(
                 [this](const std::string& title, const std::string& message, const std::vector<std::string>& options) {
                     return this->CreateShowDialog(title, message, options, true);
                 },
-            .onSaveLoaded = [this]() { this->ShowMainMenu(); },
-            .onSaveLeft = [this]() { this->ShowTitleLoadScreen(); },
+            .onSaveLoaded = [this]() { screens->ShowMainMenu(); },
+            .onSaveLeft = [this]() { screens->ShowTitleLoadScreen(); },
         }
     );
     // Add render callback to process account updates
@@ -167,38 +167,6 @@ PKSMApplication::Ref PKSMApplication::Initialize() {
     }
 }
 
-void PKSMApplication::ShowMainMenu() {
-    LOG_DEBUG("Switching to main menu");
-    this->LoadLayout(this->mainMenu);
-}
-
-void PKSMApplication::ShowTitleLoadScreen() {
-    // Release the Sav and storage textures back to the applet heap; everything rebuilds on demand.
-    // Freeing hundreds of textures at once is the title return's cost, so it is measured
-    const auto ms = [](u64 from, u64 to) { return std::to_string(armTicksToNs(to - from) / 1000000); };
-    const u64 t0 = armGetSystemTick();
-    saveDataAccessor->unloadSave();
-    const u64 t1 = armGetSystemTick();
-    if (storageScreen || bagScreen) {
-        // Screens before caches: the rows let go of shared handles cheaply while the caches still
-        // own them, so the caches bury sole-owned textures and the burst never lands here
-        storageScreen = nullptr;
-        bagScreen = nullptr;
-        const u64 t2 = armGetSystemTick();
-        const auto cleared = utils::TextureCaches::Clear();
-        const u64 t3 = armGetSystemTick();
-        LOG_DEBUG(
-            "Title return: save " + ms(t0, t1) + " ms, screens " + ms(t1, t2) + " ms, caches " + ms(t2, t3) + " ms (" +
-            std::to_string(cleared.sprites) + " sprites, " + std::to_string(cleared.items) + " items, " +
-            std::to_string(cleared.glyphs) + " glyphs, " + std::to_string(cleared.texts) + " texts)"
-        );
-        utils::Logger::Flush();  // a milestone worth having even if the app exits right after
-    }
-    LOG_MEMORY();
-    LOG_DEBUG("Switching to title load screen");
-    this->LoadLayout(this->titleLoadScreen);
-}
-
 pu::ui::Overlay::Ref PKSMApplication::MakeToastOverlay(const std::string& message) {
     // A lingering error toast would make StartOverlay a silent no-op
     if (errorToastActive) {
@@ -241,113 +209,35 @@ void PKSMApplication::ShowErrorToast(const std::string& message) {
     errorToastActive = true;
 }
 
-void PKSMApplication::ShowStorageScreen() {
-    // Built on first entry: the screen's textures cost ~25MB of the applet heap
-    if (!storageScreen) {
-        const u64 t0 = armGetSystemTick();
-        LOG_DEBUG("Creating storage screen on first use...");
-        storageScreen = pksm::layout::StorageScreen::New(
-            [this]() { this->ShowMainMenu(); },
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            [this](const std::string& title, const std::string& message, const std::string& confirmLabel) {
-                return this->CreateShowDialog(title, message, {confirmLabel, "Cancel"}, true) == 0;
-            },
-            saveDataAccessor,
-            boxDataProvider,
-            storageHand,
-            boxNameEditor
-        );
-        LOG_MEMORY();
-        LOG_DEBUG(
-            "Storage screen construct: " + std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms"
-        );
-    }
-    LOG_DEBUG("Switching to storage screen");
-    this->LoadLayout(this->storageScreen);
-}
-
-void PKSMApplication::ShowBagScreen() {
-    // Built per loaded save, like the storage screen
-    if (!bagScreen) {
-        const u64 t0 = armGetSystemTick();
-        bagScreen = pksm::layout::BagScreen::New(
-            [this]() { this->ShowMainMenu(); },
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            [this](const std::string& title, const std::string& message, const std::vector<std::string>& options) {
-                return this->CreateShowDialog(title, message, options, true);
-            },
-            saveDataAccessor,
-            bagDataProvider
-        );
-        LOG_MEMORY();
-        LOG_DEBUG("Bag screen construct: " + std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms");
-    }
-    LOG_DEBUG("Switching to bag screen");
-    this->LoadLayout(this->bagScreen);
-}
-
 void PKSMApplication::OnLoad() {
     try {
         LOG_DEBUG("Loading title screen...");
         LOG_MEMORY();
 
-        // Create title load screen
-        LOG_DEBUG("Creating title load screen...");
-        titleLoadScreen = pksm::layout::TitleLoadScreen::New(
+        screens = std::make_unique<ScreenRouter>(
+            *this,
+            *accountManager,
             titleProvider,
             saveProvider,
-            *accountManager,
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { saveSession->Load(title, save); }
+            saveDataAccessor,
+            boxDataProvider,
+            storageHand,
+            boxNameEditor,
+            bagDataProvider,
+            [this](pksm::titles::Title::Ref title, pksm::saves::Save::Ref save) { saveSession->Load(title, save); },
+            [this]() { saveSession->Leave(); }
         );
-
-        // Create main menu with back callback and overlay handlers
-        // Create navigation callbacks for menu buttons
-        LOG_DEBUG("Creating navigation callbacks...");
-        std::map<pksm::ui::MenuButtonType, std::function<void()>> navigationCallbacks = {
-            {pksm::ui::MenuButtonType::Storage, [this]() { this->ShowStorageScreen(); }},
-            {pksm::ui::MenuButtonType::Editor, [this]() { LOG_DEBUG("Editor button pressed (not implemented)"); }},
-            {pksm::ui::MenuButtonType::Events, [this]() { LOG_DEBUG("Events button pressed (not implemented)"); }},
-            {pksm::ui::MenuButtonType::Bag, [this]() { this->ShowBagScreen(); }},
-            {pksm::ui::MenuButtonType::Scripts, [this]() { LOG_DEBUG("Scripts button pressed (not implemented)"); }},
-            {pksm::ui::MenuButtonType::Settings, [this]() { LOG_DEBUG("Settings button pressed (not implemented)"); }}
-        };
-
-        LOG_DEBUG("Creating main menu...");
-        mainMenu = pksm::layout::MainMenu::New(
-            [this]() { saveSession->Leave(); },
-            [this](pu::ui::Overlay::Ref overlay) { this->StartOverlay(overlay); },
-            [this]() { this->EndOverlay(); },
-            saveDataAccessor,  // Pass the save data accessor to the main menu
-            navigationCallbacks  // Pass navigation callbacks to the main menu
-        );
-
-        // The storage screen is built lazily in ShowStorageScreen
 
         // Register for save data changes in both MainMenu and StorageScreen
         LOG_DEBUG("Setting up save data change callbacks...");
         saveDataAccessor->setOnSaveDataChanged([this](pksm::saves::SaveData::Ref saveData) {
             LOG_DEBUG("Save data changed, updating UI");
-
-            // Update main menu with new save data
-            if (mainMenu) {
-                LOG_DEBUG("Updating MainMenu with new save data");
-                mainMenu->UpdateTrainerInfo();
-            }
-
-            // Preload box data for storage screen
-            if (storageScreen && saveData) {
-                LOG_DEBUG("Preloading box data for StorageScreen");
-                storageScreen->LoadBoxData();
-            }
+            screens->OnSaveDataChanged(saveData);
         });
 
         // Start with title load screen
         LOG_DEBUG("Loading initial screen...");
-        this->ShowTitleLoadScreen();
+        screens->ShowTitleLoadScreen();
 
         LOG_DEBUG("Application loaded successfully");
         utils::Logger::Flush();

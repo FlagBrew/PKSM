@@ -53,7 +53,7 @@ void SaveSession::Leave() {
             return;
         }
     }
-    hooks.onSaveLeft();
+    ReleaseSave();
 }
 
 void SaveSession::Poll() {
@@ -87,7 +87,7 @@ void SaveSession::FinishPendingWrite() {
         hooks.requestChoice("Save Failed", "The save file could not be written. Your changes are still loaded.", {"OK"});
         return;
     }
-    hooks.onSaveLeft();
+    ReleaseSave();
 }
 
 void SaveSession::FinishPendingLoad() {
@@ -132,4 +132,12 @@ void SaveSession::FinishPendingLoad() {
     }
 }
 
+void SaveSession::ReleaseSave() {
+    // The Sav goes before the screens built on it; a title return logs each step's cost
+    const u64 t0 = armGetSystemTick();
+    saveDataAccessor->unloadSave();
+    LOG_DEBUG("Save released: " + std::to_string(armTicksToNs(armGetSystemTick() - t0) / 1000000) + " ms");
+    hooks.onSaveLeft();
+}
 }  // namespace pksm
+
