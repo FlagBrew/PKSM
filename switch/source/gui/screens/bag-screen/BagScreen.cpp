@@ -32,6 +32,11 @@ std::optional<int> PromptQuantity(const std::string& header, int initial, int mi
     return std::stoi(*entered);
 }
 
+// What a pouch holds, for the count and the sort prompt
+std::string Noun(const pksm::bag::Pouch& pouch) {
+    return pouch.pouch == ::pksm::Sav::Pouch::Donut ? "donut" : "item";
+}
+
 }  // namespace
 
 namespace pksm::layout {
@@ -242,8 +247,7 @@ void BagScreen::ShowPouch(size_t index) {
     const auto& pouch = bag.pouches[index];
     pouchMarker->SetY(PouchY(index));
     pouchTitles[index]->SetVisible(true);
-    const std::string noun = pouch.pouch == ::pksm::Sav::Pouch::Donut ? " donut" : " item";
-    pouchCount->SetText(std::to_string(pouch.items.size()) + noun + (pouch.items.size() == 1 ? "" : "s"));
+    pouchCount->SetText(std::to_string(pouch.items.size()) + " " + Noun(pouch) + (pouch.items.size() == 1 ? "" : "s"));
     pouchCount->SetX(LIST_X + ListWidth() - pouchCount->GetWidth());
     itemList->SetDataSource(pouch.items, bag.storageFormat, pouch.pouch);
     for (size_t i = 0; i < pouch.items.size(); i++) {
@@ -331,7 +335,7 @@ void BagScreen::UpdateHelpItems() {
         if (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].items.empty()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open"});
         }
-        if (CanReorder()) {
+        if (CanSort()) {
             helpItems.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort"});
         }
         helpItems.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back"});
@@ -405,8 +409,8 @@ void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
         // A removal shifts the rows; a quantity change only re-rasterizes its own detail, and
         // after a move the rows already stand in the save's new order
         itemList->SetDataSource(items, bag.storageFormat, bag.pouches[currentPouch].pouch, selected, true);
-        const std::string noun = bag.pouches[currentPouch].pouch == ::pksm::Sav::Pouch::Donut ? " donut" : " item";
-        pouchCount->SetText(std::to_string(items.size()) + noun + (items.size() == 1 ? "" : "s"));
+        const std::string noun = Noun(bag.pouches[currentPouch]);
+        pouchCount->SetText(std::to_string(items.size()) + " " + noun + (items.size() == 1 ? "" : "s"));
         pouchCount->SetX(LIST_X + ListWidth() - pouchCount->GetWidth());
     }
     for (size_t i = 0; i < items.size(); i++) {
@@ -613,6 +617,10 @@ bool BagScreen::CanReorder() const {
     return !pouch.indexedByItem && pouch.pouch != ::pksm::Sav::Pouch::Donut && pouch.items.size() > 1;
 }
 
+bool BagScreen::CanSort() const {
+    return (currentPouch < bag.pouches.size() && !bag.pouches[currentPouch].sortOptions.empty()) || CanReorder();
+}
+
 void BagScreen::LiftItem() {
     const size_t index = itemList->GetSelectedIndex();
     if (!CanReorder() || index >= bag.pouches[currentPouch].items.size()) {
@@ -662,6 +670,10 @@ void BagScreen::EndCarry() {
 
 void BagScreen::SortPouch() {
     const auto& pouch = bag.pouches[currentPouch];
+    if (!pouch.sortOptions.empty()) {
+        ChoosePouchSort();
+        return;
+    }
     if (!CanReorder()) {
         pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
         return;
@@ -680,6 +692,23 @@ void BagScreen::SortPouch() {
     if (auto updated = bagDataProvider->Sort(saveDataAccessor->getCurrentSaveData(), pouch.pouch, orders[choice])) {
         bag.pouches[currentPouch] = std::move(*updated);
         ShowPouch(currentPouch);  // every row moved: rebind from the top
+    }
+}
+
+void BagScreen::ChoosePouchSort() {
+    const auto& pouch = bag.pouches[currentPouch];
+    std::vector<std::string> options = pouch.sortOptions;
+    options[pouch.sortOption] += " (current)";
+    options.push_back("Cancel");
+    const int choice = requestChoice("Sort " + pouch.name, "The game lists the " + Noun(pouch) + "s", options);
+    if (choice < 0 || static_cast<size_t>(choice) == pouch.sortOption) {
+        return;
+    }
+    const auto updated =
+        bagDataProvider->SetPouchSort(saveDataAccessor->getCurrentSaveData(), pouch.pouch, static_cast<size_t>(choice));
+    if (updated) {
+        bag = std::move(*updated);  // a setting some games share across pouches; the stacks are the same
+        ShowPouch(currentPouch);
     }
 }
 
@@ -718,7 +747,7 @@ std::vector<pksm::ui::HelpItem> BagScreen::GetHelpOverlayItems() const {
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Pouches"});
     } else {
         items.push_back({{pksm::ui::global::ButtonGlyph::A}, "Open Pouch"});
-        if (CanReorder()) {
+        if (CanSort()) {
             items.push_back({{pksm::ui::global::ButtonGlyph::Y}, "Sort Pouch"});
         }
         items.push_back({{pksm::ui::global::ButtonGlyph::B}, "Back to Main Menu"});

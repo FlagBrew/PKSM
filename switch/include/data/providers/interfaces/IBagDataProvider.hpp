@@ -47,4 +47,10 @@ public:
     // pouch indexes by item
     virtual std::optional<pksm::bag::Pouch>
     Sort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, pksm::bag::SortOrder order) = 0;
+
+    // Puts the pouch in one of its sortOptions and returns the bag as it now reads, since some
+    // games keep one setting for every pouch; nothing when saveData is not the live save or the
+    // pouch has no options
+    virtual std::optional<pksm::bag::BagData>
+    SetPouchSort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, size_t option) = 0;
 };

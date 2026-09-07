@@ -23,4 +23,6 @@ public:
     Move(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, u16 fromSlot, u16 toSlot) override;
     std::optional<pksm::bag::Pouch>
     Sort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, pksm::bag::SortOrder order) override;
+    std::optional<pksm::bag::BagData>
+    SetPouchSort(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Pouch pouch, size_t option) override;
 };

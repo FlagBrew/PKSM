@@ -138,13 +138,16 @@ private:
     void ClearSearch();
 
     // Reordering, where the game keeps a slot array. In the list Y lifts a row, the cursor carries
-    // it, Y drops it into the save and B puts it back where it was; on the pouch column Y sorts
+    // it, Y drops it into the save and B puts it back where it was; on the pouch column Y sorts.
+    // A pouch the game orders itself offers the game's own options there instead
     bool CanReorder() const;
+    bool CanSort() const;
     void LiftItem();
     void DropItem();
     void PutBack();
     void EndCarry();
     void SortPouch();
+    void ChoosePouchSort();
 
     // Override BaseLayout methods
     std::vector<pksm::ui::HelpItem> GetHelpOverlayItems() const override;

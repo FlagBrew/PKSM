@@ -23,8 +23,12 @@ struct Pouch {
     std::string name;
     size_t capacity;
     u16 maxCount = 0;         // Largest quantity one slot holds in-game; 1 means one of each, not a stack
-    std::vector<Slot> items;  // Owned items in save order
-    bool indexedByItem = false;  // One slot per item: rows never move, and full means every item is held
+    std::vector<Slot> items;  // Owned items, in the order the game shows them
+    bool indexedByItem = false;  // One slot per item: the player never moves them, and full means every item is held
+    // Where the game orders the pouch itself: its sort options as its menu lists them and the one
+    // in force; empty where the player orders the slots
+    std::vector<std::string> sortOptions;
+    size_t sortOption = 0;
 };
 
 struct BagData {
