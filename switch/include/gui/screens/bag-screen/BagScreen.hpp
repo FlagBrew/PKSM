@@ -13,8 +13,8 @@
 #include "gui/shared/components/AnimatedBackground.hpp"
 #include "gui/shared/components/BagItemList.hpp"
 #include "gui/shared/components/BaseLayout.hpp"
-#include "gui/shared/components/FocusableButton.hpp"
 #include "gui/shared/components/ItemPicker.hpp"
+#include "gui/shared/components/PouchColumn.hpp"
 #include "input/HoldRepeat.hpp"
 #include "input/ButtonInputHandler.hpp"
 #include "input/directional/DirectionalInputHandler.hpp"
@@ -56,10 +56,7 @@ private:
     static constexpr size_t NO_POUCH = SIZE_MAX;
     size_t currentPouch = NO_POUCH;
 
-    std::vector<pksm::ui::FocusableButton::Ref> pouchButtons;
-    pu::ui::elm::Rectangle::Ref pouchMarker;
-    // One title per pouch, rasterized up front: a switch only flips visibility
-    std::vector<pu::ui::elm::TextBlock::Ref> pouchTitles;
+    pksm::ui::PouchColumn::Ref pouchColumn;
     pu::ui::elm::TextBlock::Ref pouchCount;
     pu::ui::elm::TextBlock::Ref emptyNotice;
     pksm::ui::BagItemList::Ref itemList;
@@ -73,13 +70,6 @@ private:
     // Layout constants
     static constexpr pu::i32 SIDE_MARGIN = 80;
     static constexpr pu::i32 TOP_MARGIN = 120;
-    static constexpr pu::i32 POUCH_WIDTH = 400;
-    static constexpr pu::i32 POUCH_HEIGHT = 72;
-    static constexpr pu::i32 POUCH_SPACING = 12;
-    static constexpr pu::i32 GLYPH_SIZE = 44;
-    static constexpr pu::i32 GLYPH_INSET = 16;
-    static constexpr pu::i32 MARKER_WIDTH = 8;
-    static constexpr pu::i32 MARKER_GAP = 10;
     static constexpr pu::i32 LIST_X = 600;
     static constexpr pu::i32 LIST_Y = 190;
     static constexpr pu::i32 LIST_BOTTOM_MARGIN = 10;
@@ -97,9 +87,6 @@ private:
     pksm::input::ButtonInputHandler pickerButtonHandler;
     pksm::input::ButtonInputHandler carryButtonHandler;
 
-    static constexpr pu::i32 PouchY(size_t index) {
-        return TOP_MARGIN + static_cast<pu::i32>(index) * (POUCH_HEIGHT + POUCH_SPACING);
-    }
     pu::i32 ListWidth() { return GetWidth() - LIST_X - SIDE_MARGIN; }
     pu::i32 ListHeight() { return GetHeight() - LIST_Y - pksm::ui::HelpFooter::FOOTER_HEIGHT - LIST_BOTTOM_MARGIN; }
 
@@ -109,7 +96,6 @@ private:
     void InitializeItemList();
     void InitializePicker();
     void ShowPouch(size_t index);
-    void FocusPouch(size_t index);
     void FocusItemList();
     void StepPouch(int delta);
     void HandleBackButton();

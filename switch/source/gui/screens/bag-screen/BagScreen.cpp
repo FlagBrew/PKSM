@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <switch.h>
 
-#include "gui/shared/components/SpriteImage.hpp"
 #include "utils/Logger.hpp"
 #include "utils/PouchGlyphs.hpp"
 #include "utils/SoftwareKeyboard.hpp"
@@ -89,23 +88,21 @@ BagScreen::BagScreen(
 
     pouchDirectionalHandler.SetOnMoveUp([this]() {
         if (currentPouch > 0) {
-            FocusPouch(currentPouch - 1);
+            pouchColumn->RequestFocus(currentPouch - 1);
         } else {
-            pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::UP);
+            pouchColumn->ShakeSelected(ui::ShakeDirection::UP);
         }
     });
     pouchDirectionalHandler.SetOnMoveDown([this]() {
-        if (currentPouch + 1 < pouchButtons.size()) {
-            FocusPouch(currentPouch + 1);
+        if (currentPouch + 1 < bag.pouches.size()) {
+            pouchColumn->RequestFocus(currentPouch + 1);
         } else {
-            pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::DOWN);
+            pouchColumn->ShakeSelected(ui::ShakeDirection::DOWN);
         }
     });
-    pouchDirectionalHandler.SetOnMoveLeft([this]() {
-        pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::LEFT);
-    });
+    pouchDirectionalHandler.SetOnMoveLeft([this]() { pouchColumn->ShakeSelected(ui::ShakeDirection::LEFT); });
     pouchDirectionalHandler.SetOnMoveRight([this]() { FocusItemList(); });
-    listDirectionalHandler.SetOnMoveLeft([this]() { FocusPouch(currentPouch); });
+    listDirectionalHandler.SetOnMoveLeft([this]() { pouchColumn->RequestFocus(currentPouch); });
 
     buttonHandler.RegisterButton(HidNpadButton_B, nullptr, [this]() { HandleBackButton(); });
     buttonHandler.RegisterButton(HidNpadButton_L, nullptr, [this]() { StepPouch(-1); });
@@ -133,8 +130,8 @@ BagScreen::BagScreen(
         return !picker->GetSearch().empty();
     });
 
-    if (!pouchButtons.empty()) {
-        pouchButtons[0]->RequestFocus();
+    if (!bag.pouches.empty()) {
+        pouchColumn->RequestFocus(0);
     }
 
     this->SetOnInput(
@@ -146,57 +143,20 @@ BagScreen::BagScreen(
 }
 
 void BagScreen::InitializePouchColumn() {
-    for (size_t i = 0; i < bag.pouches.size(); i++) {
-        auto button = pksm::ui::FocusableButton::New(
-            SIDE_MARGIN,
-            PouchY(i),
-            POUCH_WIDTH,
-            POUCH_HEIGHT,
-            bag.pouches[i].name,
-            pu::ui::Color(0, 0, 0, 70),
-            pu::ui::Color(255, 255, 255, 80)
-        );
-        button->SetContentFont(pksm::ui::global::MakeMediumFontName(pksm::ui::global::FONT_SIZE_ACCOUNT_NAME));
-        button->SetName("Pouch button: " + bag.pouches[i].name);
-        button->SetOnFocus([this, i]() {
-            // Focus returning from the list lands on the pouch already shown
-            if (i != currentPouch) {
-                ShowPouch(i);
-            }
-            UpdateHelpItems();
-        });
-        button->SetOnClick([this]() { FocusItemList(); });
-        focusManager->RegisterFocusable(button);
-        this->Add(button);
-        pouchButtons.push_back(button);
-        // Drawn over the button, left of its centred name
-        this->Add(pksm::ui::SpriteImage::New(
-            SIDE_MARGIN + GLYPH_INSET,
-            PouchY(i) + (POUCH_HEIGHT - GLYPH_SIZE) / 2,
-            GLYPH_SIZE,
-            GLYPH_SIZE,
-            utils::PouchGlyphs::Get(bag.pouches[i].pouch, bag.storageFormat)
-        ));
-
-        auto title = AddText(
-            LIST_X,
-            TOP_MARGIN - 10,
-            bag.pouches[i].name,
-            pksm::ui::global::MakeHeavyFontName(pksm::ui::global::FONT_SIZE_HEADER)
-        );
-        title->SetVisible(false);
-        pouchTitles.push_back(title);
+    std::vector<pksm::ui::PouchColumn::Entry> pouches;
+    for (const auto& pouch : bag.pouches) {
+        pouches.push_back({pouch.name, utils::PouchGlyphs::Get(pouch.pouch, bag.storageFormat)});
     }
-
-    pouchMarker = pu::ui::elm::Rectangle::New(
-        SIDE_MARGIN - MARKER_GAP - MARKER_WIDTH,
-        PouchY(0),
-        MARKER_WIDTH,
-        POUCH_HEIGHT,
-        pksm::ui::global::TEXT_WHITE
-    );
-    pouchMarker->SetVisible(!pouchButtons.empty());
-    this->Add(pouchMarker);
+    pouchColumn = pksm::ui::PouchColumn::New(SIDE_MARGIN, TOP_MARGIN, LIST_X, TOP_MARGIN - 10, pouches, focusManager);
+    pouchColumn->SetOnPouchFocused([this](size_t i) {
+        // Focus returning from the list lands on the pouch already shown
+        if (i != currentPouch) {
+            ShowPouch(i);
+        }
+        UpdateHelpItems();
+    });
+    pouchColumn->SetOnPouchActivated([this]() { FocusItemList(); });
+    this->Add(pouchColumn);
 }
 
 pu::ui::elm::TextBlock::Ref
@@ -240,13 +200,9 @@ void BagScreen::InitializePicker() {
 
 void BagScreen::ShowPouch(size_t index) {
     const u64 t0 = armGetSystemTick();
-    if (currentPouch != NO_POUCH) {
-        pouchTitles[currentPouch]->SetVisible(false);
-    }
     currentPouch = index;
     const auto& pouch = bag.pouches[index];
-    pouchMarker->SetY(PouchY(index));
-    pouchTitles[index]->SetVisible(true);
+    pouchColumn->Select(index);
     pouchCount->SetText(std::to_string(pouch.items.size()) + " " + Noun(pouch) + (pouch.items.size() == 1 ? "" : "s"));
     pouchCount->SetX(LIST_X + ListWidth() - pouchCount->GetWidth());
     itemList->SetDataSource(pouch.items, bag.storageFormat, pouch.pouch);
@@ -262,34 +218,30 @@ void BagScreen::ShowPouch(size_t index) {
     );
 }
 
-void BagScreen::FocusPouch(size_t index) {
-    pouchButtons[index]->RequestFocus();
-}
-
 void BagScreen::FocusItemList() {
     if (bag.pouches[currentPouch].items.empty()) {
-        pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::RIGHT);
+        pouchColumn->ShakeSelected(ui::ShakeDirection::RIGHT);
         return;
     }
     itemList->RequestFocus();
 }
 
 void BagScreen::StepPouch(int delta) {
-    if (pouchButtons.empty()) {
+    if (bag.pouches.empty()) {
         return;
     }
-    const size_t count = pouchButtons.size();
+    const size_t count = bag.pouches.size();
     const size_t next = (currentPouch + (delta < 0 ? count - 1 : 1)) % count;
     if (itemList->IsFocused() && !bag.pouches[next].items.empty()) {
         ShowPouch(next);
     } else {
-        FocusPouch(next);
+        pouchColumn->RequestFocus(next);
     }
 }
 
 void BagScreen::HandleBackButton() {
     if (itemList->IsFocused()) {
-        FocusPouch(currentPouch);
+        pouchColumn->RequestFocus(currentPouch);
         return;
     }
     LOG_DEBUG("B button pressed, returning to main menu");
@@ -321,9 +273,7 @@ void BagScreen::UpdateHelpItems() {
 
 void BagScreen::UpdatePouchColumn() {
     const bool reachable = !isHelpOverlayVisible && !picker->IsOpen() && liftedFrom == NOT_LIFTED;
-    for (auto& button : pouchButtons) {
-        button->SetDisabled(!reachable);
-    }
+    pouchColumn->SetDisabled(!reachable);
 }
 
 void BagScreen::OnInput(u64 down, u64 up, u64 held) {
@@ -377,7 +327,7 @@ void BagScreen::ApplyPouch(pksm::bag::Pouch pouch, size_t selected) {
     if (items.empty()) {
         // Nothing left to hold the cursor; the pouch column takes it
         ShowPouch(currentPouch);
-        FocusPouch(currentPouch);
+        pouchColumn->RequestFocus(currentPouch);
         UpdateHelpItems();
         return;
     }
@@ -462,7 +412,7 @@ bool BagScreen::CanAdd() const {
 
 void BagScreen::ShowPouchView(bool visible) {
     const auto& items = bag.pouches[currentPouch].items;
-    pouchTitles[currentPouch]->SetVisible(visible);
+    pouchColumn->SetTitleVisible(visible);
     pouchCount->SetVisible(visible);
     itemList->SetVisible(visible && !items.empty());
     emptyNotice->SetVisible(visible && items.empty());
@@ -470,9 +420,7 @@ void BagScreen::ShowPouchView(bool visible) {
 
 void BagScreen::OpenPicker() {
     if (!CanAdd()) {
-        if (currentPouch < pouchButtons.size()) {
-            pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // donuts are baked in-game
-        }
+        pouchColumn->ShakeSelected(ui::ShakeDirection::RIGHT);  // donuts are baked in-game
         return;
     }
     const auto& pouch = bag.pouches[currentPouch];
@@ -506,7 +454,7 @@ void BagScreen::RestorePouchView(bool toList) {
     if (toList && !bag.pouches[currentPouch].items.empty()) {
         itemList->RequestFocus();
     } else {
-        FocusPouch(currentPouch);
+        pouchColumn->RequestFocus(currentPouch);
     }
     UpdateHelpItems();
 }
@@ -651,7 +599,7 @@ void BagScreen::SortPouch() {
         return;
     }
     if (!CanReorder()) {
-        pouchButtons[currentPouch]->shakeOutOfBounds(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
+        pouchColumn->ShakeSelected(ui::ShakeDirection::RIGHT);  // this pouch keeps its order
         return;
     }
     std::vector<std::string> options{"Name", "Number"};
