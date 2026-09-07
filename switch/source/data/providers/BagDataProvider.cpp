@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "data/bag/BagSorting.hpp"
+#include "data/bag/ItemMarks.hpp"
 #include "data/bag/NativeItems.hpp"
 #include "sav/Item.hpp"
 #include "sav/SavZA.hpp"
@@ -60,8 +61,8 @@ pksm::bag::Pouch ReadPouch(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch, int
         if (id != 0 && item->count() > 0) {
             Row row{{id, item->count(), pksm::strings::ItemName(id, storageFormat), {}, 0, static_cast<u16>(slot)}};
             row.key = pksm::bag::BagSortKeyOf(sav, *item, row.slot.name, sort);
-        row.slot.isNew = row.key.isNew;
-        row.slot.favorite = row.key.favorite;
+            row.slot.isNew = row.key.isNew;
+            row.slot.favorite = row.key.favorite;
             rows.push_back(std::move(row));
         }
     }
@@ -102,8 +103,8 @@ pksm::bag::BagData BagDataProvider::GetBag(const pksm::saves::SaveData::Ref& sav
         return bag;
     }
     bag.storageFormat = sav->generation();
-    // Gen 9 keeps both marks beside every item; the older formats' red dot is not shown yet
-    bag.keepsNewMark = bag.keepsFavorite = bag.storageFormat == ::pksm::Generation::NINE;
+    bag.keepsNewMark = pksm::bag::KeepsNewMark(*sav);
+    bag.keepsFavorite = pksm::bag::KeepsFavorite(*sav);
     for (const auto& [pouch, capacity] : sav->pouches()) {
         bag.pouches.push_back(ReadPouch(*sav, pouch, capacity));
     }
@@ -310,14 +311,12 @@ std::optional<pksm::bag::Pouch> BagDataProvider::SetMarks(
 ) {
     ::pksm::Sav* sav = saveDataAccessor->savFor(saveData);
     const int capacity = sav ? PouchCapacity(*sav, pouch) : 0;
-    if (slot >= capacity || sav->generation() != ::pksm::Generation::NINE) {
+    if (slot >= capacity || !(pksm::bag::KeepsNewMark(*sav) || pksm::bag::KeepsFavorite(*sav))) {
         return std::nullopt;
     }
     auto item = sav->item(pouch, slot);
-    auto& item9 = static_cast<::pksm::Item9a&>(*item);
-    item9.newFlag(isNew);
-    item9.favoriteFlag(favorite);
-    sav->item(item9, pouch, slot);
+    pksm::bag::SetMarks(*sav, *item, {isNew, favorite});
+    sav->item(*item, pouch, slot);
     saveDataAccessor->markDirty();
     return ReadPouch(*sav, pouch, capacity);
 }

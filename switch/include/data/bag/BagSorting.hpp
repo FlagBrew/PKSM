@@ -22,7 +22,7 @@ std::optional<BagSort> BagSortOf(const ::pksm::Sav& sav);
 // The sort as the save numbers it
 u8 BagSortValue(BagSort sort);
 
-// What the game's order reads off an item; only Gen 9 items carry it, the rest keep their order
+// What the game's order reads off an item: the marks any format keeps, the type order only Gen 9's
 struct BagSortKey {
     int order = 0;  // the game's sort-by-type position
     bool isNew = false;

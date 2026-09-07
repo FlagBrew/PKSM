@@ -4,6 +4,8 @@
 #include <array>
 #include <cctype>
 
+#include "data/bag/ItemMarks.hpp"
+
 namespace {
 
 constexpr std::array<u8, 3> DONUT_SORT_VALUES{2, 0, 1};  // by DonutSort
@@ -28,11 +30,11 @@ u8 BagSortValue(BagSort sort) {
 
 BagSortKey BagSortKeyOf(const ::pksm::Sav& sav, const ::pksm::Item& item, const std::string& name, BagSort sort) {
     BagSortKey key;
+    const ItemMarks marks = MarksOf(sav, item);
+    key.isNew = marks.isNew;
+    key.favorite = marks.favorite;
     if (item.generation() == ::pksm::Generation::NINE) {
-        const auto& item9 = static_cast<const ::pksm::Item9a&>(item);
-        key.order = sav.itemSortOrder(item9.id());
-        key.isNew = item9.newFlag();
-        key.favorite = item9.favoriteFlag();
+        key.order = sav.itemSortOrder(item.id());
         if (sort == BagSort::Name) {
             key.name = FoldCase(name);
         }
