@@ -5,68 +5,12 @@
 #include <cctype>
 #include <unordered_set>
 
+#include "data/bag/NativeItems.hpp"
 #include "sav/Item.hpp"
-#include "sav/Sav1.hpp"
-#include "sav/Sav2.hpp"
-#include "sav/Sav3.hpp"
 #include "sav/SavZA.hpp"
 #include "utils/CoreStrings.hpp"
 
 namespace {
-
-// Gen 1-3 items carry their own ids; id() would convert to the national index
-u16 NativeItemId(const ::pksm::Item& item) {
-    switch (item.generation()) {
-        case ::pksm::Generation::ONE:
-            return static_cast<const ::pksm::Item1&>(item).id1();
-        case ::pksm::Generation::TWO:
-            return static_cast<const ::pksm::Item2&>(item).id2();
-        case ::pksm::Generation::THREE:
-            return static_cast<const ::pksm::Item3&>(item).id3();
-        default:
-            return item.id();
-    }
-}
-
-void SetNativeItemId(::pksm::Item& item, u16 id) {
-    switch (item.generation()) {
-        case ::pksm::Generation::ONE:
-            static_cast<::pksm::Item1&>(item).id1(id);
-            break;
-        case ::pksm::Generation::TWO:
-            static_cast<::pksm::Item2&>(item).id2(id);
-            break;
-        case ::pksm::Generation::THREE:
-            static_cast<::pksm::Item3&>(item).id3(id);
-            break;
-        default:
-            item.id(id);
-            break;
-    }
-}
-
-// The pouch's item list in the ids the format stores; core's validItems() speaks national ids,
-// which Gen 1-3 saves do not
-std::span<const int> NativeItemList(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch) {
-    const auto lists = [&]() {
-        switch (sav.generation()) {
-            case ::pksm::Generation::ONE:
-                return static_cast<const ::pksm::Sav1&>(sav).validItems1();
-            case ::pksm::Generation::TWO:
-                return static_cast<const ::pksm::Sav2&>(sav).validItems2();
-            case ::pksm::Generation::THREE:
-                return static_cast<const ::pksm::Sav3&>(sav).validItems3();
-            default:
-                return sav.validItems();
-        }
-    }();
-    for (const auto& [candidate, list] : lists) {
-        if (candidate == pouch) {
-            return list;
-        }
-    }
-    return {};
-}
 
 // Quality and level boost, the two things a donut is chosen for
 std::string DonutDetail(const ::pksm::SavZA::Donut& donut) {
@@ -160,7 +104,7 @@ pksm::bag::Pouch ReadPouch(const ::pksm::Sav& sav, ::pksm::Sav::Pouch pouch, int
         if (!item) {
             break;
         }
-        const u16 id = NativeItemId(*item);
+        const u16 id = pksm::bag::NativeItemId(*item);
         if (id != 0 && item->count() > 0) {
             Row row{{id, item->count(), pksm::strings::ItemName(id, storageFormat), {}, 0, static_cast<u16>(slot)}, 0};
             if (item->generation() == ::pksm::Generation::NINE) {
@@ -286,11 +230,11 @@ BagDataProvider::GetAddable(const pksm::saves::SaveData::Ref& saveData, ::pksm::
             break;
         }
         if (item->count() > 0) {
-            held.insert(NativeItemId(*item));
+            held.insert(pksm::bag::NativeItemId(*item));
         }
     }
     const auto storageFormat = sav->generation();
-    for (const int id : NativeItemList(*sav, pouch)) {
+    for (const int id : pksm::bag::NativeItemList(*sav, pouch)) {
         const u16 itemId = static_cast<u16>(id);
         if (id > 0 && !held.contains(itemId)) {
             addable.push_back({itemId, 0, pksm::strings::ItemName(itemId, storageFormat), {}, 0, 0});
@@ -305,7 +249,7 @@ BagDataProvider::Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Po
     if (!sav || count == 0) {
         return std::nullopt;
     }
-    const auto list = NativeItemList(*sav, pouch);
+    const auto list = pksm::bag::NativeItemList(*sav, pouch);
     const auto position = std::find(list.begin(), list.end(), itemId);
     if (position == list.end()) {
         return std::nullopt;
@@ -316,7 +260,7 @@ BagDataProvider::Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Po
         // Slots follow the list, so the item's own slot is its place in it; refused when held
         target = static_cast<int>(position - list.begin());
         const auto item = target < capacity ? sav->item(pouch, static_cast<u16>(target)) : nullptr;
-        if (!item || NativeItemId(*item) != itemId || item->count() > 0) {
+        if (!item || pksm::bag::NativeItemId(*item) != itemId || item->count() > 0) {
             return std::nullopt;
         }
     } else {
@@ -326,7 +270,7 @@ BagDataProvider::Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Po
             if (!item) {
                 break;
             }
-            const u16 id = NativeItemId(*item);
+            const u16 id = pksm::bag::NativeItemId(*item);
             if (id == itemId && item->count() > 0) {
                 return std::nullopt;
             }
@@ -340,7 +284,7 @@ BagDataProvider::Add(const pksm::saves::SaveData::Ref& saveData, ::pksm::Sav::Po
         return std::nullopt;
     }
     auto item = sav->item(pouch, static_cast<u16>(target));
-    SetNativeItemId(*item, itemId);
+    pksm::bag::SetNativeItemId(*item, itemId);
     item->count(count);
     sav->item(*item, pouch, static_cast<u16>(target));
     saveDataAccessor->markDirty();
@@ -391,7 +335,7 @@ std::optional<pksm::bag::Pouch> BagDataProvider::Sort(
         if (!item) {
             break;
         }
-        const u16 id = NativeItemId(*item);
+        const u16 id = pksm::bag::NativeItemId(*item);
         if (id != 0 && item->count() > 0) {
             std::string key = byName ? FoldCase(pksm::strings::ItemName(id, storageFormat)) : "";
             owned.push_back({std::move(item), id, std::move(key), slot});
