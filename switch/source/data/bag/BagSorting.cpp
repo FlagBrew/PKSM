@@ -31,8 +31,8 @@ BagSortKey BagSortKeyOf(const ::pksm::Sav& sav, const ::pksm::Item& item, const 
     if (item.generation() == ::pksm::Generation::NINE) {
         const auto& item9 = static_cast<const ::pksm::Item9a&>(item);
         key.order = sav.itemSortOrder(item9.id());
-        key.isNew = item9.isNew();
-        key.favorite = item9.isFavorite();
+        key.isNew = item9.newFlag();
+        key.favorite = item9.favoriteFlag();
         if (sort == BagSort::Name) {
             key.name = FoldCase(name);
         }
