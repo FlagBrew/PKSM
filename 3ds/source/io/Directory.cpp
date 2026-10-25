@@ -26,6 +26,7 @@
 
 #include "Directory.hpp"
 #include "internal_fspxi.hpp"
+#include <algorithm>
 #include <array>
 
 #define DIRECTORY_READ_SIZE 10
@@ -36,11 +37,14 @@ Directory::Directory(Handle handle) : err(0), load(false)
     std::array<FS_DirectoryEntry, DIRECTORY_READ_SIZE> tmp;
     do
     {
-        err = FSDIR_Read(handle, &result, DIRECTORY_READ_SIZE, tmp.data());
-        if (result > 0)
+        // A failed reply carries no count: libctru hands back the request's buffer descriptor
+        // instead, ~88k entries. Trusting it threw std::bad_alloc on a corrupt extdata (#1597).
+        if (R_FAILED(err = FSDIR_Read(handle, &result, DIRECTORY_READ_SIZE, tmp.data())))
         {
-            list.insert(list.end(), tmp.begin(), tmp.begin() + result);
+            break;
         }
+        result = std::min<u32>(result, DIRECTORY_READ_SIZE);
+        list.insert(list.end(), tmp.begin(), tmp.begin() + result);
     }
     while (result);
 
@@ -65,11 +69,14 @@ Directory::Directory(FSPXI_Directory handle)
     std::array<FS_DirectoryEntry, DIRECTORY_READ_SIZE> tmp;
     do
     {
-        err = FSPXI_ReadDirectory(fspxiHandle, handle, &result, DIRECTORY_READ_SIZE, tmp.data());
-        if (result > 0)
+        // Same as above: on failure the count is a stale word of the request.
+        if (R_FAILED(err = FSPXI_ReadDirectory(
+                         fspxiHandle, handle, &result, DIRECTORY_READ_SIZE, tmp.data())))
         {
-            list.insert(list.end(), tmp.begin(), tmp.begin() + result);
+            break;
         }
+        result = std::min<u32>(result, DIRECTORY_READ_SIZE);
+        list.insert(list.end(), tmp.begin(), tmp.begin() + result);
     }
     while (result);
 
