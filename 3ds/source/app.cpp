@@ -122,7 +122,7 @@ namespace
         if (name == "assets")
         {
             return "Additional assets download failed.\n\nAlways make sure you're connected to "
-                   "the internet and on the lastest version.";
+                   "the internet and on the latest version.";
         }
         return std::format("{:s} failed to initialize.", name);
     }
