@@ -36,6 +36,10 @@ class Archive
 {
 private:
     static Result createPKSMExtdataArchive(const std::string& execPath);
+    // Creates the PKSM ext data archive and mounts it as data(), marked as having the current size.
+    static Result mountNewPKSMExtdataArchive(const std::string& execPath);
+    // Deletes the PKSM ext data archive, contents and all, and mounts a new one in its place.
+    static Result resetPKSMExtdataArchive(const std::string& execPath);
     static Archive extdata(u32 extdata, bool pxi);
 
 public:
@@ -51,8 +55,8 @@ public:
     Archive& operator=(Archive&&);
 
     // confirmExtdataReset is invoked only if the existing PKSM ext data archive is found to be
-    // corrupt (opens, but its contents are unreadable). Returning true resets the archive,
-    // false aborts init. If null, a corrupt archive aborts init.
+    // corrupt (cannot be mounted, or its contents are unreadable). Returning true resets the
+    // archive, false aborts init. If null, a corrupt archive aborts init.
     static Result init(const std::string& execPath, bool (*confirmExtdataReset)() = nullptr);
     static void exit(void);
 

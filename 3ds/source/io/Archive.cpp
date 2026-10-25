@@ -29,6 +29,7 @@
 #include "Directory.hpp"
 #include "File.hpp"
 #include "internal_fspxi.hpp"
+#include "logging.hpp"
 #include "smdh.hpp"
 #include "STDirectory.hpp"
 #include <array>
@@ -554,44 +555,50 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
     }
 
     sdArchive = Archive{ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""), false};
-    if (R_FAILED(sd().result()))
+    if (R_FAILED(res = sd().result()))
     {
+        Logging::startupLog("archive", "sd open failed: 0x{:08X}", (u32)res);
         return res;
     }
+
+    // Created before touching the ext data, as its migration below backs it up to the SD card.
+    mkdir("/3ds", 777);
+    mkdir("/3ds/PKSM", 777);
+    mkdir("/3ds/PKSM/assets", 777);
+    mkdir("/3ds/PKSM/backups", 777);
+    mkdir("/3ds/PKSM/backups/wireless", 777);
+    mkdir("/3ds/PKSM/defaults", 777);
+    mkdir("/3ds/PKSM/dumps", 777);
+    mkdir("/3ds/PKSM/banks", 777);
+    mkdir("/3ds/PKSM/songs", 777);
+    mkdir("/3ds/PKSM/logs", 777);
+
+    // Recreating the ext data from scratch is the only recovery from a corrupt archive (equivalent
+    // to manually deleting it through FBI), so ask the user before destroying whatever it held.
+    const auto confirmReset = [confirmExtdataReset]
+    { return confirmExtdataReset && confirmExtdataReset(); };
+
     dataArchive = extdata(UNIQUE_ID, false);
     if (R_FAILED(data().result()))
     {
         const Result openResult = data().result();
+        Logging::startupLog("archive", "ext data not mounted: 0x{:08X}", (u32)openResult);
 
         // An invalid-state error means the extdata is still registered, but FS cannot mount it.
-        // Trying to create it again only returns the same error (#1567). Offer the same recovery
-        // used when the archive opens but its root cannot be read.
+        // Trying to create it again only returns the same error (#1567).
         if (R_SUMMARY(openResult) == RS_INVALIDSTATE)
         {
-            if (!confirmExtdataReset || !confirmExtdataReset())
+            if (!confirmReset())
             {
                 return openResult;
             }
 
-            if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+            if (R_FAILED(res = resetPKSMExtdataArchive(execPath)))
             {
                 return res;
             }
         }
-
-        if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
-        {
-            return res;
-        }
-
-        dataArchive = extdata(UNIQUE_ID, false);
-        if (R_FAILED(res = data().result()))
-        {
-            return res;
-        }
-
-        if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
-            res != (long)0xC82044B9)
+        else if (R_FAILED(res = mountNewPKSMExtdataArchive(execPath)))
         {
             return res;
         }
@@ -599,35 +606,14 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
     else if (!extdataReadable())
     {
         // The archive opened but its root contents are unreadable: it is corrupt (#1558).
-        // Recreating it from scratch is the only recovery (equivalent to manually deleting the
-        // ext data through FBI), so ask the user before destroying whatever it held.
-        if (confirmExtdataReset && !confirmExtdataReset())
+        Logging::startupLog("archive", "ext data root unreadable: 0x{:08X}", (u32)data().result());
+        if (!confirmReset())
         {
             // Abort init; surface the underlying FS error if the open itself failed.
             return R_FAILED(data().result()) ? data().result() : (Result)-1;
         }
 
-        if (R_FAILED(res = data().close()))
-        {
-            return res;
-        }
-        if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
-        {
-            return res;
-        }
-        if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
-        {
-            return res;
-        }
-
-        dataArchive = extdata(UNIQUE_ID, false);
-        if (R_FAILED(res = data().result()))
-        {
-            return res;
-        }
-
-        if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
-            res != (long)0xC82044B9)
+        if (R_FAILED(res = resetPKSMExtdataArchive(execPath)))
         {
             return res;
         }
@@ -639,33 +625,47 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
         {
             if (R_FAILED(res = copyDir(data(), u"/", sd(), u"/3ds/PKSM/extdata")))
             {
-                return res;
-            }
+                // The root lists, but something in it cannot be read back: the archive is corrupt
+                // just the same, and reinstalling PKSM keeps it around (#1581).
+                Logging::startupLog("archive", "ext data backup failed: 0x{:08X}", (u32)res);
+                if (!confirmReset())
+                {
+                    return res;
+                }
 
-            if (R_FAILED(res = data().close()))
-            {
-                return res;
+                if (R_FAILED(res = resetPKSMExtdataArchive(execPath)))
+                {
+                    return res;
+                }
             }
-            if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+            else
             {
-                return res;
-            }
-            if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
-            {
-                return res;
-            }
+                if (R_FAILED(res = data().close()))
+                {
+                    return res;
+                }
+                if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+                {
+                    return res;
+                }
+                if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+                {
+                    return res;
+                }
 
-            data() = extdata(UNIQUE_ID, false);
+                data() = extdata(UNIQUE_ID, false);
 
-            if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
-            {
-                return res;
-            }
+                if (R_FAILED(res = moveDir(sd(), u"/3ds/PKSM/extdata", data(), u"/")))
+                {
+                    return res;
+                }
 
-            if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
-                res != (long)0xC82044B9)
-            {
-                return res;
+                if (R_FAILED(
+                        res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
+                    res != (long)0xC82044B9)
+                {
+                    return res;
+                }
             }
         }
         else
@@ -673,16 +673,6 @@ Result Archive::init(const std::string& execPath, bool (*confirmExtdataReset)())
             checkFile->close();
         }
     }
-    mkdir("/3ds", 777);
-    mkdir("/3ds/PKSM", 777);
-    mkdir("/3ds/PKSM/assets", 777);
-    mkdir("/3ds/PKSM/backups", 777);
-    mkdir("/3ds/PKSM/backups/wireless", 777);
-    mkdir("/3ds/PKSM/defaults", 777);
-    mkdir("/3ds/PKSM/dumps", 777);
-    mkdir("/3ds/PKSM/banks", 777);
-    mkdir("/3ds/PKSM/songs", 777);
-    mkdir("/3ds/PKSM/logs", 777);
 
     Archive::data().createDir(fsMakePath(PATH_UTF16, u"/banks"), 0);
     Archive::sd().deleteDir(u"/3ds/PKSM/additionalassets");
@@ -799,4 +789,45 @@ Result Archive::createPKSMExtdataArchive(const std::string& execPath)
         PKSM_ARCHIVE_DATA, ndirs, nfiles, sizeLimit, sizeof(smdh_s), (u8*)smdh);
     delete smdh;
     return res;
+}
+
+Result Archive::mountNewPKSMExtdataArchive(const std::string& execPath)
+{
+    Result res;
+    if (R_FAILED(res = createPKSMExtdataArchive(execPath)))
+    {
+        Logging::startupLog("archive", "ext data create failed: 0x{:08X}", (u32)res);
+        return res;
+    }
+
+    dataArchive = extdata(UNIQUE_ID, false);
+    if (R_FAILED(res = data().result()))
+    {
+        Logging::startupLog("archive", "new ext data open failed: 0x{:08X}", (u32)res);
+        return res;
+    }
+
+    if (R_FAILED(res = data().createFile(fsMakePath(PATH_UTF16, u"/sizeCheck"), 0, 1)) &&
+        res != (long)0xC82044B9)
+    {
+        Logging::startupLog("archive", "ext data size check failed: 0x{:08X}", (u32)res);
+        return res;
+    }
+
+    return 0;
+}
+
+Result Archive::resetPKSMExtdataArchive(const std::string& execPath)
+{
+    // Unmount whatever was mounted of the old archive, or it cannot be deleted
+    dataArchive = Archive{};
+
+    Result res;
+    if (R_FAILED(res = FSUSER_DeleteExtSaveData(PKSM_ARCHIVE_DATA)))
+    {
+        Logging::startupLog("archive", "ext data delete failed: 0x{:08X}", (u32)res);
+        return res;
+    }
+
+    return mountNewPKSMExtdataArchive(execPath);
 }
