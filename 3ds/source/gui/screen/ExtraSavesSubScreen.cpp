@@ -554,6 +554,9 @@ void ExtraSavesSubScreen::update(touchPosition* touch)
             Configuration::getInstance().extraSaves(
                 selectedGame ? groupToId2(group) : groupToId1(group), currentSaves);
         }
+        // this screen is also reachable from the save loader, which never goes through the
+        // settings screen that would otherwise write the configuration
+        Configuration::getInstance().save();
         updateConfig = false;
         savesChanged = true;
         updateSaves();
